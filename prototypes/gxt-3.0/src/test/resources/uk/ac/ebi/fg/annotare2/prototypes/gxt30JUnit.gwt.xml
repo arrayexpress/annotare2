@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <!-- Inherit our applications main module.                      -->
+  <inherits name='uk.ac.ebi.fg.annotare2.prototypes.gxt30' />
+
+  <!-- Specify the path to any remote services.                   -->
+  <servlet path="/gxt30/greet" class="uk.ac.ebi.fg.annotare2.prototypes.server.GreetingServiceImpl" />
+
+</module>
