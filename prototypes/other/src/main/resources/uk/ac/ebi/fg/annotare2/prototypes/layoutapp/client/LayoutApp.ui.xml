@@ -1,0 +1,118 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .logo {
+            padding-left: 10px;
+            font-family: 'Arial Unicode MS', Arial, sans-serif;
+        }
+
+        .logo h1.title {
+            font-size: 23px;
+            font-weight: normal;
+            margin: 5px 0;
+            padding: 0;
+        }
+
+        .logo div {
+            color: #787878;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .experiment {
+            padding: 5px;
+            margin: 3px;
+            border-bottom: 1px solid #ededed;
+        }
+    </ui:style>
+
+    <g:DockPanel width="100%" height="100%">
+        <g:Dock direction="NORTH" height="60px">
+
+
+            <g:HTMLPanel height="60px">
+                <g:DockPanel width="100%" height="100%">
+                    <g:Dock direction="WEST">
+                        <g:HTMLPanel addStyleNames="{style.logo}">
+                            <h1 class="{style.title}">Annotare 2.0</h1>
+                            <div>Submition portal for
+                                <a href="http://ebi.ac.uk/arrayexpress">ArrayExpress</a>
+                            </div>
+                        </g:HTMLPanel>
+                    </g:Dock>
+                    <g:Dock direction='EAST' width="400px" height="100%">
+
+                        <g:HTMLPanel height="100%">
+
+                            <div style="float:right; height:100%; padding-right:5px;">
+
+                                <g:DockPanel width="100%" height="100%">
+                                    <g:Dock direction="NORTH">
+                                        <g:HTMLPanel>
+                                            <span>olkin@ebi.ac.uk,
+                                                <a href="#">sign out</a>
+                                            </span>
+                                        </g:HTMLPanel>
+                                    </g:Dock>
+                                    <g:Dock direction="SOUTH" horizontalAlignment="ALIGN_RIGHT"
+                                            verticalAlignment="ALIGN_BOTTOM">
+                                        <g:ListBox ui:field="experimentList"/>
+                                    </g:Dock>
+                                </g:DockPanel>
+
+                            </div>
+                            <div style="clear:both; height:1px;"></div>
+
+                        </g:HTMLPanel>
+
+                    </g:Dock>
+                </g:DockPanel>
+                <hr/>
+            </g:HTMLPanel>
+
+
+        </g:Dock>
+
+        <g:Dock direction="CENTER">
+            <g:DockPanel width="100%" height="100%">
+                <g:Dock direction="WEST" width="10%">
+                    <g:HTML>&nbsp;</g:HTML>
+                </g:Dock>
+                <g:Dock direction="CENTER" width="80%">
+                    <g:HTMLPanel>
+                        <h1>My Experiments</h1>
+                        <g:Button ui:field="newExperimentBtn" text="add experiment"/>
+                        <div class="{style.experiment}">
+                            Experiment 1
+                        </div>
+                        <div class="{style.experiment}">
+                            Experiment 2
+                        </div>
+                        <div class="{style.experiment}">
+                            Experiment 3
+                        </div>
+                        <div class="{style.experiment}">
+                            Experiment 4
+                        </div>
+                        <div>pages: 1 2 3 .... 10</div>
+                    </g:HTMLPanel>
+                </g:Dock>
+                <g:Dock direction="EAST" width="10%">
+                    <g:HTML>&nbsp;</g:HTML>
+                </g:Dock>
+
+            </g:DockPanel>
+        </g:Dock>
+
+        <g:Dock direction="SOUTH" height="30px">
+            <g:HTML>
+                <div style="text-align: center; font-size:11px">
+                    &copy; 2012 EMBL-EBI, Functional Genomics Group
+                </div>
+            </g:HTML>
+        </g:Dock>
+    </g:DockPanel>
+</ui:UiBinder>
