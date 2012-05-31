@@ -3,7 +3,6 @@ package uk.ac.ebi.fg.annotare2.prototypes.layoutapp.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -21,10 +20,7 @@ public class LayoutApp implements EntryPoint {
 
     @UiField ListBox experimentList;
 
-    @UiField Button newExpSubmissionBtn;
-    @UiField Button newAdfSubmissionBtn;
-
-    @UiField ExpSubmissionList submissionList;
+    @UiField TabLayoutPanel tabPanel;
 
     public void onModuleLoad() {
         setUncaughtExceptionHandler();
@@ -47,6 +43,10 @@ public class LayoutApp implements EntryPoint {
         experimentList.addItem("Experiment 3");
         experimentList.addItem("Experiment 4");
 
+        tabPanel.add(new MySubmissionsHome(), "Experiment submissions");
+        tabPanel.add(new MySubmissionsHome(),  "ADF submissions");
+
+        tabPanel.selectTab(0);
 
         hasWidgets.add(hPanel);
     }
@@ -54,11 +54,6 @@ public class LayoutApp implements EntryPoint {
     @UiHandler("experimentList")
     protected void projectSelect(ChangeEvent event) {
         Window.alert("you've selected " + experimentList.getValue(experimentList.getSelectedIndex()));
-    }
-
-    @UiHandler("newExpSubmissionBtn")
-    protected void newExperimentClick(ClickEvent event) {
-        Window.alert("Create new experiment");
     }
 
     private void setUncaughtExceptionHandler() {

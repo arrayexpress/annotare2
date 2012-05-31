@@ -17,9 +17,9 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class ExpSubmissionList extends Composite {
+public class SubmissionList extends Composite {
 
-    interface Binder extends UiBinder<Widget, ExpSubmissionList> {
+    interface Binder extends UiBinder<Widget, SubmissionList> {
     }
 
     @UiField(provided = true)
@@ -28,7 +28,7 @@ public class ExpSubmissionList extends Composite {
     @UiField(provided = true)
     SimplePager pager;
 
-    public ExpSubmissionList() {
+    public SubmissionList() {
         cellTable = new CellTable<SubmissionInfo>();
         cellTable.setWidth("100%", true);
         cellTable.addColumn(new TextColumn<SubmissionInfo>() {
@@ -55,9 +55,13 @@ public class ExpSubmissionList extends Composite {
         dataProvider.setList(asList(
                 new SubmissionInfo("Submission1", new Date(), "not ready"),
                 new SubmissionInfo("Submission1", new Date(), "not ready"),
+                new SubmissionInfo("Submission1", new Date(), "not ready"),
+                new SubmissionInfo("Submission1", new Date(), "not ready"),
+                new SubmissionInfo("Submission1", new Date(), "not ready"),
                 new SubmissionInfo("Submission1", new Date(), "not ready")
-                ));
-        // Create the UiBinder.
+
+        ));
+
         Binder uiBinder = GWT.create(Binder.class);
         Widget widget = uiBinder.createAndBindUi(this);
 

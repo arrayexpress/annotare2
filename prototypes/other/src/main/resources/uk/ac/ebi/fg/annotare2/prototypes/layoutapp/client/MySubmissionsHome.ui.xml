@@ -1,0 +1,12 @@
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.prototypes.layoutapp.client">
+
+        <g:HTMLPanel>
+            <h1>My Submissions</h1>
+            <g:Button ui:field="newSubmissionBtn" text="add experiment submission"/>
+            <my:SubmissionList ui:field="submissionList"/>
+        </g:HTMLPanel>
+
+</ui:UiBinder>

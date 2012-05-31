@@ -23,24 +23,24 @@
             padding: 0;
         }
 
-        .experiment {
-            padding: 5px;
-            margin: 3px;
-            border-bottom: 1px solid #ededed;
+        .header {
+            border-bottom: 1px solid #898989;
+            margin-bottom: 5px;
         }
+
     </ui:style>
 
-    <g:DockPanel width="100%" height="100%">
+    <g:DockPanel width="100%">
         <g:Dock direction="NORTH" height="60px">
 
 
-            <g:HTMLPanel height="60px">
-                <g:DockPanel width="100%" height="100%">
+                <g:DockPanel width="100%" height="100%" addStyleNames="{style.header}">
                     <g:Dock direction="WEST">
                         <g:HTMLPanel addStyleNames="{style.logo}">
                             <h1 class="{style.title}">Annotare 2.0</h1>
-                            <div>Submission portal for
+                            <div>
                                 <a href="http://ebi.ac.uk/arrayexpress">ArrayExpress</a>
+                                data submission tool
                             </div>
                         </g:HTMLPanel>
                     </g:Dock>
@@ -71,8 +71,6 @@
 
                     </g:Dock>
                 </g:DockPanel>
-                <hr/>
-            </g:HTMLPanel>
 
 
         </g:Dock>
@@ -83,13 +81,7 @@
                     <g:HTML>&nbsp;</g:HTML>
                 </g:Dock>
                 <g:Dock direction="CENTER" width="80%">
-                    <g:HTMLPanel>
-                        <h1>My Submissions</h1>
-                        <g:Button ui:field="newExpSubmissionBtn" text="add experiment submission"/>
-                        <g:Button ui:field="newAdfSubmissionBtn" text="add ADF submission"/>
-
-                        <my:ExpSubmissionList ui:field="submissionList"/>
-                    </g:HTMLPanel>
+                    <g:TabLayoutPanel ui:field="tabPanel" barHeight="60" height="400px"></g:TabLayoutPanel>
                 </g:Dock>
                 <g:Dock direction="EAST" width="10%">
                     <g:HTML>&nbsp;</g:HTML>

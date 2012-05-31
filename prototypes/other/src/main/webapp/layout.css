@@ -3,9 +3,9 @@
     padding: 5px 7px;
     text-decoration: none;
     cursor: pointer;
-    cursor: hand;
+    cursor: pointer;
     font-size:small;
-    background: url("images/hborder.png") repeat-x 0px -2077px;
+    /*background: url("images/hborder.png") repeat-x 0px -2077px;*/
     border:1px solid #bbb;
     border-bottom: 1px solid #a0a0a0;
     border-radius: 3px;
@@ -23,4 +23,125 @@
 }
 .gwt-Button[disabled]:hover {
     border: 1px outset #ccc;
+}
+
+.gwt-DecoratedTabBar {
+    background: #ccc;
+    padding-top: 6px;
+}
+.gwt-DecoratedTabBar .gwt-TabBarFirst {
+    width: 5px;  /* first tab distance from the left */
+}
+.gwt-DecoratedTabBar .gwt-TabBarRest {
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem {
+    border-collapse: collapse;
+    margin-left: 4px;
+}
+.gwt-DecoratedTabBar .tabTopCenter {
+    padding: 0px;
+    background: #8E8E8E;
+}
+.gwt-DecoratedTabBar .tabTopLeft,
+.gwt-DecoratedTabBar .tabTopRight {
+    padding: 0px;
+    zoom: 1;
+}
+.gwt-DecoratedTabBar .tabTopLeftInner,
+.gwt-DecoratedTabBar .tabTopRightInner {
+    width: 3px;
+    height: 3px;
+}
+
+.gwt-DecoratedTabBar .tabMiddleLeft,
+.gwt-DecoratedTabBar .tabMiddleRight {
+    width: 3px;
+    padding: 0px;
+    background: #8E8E8E;
+}
+.gwt-DecoratedTabBar .tabMiddleLeftInner,
+.gwt-DecoratedTabBar .tabMiddleRightInner {
+    width: 1px;
+    height: 1px;
+}
+.gwt-DecoratedTabBar .tabMiddleCenter {
+    padding: 0px 5px 4px 5px;
+    cursor: pointer;
+    cursor: pointer;
+    color: #fff;
+    font-weight: normal;
+    text-align: center;
+    background: #8E8E8E;
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabTopCenter {
+    background:#fff;
+}
+
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleLeft,
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleRight {
+    background: #fff;
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-selected .tabMiddleCenter {
+    cursor: default;
+    background: #fff;
+    color:#333;
+    font-weight:bold;
+}
+.gwt-DecoratedTabBar .gwt-TabBarItem-disabled .tabMiddleCenter {
+    cursor: default;
+    color: #999999;
+}
+html>body .gwt-DecoratedTabBar {
+}
+* html .gwt-DecoratedTabBar .tabTopLeftInner,
+* html .gwt-DecoratedTabBar .tabTopRightInner {
+    width: 3px;
+    height: 3px;
+    overflow: hidden;
+}
+.gwt-TabPanel {
+}
+.gwt-TabPanelBottom {
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 0px 1px 1px;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs {
+    background: #CCC;
+    padding-top: 6px;
+    padding-left: 5px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelContentContainer {
+    border-color: #CCC;
+    border-style: solid;
+    border-width: 0px 1px 1px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
+    border: none;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+    margin-left: 4px;
+    padding: 4px 8px 4px 8px;
+    cursor: pointer;
+    color: white;
+    font-weight: normal;
+    text-align: center;
+    background: #8E8E8E;
+    -moz-border-radius: 3px 3px 0px 0px;
+    border-radius: 3px 3px 0px 0px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
+    cursor: default;
+    background:white;
+    color:#333;
+    font-weight: bold;
 }
