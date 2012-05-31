@@ -4,7 +4,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -22,7 +21,10 @@ public class LayoutApp implements EntryPoint {
 
     @UiField ListBox experimentList;
 
-    @UiField Button newExperimentBtn;
+    @UiField Button newExpSubmissionBtn;
+    @UiField Button newAdfSubmissionBtn;
+
+    @UiField ExpSubmissionList submissionList;
 
     public void onModuleLoad() {
         setUncaughtExceptionHandler();
@@ -44,6 +46,8 @@ public class LayoutApp implements EntryPoint {
         experimentList.addItem("Experiment 2");
         experimentList.addItem("Experiment 3");
         experimentList.addItem("Experiment 4");
+
+
         hasWidgets.add(hPanel);
     }
 
@@ -52,7 +56,7 @@ public class LayoutApp implements EntryPoint {
         Window.alert("you've selected " + experimentList.getValue(experimentList.getSelectedIndex()));
     }
 
-    @UiHandler("newExperimentBtn")
+    @UiHandler("newExpSubmissionBtn")
     protected void newExperimentClick(ClickEvent event) {
         Window.alert("Create new experiment");
     }
