@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.user.client;
+package uk.ac.ebi.fg.annotare2.web.client.admin;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * @author Olga Melnichuk
  */
-public class UserApp implements EntryPoint {
+public class AdminApp implements EntryPoint {
 
     public void onModuleLoad() {
-        //TODO
+        loadModule(RootPanel.get());
     }
 
+    private void loadModule(RootPanel root) {
+        Window.alert("Hi!");
+    }
 }

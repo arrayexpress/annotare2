@@ -52,6 +52,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.sencha.gxt</groupId>
             <artifactId>gxt</artifactId>
             <version>3.0.0</version>
@@ -71,9 +76,9 @@
                     <execution>
                         <configuration>
                             <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
-                            <module>uk.ac.ebi.fg.annotare2.web.login.client.LoginApp</module>
-                            <module>uk.ac.ebi.fg.annotare2.web.admin.client.AdminApp</module>
-                            <module>uk.ac.ebi.fg.annotare2.web.user.client.UserApp</module>
+                            <module>uk.ac.ebi.fg.annotare2.web.client.login.LoginApp</module>
+                            <module>uk.ac.ebi.fg.annotare2.web.client.admin.AdminApp</module>
+                            <module>uk.ac.ebi.fg.annotare2.web.client.user.UserApp</module>
                             <module>uk.ac.ebi.fg.annotare2.web.common.client.CommonApp</module>
                         </configuration>
                         <goals>
