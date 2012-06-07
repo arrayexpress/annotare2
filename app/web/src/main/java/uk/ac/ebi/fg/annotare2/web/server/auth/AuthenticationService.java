@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.client.login;
+package uk.ac.ebi.fg.annotare2.web.server.auth;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
+import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Olga Melnichuk
  */
-public class LoginApp implements EntryPoint {
+public interface AuthenticationService {
 
-    public void onModuleLoad() {
-        loadModule(RootPanel.get());
-    }
+    boolean isLoggedIn(HttpServletRequest request);
 
-    private void loadModule(RootPanel root) {
-        Window.alert("Hi!");
-    }
+    ValidationErrors login(HttpServletRequest request) throws LoginException;
+
 }
