@@ -40,6 +40,8 @@
 
     <properties>
         <gwtVersion>2.4.0</gwtVersion>
+        <surefireVersion>2.12</surefireVersion>
+        <cloverVersion>3.1.3</cloverVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -105,27 +107,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12</version>
+                <version>${surefireVersion}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.surefire</groupId>
                         <artifactId>surefire-junit47</artifactId>
-                        <version>2.12</version>
+                        <version>${surefireVersion}</version>
                     </dependency>
                 </dependencies>
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-clover2-plugin</artifactId>
-                <version>3.1.3</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>instrument</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>${cloverVersion}</version>
+                <configuration>
+                    <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
+                    <singleCloverDatabase>true</singleCloverDatabase>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -135,11 +133,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.12</version>
+                <version>${surefireVersion}</version>
                 <configuration>
                     <aggregate>false</aggregate>
                     <showSuccess>true</showSuccess>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-clover2-plugin</artifactId>
+                <version>${cloverVersion}</version>
             </plugin>
         </plugins>
     </reporting>
