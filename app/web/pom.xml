@@ -137,7 +137,7 @@
                         <configuration>
                             <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
                             <module>uk.ac.ebi.fg.annotare2.web.client.UserApp</module>
-                            <module>uk.ac.ebi.fg.annotare2.web.client.CommonApp</module>
+                            <module>uk.ac.ebi.fg.annotare2.web.client.Common</module>
                             <!--<module>uk.ac.ebi.fg.annotare2.web.client.AdminApp</module>-->
                         </configuration>
                         <goals>
