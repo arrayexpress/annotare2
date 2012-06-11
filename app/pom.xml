@@ -45,26 +45,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>artifactory-repo</id>
-            <url>http://bar.ebi.ac.uk:8081/artifactory/repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>artifactory-repo</id>
-            <url>http://bar.ebi.ac.uk:8081/artifactory/repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
