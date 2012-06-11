@@ -18,7 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.server.servlet.utils;
 
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
+import javax.servlet.http.HttpServletRequest;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Olga Melnichuk
@@ -26,7 +29,32 @@ import static org.junit.Assert.fail;
 public class RequestParamTest {
 
     @Test
-    public void test() {
-        fail();
+    public void testEmptyParam() {
+        final String paramName = "param";
+
+        RequestParam param = RequestParam.from(mockRequest(paramName, null), paramName);
+        assertTrue(param.isEmpty());
+        assertEquals(paramName, param.getName());
+        assertNull(param.getValue());
+    }
+
+    @Test
+    public void testNonEmptyParam() {
+        final String paramName = "param";
+        final String[] paramValues = new String[]{"val1", "val2"};
+
+        RequestParam param = RequestParam.from(mockRequest(paramName, paramValues), paramName);
+        assertFalse(param.isEmpty());
+        assertEquals(paramName, param.getName());
+        assertEquals(paramValues[0], param.getValue());
+    }
+
+    private HttpServletRequest mockRequest(String paramName, String[] values) {
+        HttpServletRequest request = createMock(HttpServletRequest.class);
+        expect(request.getParameterValues(paramName))
+                .andReturn(values)
+                .once();
+        replay(request);
+        return request;
     }
 }
