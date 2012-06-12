@@ -33,34 +33,55 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Annotare 2.0 - Sign In</title>
-    <style type="text/css">
-        .error {
-            color: red;
-        }
-    </style>
+    <link type="text/css" rel="stylesheet" href="login.css">
 </head>
 <body>
 
-<form method="POST">
-    <p class="error">${dummyErrors}</p>
-    <table>
-        <tr>
-            <td>username:</td>
-            <td><input type="text" name="username" value="${username}"/></td>
-            <td class="error">${usernameErrors}</td>
-        </tr>
-        <tr>
-            <td>password:</td>
-            <td><input type="password" name="password"/></td>
-            <td class="error">${passwordErrors}</td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <button name="signIn">sign in</button>
-            </td>
-        </tr>
-    </table>
-</form>
+<div class="outer">
+    <div class="inner">
+        <h1>Annotare 2.0</h1>
+
+        <div class="frame">
+            <form method="POST">
+                <table class="form">
+                    <tr class="error">
+                        <td colspan="2">${dummyErrors}</td>
+                    </tr>
+                    <tr class="row right">
+                        <td>Username</td>
+                        <td><input type="text" name="username" value="${username}" style="width:98%"/></td>
+                    </tr>
+                    <tr class="error">
+                        <td></td>
+                        <td>${usernameErrors}</td>
+                    </tr>
+                    <tr class="row right">
+                        <td>Password</td>
+                        <td><input type="password" name="password" style="width:98%"/></td>
+                    </tr>
+                    <tr class="error">
+                        <td></td>
+                        <td>${passwordErrors}</td>
+                    </tr>
+                    <tr class="row">
+                        <td></td>
+                        <td>
+                            <input type="checkbox"/>&nbsp;Remember me on this computer?
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td></td>
+                        <td>
+                            <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="#" onclick="return false;">Forgot your password?</a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Register</a></div>
+        </div>
+        <div class="copy">2012 EMBL-EBI, Functional Genomics Group</div>
+    </div>
+</div>
 
 </body>
 </html>
