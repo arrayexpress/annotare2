@@ -45,6 +45,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>sencha-gpl-release</id>
+            <name>Open source licensed Sencha artifacts</name>
+            <url>https://maven.sencha.com/repo/gpl-release/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -126,13 +134,5 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <repositories>
-        <repository>
-            <id>sencha-gpl-release</id>
-            <name>Open source licensed Sencha artifacts</name>
-            <url>https://maven.sencha.com/repo/gpl-release/</url>
-        </repository>
-    </repositories>
 </project>
 
