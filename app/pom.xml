@@ -29,7 +29,7 @@
     <modules>
         <module>web</module>
     </modules>
-    
+
     <licenses>
         <license>
             <name>Apache Software License 2.0</name>
@@ -127,5 +127,12 @@
         </plugins>
     </reporting>
 
+    <repositories>
+        <repository>
+            <id>sencha-gpl-release</id>
+            <name>Open source licensed Sencha artifacts</name>
+            <url>https://maven.sencha.com/repo/gpl-release/</url>
+        </repository>
+    </repositories>
 </project>
 
