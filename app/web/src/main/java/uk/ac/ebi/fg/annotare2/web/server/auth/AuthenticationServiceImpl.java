@@ -37,8 +37,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private static final SessionAttribute USER_EMAIL = new SessionAttribute("email");
 
-    @Inject
     private AccountManager accountManager;
+
+    @Inject
+    public AuthenticationServiceImpl(AccountManager accountManager) {
+        this.accountManager = accountManager;
+    }
 
     public boolean isLoggedIn(HttpServletRequest request) {
         return USER_EMAIL.exists(request.getSession());
@@ -62,13 +66,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         USER_EMAIL.remove(request.getSession());
     }
 
-    private static class LoginParams {
+    static class LoginParams {
+        public static final String EMAIL_PARAM = "email";
+        public static final String PASSWORD_PARAM = "password";
+
         private final RequestParam email;
         private final RequestParam password;
 
         private LoginParams(HttpServletRequest request) {
-            email = RequestParam.from(request, "email");
-            password = RequestParam.from(request, "password");
+            email = RequestParam.from(request, EMAIL_PARAM);
+            password = RequestParam.from(request, PASSWORD_PARAM);
         }
 
         public ValidationErrors validate() {

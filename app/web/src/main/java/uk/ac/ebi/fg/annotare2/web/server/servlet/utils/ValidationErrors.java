@@ -20,6 +20,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import static com.google.common.base.Joiner.on;
 
@@ -51,7 +52,8 @@ public class ValidationErrors implements Serializable {
     }
 
     public String getErrors(String name) {
-        return on(",").join(errors.get(name));
+        Collection<String> err = errors.get(name);
+        return err == null ? "" : on(",").join(err);
     }
 
 }

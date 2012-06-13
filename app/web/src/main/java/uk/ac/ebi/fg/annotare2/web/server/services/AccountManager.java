@@ -27,8 +27,12 @@ import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex
  */
 public class AccountManager {
 
-    @Inject
     private UserDao userDao;
+
+    @Inject
+    public AccountManager(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public boolean isValid(String email, String password) {
         try {
