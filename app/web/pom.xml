@@ -40,6 +40,17 @@
     </properties>
 
     <dependencies>
+
+        <!-- Annotare dependencies -->
+
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
+            <artifactId>annotare2-om</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- Web specific dependencies -->
+
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
