@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtils.redirectToLogin;
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToLogin;
 
 /**
  * @author Olga Melnichuk

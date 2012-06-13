@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtils.forwardToLogin;
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtils.redirectToApp;
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.forwardToLogin;
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToApp;
 
 /**
  * @author Olga Melnichuk

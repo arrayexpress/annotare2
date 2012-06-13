@@ -29,7 +29,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
-class ServletUtils {
+class ServletUtil {
+
+    private ServletUtil() {
+    }
 
     private static final Pattern GWT_SRV_PARAM = Pattern.compile(".*?(gwt\\.codesvr=[0-9.:]+).*");
 
