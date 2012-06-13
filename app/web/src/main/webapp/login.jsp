@@ -21,12 +21,12 @@
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
         pageContext.setAttribute("dummyErrors", errors.getErrors());
-        pageContext.setAttribute("usernameErrors", errors.getErrors("username"));
+        pageContext.setAttribute("emailErrors", errors.getErrors("email"));
         pageContext.setAttribute("passwordErrors", errors.getErrors("password"));
     }
 
-    String[] values = request.getParameterValues("username");
-    pageContext.setAttribute("username", values == null ? "" : values[0]);
+    String[] values = request.getParameterValues("email");
+    pageContext.setAttribute("email", values == null ? "" : values[0]);
 %>
 <!DOCTYPE html>
 <html>
@@ -48,12 +48,12 @@
                         <td colspan="2">${dummyErrors}</td>
                     </tr>
                     <tr class="row right">
-                        <td>Username</td>
-                        <td><input type="text" name="username" value="${username}" style="width:98%"/></td>
+                        <td>Email</td>
+                        <td><input type="text" name="email" value="${email}" style="width:98%"/></td>
                     </tr>
                     <tr class="error">
                         <td></td>
-                        <td>${usernameErrors}</td>
+                        <td>${emailErrors}</td>
                     </tr>
                     <tr class="row right">
                         <td>Password</td>
@@ -77,7 +77,7 @@
                     </tr>
                 </table>
             </form>
-            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Register</a></div>
+            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Sign Up</a></div>
         </div>
         <div class="copy">2012 EMBL-EBI, Functional Genomics Group</div>
     </div>

@@ -18,10 +18,13 @@ package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import uk.ac.ebi.fg.annotare2.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.dao.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.web.server.auth.AuthenticationService;
 import uk.ac.ebi.fg.annotare2.web.server.auth.AuthenticationServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.auth.LoginServlet;
 import uk.ac.ebi.fg.annotare2.web.server.auth.SecurityFilter;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 
 /**
  * @author Olga Melnichuk
@@ -37,6 +40,8 @@ public class AppServletModule extends ServletModule {
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
 
+        bind(UserDao.class).to(UserDaoDummy.class).in(Scopes.SINGLETON);
+        bind(AccountManager.class).in(Scopes.SINGLETON);
         bind(AuthenticationService.class).to(AuthenticationServiceImpl.class).in(Scopes.SINGLETON);
     }
 }

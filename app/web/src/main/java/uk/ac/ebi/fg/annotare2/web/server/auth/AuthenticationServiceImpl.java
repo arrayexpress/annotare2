@@ -16,6 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
+import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
@@ -29,52 +33,56 @@ import static java.util.Arrays.asList;
  */
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private static final SessionAttribute USERNAME = new SessionAttribute("username");
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
+
+    private static final SessionAttribute USER_EMAIL = new SessionAttribute("email");
+
+    @Inject
+    private AccountManager accountManager;
 
     public boolean isLoggedIn(HttpServletRequest request) {
-        return USERNAME.exists(request.getSession());
+        return USER_EMAIL.exists(request.getSession());
     }
 
     public ValidationErrors login(HttpServletRequest request) throws LoginException {
         LoginParams params = new LoginParams(request);
         ValidationErrors errors = params.validate();
         if (errors.isEmpty()) {
-
-/*      TODO
-        if (!accountManager.contains(params.getUsername(), params.getPassword())) {
-           throw new LoginException("User ");
-        }
-*/
-            USERNAME.set(request.getSession(), params.getUsername());
+            if (!accountManager.isValid(params.getEmail(), params.getPassword())) {
+                log.debug("User '{}' entered invalid params", params.getEmail());
+                throw new LoginException("Sorry, the email or password you entered is not valid.");
+            }
+            log.debug("User '{}' logged in", params.getEmail());
+            USER_EMAIL.set(request.getSession(), params.getEmail());
         }
         return errors;
     }
 
     public void logout(HttpServletRequest request) {
-        USERNAME.remove(request.getSession());
+        USER_EMAIL.remove(request.getSession());
     }
 
     private static class LoginParams {
-        private final RequestParam username;
+        private final RequestParam email;
         private final RequestParam password;
 
         private LoginParams(HttpServletRequest request) {
-            username = RequestParam.from(request, "username");
+            email = RequestParam.from(request, "email");
             password = RequestParam.from(request, "password");
         }
 
         public ValidationErrors validate() {
             ValidationErrors errors = new ValidationErrors();
-            for (RequestParam p : asList(username, password)) {
+            for (RequestParam p : asList(email, password)) {
                 if (p.isEmpty()) {
-                    errors.append(p.getName(), "Please specify some value.");
+                    errors.append(p.getName(), "Please specify a value, " + p.getName() + " is required");
                 }
             }
             return errors;
         }
 
-        public String getUsername() {
-            return username.getValue();
+        public String getEmail() {
+            return email.getValue();
         }
 
         public String getPassword() {
