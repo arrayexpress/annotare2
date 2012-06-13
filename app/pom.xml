@@ -39,7 +39,7 @@
     </licenses>
 
     <properties>
-        <gwtVersion>2.4.0</gwtVersion>
+        <slf4jVersion>1.6.4</slf4jVersion>
         <surefireVersion>2.12</surefireVersion>
         <cloverVersion>3.1.3</cloverVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,6 +54,9 @@
     </repositories>
 
     <dependencies>
+
+        <!-- unit tests -->
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -66,19 +69,36 @@
             <version>3.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-            <scope>test</scope>
+
+        <!-- logging -->
+
+        <dependency> <!-- this will allow redirection of java.util.logging calls via slf4j -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4jVersion}</version>
         </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-            <classifier>sources</classifier>
-            <scope>test</scope>
+        <dependency> <!-- this will allow redirection of org.apache.commons.logging calls via slf4j -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4jVersion}</version>
         </dependency>
+        <dependency> <!-- native slf4j api for own application logging -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4jVersion}</version>
+        </dependency>
+
+        <dependency> <!-- log4j itself -->
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+        <dependency> <!-- log4-slf4j bridge -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4jVersion}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
