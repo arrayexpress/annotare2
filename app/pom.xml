@@ -131,6 +131,7 @@
                 <version>${cloverVersion}</version>
                 <configuration>
                     <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
+                    <licenseLocation>${user.home}/clover.license</licenseLocation>
                     <singleCloverDatabase>true</singleCloverDatabase>
                 </configuration>
             </plugin>
