@@ -16,18 +16,27 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
+import com.google.inject.Inject;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.forwardToLogin;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthenticationService {
+public class LogoutServlet extends HttpServlet {
 
-    boolean isLoggedIn(HttpServletRequest request);
+    @Inject
+    private AuthenticationService authService;
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpServletRequest request);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        authService.logout(request);
+        forwardToLogin(getServletConfig().getServletContext(), request, response);
+    }
 }

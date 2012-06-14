@@ -20,10 +20,7 @@ import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDaoDummy;
-import uk.ac.ebi.fg.annotare2.web.server.auth.AuthenticationService;
-import uk.ac.ebi.fg.annotare2.web.server.auth.AuthenticationServiceImpl;
-import uk.ac.ebi.fg.annotare2.web.server.auth.LoginServlet;
-import uk.ac.ebi.fg.annotare2.web.server.auth.SecurityFilter;
+import uk.ac.ebi.fg.annotare2.web.server.auth.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 
 /**
@@ -36,9 +33,11 @@ public class AppServletModule extends ServletModule {
         filter("/UserApp/*", "/index.html").through(SecurityFilter.class);
 
         serve("/login").with(LoginServlet.class);
+        serve("/logout").with(LogoutServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
+        bind(LogoutServlet.class).in(Scopes.SINGLETON);
 
         bind(UserDao.class).to(UserDaoDummy.class).in(Scopes.SINGLETON);
         bind(AccountManager.class).in(Scopes.SINGLETON);
