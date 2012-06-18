@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
+import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,33 +36,30 @@ class ServletUtil {
     private ServletUtil() {
     }
 
-    private static final Pattern GWT_SRV_PARAM = Pattern.compile(".*?(gwt\\.codesvr=[0-9.:]+).*");
+    private static final SessionAttribute ORIGINAL_URL = new SessionAttribute("original_url");
 
     public static void redirectToApp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        redirect("/index.html", request, response);
+        String url = (String) ORIGINAL_URL.get(request.getSession());
+        String reqUrl = requestUrl(request);
+        redirect(url == null || url.equals(reqUrl) ? withContextPath("/", request) : url, request, response);
     }
 
     public static void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        redirect("/login", request, response);
+        ORIGINAL_URL.set(request.getSession(), requestUrl(request));
+        redirect(withContextPath("/login", request), request, response);
     }
 
     public static void forwardToLogin(ServletContext context, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        context.getRequestDispatcher(newUrl("/login.jsp", request)).forward(request, response);
+        context.getRequestDispatcher(withContextPath("/login.jsp", request)).forward(request, response);
+    }
+
+    private static String withContextPath(String url, HttpServletRequest request) {
+        return request.getContextPath() + url;
     }
 
     private static void redirect(String url, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(response.encodeRedirectURL(newUrl(url, request)));
-    }
-
-    private static String newUrl(String url, HttpServletRequest request) {
-        StringBuilder newUrl = new StringBuilder(request.getContextPath()).append(url);
-        String reqUrl = requestUrl(request);
-        Matcher m = GWT_SRV_PARAM.matcher(reqUrl);
-        if (m.matches()) {
-            newUrl.append("?").append(m.group(1));
-        }
-        return newUrl.toString();
+        response.sendRedirect(response.encodeRedirectURL(url));
     }
 
     private static String requestUrl(HttpServletRequest request) {
