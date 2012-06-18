@@ -18,12 +18,22 @@
 
     <inherits name='uk.ac.ebi.fg.annotare2.web.client.Common' />
 
-    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+    <inherits name='com.google.gwt.activity.Activity'/>
 
-    <inherits name='com.sencha.gxt.ui.GXT'/>
+    <inherits name='com.google.gwt.place.Place'/>
+
+    <inherits name='com.google.web.bindery.event.Event'/>
+
+    <inherits name='com.google.gwt.user.theme.clean.Clean'/>
+    <!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
+    <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+    <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+    <inherits name="com.google.gwt.inject.Inject"/>
 
     <entry-point class='uk.ac.ebi.fg.annotare2.web.client.user.UserApp' />
 
     <source path='user' />
+    <source path="shared" />
 
 </module>
