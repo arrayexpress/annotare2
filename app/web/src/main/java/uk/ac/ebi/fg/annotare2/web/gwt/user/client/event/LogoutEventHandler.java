@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.gwt.user.client.event;
 
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthenticationService {
+public interface LogoutEventHandler extends EventHandler {
 
-    boolean isLoggedIn(HttpServletRequest request);
-
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    void onLogout();
 }

@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserAccount;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthenticationService {
+public interface UserAccountServiceAsync {
 
-    boolean isLoggedIn(HttpServletRequest request);
+    void getCurrentUser(AsyncCallback<UserAccount> async);
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    void logout(AsyncCallback<Void> async);
 }

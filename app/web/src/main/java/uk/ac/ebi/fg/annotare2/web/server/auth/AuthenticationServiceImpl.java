@@ -19,12 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.server.auth;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import static java.util.Arrays.asList;
 
@@ -62,8 +64,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return errors;
     }
 
-    public void logout(HttpServletRequest request) {
-        USER_EMAIL.remove(request.getSession());
+    public void logout(HttpSession session) {
+        USER_EMAIL.remove(session);
+    }
+
+    public User getCurrentUser(HttpSession session) {
+        String email = (String)USER_EMAIL.get(session);
+        return accountManager.getByEmail(email);
     }
 
     static class LoginParams {

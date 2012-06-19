@@ -154,15 +154,15 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
-                            <module>uk.ac.ebi.fg.annotare2.web.client.UserApp</module>
-                            <module>uk.ac.ebi.fg.annotare2.web.client.Common</module>
-                            <!--<module>uk.ac.ebi.fg.annotare2.web.client.AdminApp</module>-->
+                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=PRETTY</extraJvmArgs>
+                            <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
+                            <!--<module>uk.ac.ebi.fg.annotare2.web.Common</module>-->
+                            <!--<module>uk.ac.ebi.fg.annotare2.web.AdminApp</module>-->
                         </configuration>
                         <goals>
                             <goal>compile</goal>
                             <goal>test</goal>
-                            <goal>generateAsync</goal>
+<!--                            <goal>generateAsync</goal>-->
                         </goals>
                     </execution>
                 </executions>

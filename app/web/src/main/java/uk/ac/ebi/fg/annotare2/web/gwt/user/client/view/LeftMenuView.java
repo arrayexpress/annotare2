@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.client.user;
+package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Olga Melnichuk
  */
-public class UserApp implements EntryPoint {
-
-    public void onModuleLoad() {
-        loadModule(RootPanel.get());
-    }
-
-    private void loadModule(RootPanel root) {
-        Window.alert("Hi!");
+public interface LeftMenuView extends IsWidget {
+    
+    void setPresenter(Presenter presenter);
+    
+    public interface Presenter {
+        
     }
 }

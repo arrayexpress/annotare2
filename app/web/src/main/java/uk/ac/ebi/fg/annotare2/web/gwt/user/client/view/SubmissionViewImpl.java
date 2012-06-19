@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import com.google.gwt.user.client.ui.Composite;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthenticationService {
+public class SubmissionViewImpl extends Composite implements SubmissionView {
 
-    boolean isLoggedIn(HttpServletRequest request);
+    private Presenter presenter;
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
 }
