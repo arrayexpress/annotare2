@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,13 +56,14 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             public String getValue(SubmissionInfo object) {
                 return object.getTitle();
             }
-        });
+        }, new TextHeader("Title"));
+
         cellTable.addColumn(new TextColumn<SubmissionInfo>() {
             @Override
             public String getValue(SubmissionInfo object) {
                 return object.getDescription();
             }
-        });
+        }, new TextHeader("Description"));
 
 
         dataProvider = new ListDataProvider<SubmissionInfo>();
