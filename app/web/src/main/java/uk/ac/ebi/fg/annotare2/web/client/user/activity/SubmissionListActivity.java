@@ -50,11 +50,6 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
         containerWidget.setWidget(view.asWidget());
     }
 
-    @Override
-    public String mayStop() {
-        return "Please hold on. This activity is stopping.";
-    }
-
     public void goTo(Place place) {
         placeController.goTo(place);
     }

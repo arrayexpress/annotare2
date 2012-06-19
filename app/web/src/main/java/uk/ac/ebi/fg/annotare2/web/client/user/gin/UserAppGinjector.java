@@ -22,6 +22,7 @@ import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.client.user.gin.annotations.ContentDisplay;
+import uk.ac.ebi.fg.annotare2.web.client.user.gin.annotations.HeaderDisplay;
 import uk.ac.ebi.fg.annotare2.web.client.user.gin.annotations.LeftMenuDisplay;
 import uk.ac.ebi.fg.annotare2.web.client.user.mvp.UserAppPlaceFactory;
 
@@ -35,9 +36,14 @@ public interface UserAppGinjector extends Ginjector {
 
     PlaceController getPlaceController();
 
-    @LeftMenuDisplay ActivityMapper getLeftMenuActivityMapper();
+    @HeaderDisplay
+    ActivityMapper getHeaderActivityMapper();
 
-    @ContentDisplay ActivityMapper getContentActivityMapper();
+    @LeftMenuDisplay
+    ActivityMapper getLeftMenuActivityMapper();
+
+    @ContentDisplay
+    ActivityMapper getContentActivityMapper();
 
     UserAppPlaceFactory getPlaceFactory();
 

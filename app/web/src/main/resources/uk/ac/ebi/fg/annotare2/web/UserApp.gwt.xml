@@ -16,7 +16,7 @@
   -->
 <module rename-to='UserApp'>
 
-    <inherits name='uk.ac.ebi.fg.annotare2.web.client.Common' />
+    <inherits name='uk.ac.ebi.fg.annotare2.web.Common' />
 
     <inherits name='com.google.gwt.activity.Activity'/>
 
@@ -33,7 +33,7 @@
 
     <entry-point class='uk.ac.ebi.fg.annotare2.web.client.user.UserApp' />
 
-    <source path='user' />
+    <source path='client' />
     <source path="shared" />
 
 </module>

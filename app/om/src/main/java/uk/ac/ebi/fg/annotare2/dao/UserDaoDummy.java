@@ -34,14 +34,17 @@ public class UserDaoDummy implements UserDao {
         put("user@ebi.ac.uk", new User("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee"));
     }};
 
-    public User getUser(String email, String password) throws RecordNotFoundException {
+    public User getUserByEmailAndPassword(String email, String password) {
         log.debug("getUser(email={}, password=***)", email);
 
-        User u = map.get(email);
+        User u = getUserByEmail(email);
         if (u == null || !(u.getPassword().equals(password))) {
-            throw new RecordNotFoundException("User not found: password and email " + email);
+            return null;
         }
         return u;
     }
 
+    public User getUserByEmail(String email) {
+        return map.get(email);
+    }
 }

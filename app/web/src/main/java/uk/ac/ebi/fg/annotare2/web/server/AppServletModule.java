@@ -21,6 +21,7 @@ import com.google.inject.servlet.ServletModule;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.web.server.auth.*;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.UserAccountServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 
 /**
@@ -33,11 +34,12 @@ public class AppServletModule extends ServletModule {
         filter("/UserApp/*", "/index.html").through(SecurityFilter.class);
 
         serve("/login").with(LoginServlet.class);
-        serve("/logout").with(LogoutServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
-        bind(LogoutServlet.class).in(Scopes.SINGLETON);
+
+        serve("/UserApp/userAccountService").with(UserAccountServiceImpl.class);
+        bind(UserAccountServiceImpl.class).in(Scopes.SINGLETON);
 
         bind(UserDao.class).to(UserDaoDummy.class).in(Scopes.SINGLETON);
         bind(AccountManager.class).in(Scopes.SINGLETON);

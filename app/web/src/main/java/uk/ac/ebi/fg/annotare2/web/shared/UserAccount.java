@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.client.user.view.widget;
+package uk.ac.ebi.fg.annotare2.web.shared;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionListHeader extends Composite implements IsWidget {
+public class UserAccount implements Serializable {
 
-    interface Binder extends UiBinder<DockPanel, SubmissionListHeader> {
+    private String email;
+
+    public UserAccount() {
     }
 
-    @UiField
-    AppHeader appHeader;
+    public UserAccount(String email) {
+        this.email = email;
+    }
 
-    public SubmissionListHeader() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+    public String getEmail() {
+        return email;
     }
 }

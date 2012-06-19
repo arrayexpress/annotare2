@@ -41,12 +41,12 @@ class ServletUtil {
     public static void redirectToApp(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String url = (String) ORIGINAL_URL.get(request.getSession());
         String reqUrl = requestUrl(request);
-        redirect(url == null || url.equals(reqUrl) ? withContextPath("/", request) : url, request, response);
+        redirect(url == null || url.equals(reqUrl) ? withContextPath("/", request) : url, response);
     }
 
     public static void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ORIGINAL_URL.set(request.getSession(), requestUrl(request));
-        redirect(withContextPath("/login", request), request, response);
+        redirect(withContextPath("/login", request), response);
     }
 
     public static void forwardToLogin(ServletContext context, HttpServletRequest request, HttpServletResponse response)
@@ -58,7 +58,7 @@ class ServletUtil {
         return request.getContextPath() + url;
     }
 
-    private static void redirect(String url, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private static void redirect(String url, HttpServletResponse response) throws IOException {
         response.sendRedirect(response.encodeRedirectURL(url));
     }
 

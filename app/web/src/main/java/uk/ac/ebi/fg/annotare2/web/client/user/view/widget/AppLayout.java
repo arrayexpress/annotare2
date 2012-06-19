@@ -37,6 +37,9 @@ public class AppLayout extends Composite {
     @UiField
     SimplePanel centerPanel;
 
+    @UiField
+    SimplePanel topPanel;
+
     public AppLayout() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -49,4 +52,9 @@ public class AppLayout extends Composite {
     public SimplePanel getCenterPanel() {
         return centerPanel;
     }
+
+    public SimplePanel getTopPanel() {
+        return topPanel;
+    }
+
 }

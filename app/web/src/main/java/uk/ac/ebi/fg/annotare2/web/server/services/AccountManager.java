@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.om.User;
 
 import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
 
@@ -35,11 +36,10 @@ public class AccountManager {
     }
 
     public boolean isValid(String email, String password) {
-        try {
-            userDao.getUser(email, md5Hex(password));
-        } catch (RecordNotFoundException e) {
-            return false;
-        }
-        return true;
+        return userDao.getUserByEmailAndPassword(email, md5Hex(password)) != null;
+    }
+
+    public User getByEmail(String email) {
+        return userDao.getUserByEmail(email);
     }
 }

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.client.user.activity;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
@@ -47,11 +48,6 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         //view.setPlaceName(token);
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
-    }
-
-    @Override
-    public String mayStop() {
-        return "Please hold on. This activity is stopping.";
     }
 
     public void goTo(Place place) {

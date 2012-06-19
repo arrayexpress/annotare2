@@ -61,7 +61,7 @@
             <g:HTMLPanel height="100%">
 
                 <div style="float:right; height:100%; padding-right:5px;">
-                     <g:Label ui:field="userNameLabel" />, <g:Anchor ui:field="signOutLink" text="Sign Out"/>
+                     <g:InlineLabel  ui:field="userNameLabel" />, <g:Anchor ui:field="signOutLink" text="Sign Out"/>
                 </div>
                 <div style="clear:both; height:1px;"></div>
 

@@ -14,10 +14,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<module>
+<module rename-to='AdminApp'>
 
-    <inherits name='com.google.gwt.user.User' />
+    <inherits name='uk.ac.ebi.fg.annotare2.web.Common' />
 
-    <source path='common' />
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+
+    <inherits name='com.sencha.gxt.ui.GXT'/>
+
+    <entry-point class='uk.ac.ebi.fg.annotare2.web.client.admin.AdminApp' />
+
+    <source path='client/admin' />
 
 </module>

@@ -20,26 +20,33 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.client.user.place.SubmissionViewPlace;
-import uk.ac.ebi.fg.annotare2.web.client.user.view.SubmissionView;
+import uk.ac.ebi.fg.annotare2.web.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.client.UserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.client.user.view.HeaderView;
+import uk.ac.ebi.fg.annotare2.web.shared.UserAccount;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionViewActivity extends AbstractActivity implements SubmissionView.Presenter {
+public class HeaderActivity extends AbstractActivity implements HeaderView.Presenter {
 
-    private final SubmissionView view;
+    private final HeaderView view;
     private final PlaceController placeController;
+    private final UserAccountServiceAsync rpcService;
 
     @Inject
-    public SubmissionViewActivity(SubmissionView view, PlaceController placeController) {
+    public HeaderActivity(HeaderView view,
+                          PlaceController placeController,
+                          UserAccountServiceAsync rpcService) {
         this.view = view;
         this.placeController = placeController;
+        this.rpcService = rpcService;
     }
 
-    public SubmissionViewActivity withPlace(SubmissionViewPlace place) {
+    public HeaderActivity withPlace(Place place) {
         //this.token = place.getPlaceName();
         return this;
     }
@@ -48,9 +55,34 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
         //view.setPlaceName(token);
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        asyncInit(view);
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    public void logout() {
+        rpcService.logout(new AsyncCallbackWrapper<Void>() {
+            public void onSuccess(Void result) {
+                 Window.Location.reload();
+            }
+
+            public void onFailure(Throwable caught) {
+                Window.alert("Error during logout");
+            }
+        }.wrap());
+    }
+
+    private void asyncInit(final HeaderView view) {
+        rpcService.getCurrentUser(new AsyncCallbackWrapper<UserAccount>() {
+            public void onSuccess(UserAccount result) {
+                view.setUserName(result.getEmail());
+            }
+
+            public void onFailure(Throwable caught) {
+                Window.alert("Error retrieving user");
+            }
+        }.wrap());
     }
 }

@@ -27,8 +27,10 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import uk.ac.ebi.fg.annotare2.web.client.user.gin.annotations.ContentDisplay;
+import uk.ac.ebi.fg.annotare2.web.client.user.gin.annotations.HeaderDisplay;
 import uk.ac.ebi.fg.annotare2.web.client.user.gin.annotations.LeftMenuDisplay;
 import uk.ac.ebi.fg.annotare2.web.client.user.mvp.ContentActivityMapper;
+import uk.ac.ebi.fg.annotare2.web.client.user.mvp.HeaderActivityMapper;
 import uk.ac.ebi.fg.annotare2.web.client.user.mvp.LeftMenuActivityMapper;
 import uk.ac.ebi.fg.annotare2.web.client.user.mvp.UserAppPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.client.user.view.*;
@@ -42,9 +44,11 @@ public class UserAppGinModule extends AbstractGinModule {
     protected void configure() {
         bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
         bind(PlaceHistoryMapper.class).to(UserAppPlaceHistoryMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(HeaderDisplay.class).to(HeaderActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(LeftMenuDisplay.class).to(LeftMenuActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(ContentDisplay.class).to(ContentActivityMapper.class).in(Singleton.class);
 
+        bind(HeaderView.class).to(HeaderViewImpl.class);
         bind(LeftMenuView.class).to(LeftMenuViewImpl.class);
         bind(SubmissionView.class).to(SubmissionViewImpl.class);
         bind(SubmissionListView.class).to(SubmissionListViewImpl.class);

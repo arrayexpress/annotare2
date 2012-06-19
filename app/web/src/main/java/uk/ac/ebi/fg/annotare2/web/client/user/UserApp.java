@@ -47,6 +47,10 @@ public class UserApp implements EntryPoint {
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 
+        ActivityMapper headerActivityMapper = injector.getHeaderActivityMapper();
+        ActivityManager headerActivityManager = new ActivityManager(headerActivityMapper, eventBus);
+        headerActivityManager.setDisplay(appWidget.getTopPanel());
+
         ActivityMapper leftMenuActivityMapper = injector.getLeftMenuActivityMapper();
         ActivityManager leftMenuActivityManager = new ActivityManager(leftMenuActivityMapper, eventBus);
         leftMenuActivityManager.setDisplay(appWidget.getWestPanel());

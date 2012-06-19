@@ -14,43 +14,55 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.client.user.view.widget;
+package uk.ac.ebi.fg.annotare2.web.client.user.view;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockPanel;
 import uk.ac.ebi.fg.annotare2.web.client.user.event.LogoutEvent;
-
+import uk.ac.ebi.fg.annotare2.web.client.user.event.LogoutEventHandler;
+import uk.ac.ebi.fg.annotare2.web.client.user.view.widget.AppHeader;
 
 /**
  * @author Olga Melnichuk
  */
-public class AppHeader extends Composite implements IsWidget {
+public class HeaderViewImpl extends Composite implements HeaderView {
 
-    interface Binder extends UiBinder<DockPanel, AppHeader> {
+    interface Binder extends UiBinder<DockPanel, HeaderViewImpl> {
     }
 
     @UiField
-    Label userNameLabel;
+    AppHeader appHeader;
 
-    @UiField
-    Anchor signOutLink;
+    private Presenter presenter;
 
-    public AppHeader() {
+    public HeaderViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void setUserName(String name) {
-        userNameLabel.setText(name);
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
-    @UiHandler("signOutLink")
-    void onClickSignOut(ClickEvent e) {
-        fireEvent(new LogoutEvent());
+    public void setUserName(String name) {
+        appHeader.setUserName(name);
+    }
+
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        appHeader.addHandler(new LogoutEventHandler() {
+            public void onLogout() {
+                presenter.logout();
+            }
+        }, LogoutEvent.TYPE);
+    }
+
+    @Override
+    protected void onUnload() {
+        super.onUnload();
     }
 }

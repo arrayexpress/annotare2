@@ -62,7 +62,10 @@ public class SecurityFilter implements Filter {
     }
 
     private boolean isHtmlAccepted(HttpServletRequest request) {
-        String accept = request.getHeader("Accept");
-        return !isNullOrEmpty(accept) && accept.contains("text/html");
+        String accept = request.getHeader("Accept").split(";")[0];
+        boolean accepted = !isNullOrEmpty(accept) && (accept.contains("text/html")) ;
+
+        String url = request.getRequestURL().toString();
+        return accepted || url.contains(".html");
     }
 }
