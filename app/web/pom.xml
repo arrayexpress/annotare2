@@ -154,9 +154,9 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
+                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=PRETTY</extraJvmArgs>
                             <module>uk.ac.ebi.fg.annotare2.web.UserApp</module>
-                            <module>uk.ac.ebi.fg.annotare2.web.Common</module>
+                            <!--<module>uk.ac.ebi.fg.annotare2.web.Common</module>-->
                             <!--<module>uk.ac.ebi.fg.annotare2.web.AdminApp</module>-->
                         </configuration>
                         <goals>

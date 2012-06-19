@@ -16,7 +16,7 @@
   -->
 <module rename-to='UserApp'>
 
-    <inherits name='uk.ac.ebi.fg.annotare2.web.Common' />
+    <inherits name='com.google.gwt.user.User'/>
 
     <inherits name='com.google.gwt.activity.Activity'/>
 
