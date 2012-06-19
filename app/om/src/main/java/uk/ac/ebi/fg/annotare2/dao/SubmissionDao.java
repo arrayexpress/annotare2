@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.dao;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.SubmissionType;
+import uk.ac.ebi.fg.annotare2.om.User;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserAccountServiceAsync {
+public interface SubmissionDao {
 
-    void getCurrentUser(AsyncCallback<UserInfo> async);
+    Submission getSubmission(int id) throws RecordNotFoundException;
 
-    void logout(AsyncCallback<Void> async);
+    List<Submission> getSubmissionsByType(User user, SubmissionType type);
 }

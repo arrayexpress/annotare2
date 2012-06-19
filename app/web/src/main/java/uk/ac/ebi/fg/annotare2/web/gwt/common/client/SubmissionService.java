@@ -16,15 +16,17 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserAccountServiceAsync {
+@RemoteServiceRelativePath("submissionService")
+public interface SubmissionService extends RemoteService {
 
-    void getCurrentUser(AsyncCallback<UserInfo> async);
-
-    void logout(AsyncCallback<Void> async);
+    List<SubmissionInfo> getSubmissions();
 }

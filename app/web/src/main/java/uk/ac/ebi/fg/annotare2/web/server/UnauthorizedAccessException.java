@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+package uk.ac.ebi.fg.annotare2.web.server;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserAccountServiceAsync {
+public class UnauthorizedAccessException extends RuntimeException {
 
-    void getCurrentUser(AsyncCallback<UserInfo> async);
-
-    void logout(AsyncCallback<Void> async);
+    public UnauthorizedAccessException(String message) {
+        super(message);
+    }
 }

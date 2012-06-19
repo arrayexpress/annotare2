@@ -17,14 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+import com.google.gwt.user.client.rpc.RemoteService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
 
-/**
- * @author Olga Melnichuk
- */
-public interface UserAccountServiceAsync {
+import java.util.Collection;
+import java.util.List;
 
-    void getCurrentUser(AsyncCallback<UserInfo> async);
+public interface SubmissionServiceAsync {
 
-    void logout(AsyncCallback<Void> async);
+    void getSubmissions(AsyncCallback<List<SubmissionInfo>> async);
 }

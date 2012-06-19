@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
+package uk.ac.ebi.fg.annotare2.dao.dummy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.om.User;
 
 import java.util.HashMap;
@@ -30,10 +31,6 @@ public class UserDaoDummy implements UserDao {
 
     private static final Logger log = LoggerFactory.getLogger(UserDaoDummy.class);
 
-    private final Map<String, User> map = new HashMap<String, User>() {{
-        put("user@ebi.ac.uk", new User("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee"));
-    }};
-
     public User getUserByEmailAndPassword(String email, String password) {
         log.debug("getUser(email={}, password=***)", email);
 
@@ -45,6 +42,6 @@ public class UserDaoDummy implements UserDao {
     }
 
     public User getUserByEmail(String email) {
-        return map.get(email);
+        return DummyDb.getUserByEmail(email);
     }
 }

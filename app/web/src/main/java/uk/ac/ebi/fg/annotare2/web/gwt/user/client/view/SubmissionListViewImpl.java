@@ -16,27 +16,66 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class SubmissionListViewImpl extends Composite implements SubmissionListView {
 
-    interface Binder extends UiBinder<HTMLPanel, SubmissionListViewImpl> {
+    interface Binder extends UiBinder<Widget, SubmissionListViewImpl> {
     }
 
     private Presenter presenter;
 
+    private ListDataProvider<SubmissionInfo> dataProvider;
+
+    @UiField(provided = true)
+    CellTable<SubmissionInfo> cellTable;
+
     public SubmissionListViewImpl() {
+        cellTable = new CellTable<SubmissionInfo>();
+        cellTable.setWidth("100%", true);
+        cellTable.addColumn(new TextColumn<SubmissionInfo>() {
+            @Override
+            public String getValue(SubmissionInfo object) {
+                return object.getTitle();
+            }
+        });
+        cellTable.addColumn(new TextColumn<SubmissionInfo>() {
+            @Override
+            public String getValue(SubmissionInfo object) {
+                return object.getDescription();
+            }
+        });
+
+
+        dataProvider = new ListDataProvider<SubmissionInfo>();
+        dataProvider.addDataDisplay(cellTable);
+
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void setSubmissions(List<SubmissionInfo> submissions) {
+        dataProvider.setList(submissions);
     }
 }

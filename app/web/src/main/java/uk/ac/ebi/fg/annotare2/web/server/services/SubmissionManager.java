@@ -14,17 +14,29 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.SubmissionType;
+import uk.ac.ebi.fg.annotare2.om.User;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserAccountServiceAsync {
+public class SubmissionManager {
 
-    void getCurrentUser(AsyncCallback<UserInfo> async);
+    private SubmissionDao submissionDao;
 
-    void logout(AsyncCallback<Void> async);
+    @Inject
+    public SubmissionManager(SubmissionDao submissionDao) {
+        this.submissionDao = submissionDao;
+    }
+
+    public List<Submission> getSubmissions(User user) {
+        return submissionDao.getSubmissionsByType(user, SubmissionType.EXPERIMENT);
+    }
 }

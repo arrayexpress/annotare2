@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserAccountServiceAsync {
+public class UserInfo implements Serializable {
 
-    void getCurrentUser(AsyncCallback<UserInfo> async);
+    private String email;
 
-    void logout(AsyncCallback<Void> async);
+    public UserInfo() {
+    }
+
+    public UserInfo(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

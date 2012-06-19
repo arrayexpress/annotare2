@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+package uk.ac.ebi.fg.annotare2.om;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserAccountServiceAsync {
-
-    void getCurrentUser(AsyncCallback<UserInfo> async);
-
-    void logout(AsyncCallback<Void> async);
+public class ExperimentSubmission extends Submission {
+    public ExperimentSubmission(int id, String title, String description) {
+        super(id, title, description, SubmissionType.EXPERIMENT);
+    }
 }

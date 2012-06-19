@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.UserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.HeaderView;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserAccount;
 
 /**
  * @author Olga Melnichuk
@@ -75,8 +75,8 @@ public class HeaderActivity extends AbstractActivity implements HeaderView.Prese
     }
 
     private void asyncInit(final HeaderView view) {
-        rpcService.getCurrentUser(new AsyncCallbackWrapper<UserAccount>() {
-            public void onSuccess(UserAccount result) {
+        rpcService.getCurrentUser(new AsyncCallbackWrapper<UserInfo>() {
+            public void onSuccess(UserInfo result) {
                 view.setUserName(result.getEmail());
             }
 

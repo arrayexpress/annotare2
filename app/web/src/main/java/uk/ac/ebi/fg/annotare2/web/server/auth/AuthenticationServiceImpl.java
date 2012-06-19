@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
@@ -70,7 +71,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public User getCurrentUser(HttpSession session) {
         String email = (String)USER_EMAIL.get(session);
-        return accountManager.getByEmail(email);
+        User user = accountManager.getByEmail(email);
+        if (user == null) {
+            throw new UnauthorizedAccessException("Sorry, you are not logged in");
+        }
+        return user;
     }
 
     static class LoginParams {

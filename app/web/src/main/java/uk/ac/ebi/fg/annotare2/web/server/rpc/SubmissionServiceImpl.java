@@ -18,28 +18,38 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.UserAccountService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
 import uk.ac.ebi.fg.annotare2.web.server.auth.AuthenticationService;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class UserAccountServiceImpl extends RemoteServiceServlet implements UserAccountService {
+public class SubmissionServiceImpl extends RemoteServiceServlet implements SubmissionService {
+
+    @Inject
+    private SubmissionManager manager;
 
     @Inject
     private AuthenticationService authService;
 
-    public UserInfo getCurrentUser() {
-        User user = authService.getCurrentUser(getSession());
-        return new UserInfo(user.getEmail());
+    public List<SubmissionInfo> getSubmissions() {
+        List<SubmissionInfo> list = new ArrayList<SubmissionInfo>();
+        for (Submission s : manager.getSubmissions(currentUser())) {
+            list.add(new SubmissionInfo(s.getTitle(), s.getDescription()));
+        }
+        return list;
     }
 
-    public void logout() {
-        authService.logout(getSession());
+    private User currentUser() {
+        return authService.getCurrentUser(getSession());
     }
 
     private HttpSession getSession() {

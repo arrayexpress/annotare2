@@ -21,18 +21,25 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
-public class UserAccount implements Serializable {
+public class SubmissionInfo implements Serializable {
 
-    private String email;
+    private String title;
 
-    public UserAccount() {
+    private String description;
+
+    public SubmissionInfo() {
     }
 
-    public UserAccount(String email) {
-        this.email = email;
+    public SubmissionInfo(String title, String description) {
+        this.title = title;
+        this.description = description;
     }
 
-    public String getEmail() {
-        return email;
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

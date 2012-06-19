@@ -16,7 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
+
 import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
 
 import javax.servlet.http.HttpServletRequest;
