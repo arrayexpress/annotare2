@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthenticationService {
+public class UserAccount implements Serializable {
 
-    boolean isLoggedIn(HttpServletRequest request);
+    private String email;
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
+    public UserAccount() {
+    }
 
-    void logout(HttpSession session);
+    public UserAccount(String email) {
+        this.email = email;
+    }
 
-    User getCurrentUser(HttpSession session);
+    public String getEmail() {
+        return email;
+    }
 }

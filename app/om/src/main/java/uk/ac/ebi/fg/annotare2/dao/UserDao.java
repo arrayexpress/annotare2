@@ -23,6 +23,8 @@ import uk.ac.ebi.fg.annotare2.om.User;
  */
 public interface UserDao {
 
-    public User getUser(String email, String password) throws RecordNotFoundException;
+    public User getUserByEmailAndPassword(String email, String password);
+
+    public User getUserByEmail(String email);
 
 }
