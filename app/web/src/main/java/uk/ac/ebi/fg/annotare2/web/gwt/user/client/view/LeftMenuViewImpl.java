@@ -18,8 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.MenuButton;
 
 /**
  * @author Olga Melnichuk
@@ -31,9 +33,16 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     private Presenter presenter;
 
-    public LeftMenuViewImpl( ) {
+    @UiField
+    MenuButton createButton;
+
+    public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+
+        createButton.addMenuButtonItem("Microarray Experiment Submission");
+        createButton.addMenuButtonItem("HTS Experiment Submission");
+        createButton.addMenuButtonItem("ADF Submission");
     }
 
     public void setPresenter(Presenter presenter) {
