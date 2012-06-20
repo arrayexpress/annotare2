@@ -14,30 +14,6 @@
  * limitations under the License.
  */
 
-html, body {
-    font-family: 'Arial Unicode MS', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-h1 {
-    font-size: 18px;
-    font-weight: bolder;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    color: #207A7A;
-}
-
-a, a:link, a:visited {
-    color: #185C5C;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 .outer {
     position: absolute;
     top: 30%;
@@ -55,13 +31,6 @@ a:hover {
     border: 1px solid #207A7A;
     padding: 15px 10px 2px;
     font-size: small;
-}
-
-.copy {
-    padding-top: 3px;
-    font-size: small;
-    color: #207A7A;
-    text-align: center;
 }
 
 .error {
