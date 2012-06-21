@@ -24,10 +24,15 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
 
 import java.util.Collection;
@@ -65,6 +70,14 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             }
         }, new TextHeader("Description"));
 
+
+        final SelectionModel<SubmissionInfo> selectionModel = new SingleSelectionModel<SubmissionInfo>();
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            public void onSelectionChange(SelectionChangeEvent event) {
+                GWT.log("onSelectionChange(..)");
+            }
+        });
+        cellTable.setSelectionModel(selectionModel);
 
         dataProvider = new ListDataProvider<SubmissionInfo>();
         dataProvider.addDataDisplay(cellTable);
