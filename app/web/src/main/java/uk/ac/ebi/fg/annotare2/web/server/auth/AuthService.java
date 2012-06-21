@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author Olga Melnichuk
  */
-public interface AuthenticationService {
+public interface AuthService {
 
     boolean isLoggedIn(HttpServletRequest request);
 

@@ -32,7 +32,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToLogin
 public class SecurityFilter implements Filter {
 
     @Inject
-    private AuthenticationService authService;
+    private AuthService authService;
 
     public void init(FilterConfig filterConfig) throws ServletException {
     }

@@ -34,7 +34,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToApp;
 public class LoginServlet extends HttpServlet {
 
     @Inject
-    private AuthenticationService authService;
+    private AuthService authService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

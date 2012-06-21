@@ -53,6 +53,6 @@ public class AppServletModule extends ServletModule {
         bind(AccountManager.class).in(Scopes.SINGLETON);
         bind(SubmissionManager.class).in(Scopes.SINGLETON);
 
-        bind(AuthenticationService.class).to(AuthenticationServiceImpl.class).in(Scopes.SINGLETON);
+        bind(AuthService.class).to(AuthServiceImpl.class).in(Scopes.SINGLETON);
     }
 }

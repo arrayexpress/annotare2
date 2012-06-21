@@ -34,16 +34,16 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthServiceImpl implements AuthService {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private static final SessionAttribute USER_EMAIL = new SessionAttribute("email");
 
     private AccountManager accountManager;
 
     @Inject
-    public AuthenticationServiceImpl(AccountManager accountManager) {
+    public AuthServiceImpl(AccountManager accountManager) {
         this.accountManager = accountManager;
     }
 

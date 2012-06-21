@@ -22,7 +22,7 @@ import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
-import uk.ac.ebi.fg.annotare2.web.server.auth.AuthenticationService;
+import uk.ac.ebi.fg.annotare2.web.server.auth.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import javax.servlet.http.HttpSession;
@@ -38,7 +38,7 @@ public class SubmissionServiceImpl extends RemoteServiceServlet implements Submi
     private SubmissionManager manager;
 
     @Inject
-    private AuthenticationService authService;
+    private AuthService authService;
 
     public List<SubmissionInfo> getSubmissions() {
         List<SubmissionInfo> list = new ArrayList<SubmissionInfo>();

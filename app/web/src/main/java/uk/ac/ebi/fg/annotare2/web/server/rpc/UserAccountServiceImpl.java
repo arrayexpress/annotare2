@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.UserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
-import uk.ac.ebi.fg.annotare2.web.server.auth.AuthenticationService;
+import uk.ac.ebi.fg.annotare2.web.server.auth.AuthService;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
 public class UserAccountServiceImpl extends RemoteServiceServlet implements UserAccountService {
 
     @Inject
-    private AuthenticationService authService;
+    private AuthService authService;
 
     public UserInfo getCurrentUser() {
         User user = authService.getCurrentUser(getSession());
