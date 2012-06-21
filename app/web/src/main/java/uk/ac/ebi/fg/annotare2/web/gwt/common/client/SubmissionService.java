@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-@RemoteServiceRelativePath("submissionService")
+@RemoteServiceRelativePath("mySubmissions")
 public interface SubmissionService extends RemoteService {
 
     List<SubmissionInfo> getSubmissions();

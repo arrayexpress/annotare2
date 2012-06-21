@@ -16,18 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
 
 /**
  * @author Olga Melnichuk
  */
-@RemoteServiceRelativePath("userAccountService")
-public interface UserAccountService extends RemoteService {
+public interface CurrentUserAccountServiceAsync {
 
-    public UserInfo getCurrentUser();
+    void me(AsyncCallback<UserInfo> async);
 
-    public void logout();
-
+    void logout(AsyncCallback<Void> async);
 }

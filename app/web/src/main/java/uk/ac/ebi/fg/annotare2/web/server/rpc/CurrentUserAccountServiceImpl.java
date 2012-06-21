@@ -16,33 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.UserAccountService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
-import uk.ac.ebi.fg.annotare2.web.server.auth.AuthService;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Olga Melnichuk
  */
-public class UserAccountServiceImpl extends RemoteServiceServlet implements UserAccountService {
+public class CurrentUserAccountServiceImpl extends RemoteServiceBase implements CurrentUserAccountService {
 
-    @Inject
-    private AuthService authService;
-
-    public UserInfo getCurrentUser() {
-        User user = authService.getCurrentUser(getSession());
-        return new UserInfo(user.getEmail());
+    public UserInfo me() {
+        return new UserInfo(getCurrentUser().getEmail());
     }
 
     public void logout() {
-        authService.logout(getSession());
-    }
-
-    private HttpSession getSession() {
-        return getThreadLocalRequest().getSession();
+        doLogout();
     }
 }
