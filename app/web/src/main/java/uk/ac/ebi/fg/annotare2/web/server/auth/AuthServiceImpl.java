@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public void logout(HttpSession session) {
-        USER_EMAIL.remove(session);
+        session.invalidate();
     }
 
     public User getCurrentUser(HttpSession session) {
