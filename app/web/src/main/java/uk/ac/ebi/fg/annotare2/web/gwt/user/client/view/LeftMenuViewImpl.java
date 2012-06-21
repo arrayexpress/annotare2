@@ -17,8 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.MenuButton;
@@ -33,8 +36,22 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     private Presenter presenter;
 
+    private Anchor selected;
+
     @UiField
     MenuButton createButton;
+
+    @UiField
+    Anchor recent;
+
+    @UiField
+    Anchor maSubmissions;
+
+    @UiField
+    Anchor htsSubmissions;
+
+    @UiField
+    Anchor adfSubmissions;
 
     public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -48,4 +65,37 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
+
+    @UiHandler("recent")
+    public void onRecentClick(ClickEvent event) {
+        selectItem(recent);
+        presenter.onRecentClick();
+    }
+
+    @UiHandler("maSubmissions")
+    public void onMaSubmissionsClick(ClickEvent event) {
+        selectItem(maSubmissions);
+        presenter.onMaSubmissionsClick();
+    }
+
+    public void selectItem(String item) {
+        if ("recent".equals(item)) {
+            selectItem(recent);
+        }
+
+        if ("maSubmissions".equals(item)) {
+            selectItem(maSubmissions);
+        }
+    }
+
+    private void selectItem(Anchor item) {
+        final String styleName = "selectedItem";
+        if (selected != null) {
+            selected.removeStyleName(styleName);
+            selected = null;
+        }
+        item.addStyleName(styleName);
+        selected = item;
+    }
+
 }

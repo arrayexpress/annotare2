@@ -19,14 +19,18 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget">
-
+    <ui:style>
+        .selected {
+            color: red;
+        }
+    </ui:style>
     <g:VerticalPanel>
         <g:HTMLPanel>
             <wgt:MenuButton text="Create" ui:field="createButton" width="140px"/>
-            <p>Recent</p>
-            <p>My Microarray Submissions</p>
-            <p>My HTS Submissions</p>
-            <p>My ADF Submissions</p>
+            <p><g:Anchor text="Recent" ui:field="recent"/></p>
+            <p><g:Anchor text="My Microarray Submissions" ui:field="maSubmissions"/></p>
+            <p><g:Anchor text="My HTS Submissions" ui:field="htsSubmissions"/></p>
+            <p><g:Anchor text="My ADF Submissions" ui:field="adfSubmissions"/></p>
         </g:HTMLPanel>
     </g:VerticalPanel>
 </ui:UiBinder>

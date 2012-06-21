@@ -24,8 +24,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface LeftMenuView extends IsWidget {
     
     void setPresenter(Presenter presenter);
-    
+
+    void selectItem(String name);
+
     public interface Presenter {
-        
+
+        void onRecentClick();
+
+        void onMaSubmissionsClick();
     }
 }

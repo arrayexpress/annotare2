@@ -22,6 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
 
 /**
@@ -40,6 +41,10 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     public LeftMenuActivity withPlace(Place place) {
         //this.token = place.getPlaceName();
+        if (place instanceof SubmissionListPlace) {
+            String name = ((SubmissionListPlace) place).getPlaceName();
+            this.view.selectItem(name);
+        }
         return this;
     }
 
@@ -51,5 +56,17 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    public void onRecentClick() {
+        SubmissionListPlace place = new SubmissionListPlace();
+        place.setPlaceName("recent");
+        goTo(place);
+    }
+
+    public void onMaSubmissionsClick() {
+        SubmissionListPlace place = new SubmissionListPlace();
+        place.setPlaceName("maSubmissions");
+        goTo(place);
     }
 }
