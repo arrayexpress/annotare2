@@ -31,7 +31,7 @@ import java.util.List;
 public class SubmissionDaoDummy implements SubmissionDao {
 
     public Submission getSubmission(int id) throws RecordNotFoundException {
-        Submission s = DummyDb.getSubmission(id);
+        Submission s = DummyData.getSubmission(id);
         if (s == null) {
             throw new RecordNotFoundException("Submission with id=" + id + " not found");
         }
@@ -39,6 +39,6 @@ public class SubmissionDaoDummy implements SubmissionDao {
     }
 
     public List<Submission> getSubmissionsByType(User user, SubmissionType type) {
-        return DummyDb.getSubmissions(user, type);
+        return DummyData.getSubmissions(user, type);
     }
 }

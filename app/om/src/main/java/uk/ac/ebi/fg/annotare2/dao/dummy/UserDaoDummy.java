@@ -42,6 +42,6 @@ public class UserDaoDummy implements UserDao {
     }
 
     public User getUserByEmail(String email) {
-        return DummyDb.getUserByEmail(email);
+        return DummyData.getUserByEmail(email);
     }
 }

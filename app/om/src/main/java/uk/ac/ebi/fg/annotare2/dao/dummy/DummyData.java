@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class DummyDb {
+public class DummyData {
 
     private static final Map<String, User> userByEmail = new HashMap<String, User>();
 
@@ -54,7 +54,7 @@ public class DummyDb {
                 "Whole-genome microarray profiling of gene expression pattern in 96 tissues from gastric and colon cancer patients");
     }
 
-    private DummyDb() {}
+    private DummyData() {}
 
 
     private static User createUser(String email, String password) {
