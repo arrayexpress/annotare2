@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.web.server.auth.AuthService;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HeaderView extends IsWidget {
+public abstract class RemoteServiceBase extends RemoteServiceServlet {
 
-    void setPresenter(Presenter presenter);
+    @Inject
+    private AuthService authService;
 
-    void setUserName(String name);
+    protected User getCurrentUser() {
+        return authService.getCurrentUser(getSession());
+    }
 
-    public interface Presenter {
+    protected HttpSession getSession() {
+        return getThreadLocalRequest().getSession();
     }
 }

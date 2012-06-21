@@ -16,43 +16,33 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
-import uk.ac.ebi.fg.annotare2.web.server.auth.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
-import javax.servlet.http.HttpSession;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionServiceImpl extends RemoteServiceServlet implements SubmissionService {
+public class SubmissionServiceImpl extends RemoteServiceBase implements SubmissionService {
 
     @Inject
     private SubmissionManager manager;
 
-    @Inject
-    private AuthService authService;
-
     public List<SubmissionInfo> getSubmissions() {
-        List<SubmissionInfo> list = new ArrayList<SubmissionInfo>();
-        for (Submission s : manager.getSubmissions(currentUser())) {
-            list.add(new SubmissionInfo(s.getTitle(), s.getDescription()));
-        }
-        return list;
-    }
-
-    private User currentUser() {
-        return authService.getCurrentUser(getSession());
-    }
-
-    private HttpSession getSession() {
-        return getThreadLocalRequest().getSession();
+        return new ArrayList<SubmissionInfo>(
+                Lists.transform(manager.getSubmissions(getCurrentUser()), new Function<Submission, SubmissionInfo>() {
+                    public SubmissionInfo apply(@Nullable Submission submission) {
+                        return new SubmissionInfo(submission.getTitle(), submission.getDescription());
+                    }
+                })
+        );
     }
 }

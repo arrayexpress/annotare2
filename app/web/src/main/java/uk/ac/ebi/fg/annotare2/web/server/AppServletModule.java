@@ -38,9 +38,11 @@ public class AppServletModule extends ServletModule {
         filter("/UserApp/*", "/index.html").through(SecurityFilter.class);
 
         serve("/login").with(LoginServlet.class);
+        serve("/logout").with(LogoutServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
+        bind(LogoutServlet.class).in(Scopes.SINGLETON);
 
         serve("/UserApp/userAccountService").with(UserAccountServiceImpl.class);
         bind(UserAccountServiceImpl.class).in(Scopes.SINGLETON);

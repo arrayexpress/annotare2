@@ -55,7 +55,7 @@ public class SecurityFilter implements Filter {
 
     private void forceLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (isHtmlAccepted(request)) {
-            redirectToLogin(request, response);
+            redirectToLogin(request, response, true);
             return;
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
