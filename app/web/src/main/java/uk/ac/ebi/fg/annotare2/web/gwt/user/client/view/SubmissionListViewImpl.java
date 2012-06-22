@@ -68,10 +68,16 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         }, new TextHeader("Description"));
 
 
-        final SelectionModel<SubmissionInfo> selectionModel = new SingleSelectionModel<SubmissionInfo>();
+        final SingleSelectionModel<SubmissionInfo> selectionModel = new SingleSelectionModel<SubmissionInfo>(
+                new ProvidesKey<SubmissionInfo>() {
+                    public Object getKey(SubmissionInfo item) {
+                        return item.getId();
+                    }
+                }
+        );
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             public void onSelectionChange(SelectionChangeEvent event) {
-                GWT.log("onSelectionChange(..)");
+                GWT.log("onSelectionChange(" + selectionModel.getSelectedObject().getId() + ")");
             }
         });
         cellTable.setSelectionModel(selectionModel);
