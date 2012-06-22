@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListView;
 
 import java.util.Collection;
@@ -75,5 +76,11 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    public void onSubmissionSelected(int id) {
+        SubmissionViewPlace place = new SubmissionViewPlace();
+        place.setSubmissionId(id);
+        goTo(place);
     }
 }

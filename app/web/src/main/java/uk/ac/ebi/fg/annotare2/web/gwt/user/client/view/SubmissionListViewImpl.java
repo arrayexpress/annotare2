@@ -75,11 +75,15 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
                     }
                 }
         );
+
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             public void onSelectionChange(SelectionChangeEvent event) {
-                GWT.log("onSelectionChange(" + selectionModel.getSelectedObject().getId() + ")");
+                int id = selectionModel.getSelectedObject().getId();
+                GWT.log("onSelectionChange(" + id + ")");
+                presenter.onSubmissionSelected(id);
             }
         });
+
         cellTable.setSelectionModel(selectionModel);
 
         cellTable.addStyleName("no-cell-borders");

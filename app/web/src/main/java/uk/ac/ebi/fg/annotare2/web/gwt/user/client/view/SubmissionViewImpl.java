@@ -16,14 +16,25 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Olga Melnichuk
  */
 public class SubmissionViewImpl extends Composite implements SubmissionView {
 
+    interface Binder extends UiBinder<Widget, SubmissionViewImpl> {
+    }
+
     private Presenter presenter;
+
+    public SubmissionViewImpl() {
+        Binder uiBinder = GWT.create(Binder.class);
+        initWidget(uiBinder.createAndBindUi(this));
+    }
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
