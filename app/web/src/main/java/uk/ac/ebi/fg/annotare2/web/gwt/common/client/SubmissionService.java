@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 import java.util.List;
 
@@ -28,5 +28,5 @@ import java.util.List;
 @RemoteServiceRelativePath("mySubmissions")
 public interface SubmissionService extends RemoteService {
 
-    List<SubmissionInfo> getSubmissions();
+    List<SubmissionDetails> getSubmissions();
 }

@@ -21,14 +21,14 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
-public class UserInfo implements Serializable {
+public class UserDetails implements Serializable {
 
     private String email;
 
-    public UserInfo() {
+    public UserDetails() {
     }
 
-    public UserInfo(String email) {
+    public UserDetails(String email) {
         this.email = email;
     }
 

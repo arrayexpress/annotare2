@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionInfo implements Serializable {
+public class SubmissionDetails implements Serializable {
 
     private int id;
 
@@ -29,10 +29,10 @@ public class SubmissionInfo implements Serializable {
 
     private String description;
 
-    public SubmissionInfo() {
+    public SubmissionDetails() {
     }
 
-    public SubmissionInfo(int id, String title, String description) {
+    public SubmissionDetails(int id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;

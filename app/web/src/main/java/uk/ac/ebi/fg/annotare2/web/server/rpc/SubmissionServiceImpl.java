@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import javax.annotation.Nullable;
@@ -36,11 +36,11 @@ public class SubmissionServiceImpl extends RemoteServiceBase implements Submissi
     @Inject
     private SubmissionManager manager;
 
-    public List<SubmissionInfo> getSubmissions() {
-        return new ArrayList<SubmissionInfo>(
-                Lists.transform(manager.getSubmissions(getCurrentUser()), new Function<Submission, SubmissionInfo>() {
-                    public SubmissionInfo apply(@Nullable Submission submission) {
-                        return new SubmissionInfo(submission.getId(), submission.getTitle(), submission.getDescription());
+    public List<SubmissionDetails> getSubmissions() {
+        return new ArrayList<SubmissionDetails>(
+                Lists.transform(manager.getSubmissions(getCurrentUser()), new Function<Submission, SubmissionDetails>() {
+                    public SubmissionDetails apply(@Nullable Submission submission) {
+                        return new SubmissionDetails(submission.getId(), submission.getTitle(), submission.getDescription());
                     }
                 })
         );

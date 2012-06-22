@@ -25,12 +25,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListView;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -62,8 +61,8 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     }
 
     private void loadSubmissionListAsync() {
-        rpcService.getSubmissions(new AsyncCallbackWrapper<List<SubmissionInfo>>() {
-            public void onSuccess(List<SubmissionInfo> result) {
+        rpcService.getSubmissions(new AsyncCallbackWrapper<List<SubmissionDetails>>() {
+            public void onSuccess(List<SubmissionDetails> result) {
                 view.setSubmissions(result);
             }
 

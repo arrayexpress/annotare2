@@ -17,13 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.RemoteService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface SubmissionServiceAsync {
 
-    void getSubmissions(AsyncCallback<List<SubmissionInfo>> async);
+    void getSubmissions(AsyncCallback<List<SubmissionDetails>> async);
 }

@@ -16,23 +16,17 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,32 +39,32 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
     private Presenter presenter;
 
-    private ListDataProvider<SubmissionInfo> dataProvider;
+    private ListDataProvider<SubmissionDetails> dataProvider;
 
     @UiField(provided = true)
-    CellTable<SubmissionInfo> cellTable;
+    CellTable<SubmissionDetails> cellTable;
 
     public SubmissionListViewImpl() {
-        cellTable = new CellTable<SubmissionInfo>();
+        cellTable = new CellTable<SubmissionDetails>();
         cellTable.setWidth("100%", true);
-        cellTable.addColumn(new TextColumn<SubmissionInfo>() {
+        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
             @Override
-            public String getValue(SubmissionInfo object) {
+            public String getValue(SubmissionDetails object) {
                 return object.getTitle();
             }
         }, new TextHeader("Title"));
 
-        cellTable.addColumn(new TextColumn<SubmissionInfo>() {
+        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
             @Override
-            public String getValue(SubmissionInfo object) {
+            public String getValue(SubmissionDetails object) {
                 return object.getDescription();
             }
         }, new TextHeader("Description"));
 
 
-        final SingleSelectionModel<SubmissionInfo> selectionModel = new SingleSelectionModel<SubmissionInfo>(
-                new ProvidesKey<SubmissionInfo>() {
-                    public Object getKey(SubmissionInfo item) {
+        final SingleSelectionModel<SubmissionDetails> selectionModel = new SingleSelectionModel<SubmissionDetails>(
+                new ProvidesKey<SubmissionDetails>() {
+                    public Object getKey(SubmissionDetails item) {
                         return item.getId();
                     }
                 }
@@ -88,7 +82,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         cellTable.addStyleName("no-cell-borders");
 
-        dataProvider = new ListDataProvider<SubmissionInfo>();
+        dataProvider = new ListDataProvider<SubmissionDetails>();
         dataProvider.addDataDisplay(cellTable);
 
         Binder uiBinder = GWT.create(Binder.class);
@@ -99,7 +93,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         this.presenter = presenter;
     }
 
-    public void setSubmissions(List<SubmissionInfo> submissions) {
+    public void setSubmissions(List<SubmissionDetails> submissions) {
         dataProvider.setList(submissions);
     }
 }

@@ -17,15 +17,15 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
 
 /**
  * @author Olga Melnichuk
  */
 public class CurrentUserAccountServiceImpl extends RemoteServiceBase implements CurrentUserAccountService {
 
-    public UserInfo me() {
-        return new UserInfo(getCurrentUser().getEmail());
+    public UserDetails me() {
+        return new UserDetails(getCurrentUser().getEmail());
     }
 
     public void logout() {
