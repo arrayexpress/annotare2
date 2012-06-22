@@ -43,7 +43,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         //this.token = place.getPlaceName();
         if (place instanceof SubmissionListPlace) {
             String name = ((SubmissionListPlace) place).getPlaceName();
-            this.view.selectItem(name);
+            this.view.setFilter(name == null ? LeftMenuView.Filter.ALL_SUBMISSIONS  : LeftMenuView.Filter.valueOf(name));
         }
         return this;
     }
@@ -58,15 +58,9 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         placeController.goTo(place);
     }
 
-    public void onRecentClick() {
+    public void onSubmissionFilterClick(LeftMenuView.Filter filter) {
         SubmissionListPlace place = new SubmissionListPlace();
-        place.setPlaceName("recent");
-        goTo(place);
-    }
-
-    public void onMaSubmissionsClick() {
-        SubmissionListPlace place = new SubmissionListPlace();
-        place.setPlaceName("maSubmissions");
+        place.setPlaceName(filter.toString());
         goTo(place);
     }
 }

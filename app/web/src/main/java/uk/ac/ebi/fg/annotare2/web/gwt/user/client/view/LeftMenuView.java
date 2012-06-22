@@ -25,12 +25,15 @@ public interface LeftMenuView extends IsWidget {
     
     void setPresenter(Presenter presenter);
 
-    void selectItem(String name);
+    void setFilter(Filter filter);
 
     public interface Presenter {
 
-        void onRecentClick();
+        void onSubmissionFilterClick(Filter filter);
+    }
 
-        void onMaSubmissionsClick();
+    public enum Filter {
+        ALL_SUBMISSIONS,
+        MA_SUBMISSIONS
     }
 }

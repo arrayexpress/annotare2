@@ -69,22 +69,24 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     @UiHandler("allSubmissions")
     public void onRecentClick(ClickEvent event) {
         selectItem(allSubmissions);
-        presenter.onRecentClick();
+        presenter.onSubmissionFilterClick(Filter.ALL_SUBMISSIONS);
     }
 
     @UiHandler("maSubmissions")
     public void onMaSubmissionsClick(ClickEvent event) {
         selectItem(maSubmissions);
-        presenter.onMaSubmissionsClick();
+        presenter.onSubmissionFilterClick(Filter.MA_SUBMISSIONS);
     }
 
-    public void selectItem(String item) {
-        if ("allSubmissions".equals(item)) {
-            selectItem(allSubmissions);
-        }
+    public void setFilter(Filter filter) {
+        switch (filter) {
+            case ALL_SUBMISSIONS:
+                selectItem(allSubmissions);
+                break;
 
-        if ("maSubmissions".equals(item)) {
-            selectItem(maSubmissions);
+            case MA_SUBMISSIONS:
+                selectItem(maSubmissions);
+                break;
         }
     }
 
