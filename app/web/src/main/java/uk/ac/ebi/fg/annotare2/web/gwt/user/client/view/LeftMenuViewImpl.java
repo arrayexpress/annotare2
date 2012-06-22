@@ -42,7 +42,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     MenuButton createButton;
 
     @UiField
-    Anchor recent;
+    Anchor allSubmissions;
 
     @UiField
     Anchor maSubmissions;
@@ -66,9 +66,9 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         this.presenter = presenter;
     }
 
-    @UiHandler("recent")
+    @UiHandler("allSubmissions")
     public void onRecentClick(ClickEvent event) {
-        selectItem(recent);
+        selectItem(allSubmissions);
         presenter.onRecentClick();
     }
 
@@ -79,8 +79,8 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     }
 
     public void selectItem(String item) {
-        if ("recent".equals(item)) {
-            selectItem(recent);
+        if ("allSubmissions".equals(item)) {
+            selectItem(allSubmissions);
         }
 
         if ("maSubmissions".equals(item)) {
