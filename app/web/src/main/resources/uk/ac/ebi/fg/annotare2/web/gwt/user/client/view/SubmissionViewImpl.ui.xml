@@ -18,9 +18,41 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .submissionView {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .submit {
+            border-top: 1px solid #eee;
+            padding: 10px;
+        }
+    </ui:style>
 
     <g:HTMLPanel>
-        View submission details here..
+        <div class="{style.submissionView}">
+            <h1>UNACCESSIONED</h1>
+            <p>Transcription profiling of human brain total RNA vs Universal Human Reference RNA on 4 different
+                commercially available microarray to assess comparability of gene expression measurements on microarrays
+                (24 assays)
+            </p>
+            <p>Commercially available human genomic microarrays from four different manufacturers were used to compare
+                Human Brain Total RNA against Universal Human Reference RNA (both commercially available) prepared at
+                two different starting amounts (20 µg or 1µg). For each amount of RNA, 6 replicates were performed with
+                Human Brain Total RNA labelled with Cy3, and Universal Human Reference RNA labelled with Cy5. The
+                labelling was then reversed (dye flip) creating another 6 replicates. This meant that for each of the
+                four manufacturers there were a total of 24 arrays. Image processing was performed with two different
+                software packages, and data was normalized with three different strategies.
+            </p>
+
+            <div class="{style.submit}">
+               <div style="margin-bottom:5px;">
+                   <g:Button>Submit For Review</g:Button>
+               </div>
+               <g:TextArea width="100%" visibleLines="4"></g:TextArea>
+            </div>
+        </div>
     </g:HTMLPanel>
 </ui:UiBinder>
 
