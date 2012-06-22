@@ -33,7 +33,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Annotare 2.0 - Sign In</title>
-    <link type="text/css" rel="stylesheet" href="main.css">
+    <link type="text/css" rel="stylesheet" href="general.css">
     <link type="text/css" rel="stylesheet" href="login.css">
 </head>
 <body>
