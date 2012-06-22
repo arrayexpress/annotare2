@@ -28,10 +28,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SelectionModel;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.*;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionInfo;
 
@@ -78,6 +75,8 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             }
         });
         cellTable.setSelectionModel(selectionModel);
+
+        cellTable.addStyleName("no-cell-borders");
 
         dataProvider = new ListDataProvider<SubmissionInfo>();
         dataProvider.addDataDisplay(cellTable);
