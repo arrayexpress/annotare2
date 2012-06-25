@@ -55,11 +55,11 @@ class ServletUtil {
 
     public static void forwardToLogin(ServletContext context, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        context.getRequestDispatcher(contextBasedUrl("/login.jsp", request)).forward(request, response);
+        context.getRequestDispatcher(preserveCodeSrvParam("/login.jsp", request)).forward(request, response);
     }
 
     private static String contextBasedUrl(String url, HttpServletRequest request) {
-        return preserveCodeSrvParam(url, request);
+        return  request.getContextPath() + preserveCodeSrvParam(url, request);
     }
 
     private static void redirect(String url, HttpServletResponse response) throws IOException {
@@ -73,7 +73,7 @@ class ServletUtil {
     }
 
     private static String preserveCodeSrvParam(String url, HttpServletRequest request) {
-        StringBuilder newUrl = new StringBuilder(request.getContextPath()).append(url);
+        StringBuilder newUrl = new StringBuilder().append(url);
         String params = nullToEmpty(request.getQueryString());
         Matcher m = GWT_SRV_PARAM.matcher(params);
         if (m.matches()) {
