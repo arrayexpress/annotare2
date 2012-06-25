@@ -177,7 +177,7 @@
                 </executions>
                 <configuration>
                     <webappDirectory>${webappDirectory}</webappDirectory>
-                    <packagingExcludes>**/client/**</packagingExcludes>
+                    <!--packagingExcludes>**/client/**</packagingExcludes-->
                 </configuration>
             </plugin>
         </plugins>
