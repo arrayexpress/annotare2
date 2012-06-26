@@ -17,8 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,19 +36,25 @@ import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToApp;
  */
 public class LoginServlet extends HttpServlet {
 
+    private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
+
     @Inject
     private AuthService authService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug("Login details submitted; validating..");
         ValidationErrors errors = new ValidationErrors();
         try {
             errors.append(authService.login(request));
             if (errors.isEmpty()) {
+                log.debug("Login details are valid; Authorization succeeded");
                 redirectToApp(request, response);
                 return;
             }
+            log.debug("Login detail are invalid");
         } catch (LoginException e) {
+            log.debug("Authorization failed");
             errors.append(e.getMessage());
         }
 

@@ -37,8 +37,8 @@ public class AppServletModule extends ServletModule {
     protected void configureServlets() {
         filter("/UserApp/*", "/index.html").through(SecurityFilter.class);
 
-        serve("/login").with(LoginServlet.class);
-        serve("/logout").with(LogoutServlet.class);
+        serveRegex("(/login)(?:;jsessionid=[A-Z0-9]+)?").with(LoginServlet.class);
+        serveRegex("(/logout)(?:;jsessionid=[A-Z0-9]+)?").with(LogoutServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
