@@ -29,7 +29,6 @@ public class SubmissionListPlace extends Place {
     private String placeName;
     private String filter;
     private String sortorder;
-    
 
     public void setPlaceName(String placeName) {
         this.placeName = placeName;

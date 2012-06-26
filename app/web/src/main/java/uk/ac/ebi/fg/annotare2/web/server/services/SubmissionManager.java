@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.SubmissionType;
+import uk.ac.ebi.fg.annotare2.om.User;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HeaderView extends IsWidget {
+public class SubmissionManager {
 
-    void setPresenter(Presenter presenter);
+    private SubmissionDao submissionDao;
 
-    void setUserName(String name);
+    @Inject
+    public SubmissionManager(SubmissionDao submissionDao) {
+        this.submissionDao = submissionDao;
+    }
 
-    public interface Presenter {
+    public List<Submission> getSubmissions(User user) {
+        return submissionDao.getSubmissionsByType(user, SubmissionType.EXPERIMENT);
     }
 }

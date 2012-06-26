@@ -32,7 +32,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToLogin
 public class SecurityFilter implements Filter {
 
     @Inject
-    private AuthenticationService authService;
+    private AuthService authService;
 
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -55,7 +55,7 @@ public class SecurityFilter implements Filter {
 
     private void forceLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (isHtmlAccepted(request)) {
-            redirectToLogin(request, response);
+            redirectToLogin(request, response, true);
             return;
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

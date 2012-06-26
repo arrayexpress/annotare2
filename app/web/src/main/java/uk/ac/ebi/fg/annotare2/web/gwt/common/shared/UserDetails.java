@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HeaderView extends IsWidget {
+public class UserDetails implements Serializable {
 
-    void setPresenter(Presenter presenter);
+    private String email;
 
-    void setUserName(String name);
+    public UserDetails() {
+    }
 
-    public interface Presenter {
+    public UserDetails(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

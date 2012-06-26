@@ -27,7 +27,16 @@ import com.google.inject.Provider;
 public class SubmissionViewPlace extends Place {
 
     private String placeName;
-    private int sid;
+    private int submissionId;
+
+
+    public int getSubmissionId() {
+        return submissionId;
+    }
+
+    public void setSubmissionId(int submissionId) {
+        this.submissionId = submissionId;
+    }
 
     public void setPlaceName(String placeName) {
         this.placeName = placeName;

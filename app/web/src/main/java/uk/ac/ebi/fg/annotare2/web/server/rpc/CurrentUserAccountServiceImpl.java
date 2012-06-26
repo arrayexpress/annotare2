@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthenticationService {
+public class CurrentUserAccountServiceImpl extends RemoteServiceBase implements CurrentUserAccountService {
 
-    boolean isLoggedIn(HttpServletRequest request);
+    public UserDetails me() {
+        return new UserDetails(getCurrentUser().getEmail());
+    }
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    public void logout() {
+        doLogout();
+    }
 }

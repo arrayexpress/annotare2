@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,36 +24,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.forwardToLogin;
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToApp;
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToLogin;
 
 /**
  * @author Olga Melnichuk
  */
-public class LoginServlet extends HttpServlet {
+public class LogoutServlet  extends HttpServlet {
 
     @Inject
     private AuthService authService;
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ValidationErrors errors = new ValidationErrors();
-        try {
-            errors.append(authService.login(request));
-            if (errors.isEmpty()) {
-                redirectToApp(request, response);
-                return;
-            }
-        } catch (LoginException e) {
-            errors.append(e.getMessage());
-        }
-
-        request.setAttribute("errors", errors);
-        forwardToLogin(getServletConfig().getServletContext(), request, response);
-    }
-
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        forwardToLogin(getServletConfig().getServletContext(), request, response);
+        authService.logout(request.getSession());
+        redirectToLogin(request, response, false);
     }
+
 }

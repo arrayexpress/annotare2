@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
-
-import com.google.gwt.user.client.ui.IsWidget;
+package uk.ac.ebi.fg.annotare2.web.server;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HeaderView extends IsWidget {
+public class UnauthorizedAccessException extends RuntimeException {
 
-    void setPresenter(Presenter presenter);
-
-    void setUserName(String name);
-
-    public interface Presenter {
+    public UnauthorizedAccessException(String message) {
+        super(message);
     }
 }

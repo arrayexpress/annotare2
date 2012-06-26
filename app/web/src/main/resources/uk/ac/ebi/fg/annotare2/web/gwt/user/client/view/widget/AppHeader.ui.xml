@@ -20,7 +20,7 @@
 
     <ui:style>
         .logo {
-            padding-left: 10px;
+            padding:0;
             font-family: 'Arial Unicode MS', Arial, sans-serif;
         }
 

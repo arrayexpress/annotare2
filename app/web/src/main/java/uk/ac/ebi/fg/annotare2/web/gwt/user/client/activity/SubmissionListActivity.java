@@ -20,10 +20,17 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListView;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -32,11 +39,13 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
 
     private final SubmissionListView view;
     private final PlaceController placeController;
+    private final SubmissionServiceAsync rpcService;
 
     @Inject
-    public SubmissionListActivity(SubmissionListView view, PlaceController placeController) {
+    public SubmissionListActivity(SubmissionListView view, PlaceController placeController, SubmissionServiceAsync rpcService) {
         this.view = view;
         this.placeController = placeController;
+        this.rpcService = rpcService;
     }
 
     public SubmissionListActivity withPlace(SubmissionListPlace place) {
@@ -48,9 +57,29 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
         //view.setPlaceName(token);
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        loadSubmissionListAsync();
+    }
+
+    private void loadSubmissionListAsync() {
+        rpcService.getSubmissions(new AsyncCallbackWrapper<List<SubmissionDetails>>() {
+            public void onSuccess(List<SubmissionDetails> result) {
+                view.setSubmissions(result);
+            }
+
+            public void onFailure(Throwable caught) {
+                Window.alert("Can't load submission list");
+            }
+
+        }.wrap());
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    public void onSubmissionSelected(int id) {
+        SubmissionViewPlace place = new SubmissionViewPlace();
+        place.setSubmissionId(id);
+        goTo(place);
     }
 }

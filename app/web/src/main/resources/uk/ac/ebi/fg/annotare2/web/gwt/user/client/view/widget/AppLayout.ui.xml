@@ -22,15 +22,19 @@
         <g:Dock direction="NORTH" height="60px">
             <g:SimplePanel ui:field="topPanel" />
         </g:Dock>
-        <g:Dock direction="WEST" width="30%">
-            <g:SimplePanel ui:field="westPanel"/>
-        </g:Dock>
-        <g:Dock direction="CENTER" width="70%">
-            <g:SimplePanel ui:field="centerPanel"/>
+        <g:Dock direction="CENTER">
+            <g:DockPanel width="100%">
+                <g:Dock direction="WEST" width="200px">
+                    <g:SimplePanel ui:field="westPanel"/>
+                </g:Dock>
+                <g:Dock direction="EAST">
+                    <g:SimplePanel ui:field="centerPanel"/>
+                </g:Dock>
+            </g:DockPanel>
         </g:Dock>
         <g:Dock direction="SOUTH" height="30px">
             <g:HTMLPanel>
-                2012 EMBL-EBI, Funcitonal Genomics Group
+                <div class="copy"> 2012 EMBL-EBI, Funcitonal Genomics Group </div>
             </g:HTMLPanel>
         </g:Dock>
     </g:DockPanel>

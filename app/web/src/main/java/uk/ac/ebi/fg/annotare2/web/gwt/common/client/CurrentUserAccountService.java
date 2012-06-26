@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HeaderView extends IsWidget {
+@RemoteServiceRelativePath("me")
+public interface CurrentUserAccountService extends RemoteService {
 
-    void setPresenter(Presenter presenter);
+    public UserDetails me();
 
-    void setUserName(String name);
+    public void logout();
 
-    public interface Presenter {
-    }
 }
