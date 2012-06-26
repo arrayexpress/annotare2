@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
 
 import javax.servlet.ServletContext;
@@ -34,6 +36,8 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 class ServletUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(ServletUtil.class);
+
     private ServletUtil() {
     }
 
@@ -42,11 +46,13 @@ class ServletUtil {
     private static final Pattern GWT_SRV_PARAM = Pattern.compile(".*?(gwt\\.codesvr=[0-9.:]+).*");
 
     public static void redirectToApp(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug("Redirecting to app..");
         String originalUrl = (String) ORIGINAL_URL.get(request.getSession());
         redirect(originalUrl == null ? contextBasedUrl("/index.html", request) : originalUrl, response);
     }
 
     public static void redirectToLogin(HttpServletRequest request, HttpServletResponse response, boolean preserveOriginal) throws IOException {
+        log.debug("Redirecting to login servlet..");
         if (preserveOriginal) {
             ORIGINAL_URL.set(request.getSession(), requestUrl(request));
         }
@@ -55,6 +61,7 @@ class ServletUtil {
 
     public static void forwardToLogin(ServletContext context, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+        log.debug("Forwarding to login page..");
         context.getRequestDispatcher(preserveCodeSrvParam("/login.jsp", request)).forward(request, response);
     }
 
