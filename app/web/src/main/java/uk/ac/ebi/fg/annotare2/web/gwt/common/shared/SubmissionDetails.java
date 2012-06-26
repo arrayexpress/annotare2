@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Olga Melnichuk
@@ -29,13 +30,16 @@ public class SubmissionDetails implements Serializable {
 
     private String description;
 
+    private Date created;
+
     public SubmissionDetails() {
     }
 
-    public SubmissionDetails(int id, String title, String description) {
+    public SubmissionDetails(int id, String title, String description, Date created) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.created = created;
     }
 
     public int getId() {
@@ -49,4 +53,9 @@ public class SubmissionDetails implements Serializable {
     public String getDescription() {
         return description;
     }
+
+    public Date getCreated() {
+        return created;
+    }
+
 }

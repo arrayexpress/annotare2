@@ -52,6 +52,10 @@ public class DummyData {
         createSubmission(user,
                 "Transcription profiling of non-cancerous tissue and cancerous tissue from gastric and colon cancer patients (96 assays)",
                 "Whole-genome microarray profiling of gene expression pattern in 96 tissues from gastric and colon cancer patients");
+
+        createSubmission(user,
+                "Ewing's sarcoma tumor samples",
+                "This SuperSeries is composed of the following subset Series: GSE37370: microRNA expression data from Ewing's sarcoma tumor samples GSE37371: Expression data from Ewing's sarcoma tumor samples Refer to individual Series");
     }
 
     private DummyData() {}

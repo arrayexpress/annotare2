@@ -40,7 +40,12 @@ public class SubmissionServiceImpl extends RemoteServiceBase implements Submissi
         return new ArrayList<SubmissionDetails>(
                 Lists.transform(manager.getSubmissions(getCurrentUser()), new Function<Submission, SubmissionDetails>() {
                     public SubmissionDetails apply(@Nullable Submission submission) {
-                        return new SubmissionDetails(submission.getId(), submission.getTitle(), submission.getDescription());
+                        return new SubmissionDetails(
+                                submission.getId(),
+                                submission.getTitle(),
+                                submission.getDescription(),
+                                submission.getCreated()
+                        );
                     }
                 })
         );
