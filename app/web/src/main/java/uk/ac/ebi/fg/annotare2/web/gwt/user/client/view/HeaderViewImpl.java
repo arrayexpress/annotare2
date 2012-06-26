@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.LogoutEvent;
@@ -56,7 +57,11 @@ public class HeaderViewImpl extends Composite implements HeaderView {
         super.onLoad();
         appHeader.addHandler(new LogoutEventHandler() {
             public void onLogout() {
-                presenter.logout();
+                String url = GWT.getHostPageBaseURL() + "logout";
+                if (!GWT.isProdMode()) {
+                    url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
+                }
+                Window.Location.assign(url);
             }
         }, LogoutEvent.TYPE);
     }

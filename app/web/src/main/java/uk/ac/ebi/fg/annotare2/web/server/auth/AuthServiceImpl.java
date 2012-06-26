@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
@@ -33,16 +34,16 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthServiceImpl implements AuthService {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private static final SessionAttribute USER_EMAIL = new SessionAttribute("email");
 
     private AccountManager accountManager;
 
     @Inject
-    public AuthenticationServiceImpl(AccountManager accountManager) {
+    public AuthServiceImpl(AccountManager accountManager) {
         this.accountManager = accountManager;
     }
 
@@ -65,12 +66,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public void logout(HttpSession session) {
-        USER_EMAIL.remove(session);
+        session.invalidate();
     }
 
     public User getCurrentUser(HttpSession session) {
         String email = (String)USER_EMAIL.get(session);
-        return accountManager.getByEmail(email);
+        User user = accountManager.getByEmail(email);
+        if (user == null) {
+            throw new UnauthorizedAccessException("Sorry, you are not logged in");
+        }
+        return user;
     }
 
     static class LoginParams {

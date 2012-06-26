@@ -19,29 +19,38 @@ package uk.ac.ebi.fg.annotare2.om;
 /**
  * @author Olga Melnichuk
  */
-public class User {
+public abstract class Submission {
 
     private int id;
 
-    private String email;
+    private String title;
 
-    private String password;
+    private String description;
 
-    public User(int id, String email, String password) {
+    private SubmissionType type;
+
+    private SubmissionStatus status = SubmissionStatus.NEW;
+
+    protected Submission(int id, String title, String description, SubmissionType type) {
         this.id = id;
-        this.email = email;
-        this.password = password;
+        this.title = title;
+        this.description = description;
+        this.type = type;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getTitle() {
+        return title;
     }
 
-    public String getPassword() {
-        return password;
+    public String getDescription() {
+        return description;
+    }
+
+    public SubmissionType getType() {
+        return type;
     }
 }

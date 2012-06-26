@@ -14,19 +14,34 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
-
-import com.google.gwt.user.client.ui.IsWidget;
-
-/**
- * @author Olga Melnichuk
- */
-public interface HeaderView extends IsWidget {
-
-    void setPresenter(Presenter presenter);
-
-    void setUserName(String name);
-
-    public interface Presenter {
-    }
+html, body {
+    font-family: 'Arial Unicode MS', Arial, sans-serif; /*"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;*/
+    margin: 0;
+    padding: 0;
 }
+
+h1 {
+    font-size: 18px;
+    font-weight: bolder;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    color: #207A7A;
+}
+
+a, a:link, a:visited {
+    color: #185C5C;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.copy {
+    padding-top: 3px;
+    font-size: small;
+    color: #207A7A;
+    text-align: center;
+}
+

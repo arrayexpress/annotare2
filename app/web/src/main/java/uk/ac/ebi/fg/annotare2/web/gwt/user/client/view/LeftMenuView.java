@@ -24,8 +24,16 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface LeftMenuView extends IsWidget {
     
     void setPresenter(Presenter presenter);
-    
+
+    void setFilter(Filter filter);
+
     public interface Presenter {
-        
+
+        void onSubmissionFilterClick(Filter filter);
+    }
+
+    public enum Filter {
+        ALL_SUBMISSIONS,
+        MA_SUBMISSIONS
     }
 }

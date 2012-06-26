@@ -18,11 +18,15 @@ package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
-import uk.ac.ebi.fg.annotare2.dao.UserDaoDummy;
+import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
+import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.web.server.auth.*;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.UserAccountServiceImpl;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.CurrentUserAccountServiceImpl;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.SubmissionServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 /**
  * @author Olga Melnichuk
@@ -34,15 +38,23 @@ public class AppServletModule extends ServletModule {
         filter("/UserApp/*", "/index.html").through(SecurityFilter.class);
 
         serve("/login").with(LoginServlet.class);
+        serve("/logout").with(LogoutServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
+        bind(LogoutServlet.class).in(Scopes.SINGLETON);
 
-        serve("/UserApp/userAccountService").with(UserAccountServiceImpl.class);
-        bind(UserAccountServiceImpl.class).in(Scopes.SINGLETON);
+        serve("/UserApp/me").with(CurrentUserAccountServiceImpl.class);
+        bind(CurrentUserAccountServiceImpl.class).in(Scopes.SINGLETON);
+
+        serve("/UserApp/mySubmissions").with(SubmissionServiceImpl.class);
+        bind(SubmissionServiceImpl.class).in(Scopes.SINGLETON);
 
         bind(UserDao.class).to(UserDaoDummy.class).in(Scopes.SINGLETON);
+        bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(Scopes.SINGLETON);
         bind(AccountManager.class).in(Scopes.SINGLETON);
-        bind(AuthenticationService.class).to(AuthenticationServiceImpl.class).in(Scopes.SINGLETON);
+        bind(SubmissionManager.class).in(Scopes.SINGLETON);
+
+        bind(AuthService.class).to(AuthServiceImpl.class).in(Scopes.SINGLETON);
     }
 }

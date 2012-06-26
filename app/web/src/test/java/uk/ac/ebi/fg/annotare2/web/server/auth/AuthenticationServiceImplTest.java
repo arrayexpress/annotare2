@@ -40,7 +40,7 @@ public class AuthenticationServiceImplTest {
         HttpServletRequest request = mockRequest(name, password);
 
         try {
-            AuthenticationService authService = new AuthenticationServiceImpl(accMan);
+            AuthService authService = new AuthServiceImpl(accMan);
             ValidationErrors errors = authService.login(request);
             assertTrue(errors.isEmpty());
         } catch (LoginException e) {
@@ -57,7 +57,7 @@ public class AuthenticationServiceImplTest {
         HttpServletRequest request = mockRequest(name, password);
 
         try {
-            AuthenticationService authService = new AuthenticationServiceImpl(accMan);
+            AuthService authService = new AuthServiceImpl(accMan);
             authService.login(request);
             fail("Non-existed user should not be logged in");
         } catch (LoginException e) {
@@ -67,27 +67,27 @@ public class AuthenticationServiceImplTest {
 
     @Test
     public void testInvalidLogin() throws LoginException {
-        AuthenticationService authService = new AuthenticationServiceImpl(null);
+        AuthService authService = new AuthServiceImpl(null);
 
         HttpServletRequest request = mockRequest("user", null);
         ValidationErrors errors = authService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthenticationServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
+        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
 
         request = mockRequest("user", "");
         errors = authService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthenticationServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
+        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
 
         request = mockRequest(null, "password");
         errors = authService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthenticationServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
+        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
 
         request = mockRequest("", "password");
         errors = authService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthenticationServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
+        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
     }
 
     private AccountManager mockAccManager(String user, String password, boolean exists) {
@@ -104,11 +104,11 @@ public class AuthenticationServiceImplTest {
 
         HttpServletRequest request = createMock(HttpServletRequest.class);
         expect(request
-                .getParameterValues(AuthenticationServiceImpl.LoginParams.EMAIL_PARAM))
+                .getParameterValues(AuthServiceImpl.LoginParams.EMAIL_PARAM))
                 .andReturn(name == null ? null : new String[]{name}).anyTimes();
 
         expect(request
-                .getParameterValues(AuthenticationServiceImpl.LoginParams.PASSWORD_PARAM))
+                .getParameterValues(AuthServiceImpl.LoginParams.PASSWORD_PARAM))
                 .andReturn(password == null ? null : new String[]{password}).anyTimes();
 
         expect(request.getSession()).andReturn(session).anyTimes();

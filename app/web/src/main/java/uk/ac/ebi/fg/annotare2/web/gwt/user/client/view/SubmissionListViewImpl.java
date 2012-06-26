@@ -18,25 +18,82 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class SubmissionListViewImpl extends Composite implements SubmissionListView {
 
-    interface Binder extends UiBinder<HTMLPanel, SubmissionListViewImpl> {
+    interface Binder extends UiBinder<Widget, SubmissionListViewImpl> {
     }
 
     private Presenter presenter;
 
+    private ListDataProvider<SubmissionDetails> dataProvider;
+
+    @UiField(provided = true)
+    CellTable<SubmissionDetails> cellTable;
+
     public SubmissionListViewImpl() {
+        cellTable = new CellTable<SubmissionDetails>();
+        cellTable.setWidth("100%", true);
+        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+            @Override
+            public String getValue(SubmissionDetails object) {
+                return object.getTitle();
+            }
+        }, new TextHeader("Title"));
+
+        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+            @Override
+            public String getValue(SubmissionDetails object) {
+                return object.getDescription();
+            }
+        }, new TextHeader("Description"));
+
+
+        final SingleSelectionModel<SubmissionDetails> selectionModel = new SingleSelectionModel<SubmissionDetails>(
+                new ProvidesKey<SubmissionDetails>() {
+                    public Object getKey(SubmissionDetails item) {
+                        return item.getId();
+                    }
+                }
+        );
+
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            public void onSelectionChange(SelectionChangeEvent event) {
+                int id = selectionModel.getSelectedObject().getId();
+                GWT.log("onSelectionChange(" + id + ")");
+                presenter.onSubmissionSelected(id);
+            }
+        });
+
+        cellTable.setSelectionModel(selectionModel);
+
+        cellTable.addStyleName("no-cell-borders");
+
+        dataProvider = new ListDataProvider<SubmissionDetails>();
+        dataProvider.addDataDisplay(cellTable);
+
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void setSubmissions(List<SubmissionDetails> submissions) {
+        dataProvider.setList(submissions);
     }
 }

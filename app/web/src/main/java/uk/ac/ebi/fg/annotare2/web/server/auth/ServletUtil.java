@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * @author Olga Melnichuk
@@ -38,24 +39,27 @@ class ServletUtil {
 
     private static final SessionAttribute ORIGINAL_URL = new SessionAttribute("original_url");
 
+    private static final Pattern GWT_SRV_PARAM = Pattern.compile(".*?(gwt\\.codesvr=[0-9.:]+).*");
+
     public static void redirectToApp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String url = (String) ORIGINAL_URL.get(request.getSession());
-        String reqUrl = requestUrl(request);
-        redirect(url == null || url.equals(reqUrl) ? withContextPath("/", request) : url, response);
+        String originalUrl = (String) ORIGINAL_URL.get(request.getSession());
+        redirect(originalUrl == null ? contextBasedUrl("/index.html", request) : originalUrl, response);
     }
 
-    public static void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ORIGINAL_URL.set(request.getSession(), requestUrl(request));
-        redirect(withContextPath("/login", request), response);
+    public static void redirectToLogin(HttpServletRequest request, HttpServletResponse response, boolean preserveOriginal) throws IOException {
+        if (preserveOriginal) {
+            ORIGINAL_URL.set(request.getSession(), requestUrl(request));
+        }
+        redirect(contextBasedUrl("/login", request), response);
     }
 
     public static void forwardToLogin(ServletContext context, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        context.getRequestDispatcher(withContextPath("/login.jsp", request)).forward(request, response);
+        context.getRequestDispatcher(preserveCodeSrvParam("/login.jsp", request)).forward(request, response);
     }
 
-    private static String withContextPath(String url, HttpServletRequest request) {
-        return request.getContextPath() + url;
+    private static String contextBasedUrl(String url, HttpServletRequest request) {
+        return  request.getContextPath() + preserveCodeSrvParam(url, request);
     }
 
     private static void redirect(String url, HttpServletResponse response) throws IOException {
@@ -66,5 +70,15 @@ class ServletUtil {
         String uri = request.getRequestURI();
         String queryString = request.getQueryString();
         return isNullOrEmpty(queryString) ? uri : uri + "?" + queryString;
+    }
+
+    private static String preserveCodeSrvParam(String url, HttpServletRequest request) {
+        StringBuilder newUrl = new StringBuilder().append(url);
+        String params = nullToEmpty(request.getQueryString());
+        Matcher m = GWT_SRV_PARAM.matcher(params);
+        if (m.matches()) {
+            newUrl.append(url.contains("?") ? "&" : "?").append(m.group(1));
+        }
+        return newUrl.toString();
     }
 }

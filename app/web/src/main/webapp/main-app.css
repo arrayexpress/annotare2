@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+.selectedItem {
+    color: red;
+}
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-/**
- * @author Olga Melnichuk
- */
-public interface HeaderView extends IsWidget {
-
-    void setPresenter(Presenter presenter);
-
-    void setUserName(String name);
-
-    public interface Presenter {
-    }
+.no-cell-borders td {
+    border-style: none;
 }

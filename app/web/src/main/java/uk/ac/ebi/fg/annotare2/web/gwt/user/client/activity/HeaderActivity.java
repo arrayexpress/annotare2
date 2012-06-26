@@ -24,9 +24,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.UserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.HeaderView;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserAccount;
 
 /**
  * @author Olga Melnichuk
@@ -35,12 +35,12 @@ public class HeaderActivity extends AbstractActivity implements HeaderView.Prese
 
     private final HeaderView view;
     private final PlaceController placeController;
-    private final UserAccountServiceAsync rpcService;
+    private final CurrentUserAccountServiceAsync rpcService;
 
     @Inject
     public HeaderActivity(HeaderView view,
                           PlaceController placeController,
-                          UserAccountServiceAsync rpcService) {
+                          CurrentUserAccountServiceAsync rpcService) {
         this.view = view;
         this.placeController = placeController;
         this.rpcService = rpcService;
@@ -75,8 +75,8 @@ public class HeaderActivity extends AbstractActivity implements HeaderView.Prese
     }
 
     private void asyncInit(final HeaderView view) {
-        rpcService.getCurrentUser(new AsyncCallbackWrapper<UserAccount>() {
-            public void onSuccess(UserAccount result) {
+        rpcService.me(new AsyncCallbackWrapper<UserDetails>() {
+            public void onSuccess(UserDetails result) {
                 view.setUserName(result.getEmail());
             }
 

@@ -14,29 +14,36 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.uibinder.client.UiConstructor;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionViewImpl extends Composite implements SubmissionView {
+public class MenuButtonItem extends Composite implements HasText {
 
-    interface Binder extends UiBinder<Widget, SubmissionViewImpl> {
+    interface Binder extends UiBinder<Widget, MenuButtonItem> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
-    private Presenter presenter;
+    @UiField
+    Label label;
 
-    public SubmissionViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+    @UiConstructor
+    public MenuButtonItem() {
+        initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public String getText() {
+        return label.getText();
+    }
+
+    public void setText(String text) {
+        label.setText(text);
     }
 }

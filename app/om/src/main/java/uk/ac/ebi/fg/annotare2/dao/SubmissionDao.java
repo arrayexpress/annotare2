@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.dao;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.SubmissionType;
+import uk.ac.ebi.fg.annotare2.om.User;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HeaderView extends IsWidget {
+public interface SubmissionDao {
 
-    void setPresenter(Presenter presenter);
+    Submission getSubmission(int id) throws RecordNotFoundException;
 
-    void setUserName(String name);
-
-    public interface Presenter {
-    }
+    List<Submission> getSubmissionsByType(User user, SubmissionType type);
 }
