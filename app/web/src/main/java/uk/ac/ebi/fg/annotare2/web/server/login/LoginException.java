@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
 /**
  * @author Olga Melnichuk
  */
-@RemoteServiceRelativePath(CurrentUserAccountService.NAME)
-public interface CurrentUserAccountService extends RemoteService {
+public class LoginException extends Exception {
 
-    public static final String NAME = "currentUserAccountService";
-
-    public UserDetails me();
-
-    public void logout();
-
+    public LoginException(String expAcc) {
+        super(expAcc);
+    }
 }

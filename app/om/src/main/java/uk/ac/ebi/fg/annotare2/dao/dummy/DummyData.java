@@ -20,16 +20,15 @@ import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.om.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -45,6 +44,8 @@ public class DummyData {
 
     static {
         User user = createUser("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee");
+        //user.setRoles(asList(UserRole.AUTHENTICATED));
+
         createSubmission(user,
                 "Transcription profiling of human brain total RNA vs Universal Human Reference RNA on 4 different commercially available microarray to assess comparability of gene expression measurements on microarrays (24 assays)",
                 "Commercially available human genomic microarrays from four different manufacturers were used to compare Human Brain Total RNA against Universal Human Reference RNA (both commercially available) prepared at two different starting amounts (20 µg or 1µg). For each amount of RNA, 6 replicates were performed with Human Brain Total RNA labelled with Cy3, and Universal Human Reference RNA labelled with Cy5. The labelling was then reversed (dye flip) creating another 6 replicates. This meant that for each of the four manufacturers there were a total of 24 arrays. Image processing was performed with two different software packages, and data was normalized with three different strategies.");
@@ -52,6 +53,10 @@ public class DummyData {
         createSubmission(user,
                 "Transcription profiling of non-cancerous tissue and cancerous tissue from gastric and colon cancer patients (96 assays)",
                 "Whole-genome microarray profiling of gene expression pattern in 96 tissues from gastric and colon cancer patients");
+
+        createSubmission(user,
+                "Ewing's sarcoma tumor samples",
+                "This SuperSeries is composed of the following subset Series: GSE37370: microRNA expression data from Ewing's sarcoma tumor samples GSE37371: Expression data from Ewing's sarcoma tumor samples Refer to individual Series");
     }
 
     private DummyData() {}

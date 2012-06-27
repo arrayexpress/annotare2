@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
+
+
+import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author Olga Melnichuk
  */
-public class LoginException extends Exception {
+public interface AuthService {
 
-    public LoginException(String expAcc) {
-        super(expAcc);
-    }
+    boolean isLoggedIn(HttpServletRequest request);
+
+    ValidationErrors login(HttpServletRequest request) throws LoginException;
+
+    void logout(HttpSession session);
+
+    User getCurrentUser(HttpSession session);
 }

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.server.AllRpcServicePaths;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToLogin;
+import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.LOGIN;
 
 /**
  * @author Olga Melnichuk
@@ -38,6 +38,9 @@ public class SecurityFilter implements Filter {
 
     @Inject
     private AuthService authService;
+
+    @Inject
+    private AllRpcServicePaths rpcServicePaths;
 
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -67,20 +70,17 @@ public class SecurityFilter implements Filter {
         }
 
 
-        if (isHtmlAccepted(request)) {
-            log.debug("Client accepts HTML; redirecting to login page..");
-            redirectToLogin(request, response, true);
+        if (isRpcServicePath(request)) {
+            log.debug("Is an RPC service path; so returning unauthorised ({}) code..", HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        log.debug("Client doesn't accept HTML; returning unauthorised ({}) code..", HttpServletResponse.SC_UNAUTHORIZED);
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        log.debug("Not an RPC service path");
+        LOGIN.saveAndRedirect(request, response);
     }
 
-    private boolean isHtmlAccepted(HttpServletRequest request) {
-        String accept = request.getHeader("Accept").split(";")[0];
-        boolean accepted = !isNullOrEmpty(accept) && (accept.contains("text/html")) ;
-
-        String url = request.getRequestURL().toString();
-        return accepted || url.contains(".html");
+    private boolean isRpcServicePath(HttpServletRequest request) {
+       return rpcServicePaths.recognizeUri(request.getRequestURI());
     }
 }

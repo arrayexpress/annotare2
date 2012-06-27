@@ -24,7 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
@@ -39,10 +39,10 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
 
     private final SubmissionListView view;
     private final PlaceController placeController;
-    private final SubmissionServiceAsync rpcService;
+    private final SubmissionListServiceAsync rpcService;
 
     @Inject
-    public SubmissionListActivity(SubmissionListView view, PlaceController placeController, SubmissionServiceAsync rpcService) {
+    public SubmissionListActivity(SubmissionListView view, PlaceController placeController, SubmissionListServiceAsync rpcService) {
         this.view = view;
         this.placeController = placeController;
         this.rpcService = rpcService;

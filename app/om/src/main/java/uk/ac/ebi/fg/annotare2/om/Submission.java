@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import java.util.Date;
+
 /**
  * @author Olga Melnichuk
  */
@@ -29,6 +31,8 @@ public abstract class Submission {
 
     private SubmissionType type;
 
+    private Date created;
+
     private SubmissionStatus status = SubmissionStatus.NEW;
 
     protected Submission(int id, String title, String description, SubmissionType type) {
@@ -36,6 +40,7 @@ public abstract class Submission {
         this.title = title;
         this.description = description;
         this.type = type;
+        this.created = new Date();
     }
 
     public int getId() {
@@ -48,6 +53,10 @@ public abstract class Submission {
 
     public String getDescription() {
         return description;
+    }
+
+    public Date getCreated() {
+        return created;
     }
 
     public SubmissionType getType() {
