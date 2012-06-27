@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

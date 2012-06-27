@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
