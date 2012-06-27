@@ -44,7 +44,7 @@ public class DummyData {
 
     static {
         User user = createUser("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee");
-        user.setRoles(asList(UserRole.AUTHENTICATED));
+        //user.setRoles(asList(UserRole.AUTHENTICATED));
 
         createSubmission(user,
                 "Transcription profiling of human brain total RNA vs Universal Human Reference RNA on 4 different commercially available microarray to assess comparability of gene expression measurements on microarrays (24 assays)",
