@@ -24,7 +24,11 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.MenuButton;
+
+import java.util.HashMap;
 
 /**
  * @author Olga Melnichuk
@@ -36,22 +40,24 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     private Presenter presenter;
 
-    private Anchor selected;
+    private Widget selected;
 
     @UiField
     MenuButton createButton;
 
     @UiField
-    Anchor allSubmissions;
+    LeftMenuItem allSubmissions;
 
     @UiField
-    Anchor maSubmissions;
+    LeftMenuItem maSubmissions;
 
     @UiField
-    Anchor htsSubmissions;
+    LeftMenuItem htsSubmissions;
 
     @UiField
-    Anchor adfSubmissions;
+    LeftMenuItem adfSubmissions;
+
+    private HashMap<Filter, Widget> filters = new HashMap<Filter, Widget>();
 
     public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -60,6 +66,11 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         createButton.addMenuButtonItem("Microarray Experiment Submission");
         createButton.addMenuButtonItem("HTS Experiment Submission");
         createButton.addMenuButtonItem("ADF Submission");
+
+        filters.put(Filter.MA_SUBMISSIONS, maSubmissions);
+        filters.put(Filter.ADF_SUBMISSIONS, adfSubmissions);
+        filters.put(Filter.HTS_SUBMISSIONS, htsSubmissions);
+        filters.put(Filter.ALL_SUBMISSIONS, allSubmissions);
     }
 
     public void setPresenter(Presenter presenter) {
@@ -68,29 +79,34 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     @UiHandler("allSubmissions")
     public void onRecentClick(ClickEvent event) {
-        selectItem(allSubmissions);
-        presenter.onSubmissionFilterClick(Filter.ALL_SUBMISSIONS);
+        filterClick(Filter.ALL_SUBMISSIONS);
     }
 
     @UiHandler("maSubmissions")
     public void onMaSubmissionsClick(ClickEvent event) {
-        selectItem(maSubmissions);
-        presenter.onSubmissionFilterClick(Filter.MA_SUBMISSIONS);
+        filterClick(Filter.MA_SUBMISSIONS);
+    }
+
+    @UiHandler("htsSubmissions")
+    public void onHtsSubmissionsClick(ClickEvent event) {
+        filterClick(Filter.HTS_SUBMISSIONS);
+    }
+
+    @UiHandler("adfSubmissions")
+    public void onAdfSubmissionsClick(ClickEvent event) {
+        filterClick(Filter.ADF_SUBMISSIONS);
+    }
+
+    private void filterClick(Filter filter) {
+        selectItem(filters.get(filter));
+        presenter.onSubmissionFilterClick(filter);
     }
 
     public void setFilter(Filter filter) {
-        switch (filter) {
-            case ALL_SUBMISSIONS:
-                selectItem(allSubmissions);
-                break;
-
-            case MA_SUBMISSIONS:
-                selectItem(maSubmissions);
-                break;
-        }
+        selectItem(filters.get(filter));
     }
 
-    private void selectItem(Anchor item) {
+    private void selectItem(Widget item) {
         final String styleName = "selectedItem";
         if (selected != null) {
             selected.removeStyleName(styleName);

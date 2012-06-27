@@ -34,6 +34,8 @@ public interface LeftMenuView extends IsWidget {
 
     public enum Filter {
         ALL_SUBMISSIONS,
-        MA_SUBMISSIONS
+        MA_SUBMISSIONS,
+        HTS_SUBMISSIONS,
+        ADF_SUBMISSIONS
     }
 }
