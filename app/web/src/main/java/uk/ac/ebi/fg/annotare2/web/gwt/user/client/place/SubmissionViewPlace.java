@@ -26,9 +26,7 @@ import com.google.inject.Provider;
  */
 public class SubmissionViewPlace extends Place {
 
-    private String placeName;
-    private int submissionId;
-
+    private Integer submissionId;
 
     public int getSubmissionId() {
         return submissionId;
@@ -36,14 +34,6 @@ public class SubmissionViewPlace extends Place {
 
     public void setSubmissionId(int submissionId) {
         this.submissionId = submissionId;
-    }
-
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
-    }
-
-    public String getPlaceName() {
-        return placeName;
     }
 
     public static class Tokenizer implements PlaceTokenizer<SubmissionViewPlace> {
@@ -56,12 +46,12 @@ public class SubmissionViewPlace extends Place {
         }
 
         public String getToken(SubmissionViewPlace place) {
-            return place.getPlaceName();
+            return "" + place.getSubmissionId();
         }
 
         public SubmissionViewPlace getPlace(String token) {
             SubmissionViewPlace place = placeProvider.get();
-            place.setPlaceName(token);
+            place.setSubmissionId(Integer.valueOf(token));
             return place;
         }
     }
