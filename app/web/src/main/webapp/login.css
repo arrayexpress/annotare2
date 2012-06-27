@@ -1,0 +1,83 @@
+/*
+ * Copyright 2009-2012 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.outer {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: 100%;
+}
+
+.inner {
+    width: 500px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.frame {
+    border: 1px solid #207A7A;
+    padding: 15px 10px 2px;
+    font-size: small;
+}
+
+.error {
+    font-size: small;
+    color: red;
+    text-align: left;
+}
+
+.form {
+    border-collapse: collapse;
+    color: #000;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.form td {
+    padding: 0 3px;
+}
+
+.form tr.row td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.form tr.right td {
+   text-align: right;
+}
+
+.form input {
+    padding: 5px 4px;
+    border: 1px solid #CCC;
+    border-top: 1px solid #999;
+    font-size: small;
+    font-family: Arial Unicode MS, Arial, sans-serif;
+}
+
+.form button {
+    margin: 0;
+    padding: 5px 7px;
+    text-decoration: none;
+    cursor: pointer;
+    cursor: hand;
+    font-size: small;
+    border: 1px solid #BBB;
+    border-bottom: 1px solid #A0A0A0;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: white;
+}
