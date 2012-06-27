@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.web.server.auth;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletNavigation.HOME;
 
 /**
  * @author Olga Melnichuk
  */
-@RemoteServiceRelativePath(CurrentUserAccountService.NAME)
-public interface CurrentUserAccountService extends RemoteService {
+public class HomeServlet extends HttpServlet {
 
-    public static final String NAME = "currentUserAccountService";
-
-    public UserDetails me();
-
-    public void logout();
-
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HOME.forward(getServletConfig().getServletContext(), request, response);
+    }
 }

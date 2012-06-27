@@ -34,42 +34,56 @@ import static com.google.common.base.Strings.nullToEmpty;
 /**
  * @author Olga Melnichuk
  */
-class ServletUtil {
+enum ServletNavigation {
+    LOGIN("/login", "/login.jsp"),
+    HOME("/", "/home.jsp");
 
-    private static final Logger log = LoggerFactory.getLogger(ServletUtil.class);
-
-    private ServletUtil() {
-    }
+    private static final Logger log = LoggerFactory.getLogger(ServletNavigation.class);
 
     private static final SessionAttribute ORIGINAL_URL = new SessionAttribute("original_url");
 
     private static final Pattern GWT_SRV_PARAM = Pattern.compile(".*?(gwt\\.codesvr=[0-9.:]+).*");
 
-    public static void redirectToApp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug("Redirecting to app..");
+    private String redirectTo;
+
+    private String forwardTo;
+
+    ServletNavigation(String redirectTo, String forwardTo) {
+        this.redirectTo = redirectTo;
+        this.forwardTo = forwardTo;
+    }
+
+    public void saveAndRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug("Saving the original url and redirecting to {}", redirectTo);
+        ORIGINAL_URL.set(request.getSession(), requestUrl(request));
+        redirect(request, response);
+    }
+
+    public void restoreAndRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String originalUrl = (String) ORIGINAL_URL.get(request.getSession());
-        redirect(originalUrl == null ? contextBasedUrl("/index.html", request) : originalUrl, response);
-    }
-
-    public static void redirectToLogin(HttpServletRequest request, HttpServletResponse response, boolean preserveOriginal) throws IOException {
-        log.debug("Redirecting to login servlet..");
-        if (preserveOriginal) {
-            ORIGINAL_URL.set(request.getSession(), requestUrl(request));
+        if (originalUrl != null) {
+            log.debug("Redirecting to original url {}", originalUrl);
+            sendRedirect(originalUrl, response);
+        } else {
+            redirect(request, response);
         }
-        redirect(contextBasedUrl("/login", request), response);
     }
 
-    public static void forwardToLogin(ServletContext context, HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        log.debug("Forwarding to login page..");
-        context.getRequestDispatcher(preserveCodeSrvParam("/login.jsp", request)).forward(request, response);
+    public void redirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug("Redirecting to {}", redirectTo);
+        sendRedirect(contextBasedUrl(redirectTo, request), response);
+    }
+
+    public void forward(ServletContext context, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        log.debug("Forwarding to {}", forwardTo);
+        context.getRequestDispatcher(preserveCodeSrvParam(forwardTo, request)).forward(request, response);
     }
 
     private static String contextBasedUrl(String url, HttpServletRequest request) {
-        return  request.getContextPath() + preserveCodeSrvParam(url, request);
+        return request.getContextPath() + preserveCodeSrvParam(url, request);
     }
 
-    private static void redirect(String url, HttpServletResponse response) throws IOException {
+    private static void sendRedirect(String url, HttpServletResponse response) throws IOException {
         response.sendRedirect(response.encodeRedirectURL(url));
     }
 

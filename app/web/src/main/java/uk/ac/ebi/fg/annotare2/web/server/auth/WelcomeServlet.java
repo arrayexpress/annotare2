@@ -16,28 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.auth;
 
-import com.google.inject.Inject;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletNavigation.LOGIN;
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletNavigation.HOME;
 
 /**
+ * Everything that considered to be welcome file (index.html, index.jsp, etc.) is redirected to the application home.
+ *
  * @author Olga Melnichuk
  */
-public class LogoutServlet  extends HttpServlet {
-
-    @Inject
-    private AuthService authService;
+public class WelcomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        authService.logout(request.getSession());
-        LOGIN.redirect(request, response);
+        HOME.redirect(request, response);
     }
-
 }

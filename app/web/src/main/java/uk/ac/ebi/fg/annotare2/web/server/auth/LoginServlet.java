@@ -21,15 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
 
-import javax.servlet.Filter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.forwardToLogin;
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToApp;
+import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletNavigation.*;
 
 /**
  * @author Olga Melnichuk
@@ -49,7 +47,7 @@ public class LoginServlet extends HttpServlet {
             errors.append(authService.login(request));
             if (errors.isEmpty()) {
                 log.debug("Login details are valid; Authorization succeeded");
-                redirectToApp(request, response);
+                HOME.restoreAndRedirect(request, response);
                 return;
             }
             log.debug("Login detail are invalid");
@@ -59,11 +57,11 @@ public class LoginServlet extends HttpServlet {
         }
 
         request.setAttribute("errors", errors);
-        forwardToLogin(getServletConfig().getServletContext(), request, response);
+        LOGIN.forward(getServletConfig().getServletContext(), request, response);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        forwardToLogin(getServletConfig().getServletContext(), request, response);
+        LOGIN.forward(getServletConfig().getServletContext(), request, response);
     }
 }
