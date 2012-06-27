@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletNavigation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.*;
 
 /**
  * @author Olga Melnichuk

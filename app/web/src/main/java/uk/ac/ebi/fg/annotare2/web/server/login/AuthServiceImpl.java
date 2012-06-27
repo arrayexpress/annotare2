@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;

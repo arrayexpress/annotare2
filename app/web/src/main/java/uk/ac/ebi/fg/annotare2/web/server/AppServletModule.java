@@ -24,7 +24,7 @@ import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
-import uk.ac.ebi.fg.annotare2.web.server.auth.*;
+import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.CurrentUserAccountServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.SubmissionListServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;

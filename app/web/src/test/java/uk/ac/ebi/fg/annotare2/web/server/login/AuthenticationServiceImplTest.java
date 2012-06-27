@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
