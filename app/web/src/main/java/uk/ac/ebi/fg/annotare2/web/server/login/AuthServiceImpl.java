@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.RequestParam;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.SessionAttribute;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.RequestParam;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

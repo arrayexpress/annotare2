@@ -22,33 +22,44 @@ import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
-import uk.ac.ebi.fg.annotare2.web.server.auth.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
+import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.CurrentUserAccountServiceImpl;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.SubmissionServiceImpl;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.SubmissionListServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+
+import javax.servlet.http.HttpServlet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
  */
 public class AppServletModule extends ServletModule {
 
+    private final AllRpcServicePathsImpl allRpc = new AllRpcServicePathsImpl();
+
     @Override
     protected void configureServlets() {
-        filter("/UserApp/*", "/index.html").through(SecurityFilter.class);
+        filter("/UserApp/*", "/").through(SecurityFilter.class);
 
         serveRegex("(/login)(?:;jsessionid=[A-Z0-9]+)?").with(LoginServlet.class);
         serveRegex("(/logout)(?:;jsessionid=[A-Z0-9]+)?").with(LogoutServlet.class);
+        serveRegex("(/)(?:;jsessionid=[A-Z0-9]+)?").with(HomeServlet.class);
+        serveRegex("(/index.*)(?:;jsessionid=[A-Z0-9]+)?").with(WelcomeServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
         bind(LogoutServlet.class).in(Scopes.SINGLETON);
+        bind(HomeServlet.class).in(Scopes.SINGLETON);
+        bind(WelcomeServlet.class).in(Scopes.SINGLETON);
 
-        serve("/UserApp/me").with(CurrentUserAccountServiceImpl.class);
-        bind(CurrentUserAccountServiceImpl.class).in(Scopes.SINGLETON);
+        serveAndBindRpcService("UserApp", CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class);
+        serveAndBindRpcService("UserApp", SubmissionListService.NAME, SubmissionListServiceImpl.class);
 
-        serve("/UserApp/mySubmissions").with(SubmissionServiceImpl.class);
-        bind(SubmissionServiceImpl.class).in(Scopes.SINGLETON);
+        bind(SubmissionListServiceImpl.class).in(Scopes.SINGLETON);
 
         bind(UserDao.class).to(UserDaoDummy.class).in(Scopes.SINGLETON);
         bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(Scopes.SINGLETON);
@@ -56,5 +67,28 @@ public class AppServletModule extends ServletModule {
         bind(SubmissionManager.class).in(Scopes.SINGLETON);
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(Scopes.SINGLETON);
+        bind(AllRpcServicePaths.class).toInstance(allRpc);
+    }
+
+    private void serveAndBindRpcService(String moduleName, String serviceName, Class<? extends HttpServlet> implClass) {
+        String servicePath = "/" + moduleName + "/" + serviceName;
+
+        serve(servicePath).with(implClass);
+        bind(implClass).in(Scopes.SINGLETON);
+
+        allRpc.awareOf(servicePath);
+    }
+
+    static class AllRpcServicePathsImpl implements AllRpcServicePaths {
+
+        private final Set<String> paths = new HashSet<String>();
+
+        public boolean recognizeUri(String uri) {
+            return paths.contains(uri);
+        }
+
+        void awareOf(String path) {
+            paths.add(path);
+        }
     }
 }

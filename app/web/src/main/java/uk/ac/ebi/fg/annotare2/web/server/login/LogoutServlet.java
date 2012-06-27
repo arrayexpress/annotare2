@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import com.google.inject.Inject;
 
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.auth.ServletUtil.redirectToLogin;
+import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.LOGIN;
 
 /**
  * @author Olga Melnichuk
@@ -37,7 +37,7 @@ public class LogoutServlet  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         authService.logout(request.getSession());
-        redirectToLogin(request, response, false);
+        LOGIN.redirect(request, response);
     }
 
 }

@@ -16,20 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
-/**
- * @author Olga Melnichuk
- */
-@RemoteServiceRelativePath(CurrentUserAccountService.NAME)
-public interface CurrentUserAccountService extends RemoteService {
+import java.util.List;
 
-    public static final String NAME = "currentUserAccountService";
+public interface SubmissionListServiceAsync {
 
-    public UserDetails me();
-
-    public void logout();
-
+    void getSubmissions(AsyncCallback<List<SubmissionDetails>> async);
 }

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -28,6 +29,8 @@ import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 import java.util.List;
+
+import static com.google.gwt.i18n.client.DateTimeFormat.getFormat;
 
 /**
  * @author Olga Melnichuk
@@ -60,6 +63,13 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
                 return object.getDescription();
             }
         }, new TextHeader("Description"));
+
+        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+            @Override
+            public String getValue(SubmissionDetails object) {
+                return getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(object.getCreated());
+            }
+        }, new TextHeader("Created"));
 
 
         final SingleSelectionModel<SubmissionDetails> selectionModel = new SingleSelectionModel<SubmissionDetails>(

@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.auth;
+package uk.ac.ebi.fg.annotare2.web.server.login;
 
-
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
-import uk.ac.ebi.fg.annotare2.web.server.servlet.utils.ValidationErrors;
-
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.HOME;
 
 /**
+ * Everything that considered to be welcome file (index.html, index.jsp, etc.) is redirected to the application home.
+ *
  * @author Olga Melnichuk
  */
-public interface AuthService {
+public class WelcomeServlet extends HttpServlet {
 
-    boolean isLoggedIn(HttpServletRequest request);
-
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HOME.redirect(request, response);
+    }
 }
