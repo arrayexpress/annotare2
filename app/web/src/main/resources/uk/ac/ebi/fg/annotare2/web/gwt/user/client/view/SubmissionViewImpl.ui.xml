@@ -48,7 +48,7 @@
 
             <div class="{style.submit}">
                <div style="margin-bottom:5px;">
-                   <g:Button>Submit For Review</g:Button>
+                   <g:Button>Submit</g:Button>
                </div>
                <g:TextArea width="100%" visibleLines="4"></g:TextArea>
             </div>
