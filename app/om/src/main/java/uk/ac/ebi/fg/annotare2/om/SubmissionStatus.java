@@ -20,10 +20,9 @@ package uk.ac.ebi.fg.annotare2.om;
  * @author Olga Melnichuk
  */
 public enum SubmissionStatus {
-    NEW/*,
-    READY_FOR_REVIEW,
-    IN_REVIEW,
-    APPROVED,
-    INCOMPLETE,
-    LOADED*/
+    IN_PROGRESS,
+    SUBMITTED,
+    IN_CURATION,
+    PRIVATE_IN_AE,
+    PUBLIC_IN_AE
 }

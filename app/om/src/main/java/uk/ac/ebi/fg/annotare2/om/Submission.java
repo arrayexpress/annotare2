@@ -35,7 +35,7 @@ public abstract class Submission {
 
     private User createdBy;
 
-    private SubmissionStatus status = SubmissionStatus.NEW;
+    private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
     protected Submission(int id, String title, String description, SubmissionType type, User createdBy) {
         this.id = id;
@@ -64,6 +64,10 @@ public abstract class Submission {
 
     public SubmissionType getType() {
         return type;
+    }
+
+    public SubmissionStatus getStatus() {
+        return status;
     }
 
     public boolean isCreatedBy(User user) {
