@@ -72,6 +72,12 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             }
         }, new TextHeader("Description"));
 
+        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+            @Override
+            public String getValue(SubmissionDetails object) {
+                return "IN PROGRESS"; // TODO
+            }
+        }, new TextHeader("Status"));
 
         final SingleSelectionModel<SubmissionDetails> selectionModel = new SingleSelectionModel<SubmissionDetails>(
                 new ProvidesKey<SubmissionDetails>() {
