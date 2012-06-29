@@ -50,6 +50,14 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
     public SubmissionListViewImpl() {
         cellTable = new CellTable<SubmissionDetails>();
         cellTable.setWidth("100%", true);
+
+        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+            @Override
+            public String getValue(SubmissionDetails object) {
+                return getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(object.getCreated());
+            }
+        }, new TextHeader("Created"));
+
         cellTable.addColumn(new TextColumn<SubmissionDetails>() {
             @Override
             public String getValue(SubmissionDetails object) {
@@ -63,13 +71,6 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
                 return object.getDescription();
             }
         }, new TextHeader("Description"));
-
-        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
-            @Override
-            public String getValue(SubmissionDetails object) {
-                return getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(object.getCreated());
-            }
-        }, new TextHeader("Created"));
 
 
         final SingleSelectionModel<SubmissionDetails> selectionModel = new SingleSelectionModel<SubmissionDetails>(
