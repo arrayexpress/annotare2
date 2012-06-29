@@ -33,18 +33,8 @@
     <g:HTMLPanel>
         <div class="{style.submissionView}">
             <h1>UNACCESSIONED</h1>
-            <p>Transcription profiling of human brain total RNA vs Universal Human Reference RNA on 4 different
-                commercially available microarray to assess comparability of gene expression measurements on microarrays
-                (24 assays)
-            </p>
-            <p>Commercially available human genomic microarrays from four different manufacturers were used to compare
-                Human Brain Total RNA against Universal Human Reference RNA (both commercially available) prepared at
-                two different starting amounts (20 µg or 1µg). For each amount of RNA, 6 replicates were performed with
-                Human Brain Total RNA labelled with Cy3, and Universal Human Reference RNA labelled with Cy5. The
-                labelling was then reversed (dye flip) creating another 6 replicates. This meant that for each of the
-                four manufacturers there were a total of 24 arrays. Image processing was performed with two different
-                software packages, and data was normalized with three different strategies.
-            </p>
+            <div ui:field="title"></div>
+            <div ui:field="description"></div>
 
             <div class="{style.submit}">
                <div style="margin-bottom:5px;">

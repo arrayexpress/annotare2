@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
 /**
  * @author Olga Melnichuk
  */
-@RemoteServiceRelativePath(SubmissionService.NAME)
-public interface SubmissionService extends RemoteService {
+public class AccessControlException extends Exception {
 
-    public static final String NAME = "submissionService";
-
-    SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
+    public AccessControlException(String expAcc) {
+        super(expAcc);
+    }
 }

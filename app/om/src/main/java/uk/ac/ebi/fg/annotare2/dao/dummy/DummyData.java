@@ -44,7 +44,7 @@ public class DummyData {
 
     static {
         User user = createUser("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee");
-        //user.setRoles(asList(UserRole.AUTHENTICATED));
+        user.setRoles(asList(UserRole.AUTHENTICATED));
 
         createSubmission(user,
                 "Transcription profiling of human brain total RNA vs Universal Human Reference RNA on 4 different commercially available microarray to assess comparability of gene expression measurements on microarrays (24 assays)",
@@ -69,7 +69,7 @@ public class DummyData {
     }
 
     private static Submission createSubmission(User user, String title, String description) {
-        Submission submission = new ExperimentSubmission(count++, title, description);
+        Submission submission = new ExperimentSubmission(count++, title, description, user);
         submissions.put(submission.getId(), submission);
         userSubmissions.put(user.getId(), submission.getId());
         return submission;

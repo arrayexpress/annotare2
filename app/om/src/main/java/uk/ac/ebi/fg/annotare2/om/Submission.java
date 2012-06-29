@@ -33,14 +33,17 @@ public abstract class Submission {
 
     private Date created;
 
+    private User createdBy;
+
     private SubmissionStatus status = SubmissionStatus.NEW;
 
-    protected Submission(int id, String title, String description, SubmissionType type) {
+    protected Submission(int id, String title, String description, SubmissionType type, User createdBy) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.type = type;
         this.created = new Date();
+        this.createdBy = createdBy;
     }
 
     public int getId() {
@@ -61,5 +64,9 @@ public abstract class Submission {
 
     public SubmissionType getType() {
         return type;
+    }
+
+    public boolean isCreatedBy(User user) {
+        return createdBy.equals(user);
     }
 }

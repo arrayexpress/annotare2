@@ -17,9 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 /**
  * @author Olga Melnichuk
@@ -31,6 +34,12 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
 
     private Presenter presenter;
 
+    @UiField
+    DivElement title;
+
+    @UiField
+    DivElement description;
+
     public SubmissionViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -38,5 +47,10 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void setSubmission(SubmissionDetails submission) {
+        title.setInnerText(submission.getTitle());
+        description.setInnerText(submission.getDescription());
     }
 }
