@@ -29,7 +29,7 @@
         <g:Dock direction="SOUTH" width="100%">
 
             <g:HTMLPanel height="100%">
-                <h1>Submissions</h1>
+                <h1>My Submissions</h1>
             </g:HTMLPanel>
 
         </g:Dock>
