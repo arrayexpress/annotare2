@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.om;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -30,7 +31,7 @@ public class User {
 
     private String password;
 
-    private ArrayList<UserRole> roles;
+    private List<Role> roles;
 
     public User(int id, String email, String password) {
         this.id = id;
@@ -50,12 +51,20 @@ public class User {
         return password;
     }
 
-    public void setRoles(Collection<UserRole> roles) {
-        this.roles = new ArrayList<UserRole>(roles);
+    public void setRoles(Collection<Role> roles) {
+        this.roles = new ArrayList<Role>(roles);
     }
 
     public boolean isCurator() {
-        return roles.contains(UserRole.CURATOR);
+        return roles.contains(Role.CURATOR);
+    }
+
+    public boolean isAllowed(HasEffectiveAcl obj, Permission permission) {
+        return obj.getEffectiveAcl().hasPermission(this, permission);
+    }
+
+    public List<Role> getRoles() {
+        return roles;
     }
 
     @Override

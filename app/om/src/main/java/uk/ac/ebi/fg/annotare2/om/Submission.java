@@ -21,7 +21,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public abstract class Submission {
+public abstract class Submission implements HasEffectiveAcl {
 
     private int id;
 
@@ -34,16 +34,19 @@ public abstract class Submission {
     private Date created;
 
     private User createdBy;
+    
+    private Acl acl;
 
     private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
-    protected Submission(int id, String title, String description, SubmissionType type, User createdBy) {
+    protected Submission(int id, String title, String description, SubmissionType type, User createdBy, Acl acl) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.type = type;
         this.created = new Date();
         this.createdBy = createdBy;
+        this.acl = acl;
     }
 
     public int getId() {
@@ -70,7 +73,7 @@ public abstract class Submission {
         return status;
     }
 
-    public boolean isCreatedBy(User user) {
-        return createdBy.equals(user);
+    public EffectiveAcl getEffectiveAcl() {
+        return new EffectiveAcl(acl, createdBy);
     }
 }

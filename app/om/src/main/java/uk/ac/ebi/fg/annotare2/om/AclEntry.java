@@ -16,11 +16,34 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import java.util.Collection;
+
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentSubmission extends Submission {
-    public ExperimentSubmission(int id, String title, String description, User user, Acl acl) {
-        super(id, title, description, SubmissionType.EXPERIMENT, user, acl);
+public class AclEntry {
+
+    private int id;
+
+    private Role role;
+
+    private Permission permission;
+
+    public AclEntry(int id, Role role, Permission permission) {
+        this.id  = id;
+        this.role = role;
+        this.permission = permission;
+    }
+
+    public boolean complies(Collection<? extends Role> roles, Permission permission) {
+        if (!this.permission.equals(permission)) {
+            return false;
+        }
+        for (Role r : roles) {
+            if (r.equals(role)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -16,11 +16,37 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
-public enum UserRole {
-    AUTHENTICATED,
-    CURATOR,
-    ADMIN;
+public class Acl {
+
+    private int id;
+
+    private String title;
+
+    private List<AclEntry> entries = new ArrayList<AclEntry>();
+
+    public Acl(int id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
+    public Acl add(AclEntry entry) {
+        entries.add(entry);
+        return this;
+    }
+
+    public boolean hasPermission(Collection<? extends Role> roles, Permission permission) {
+        for(AclEntry p : entries) {
+            if (p.complies(roles, permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
