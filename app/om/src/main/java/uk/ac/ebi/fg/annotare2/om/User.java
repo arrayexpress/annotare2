@@ -31,7 +31,7 @@ public class User {
 
     private String password;
 
-    private List<Role> roles;
+    private List<? extends Role> roles;
 
     public User(int id, String email, String password) {
         this.id = id;
@@ -51,7 +51,7 @@ public class User {
         return password;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(Collection<? extends Role> roles) {
         this.roles = new ArrayList<Role>(roles);
     }
 
@@ -63,7 +63,7 @@ public class User {
         return obj.getEffectiveAcl().hasPermission(this, permission);
     }
 
-    public List<Role> getRoles() {
+    public List<? extends Role> getRoles() {
         return roles;
     }
 

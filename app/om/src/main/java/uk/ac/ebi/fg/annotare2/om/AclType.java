@@ -16,37 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 /**
  * @author Olga Melnichuk
  */
-public class Acl {
-
-    private int id;
-
-    private AclType type;
-
-    private List<AclEntry> entries = new ArrayList<AclEntry>();
-
-    public Acl(int id, AclType type) {
-        this.id = id;
-        this.type = type;
-    }
-
-    public Acl add(AclEntry entry) {
-        entries.add(entry);
-        return this;
-    }
-
-    public boolean hasPermission(Collection<? extends Role> roles, Permission permission) {
-        for(AclEntry p : entries) {
-            if (p.complies(roles, permission)) {
-                return true;
-            }
-        }
-        return false;
-    }
+public enum AclType {
+    SUBMISSION
 }

@@ -40,10 +40,12 @@ public class DummyData {
     private static final Map<Integer, Submission> submissions = new HashMap<Integer, Submission>();
     private static final Multimap<Integer, Integer> userSubmissions = ArrayListMultimap.create();
 
+    private static final Map<AclType, Acl> acls = new HashMap<AclType, Acl>();
+
     private static int count = 1;
 
     static {
-        Acl submissionAcl = createAcl("Submission")
+        Acl submissionAcl = createAcl(AclType.SUBMISSION)
                 .add(createAclEntry(Role.AUTHENTICATED, Permission.CREATE))
 
                 .add(createAclEntry(Role.OWNER, Permission.VIEW))
@@ -90,8 +92,14 @@ public class DummyData {
         return submission;
     }
 
-    private static Acl createAcl(String aclName) {
-        return new Acl(nextId(), aclName);
+    private static Acl createAcl(AclType aclType) {
+        Acl acl = acls.get(aclType);
+        if (acl != null) {
+            return acl;
+        }
+        acl = new Acl(nextId(), aclType);
+        acls.put(aclType, acl);
+        return acl;
     }
 
     private static AclEntry createAclEntry(Role role, Permission permission) {
@@ -100,6 +108,14 @@ public class DummyData {
 
     private static int nextId() {
         return count++;
+    }
+
+    public static Acl getAcl(AclType type) {
+        Acl acl = acls.get(type);
+        if (acl == null) {
+            throw new IllegalStateException("No any ACL associated with the type " + type);
+        }
+        return acl;
     }
 
     public static User getUserByEmail(String email) {
