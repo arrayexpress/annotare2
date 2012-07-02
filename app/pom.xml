@@ -141,6 +141,11 @@
                     <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
                     <licenseLocation>${user.home}/clover.license</licenseLocation>
                     <singleCloverDatabase>true</singleCloverDatabase>
+                    <excludes>
+                        <!-- GWT classes -->
+                        <exclude>**/client/**/*.java</exclude>
+                        <exclude>**/shared/**/*.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
