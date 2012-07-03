@@ -21,7 +21,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -49,13 +48,10 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     LeftMenuItem allSubmissions;
 
     @UiField
-    LeftMenuItem maSubmissions;
+    LeftMenuItem completed;
 
     @UiField
-    LeftMenuItem htsSubmissions;
-
-    @UiField
-    LeftMenuItem adfSubmissions;
+    LeftMenuItem incomplete;
 
     private HashMap<Filter, Widget> filters = new HashMap<Filter, Widget>();
 
@@ -67,9 +63,8 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         createButton.addMenuButtonItem("HTS Experiment Submission");
         createButton.addMenuButtonItem("ADF Submission");
 
-        filters.put(Filter.MA_SUBMISSIONS, maSubmissions);
-        filters.put(Filter.ADF_SUBMISSIONS, adfSubmissions);
-        filters.put(Filter.HTS_SUBMISSIONS, htsSubmissions);
+        filters.put(Filter.COMPLETED, completed);
+        filters.put(Filter.INCOMPLETE, incomplete);
         filters.put(Filter.ALL_SUBMISSIONS, allSubmissions);
     }
 
@@ -82,19 +77,14 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         filterClick(Filter.ALL_SUBMISSIONS);
     }
 
-    @UiHandler("maSubmissions")
-    public void onMaSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.MA_SUBMISSIONS);
+    @UiHandler("completed")
+    public void onCompletedSubmissionsClick(ClickEvent event) {
+        filterClick(Filter.COMPLETED);
     }
 
-    @UiHandler("htsSubmissions")
-    public void onHtsSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.HTS_SUBMISSIONS);
-    }
-
-    @UiHandler("adfSubmissions")
-    public void onAdfSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.ADF_SUBMISSIONS);
+    @UiHandler("incomplete")
+    public void onIncompleteSubmissionsClick(ClickEvent event) {
+        filterClick(Filter.INCOMPLETE);
     }
 
     private void filterClick(Filter filter) {
