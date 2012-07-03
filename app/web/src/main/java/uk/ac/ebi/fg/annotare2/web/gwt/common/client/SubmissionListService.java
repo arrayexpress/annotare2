@@ -20,7 +20,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -30,5 +30,9 @@ public interface SubmissionListService extends RemoteService {
 
     public static final String NAME = "submissionListService";
 
-    List<UISubmission> getSubmissions();
+    ArrayList<UISubmission> getAllSubmissions();
+
+    ArrayList<UISubmission> getCompletedSubmissions();
+
+    ArrayList<UISubmission> getIncompleteSubmissions();
 }

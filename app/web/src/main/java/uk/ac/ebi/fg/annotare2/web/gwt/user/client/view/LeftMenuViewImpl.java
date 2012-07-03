@@ -53,7 +53,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     @UiField
     LeftMenuItem incomplete;
 
-    private HashMap<Filter, Widget> filters = new HashMap<Filter, Widget>();
+    private HashMap<SubmissionListFilter, Widget> filters = new HashMap<SubmissionListFilter, Widget>();
 
     public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -63,9 +63,9 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         createButton.addMenuButtonItem("HTS Experiment Submission");
         createButton.addMenuButtonItem("ADF Submission");
 
-        filters.put(Filter.COMPLETED, completed);
-        filters.put(Filter.INCOMPLETE, incomplete);
-        filters.put(Filter.ALL_SUBMISSIONS, allSubmissions);
+        filters.put(SubmissionListFilter.COMPLETED_SUBMISSIONS, completed);
+        filters.put(SubmissionListFilter.INCOMPLETE_SUBMISSIONS, incomplete);
+        filters.put(SubmissionListFilter.ALL_SUBMISSIONS, allSubmissions);
     }
 
     public void setPresenter(Presenter presenter) {
@@ -74,25 +74,25 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     @UiHandler("allSubmissions")
     public void onRecentClick(ClickEvent event) {
-        filterClick(Filter.ALL_SUBMISSIONS);
+        filterClick(SubmissionListFilter.ALL_SUBMISSIONS);
     }
 
     @UiHandler("completed")
     public void onCompletedSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.COMPLETED);
+        filterClick(SubmissionListFilter.COMPLETED_SUBMISSIONS);
     }
 
     @UiHandler("incomplete")
     public void onIncompleteSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.INCOMPLETE);
+        filterClick(SubmissionListFilter.INCOMPLETE_SUBMISSIONS);
     }
 
-    private void filterClick(Filter filter) {
+    private void filterClick(SubmissionListFilter filter) {
         selectItem(filters.get(filter));
         presenter.onSubmissionFilterClick(filter);
     }
 
-    public void setFilter(Filter filter) {
+    public void setFilter(SubmissionListFilter filter) {
         selectItem(filters.get(filter));
     }
 

@@ -14,23 +14,28 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
-
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
-
-import java.util.List;
+package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SubmissionDao {
+public enum SubmissionListFilter {
 
-    Submission getSubmission(int id) throws RecordNotFoundException;
+    ALL_SUBMISSIONS,
 
-    List<Submission> getSubmissionsByType(User user, SubmissionType type);
+    COMPLETED_SUBMISSIONS,
 
-    List<Submission> getSubmissionsByStatus(User user, SubmissionStatus... status);
+    INCOMPLETE_SUBMISSIONS;
+
+    public static SubmissionListFilter getIfPresent(String token) {
+        if (token == null || token.isEmpty()) {
+            return null;
+        }
+        for (SubmissionListFilter f : values()) {
+            if (f.name().equals(token)) {
+                return f;
+            }
+        }
+        return null;
+    }
 }

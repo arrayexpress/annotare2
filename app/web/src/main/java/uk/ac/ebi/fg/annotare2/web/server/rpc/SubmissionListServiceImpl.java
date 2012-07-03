@@ -23,7 +23,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -33,9 +32,21 @@ public class SubmissionListServiceImpl extends RemoteServiceBase implements Subm
     @Inject
     private SubmissionManager manager;
 
-    public List<UISubmission> getSubmissions() {
+    public ArrayList<UISubmission> getAllSubmissions() {
         return new ArrayList<UISubmission>(
-                Lists.transform(manager.getSubmissions(getCurrentUser()), DataObjects.SUBMISSION_TRANSFORM)
+                Lists.transform(manager.getAllSubmissions(getCurrentUser()), DataObjects.SUBMISSION_TRANSFORM)
+        );
+    }
+
+    public ArrayList<UISubmission> getCompletedSubmissions() {
+        return new ArrayList<UISubmission>(
+                Lists.transform(manager.getCompletedSubmissions(getCurrentUser()), DataObjects.SUBMISSION_TRANSFORM)
+        );
+    }
+
+    public ArrayList<UISubmission> getIncompleteSubmissions() {
+        return new ArrayList<UISubmission>(
+                Lists.transform(manager.getIncompleteSubmissions(getCurrentUser()), DataObjects.SUBMISSION_TRANSFORM)
         );
     }
 }

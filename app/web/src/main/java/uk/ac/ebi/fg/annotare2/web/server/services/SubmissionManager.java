@@ -35,8 +35,21 @@ public class SubmissionManager {
         this.submissionDao = submissionDao;
     }
 
-    public List<Submission> getSubmissions(User user) {
+    public List<Submission> getAllSubmissions(User user) {
         return submissionDao.getSubmissionsByType(user, SubmissionType.EXPERIMENT);
+    }
+
+    public List<Submission> getIncompleteSubmissions(User user) {
+        return submissionDao.getSubmissionsByStatus(user,
+                SubmissionStatus.IN_PROGRESS,
+                SubmissionStatus.IN_CURATION,
+                SubmissionStatus.SUBMITTED);
+    }
+
+    public List<Submission> getCompletedSubmissions(User user) {
+        return submissionDao.getSubmissionsByStatus(user,
+                SubmissionStatus.PRIVATE_IN_AE,
+                SubmissionStatus.PUBLIC_IN_AE);
     }
 
     public Submission getSubmission(User user, int id) throws RecordNotFoundException, AccessControlException {

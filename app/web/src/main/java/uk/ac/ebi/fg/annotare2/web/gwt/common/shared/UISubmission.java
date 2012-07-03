@@ -26,6 +26,8 @@ public class UISubmission implements Serializable {
 
     private int id;
 
+    private String accession;
+
     private String title;
 
     private String description;
@@ -37,8 +39,9 @@ public class UISubmission implements Serializable {
     public UISubmission() {
     }
 
-    public UISubmission(int id, String title, String description, Date created, UISubmissionStatus status) {
+    public UISubmission(int id, String accession, String title, String description, Date created, UISubmissionStatus status) {
         this.id = id;
+        this.accession = accession;
         this.title = title;
         this.description = description;
         this.created = created;
@@ -47,6 +50,10 @@ public class UISubmission implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public String getAccession() {
+        return accession;
     }
 
     public String getTitle() {

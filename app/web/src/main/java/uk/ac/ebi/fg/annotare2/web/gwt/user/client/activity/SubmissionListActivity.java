@@ -28,9 +28,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -40,6 +41,7 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     private final SubmissionListView view;
     private final PlaceController placeController;
     private final SubmissionListServiceAsync rpcService;
+    private SubmissionListFilter filter;
 
     @Inject
     public SubmissionListActivity(SubmissionListView view, PlaceController placeController, SubmissionListServiceAsync rpcService) {
@@ -49,28 +51,61 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     }
 
     public SubmissionListActivity withPlace(SubmissionListPlace place) {
-        //this.token = place.getPlaceName();
+        this.filter = place.getFilter();
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //view.setPlaceName(token);
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadSubmissionListAsync();
     }
 
     private void loadSubmissionListAsync() {
-        rpcService.getSubmissions(new AsyncCallbackWrapper<List<UISubmission>>() {
-            public void onSuccess(List<UISubmission> result) {
-                view.setSubmissions(result);
-            }
+        switch (filter) {
+            case ALL_SUBMISSIONS:
+                rpcService.getAllSubmissions(new AsyncCallbackWrapper<ArrayList<UISubmission>>() {
+                    public void onSuccess(ArrayList<UISubmission> result) {
+                        view.setSubmissions(result);
+                    }
 
-            public void onFailure(Throwable caught) {
-                Window.alert("Can't load submission list");
-            }
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Can't load submission list");
+                    }
 
-        }.wrap());
+                }.wrap());
+                return;
+
+            case INCOMPLETE_SUBMISSIONS:
+                rpcService.getIncompleteSubmissions(new AsyncCallbackWrapper<ArrayList<UISubmission>>() {
+                    public void onSuccess(ArrayList<UISubmission> result) {
+                        view.setSubmissions(result);
+                    }
+
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Can't load submission list");
+                    }
+
+                }.wrap());
+                return;
+
+            case COMPLETED_SUBMISSIONS:
+                rpcService.getCompletedSubmissions(new AsyncCallbackWrapper<ArrayList<UISubmission>>() {
+                    public void onSuccess(ArrayList<UISubmission> result) {
+                        view.setSubmissions(result);
+                    }
+
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Can't load submission list");
+                    }
+
+                }.wrap());
+                return;
+
+            default:
+                Window.alert("Illegal application state..");
+        }
+        //TODO
     }
 
     public void goTo(Place place) {

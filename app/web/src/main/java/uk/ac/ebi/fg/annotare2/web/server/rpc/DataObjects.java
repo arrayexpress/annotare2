@@ -45,6 +45,7 @@ class DataObjects {
             checkNotNull(submission);
             return new UISubmission(
                     submission.getId(),
+                    submission.getAccession(),
                     submission.getTitle(),
                     submission.getDescription(),
                     submission.getCreated(),
