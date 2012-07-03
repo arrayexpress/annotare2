@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
-
-import java.io.Serializable;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
 /**
  * @author Olga Melnichuk
  */
-public class UserDetails implements Serializable {
+public class AccessControlException extends Exception {
 
-    private String email;
-
-    public UserDetails() {
-    }
-
-    public UserDetails(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
+    public AccessControlException(String expAcc) {
+        super(expAcc);
     }
 }

@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.place;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
+import com.google.gwt.place.shared.Prefix;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -36,6 +37,7 @@ public class SubmissionViewPlace extends Place {
         this.submissionId = submissionId;
     }
 
+    @Prefix("submView")
     public static class Tokenizer implements PlaceTokenizer<SubmissionViewPlace> {
 
         private final Provider<SubmissionViewPlace> placeProvider;

@@ -14,23 +14,36 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
+package uk.ac.ebi.fg.annotare2.om;
 
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
-
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SubmissionDao {
+public class AclEntry {
 
-    Submission getSubmission(int id) throws RecordNotFoundException;
+    private int id;
 
-    List<Submission> getSubmissionsByType(User user, SubmissionType type);
+    private Role role;
 
-    List<Submission> getSubmissionsByStatus(User user, SubmissionStatus... status);
+    private Permission permission;
+
+    public AclEntry(int id, Role role, Permission permission) {
+        this.id  = id;
+        this.role = role;
+        this.permission = permission;
+    }
+
+    public boolean complies(Collection<? extends Role> roles, Permission permission) {
+        if (!this.permission.equals(permission)) {
+            return false;
+        }
+        for (Role r : roles) {
+            if (r.equals(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

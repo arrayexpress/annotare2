@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
-
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
-
-import java.util.List;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SubmissionDao {
+public class NoPermissionException extends Exception {
 
-    Submission getSubmission(int id) throws RecordNotFoundException;
+    public NoPermissionException() {
+    }
 
-    List<Submission> getSubmissionsByType(User user, SubmissionType type);
-
-    List<Submission> getSubmissionsByStatus(User user, SubmissionStatus... status);
+    public NoPermissionException(String expAcc) {
+        super(expAcc);
+    }
 }

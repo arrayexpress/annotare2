@@ -16,14 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.dao.dummy;
 
+import com.google.common.base.Predicate;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.om.SubmissionType;
 import uk.ac.ebi.fg.annotare2.om.User;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+
+import static java.util.Arrays.asList;
+import static uk.ac.ebi.fg.annotare2.dao.dummy.DummyData.getSubmission;
+import static uk.ac.ebi.fg.annotare2.dao.dummy.DummyData.getSubmissions;
 
 /**
  * @author Olga Melnichuk
@@ -38,7 +45,19 @@ public class SubmissionDaoDummy implements SubmissionDao {
         return s;
     }
 
-    public List<Submission> getSubmissionsByType(User user, SubmissionType type) {
-        return DummyData.getSubmissions(user, type);
+    public List<Submission> getSubmissionsByType(User user, final SubmissionType type) {
+        return getSubmissions(user, new Predicate<Submission>() {
+            public boolean apply(@Nullable Submission input) {
+                return input.getType().equals(type);
+            }
+        });
+    }
+
+    public List<Submission> getSubmissionsByStatus(User user, final SubmissionStatus... statuses) {
+        return getSubmissions(user, new Predicate<Submission>() {
+            public boolean apply(@Nullable Submission input) {
+                return asList(statuses).contains(input.getStatus());
+            }
+        });
     }
 }

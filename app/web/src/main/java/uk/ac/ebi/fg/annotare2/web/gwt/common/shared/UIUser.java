@@ -17,45 +17,22 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionDetails implements Serializable {
+public class UIUser implements Serializable {
 
-    private int id;
+    private String email;
 
-    private String title;
-
-    private String description;
-
-    private Date created;
-
-    public SubmissionDetails() {
+    public UIUser() {
     }
 
-    public SubmissionDetails(int id, String title, String description, Date created) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.created = created;
+    public UIUser(String email) {
+        this.email = email;
     }
 
-    public int getId() {
-        return id;
+    public String getEmail() {
+        return email;
     }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
 }

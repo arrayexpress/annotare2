@@ -18,26 +18,38 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.place;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
+import com.google.gwt.place.shared.Prefix;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
 
 /**
  * @author Olga Melnichuk
  */
 public class SubmissionListPlace extends Place {
 
-    private String placeName;
-    private String filter;
-    private String sortorder;
+    private SubmissionListFilter filter;
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
+    {
+        /**
+         * When the default constructor is invoked set the default value to the filter.
+         */
+        setFilter(null);
     }
 
-    public String getPlaceName() {
-        return placeName;
+    public SubmissionListFilter getFilter() {
+        return filter;
     }
 
+    public void setFilter(SubmissionListFilter filter) {
+        setFilter(filter, SubmissionListFilter.ALL_SUBMISSIONS);
+    }
+
+    private void setFilter(SubmissionListFilter filter, SubmissionListFilter defaultFilter) {
+        this.filter = filter == null ? defaultFilter : filter;
+    }
+
+    @Prefix("submList")
     public static class Tokenizer implements PlaceTokenizer<SubmissionListPlace> {
 
         private final Provider<SubmissionListPlace> placeProvider;
@@ -48,12 +60,16 @@ public class SubmissionListPlace extends Place {
         }
 
         public String getToken(SubmissionListPlace place) {
-            return place.getPlaceName();
+            return place.getFilter().name();
         }
 
         public SubmissionListPlace getPlace(String token) {
             SubmissionListPlace place = placeProvider.get();
-            place.setPlaceName(token);
+            SubmissionListFilter filter = SubmissionListFilter.getIfPresent(token);
+            if (filter == null) {
+                return null;
+            }
+            place.setFilter(filter);
             return place;
         }
     }
