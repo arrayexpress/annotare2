@@ -19,6 +19,11 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
+        .submissionTitle {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
         .submissionView {
             border: 1px solid #ddd;
             padding: 10px;
@@ -32,15 +37,18 @@
 
     <g:HTMLPanel>
         <div class="{style.submissionView}">
-            <h1>UNACCESSIONED</h1>
-            <div ui:field="title"></div>
+            <div class="{style.submissionTitle}">
+                <h1 ui:field="accession"></h1>
+                <div ui:field="title"></div>
+            </div>
+
             <div ui:field="description"></div>
 
             <div class="{style.submit}">
-               <div style="margin-bottom:5px;">
-                   <g:Button>Submit</g:Button>
-               </div>
-               <g:TextArea width="100%" visibleLines="4"></g:TextArea>
+                <div style="margin-bottom:5px;">
+                    <g:Button>Submit</g:Button>
+                </div>
+                <g:TextArea width="100%" visibleLines="4"></g:TextArea>
             </div>
         </div>
     </g:HTMLPanel>
