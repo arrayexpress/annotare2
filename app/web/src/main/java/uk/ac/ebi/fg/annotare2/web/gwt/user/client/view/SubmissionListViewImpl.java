@@ -16,11 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
+import com.google.gwt.cell.client.ImageCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
@@ -78,6 +80,13 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
                 return object.getStatus().name();
             }
         }, new TextHeader("Status"));
+
+        cellTable.addColumn(new Column<UISubmission, String>(new ImageCell()) {
+            @Override
+            public String getValue(UISubmission object) {
+                return "images/edit-icon.gif";
+            }
+        });
 
         final SingleSelectionModel<UISubmission> selectionModel = new SingleSelectionModel<UISubmission>(
                 new ProvidesKey<UISubmission>() {
