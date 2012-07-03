@@ -16,23 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import java.io.Serializable;
-
 /**
  * @author Olga Melnichuk
  */
-public class UserDetails implements Serializable {
-
-    private String email;
-
-    public UserDetails() {
-    }
-
-    public UserDetails(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
+public enum UISubmissionStatus {
+    IN_PROGRESS,
+    SUBMITTED,
+    IN_CURATION,
+    PRIVATE_IN_AE,
+    PUBLIC_IN_AE
 }

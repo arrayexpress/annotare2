@@ -26,7 +26,7 @@ import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 
 import java.util.List;
 
@@ -42,46 +42,46 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
     private Presenter presenter;
 
-    private ListDataProvider<SubmissionDetails> dataProvider;
+    private ListDataProvider<UISubmission> dataProvider;
 
     @UiField(provided = true)
-    CellTable<SubmissionDetails> cellTable;
+    CellTable<UISubmission> cellTable;
 
     public SubmissionListViewImpl() {
-        cellTable = new CellTable<SubmissionDetails>();
+        cellTable = new CellTable<UISubmission>();
         cellTable.setWidth("100%", true);
 
-        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+        cellTable.addColumn(new TextColumn<UISubmission>() {
             @Override
-            public String getValue(SubmissionDetails object) {
+            public String getValue(UISubmission object) {
                 return getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(object.getCreated());
             }
         }, new TextHeader("Created"));
 
-        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+        cellTable.addColumn(new TextColumn<UISubmission>() {
             @Override
-            public String getValue(SubmissionDetails object) {
+            public String getValue(UISubmission object) {
                 return object.getTitle();
             }
         }, new TextHeader("Title"));
 
-        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+        cellTable.addColumn(new TextColumn<UISubmission>() {
             @Override
-            public String getValue(SubmissionDetails object) {
+            public String getValue(UISubmission object) {
                 return object.getDescription();
             }
         }, new TextHeader("Description"));
 
-        cellTable.addColumn(new TextColumn<SubmissionDetails>() {
+        cellTable.addColumn(new TextColumn<UISubmission>() {
             @Override
-            public String getValue(SubmissionDetails object) {
-                return "IN PROGRESS"; // TODO
+            public String getValue(UISubmission object) {
+                return object.getStatus().name();
             }
         }, new TextHeader("Status"));
 
-        final SingleSelectionModel<SubmissionDetails> selectionModel = new SingleSelectionModel<SubmissionDetails>(
-                new ProvidesKey<SubmissionDetails>() {
-                    public Object getKey(SubmissionDetails item) {
+        final SingleSelectionModel<UISubmission> selectionModel = new SingleSelectionModel<UISubmission>(
+                new ProvidesKey<UISubmission>() {
+                    public Object getKey(UISubmission item) {
                         return item.getId();
                     }
                 }
@@ -99,7 +99,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         cellTable.addStyleName("no-cell-borders");
 
-        dataProvider = new ListDataProvider<SubmissionDetails>();
+        dataProvider = new ListDataProvider<UISubmission>();
         dataProvider.addDataDisplay(cellTable);
 
         Binder uiBinder = GWT.create(Binder.class);
@@ -110,7 +110,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         this.presenter = presenter;
     }
 
-    public void setSubmissions(List<SubmissionDetails> submissions) {
+    public void setSubmissions(List<UISubmission> submissions) {
         dataProvider.setList(submissions);
     }
 }

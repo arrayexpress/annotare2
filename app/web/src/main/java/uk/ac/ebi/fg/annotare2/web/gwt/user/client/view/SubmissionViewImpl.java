@@ -22,7 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 
 /**
  * @author Olga Melnichuk
@@ -49,7 +49,7 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
         this.presenter = presenter;
     }
 
-    public void setSubmission(SubmissionDetails submission) {
+    public void setSubmission(UISubmission submission) {
         title.setInnerText(submission.getTitle());
         description.setInnerText(submission.getDescription());
     }
