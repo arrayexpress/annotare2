@@ -37,8 +37,7 @@ public class LeftMenuActivityMapper implements ActivityMapper {
     }
 
     public Activity getActivity(Place place) {
-        return (currentActivity != null) ?
-                currentActivity :
-                (currentActivity = activityProvider.get().withPlace(place));
+        return (currentActivity == null ? (currentActivity = activityProvider.get()) : currentActivity)
+               .withPlace(place);
     }
 }
