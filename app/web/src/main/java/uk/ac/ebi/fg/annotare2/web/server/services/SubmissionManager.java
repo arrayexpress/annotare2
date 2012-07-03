@@ -17,10 +17,9 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.om.*;
 
 import java.util.List;
 
@@ -36,7 +35,28 @@ public class SubmissionManager {
         this.submissionDao = submissionDao;
     }
 
-    public List<Submission> getSubmissions(User user) {
+    public List<Submission> getAllSubmissions(User user) {
         return submissionDao.getSubmissionsByType(user, SubmissionType.EXPERIMENT);
+    }
+
+    public List<Submission> getIncompleteSubmissions(User user) {
+        return submissionDao.getSubmissionsByStatus(user,
+                SubmissionStatus.IN_PROGRESS,
+                SubmissionStatus.IN_CURATION,
+                SubmissionStatus.SUBMITTED);
+    }
+
+    public List<Submission> getCompletedSubmissions(User user) {
+        return submissionDao.getSubmissionsByStatus(user,
+                SubmissionStatus.PRIVATE_IN_AE,
+                SubmissionStatus.PUBLIC_IN_AE);
+    }
+
+    public Submission getSubmission(User user, int id) throws RecordNotFoundException, AccessControlException {
+        Submission sb = submissionDao.getSubmission(id);
+        if(!user.isAllowed(sb, Permission.VIEW)) {
+            throw new AccessControlException("User " + user + " doesn't have a permission to view the submission " + sb);
+        }
+        return sb;
     }
 }

@@ -20,8 +20,14 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionView;
 
@@ -32,15 +38,18 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
 
     private final SubmissionView view;
     private final PlaceController placeController;
+    private final SubmissionServiceAsync rpcService;
+    private Integer submissionId;
 
     @Inject
-    public SubmissionViewActivity(SubmissionView view, PlaceController placeController) {
+    public SubmissionViewActivity(SubmissionView view, PlaceController placeController, SubmissionServiceAsync rpcService) {
         this.view = view;
         this.placeController = placeController;
+        this.rpcService = rpcService;
     }
 
     public SubmissionViewActivity withPlace(SubmissionViewPlace place) {
-        //this.token = place.getPlaceName();
+        submissionId = place.getSubmissionId();
         return this;
     }
 
@@ -48,9 +57,26 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
         //view.setPlaceName(token);
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        loadAsync();
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    private void loadAsync() {
+        rpcService.getSubmission(submissionId, new AsyncCallbackWrapper<UISubmission>() {
+            public void onFailure(Throwable caught) {
+                //TODO
+                if (caught instanceof ResourceNotFoundException ||
+                        caught instanceof NoPermissionException) {
+                    Window.alert(caught.getMessage());
+                }
+            }
+
+            public void onSuccess(UISubmission result) {
+                view.setSubmission(result);
+            }
+        }.wrap());
     }
 }

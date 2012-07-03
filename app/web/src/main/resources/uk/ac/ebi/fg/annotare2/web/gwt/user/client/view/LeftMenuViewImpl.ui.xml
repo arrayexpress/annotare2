@@ -24,9 +24,8 @@
         <g:HTMLPanel>
             <wgt:MenuButton text="Create" ui:field="createButton" width="140px"/>
             <p><wgt:LeftMenuItem text="All Submissions" ui:field="allSubmissions"/></p>
-            <p><wgt:LeftMenuItem text="Microarray Submissions" ui:field="maSubmissions"/></p>
-            <p><wgt:LeftMenuItem text="HTS Submissions" ui:field="htsSubmissions"/></p>
-            <p><wgt:LeftMenuItem text="ADF Submissions" ui:field="adfSubmissions"/></p>
+            <p><wgt:LeftMenuItem text="Completed" ui:field="completed"/></p>
+            <p><wgt:LeftMenuItem text="Incomplete" ui:field="incomplete"/></p>
         </g:HTMLPanel>
     </g:VerticalPanel>
 </ui:UiBinder>

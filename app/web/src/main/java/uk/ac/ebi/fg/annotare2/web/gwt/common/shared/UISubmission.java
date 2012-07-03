@@ -14,49 +14,37 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.om;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class Submission implements HasEffectiveAcl {
+public class UISubmission implements Serializable {
 
     private int id;
 
-    private String accession;
+    private AccessionValue accession = new AccessionValue();
 
     private String title;
 
     private String description;
 
-    private SubmissionType type;
-
     private Date created;
 
-    private User createdBy;
-    
-    private Acl acl;
+    private UISubmissionStatus status;
 
-    private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
+    public UISubmission() {
+    }
 
-    protected Submission(int id,
-                         String accession,
-                         String title,
-                         String description,
-                         SubmissionType type,
-                         User createdBy,
-                         Acl acl,
-                         SubmissionStatus status) {
+    public UISubmission(int id, String accession, String title, String description, Date created, UISubmissionStatus status) {
         this.id = id;
-        this.accession = accession;
+        this.accession.set(accession);
         this.title = title;
         this.description = description;
-        this.type = type;
-        this.created = new Date();
-        this.createdBy = createdBy;
-        this.acl = acl;
+        this.created = created;
         this.status = status;
     }
 
@@ -65,7 +53,7 @@ public abstract class Submission implements HasEffectiveAcl {
     }
 
     public String getAccession() {
-        return accession;
+        return accession.get();
     }
 
     public String getTitle() {
@@ -80,15 +68,7 @@ public abstract class Submission implements HasEffectiveAcl {
         return created;
     }
 
-    public SubmissionType getType() {
-        return type;
-    }
-
-    public SubmissionStatus getStatus() {
+    public UISubmissionStatus getStatus() {
         return status;
-    }
-
-    public EffectiveAcl getEffectiveAcl() {
-        return new EffectiveAcl(acl, createdBy);
     }
 }

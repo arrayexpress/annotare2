@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
-
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
-
-import java.util.List;
+package uk.ac.ebi.fg.annotare2.om;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SubmissionDao {
-
-    Submission getSubmission(int id) throws RecordNotFoundException;
-
-    List<Submission> getSubmissionsByType(User user, SubmissionType type);
-
-    List<Submission> getSubmissionsByStatus(User user, SubmissionStatus... status);
+public interface HasEffectiveAcl {
+    
+    EffectiveAcl getEffectiveAcl();
 }

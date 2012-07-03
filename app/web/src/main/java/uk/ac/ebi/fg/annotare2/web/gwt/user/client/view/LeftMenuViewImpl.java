@@ -21,7 +21,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -49,15 +48,12 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     LeftMenuItem allSubmissions;
 
     @UiField
-    LeftMenuItem maSubmissions;
+    LeftMenuItem completed;
 
     @UiField
-    LeftMenuItem htsSubmissions;
+    LeftMenuItem incomplete;
 
-    @UiField
-    LeftMenuItem adfSubmissions;
-
-    private HashMap<Filter, Widget> filters = new HashMap<Filter, Widget>();
+    private HashMap<SubmissionListFilter, Widget> filters = new HashMap<SubmissionListFilter, Widget>();
 
     public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -67,10 +63,9 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         createButton.addMenuButtonItem("HTS Experiment Submission");
         createButton.addMenuButtonItem("ADF Submission");
 
-        filters.put(Filter.MA_SUBMISSIONS, maSubmissions);
-        filters.put(Filter.ADF_SUBMISSIONS, adfSubmissions);
-        filters.put(Filter.HTS_SUBMISSIONS, htsSubmissions);
-        filters.put(Filter.ALL_SUBMISSIONS, allSubmissions);
+        filters.put(SubmissionListFilter.COMPLETED_SUBMISSIONS, completed);
+        filters.put(SubmissionListFilter.INCOMPLETE_SUBMISSIONS, incomplete);
+        filters.put(SubmissionListFilter.ALL_SUBMISSIONS, allSubmissions);
     }
 
     public void setPresenter(Presenter presenter) {
@@ -79,30 +74,25 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     @UiHandler("allSubmissions")
     public void onRecentClick(ClickEvent event) {
-        filterClick(Filter.ALL_SUBMISSIONS);
+        filterClick(SubmissionListFilter.ALL_SUBMISSIONS);
     }
 
-    @UiHandler("maSubmissions")
-    public void onMaSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.MA_SUBMISSIONS);
+    @UiHandler("completed")
+    public void onCompletedSubmissionsClick(ClickEvent event) {
+        filterClick(SubmissionListFilter.COMPLETED_SUBMISSIONS);
     }
 
-    @UiHandler("htsSubmissions")
-    public void onHtsSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.HTS_SUBMISSIONS);
+    @UiHandler("incomplete")
+    public void onIncompleteSubmissionsClick(ClickEvent event) {
+        filterClick(SubmissionListFilter.INCOMPLETE_SUBMISSIONS);
     }
 
-    @UiHandler("adfSubmissions")
-    public void onAdfSubmissionsClick(ClickEvent event) {
-        filterClick(Filter.ADF_SUBMISSIONS);
-    }
-
-    private void filterClick(Filter filter) {
+    private void filterClick(SubmissionListFilter filter) {
         selectItem(filters.get(filter));
         presenter.onSubmissionFilterClick(filter);
     }
 
-    public void setFilter(Filter filter) {
+    public void setFilter(SubmissionListFilter filter) {
         selectItem(filters.get(filter));
     }
 

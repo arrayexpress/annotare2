@@ -16,13 +16,34 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
-public enum SubmissionStatus {
-    IN_PROGRESS,
-    SUBMITTED,
-    IN_CURATION,
-    PRIVATE_IN_AE,
-    PUBLIC_IN_AE
+public class EffectiveAcl {
+
+    private Acl acl;
+    
+    private User owner;
+
+    public EffectiveAcl(Acl acl, User owner) {
+        this.acl = acl;
+        this.owner = owner;
+    }
+    
+    public boolean hasPermission(User user, Permission permission) {
+        return acl.hasPermission(getEffectiveRoles(user), permission);
+    }
+    
+    private Collection<? extends Role> getEffectiveRoles(User user) {
+        List<Role> roles = new ArrayList<Role>();
+        roles.addAll(user.getRoles());
+        if (user.equals(owner)) {
+            roles.add(Role.OWNER);
+        }
+        return roles;
+    }
 }

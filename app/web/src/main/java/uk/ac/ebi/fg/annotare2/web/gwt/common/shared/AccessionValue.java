@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
-
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SubmissionDao {
+public class AccessionValue implements Serializable {
 
-    Submission getSubmission(int id) throws RecordNotFoundException;
+    private static final String UNACCESSIONED = "UNACCESSIONED";
 
-    List<Submission> getSubmissionsByType(User user, SubmissionType type);
+    private String value;
 
-    List<Submission> getSubmissionsByStatus(User user, SubmissionStatus... status);
+    public String get() {
+        return value == null ? UNACCESSIONED : value;
+    }
+
+    public void set(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return get();
+    }
 }

@@ -17,14 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UserDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
 
 /**
  * @author Olga Melnichuk
  */
 public interface CurrentUserAccountServiceAsync {
 
-    void me(AsyncCallback<UserDetails> async);
+    void me(AsyncCallback<UIUser> async);
 
     void logout(AsyncCallback<Void> async);
 }

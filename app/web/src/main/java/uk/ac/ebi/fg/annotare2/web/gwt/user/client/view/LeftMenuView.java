@@ -25,17 +25,10 @@ public interface LeftMenuView extends IsWidget {
     
     void setPresenter(Presenter presenter);
 
-    void setFilter(Filter filter);
+    void setFilter(SubmissionListFilter filter);
 
     public interface Presenter {
 
-        void onSubmissionFilterClick(Filter filter);
-    }
-
-    public enum Filter {
-        ALL_SUBMISSIONS,
-        MA_SUBMISSIONS,
-        HTS_SUBMISSIONS,
-        ADF_SUBMISSIONS
+        void onSubmissionFilterClick(SubmissionListFilter filter);
     }
 }

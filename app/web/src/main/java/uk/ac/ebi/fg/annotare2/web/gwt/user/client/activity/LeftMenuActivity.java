@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
 
 /**
  * @author Olga Melnichuk
@@ -40,16 +41,13 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     }
 
     public LeftMenuActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
         if (place instanceof SubmissionListPlace) {
-            String name = ((SubmissionListPlace) place).getPlaceName();
-            this.view.setFilter(name == null ? LeftMenuView.Filter.ALL_SUBMISSIONS  : LeftMenuView.Filter.valueOf(name));
+            this.view.setFilter(((SubmissionListPlace) place).getFilter());
         }
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //view.setPlaceName(token);
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
     }
@@ -58,9 +56,9 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         placeController.goTo(place);
     }
 
-    public void onSubmissionFilterClick(LeftMenuView.Filter filter) {
+    public void onSubmissionFilterClick(SubmissionListFilter filter) {
         SubmissionListPlace place = new SubmissionListPlace();
-        place.setPlaceName(filter.toString());
+        place.setFilter(filter);
         goTo(place);
     }
 }
