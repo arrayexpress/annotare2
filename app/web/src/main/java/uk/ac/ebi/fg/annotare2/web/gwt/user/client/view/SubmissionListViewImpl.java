@@ -16,12 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.ImageCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -32,8 +30,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
+import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.ClickableImageCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.resources.ImageResources;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.ClickableImageResourceCell;
 
 import java.util.List;
 
@@ -46,6 +46,9 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
     interface Binder extends UiBinder<Widget, SubmissionListViewImpl> {
     }
+
+    @Inject
+    private ImageResources resourceBundle;
 
     private Presenter presenter;
 
@@ -86,17 +89,17 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             }
         }, new TextHeader("Status"));
 
-        Column<UISubmission, String> editIconColumn = new Column<UISubmission, String>(
-                new ClickableImageCell()){
+        Column<UISubmission, ImageResource> editIconColumn =
+                new Column<UISubmission, ImageResource>(new ClickableImageResourceCell()){
 
             @Override
-            public String getValue(UISubmission object) {
-                return "images/edit-icon.gif";
+            public ImageResource getValue(UISubmission object) {
+                return resourceBundle.editIcon();
             }
         };
 
-        editIconColumn.setFieldUpdater(new FieldUpdater<UISubmission, String>() {
-            public void update(int index, UISubmission object, String value) {
+        editIconColumn.setFieldUpdater(new FieldUpdater<UISubmission, ImageResource>() {
+            public void update(int index, UISubmission object, ImageResource value) {
                 Window.alert("To be implemented..");
             }
         });

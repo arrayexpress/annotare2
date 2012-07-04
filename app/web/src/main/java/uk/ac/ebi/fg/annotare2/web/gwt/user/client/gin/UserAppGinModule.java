@@ -24,6 +24,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.resources.ImageResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.annotations.ContentDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.annotations.HeaderDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.annotations.LeftMenuDisplay;
@@ -50,6 +51,8 @@ public class UserAppGinModule extends AbstractGinModule {
         bind(LeftMenuView.class).to(LeftMenuViewImpl.class);
         bind(SubmissionView.class).to(SubmissionViewImpl.class);
         bind(SubmissionListView.class).to(SubmissionListViewImpl.class);
+
+        bind(ImageResources.class).in(Singleton.class);
     }
 
     @Provides
