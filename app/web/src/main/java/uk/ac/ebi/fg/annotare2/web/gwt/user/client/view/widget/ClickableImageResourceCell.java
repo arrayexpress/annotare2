@@ -19,10 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ImageResourceRenderer;
 
@@ -33,18 +36,29 @@ public class ClickableImageResourceCell extends AbstractCell<ImageResource> {
 
     private static ImageResourceRenderer renderer;
 
+    interface Template extends SafeHtmlTemplates {
+        @Template("<span style=\"cursor:pointer\">{0}</span>")
+        SafeHtml span(SafeHtml content);
+    }
+
+    private static Template template;
+
     public ClickableImageResourceCell() {
         super("click", "keydown");
 
         if (renderer == null) {
             renderer = new ImageResourceRenderer();
         }
+
+        if (template == null) {
+            template = GWT.create(Template.class);
+        }
     }
 
     @Override
     public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
         if (value != null) {
-            sb.append(renderer.render(value));
+            sb.append(template.span(renderer.render(value)));
         }
     }
 
