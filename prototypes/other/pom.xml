@@ -88,8 +88,9 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Dgwt.logLevel=DEBUG  -Dgwt.style=DETAILED</extraJvmArgs>
-                                <module>uk.ac.ebi.fg.annotare2.prototypes.layoutapp.LayoutApp</module>
+                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
+                            <module>uk.ac.ebi.fg.annotare2.prototypes.layoutapp.LayoutApp</module>
+                            <module>uk.ac.ebi.fg.annotare2.prototypes.editorapp.EditorApp</module>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
