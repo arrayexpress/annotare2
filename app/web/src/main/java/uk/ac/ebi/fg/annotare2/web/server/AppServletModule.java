@@ -45,17 +45,22 @@ public class AppServletModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        filter("/UserApp/*", "/").through(SecurityFilter.class);
+        filter("/UserApp/*",
+               "/EditorApp/*",
+               "/"
+        ).through(SecurityFilter.class);
 
         serveRegex("(/login)(?:;jsessionid=[A-Z0-9]+)?").with(LoginServlet.class);
         serveRegex("(/logout)(?:;jsessionid=[A-Z0-9]+)?").with(LogoutServlet.class);
         serveRegex("(/)(?:;jsessionid=[A-Z0-9]+)?").with(HomeServlet.class);
+        serveRegex("(/editor/)(?:;jsessionid=[A-Z0-9]+)?").with(EditorServlet.class);
         serveRegex("(/index.*)(?:;jsessionid=[A-Z0-9]+)?").with(WelcomeServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
         bind(LogoutServlet.class).in(Scopes.SINGLETON);
         bind(HomeServlet.class).in(Scopes.SINGLETON);
+        bind(EditorServlet.class).in(Scopes.SINGLETON);
         bind(WelcomeServlet.class).in(Scopes.SINGLETON);
 
         serveAndBindRpcService("UserApp", CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class);

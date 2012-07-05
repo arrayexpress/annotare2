@@ -151,7 +151,7 @@
                         <configuration>
                             <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=PRETTY</extraJvmArgs>
                             <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
-                            <!--<module>uk.ac.ebi.fg.annotare2.web.Common</module>-->
+                            <module>uk.ac.ebi.fg.annotare2.web.gwt.editor.EditorApp</module>
                             <!--<module>uk.ac.ebi.fg.annotare2.web.AdminApp</module>-->
                         </configuration>
                         <goals>

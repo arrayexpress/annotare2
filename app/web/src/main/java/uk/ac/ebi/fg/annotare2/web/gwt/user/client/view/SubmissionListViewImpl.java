@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -90,17 +91,24 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         }, new TextHeader("Status"));
 
         Column<UISubmission, ImageResource> editIconColumn =
-                new Column<UISubmission, ImageResource>(new ClickableImageResourceCell()){
+                new Column<UISubmission, ImageResource>(new ClickableImageResourceCell()) {
 
-            @Override
-            public ImageResource getValue(UISubmission object) {
-                return resourceBundle.editIcon();
-            }
-        };
+                    @Override
+                    public ImageResource getValue(UISubmission object) {
+                        return resourceBundle.editIcon();
+                    }
+                };
 
         editIconColumn.setFieldUpdater(new FieldUpdater<UISubmission, ImageResource>() {
             public void update(int index, UISubmission object, ImageResource value) {
-                Window.alert("To be implemented..");
+                /*String url = GWT.getHostPageBaseURL() + "editor/";
+                if (!GWT.isProdMode()) {
+                    url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
+                }*/
+                UrlBuilder builder = Window.Location.createUrlBuilder();
+                builder.setPath("editor/");
+                builder.setHash(null);
+                Window.open(builder.buildString(), "_blank", "");
             }
         });
 
