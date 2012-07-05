@@ -22,7 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.MenuButton;
@@ -34,7 +34,7 @@ import java.util.HashMap;
  */
 public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
-    interface Binder extends UiBinder<VerticalPanel, LeftMenuViewImpl> {
+    interface Binder extends UiBinder<HTMLPanel, LeftMenuViewImpl> {
     }
 
     private Presenter presenter;

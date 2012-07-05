@@ -22,12 +22,13 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.UserAppGinjector;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppLayout;
 
 /**
@@ -40,10 +41,10 @@ public class UserApp implements EntryPoint {
     private AppLayout appWidget = new AppLayout();
 
     public void onModuleLoad() {
-        loadModule(RootPanel.get());
+        loadModule(RootLayoutPanel.get());
     }
 
-    private void loadModule(RootPanel root) {
+    private void loadModule(HasWidgets root) {
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 

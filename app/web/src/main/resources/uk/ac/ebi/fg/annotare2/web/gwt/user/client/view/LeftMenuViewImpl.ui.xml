@@ -19,14 +19,17 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget">
-
-    <g:VerticalPanel>
-        <g:HTMLPanel>
-            <wgt:MenuButton text="Create" ui:field="createButton" width="140px"/>
-            <p><wgt:LeftMenuItem text="All Submissions" ui:field="allSubmissions"/></p>
-            <p><wgt:LeftMenuItem text="Completed" ui:field="completed"/></p>
-            <p><wgt:LeftMenuItem text="Incomplete" ui:field="incomplete"/></p>
-        </g:HTMLPanel>
-    </g:VerticalPanel>
+    <g:HTMLPanel>
+        <wgt:MenuButton text="Create" ui:field="createButton" width="140px"/>
+        <p>
+            <wgt:LeftMenuItem text="All Submissions" ui:field="allSubmissions"/>
+        </p>
+        <p>
+            <wgt:LeftMenuItem text="Completed" ui:field="completed"/>
+        </p>
+        <p>
+            <wgt:LeftMenuItem text="Incomplete" ui:field="incomplete"/>
+        </p>
+    </g:HTMLPanel>
 </ui:UiBinder>
 

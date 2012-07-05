@@ -30,7 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.LogoutEvent;
  */
 public class AppHeader extends Composite implements IsWidget {
 
-    interface Binder extends UiBinder<DockPanel, AppHeader> {
+    interface Binder extends UiBinder<HTMLPanel, AppHeader> {
     }
 
     @UiField
