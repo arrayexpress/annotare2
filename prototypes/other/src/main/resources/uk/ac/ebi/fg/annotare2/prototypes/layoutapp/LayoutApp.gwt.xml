@@ -11,9 +11,6 @@
     <!--inherits name='com.google.gwt.user.theme.chrome.Chrome'/>   -->
     <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
-    <!-- Other module inherits                                      -->
-    <inherits name='com.sencha.gxt.ui.GXT'/>
-
     <!-- Specify the app entry point class.                         -->
     <entry-point class='uk.ac.ebi.fg.annotare2.prototypes.layoutapp.client.LayoutApp' />
 
