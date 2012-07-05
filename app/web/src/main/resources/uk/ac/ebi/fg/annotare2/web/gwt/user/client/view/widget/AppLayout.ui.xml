@@ -18,26 +18,35 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <g:DockPanel width="100%">
-        <g:Dock direction="NORTH" height="60px">
-            <g:SimplePanel ui:field="topPanel" />
-        </g:Dock>
-        <g:Dock direction="CENTER">
-            <g:DockPanel width="100%">
-                <g:Dock direction="WEST" width="200px">
-                    <g:SimplePanel ui:field="westPanel"/>
-                </g:Dock>
-                <g:Dock direction="EAST">
-                    <g:SimplePanel ui:field="centerPanel"/>
-                </g:Dock>
-            </g:DockPanel>
-        </g:Dock>
-        <g:Dock direction="SOUTH" height="30px">
-            <g:HTMLPanel>
+    <ui:style>
+        .paddingLeft {
+            padding-left: 15px;
+        }
+        .paddingRight {
+            padding-right: 15px;
+        }
+    </ui:style>
+
+    <g:DockLayoutPanel unit="PX">
+        <g:north size="110">
+            <g:SimplePanel ui:field="topPanel" addStyleNames="{style.paddingLeft} {style.paddingRight}"/>
+        </g:north>
+        <g:center>
+            <g:DockLayoutPanel>
+                <g:west size="200">
+                    <g:SimplePanel ui:field="westPanel" addStyleNames="{style.paddingLeft}"/>
+                </g:west>
+                <g:center>
+                    <g:SimplePanel ui:field="centerPanel" addStyleNames="{style.paddingRight}"/>
+                </g:center>
+            </g:DockLayoutPanel>
+        </g:center>
+        <g:south size="30">
+            <g:HTML>
                 <div class="copy"> 2012 EMBL-EBI, Functional Genomics Group </div>
-            </g:HTMLPanel>
-        </g:Dock>
-    </g:DockPanel>
+            </g:HTML>
+        </g:south>
+    </g:DockLayoutPanel>
 
 </ui:UiBinder>
 
