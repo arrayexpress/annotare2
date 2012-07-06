@@ -4,10 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
 import java.util.Date;
 
@@ -21,12 +18,13 @@ public class ContactView extends Composite implements IsWidget {
     }
 
     @UiField
-    Label contactName;
+    DisclosurePanel disclosurePanel;
 
     @UiConstructor
     public ContactView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        contactName.setText("Contact Name " + new Date().getTime());
+        //contactName.setText("Contact Name " + new Date().getTime());
+        disclosurePanel.getHeaderTextAccessor().setText("Contact Name " + new Date().getTime());
     }
 }

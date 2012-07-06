@@ -4,7 +4,7 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.prototypes.editorapp.client">
 
-    <g:VerticalPanel>
+    <g:VerticalPanel spacing="2" width="100%">
         <wgt:ContactView/>
         <wgt:ContactView/>
         <wgt:ContactView/>

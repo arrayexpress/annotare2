@@ -4,6 +4,14 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.prototypes.editorapp.client">
 
+    <ui:style>
+        .idfContentPane{
+            border-left: 1px solid blue;
+            padding-top: 15px;
+            padding-left: 15px;
+        }
+    </ui:style>
+
     <g:DockLayoutPanel>
         <g:north size="60">
             <g:HTML>
@@ -26,7 +34,7 @@
             </g:FlowPanel>
         </g:west>
         <g:center>
-            <g:ScrollPanel>
+            <g:ScrollPanel addStyleNames="{style.idfContentPane}">
                <wgt:ContactListView/>
             </g:ScrollPanel>
         </g:center>
