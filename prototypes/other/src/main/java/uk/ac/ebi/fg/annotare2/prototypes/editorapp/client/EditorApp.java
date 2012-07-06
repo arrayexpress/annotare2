@@ -3,9 +3,8 @@ package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * @author Olga Melnichuk
@@ -17,19 +16,22 @@ public class EditorApp implements EntryPoint {
 
     private static final Binder binder = GWT.create(Binder.class);
 
+    @UiField
+    TabLayoutPanel tabPanel;
+
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
     }
 
     public void loadModule(final HasWidgets hasWidgets) {
         DockLayoutPanel hPanel = binder.createAndBindUi(this);
-/*
-        tabPanel.add(, "IDF");
-        tabPanel.add(, "SDRF");
-        tabPanel.add(, "ADF");
-        tabPanel.add(, "Data");
 
-        tabPanel.selectTab(0);*/
+        tabPanel.add(new IdfView(), "IDF");
+        tabPanel.add(new SimplePanel(), "SDRF");
+        tabPanel.add(new SimplePanel(), "ADF");
+        tabPanel.add(new SimplePanel(), "Data");
+
+        tabPanel.selectTab(0);
 
         hasWidgets.add(hPanel);
     }

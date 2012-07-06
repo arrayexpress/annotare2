@@ -1,0 +1,23 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <g:DisclosurePanel>
+        <g:customHeader>
+             <g:Label ui:field="contactName"/>
+        </g:customHeader>
+        <g:HTMLPanel>
+            <g:Grid>
+                <g:row>
+                    <g:customCell>
+                        <g:Label>Name:</g:Label>
+                    </g:customCell>
+                    <g:customCell>
+                        <g:TextBox title="Contact Name"/>
+                    </g:customCell>
+                </g:row>
+            </g:Grid>
+        </g:HTMLPanel>
+    </g:DisclosurePanel>
+</ui:UiBinder>

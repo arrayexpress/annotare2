@@ -9,9 +9,9 @@
     </ui:style>
 
     <g:DockLayoutPanel>
-        <g:north size="40">
+        <g:north size="60">
             <g:HTML>
-                <div style="border:1px solid red; height:97%">Header</div>
+                <div style="border:1px solid red; height:97%">Header: Submission Accession, Dates, Save Button, Validate Button, Global Messages</div>
             </g:HTML>
         </g:north>
         <g:center addStyleNames="{style.border}">
@@ -19,18 +19,12 @@
                 <g:south size="20">
                     <g:ScrollPanel height="100%">
                         <g:HTMLPanel>
-                            <div style="border:1px solid blue; height:100%">South</div>
+                            <div style="border:1px solid blue; height:100%">Validation logs...errors, warnings etc.</div>
                         </g:HTMLPanel>
                     </g:ScrollPanel>
                 </g:south>
                 <g:center>
-                    <g:ScrollPanel height="100%">
-                        <g:HTMLPanel>
-                            <div style="border:1px solid blue; height:100%">
-                                Center<br/>
-                            </div>
-                        </g:HTMLPanel>
-                    </g:ScrollPanel>
+                    <g:TabLayoutPanel ui:field="tabPanel" barHeight="35"></g:TabLayoutPanel>
                 </g:center>
             </g:SplitLayoutPanel>
         </g:center>
