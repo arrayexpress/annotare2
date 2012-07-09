@@ -5,14 +5,14 @@
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.prototypes.editorapp.client">
 
     <g:VerticalPanel spacing="2" width="100%">
-        <wgt:ContactView/>
-        <wgt:ContactView/>
-        <wgt:ContactView/>
-        <wgt:ContactView/>
-        <wgt:ContactView/>
-        <wgt:ContactView/>
-        <wgt:ContactView/>
-        <wgt:ContactView/>
+        <wgt:ContactView firstName="Iva" lastName="Woody"/>
+        <wgt:ContactView firstName="Kelly" initials="E" lastName="Hanton"/>
+        <wgt:ContactView firstName="Hugh" lastName="Zanders"/>
+        <wgt:ContactView firstName="Neil" lastName="Brandi"/>
+        <wgt:ContactView firstName="Lorrie" lastName="Pascal"/>
+        <wgt:ContactView firstName="Erik" lastName="Scutt"/>
+        <wgt:ContactView firstName="Roxie" lastName="Lenart"/>
+        <wgt:ContactView firstName="Emilia" lastName="Raatz"/>
     </g:VerticalPanel>
 
 </ui:UiBinder>

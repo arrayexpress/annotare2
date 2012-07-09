@@ -21,16 +21,35 @@
 }
 
 .gwt-DisclosurePanel .header {
-
 }
 
 .gwt-DisclosurePanel .content {
     border: none;
-
 }
 
 .gwt-DisclosurePanel-open .content {
 }
 
 .gwt-DisclosurePanel-closed .header {
+}
+
+.my-TextBoxWithPlaceHolder .gwt-Label {
+    margin: 3px;
+    padding: 4px 3px;
+    border: 1px solid transparent;
+    font-style: italic;
+    font-size: small;
+    font-family: Arial Unicode MS, Arial, sans-serif;
+}
+
+.my-TextBoxWithPlaceHolder .gwt-Label.empty {
+    color: #888;
+}
+
+.my-TextBoxWithPlaceHolder .gwt-Label:hover {
+    border: 1px solid #ccc;
+}
+
+.my-ContactView .my-content td {
+    padding-left: 15px;
 }
