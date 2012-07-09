@@ -14,19 +14,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<module rename-to='UserApp'>
+<module rename-to="UserApp">
 
     <inherits name="com.google.gwt.resources.Resources" />
 
-    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.user.User"/>
 
-    <inherits name='com.google.gwt.activity.Activity'/>
+    <inherits name="com.google.gwt.activity.Activity"/>
 
-    <inherits name='com.google.gwt.place.Place'/>
+    <inherits name="com.google.gwt.place.Place"/>
 
-    <inherits name='com.google.web.bindery.event.Event'/>
+    <inherits name="com.google.web.bindery.event.Event"/>
 
-    <inherits name='com.google.gwt.user.theme.clean.Clean'/>
+    <inherits name="com.google.gwt.user.theme.clean.Clean"/>
     <!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
     <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
     <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
@@ -35,9 +35,15 @@
 
     <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp" />
 
-    <entry-point class='uk.ac.ebi.fg.annotare2.web.gwt.user.client.UserApp' />
+    <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.widgets.CustomWidgets"/>
 
-    <source path='client' />
+    <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.widgets.DefaultTheme"/>
+
+    <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.user.client.UserApp" />
+
+    <stylesheet src="UserApp.css"/>
+
+    <source path="client" />
     <source path="shared" />
 
 </module>

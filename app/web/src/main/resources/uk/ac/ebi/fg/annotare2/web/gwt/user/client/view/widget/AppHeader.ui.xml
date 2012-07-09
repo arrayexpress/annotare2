@@ -18,39 +18,12 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <ui:style>
-        .logo {
-            padding:0;
-            font-family: 'Arial Unicode MS', Arial, sans-serif;
-        }
-
-        .logo h1.title {
-            font-size: 23px;
-            font-weight: normal;
-            margin: 5px 0;
-            padding: 0;
-        }
-
-        .logo div {
-            color: #787878;
-            font-size: 12px;
-            margin: 0;
-            padding: 0;
-        }
-
-        .header {
-            border-bottom: 1px solid #898989;
-            margin-bottom: 5px;
-        }
-
-    </ui:style>
-
-    <g:HTMLPanel height="100%">
-        <table width="100%" style="height:100%;" cellpadding="0" cellspacing="0" class="{style.header}">
+    <g:HTMLPanel height="100%" addStyleNames="app-Header">
+        <table width="100%" style="height:100%;" cellpadding="0" cellspacing="0">
             <tr>
-                <td class="{style.logo}">
-                    <h1 class="{style.title}">Annotare 2.0</h1>
-                    <div>
+                <td>
+                    <h1 class="logo">Annotare 2.0</h1>
+                    <div class="logotext">
                         <a href="http://ebi.ac.uk/arrayexpress">ArrayExpress</a> experiment submission tool
                     </div>
                 </td>

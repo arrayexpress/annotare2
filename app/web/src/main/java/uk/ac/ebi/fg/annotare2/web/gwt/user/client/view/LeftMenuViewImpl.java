@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.MenuButton;
+import uk.ac.ebi.fg.annotare2.web.gwt.widgets.client.MenuButton;
 
 import java.util.HashMap;
 
