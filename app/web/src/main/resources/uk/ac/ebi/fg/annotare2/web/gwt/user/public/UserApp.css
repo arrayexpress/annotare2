@@ -75,6 +75,7 @@
     -khtml-user-select: none;
     user-select: none;
     font-size: 14px;
+    border: 1px solid transparent;
 }
 
 .app-LeftMenuItem:hover {
@@ -84,11 +85,11 @@
 }
 
 .app-LeftMenuItem:active {
-    font-size: 16px;
+    color: #888;
 }
 
 .app-LeftMenuItem.selectedItem {
-    background-color: #91c3bb;
+    background-color: #48877c;
     color: white;
     font-size: 16px;
 }
@@ -96,10 +97,6 @@
 .app-LeftMenu .createButton {
     padding: 10px 5px 10px 15px;
 }
-
-/*.wgt-MenuButton {
-    background-color: red;
-} */
 
 /* Styling Submission List */
 
@@ -115,7 +112,112 @@
     border-style: none;
 }
 
-    /* -- */
+/* Styling MenuButton */
 
+.wgt-MenuButton {
+    background-color: #E5A066;
+    border: 1px solid #E5A066;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    color: white;
+    line-height: 1;
+    padding: 0 0;
+    text-align: center;
+    text-shadow: 0 1px 0 #eee;
+}
 
+.wgt-MenuButton:hover {
+    background-color: #E5A066;
+    cursor: pointer;
+    text-shadow: 0 1px 0 #ddd;
+    -webkit-box-shadow: inset 0 0 5px #844511;
+    -moz-box-shadow: inset 0 0 5px #844511;
+    box-shadow: inset 0 0 5px  #844511;
+}
 
+.wgt-MenuButton:active {
+    border: 1px solid #aaa;
+    border-bottom: 1px solid #888;
+}
+
+.wgt-MenuButton .label {
+    margin: 5px 7px;
+    font-size: 16px;
+    font-family: 'Arial Unicode MS', Arial, sans-serif;
+    font-weight: normal;
+}
+
+.wgt-MenuButton-icon {
+    background: url("images/white-triangle-icon.gif") 50% 50% no-repeat;
+    width: 10px;
+    border-left: 1px solid #F2D0B2;
+}
+
+.wgt-MenuButtonPopup {
+    border: 1px solid #898989;
+}
+
+.wgt-MenuButtonPopup .popupContent {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupMiddleCenter {
+    padding: 0;
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupTopCenter {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupBottomCenter {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupMiddleLeft {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupMiddleRight {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupTopLeft {
+   background: white;
+}
+
+.wgt-MenuButtonPopup .popupTopRight {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupBottomLeft {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupBottomRight {
+    background: white;
+}
+
+.wgt-MenuButtonItem {
+    border: none;
+    padding: 7px 7px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.wgt-MenuButtonItem:hover {
+    background-color: #F3F7FB;
+    cursor: pointer;
+}
+
+.wgt-MenuButtonItem:active {
+    border: none;
+    color: #888;
+}
+
+.wgt-MenuButtonItem .label {
+}

@@ -23,9 +23,9 @@
             <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td>
-                        <g:Label ui:field="label" text="My Button"/>
+                        <g:Label ui:field="label" text="My Button" styleName="label"/>
                     </td>
-                    <td class="wgt-MenuButton-expand"></td>
+                    <td class="wgt-MenuButton-icon"></td>
                 </tr>
             </table>
         </g:HTMLPanel>

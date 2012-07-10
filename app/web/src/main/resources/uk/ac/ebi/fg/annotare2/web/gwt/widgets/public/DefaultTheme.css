@@ -31,7 +31,9 @@
     -o-border-radius: 3px;
     border-radius: 3px;
     color: #333;
-    font: bold 11px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    font-size: 11px;
     line-height: 1;
     padding: 0 0;
     text-align: center;
@@ -71,3 +73,125 @@
     border-left: 1px solid #aaa;
 }
 
+.wgt-MenuButton .label {
+}
+
+.wgt-MenuButtonItem {
+    border: 1px solid transparent;
+    padding: 5px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.wgt-MenuButtonItem:hover {
+    background-color: #ddd;
+    cursor: pointer;
+    text-shadow: 0 1px 0 #ddd;
+}
+
+.wgt-MenuButtonItem:active {
+    border: 1px solid #bbb;
+    border-bottom: 1px solid #999;
+}
+
+.wgt-MenuButtonItem .label {
+
+}
+
+.wgt-MenuButtonPopup {
+}
+
+.wgt-MenuButtonPopup .popupContent {
+}
+
+.wgt-MenuButtonPopup .popupMiddleCenter {
+    padding: 3px;
+    background: #f1f1f1;
+}
+
+.wgt-MenuButtonPopup .popupTopCenter {
+    background: url(images/hborder.png) 0px -2937px repeat-x;
+}
+
+.wgt-MenuButtonPopup .popupBottomCenter {
+    background: url(images/hborder.png) repeat-x 0px -2938px;
+    -background: url(images/hborder_ie6.png) repeat-x 0px -2138px;
+}
+
+.wgt-MenuButtonPopup .popupMiddleLeft {
+    background: url(images/vborder.png) -21px 0px repeat-y;
+}
+
+.wgt-MenuButtonPopup .popupMiddleRight {
+    background: url(images/vborder.png) repeat-y -24px 0px;
+    -background: url(images/vborder_ie6.png) repeat-y -24px 0px;
+}
+
+.wgt-MenuButtonPopup .popupTopLeftInner {
+    width: 6px;
+    height: 5px;
+    zoom: 1;
+}
+
+.wgt-MenuButtonPopup .popupTopRightInner {
+    width: 6px;
+    height: 5px;
+    zoom: 1;
+}
+
+.wgt-MenuButtonPopup .popupBottomLeftInner {
+    width: 6px;
+    height: 6px;
+    zoom: 1;
+}
+
+.wgt-MenuButtonPopup .popupBottomRightInner {
+    width: 6px;
+    height: 6px;
+    zoom: 1;
+}
+
+.wgt-MenuButtonPopup .popupTopLeft {
+    background: url(images/circles.png) no-repeat 0px -16px;
+    -background: url(images/circles_ie6.png) no-repeat 0px -16px;
+}
+
+.wgt-MenuButtonPopup .popupTopRight {
+    background: url(images/circles.png) no-repeat -6px -16px;
+    -background: url(images/circles_ie6.png) no-repeat -6px -16px;
+}
+
+.wgt-MenuButtonPopup .popupBottomLeft {
+    background: url(images/circles.png) no-repeat 0px -21px;
+    -background: url(images/circles_ie6.png) no-repeat 0px -21px;
+}
+
+.wgt-MenuButtonPopup .popupBottomRight {
+    background: url(images/circles.png) no-repeat -6px -21px;
+    -background: url(images/circles_ie6.png) no-repeat -6px -21px;
+}
+
+* html .wgt-MenuButtonPopup .popupTopLeftInner {
+    width: 6px;
+    height: 5px;
+    overflow: hidden;
+}
+
+* html .wgt-MenuButtonPopup .popupTopRightInner {
+    width: 6px;
+    height: 5px;
+    overflow: hidden;
+}
+
+* html .wgt-MenuButtonPopup .popupBottomLeftInner {
+    width: 6px;
+    height: 6px;
+    overflow: hidden;
+}
+
+* html .wgt-MenuButtonPopup .popupBottomRightInner {
+    width: 6px;
+    height: 6px;
+    overflow: hidden;
+}

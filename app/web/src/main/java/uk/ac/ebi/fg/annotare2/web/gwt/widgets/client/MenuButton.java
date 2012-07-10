@@ -109,6 +109,7 @@ public class MenuButton extends Composite implements HasText, HasCloseHandlers<P
     private void openPopup() {
         if (popup == null)     {
         popup = new DecoratedPopupPanel(true, false);
+        popup.setStyleName("wgt-MenuButtonPopup");
         popup.setWidget(vpanel);
 //        popup.setAnimationType(PopupPanel.AnimationType.ONE_WAY_CORNER);
 //        popup.setAnimationEnabled(isAnimationEnabled);
