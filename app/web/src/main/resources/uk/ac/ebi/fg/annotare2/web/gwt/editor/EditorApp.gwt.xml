@@ -14,29 +14,29 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<module rename-to='EditorApp'>
+<module rename-to="EditorApp">
 
-    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.user.User"/>
 
-    <inherits name='com.google.gwt.activity.Activity'/>
+    <inherits name="com.google.gwt.activity.Activity"/>
 
-    <inherits name='com.google.gwt.place.Place'/>
+    <inherits name="com.google.gwt.place.Place"/>
 
-    <inherits name='com.google.web.bindery.event.Event'/>
+    <inherits name="com.google.web.bindery.event.Event"/>
 
-    <inherits name='com.google.gwt.user.theme.clean.Clean'/>
+    <inherits name="com.google.gwt.user.theme.clean.Clean"/>
     <!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
     <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
     <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
     <inherits name="com.google.gwt.inject.Inject"/>
 
-    <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp" />
+    <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp"/>
 
-    <entry-point class='uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorApp' />
+    <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorApp"/>
 
-    <source path='client' />
-    <source path="shared" />
+    <source path="client"/>
+    <source path="shared"/>
 
 </module>
 
