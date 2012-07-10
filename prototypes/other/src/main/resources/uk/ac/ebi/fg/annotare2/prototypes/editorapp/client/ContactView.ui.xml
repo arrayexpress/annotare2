@@ -1,0 +1,40 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.prototypes.editorapp.client">
+
+    <g:DisclosurePanel ui:field="disclosurePanel" width="100%" addStyleNames="my-ContactView">
+        <g:header>Header</g:header>
+        <g:HTMLPanel>
+            <table cellpadding="0" cellspacing="0" class="my-content">
+                <tr>
+                    <td>Name:</td>
+                    <td><wgt:TextBoxWithPlaceHolder placeHolder="First Name" ui:field="firstNameBox" width="120px"/></td>
+                    <td><wgt:TextBoxWithPlaceHolder placeHolder="(Initials)" ui:field="initialsBox" width="50px"/></td>
+                    <td><wgt:TextBoxWithPlaceHolder placeHolder="Last Name" ui:field="lastNameBox" width="120px"/></td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td colspan="3"><wgt:TextBoxWithPlaceHolder placeHolder="Email" ui:field="emailBox" width="120px"/></td>
+                </tr>
+                <tr>
+                    <td>Phone:</td>
+                    <td colspan="3"><wgt:TextBoxWithPlaceHolder placeHolder="Phone" ui:field="phoneBox" width="120px"/></td>
+                </tr>
+                <tr>
+                    <td>Fax:</td>
+                    <td colspan="3"><wgt:TextBoxWithPlaceHolder placeHolder="Fax" ui:field="faxBox" width="120px"/></td>
+                </tr>
+                <tr>
+                    <td>Affiliation:</td>
+                    <td colspan="3"><wgt:TextBoxWithPlaceHolder placeHolder="Affiliation" ui:field="affiliationBox" width="120px"/></td>
+                </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td colspan="3"><g:TextBox/></td>
+                </tr>
+            </table>
+        </g:HTMLPanel>
+    </g:DisclosurePanel>
+</ui:UiBinder>

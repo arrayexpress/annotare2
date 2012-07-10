@@ -54,11 +54,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sencha.gxt</groupId>
-            <artifactId>gxt</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.7</version>
@@ -93,8 +88,9 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Dgwt.logLevel=DEBUG  -Dgwt.style=DETAILED</extraJvmArgs>
-                                <module>uk.ac.ebi.fg.annotare2.prototypes.layoutapp.client.LayoutApp</module>
+                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
+                            <module>uk.ac.ebi.fg.annotare2.prototypes.layoutapp.LayoutApp</module>
+                            <module>uk.ac.ebi.fg.annotare2.prototypes.editorapp.EditorApp</module>
                         </configuration>
                         <goals>
                             <goal>compile</goal>

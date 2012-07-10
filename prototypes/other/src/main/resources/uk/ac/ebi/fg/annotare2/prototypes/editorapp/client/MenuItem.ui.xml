@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:style>
+       .menuItem {
+           font-family: Arial Unicode MS, Arial, sans-serif;
+           text-align: center;
+           background-color: white;
+           padding-top: 10px;
+           padding-bottom: 10px;
+           padding-left: 5px;
+           padding-right: 5px;
+           cursor: pointer;
+       }
+
+       .menuItem:hover {
+           background-color: #eee;
+       }
+    </ui:style>
+
+    <g:HTMLPanel addStyleNames="{style.menuItem}">
+       <g:Label ui:field="title"/>
+    </g:HTMLPanel>
+
+</ui:UiBinder>

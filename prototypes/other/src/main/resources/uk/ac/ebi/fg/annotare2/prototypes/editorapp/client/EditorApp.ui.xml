@@ -1,0 +1,33 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .border {
+            border: 1px solid black;
+        }
+    </ui:style>
+
+    <g:DockLayoutPanel>
+        <g:north size="60">
+            <g:HTML>
+                <div style="border:1px solid red; height:97%">Header: Submission Accession, Dates, Save Button, Validate Button, Global Messages</div>
+            </g:HTML>
+        </g:north>
+        <g:center addStyleNames="{style.border}">
+            <g:SplitLayoutPanel>
+                <g:south size="20">
+                    <g:ScrollPanel height="100%">
+                        <g:HTMLPanel>
+                            <div style="border:1px solid blue; height:100%">Validation logs...errors, warnings etc.</div>
+                        </g:HTMLPanel>
+                    </g:ScrollPanel>
+                </g:south>
+                <g:center>
+                    <g:TabLayoutPanel ui:field="tabPanel" barHeight="35"></g:TabLayoutPanel>
+                </g:center>
+            </g:SplitLayoutPanel>
+        </g:center>
+    </g:DockLayoutPanel>
+
+</ui:UiBinder>

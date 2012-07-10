@@ -8,7 +8,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 /**
  * @author Olga Melnichuk
@@ -61,7 +60,7 @@ public class LayoutApp implements EntryPoint {
             public void onUncaughtException(Throwable e) {
                 e.printStackTrace();
                 Throwable rootCause = getRootCause(e);
-                new AlertMessageBox("Exception", rootCause.toString()).show();
+                Window.alert(rootCause.toString());
             }
         });
     }
