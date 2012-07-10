@@ -46,8 +46,9 @@ public class AppServletModule extends ServletModule {
     @Override
     protected void configureServlets() {
         filter("/UserApp/*",
-               "/EditorApp/*",
-               "/"
+                "/",
+                "/EditorApp/*",
+                "/editor/"
         ).through(SecurityFilter.class);
 
         serveRegex("(/login)(?:;jsessionid=[A-Z0-9]+)?").with(LoginServlet.class);
