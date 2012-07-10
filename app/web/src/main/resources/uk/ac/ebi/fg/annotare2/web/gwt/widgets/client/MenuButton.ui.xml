@@ -18,28 +18,16 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <ui:style>
-        .my-MenuButtonItem {
-            border: 1px solid transparent;
-            padding: 5px;
-            -moz-user-select: none;
-            -khtml-user-select: none;
-            user-select: none;
-        }
-
-        .my-MenuButtonItem:hover {
-            background-color: #ddd;
-            cursor: pointer;
-            text-shadow: 0 1px 0 #ddd;
-        }
-
-        .my-MenuButtonItem:active {
-            border: 1px solid #bbb;
-            border-bottom: 1px solid #999;
-        }
-    </ui:style>
-
-    <g:SimplePanel styleName="{style.my-MenuButtonItem}">
-        <g:Label ui:field="label"/>
+    <g:SimplePanel ui:field="panel" styleName="wgt-MenuButton">
+        <g:HTMLPanel>
+            <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td>
+                        <g:Label ui:field="label" text="My Button" styleName="label"/>
+                    </td>
+                    <td class="wgt-MenuButton-icon"></td>
+                </tr>
+            </table>
+        </g:HTMLPanel>
     </g:SimplePanel>
 </ui:UiBinder>

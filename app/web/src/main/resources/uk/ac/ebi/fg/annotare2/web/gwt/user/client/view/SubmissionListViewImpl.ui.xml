@@ -19,13 +19,9 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:c="urn:import:com.google.gwt.user.cellview.client">
-    <ui:style>
-         .submissionList td div {
-             white-space: nowrap;
-             overflow: hidden;
-         }
-    </ui:style>
 
-     <c:CellTable ui:field='cellTable' addStyleNames="{style.submissionList}"/>
+     <g:HTMLPanel addStyleNames="app-SubmissionList">
+         <c:CellTable ui:field='cellTable' />
+     </g:HTMLPanel>
 
 </ui:UiBinder>

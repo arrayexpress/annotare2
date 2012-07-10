@@ -13,13 +13,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder
-        xmlns:ui="urn:ui:com.google.gwt.uibinder"
-        xmlns:g="urn:import:com.google.gwt.user.client.ui">
-
-    <g:SimplePanel styleName="app-LeftMenuItem">
-        <g:Label ui:field="label"/>
-    </g:SimplePanel>
-</ui:UiBinder>
-
+<module>
+    <stylesheet src="DefaultTheme.css"/>
+</module>

@@ -24,6 +24,6 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface ImageResources extends ClientBundle {
 
-    @Source("images/edit-icon.gif")
+    @Source("../../public/images/edit-icon.gif")
     public ImageResource editIcon();
 }
