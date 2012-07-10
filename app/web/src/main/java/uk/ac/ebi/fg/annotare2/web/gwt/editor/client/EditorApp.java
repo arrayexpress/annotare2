@@ -18,18 +18,24 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorAppLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppLayout;
 
 /**
  * @author Olga Melnichuk
  */
 public class EditorApp implements EntryPoint {
 
+    private EditorAppLayout appWidget = new EditorAppLayout();
+
     public void onModuleLoad() {
-        loadModule(RootPanel.get());
+        loadModule(RootLayoutPanel.get());
     }
 
-    private void loadModule(RootPanel root) {
-        Window.alert("Welcome to the submission editor app!");
+    private void loadModule(HasWidgets root) {
+        root.add(appWidget);
     }
 }
