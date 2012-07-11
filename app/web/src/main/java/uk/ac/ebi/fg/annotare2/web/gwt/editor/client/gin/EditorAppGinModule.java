@@ -25,10 +25,14 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorHeaderDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabHeaderDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorAppPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorHeaderActivityMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorTabHeaderActivityMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorHeaderView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorHeaderViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabHeaderView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabHeaderViewImpl;
 
 /**
  * @author Olga Melnichuk
@@ -40,8 +44,10 @@ public class EditorAppGinModule  extends AbstractGinModule {
         bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
         bind(PlaceHistoryMapper.class).to(EditorAppPlaceHistoryMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorHeaderDisplay.class).to(EditorHeaderActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorTabHeaderDisplay.class).to(EditorTabHeaderActivityMapper.class).in(Singleton.class);
 
         bind(EditorHeaderView.class).to(EditorHeaderViewImpl.class);
+        bind(EditorTabHeaderView.class).to(EditorTabHeaderViewImpl.class);
     }
 
     @Provides

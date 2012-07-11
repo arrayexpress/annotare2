@@ -26,7 +26,7 @@
 
     <g:DockLayoutPanel>
         <g:north size="60">
-            <g:SimplePanel ui:field="topPanel"/>
+            <g:SimplePanel ui:field="headerDisplay"/>
         </g:north>
         <g:center>
             <g:SplitLayoutPanel>
@@ -40,9 +40,7 @@
                 <g:center>
                     <g:DockLayoutPanel>
                         <g:north size="120">
-                            <g:HTML>
-                                <div>IDF, SDRF, ADF, DATA tabs and tab header</div>
-                            </g:HTML>
+                            <g:SimplePanel ui:field="tabHeaderDisplay" />
                         </g:north>
                         <g:west size="60">
                             <g:ScrollPanel height="100%" addStyleNames="{style.border}">
