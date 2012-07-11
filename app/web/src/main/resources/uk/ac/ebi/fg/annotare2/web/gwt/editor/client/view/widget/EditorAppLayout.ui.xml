@@ -26,9 +26,7 @@
 
     <g:DockLayoutPanel>
         <g:north size="60">
-            <g:HTML>
-                <div>Editor Header: Accession, Save Button, Validate Button, Global Messages</div>
-            </g:HTML>
+            <g:SimplePanel ui:field="topPanel"/>
         </g:north>
         <g:center>
             <g:SplitLayoutPanel>

@@ -18,10 +18,10 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget">
+        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget">
 
     <g:HTMLPanel>
-        <wgt:AppHeader ui:field="appHeader" height="60px"/>
+        <my:AppHeader ui:field="appHeader" height="60px"/>
         <div class="app-TopicHeader">
             <h1>My Submissions</h1>
         </div>

@@ -16,18 +16,34 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
+import com.google.gwt.activity.shared.ActivityManager;
+import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorAppGinjector;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorAppPlaceFactory;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorAppPlaceHistoryMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorAppLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.UserAppGinjector;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceFactory;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceHistoryMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppLayout;
 
 /**
  * @author Olga Melnichuk
  */
 public class EditorApp implements EntryPoint {
+
+    private final EditorAppGinjector injector = GWT.create(EditorAppGinjector.class);
 
     private EditorAppLayout appWidget = new EditorAppLayout();
 
@@ -36,6 +52,24 @@ public class EditorApp implements EntryPoint {
     }
 
     private void loadModule(HasWidgets root) {
+        EventBus eventBus = injector.getEventBus();
+        PlaceController placeController = injector.getPlaceController();
+
+        ActivityMapper headerActivityMapper = injector.getHeaderActivityMapper();
+        ActivityManager headerActivityManager = new ActivityManager(headerActivityMapper, eventBus);
+        headerActivityManager.setDisplay(appWidget.getTopPanel());
+
+        EditorAppPlaceFactory factory = injector.getPlaceFactory();
+        IdfPlace defaultPlace = factory.getIdfPlace();
+
+        EditorAppPlaceHistoryMapper historyMapper = GWT.create(EditorAppPlaceHistoryMapper.class);
+        historyMapper.setFactory(factory);
+
+        PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+        historyHandler.register(placeController, eventBus, defaultPlace);
+
         root.add(appWidget);
+
+        historyHandler.handleCurrentHistory();
     }
 }

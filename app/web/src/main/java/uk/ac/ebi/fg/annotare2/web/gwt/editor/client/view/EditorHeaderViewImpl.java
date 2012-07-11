@@ -14,33 +14,24 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorAppLayout extends Composite {
+public class EditorHeaderViewImpl extends Composite implements  EditorHeaderView {
 
-    interface Binder extends UiBinder<DockLayoutPanel, EditorAppLayout> {
+    interface Binder extends UiBinder<HTMLPanel, EditorHeaderViewImpl> {
     }
 
-    @UiField
-    HasOneWidget topPanel;
-
-    public EditorAppLayout() {
+    public EditorHeaderViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public HasOneWidget getTopPanel() {
-        return topPanel;
-    }
 }
