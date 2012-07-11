@@ -40,11 +40,14 @@
 
 <div class="outer">
     <div class="inner">
-        <h1>Annotare 2.0</h1>
 
         <div class="frame">
             <form method="POST">
                 <table class="form">
+                    <tr>
+                        <td></td>
+                        <td><h1>Annotare 2.0</h1></td>
+                    </tr>
                     <tr class="error">
                         <td colspan="2">${dummyErrors}</td>
                     </tr>
@@ -67,23 +70,21 @@
                     <tr class="row">
                         <td></td>
                         <td>
-                            <input type="checkbox"/>&nbsp;Remember me on this computer?
+                            <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="#" onclick="return false;">Forgot your password?</a>
                         </td>
                     </tr>
-                    <tr class="row">
+                    <tr>
                         <td></td>
                         <td>
-                            <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="#" onclick="return false;">Forgot your password?</a>
+                            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Sign Up</a></div>
                         </td>
                     </tr>
                 </table>
             </form>
-            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Sign Up</a></div>
         </div>
-        <div class="copy">2012 EMBL-EBI, Functional Genomics Group</div>
     </div>
 </div>
-
+<div class="at-bottom copy">2012 EMBL-EBI, Functional Genomics Group</div>
 </body>
 </html>
 
