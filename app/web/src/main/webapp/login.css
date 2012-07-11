@@ -28,7 +28,6 @@
 }
 
 .frame {
-    border: 1px solid #207A7A;
     padding: 15px 10px 2px;
     font-size: small;
 }
@@ -80,4 +79,12 @@
     border-radius: 3px;
     -moz-border-radius: 3px;
     background: white;
+}
+
+.at-bottom {
+    width:100%;
+    position:absolute;
+    bottom:0;
+    left:0;
+    text-align:center;
 }
