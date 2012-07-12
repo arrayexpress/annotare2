@@ -20,7 +20,7 @@
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
     <g:HTMLPanel>
-        <my:TabPanel/>
+        <g:TabBar ui:field="tabBar"/>
         <div>
             <h3>Investigation Design</h3>
         </div>

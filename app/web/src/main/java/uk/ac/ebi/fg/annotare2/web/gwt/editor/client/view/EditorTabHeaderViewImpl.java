@@ -17,9 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.TabBar;
+
 
 /**
  * @author Olga Melnichuk
@@ -29,9 +34,22 @@ public class EditorTabHeaderViewImpl extends Composite implements EditorTabHeade
     interface Binder extends UiBinder<HTMLPanel, EditorTabHeaderViewImpl> {
     }
 
+    @UiField
+    TabBar tabBar;
+
     public EditorTabHeaderViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+
+        tabBar.addTab("IDF");
+        tabBar.addTab("SDRF");
+        tabBar.addTab("DATA");
+        tabBar.addTab("ADF");
+        tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
+            public void onSelection(SelectionEvent<Integer> integerSelectionEvent) {
+               // Window.alert("Tab " + integerSelectionEvent.getSelectedItem() + " selected");
+            }
+        });
     }
 
 }

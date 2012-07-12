@@ -33,7 +33,7 @@
             position: relative;
             bottom: -1px;
             left: 0;
-            background-color: #60e462;
+            background-color: #afc96c;
             padding: 2px 5px;
         }
     </ui:style>
