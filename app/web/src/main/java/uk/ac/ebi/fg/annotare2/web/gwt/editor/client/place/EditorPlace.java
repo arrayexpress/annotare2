@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.place.shared.Place;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorTabHeaderView extends IsWidget {
+public abstract class EditorPlace extends Place {
+    public abstract EditorTabType getTabType();
 
-    void selectTab(EditorTabType tabType);
-
-    void setPresenter(Presenter presenter);
-
-    public interface Presenter {
-        void onTabSelect(EditorTabType type);
+    public static EditorPlace create(EditorTabType type) {
+        //TODO
+        switch(type) {
+            case IDF: return new IdfPlace();
+            default: return new SdrfPlace();
+        }
     }
 }

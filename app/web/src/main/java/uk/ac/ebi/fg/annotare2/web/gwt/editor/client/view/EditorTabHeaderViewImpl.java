@@ -25,6 +25,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TabBar;
 
+import java.util.ArrayList;
+
 
 /**
  * @author Olga Melnichuk
@@ -37,19 +39,50 @@ public class EditorTabHeaderViewImpl extends Composite implements EditorTabHeade
     @UiField
     TabBar tabBar;
 
+    private ArrayList<EditorTabType> tabTypes = new ArrayList<EditorTabType>();
+
+    private Presenter presenter;
+
     public EditorTabHeaderViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
 
-        tabBar.addTab("IDF");
-        tabBar.addTab("SDRF");
-        tabBar.addTab("DATA");
-        tabBar.addTab("ADF");
+        tabTypes.add(EditorTabType.IDF);
+        tabTypes.add(EditorTabType.SDRF);
+
+        for(EditorTabType type : tabTypes) {
+            tabBar.addTab(type.name());
+        }
+
         tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
-            public void onSelection(SelectionEvent<Integer> integerSelectionEvent) {
-               // Window.alert("Tab " + integerSelectionEvent.getSelectedItem() + " selected");
+            public void onSelection(SelectionEvent<Integer> event) {
+                onTabSelect(event.getSelectedItem());
             }
         });
     }
 
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public void selectTab(EditorTabType tabType) {
+        tabBar.selectTab(indexOf(tabType));
+    }
+
+    private void onTabSelect(Integer typeIndex) {
+        if (presenter != null) {
+            presenter.onTabSelect(tabTypes.get(typeIndex));
+        }
+    }
+
+    private int indexOf(EditorTabType desiredType) {
+        int i=0;
+        for(EditorTabType type : tabTypes) {
+            if (type.equals(desiredType)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
 }

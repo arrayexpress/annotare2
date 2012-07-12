@@ -26,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 /**
  * @author Olga Melnichuk
  */
-public class IdfPlace extends EditorPlace {
+public class SdrfPlace extends EditorPlace {
 
     private String placeName;
 
@@ -39,25 +39,25 @@ public class IdfPlace extends EditorPlace {
     }
 
     public EditorTabType getTabType() {
-        return EditorTabType.IDF;
+        return EditorTabType.SDRF;
     }
 
-    @Prefix("idfEdit")
-    public static class Tokenizer implements PlaceTokenizer<IdfPlace> {
+    @Prefix("sdrfEdit")
+    public static class Tokenizer implements PlaceTokenizer<SdrfPlace> {
 
-        private final Provider<IdfPlace> placeProvider;
+        private final Provider<SdrfPlace> placeProvider;
 
         @Inject
-        public Tokenizer(Provider<IdfPlace> placeProvider) {
+        public Tokenizer(Provider<SdrfPlace> placeProvider) {
             this.placeProvider = placeProvider;
         }
 
-        public String getToken(IdfPlace place) {
+        public String getToken(SdrfPlace place) {
             return place.getPlaceName();
         }
 
-        public IdfPlace getPlace(String token) {
-            IdfPlace place = placeProvider.get();
+        public SdrfPlace getPlace(String token) {
+            SdrfPlace place = placeProvider.get();
             place.setPlaceName(token);
             return place;
         }

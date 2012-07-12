@@ -22,6 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.EditorTabHeaderActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.EditorPlace;
 
 /**
  * @author Olga Melnichuk
@@ -38,6 +39,6 @@ public class EditorTabHeaderActivityMapper implements ActivityMapper {
 
     public Activity getActivity(Place place) {
         return (currentActivity == null ? (currentActivity = activityProvider.get()) : currentActivity)
-                .withPlace(place);
+                .withPlace((EditorPlace)place);
     }
 }

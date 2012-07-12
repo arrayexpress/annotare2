@@ -16,18 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 /**
  * @author Olga Melnichuk
  */
-public interface EditorTabHeaderView extends IsWidget {
-
-    void selectTab(EditorTabType tabType);
-
-    void setPresenter(Presenter presenter);
-
-    public interface Presenter {
-        void onTabSelect(EditorTabType type);
-    }
+public enum EditorTabType {
+    IDF,
+    SDRF,
+    DATA,
+    ADF
 }

@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 
 /**
  * @author Olga Melnichuk
@@ -31,12 +32,26 @@ public class EditorAppPlaceFactory {
     @Inject
     Provider<IdfPlace> idfPlaceProvider;
 
+    @Inject
+    SdrfPlace.Tokenizer sdrfPlaceTokenizer;
+
+    @Inject
+    Provider<SdrfPlace> sdrfPlaceProvider;
+
     public IdfPlace.Tokenizer getIdfPlaceTokenizer() {
         return idfPlaceTokenizer;
     }
 
     public IdfPlace getIdfPlace() {
         return idfPlaceProvider.get();
+    }
+
+    public SdrfPlace.Tokenizer getSdrfPlaceTokenizer() {
+        return sdrfPlaceTokenizer;
+    }
+
+    public SdrfPlace getSdrfPlace() {
+        return sdrfPlaceProvider.get();
     }
 
 }
