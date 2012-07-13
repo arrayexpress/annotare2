@@ -16,42 +16,28 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp;
 
+import com.google.gwt.activity.shared.Activity;
+import com.google.gwt.activity.shared.ActivityMapper;
+import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.EditorTitleBarActivity;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorAppPlaceFactory {
+public class EditorTitleBarActivityMapper implements ActivityMapper {
+
+    private final Provider<EditorTitleBarActivity> activityProvider;
+    private EditorTitleBarActivity currentActivity;
 
     @Inject
-    IdfPlace.Tokenizer idfPlaceTokenizer;
-
-    @Inject
-    Provider<IdfPlace> idfPlaceProvider;
-
-    @Inject
-    SdrfPlace.Tokenizer sdrfPlaceTokenizer;
-
-    @Inject
-    Provider<SdrfPlace> sdrfPlaceProvider;
-
-    public IdfPlace.Tokenizer getIdfPlaceTokenizer() {
-        return idfPlaceTokenizer;
+    public EditorTitleBarActivityMapper(Provider<EditorTitleBarActivity> activityProvider) {
+        this.activityProvider = activityProvider;
     }
 
-    public IdfPlace getIdfPlace() {
-        return idfPlaceProvider.get();
+    public Activity getActivity(Place place) {
+        return (currentActivity == null ? (currentActivity = activityProvider.get()) : currentActivity)
+                .withPlace(place);
     }
-
-    public SdrfPlace.Tokenizer getSdrfPlaceTokenizer() {
-        return sdrfPlaceTokenizer;
-    }
-
-    public SdrfPlace getSdrfPlace() {
-        return sdrfPlaceProvider.get();
-    }
-
 }

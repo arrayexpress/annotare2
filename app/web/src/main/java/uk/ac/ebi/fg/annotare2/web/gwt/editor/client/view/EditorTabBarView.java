@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * @author Olga Melnichuk
  */
-public interface EditorTabHeaderView extends IsWidget {
+public interface EditorTabBarView extends IsWidget {
 
     void selectTab(EditorTabType tabType);
 

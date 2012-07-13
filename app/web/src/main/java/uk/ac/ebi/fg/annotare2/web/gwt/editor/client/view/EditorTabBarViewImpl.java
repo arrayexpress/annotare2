@@ -31,9 +31,9 @@ import java.util.ArrayList;
 /**
  * @author Olga Melnichuk
  */
-public class EditorTabHeaderViewImpl extends Composite implements EditorTabHeaderView {
+public class EditorTabBarViewImpl extends Composite implements EditorTabBarView {
 
-    interface Binder extends UiBinder<HTMLPanel, EditorTabHeaderViewImpl> {
+    interface Binder extends UiBinder<HTMLPanel, EditorTabBarViewImpl> {
     }
 
     @UiField
@@ -43,7 +43,7 @@ public class EditorTabHeaderViewImpl extends Composite implements EditorTabHeade
 
     private Presenter presenter;
 
-    public EditorTabHeaderViewImpl() {
+    public EditorTabBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
 

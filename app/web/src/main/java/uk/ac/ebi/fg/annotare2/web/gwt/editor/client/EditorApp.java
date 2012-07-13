@@ -25,20 +25,20 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorAppGinjector;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorAppPlaceFactory;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorAppPlaceHistoryMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorAppLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
 
 /**
  * @author Olga Melnichuk
  */
 public class EditorApp implements EntryPoint {
 
-    private final EditorAppGinjector injector = GWT.create(EditorAppGinjector.class);
+    private final EditorGinjector injector = GWT.create(EditorGinjector.class);
 
-    private EditorAppLayout appWidget = new EditorAppLayout();
+    private EditorLayout appWidget = new EditorLayout();
 
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
@@ -48,18 +48,18 @@ public class EditorApp implements EntryPoint {
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 
-        ActivityMapper headerActivityMapper = injector.getHeaderActivityMapper();
-        ActivityManager headerActivityManager = new ActivityManager(headerActivityMapper, eventBus);
-        headerActivityManager.setDisplay(appWidget.getHeaderDisplay());
+        ActivityMapper titleBarActivityMapper = injector.getTitleBarActivityMapper();
+        ActivityManager titleBarActivityManager = new ActivityManager(titleBarActivityMapper, eventBus);
+        titleBarActivityManager.setDisplay(appWidget.getTitleBarDisplay());
 
-        ActivityMapper tabHeaderActivityMapper = injector.getTabHeaderActivityMapper();
-        ActivityManager tabHeaderActivityManager = new ActivityManager(tabHeaderActivityMapper, eventBus);
-        tabHeaderActivityManager.setDisplay(appWidget.getTabHeaderDisplay());
+        ActivityMapper tabBarActivityMapper = injector.getTabBarActivityMapper();
+        ActivityManager tabBarActivityManager = new ActivityManager(tabBarActivityMapper, eventBus);
+        tabBarActivityManager.setDisplay(appWidget.getTabBarDisplay());
 
-        EditorAppPlaceFactory factory = injector.getPlaceFactory();
+        EditorPlaceFactory factory = injector.getPlaceFactory();
         IdfPlace defaultPlace = factory.getIdfPlace();
 
-        EditorAppPlaceHistoryMapper historyMapper = GWT.create(EditorAppPlaceHistoryMapper.class);
+        EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);
         historyMapper.setFactory(factory);
 
         PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);

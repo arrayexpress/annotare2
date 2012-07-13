@@ -26,27 +26,27 @@ import com.google.gwt.user.client.ui.HasOneWidget;
 /**
  * @author Olga Melnichuk
  */
-public class EditorAppLayout extends Composite {
+public class EditorLayout extends Composite {
 
-    interface Binder extends UiBinder<DockLayoutPanel, EditorAppLayout> {
+    interface Binder extends UiBinder<DockLayoutPanel, EditorLayout> {
     }
 
     @UiField
-    HasOneWidget headerDisplay;
+    HasOneWidget titleBarDisplay;
 
     @UiField
-    HasOneWidget tabHeaderDisplay;
+    HasOneWidget tabBarDisplay;
 
-    public EditorAppLayout() {
+    public EditorLayout() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public HasOneWidget getHeaderDisplay() {
-        return headerDisplay;
+    public HasOneWidget getTitleBarDisplay() {
+        return titleBarDisplay;
     }
 
-    public HasOneWidget getTabHeaderDisplay() {
-        return tabHeaderDisplay;
+    public HasOneWidget getTabBarDisplay() {
+        return tabBarDisplay;
     }
 }

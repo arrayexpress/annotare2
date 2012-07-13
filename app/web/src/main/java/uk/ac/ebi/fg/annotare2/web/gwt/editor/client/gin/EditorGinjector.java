@@ -21,26 +21,26 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorHeaderDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabHeaderDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorAppPlaceFactory;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabBarDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTitleBarDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 
 /**
  * @author Olga Melnichuk
  */
-@GinModules({EditorAppGinModule.class})
-public interface EditorAppGinjector extends Ginjector {
+@GinModules({EditorGinModule.class})
+public interface EditorGinjector extends Ginjector {
 
     EventBus getEventBus();
 
     PlaceController getPlaceController();
 
-    EditorAppPlaceFactory getPlaceFactory();
+    EditorPlaceFactory getPlaceFactory();
 
-    @EditorHeaderDisplay
-    ActivityMapper getHeaderActivityMapper();
+    @EditorTitleBarDisplay
+    ActivityMapper getTitleBarActivityMapper();
 
-    @EditorTabHeaderDisplay
-    ActivityMapper getTabHeaderActivityMapper();
+    @EditorTabBarDisplay
+    ActivityMapper getTabBarActivityMapper();
 
 }

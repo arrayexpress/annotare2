@@ -16,22 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorHeaderViewImpl extends Composite implements  EditorHeaderView {
-
-    interface Binder extends UiBinder<HTMLPanel, EditorHeaderViewImpl> {
-    }
-
-    public EditorHeaderViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
-    }
-
+public interface EditorTitleBarView extends IsWidget {
 }

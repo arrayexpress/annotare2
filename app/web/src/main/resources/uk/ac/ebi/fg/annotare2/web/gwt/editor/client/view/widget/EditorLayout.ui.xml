@@ -26,7 +26,7 @@
 
     <g:DockLayoutPanel>
         <g:north size="60">
-            <g:SimplePanel ui:field="headerDisplay"/>
+            <g:SimplePanel ui:field="titleBarDisplay"/>
         </g:north>
         <g:center>
             <g:SplitLayoutPanel>
@@ -40,7 +40,7 @@
                 <g:center>
                     <g:DockLayoutPanel>
                         <g:north size="120">
-                            <g:SimplePanel ui:field="tabHeaderDisplay" />
+                            <g:SimplePanel ui:field="tabBarDisplay" />
                         </g:north>
                         <g:west size="60">
                             <g:ScrollPanel height="100%" addStyleNames="{style.border}">

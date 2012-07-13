@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.place.shared.PlaceHistoryMapperWithFactory;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorHeaderView  extends IsWidget {
+public interface EditorPlaceHistoryMapper extends PlaceHistoryMapperWithFactory<EditorPlaceFactory> {
 }

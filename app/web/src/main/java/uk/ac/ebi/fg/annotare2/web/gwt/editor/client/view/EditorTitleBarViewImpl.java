@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.place.shared.PlaceHistoryMapperWithFactory;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorAppPlaceHistoryMapper extends PlaceHistoryMapperWithFactory<EditorAppPlaceFactory> {
+public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
+
+    interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
+    }
+
+    public EditorTitleBarViewImpl() {
+        Binder uiBinder = GWT.create(Binder.class);
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
 }

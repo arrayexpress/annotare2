@@ -21,19 +21,19 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.EditorTabHeaderActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.EditorTabBarActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.EditorPlace;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorTabHeaderActivityMapper implements ActivityMapper {
+public class EditorTabBarActivityMapper implements ActivityMapper {
 
-    private final Provider<EditorTabHeaderActivity> activityProvider;
-    private EditorTabHeaderActivity currentActivity;
+    private final Provider<EditorTabBarActivity> activityProvider;
+    private EditorTabBarActivity currentActivity;
 
     @Inject
-    public EditorTabHeaderActivityMapper(Provider<EditorTabHeaderActivity> activityProvider) {
+    public EditorTabBarActivityMapper(Provider<EditorTabBarActivity> activityProvider) {
         this.activityProvider = activityProvider;
     }
 

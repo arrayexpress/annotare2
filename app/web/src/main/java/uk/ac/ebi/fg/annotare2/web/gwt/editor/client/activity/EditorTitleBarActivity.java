@@ -22,42 +22,34 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.EditorPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabHeaderView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorTabHeaderActivity extends AbstractActivity implements EditorTabHeaderView.Presenter {
+public class EditorTitleBarActivity extends AbstractActivity {
 
-    private final EditorTabHeaderView view;
+    private final EditorTitleBarView view;
     private final PlaceController placeController;
-    private EditorTabType tabType;
 
     @Inject
-    public EditorTabHeaderActivity(EditorTabHeaderView view,
-                                PlaceController placeController) {
+    public EditorTitleBarActivity(EditorTitleBarView view,
+                                  PlaceController placeController) {
         this.view = view;
         this.placeController = placeController;
     }
 
-    public EditorTabHeaderActivity withPlace(EditorPlace place) {
-        tabType = place.getTabType();
+    public EditorTitleBarActivity withPlace(Place place) {
+        //this.token = place.getPlaceName();
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        view.setPresenter(this);
-        view.selectTab(tabType);
+        //TODO view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
-    }
-
-    public void onTabSelect(EditorTabType type) {
-        goTo(EditorPlace.create(type));
     }
 }

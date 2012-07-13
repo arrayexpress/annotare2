@@ -24,30 +24,30 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorHeaderDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabHeaderDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorAppPlaceHistoryMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorHeaderActivityMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorTabHeaderActivityMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorHeaderView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorHeaderViewImpl;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabHeaderView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabHeaderViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabBarDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTitleBarDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorTitleBarActivityMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorTabBarActivityMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabBarView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabBarViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarViewImpl;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorAppGinModule  extends AbstractGinModule {
+public class EditorGinModule extends AbstractGinModule {
 
     @Override
     protected void configure() {
         bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
-        bind(PlaceHistoryMapper.class).to(EditorAppPlaceHistoryMapper.class).in(Singleton.class);
-        bind(ActivityMapper.class).annotatedWith(EditorHeaderDisplay.class).to(EditorHeaderActivityMapper.class).in(Singleton.class);
-        bind(ActivityMapper.class).annotatedWith(EditorTabHeaderDisplay.class).to(EditorTabHeaderActivityMapper.class).in(Singleton.class);
+        bind(PlaceHistoryMapper.class).to(EditorPlaceHistoryMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorTitleBarDisplay.class).to(EditorTitleBarActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorTabBarDisplay.class).to(EditorTabBarActivityMapper.class).in(Singleton.class);
 
-        bind(EditorHeaderView.class).to(EditorHeaderViewImpl.class);
-        bind(EditorTabHeaderView.class).to(EditorTabHeaderViewImpl.class);
+        bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
+        bind(EditorTabBarView.class).to(EditorTabBarViewImpl.class);
     }
 
     @Provides
