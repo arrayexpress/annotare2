@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 import com.google.inject.Inject;
