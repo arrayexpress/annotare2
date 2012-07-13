@@ -43,8 +43,8 @@
                         <g:north size="120">
                             <g:SimplePanel ui:field="tabBarDisplay" />
                         </g:north>
-                        <g:west size="60">
-                            <my:MinimizableScrollPanel size="60" height="100%" addStyleNames="{style.border}" ui:field="leftMenuDisplay"/>
+                        <g:west size="200">
+                            <my:MinimizableScrollPanel size="200" height="100%" addStyleNames="{style.border}" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
                             <g:ScrollPanel height="100%" addStyleNames="{style.border}" ui:field="contentDisplay"/>

@@ -19,14 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Olga Melnichuk
  */
 public class IdfNavigationViewImpl extends Composite implements IdfNavigationView {
 
-    interface Binder extends UiBinder<HTMLPanel, IdfNavigationViewImpl> {
+    interface Binder extends UiBinder<Widget, IdfNavigationViewImpl> {
     }
 
     public IdfNavigationViewImpl() {
