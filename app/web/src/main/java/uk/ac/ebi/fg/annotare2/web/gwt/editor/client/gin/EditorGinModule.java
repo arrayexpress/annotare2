@@ -24,15 +24,12 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorContentDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorLeftMenuDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabBarDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTitleBarDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorTitleBarActivityMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorTabBarActivityMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabBarView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabBarViewImpl;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
 
 /**
  * @author Olga Melnichuk
@@ -45,9 +42,14 @@ public class EditorGinModule extends AbstractGinModule {
         bind(PlaceHistoryMapper.class).to(EditorPlaceHistoryMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTitleBarDisplay.class).to(EditorTitleBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTabBarDisplay.class).to(EditorTabBarActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorLeftMenuDisplay.class).to(EditorLeftMenuActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorContentDisplay.class).to(EditorContentActivityMapper.class).in(Singleton.class);
 
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
         bind(EditorTabBarView.class).to(EditorTabBarViewImpl.class);
+        bind(IdfNavigationView.class).to(IdfNavigationViewImpl.class);
+        bind(IdfContentView.class).to(IdfContentViewImpl.class);
+        bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
     }
 
     @Provides

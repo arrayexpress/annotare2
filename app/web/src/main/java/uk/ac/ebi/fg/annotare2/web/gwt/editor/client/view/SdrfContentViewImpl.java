@@ -14,53 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorLayout extends Composite {
+public class SdrfContentViewImpl extends Composite implements SdrfContentView {
 
-    interface Binder extends UiBinder<DockLayoutPanel, EditorLayout> {
+    interface Binder extends UiBinder<HTMLPanel, SdrfContentViewImpl> {
     }
 
-    @UiField
-    HasOneWidget titleBarDisplay;
-
-    @UiField
-    HasOneWidget tabBarDisplay;
-
-    @UiField
-    HasOneWidget leftMenuDisplay;
-
-    @UiField
-    HasOneWidget contentDisplay;
-
-    public EditorLayout() {
+    public SdrfContentViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
-    }
-
-    public HasOneWidget getTitleBarDisplay() {
-        return titleBarDisplay;
-    }
-
-    public HasOneWidget getTabBarDisplay() {
-        return tabBarDisplay;
-    }
-
-    public HasOneWidget getLeftMenuDisplay() {
-        return leftMenuDisplay;
-    }
-
-    public HasOneWidget getContentDisplay() {
-        return contentDisplay;
     }
 }

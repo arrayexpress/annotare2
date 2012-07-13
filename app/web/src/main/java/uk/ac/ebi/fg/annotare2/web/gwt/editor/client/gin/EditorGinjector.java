@@ -21,6 +21,8 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorContentDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorLeftMenuDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabBarDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTitleBarDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
@@ -43,4 +45,9 @@ public interface EditorGinjector extends Ginjector {
     @EditorTabBarDisplay
     ActivityMapper getTabBarActivityMapper();
 
+    @EditorLeftMenuDisplay
+    ActivityMapper getLeftMenuActivityMapper();
+
+    @EditorContentDisplay
+    ActivityMapper getContentActivityMapper();
 }

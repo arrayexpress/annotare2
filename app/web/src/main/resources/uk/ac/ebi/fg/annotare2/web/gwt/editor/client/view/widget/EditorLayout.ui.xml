@@ -16,7 +16,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
-        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
     <ui:style>
         .border {
@@ -43,18 +44,10 @@
                             <g:SimplePanel ui:field="tabBarDisplay" />
                         </g:north>
                         <g:west size="60">
-                            <g:ScrollPanel height="100%" addStyleNames="{style.border}">
-                                <g:HTML>
-                                    <div>IDF left menu</div>
-                                </g:HTML>
-                            </g:ScrollPanel>
+                            <my:MinimizableScrollPanel size="60" height="100%" addStyleNames="{style.border}" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
-                            <g:ScrollPanel height="100%" addStyleNames="{style.border}">
-                                <g:HTML>
-                                    <div>Content Area</div>
-                                </g:HTML>
-                            </g:ScrollPanel>
+                            <g:ScrollPanel height="100%" addStyleNames="{style.border}" ui:field="contentDisplay"/>
                         </g:center>
                     </g:DockLayoutPanel>
                 </g:center>
