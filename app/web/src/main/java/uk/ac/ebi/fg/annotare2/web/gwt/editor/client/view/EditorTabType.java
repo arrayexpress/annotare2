@@ -20,8 +20,18 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
  * @author Olga Melnichuk
  */
 public enum EditorTabType {
-    IDF,
-    SDRF,
-    DATA,
-    ADF
+    IDF("Investigation Design"),
+    SDRF("Sample and Data Relationship"),
+    DATA("Data Files"),
+    ADF("Array Design");
+
+    private String title;
+
+    private EditorTabType(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -38,6 +39,9 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
 
     @UiField
     TabBar tabBar;
+
+    @UiField
+    HeadingElement tabTitle;
 
     private ArrayList<EditorTabType> tabTypes = new ArrayList<EditorTabType>();
 
@@ -70,9 +74,14 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
     }
 
     private void onTabSelect(Integer typeIndex) {
+        EditorTabType tabType = tabTypes.get(typeIndex);
+
         if (presenter != null) {
-            presenter.onTabSelect(tabTypes.get(typeIndex));
+            presenter.onTabSelect(tabType);
         }
+
+        //TODO move this code into separate method
+        tabTitle.setInnerText(tabType.getTitle());
     }
 
     private int indexOf(EditorTabType desiredType) {

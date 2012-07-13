@@ -16,13 +16,21 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
-        xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
+        xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <g:HTMLPanel>
         <g:TabBar ui:field="tabBar"/>
-        <div>
-            <h3>Investigation Design</h3>
-        </div>
+        <table>
+            <tr>
+                <td style="width:250px">
+                    <h3 ui:field="tabTitle">Tab Title</h3>
+                </td>
+                <td>
+                    <g:Button>Create</g:Button>
+                    <g:Button>Import</g:Button>
+                    <g:Button>Export</g:Button>
+                </td>
+            </tr>
+        </table>
     </g:HTMLPanel>
 </ui:UiBinder>
