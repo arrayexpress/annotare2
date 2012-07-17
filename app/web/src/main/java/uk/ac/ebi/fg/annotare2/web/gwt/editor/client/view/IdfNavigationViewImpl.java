@@ -16,13 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
 /**
@@ -30,18 +28,33 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
  */
 public class IdfNavigationViewImpl extends Composite implements IdfNavigationView {
 
-    interface Binder extends UiBinder<Widget, IdfNavigationViewImpl> {
-    }
-
-    @UiField
-    FlowPanel flowPanel;
+    private Presenter presenter;
 
     public IdfNavigationViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+        FlowPanel flowPanel = new FlowPanel();
+        flowPanel.setStyleName("edt-IdfNavigation");
 
-        for(IdfSection s : IdfSection.values()) {
-            flowPanel.add(new Label(s.getTitle()));
+        for(final IdfSection s : IdfSection.values()) {
+            Label label = new Label(s.getTitle());
+            label.setStyleName("edt-IdfNavigationItem");
+            label.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    onIdfSectionClick(s);
+                }
+            });
+            flowPanel.add(label);
+        }
+
+        initWidget(flowPanel);
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    private void onIdfSectionClick(IdfSection s) {
+        if (presenter != null) {
+            presenter.goTo(s);
         }
     }
 }

@@ -21,20 +21,33 @@ import com.google.gwt.place.shared.Prefix;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
 /**
  * @author Olga Melnichuk
  */
 public class IdfPlace extends EditorPlace {
 
-    private String placeName;
+    private IdfSection idfSection;
 
-    public String getPlaceName() {
-        return placeName;
+    public IdfPlace() {
+        setIdfSection(null);
     }
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
+    public IdfPlace(IdfSection idfSection) {
+        setIdfSection(idfSection);
+    }
+
+    public IdfSection getIdfSection() {
+        return idfSection;
+    }
+
+    public void setIdfSection(IdfSection idfSection) {
+        setIdfSection(idfSection, IdfSection.GENERAL_INFO);
+    }
+
+    public void setIdfSection(IdfSection idfSection, IdfSection defaultValue) {
+        this.idfSection = idfSection == null ? defaultValue : idfSection;
     }
 
     public EditorTabType getTabType() {
@@ -52,12 +65,16 @@ public class IdfPlace extends EditorPlace {
         }
 
         public String getToken(IdfPlace place) {
-            return place.getPlaceName();
+            return place.getIdfSection().name();
         }
 
         public IdfPlace getPlace(String token) {
+            IdfSection section = IdfSection.getIfPresent(token);
+            if (section == null) {
+                return null;
+            }
             IdfPlace place = placeProvider.get();
-            place.setPlaceName(token);
+            place.setIdfSection(section);
             return place;
         }
     }

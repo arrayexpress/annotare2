@@ -41,4 +41,16 @@ public enum IdfSection {
     public String getTitle() {
         return title;
     }
+
+    public static IdfSection getIfPresent(String token) {
+        if (token == null || token.isEmpty()) {
+            return null;
+        }
+        for (IdfSection f : values()) {
+            if (f.name().equals(token)) {
+                return f;
+            }
+        }
+        return null;
+    }
 }

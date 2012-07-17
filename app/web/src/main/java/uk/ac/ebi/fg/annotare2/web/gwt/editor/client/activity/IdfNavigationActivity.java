@@ -22,12 +22,14 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.IdfNavigationView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfNavigationActivity extends AbstractActivity {
+public class IdfNavigationActivity extends AbstractActivity implements IdfNavigationView.Presenter {
 
     private final IdfNavigationView view;
 
@@ -46,11 +48,15 @@ public class IdfNavigationActivity extends AbstractActivity {
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //TODO view.setPresenter(this);
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    public void goTo(IdfSection section) {
+        goTo(new IdfPlace(section));
     }
 }

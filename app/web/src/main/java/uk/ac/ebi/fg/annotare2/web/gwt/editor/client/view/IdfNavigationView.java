@@ -17,9 +17,16 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
 /**
  * @author Olga Melnichuk
  */
 public interface IdfNavigationView extends IsWidget {
+
+    void setPresenter(Presenter presenter);
+
+    public interface Presenter {
+        void goTo(IdfSection section);
+    }
 }
