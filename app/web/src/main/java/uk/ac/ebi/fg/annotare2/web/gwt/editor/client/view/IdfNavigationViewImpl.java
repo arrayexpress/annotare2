@@ -23,6 +23,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
+import java.util.HashMap;
+
 /**
  * @author Olga Melnichuk
  */
@@ -30,18 +32,23 @@ public class IdfNavigationViewImpl extends Composite implements IdfNavigationVie
 
     private Presenter presenter;
 
+    private HashMap<IdfSection, Label> labelMap = new HashMap<IdfSection, Label>();
+
+    private IdfSection currentSection;
+
     public IdfNavigationViewImpl() {
         FlowPanel flowPanel = new FlowPanel();
-        flowPanel.setStyleName("edt-IdfNavigation");
+        flowPanel.setStyleName("app-IdfNavigation");
 
         for(final IdfSection s : IdfSection.values()) {
             Label label = new Label(s.getTitle());
-            label.setStyleName("edt-IdfNavigationItem");
+            label.setStyleName("app-IdfNavigationItem");
             label.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     onIdfSectionClick(s);
                 }
             });
+            labelMap.put(s, label);
             flowPanel.add(label);
         }
 
@@ -52,9 +59,22 @@ public class IdfNavigationViewImpl extends Composite implements IdfNavigationVie
         this.presenter = presenter;
     }
 
+    public void setIdfSection(IdfSection section) {
+        selectNavigationItem(section);
+    }
+
     private void onIdfSectionClick(IdfSection s) {
+        selectNavigationItem(s);
         if (presenter != null) {
             presenter.goTo(s);
         }
+    }
+
+    private void selectNavigationItem(IdfSection s) {
+        if (currentSection != null) {
+            labelMap.get(currentSection).removeStyleName("selected");
+        }
+        labelMap.get(s).addStyleName("selected");
+        currentSection = s;
     }
 }

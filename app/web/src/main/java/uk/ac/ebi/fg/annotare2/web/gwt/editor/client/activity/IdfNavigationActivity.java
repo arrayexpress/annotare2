@@ -35,6 +35,8 @@ public class IdfNavigationActivity extends AbstractActivity implements IdfNaviga
 
     private final PlaceController placeController;
 
+    private IdfSection section;
+
     @Inject
     public IdfNavigationActivity(IdfNavigationView view,
                                  PlaceController placeController) {
@@ -42,13 +44,14 @@ public class IdfNavigationActivity extends AbstractActivity implements IdfNaviga
         this.placeController = placeController;
     }
 
-    public IdfNavigationActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
+    public IdfNavigationActivity withPlace(IdfPlace place) {
+        this.section = place.getIdfSection();
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
+        view.setIdfSection(section);
         containerWidget.setWidget(view.asWidget());
     }
 

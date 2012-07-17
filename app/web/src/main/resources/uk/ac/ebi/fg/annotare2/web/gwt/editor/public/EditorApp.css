@@ -69,3 +69,34 @@
     border-bottom: 2px solid white;
     outline: none;
 }
+
+/* Idf Navigation */
+
+.app-IdfNavigation {
+
+}
+
+.app-IdfNavigationItem {
+    padding: 10px 5px 10px 15px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
+
+.app-IdfNavigationItem:hover {
+    background-color: #F3F7FB;
+    cursor: pointer;
+    color: black;
+}
+
+.app-IdfNavigationItem:active {
+    color: #888;
+}
+
+.app-IdfNavigationItem.selected {
+    background-color: #48877c;
+    color: white;
+    font-size: 16px;
+}

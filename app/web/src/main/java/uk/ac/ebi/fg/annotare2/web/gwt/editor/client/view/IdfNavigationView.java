@@ -26,6 +26,8 @@ public interface IdfNavigationView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
+    void setIdfSection(IdfSection section);
+
     public interface Presenter {
         void goTo(IdfSection section);
     }
