@@ -43,14 +43,16 @@ public class AppServletModule extends ServletModule {
 
     private final AllRpcServicePathsImpl allRpc = new AllRpcServicePathsImpl();
 
+    private static final String JSESSIONID = "(?:;jsessionid=[A-Za-z0-9]+)?";
+
     @Override
     protected void configureServlets() {
         filter("/UserApp/*", "/").through(SecurityFilter.class);
 
-        serveRegex("(/login)(?:;jsessionid=[A-Z0-9]+)?").with(LoginServlet.class);
-        serveRegex("(/logout)(?:;jsessionid=[A-Z0-9]+)?").with(LogoutServlet.class);
-        serveRegex("(/)(?:;jsessionid=[A-Z0-9]+)?").with(HomeServlet.class);
-        serveRegex("(/index.*)(?:;jsessionid=[A-Z0-9]+)?").with(WelcomeServlet.class);
+        serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
+        serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
+        serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
+        serveRegex("(/index.*)").with(WelcomeServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
