@@ -18,8 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
 /**
  * @author Olga Melnichuk
@@ -29,8 +33,15 @@ public class IdfNavigationViewImpl extends Composite implements IdfNavigationVie
     interface Binder extends UiBinder<Widget, IdfNavigationViewImpl> {
     }
 
+    @UiField
+    FlowPanel flowPanel;
+
     public IdfNavigationViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+
+        for(IdfSection s : IdfSection.values()) {
+            flowPanel.add(new Label(s.getTitle()));
+        }
     }
 }

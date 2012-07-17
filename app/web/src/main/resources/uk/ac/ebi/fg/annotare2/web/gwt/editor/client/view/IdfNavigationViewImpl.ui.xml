@@ -18,18 +18,6 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <g:FlowPanel>
-        <g:Label text="General Information"/>
-        <g:Label text="Contacts"/>
-        <g:Label text="Publications"/>
-        <g:Label text="Term Definition Sources"/>
-        <g:Label text="Experimental Designs"/>
-        <g:Label text="Experimental Factors"/>
-        <g:Label text="Quality Controls"/>
-        <g:Label text="Protocols"/>
-        <g:Label text="Replicates"/>
-        <g:Label text="Normalizations"/>
-        <g:Label text="Comments"/>
-    </g:FlowPanel>
+    <g:FlowPanel ui:field="flowPanel"/>
 
 </ui:UiBinder>
