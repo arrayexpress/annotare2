@@ -22,9 +22,11 @@ import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContentActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfGeneralInfoActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfContentActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
 /**
  * @author Olga Melnichuk
@@ -32,18 +34,27 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 public class EditorContentActivityMapper implements ActivityMapper {
 
     private final Provider<IdfContentActivity> idfContentActivityProvider;
+    private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
 
     @Inject
     public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
+                                       Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
+        this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
     }
 
     public Activity getActivity(Place place) {
         if (place instanceof IdfPlace) {
-            return (idfContentActivityProvider.get()).withPlace(place);
+            IdfSection section = ((IdfPlace) place).getIdfSection();
+            switch (section) {
+                case GENERAL_INFO:
+                    return (idfGeneralInfoActivityProvider.get()).withPlace(place);
+                default:
+                    return (idfContentActivityProvider.get()).withPlace(place);
+            }
         } else if (place instanceof SdrfPlace) {
             return (sdrfContentActivityProvider.get()).withPlace(place);
         }
