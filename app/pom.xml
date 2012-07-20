@@ -27,6 +27,7 @@
     <name>Annotare 2.0</name>
 
     <modules>
+        <module>magetab</module>
         <module>om</module>
         <module>web</module>
     </modules>
