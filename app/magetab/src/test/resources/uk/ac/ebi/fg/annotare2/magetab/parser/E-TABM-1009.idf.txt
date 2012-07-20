@@ -1,0 +1,52 @@
+Investigation Title	Transcription profiling by array of Arabidopsis wild type and rbr1-cs plants 								
+Comment[Submitted Name]	RBR2007								
+Experimental Design	growth_condition_design	co-expression_design	all_pairs	transcription profiling by array					
+Experimental Design Term Source REF	The MGED Ontology	The MGED Ontology		EFO					
+Comment[AEExperimentType]	transcription profiling by array								
+Comment[AEExperimentDisplayName]	Transcription profiling by array of Arabidopsis mutant for rbr1 after treatment with 1% sucrose								
+Comment[ArrayExpressReleaseDate]	2010-12-31								
+Comment[SecondaryAccession]									
+Comment[AEMIAMESCORE]	4								
+Comment[ArrayExpressAccession]	E-TABM-1009								
+Comment[MAGETAB TimeStamp_Version]	2010-10-15 09:35:16 Last Changed Rev: 14677								
+Experimental Factor Name	COMPOUND	GENOTYPE	DOSE						
+Experimental Factor Type	compound	genotype	dose						
+Experimental Factor Term Source REF									
+Person Last Name	Hennig								
+Person First Name	Lars								
+Person Mid Initials									
+Person Email	lhennig@ethz.ch								
+Person Phone									
+Person Fax									
+Person Address									
+Person Affiliation	ETH Zurich								
+Person Roles	submitter								
+Person Roles Term Source REF	The MGED Ontology								
+Quality Control Type	biological_replicate								
+Quality Control Term Source REF	The MGED Ontology								
+Replicate Type									
+Replicate Term Source REF									
+Normalization Type									
+Normalization Term Source REF									
+Date of Experiment									
+Public Release Date	2010-12-31								
+PubMed ID	21693514								
+Publication DOI	10.1242/dev.060830								
+Publication Author List	Ruben Gutzat, Johannes Fütterer, Lorenzo Borghi, Sylvain Bischof, Yechan Laizet, Lars Hennig, Regina Feil, John Lunn and Wilhelm Gruissem								
+Publication Title	Plant RETINOBLASTOMA RELATED PROTEIN controls autotrophic seedling establishment								
+Publication Status	published								
+Publication Status Term Source REF	EFO								
+Publication Status Term Accession Number	EFO_0001796								
+Experiment Description	Wild-type and rbr1-cs plants were grown on MS plates for 3 days. RNA was extracted from both genotypes and hybridized to ATH1 arrays.								
+Protocol Name	P-TABM-5195	P-TABM-4741	P-MTAB-3962	P-TABM-4740	Affymetrix:Protocol:Hybridization-Unknown	P-AFFY-6			
+Protocol Type	grow	pool	nucleic_acid_extraction	labeling	hybridization	feature_extraction			
+Protocol Description	seedlings were grown for 3d on MS culture medium in growth chambers at 70% humidity and daily cycles of 16 h light and 8 h darkness at 22 C temperature.	plant material of the specified number of plants was pooled per replicate	Total RNA was prepared from frozen tissue using Trizol and purified with RNeasy columns (Quiagen, Hilden, Germany).<br>(Parameters: Extracted product = total_RNA, Amplification = none)	One-Cycle cDNA Synthesis Kit (Affymetrix, P/N 900431, Santa Clara, CA)	Title: Affymetrix Generic Hybridization. Description: 	Title: Affymetrix CEL analysis. Description: 			
+Protocol Parameters									
+Protocol Hardware									
+Protocol Software					MicroArraySuite 5.0	MicroArraySuite 5.0			
+Protocol Contact									
+Protocol Term Source REF		The MGED Ontology			mo				
+SDRF File	E-TABM-1009.sdrf.txt								
+Term Source Name	The MGED Ontology		NCBI Taxonomy	tair_dev:1.27	ArrayExpress	nci_meta	The MGED Ontology	EFO	mo
+Term Source File	http://mged.sourceforge.net/ontologies/MGEDontology.php		http://www.ncbi.nlm.nih.gov/Taxonomy/	http://www.arabidopsis.org/info/ontologies/	http://www.ebi.ac.uk/arrayexpress	http://ncimeta.nci.nih.gov/indexMetaphrase.html	http://mged.sourceforge.net/ontologies/MGEDontology.php	http://www.ebi.ac.uk/efo/	http://mged.sourceforge.net/ontologies/MGEDontology.php
+Term Source Version				1.27					
