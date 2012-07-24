@@ -19,11 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
+
+import java.text.SimpleDateFormat;
 
 /**
  * @author Olga Melnichuk
@@ -42,7 +45,10 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     DivElement title;
 
     @UiField
-    DivElement description;
+    SpanElement created;
+
+    @UiField
+    SpanElement status;
 
     public SubmissionViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -56,6 +62,7 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     public void setSubmission(UISubmission submission) {
         accession.setInnerText(submission.getAccession());
         title.setInnerText(submission.getTitle());
-        description.setInnerText(submission.getDescription());
+        created.setInnerText(submission.getCreated().toString());
+        status.setInnerText(submission.getStatus().name());
     }
 }

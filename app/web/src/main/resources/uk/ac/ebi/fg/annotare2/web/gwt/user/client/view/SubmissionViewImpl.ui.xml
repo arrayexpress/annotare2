@@ -42,7 +42,13 @@
                 <div ui:field="title"></div>
             </div>
 
-            <div ui:field="description"></div>
+            <div>
+                Created: <span ui:field="created"/>
+            </div>
+
+            <div>
+                Status: <span ui:field="status" />
+            </div>
 
             <div class="{style.submit}">
                 <div style="margin-bottom:5px;">
