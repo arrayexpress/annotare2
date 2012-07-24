@@ -133,9 +133,9 @@
     background-color: #E5A066;
     cursor: pointer;
     text-shadow: 0 1px 0 #ddd;
-    -webkit-box-shadow: inset 0 0 5px #844511;
-    -moz-box-shadow: inset 0 0 5px #844511;
-    box-shadow: inset 0 0 5px  #844511;
+    -webkit-box-shadow: inset 0 0 5px white;
+    -moz-box-shadow: inset 0 0 5px white;
+    box-shadow: inset 0 0 5px  white;
 }
 
 .wgt-MenuButton:active {
