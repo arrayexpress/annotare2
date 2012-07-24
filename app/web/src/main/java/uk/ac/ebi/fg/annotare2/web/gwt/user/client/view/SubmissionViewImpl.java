@@ -63,6 +63,6 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
         accession.setInnerText(submission.getAccession());
         title.setInnerText(submission.getTitle());
         created.setInnerText(submission.getCreated().toString());
-        status.setInnerText(submission.getStatus().name());
+        status.setInnerText(submission.getStatus().getTitle());
     }
 }
