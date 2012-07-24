@@ -19,17 +19,12 @@ package uk.ac.ebi.fg.annotare2.dao.dummy;
 import com.google.common.base.Predicate;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.om.SubmissionType;
-import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.om.*;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static uk.ac.ebi.fg.annotare2.dao.dummy.DummyData.getSubmission;
 import static uk.ac.ebi.fg.annotare2.dao.dummy.DummyData.getSubmissions;
 
 /**
@@ -60,4 +55,14 @@ public class SubmissionDaoDummy implements SubmissionDao {
             }
         });
     }
+
+    public SubmissionFactory getSubmissionFactory(User user) {
+        return DummyData.getSubmissionFactory(user);
+    }
+
+    public void save(Submission submission) {
+        DummyData.save(submission);
+    }
+
+
 }

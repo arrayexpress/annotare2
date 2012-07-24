@@ -20,9 +20,15 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
 
@@ -33,11 +39,13 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     private final LeftMenuView view;
     private final PlaceController placeController;
+    private final SubmissionServiceAsync asyncService;
 
     @Inject
-    public LeftMenuActivity(LeftMenuView view, PlaceController placeController) {
+    public LeftMenuActivity(LeftMenuView view, PlaceController placeController, SubmissionServiceAsync asyncService) {
         this.view = view;
         this.placeController = placeController;
+        this.asyncService = asyncService;
     }
 
     public LeftMenuActivity withPlace(Place place) {
@@ -52,13 +60,36 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         containerWidget.setWidget(view.asWidget());
     }
 
+    public void onSubmissionFilterClick(SubmissionListFilter filter) {
+        gotoSubmissionListViewPlace(filter);
+    }
+
+    public void onCreateSubmissionClick() {
+        asyncService.createSubmission(new AsyncCallbackWrapper<UISubmission>() {
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't create new submission");
+            }
+
+            public void onSuccess(UISubmission result) {
+                gotoSubmissionViewPlace(result.getId());
+            }
+        }.wrap());
+    }
+
     public void goTo(Place place) {
         placeController.goTo(place);
     }
 
-    public void onSubmissionFilterClick(SubmissionListFilter filter) {
+    private void gotoSubmissionListViewPlace(SubmissionListFilter filter) {
         SubmissionListPlace place = new SubmissionListPlace();
         place.setFilter(filter);
+        goTo(place);
+    }
+
+    private void gotoSubmissionViewPlace(int id) {
+        SubmissionViewPlace place = new SubmissionViewPlace();
+        place.setSubmissionId(id);
         goTo(place);
     }
 }

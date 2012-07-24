@@ -46,8 +46,10 @@ public class DummyData {
 
     private static int count = 1;
 
+    private static Acl submissionAcl;
+
     static {
-        Acl submissionAcl = createAcl(AclType.SUBMISSION)
+        submissionAcl = createAcl(AclType.SUBMISSION)
                 .add(createAclEntry(Role.AUTHENTICATED, Permission.CREATE))
 
                 .add(createAclEntry(Role.OWNER, Permission.VIEW))
@@ -65,21 +67,18 @@ public class DummyData {
                 null,
                 "Transcription profiling of human brain total RNA vs Universal Human Reference RNA on 4 different commercially available microarray to assess comparability of gene expression measurements on microarrays (24 assays)",
                 "Commercially available human genomic microarrays from four different manufacturers were used to compare Human Brain Total RNA against Universal Human Reference RNA (both commercially available) prepared at two different starting amounts (20 µg or 1µg). For each amount of RNA, 6 replicates were performed with Human Brain Total RNA labelled with Cy3, and Universal Human Reference RNA labelled with Cy5. The labelling was then reversed (dye flip) creating another 6 replicates. This meant that for each of the four manufacturers there were a total of 24 arrays. Image processing was performed with two different software packages, and data was normalized with three different strategies.",
-                submissionAcl,
                 SubmissionStatus.IN_PROGRESS);
 
         createSubmission(user,
                 null,
                 "Transcription profiling of non-cancerous tissue and cancerous tissue from gastric and colon cancer patients (96 assays)",
                 "Whole-genome microarray profiling of gene expression pattern in 96 tissues from gastric and colon cancer patients",
-                submissionAcl,
                 SubmissionStatus.IN_PROGRESS);
 
         createSubmission(user,
                 "E-GEOD-37372",
                 "Ewing's sarcoma tumor samples",
                 "This SuperSeries is composed of the following subset Series: GSE37370: microRNA expression data from Ewing's sarcoma tumor samples GSE37371: Expression data from Ewing's sarcoma tumor samples Refer to individual Series",
-                submissionAcl,
                 SubmissionStatus.PUBLIC_IN_AE);
     }
 
@@ -93,10 +92,13 @@ public class DummyData {
         return user;
     }
 
-    private static Submission createSubmission(User user, String accession, String title, String description, Acl acl, SubmissionStatus status) {
-        Submission submission = new ExperimentSubmission(nextId(), accession, title, description, user, acl, status);
-        submissions.put(submission.getId(), submission);
-        userSubmissions.put(user.getId(), submission.getId());
+    private static Submission createSubmission(User user, String accession, String title, String description, SubmissionStatus status) {
+        Submission submission = new ExperimentSubmission(user, submissionAcl);
+        submission.setAccession(accession);
+        submission.setTitle(title);
+        submission.setDescription(description);
+        submission.setStatus(status);
+        save(submission);
         return submission;
     }
 
@@ -144,5 +146,17 @@ public class DummyData {
 
     public static List<Submission> getSubmissions(User user, Predicate<Submission> predicate) {
         return new ArrayList<Submission>(Collections2.filter(getSubmissions(user), predicate));
+    }
+
+    public static SubmissionFactory getSubmissionFactory(User user) {
+        return new SubmissionFactory(submissionAcl, user);
+    }
+
+    public static void save(Submission submission) {
+        if (submission.getId() == 0) {
+            submission.setId(nextId());
+            submissions.put(submission.getId(), submission);
+            userSubmissions.put(submission.getCreatedBy().getId(), submission.getId());
+        }
     }
 }

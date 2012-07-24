@@ -29,4 +29,6 @@ public interface SubmissionService extends RemoteService {
     public static final String NAME = "submissionService";
 
     UISubmission getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    UISubmission createSubmission() throws NoPermissionException;
 }

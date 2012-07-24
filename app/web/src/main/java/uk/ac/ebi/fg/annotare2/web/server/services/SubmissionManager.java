@@ -59,4 +59,14 @@ public class SubmissionManager {
         }
         return sb;
     }
+
+    public Submission createSubmission(User user) throws AccessControlException {
+        SubmissionFactory factory = submissionDao.getSubmissionFactory(user);
+        if (!user.isAllowed(factory, Permission.CREATE)) {
+            throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
+        }
+        Submission submission = factory.createSubmission();
+        submissionDao.save(submission);
+        return submission;
+    }
 }

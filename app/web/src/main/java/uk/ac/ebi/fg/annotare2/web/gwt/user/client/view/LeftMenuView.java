@@ -30,5 +30,7 @@ public interface LeftMenuView extends IsWidget {
     public interface Presenter {
 
         void onSubmissionFilterClick(SubmissionListFilter filter);
+
+        void onCreateSubmissionClick();
     }
 }

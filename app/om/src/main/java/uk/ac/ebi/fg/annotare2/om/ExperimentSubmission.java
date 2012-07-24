@@ -20,7 +20,8 @@ package uk.ac.ebi.fg.annotare2.om;
  * @author Olga Melnichuk
  */
 public class ExperimentSubmission extends Submission {
-    public ExperimentSubmission(int id, String accession, String title, String description, User user, Acl acl, SubmissionStatus status) {
-        super(id, accession, title, description, SubmissionType.EXPERIMENT, user, acl, status);
+
+    public ExperimentSubmission(User user, Acl acl) {
+        super(SubmissionType.EXPERIMENT, user, acl);
     }
 }

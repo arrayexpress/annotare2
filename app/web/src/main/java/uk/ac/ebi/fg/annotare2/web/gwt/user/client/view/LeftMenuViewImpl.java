@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -59,9 +60,25 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
 
-        createButton.addMenuButtonItem("Microarray Experiment Submission");
-        createButton.addMenuButtonItem("HTS Experiment Submission");
-        createButton.addMenuButtonItem("ADF Submission");
+        createButton
+                .addMenuButtonItem("Microarray Experiment Submission")
+                .addClickHandler(new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        createSubmissionClick();
+                    }
+                });
+        createButton.addMenuButtonItem("HTS Experiment Submission")
+                .addClickHandler(new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        createSubmissionClick();
+                    }
+                });
+        createButton.addMenuButtonItem("ADF Submission")
+                .addClickHandler(new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        createSubmissionClick();
+                    }
+                });
 
         filters.put(SubmissionListFilter.COMPLETED_SUBMISSIONS, completed);
         filters.put(SubmissionListFilter.INCOMPLETE_SUBMISSIONS, incomplete);
@@ -94,6 +111,10 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     public void setFilter(SubmissionListFilter filter) {
         selectItem(filters.get(filter));
+    }
+
+    private void createSubmissionClick() {
+        presenter.onCreateSubmissionClick();
     }
 
     private void selectItem(Widget item) {

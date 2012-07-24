@@ -52,4 +52,14 @@ public class SubmissionServiceImpl extends RemoteServiceBase implements Submissi
             throw new NoPermissionException("Sorry, you do not have access to this resource");
         }
     }
+
+    public UISubmission createSubmission() throws NoPermissionException {
+        try {
+            Submission sb = submissionManager.createSubmission(getCurrentUser());
+            return createUIObject(sb);
+        } catch (AccessControlException e) {
+            log.warn("createSubmission() failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        }
+    }
 }

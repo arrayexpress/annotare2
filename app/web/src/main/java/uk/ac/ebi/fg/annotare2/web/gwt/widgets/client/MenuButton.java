@@ -77,10 +77,16 @@ public class MenuButton extends Composite implements HasText, HasCloseHandlers<P
         vpanel.add(item);
     }
 
-    public void addMenuButtonItem(String text) {
+    public MenuButtonItem addMenuButtonItem(String text) {
         MenuButtonItem item = new MenuButtonItem();
         item.setText(text);
         addMenuButtonItem(item);
+        item.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                popup.hide();
+            }
+        });
+        return item;
     }
 
     public void enable() {
@@ -107,14 +113,14 @@ public class MenuButton extends Composite implements HasText, HasCloseHandlers<P
     }
 
     private void openPopup() {
-        if (popup == null)     {
-        popup = new DecoratedPopupPanel(true, false);
-        popup.setStyleName("wgt-MenuButtonPopup");
-        popup.setWidget(vpanel);
+        if (popup == null) {
+            popup = new DecoratedPopupPanel(true, false);
+            popup.setStyleName("wgt-MenuButtonPopup");
+            popup.setWidget(vpanel);
 //        popup.setAnimationType(PopupPanel.AnimationType.ONE_WAY_CORNER);
 //        popup.setAnimationEnabled(isAnimationEnabled);
 //        popup.setStyleName(STYLENAME_DEFAULT + "Popup");
-        //popup.addCloseHandler(this);
+            //popup.addCloseHandler(this);
         }
 
         popup.setPopupPosition(panel.getAbsoluteLeft(), panel.getAbsoluteTop() + panel.getOffsetHeight());

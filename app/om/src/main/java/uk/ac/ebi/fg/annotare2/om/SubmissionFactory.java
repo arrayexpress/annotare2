@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
-
-import uk.ac.ebi.fg.annotare2.om.*;
-
-import java.util.List;
+package uk.ac.ebi.fg.annotare2.om;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SubmissionDao {
+public class SubmissionFactory implements HasEffectiveAcl {
 
-    Submission getSubmission(int id) throws RecordNotFoundException;
+    private final Acl acl;
 
-    List<Submission> getSubmissionsByType(User user, SubmissionType type);
+    private final User creator;
 
-    List<Submission> getSubmissionsByStatus(User user, SubmissionStatus... status);
+    public SubmissionFactory(Acl acl, User creator) {
+        this.acl = acl;
+        this.creator = creator;
+    }
 
-    SubmissionFactory getSubmissionFactory(User user);
+    public Submission createSubmission() {
+        return new ExperimentSubmission(creator, acl);
+    }
 
-    void save(Submission submission);
+    public EffectiveAcl getEffectiveAcl() {
+        return new EffectiveAcl(acl, creator);
+    }
 }

@@ -41,22 +41,32 @@ public abstract class Submission implements HasEffectiveAcl {
 
     private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
-    protected Submission(int id,
-                         String accession,
-                         String title,
-                         String description,
-                         SubmissionType type,
+    protected Submission(SubmissionType type,
                          User createdBy,
-                         Acl acl,
-                         SubmissionStatus status) {
-        this.id = id;
-        this.accession = accession;
-        this.title = title;
-        this.description = description;
+                         Acl acl) {
         this.type = type;
         this.created = new Date();
         this.createdBy = createdBy;
         this.acl = acl;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setAccession(String accession) {
+        this.accession = accession;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStatus(SubmissionStatus status) {
         this.status = status;
     }
 
@@ -86,6 +96,10 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public SubmissionStatus getStatus() {
         return status;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
     }
 
     public EffectiveAcl getEffectiveAcl() {
