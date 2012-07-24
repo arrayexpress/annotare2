@@ -20,9 +20,19 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
  * @author Olga Melnichuk
  */
 public enum UISubmissionStatus {
-    IN_PROGRESS,
-    SUBMITTED,
-    IN_CURATION,
-    PRIVATE_IN_AE,
-    PUBLIC_IN_AE
+    IN_PROGRESS("In Progress"),
+    SUBMITTED("Submitted"),
+    IN_CURATION("In Curation"),
+    PRIVATE_IN_AE("Private in ArrayExpress"),
+    PUBLIC_IN_AE("Public in ArrayExpress");
+
+    private final String title;
+
+    private UISubmissionStatus(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

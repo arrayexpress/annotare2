@@ -72,6 +72,15 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         cellTable.addColumn(new TextColumn<UISubmission>() {
             @Override
             public String getValue(UISubmission object) {
+                //TODO
+                String accession = object.getAccession();
+                return accession == null ? "UNACCESSIONED" : accession;
+            }
+        }, new TextHeader("Accession"));
+
+        cellTable.addColumn(new TextColumn<UISubmission>() {
+            @Override
+            public String getValue(UISubmission object) {
                 return object.getTitle();
             }
         }, new TextHeader("Title"));
@@ -79,14 +88,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         cellTable.addColumn(new TextColumn<UISubmission>() {
             @Override
             public String getValue(UISubmission object) {
-                return object.getDescription();
-            }
-        }, new TextHeader("Description"));
-
-        cellTable.addColumn(new TextColumn<UISubmission>() {
-            @Override
-            public String getValue(UISubmission object) {
-                return object.getStatus().name();
+                return object.getStatus().getTitle();
             }
         }, new TextHeader("Status"));
 
