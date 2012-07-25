@@ -39,6 +39,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.ClickableImageReso
 import java.util.List;
 
 import static com.google.gwt.i18n.client.DateTimeFormat.getFormat;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.openSubmissionEditor;
 
 /**
  * @author Olga Melnichuk
@@ -103,14 +104,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         editIconColumn.setFieldUpdater(new FieldUpdater<UISubmission, ImageResource>() {
             public void update(int index, UISubmission object, ImageResource value) {
-                /*String url = GWT.getHostPageBaseURL() + "editor/";
-                if (!GWT.isProdMode()) {
-                    url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
-                }*/
-                UrlBuilder builder = Window.Location.createUrlBuilder();
-                builder.setPath("editor/");
-                builder.setHash(null);
-                Window.open(builder.buildString(), "_blank", "");
+                openSubmissionEditor(0);
             }
         });
 

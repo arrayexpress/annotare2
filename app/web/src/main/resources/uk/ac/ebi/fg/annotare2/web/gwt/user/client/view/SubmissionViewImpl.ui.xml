@@ -67,7 +67,7 @@
                         </td>
                         <td style="border-left: 1px solid #ddd;"><b><span ui:field="status"/></b></td>
                         <td style="border-left: 1px solid #ddd;">
-                            <g:Button addStyleNames="{style.editButton}">View / Edit</g:Button>
+                            <g:Button ui:field="editButton" addStyleNames="{style.editButton}">View / Edit</g:Button>
                             <span style="color:#aaa;font-style:italic">Last updated:
                                 <span ui:field="created"/>
                             </span>

@@ -20,13 +20,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
 
 import java.text.SimpleDateFormat;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.openSubmissionEditor;
 
 /**
  * @author Olga Melnichuk
@@ -50,6 +57,9 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     @UiField
     SpanElement status;
 
+    @UiField
+    Button editButton;
+
     public SubmissionViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -65,4 +75,10 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
         created.setInnerText(submission.getCreated().toString());
         status.setInnerText(submission.getStatus().getTitle());
     }
+
+    @UiHandler("editButton")
+    public void onViewEditButtonClick(ClickEvent event) {
+        openSubmissionEditor(0);
+    }
+
 }
