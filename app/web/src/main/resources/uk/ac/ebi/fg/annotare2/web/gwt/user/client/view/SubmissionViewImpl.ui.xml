@@ -21,7 +21,16 @@
     <ui:style>
         .submissionTitle {
             margin-bottom: 5px;
-            border-bottom: 1px solid #ddd;
+        }
+
+        .submissionTitle td {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .submissionTitle h1 {
+            margin:0;
+            padding-bottom: 0;
         }
 
         .submissionView {
@@ -30,31 +39,55 @@
         }
 
         .submit {
-            border-top: 1px solid #eee;
-            padding: 10px;
+            border: 1px solid #ddd;
+            padding: 3px 7px;
+            background-color: #eeeeee;
+        }
+
+        .editButton {
+            border: 1px solid white;
+            background: #e5a066;
+            color: white;
+        }
+
+        .editButton:hover {
+            -webkit-box-shadow: inset 0 0 5px white;
+            -moz-box-shadow: inset 0 0 5px white;
+            box-shadow: inset 0 0 5px  white;
         }
     </ui:style>
 
     <g:HTMLPanel>
         <div class="{style.submissionView}">
             <div class="{style.submissionTitle}">
-                <h1 ui:field="accession"></h1>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="padding-left:0">
+                            <h1 ui:field="accession"></h1>
+                        </td>
+                        <td style="border-left: 1px solid #ddd;"><b><span ui:field="status"/></b></td>
+                        <td style="border-left: 1px solid #ddd;">
+                            <g:Button addStyleNames="{style.editButton}">View / Edit</g:Button>
+                            <span style="color:#aaa;font-style:italic">Last updated:
+                                <span ui:field="created"/>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="padding-top:10px; padding-bottom:10px">
                 <div ui:field="title"></div>
             </div>
-
-            <div>
-                Created: <span ui:field="created"/>
-            </div>
-
-            <div>
-                Status: <span ui:field="status" />
-            </div>
-
             <div class="{style.submit}">
+                <g:TextArea width="99%" visibleLines="2"></g:TextArea>
                 <div style="margin-bottom:5px;">
                     <g:Button>Submit</g:Button>
+
+                    The investigation data specified is not complete. Please
+                    <a href="#">complete</a>
+                    it before submit.
+
                 </div>
-                <g:TextArea width="100%" visibleLines="4"></g:TextArea>
             </div>
         </div>
     </g:HTMLPanel>
