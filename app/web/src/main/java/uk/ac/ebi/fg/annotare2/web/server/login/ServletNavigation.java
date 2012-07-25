@@ -37,7 +37,7 @@ import static com.google.common.base.Strings.nullToEmpty;
 enum ServletNavigation {
     LOGIN("/login", "/login.jsp"),
     HOME("/", "/home.jsp"),
-    EDITOR("/editor/", "/editor.jsp");
+    EDITOR("/edit/", "/editor.jsp");
 
     private static final Logger log = LoggerFactory.getLogger(ServletNavigation.class);
 

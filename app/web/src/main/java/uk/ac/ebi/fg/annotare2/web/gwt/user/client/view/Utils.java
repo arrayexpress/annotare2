@@ -31,7 +31,7 @@ public class Utils {
         }*/
 
         UrlBuilder builder = Window.Location.createUrlBuilder();
-        builder.setPath("editor/");
+        builder.setPath("edit/");
         builder.setHash(null);
         Window.open(builder.buildString(), "_blank", "");
     }
