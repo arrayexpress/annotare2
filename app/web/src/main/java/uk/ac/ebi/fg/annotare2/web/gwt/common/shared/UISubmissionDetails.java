@@ -22,7 +22,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public class UISubmission implements Serializable {
+public class UISubmissionDetails implements Serializable {
 
     private int id;
 
@@ -30,20 +30,17 @@ public class UISubmission implements Serializable {
 
     private String title;
 
-    private String description;
-
     private Date created;
 
     private UISubmissionStatus status;
 
-    public UISubmission() {
+    public UISubmissionDetails() {
     }
 
-    public UISubmission(int id, String accession, String title, String description, Date created, UISubmissionStatus status) {
+    public UISubmissionDetails(int id, String accession, String title, Date created, UISubmissionStatus status) {
         this.id = id;
         this.accession.set(accession);
         this.title = title;
-        this.description = description;
         this.created = created;
         this.status = status;
     }
@@ -58,10 +55,6 @@ public class UISubmission implements Serializable {
 
     public String getTitle() {
         return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public Date getCreated() {

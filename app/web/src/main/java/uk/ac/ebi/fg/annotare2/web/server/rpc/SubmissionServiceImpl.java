@@ -24,11 +24,9 @@ import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.DataObjects.createUIObject;
 
 /**
  * @author Olga Melnichuk
@@ -40,10 +38,10 @@ public class SubmissionServiceImpl extends RemoteServiceBase implements Submissi
     @Inject
     private SubmissionManager submissionManager;
 
-    public UISubmission getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
+    public UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = submissionManager.getSubmission(getCurrentUser(), id);
-            return createUIObject(sb);
+            return DataObjects.uiSubmissionDetails(sb);
         } catch (RecordNotFoundException e) {
             log.warn("getSubmission(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + "doesn't exist");
@@ -53,10 +51,10 @@ public class SubmissionServiceImpl extends RemoteServiceBase implements Submissi
         }
     }
 
-    public UISubmission createSubmission() throws NoPermissionException {
+    public UISubmissionDetails createSubmission() throws NoPermissionException {
         try {
             Submission sb = submissionManager.createSubmission(getCurrentUser());
-            return createUIObject(sb);
+            return DataObjects.uiSubmissionDetails(sb);
         } catch (AccessControlException e) {
             log.warn("createSubmission() failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");

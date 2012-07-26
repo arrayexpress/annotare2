@@ -16,10 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import java.util.ArrayList;
@@ -32,21 +31,15 @@ public class SubmissionListServiceImpl extends RemoteServiceBase implements Subm
     @Inject
     private SubmissionManager manager;
 
-    public ArrayList<UISubmission> getAllSubmissions() {
-        return new ArrayList<UISubmission>(
-                Lists.transform(manager.getAllSubmissions(getCurrentUser()), DataObjects.SUBMISSION_TRANSFORM)
-        );
+    public ArrayList<UISubmissionRow> getAllSubmissions() {
+        return DataObjects.uiSubmissionRows(manager.getAllSubmissions(getCurrentUser()));
     }
 
-    public ArrayList<UISubmission> getCompletedSubmissions() {
-        return new ArrayList<UISubmission>(
-                Lists.transform(manager.getCompletedSubmissions(getCurrentUser()), DataObjects.SUBMISSION_TRANSFORM)
-        );
+    public ArrayList<UISubmissionRow> getCompletedSubmissions() {
+        return DataObjects.uiSubmissionRows(manager.getCompletedSubmissions(getCurrentUser()));
     }
 
-    public ArrayList<UISubmission> getIncompleteSubmissions() {
-        return new ArrayList<UISubmission>(
-                Lists.transform(manager.getIncompleteSubmissions(getCurrentUser()), DataObjects.SUBMISSION_TRANSFORM)
-        );
+    public ArrayList<UISubmissionRow> getIncompleteSubmissions() {
+        return DataObjects.uiSubmissionRows(manager.getIncompleteSubmissions(getCurrentUser()));
     }
 }

@@ -16,15 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.dao.dummy;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.io.CharStreams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.om.*;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +42,8 @@ import static java.util.Arrays.asList;
  * @author Olga Melnichuk
  */
 public class DummyData {
+
+    private static final Logger log = LoggerFactory.getLogger(DummyData.class);
 
     private static final Map<String, User> userByEmail = new HashMap<String, User>();
 
@@ -63,23 +71,21 @@ public class DummyData {
         User user = createUser("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee");
         user.setRoles(asList(Role.AUTHENTICATED));
 
-        createSubmission(user,
-                null,
-                "Transcription profiling of human brain total RNA vs Universal Human Reference RNA on 4 different commercially available microarray to assess comparability of gene expression measurements on microarrays (24 assays)",
-                "Commercially available human genomic microarrays from four different manufacturers were used to compare Human Brain Total RNA against Universal Human Reference RNA (both commercially available) prepared at two different starting amounts (20 µg or 1µg). For each amount of RNA, 6 replicates were performed with Human Brain Total RNA labelled with Cy3, and Universal Human Reference RNA labelled with Cy5. The labelling was then reversed (dye flip) creating another 6 replicates. This meant that for each of the four manufacturers there were a total of 24 arrays. Image processing was performed with two different software packages, and data was normalized with three different strategies.",
-                SubmissionStatus.IN_PROGRESS);
+        try {
+            createSubmission(user,
+                    SubmissionStatus.IN_PROGRESS,
+                    "E-GEOD-37590.idf.txt");
 
-        createSubmission(user,
-                null,
-                "Transcription profiling of non-cancerous tissue and cancerous tissue from gastric and colon cancer patients (96 assays)",
-                "Whole-genome microarray profiling of gene expression pattern in 96 tissues from gastric and colon cancer patients",
-                SubmissionStatus.IN_PROGRESS);
+            createSubmission(user,
+                    SubmissionStatus.IN_PROGRESS,
+                    "E-MTAB-996.idf.txt");
 
-        createSubmission(user,
-                "E-GEOD-37372",
-                "Ewing's sarcoma tumor samples",
-                "This SuperSeries is composed of the following subset Series: GSE37370: microRNA expression data from Ewing's sarcoma tumor samples GSE37371: Expression data from Ewing's sarcoma tumor samples Refer to individual Series",
-                SubmissionStatus.PUBLIC_IN_AE);
+            createSubmission(user,
+                    SubmissionStatus.PUBLIC_IN_AE,
+                    "E-GEOD-37372.idf.txt");
+        } catch (IOException e) {
+            log.error("", e);
+        }
     }
 
     private DummyData() {
@@ -92,12 +98,11 @@ public class DummyData {
         return user;
     }
 
-    private static Submission createSubmission(User user, String accession, String title, String description, SubmissionStatus status) {
+    private static Submission createSubmission(User user, SubmissionStatus status, String idfName) throws IOException {
         Submission submission = new ExperimentSubmission(user, submissionAcl);
-        submission.setAccession(accession);
-        submission.setTitle(title);
-        submission.setDescription(description);
         submission.setStatus(status);
+        submission.setInvestigation(
+                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
         save(submission);
         return submission;
     }

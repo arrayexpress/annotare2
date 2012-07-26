@@ -16,6 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Date;
 
 /**
@@ -25,12 +33,6 @@ public abstract class Submission implements HasEffectiveAcl {
 
     private int id;
 
-    private String accession;
-
-    private String title;
-
-    private String description;
-
     private SubmissionType type;
 
     private Date created;
@@ -38,6 +40,8 @@ public abstract class Submission implements HasEffectiveAcl {
     private User createdBy;
     
     private Acl acl;
+
+    private String investigation;
 
     private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
@@ -54,16 +58,8 @@ public abstract class Submission implements HasEffectiveAcl {
         this.id = id;
     }
 
-    public void setAccession(String accession) {
-        this.accession = accession;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setInvestigation(String text) {
+        this.investigation = text;
     }
 
     public void setStatus(SubmissionStatus status) {
@@ -74,16 +70,8 @@ public abstract class Submission implements HasEffectiveAcl {
         return id;
     }
 
-    public String getAccession() {
-        return accession;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
+    public InputStream getInvestigation() throws IOException {
+        return new ByteArrayInputStream(investigation.getBytes(Charsets.UTF_8));
     }
 
     public Date getCreated() {

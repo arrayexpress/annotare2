@@ -18,7 +18,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -27,12 +26,11 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmission;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.resources.ImageResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.ClickableImageResourceCell;
 
@@ -54,65 +52,65 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
     private Presenter presenter;
 
-    private ListDataProvider<UISubmission> dataProvider;
+    private ListDataProvider<UISubmissionRow> dataProvider;
 
     @UiField(provided = true)
-    CellTable<UISubmission> cellTable;
+    CellTable<UISubmissionRow> cellTable;
 
     public SubmissionListViewImpl() {
-        cellTable = new CellTable<UISubmission>();
+        cellTable = new CellTable<UISubmissionRow>();
         cellTable.setWidth("100%", true);
 
-        cellTable.addColumn(new TextColumn<UISubmission>() {
+        cellTable.addColumn(new TextColumn<UISubmissionRow>() {
             @Override
-            public String getValue(UISubmission object) {
+            public String getValue(UISubmissionRow object) {
                 return getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(object.getCreated());
             }
         }, new TextHeader("Created"));
 
-        cellTable.addColumn(new TextColumn<UISubmission>() {
+        cellTable.addColumn(new TextColumn<UISubmissionRow>() {
             @Override
-            public String getValue(UISubmission object) {
+            public String getValue(UISubmissionRow object) {
                 //TODO
                 String accession = object.getAccession();
                 return accession == null ? "UNACCESSIONED" : accession;
             }
         }, new TextHeader("Accession"));
 
-        cellTable.addColumn(new TextColumn<UISubmission>() {
+        cellTable.addColumn(new TextColumn<UISubmissionRow>() {
             @Override
-            public String getValue(UISubmission object) {
+            public String getValue(UISubmissionRow object) {
                 return object.getTitle();
             }
         }, new TextHeader("Title"));
 
-        cellTable.addColumn(new TextColumn<UISubmission>() {
+        cellTable.addColumn(new TextColumn<UISubmissionRow>() {
             @Override
-            public String getValue(UISubmission object) {
+            public String getValue(UISubmissionRow object) {
                 return object.getStatus().getTitle();
             }
         }, new TextHeader("Status"));
 
-        Column<UISubmission, ImageResource> editIconColumn =
-                new Column<UISubmission, ImageResource>(new ClickableImageResourceCell()) {
+        Column<UISubmissionRow, ImageResource> editIconColumn =
+                new Column<UISubmissionRow, ImageResource>(new ClickableImageResourceCell()) {
 
                     @Override
-                    public ImageResource getValue(UISubmission object) {
+                    public ImageResource getValue(UISubmissionRow object) {
                         return resourceBundle.editIcon();
                     }
                 };
 
-        editIconColumn.setFieldUpdater(new FieldUpdater<UISubmission, ImageResource>() {
-            public void update(int index, UISubmission object, ImageResource value) {
+        editIconColumn.setFieldUpdater(new FieldUpdater<UISubmissionRow, ImageResource>() {
+            public void update(int index, UISubmissionRow object, ImageResource value) {
                 openSubmissionEditor(0);
             }
         });
 
         cellTable.addColumn(editIconColumn);
 
-        final SingleSelectionModel<UISubmission> selectionModel = new SingleSelectionModel<UISubmission>(
-                new ProvidesKey<UISubmission>() {
-                    public Object getKey(UISubmission item) {
+        final SingleSelectionModel<UISubmissionRow> selectionModel = new SingleSelectionModel<UISubmissionRow>(
+                new ProvidesKey<UISubmissionRow>() {
+                    public Object getKey(UISubmissionRow item) {
                         return item.getId();
                     }
                 }
@@ -128,11 +126,11 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         //todo create column black list dynamically
         cellTable.setSelectionModel(selectionModel,
-                DefaultSelectionEventManager.<UISubmission>createBlacklistManager(4));
+                DefaultSelectionEventManager.<UISubmissionRow>createBlacklistManager(4));
 
         cellTable.addStyleName("no-cell-borders");
 
-        dataProvider = new ListDataProvider<UISubmission>();
+        dataProvider = new ListDataProvider<UISubmissionRow>();
         dataProvider.addDataDisplay(cellTable);
 
         Binder uiBinder = GWT.create(Binder.class);
@@ -143,7 +141,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         this.presenter = presenter;
     }
 
-    public void setSubmissions(List<UISubmission> submissions) {
+    public void setSubmissions(List<UISubmissionRow> submissions) {
         dataProvider.setList(submissions);
     }
 }
