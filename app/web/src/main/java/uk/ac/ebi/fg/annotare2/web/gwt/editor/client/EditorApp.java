@@ -22,6 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -30,6 +31,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk
@@ -45,6 +48,8 @@ public class EditorApp implements EntryPoint {
     }
 
     private void loadModule(HasWidgets root) {
+        Window.alert(getSubmissionId() + "");
+
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 

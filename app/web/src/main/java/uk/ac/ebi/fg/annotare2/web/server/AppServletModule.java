@@ -50,13 +50,13 @@ public class AppServletModule extends ServletModule {
         filter("/UserApp/*",
                 "/",
                 "/EditorApp/*",
-                "/edit/"
+                "/edit/*"
         ).through(SecurityFilter.class);
 
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
         serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
         serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
-        serveRegex("(/edit/)" + JSESSIONID).with(EditorServlet.class);
+        serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);

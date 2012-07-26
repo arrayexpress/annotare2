@@ -54,7 +54,7 @@ public class IdfPlace extends EditorPlace {
         return EditorTabType.IDF;
     }
 
-    @Prefix("idfEdit")
+    @Prefix("idfView")
     public static class Tokenizer implements PlaceTokenizer<IdfPlace> {
 
         private final Provider<IdfPlace> placeProvider;

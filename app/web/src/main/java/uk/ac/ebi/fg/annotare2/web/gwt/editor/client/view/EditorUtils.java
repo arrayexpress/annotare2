@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
 
 /**
  * @author Olga Melnichuk
  */
-public class Utils {
+public class EditorUtils {
 
-    public static void openSubmissionEditor(int submissionId) {
-        /*String url = GWT.getHostPageBaseURL() + "editor/";
-        if (!GWT.isProdMode()) {
-            url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
-        }*/
+    private static final RegExp SUBMISSION_ID = RegExp.compile("\\/([0-9]+)\\/$");
 
-        UrlBuilder builder = Window.Location.createUrlBuilder();
-        builder.setPath("edit/0/");
-        builder.setHash(null);
-        Window.open(builder.buildString(), "_blank", "");
+    public static Integer getSubmissionId() {
+        String path = Window.Location.getPath();
+        MatchResult res = SUBMISSION_ID.exec(path);
+        if (res == null) {
+            return null;
+        }
+        return Integer.parseInt(res.getGroup(1));
     }
 }
