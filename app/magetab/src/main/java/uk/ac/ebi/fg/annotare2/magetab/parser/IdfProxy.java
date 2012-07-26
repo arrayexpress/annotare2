@@ -103,13 +103,9 @@ class IdfProxy {
         List<ExperimentalDesign> out = new ArrayList<ExperimentalDesign>();
         for (int i = 0; i < table.size(); i++) {
             String[] row = table.get(i);
-            out.add(new ExperimentalDesign(
-                    new Term(
-                            row[0],
-                            row[1],
-                            lookup(row[2])
-                    )
-            ));
+            if (row != null) {
+                out.add(new ExperimentalDesign(newTerm(row[0], row[1], row[2])));
+            }
         }
         return out;
     }
@@ -125,14 +121,12 @@ class IdfProxy {
         List<ExperimentalFactor> out = new ArrayList<ExperimentalFactor>();
         for (int i = 0; i < table.size(); i++) {
             String[] row = table.get(i);
-            out.add(new ExperimentalFactor(
-                    row[0],
-                    new Term(
-                            row[1],
-                            row[2],
-                            lookup(row[3])
-                    )
-            ));
+            if (row != null) {
+                out.add(new ExperimentalFactor(
+                        row[0],
+                        newTerm(row[1], row[2], row[3])
+                ));
+            }
         }
         return out;
     }
@@ -148,12 +142,7 @@ class IdfProxy {
         for (int i = 0; i < table.size(); i++) {
             String[] row = table.get(i);
             if (row != null) {
-                out.add(new Normalization(
-                        new Term(
-                                row[0],
-                                row[1],
-                                lookup(row[2]))
-                ));
+                out.add(new Normalization(newTerm(row[0], row[1], row[2])));
             }
         }
         return out;
@@ -170,12 +159,7 @@ class IdfProxy {
         for (int i = 0; i < table.size(); i++) {
             String[] row = table.get(i);
             if (row != null) {
-                out.add(new QualityControl(
-                        new Term(
-                                row[0],
-                                row[1],
-                                lookup(row[2]))
-                ));
+                out.add(new QualityControl(newTerm(row[0], row[1], row[2])));
             }
         }
         return out;
@@ -192,12 +176,7 @@ class IdfProxy {
         for (int i = 0; i < table.size(); i++) {
             String[] row = table.get(i);
             if (row != null) {
-                out.add(new Replicate(
-                        new Term(
-                                row[0],
-                                row[1],
-                                lookup(row[2]))
-                ));
+                out.add(new Replicate(newTerm(row[0], row[1], row[2])));
             }
         }
         return out;
@@ -235,7 +214,9 @@ class IdfProxy {
             TermList.Builder roleBuilder = new TermList.Builder(lookup(row[10]));
             for (int j = 0; j < roleNames.size(); j++) {
                 String[] r = tableRoles.get(j);
-                roleBuilder.addTerm(r[0], r[1]);
+                if (r != null) {
+                    roleBuilder.addTerm(r[0], r[1]);
+                }
             }
 
             out.add(new Person.Builder()
@@ -267,16 +248,15 @@ class IdfProxy {
         List<Publication> out = new ArrayList<Publication>();
         for (int i = 0; i < table.size(); i++) {
             String[] row = table.get(i);
-            out.add(new Publication.Builder()
-                    .setTitle(row[0])
-                    .setAuthors(row[1])
-                    .setDoi(row[2])
-                    .setPubMedId(row[3])
-                    .setStatus(new Term(
-                            row[4],
-                            row[5],
-                            lookup(row[6])
-                    )).build());
+            if (row != null) {
+                out.add(new Publication.Builder()
+                        .setTitle(row[0])
+                        .setAuthors(row[1])
+                        .setDoi(row[2])
+                        .setPubMedId(row[3])
+                        .setStatus(newTerm(row[4], row[5], row[6]))
+                        .build());
+            }
         }
         return out;
     }
@@ -297,22 +277,30 @@ class IdfProxy {
         List<Protocol> out = new ArrayList<Protocol>();
         for (int i = 0; i < table.size(); i++) {
             String[] row = table.get(i);
-            String[] params = row[2] == null ? new String[0] : row[2].split(SEMICOLON);
+            if (row != null) {
+                String[] params = row[2] == null ? new String[0] : row[2].split(SEMICOLON);
 
-            out.add(new Protocol.Builder()
-                    .setName(row[0])
-                    .setDescription(row[1])
-                    .setParameters(asList(params))
-                    .setHardware(row[3])
-                    .setSoftware(row[4])
-                    .setContact(row[5])
-                    .setType(new Term(
-                            row[6],
-                            row[7],
-                            lookup(row[8])
-                    )).build());
+                out.add(new Protocol.Builder()
+                        .setName(row[0])
+                        .setDescription(row[1])
+                        .setParameters(asList(params))
+                        .setHardware(row[3])
+                        .setSoftware(row[4])
+                        .setContact(row[5])
+                        .setType(newTerm(row[6], row[7], row[8]))
+                        .build());
+            }
         }
         return out;
+    }
+
+    private Term newTerm(String name, String accession, String sourceRef) throws MageTabParseException {
+        return (name != null || accession != null) ?
+                new Term(
+                        name,
+                        accession,
+                        lookup(sourceRef)
+                ) : null;
     }
 
     private TermSource lookup(String name) throws MageTabParseException {
