@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class IdfParserTest {
 
-    private static final String IDF_FILE = "E-TABM-1009.idf.txt";
+    private static final String IDF_FILE = "/E-TABM-1009.idf.txt";
 
     private static enum IdfField {
         Title("Investigation Title") {
