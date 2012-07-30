@@ -29,7 +29,8 @@ public class IdfTableParserTest {
     public void test() throws IOException {
         IdfTableParser parser = new IdfTableParser();
         parser.parse(IdfTableParserTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
-        System.out.println(parser.getErrors());
-
+        for(IdfTableParser.Error er : parser.getErrors()) {
+            System.out.println(er);
+        }
     }
 }

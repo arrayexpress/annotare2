@@ -16,12 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Math.max;
+import static uk.ac.ebi.fg.annotare2.magetab.parser.table.TableCell.createCell;
+import static uk.ac.ebi.fg.annotare2.magetab.parser.table.TableCell.createEmptyCell;
 
 /**
  * @author Olga Melnichuk
@@ -30,9 +31,9 @@ class Table {
 
     private int ncols;
 
-    private final List<Row> rows = new ArrayList<Row>();
+    private final List<Row> rows = newArrayList();
 
-    public void addRow(int line, Collection<String> values) {
+    void addRow(int line, Collection<String> values) {
         if (values.isEmpty()) {
             return;
         }
@@ -45,13 +46,19 @@ class Table {
        return rows.size();
     }
 
-    public List<Cell> getRow(int i) {
+    /**
+     * Returns a list of cells in the row; the number of cells is always the same.
+     *
+     * @param i row index
+     * @return a list of cells in the row
+     */
+    public List<TableCell> getRow(int i) {
         return rows.get(i).getCells(ncols);
     }
 
     public static class Row {
         private final int line;
-        private final Map<Integer, Cell> cells = new LinkedHashMap<Integer, Cell>();
+        private final Map<Integer, TableCell> cells = new LinkedHashMap<Integer, TableCell>();
         private int maxColIndex = 0;
 
         public Row(int line, Collection<String> values) {
@@ -62,19 +69,19 @@ class Table {
                 vc++;
                 v = v == null ? "" : v.trim();
                 if (!isNullOrEmpty(v)) {
-                    Cell cell = Cell.notEmpty(line, vc, v);
+                    TableCell cell = createCell(line, vc, v);
                     cells.put(vc, cell);
                     maxColIndex = vc;
                 }
             }
         }
 
-        public List<Cell> getCells(int ncols) {
-            List<Cell> out = new ArrayList<Cell>();
+        public List<TableCell> getCells(int ncols) {
+            List<TableCell> out = new ArrayList<TableCell>();
             for(int i=0; i<ncols; i++) {
-                Cell cell = cells.get(i);
+                TableCell cell = cells.get(i);
                 if (cell == null) {
-                    cell = Cell.empty(line, i);
+                    cell = createEmptyCell(line, i);
                 }
                 out.add(cell);
             }
@@ -83,43 +90,6 @@ class Table {
 
         int ncols() {
            return maxColIndex + 1;
-        }
-    }
-
-    public static class Cell {
-        private final int line;
-        private final int col;
-        private final String value;
-
-        private Cell(int line, int col, String value) {
-            this.line = line;
-            this.col = col;
-            this.value = value;
-        }
-
-        public int getLine() {
-            return line;
-        }
-
-        public int getCol() {
-            return col;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public static Cell empty(int line, int col) {
-            return new Cell(line, col, "");
-        }
-
-        public static Cell notEmpty(int line, int col, @Nonnull String value) {
-            checkNotNull(value);
-            return new Cell(line, col, value);
-        }
-
-        public boolean isEmpty() {
-            return isNullOrEmpty(value);
         }
     }
 }

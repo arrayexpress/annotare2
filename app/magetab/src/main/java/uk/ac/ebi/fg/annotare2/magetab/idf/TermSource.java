@@ -32,9 +32,7 @@ public class TermSource {
     private final String version;
     private final String file;
 
-    public TermSource(String name, @Nullable String version, String file) {
-        checkArgument(!isNullOrEmpty(name), "Term Source Name can't be null or empty");
-        checkArgument(!isNullOrEmpty(file), "Term Source File can't be null or empty");
+    public TermSource(String name, String version, String file) {
         this.name = name;
         this.version = version;
         this.file = file;
