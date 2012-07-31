@@ -24,10 +24,15 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
-class TableCell {
+public class TableCell {
+
     private final int line;
+
     private final int column;
+
     private final String value;
+
+    private String error;
 
     private TableCell(int line, int column, String value) {
         this.line = line;
@@ -45,6 +50,18 @@ class TableCell {
 
     public String getValue() {
         return value;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String msg) {
+        error = msg;
+    }
+
+    public void clearError() {
+        error = null;
     }
 
     public boolean isEmpty() {

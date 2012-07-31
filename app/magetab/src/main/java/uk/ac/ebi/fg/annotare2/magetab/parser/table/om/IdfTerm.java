@@ -14,23 +14,42 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table;
+package uk.ac.ebi.fg.annotare2.magetab.parser.table.om;
 
-import org.junit.Test;
-
-import java.io.IOException;
+import uk.ac.ebi.fg.annotare2.magetab.parser.table.TableCell;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfTableParserTest {
+public class IdfTerm {
 
-    @Test
-    public void test() throws IOException {
-        IdfTableParser parser = new IdfTableParser();
-        parser.parse(IdfTableParserTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
-        for(IdfTableParser.Error er : parser.getErrors()) {
-            System.out.println(er);
-        }
+    private TableCell name;
+
+    private TableCell accession;
+
+    private TableCell ref;
+
+    public TableCell getName() {
+        return name;
+    }
+
+    public void setName(TableCell name) {
+        this.name = name;
+    }
+
+    public TableCell getAccession() {
+        return accession;
+    }
+
+    public void setAccession(TableCell accession) {
+        this.accession = accession;
+    }
+
+    public TableCell getRef() {
+        return ref;
+    }
+
+    public void setRef(TableCell ref) {
+        this.ref = ref;
     }
 }

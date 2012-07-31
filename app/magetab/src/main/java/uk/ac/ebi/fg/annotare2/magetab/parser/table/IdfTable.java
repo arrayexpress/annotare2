@@ -19,10 +19,9 @@ package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
-import uk.ac.ebi.fg.annotare2.magetab.idf.TermList;
-import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfPerson;
+import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfTerm;
+import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfTermSource;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -31,30 +30,21 @@ import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
-import static uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfTableParser.IdfTag.*;
+import static uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfTable.IdfTag.*;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfTableParser {
-
-    private static final String EMPTY = "";
+public class IdfTable {
 
     protected enum IdfTag {
         PERSON_LAST_NAME("Person Last Name"),
         PERSON_FIRST_NAME("Person First Name"),
         PERSON_MID_INITIALS("Person Mid Initials"),
-        PERSON_EMAIL("Person Email") {
-            @Override
-            public CheckedValue checkValue(TableCell cell) {
-                //TODO a proper email checks
-                return CheckedValue.checkTrue(cell.isEmpty() || (cell.getValue().contains("@")), cell, "Invalid email address");
-            }
-        },
+        PERSON_EMAIL("Person Email"),
         PERSON_ROLES("Person Roles"),
         PERSON_ROLES_TERM_ACCESSION_NUMBER("Person Roles Term Accession Number"),
         PERSON_ROLES_TERM_SOURCE_REF("Person Roles Term Source REF"),
-
         TERM_SOURCE_NAME("Term Source Name"),
         TERM_SOURCE_FILE("Term Source File"),
         TERM_SOURCE_VERSION("Term Source Version");
@@ -68,31 +58,13 @@ public class IdfTableParser {
         public boolean identifies(List<TableCell> row) {
             return title.equals(row.get(0).getValue());
         }
-
-        public List<CheckedValue> checkValues(List<TableCell> row) {
-            List<CheckedValue> checked = new ArrayList<CheckedValue>();
-            for (TableCell cell : row) {
-                if (cell.getColumn() == 0) {
-                    continue;
-                }
-                checked.add(checkValue(cell));
-            }
-            return checked;
-        }
-
-        public CheckedValue checkValue(TableCell cell) {
-            return CheckedValue.OK;
-        }
     }
 
-    private List<Error> errors;
+    private Table table;
 
-    private Map<String, TermSource> termSources;
+    public void parse(InputStream in) throws IOException {
 
-    public Investigation parse(InputStream in) throws IOException {
-        errors = new ArrayList<Error>();
-
-        Table table = new TsvParser().parse(in);
+        table = new TsvParser().parse(in);
 
         Multimap<IdfTag, TableCell> parsedRows = ArrayListMultimap.create();
 
@@ -103,9 +75,8 @@ public class IdfTableParser {
             for (IdfTag tag : IdfTag.values()) {
                 if (recognized = tag.identifies(row)) {
                     if (parsedRows.containsKey(tag)) {
-                        addError(row.get(0), "Duplicated row");
+                        row.get(0).setError("Duplicated row");
                     } else {
-                        addErrors(tag.checkValues(row));
                         parsedRows.putAll(tag, row);
                     }
                     break;
@@ -113,40 +84,45 @@ public class IdfTableParser {
             }
 
             if (!recognized) {
-                addError(row.get(0), "unknown row specification");
+                row.get(0).setError("unknown row specification");
             }
         }
 
-        termSources = new HashMap<String, TermSource>();
+        /*termSources = new HashMap<String, TermSource>();
         for (TermSource source : parseTermSources(parsedRows)) {
             if (termSources.containsKey(source.getName())) {
                 addError("Duplicated term sources: " + source.getName());
                 continue;
             }
             termSources.put(source.getName(), source);
-        }
-
-        Investigation.Builder builder = new Investigation.Builder();
-        builder.setContacts(parseContacts(parsedRows));
-        return builder.build();
+        }*/
     }
 
+    public List<IdfPerson> getContacts() {
+        // TODO
+        return null;
+    }
 
-    private List<TermSource> parseTermSources(Multimap<IdfTag, TableCell> parsedRows) {
+    public void addContact(String firstName, String lastName) {
+        // TODO
+    }
+
+/*    private List<IdfTermSource> parseTermSources(Multimap<IdfTag, TableCell> parsedRows) {
         return (new TermSourceTags(parsedRows)).parse();
     }
 
-    private List<Person> parseContacts(Multimap<IdfTag, TableCell> parsedRows) {
+    private List<IdfPerson> parseContacts(Multimap<IdfTag, TableCell> parsedRows) {
         return (new PersonTags(parsedRows)).parse();
-    }
+    }*/
 
-    private TermList createTermList(TableCell names, TableCell accessions, TableCell ref) {
-        return new TermList.Builder(lookup(ref))
-                .addTerm(
-                        required(names, "Term Name"),
-                        optional(accessions))
-                .build();
+    private IdfTerm createTerm(TableCell name, TableCell accession, TableCell ref) {
+        IdfTerm term = new IdfTerm();
+        term.setName(name);
+        term.setAccession(accession);
+        term.setRef(ref);
+        return term;
     }
+/*
 
     public TermSource lookup(TableCell ref) {
         if (ref == null || ref.isEmpty()) {
@@ -159,38 +135,20 @@ public class IdfTableParser {
         }
         return source;
     }
-
-    private void addError(TableCell cell, String message) {
-        errors.add(new Error(cell, message));
-    }
-
-    private void addError(String message) {
-        errors.add(new Error(null, message));
-    }
-
-    private void addErrors(List<CheckedValue> checkedValues) {
-        for (CheckedValue v : checkedValues) {
-            v.addErrorTo(errors);
-        }
-    }
-
-    public List<Error> getErrors() {
-        return errors;
-    }
+*/
 
     private class PersonTags {
-
-        private final GroupedTags<Person> tags = new GroupedTags<Person>(
-                new Function<TableCell[], Person>() {
-                    public Person apply(@Nullable TableCell[] cells) {
+        private final GroupedTags<IdfPerson> tags = new GroupedTags<IdfPerson>(
+                new Function<TableCell[], IdfPerson>() {
+                    public IdfPerson apply(@Nullable TableCell[] cells) {
                         checkNotNull(cells);
-                        return new Person.Builder()
-                                .setFirstName(required(cells[0], "Person First Name"))
-                                .setLastName(required(cells[1], "Person Last Name"))
-                                .setMidInitials(optional(cells[2]))
-                                .setEmail(optional(cells[3]))
-                                .setRoles(createTermList(cells[4], cells[5], cells[6]))
-                                .build();
+                        IdfPerson p = new IdfPerson();
+                        p.setFirstName(cells[0]);
+                        p.setLastName(cells[1]);
+                        p.setMidInitials(cells[2]);
+                        p.setEmail(cells[3]);
+                        p.setRoles(createTerm(cells[4], cells[5], cells[6]));
+                        return p;
                     }
                 },
                 PERSON_FIRST_NAME,
@@ -206,22 +164,21 @@ public class IdfTableParser {
             tags.setAll(parsedRows);
         }
 
-        public List<Person> parse() {
+        public List<IdfPerson> parse() {
             return tags.getAll();
         }
     }
 
     private class TermSourceTags {
-
-        private final GroupedTags<TermSource> tags = new GroupedTags<TermSource>(
-                new Function<TableCell[], TermSource>() {
-                    public TermSource apply(@Nullable TableCell[] cells) {
+        private final GroupedTags<IdfTermSource> tags = new GroupedTags<IdfTermSource>(
+                new Function<TableCell[], IdfTermSource>() {
+                    public IdfTermSource apply(@Nullable TableCell[] cells) {
                         checkNotNull(cells);
-                        return new TermSource(
-                                required(cells[0], "Term Source Name"),
-                                optional(cells[1]),
-                                required(cells[2], "Term Source File")
-                        );
+                        IdfTermSource source = new IdfTermSource();
+                        source.setName(cells[0]);
+                        source.setVersion(cells[1]);
+                        source.setFile(cells[2]);
+                        return source;
                     }
                 },
                 TERM_SOURCE_NAME,
@@ -233,27 +190,9 @@ public class IdfTableParser {
             tags.setAll(parsedRows);
         }
 
-        public List<TermSource> parse() {
+        public List<IdfTermSource> parse() {
             return tags.getAll();
         }
-    }
-
-    private String optional(TableCell cell) {
-        return cell == null || cell.isEmpty() ? EMPTY : cell.getValue();
-    }
-
-    private String required(TableCell cell, String name) {
-        if (cell == null) {
-            String m = "Tag [" + name + "] is required; no any value found specified";
-            addError(m);
-            return null;
-        }
-        if (cell.isEmpty()) {
-            String m = "Tag [" + name + "] is required and should not be empty";
-            addError(cell, m);
-            return EMPTY;
-        }
-        return cell.getValue();
     }
 
     private static class GroupedTags<T> {
@@ -315,57 +254,6 @@ public class IdfTableParser {
                 }
             }
             return list;
-        }
-    }
-
-    public static class Error {
-        private final int line;
-        private final int column;
-        private final String message;
-
-        private Error(@Nullable TableCell cell, String message) {
-            this.line = cell == null ? -1 : cell.getLine();
-            this.column = cell == null ? -1 : cell.getColumn();
-            this.message = message;
-        }
-
-        public int getLine() {
-            return line;
-        }
-
-        public int getColumn() {
-            return column;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        @Override
-        public String toString() {
-            return "(" + line + "," + column + "): " + message;
-        }
-    }
-
-    private static class CheckedValue {
-        private static final CheckedValue OK = new CheckedValue(null);
-        private final Error error;
-
-        private CheckedValue(Error error) {
-            this.error = error;
-        }
-
-        public void addErrorTo(Collection<Error> errorList) {
-            if (error != null) {
-                errorList.add(error);
-            }
-        }
-
-        public static CheckedValue checkTrue(boolean expr, TableCell cell, String msg) {
-            if (expr) {
-                return CheckedValue.OK;
-            }
-            return new CheckedValue(new Error(cell, msg));
         }
     }
 }
