@@ -20,6 +20,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static java.lang.String.format;
+
 /**
  * @author Olga Melnichuk
  */
@@ -29,8 +31,9 @@ public class IdfTableTest {
     public void test() throws IOException {
         IdfTable parser = new IdfTable();
         parser.parse(IdfTableTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
-        for(IdfTable.Error er : parser.getErrors()) {
-            System.out.println(er);
+
+        for(TableCell er : parser.getErrors()) {
+            System.out.println(format("%i, %i : %s", er.getRow(), er.getColumn(), er.getError()));
         }
     }
 }

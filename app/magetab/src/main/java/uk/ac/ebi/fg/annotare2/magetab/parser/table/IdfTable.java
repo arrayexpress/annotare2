@@ -17,8 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfPerson;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfTerm;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfTermSource;
@@ -28,8 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.newHashSet;
 import static uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfTable.IdfTag.*;
 
 /**
@@ -55,74 +55,195 @@ public class IdfTable {
             this.title = title;
         }
 
-        public boolean identifies(List<TableCell> row) {
-            return title.equals(row.get(0).getValue());
+        public String getTitle() {
+            return title;
+        }
+
+        public boolean identifies(TableCell cell) {
+            return title.equals(cell.getValue());
         }
     }
+
+    private ContactList contactList = new ContactList();
+
+    private TermSourceList termSourceList = new TermSourceList();
 
     private Table table;
 
     public void parse(InputStream in) throws IOException {
-
         table = new TsvParser().parse(in);
 
-        Multimap<IdfTag, TableCell> parsedRows = ArrayListMultimap.create();
+        contactList.init(table);
+        termSourceList.init(table);
+
+        Set<Integer> mappedRows = newHashSet();
+        mappedRows.addAll(contactList.getMappedRows());
+        mappedRows.addAll(termSourceList.getMappedRows());
 
         for (int i = 0; i < table.getRowCount(); i++) {
-            List<TableCell> row = table.getRow(i);
-
-            boolean recognized = false;
-            for (IdfTag tag : IdfTag.values()) {
-                if (recognized = tag.identifies(row)) {
-                    if (parsedRows.containsKey(tag)) {
-                        row.get(0).setError("Duplicated row");
-                    } else {
-                        parsedRows.putAll(tag, row);
-                    }
-                    break;
-                }
-            }
-
-            if (!recognized) {
-                row.get(0).setError("unknown row specification");
+            if (!mappedRows.contains(i)) {
+                table.getCell(i, 0).setError("unrecognized row specification");
             }
         }
 
-        /*termSources = new HashMap<String, TermSource>();
-        for (TermSource source : parseTermSources(parsedRows)) {
-            if (termSources.containsKey(source.getName())) {
-                addError("Duplicated term sources: " + source.getName());
+        Map<String, IdfTermSource> termSources = newHashMap();
+        for (IdfTermSource source : getTermSources()) {
+            TableCell cell = source.getName();
+            if (cell.isEmpty()) {
                 continue;
             }
-            termSources.put(source.getName(), source);
-        }*/
+            if (termSources.containsKey(cell.getValue())) {
+                source.getName().setError("duplicated term sources: " + cell.getValue());
+                continue;
+            }
+            termSources.put(cell.getValue(), source);
+        }
+
+        List<IdfTerm> terms = newArrayList();
+        terms.addAll(Collections2.transform(contactList.getAll(), new Function<IdfPerson, IdfTerm>() {
+            public IdfTerm apply(@Nullable IdfPerson input) {
+                return input.getRoles();
+            }
+        }));
+
+        for (IdfTerm term : terms) {
+            TableCell cell = term.getRef();
+            if (!cell.isEmpty() && !termSources.containsKey(cell.getValue())) {
+                cell.setError("Term source is not defined");
+            }
+        }
     }
 
     public List<IdfPerson> getContacts() {
-        // TODO
-        return null;
+        return contactList.getAll();
     }
 
-    public void addContact(String firstName, String lastName) {
-        // TODO
+    public List<IdfTermSource> getTermSources() {
+        return termSourceList.getAll();
     }
 
-/*    private List<IdfTermSource> parseTermSources(Multimap<IdfTag, TableCell> parsedRows) {
-        return (new TermSourceTags(parsedRows)).parse();
+    private static class TermSourceList extends AbstractIdfList<IdfTermSource> {
+        protected TermSourceList() {
+            super(TERM_SOURCE_NAME,
+                    TERM_SOURCE_VERSION,
+                    TERM_SOURCE_FILE);
+        }
+
+        @Override
+        public IdfTermSource create(TableCell[] cells) {
+            IdfTermSource termSource = new IdfTermSource();
+            termSource.setName(cells[0]);
+            termSource.setVersion(cells[1]);
+            termSource.setFile(cells[2]);
+            return termSource;
+        }
     }
 
-    private List<IdfPerson> parseContacts(Multimap<IdfTag, TableCell> parsedRows) {
-        return (new PersonTags(parsedRows)).parse();
-    }*/
+    private static class ContactList extends AbstractIdfList<IdfPerson> {
+        protected ContactList() {
+            super(PERSON_FIRST_NAME,
+                    PERSON_LAST_NAME,
+                    PERSON_MID_INITIALS,
+                    PERSON_EMAIL,
+                    PERSON_ROLES,
+                    PERSON_ROLES_TERM_ACCESSION_NUMBER,
+                    PERSON_ROLES_TERM_SOURCE_REF);
+        }
 
-    private IdfTerm createTerm(TableCell name, TableCell accession, TableCell ref) {
-        IdfTerm term = new IdfTerm();
-        term.setName(name);
-        term.setAccession(accession);
-        term.setRef(ref);
-        return term;
+        @Override
+        public IdfPerson create(TableCell[] cells) {
+            IdfPerson p = new IdfPerson();
+            p.setFirstName(cells[0]);
+            p.setLastName(cells[1]);
+            p.setMidInitials(cells[2]);
+            p.setEmail(cells[3]);
+            p.setRoles(createTerm(cells[4], cells[5], cells[6]));
+            return p;
+        }
     }
-/*
+
+    private abstract static class AbstractIdfList<T> {
+
+        private final Map<IdfTag, Integer> tagToRow = newHashMap();
+
+        private final List<IdfTag> tags;
+
+        private Table table;
+
+        protected AbstractIdfList(IdfTag... tags) {
+            this.tags = newArrayList(tags);
+        }
+
+        public void init(Table table) {
+            for (int i = 0; i < table.getRowCount(); i++) {
+                TableCell firstCell = table.getCell(i, 0);
+                for (IdfTag tag : tags) {
+                    if (tag.identifies(firstCell)) {
+                        if (tagToRow.containsKey(tag)) {
+                            firstCell.setError("Duplicated row");
+                            return;
+                        }
+                        tagToRow.put(tag, firstCell.getRow());
+                    }
+                }
+            }
+            this.table = table;
+        }
+
+        public Collection<Integer> getMappedRows() {
+            return Collections.unmodifiableCollection(tagToRow.values());
+        }
+
+        public List<T> getAll() {
+            List<T> list = newArrayList();
+            for (int j = 0; j < table.getColumnCount(); j++) {
+                TableCell[] cells = new TableCell[tags.size()];
+                int i = 0, zc = 0;
+                for (IdfTag tag : tags) {
+                    Integer rIndex = tagToRow.get(tag);
+                    if (rIndex == null) {
+                        rIndex = table.getRowCount();
+                        table.getCell(rIndex, 0).setValue(tag.getTitle());
+                    }
+                    cells[i] = table.getCell(rIndex, j);
+                    if (cells[i].isEmpty()) {
+                        zc++;
+                    }
+                }
+                if (zc < cells.length) {
+                    list.add(create(cells));
+                }
+            }
+            return list;
+        }
+
+        protected IdfTerm createTerm(TableCell name, TableCell accession, TableCell ref) {
+            IdfTerm term = new IdfTerm();
+            term.setName(name);
+            term.setAccession(accession);
+            term.setRef(ref);
+            return term;
+        }
+
+        protected abstract T create(TableCell[] cells);
+    }
+
+
+    public List<TableCell> getErrors() {
+        List<TableCell> errors = newArrayList();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            for (int j = 0; j < table.getColumnCount(); j++) {
+                TableCell cell = table.getCell(i, j);
+                if (cell.getError() != null) {
+                    errors.add(cell);
+                }
+            }
+        }
+        return errors;
+    }
+
+
+    /*
 
     public TermSource lookup(TableCell ref) {
         if (ref == null || ref.isEmpty()) {
@@ -135,12 +256,12 @@ public class IdfTable {
         }
         return source;
     }
-*/
+
 
     private class PersonTags {
         private final GroupedTags<IdfPerson> tags = new GroupedTags<IdfPerson>(
-                new Function<TableCell[], IdfPerson>() {
-                    public IdfPerson apply(@Nullable TableCell[] cells) {
+                new Function<Token[], IdfPerson>() {
+                    public IdfPerson apply(@Nullable Token[] cells) {
                         checkNotNull(cells);
                         IdfPerson p = new IdfPerson();
                         p.setFirstName(cells[0]);
@@ -160,7 +281,7 @@ public class IdfTable {
                 PERSON_ROLES_TERM_SOURCE_REF
         );
 
-        private PersonTags(Multimap<IdfTag, TableCell> parsedRows) {
+        private PersonTags(Multimap<IdfTag, Token> parsedRows) {
             tags.setAll(parsedRows);
         }
 
@@ -171,8 +292,8 @@ public class IdfTable {
 
     private class TermSourceTags {
         private final GroupedTags<IdfTermSource> tags = new GroupedTags<IdfTermSource>(
-                new Function<TableCell[], IdfTermSource>() {
-                    public IdfTermSource apply(@Nullable TableCell[] cells) {
+                new Function<Token[], IdfTermSource>() {
+                    public IdfTermSource apply(@Nullable Token[] cells) {
                         checkNotNull(cells);
                         IdfTermSource source = new IdfTermSource();
                         source.setName(cells[0]);
@@ -186,7 +307,7 @@ public class IdfTable {
                 TERM_SOURCE_FILE
         );
 
-        public TermSourceTags(Multimap<IdfTag, TableCell> parsedRows) {
+        public TermSourceTags(Multimap<IdfTag, Token> parsedRows) {
             tags.setAll(parsedRows);
         }
 
@@ -197,24 +318,24 @@ public class IdfTable {
 
     private static class GroupedTags<T> {
 
-        private final Map<IdfTag, List<TableCell>> map = new LinkedHashMap<IdfTag, List<TableCell>>();
+        private final Map<IdfTag, List<Token>> map = new LinkedHashMap<IdfTag, List<Token>>();
 
-        private final Function<TableCell[], T> func;
+        private final Function<Token[], T> func;
 
         private int size;
 
-        public GroupedTags(Function<TableCell[], T> func, IdfTag... tags) {
+        public GroupedTags(Function<Token[], T> func, IdfTag... tags) {
             this.func = func;
             for (IdfTag tag : tags) {
-                map.put(tag, new ArrayList<TableCell>());
+                map.put(tag, new ArrayList<Token>());
             }
         }
 
-        public void setAll(Multimap<IdfTag, TableCell> parsedRows) {
+        public void setAll(Multimap<IdfTag, Token> parsedRows) {
             Integer sz = null;
             for (IdfTag tag : map.keySet()) {
-                Collection<TableCell> cells = parsedRows.get(tag);
-                List<TableCell> list = newArrayList(cells);
+                Collection<Token> cells = parsedRows.get(tag);
+                List<Token> list = newArrayList(cells);
                 if (!list.isEmpty()) {
                     if (sz == null) {
                         sz = list.size();
@@ -232,12 +353,12 @@ public class IdfTable {
         public List<T> getAll() {
             List<T> list = new ArrayList<T>();
             for (int i = 0; i < size; i++) {
-                TableCell[] values = new TableCell[map.size()];
+                Token[] values = new Token[map.size()];
                 int t = -1, empties = 0;
 
                 for (IdfTag tag : map.keySet()) {
                     t++;
-                    List<TableCell> cells = map.get(tag);
+                    List<Token> cells = map.get(tag);
                     if (cells.isEmpty()) {
                         values[t] = null;
                         empties++;
@@ -255,5 +376,5 @@ public class IdfTable {
             }
             return list;
         }
-    }
+    }*/
 }

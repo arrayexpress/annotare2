@@ -16,13 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.Math.max;
-import static uk.ac.ebi.fg.annotare2.magetab.parser.table.TableCell.createCell;
-import static uk.ac.ebi.fg.annotare2.magetab.parser.table.TableCell.createEmptyCell;
 
 /**
  * @author Olga Melnichuk
@@ -31,65 +30,89 @@ class Table {
 
     private int ncols;
 
-    private final List<Row> rows = newArrayList();
+    private int nrows;
 
-    void addRow(int line, Collection<String> values) {
-        if (values.isEmpty()) {
-            return;
-        }
-        Row row = new Row(line, values);
-        rows.add(row);
-        ncols = max(ncols, row.ncols());
-    }
+    private Map<Index, TableCell> cells = new HashMap<Index, TableCell>();
 
     public int getRowCount() {
-       return rows.size();
+        return nrows;
     }
 
-    /**
-     * Returns a list of cells in the row; the number of cells is always the same.
-     *
-     * @param i row index
-     * @return a list of cells in the row
-     */
-    public List<TableCell> getRow(int i) {
-        return rows.get(i).getCells(ncols);
+    public int getColumnCount() {
+        return ncols;
     }
 
-    public static class Row {
-        private final int line;
-        private final Map<Integer, TableCell> cells = new LinkedHashMap<Integer, TableCell>();
-        private int maxColIndex = 0;
-
-        public Row(int line, Collection<String> values) {
-            this.line = line;
-
-            int vc = -1;
-            for (String v : values) {
-                vc++;
-                v = v == null ? "" : v.trim();
-                if (!isNullOrEmpty(v)) {
-                    TableCell cell = createCell(line, vc, v);
-                    cells.put(vc, cell);
-                    maxColIndex = vc;
-                }
+    void addRow(Collection<String> values) {
+        int cIndex = 0;
+        for (String v : values) {
+            if (!isNullOrEmpty(v)) {
+                addCell(nrows, cIndex, v);
             }
+            cIndex++;
+        }
+    }
+
+    private TableCell addCell(int rIndex, int cIndex, String value) {
+        nrows = Math.max(rIndex + 1, nrows);
+        ncols = Math.max(cIndex + 1, ncols);
+
+        TableCell cell = new TableCell(rIndex, cIndex, value);
+        cells.put(new Index(rIndex, cIndex), cell);
+        return cell;
+    }
+
+    public TableCell getCell(int rIndex, int cIndex) {
+        TableCell cell = cells.get(new Index(rIndex, cIndex));
+        if (cell == null) {
+            cell = addCell(rIndex, cIndex, "");
+        }
+        return cell;
+    }
+
+    private static class Index {
+        /*
+                private static Comparator<Location> COMPARE_BY_ROW = new Comparator<Location>() {
+                    public int compare(Location o1, Location o2) {
+                        return Ints.compare(o1.getRow(), o2.getRow());
+                    }
+                };
+
+                private static Comparator<Location> COMPARE_BY_COLUMN = new Comparator<Location>() {
+                    public int compare(Location o1, Location o2) {
+                        return Ints.compare(o1.getCol(), o2.getCol());
+                    }
+                };
+
+        */
+        private int row;
+
+        private int col;
+
+        Index(int row, int col) {
+            checkArgument(row >= 0, "Row Location can't be negative");
+            checkArgument(col >= 0, "Column Location can't be negative");
+            this.row = row;
+            this.col = col;
         }
 
-        public List<TableCell> getCells(int ncols) {
-            List<TableCell> out = new ArrayList<TableCell>();
-            for(int i=0; i<ncols; i++) {
-                TableCell cell = cells.get(i);
-                if (cell == null) {
-                    cell = createEmptyCell(line, i);
-                }
-                out.add(cell);
-            }
-            return out;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Index)) return false;
+
+            Index index = (Index) o;
+
+            if (col != index.col) return false;
+            if (row != index.row) return false;
+
+            return true;
         }
 
-        int ncols() {
-           return maxColIndex + 1;
+        @Override
+        public int hashCode() {
+            int result = row;
+            result = 31 * result + col;
+            return result;
         }
     }
 }

@@ -26,22 +26,22 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class TableCell {
 
-    private final int line;
+    private int row;
 
-    private final int column;
+    private int column;
 
-    private final String value;
+    private String value;
 
     private String error;
 
-    private TableCell(int line, int column, String value) {
-        this.line = line;
+    public TableCell(int row, int column, String value) {
+        this.row = row;
         this.column = column;
         this.value = value;
     }
 
-    public int getLine() {
-        return line;
+    public int getRow() {
+        return row;
     }
 
     public int getColumn() {
@@ -50,6 +50,10 @@ public class TableCell {
 
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getError() {
@@ -66,14 +70,5 @@ public class TableCell {
 
     public boolean isEmpty() {
         return isNullOrEmpty(value);
-    }
-
-    public static TableCell createEmptyCell(int line, int col) {
-        return new TableCell(line, col, null);
-    }
-
-    public static TableCell createCell(int line, int col, @Nonnull String value) {
-        checkNotNull(value);
-        return new TableCell(line, col, value);
     }
 }

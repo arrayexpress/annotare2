@@ -43,19 +43,10 @@ public class TableTest {
 
     private void testTable(int... rows) {
         Table table = new Table();
-        int i = 0;
         for (int row : rows) {
-            table.addRow(i++, list(row));
+            table.addRow(list(row));
         }
-        assertTableEquals(table, ignoreZeros(Ints.asList(rows)));
-    }
-
-    private List<Integer> ignoreZeros(List<Integer> ints) {
-        return new ArrayList<Integer>(Collections2.filter(ints, new Predicate<Integer>() {
-            public boolean apply(@Nullable Integer input) {
-                return input != 0;
-            }
-        }));
+        assertTableEquals(table, Ints.asList(rows));
     }
 
     private void assertTableEquals(Table table, List<Integer> rows) {
@@ -64,16 +55,14 @@ public class TableTest {
             return;
         }
 
-        assertEquals(rows.size(), table.getRowCount());
+        int columnCount = Collections.max(rows);
 
-        int colNumbers = Collections.max(rows);
+        assertEquals(rows.size(), table.getRowCount());
+        assertEquals(columnCount, table.getColumnCount());
 
         for (int i = 0; i < rows.size(); i++) {
-            List<TableCell> cells = table.getRow(i);
-            assertEquals(colNumbers, cells.size());
-
-            for (int j = 0; j < colNumbers; j++) {
-                TableCell cell = cells.get(j);
+            for (int j=0; j< columnCount; j++) {
+                TableCell cell = table.getCell(i, j);
                 if (j < rows.get(i)) {
                     assertEquals(j + "", cell.getValue());
                 } else {

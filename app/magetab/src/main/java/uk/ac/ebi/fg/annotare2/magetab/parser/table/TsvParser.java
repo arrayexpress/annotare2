@@ -36,10 +36,8 @@ class TsvParser {
         try {
             br = new BufferedReader(new InputStreamReader(in));
             String line;
-            int lc = -1;
             while ((line = br.readLine()) != null) {
-                lc++;
-                table.addRow(lc, parseRow(line));
+                table.addRow(parseRow(line));
             }
         } finally {
             closeQuietly(br);
