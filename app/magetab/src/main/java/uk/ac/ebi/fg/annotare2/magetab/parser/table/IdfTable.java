@@ -81,7 +81,8 @@ public class IdfTable {
         mappedRows.addAll(termSourceList.getMappedRows());
 
         for (int i = 0; i < table.getRowCount(); i++) {
-            if (!mappedRows.contains(i)) {
+            TableCell firstCell = table.getCell(i, 0);
+            if (!firstCell.isEmpty() && !mappedRows.contains(i)) {
                 table.getCell(i, 0).setError("unrecognized row specification");
             }
         }
@@ -196,7 +197,7 @@ public class IdfTable {
 
         public List<T> getAll() {
             List<T> list = newArrayList();
-            for (int j = 0; j < table.getColumnCount(); j++) {
+            for (int j = 1; j < table.getColumnCount(); j++) {
                 TableCell[] cells = new TableCell[tags.size()];
                 int i = 0, zc = 0;
                 for (IdfTag tag : tags) {
@@ -209,6 +210,7 @@ public class IdfTable {
                     if (cells[i].isEmpty()) {
                         zc++;
                     }
+                    i++;
                 }
                 if (zc < cells.length) {
                     list.add(create(cells));
