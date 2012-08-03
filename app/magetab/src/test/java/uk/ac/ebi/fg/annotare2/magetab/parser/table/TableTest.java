@@ -16,16 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.primitives.Ints;
+import com.google.common.base.Function;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.collect.Collections2.transform;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.primitives.Ints.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -36,47 +36,66 @@ public class TableTest {
 
     @Test
     public void test() {
-        testTable(0, 0);
-        testTable(0, 1, 2, 3);
-        testTable(0, 1, 2, 3, 0, 2);
+        testTable(
+                asList(),
+                asList());
+
+        testTable(
+                asList(),
+                asList(0),
+                asList(0, 1),
+                asList(0, 1, 2));
+
+        testTable(
+                asList(),
+                asList(0),
+                asList(0, 1),
+                asList(0, 1, 2),
+                asList(),
+                asList(0, 1));
     }
 
-    private void testTable(int... rows) {
+    private void testTable(List<Integer>... rows) {
         Table table = new Table();
-        for (int row : rows) {
-            table.addRow(list(row));
+        List<List<String>> stringRows = newArrayList();
+        for (List<Integer> row : rows) {
+            List<String> strings = newArrayList(transform(row, new Function<Integer, String>() {
+                public String apply(@Nullable Integer input) {
+                    return input.toString();
+                }
+            }));
+            table.addRow(strings);
+            stringRows.add(strings);
         }
-        assertTableEquals(table, Ints.asList(rows));
+        assertTableEquals(table, stringRows);
     }
 
-    private void assertTableEquals(Table table, List<Integer> rows) {
+    private void assertTableEquals(Table table, List<List<String>> rows) {
         if (rows.isEmpty()) {
             assertEquals(0, table.getRowCount());
             return;
         }
 
-        int columnCount = Collections.max(rows);
+        int columnCount = Collections.max(
+                transform(rows, new Function<List<String>, Integer>() {
+                    public Integer apply(@Nullable List<String> input) {
+                        return input.size();
+                    }
+                }));
 
         assertEquals(rows.size(), table.getRowCount());
         assertEquals(columnCount, table.getColumnCount());
 
         for (int i = 0; i < rows.size(); i++) {
-            for (int j=0; j< columnCount; j++) {
+            List<String> row = rows.get(i);
+            for (int j = 0; j < columnCount; j++) {
                 TableCell cell = table.getCell(i, j);
-                if (j < rows.get(i)) {
-                    assertEquals(j + "", cell.getValue());
+                if (j < row.size()) {
+                    assertEquals(row.get(j), cell.getValue());
                 } else {
                     assertTrue(cell.isEmpty());
                 }
             }
         }
-    }
-
-    private List<String> list(int size) {
-        List<String> list = new ArrayList<String>();
-        for (int i = 0; i < size; i++) {
-            list.add("" + i);
-        }
-        return list;
     }
 }
