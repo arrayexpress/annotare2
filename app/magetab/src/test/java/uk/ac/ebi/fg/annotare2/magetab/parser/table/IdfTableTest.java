@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -32,8 +33,10 @@ public class IdfTableTest {
         IdfTable parser = new IdfTable();
         parser.parse(IdfTableTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
 
-        for(TableCell er : parser.getErrors()) {
-            System.out.println(format("%i, %i : %s", er.getRow(), er.getColumn(), er.getError()));
+        List<TableCell> errors = parser.getErrors();
+        System.out.println("Errors: " + errors.size());
+        for(TableCell er : errors) {
+            System.out.println(format("%d, %d : %s", er.getRow(), er.getColumn(), er.getError()));
         }
     }
 }
