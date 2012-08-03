@@ -22,6 +22,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.lang.Math.max;
 
 /**
  * @author Olga Melnichuk
@@ -50,11 +51,11 @@ class Table {
             }
             cIndex++;
         }
+        nrows++;
     }
 
     private TableCell addCell(int rIndex, int cIndex, String value) {
-        nrows = Math.max(rIndex + 1, nrows);
-        ncols = Math.max(cIndex + 1, ncols);
+        ncols = max(cIndex + 1, ncols);
 
         TableCell cell = new TableCell(rIndex, cIndex, value);
         cells.put(new Index(rIndex, cIndex), cell);
