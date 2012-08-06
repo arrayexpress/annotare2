@@ -14,20 +14,39 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.idf;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * @author Olga Melnichuk
  */
-public class QualityControl {
+public class ExperimentalFactor {
 
+    private final String name;
     private final Term type;
 
-    public QualityControl(Term type) {
+    public ExperimentalFactor(String name, Term type) {
+        checkArgument(!isNullOrEmpty(name), "Experimental Factor Name could not be null or empty");
+        checkArgument(type != null, "Experimental Factor Type could not be null");
+        this.name = name;
         this.type = type;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Term getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "ExperimentalFactor{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.parser;
 
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
-import uk.ac.ebi.fg.annotare2.magetab.idf.*;
+import uk.ac.ebi.fg.annotare2.magetab.limpopo.idf.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

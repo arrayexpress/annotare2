@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
-
-import static com.google.common.base.Preconditions.checkArgument;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.idf;
 
 /**
  * @author Olga Melnichuk
  */
-public class Normalization {
+public class Replicate {
 
     private final Term type;
 
-    public Normalization(Term type) {
-        checkArgument(type != null, "Normalization Type could not be null");
+    public Replicate(Term type) {
         this.type = type;
     }
 
     public Term getType() {
         return type;
-    }
-
-    @Override
-    public String toString() {
-        return "Normalization{" +
-                "type=" + type +
-                '}';
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.parser;
 
 /**
  * @author Olga Melnichuk

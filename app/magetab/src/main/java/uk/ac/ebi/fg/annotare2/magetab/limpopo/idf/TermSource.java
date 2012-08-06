@@ -14,30 +14,49 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.idf;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentalDesign {
+public class TermSource {
 
-    private final Term name;
+    public static final TermSource DEFAULT = new TermSource("default", null, "no file");
 
-    public ExperimentalDesign(Term name) {
-        checkArgument(name != null, "Experimental Design name could not be null");
+    private final String name;
+    private final String version;
+    private final String file;
+
+    public TermSource(String name, String version, String file) {
         this.name = name;
+        this.version = version;
+        this.file = file;
     }
 
-    public Term getName() {
+    public boolean isDefault() {
+        return this == DEFAULT;
+    }
+
+    public String getName() {
         return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getFile() {
+        return file;
     }
 
     @Override
     public String toString() {
-        return "ExperimentalDesign{" +
-                "name=" + name +
+        return "TermSource{" +
+                "name='" + name + '\'' +
+                ", version='" + version + '\'' +
+                ", file='" + file + '\'' +
                 '}';
     }
 }
