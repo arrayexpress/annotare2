@@ -16,8 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfGeneralInfo;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfPerson;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfTerm;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfTermSource;
@@ -38,6 +40,8 @@ import static uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfTable.IdfTag.*;
 public class IdfTable {
 
     protected enum IdfTag {
+        INVESTIGATION_TITLE("Investigation Title"),
+        EXPERIMENT_DESCRIPTION("Experiment Description"),
         PERSON_LAST_NAME("Person Last Name"),
         PERSON_FIRST_NAME("Person First Name"),
         PERSON_MID_INITIALS("Person Mid Initials"),
@@ -68,17 +72,34 @@ public class IdfTable {
 
     private TermSourceList termSourceList = new TermSourceList();
 
+    private GeneralInfoList generalInfoList = new GeneralInfoList();
+
     private Table table;
 
-    public void parse(InputStream in) throws IOException {
-        table = new TsvParser().parse(in);
+    public IdfTable() {
+        this(new Table());
+    }
+
+    @VisibleForTesting
+    IdfTable(Table table) {
+        this.table = table;
 
         contactList.init(table);
         termSourceList.init(table);
+        generalInfoList.init(table);
+    }
 
+    public static IdfTable parse(InputStream in) throws IOException {
+        IdfTable table = new IdfTable(new TsvParser().parse(in));
+        table.check();
+        return table;
+    }
+
+    public void check() {
         Set<Integer> mappedRows = newHashSet();
         mappedRows.addAll(contactList.getMappedRows());
         mappedRows.addAll(termSourceList.getMappedRows());
+        mappedRows.addAll(generalInfoList.getMappedRows());
 
         for (int i = 0; i < table.getRowCount(); i++) {
             TableCell firstCell = table.getCell(i, 0);
@@ -115,12 +136,35 @@ public class IdfTable {
         }
     }
 
+    public TableCell getTitle() {
+        return generalInfoList.getFirst(true).getTitle();
+    }
+
+    public TableCell getDescription() {
+        return generalInfoList.getFirst(true).getDescription();
+    }
+
     public List<IdfPerson> getContacts() {
         return contactList.getAll();
     }
 
     public List<IdfTermSource> getTermSources() {
         return termSourceList.getAll();
+    }
+
+    private static class GeneralInfoList extends AbstractIdfList<IdfGeneralInfo> {
+        private GeneralInfoList() {
+            super(INVESTIGATION_TITLE,
+                    EXPERIMENT_DESCRIPTION);
+        }
+
+        @Override
+        protected IdfGeneralInfo create(TableCell[] cells) {
+            IdfGeneralInfo generalInfo = new IdfGeneralInfo();
+            generalInfo.setTitle(cells[0]);
+            generalInfo.setDescription(cells[1]);
+            return generalInfo;
+        }
     }
 
     private static class TermSourceList extends AbstractIdfList<IdfTermSource> {
@@ -171,6 +215,8 @@ public class IdfTable {
 
         private Table table;
 
+        private int maxColumn = 0;
+
         protected AbstractIdfList(IdfTag... tags) {
             this.tags = newArrayList(tags);
         }
@@ -184,7 +230,9 @@ public class IdfTable {
                             firstCell.setError("Duplicated row");
                             return;
                         }
-                        tagToRow.put(tag, firstCell.getRow());
+                        int rIndex = firstCell.getRow();
+                        tagToRow.put(tag, rIndex);
+                        maxColumn = Math.max(maxColumn, table.maxColumnIndex(rIndex));
                     }
                 }
             }
@@ -197,7 +245,7 @@ public class IdfTable {
 
         public List<T> getAll() {
             List<T> list = newArrayList();
-            for (int j = 1; j < table.getColumnCount(); j++) {
+            for (int j = 1; j < maxColumn; j++) {
                 TableCell[] cells = new TableCell[tags.size()];
                 int i = 0, zc = 0;
                 for (IdfTag tag : tags) {
@@ -217,6 +265,34 @@ public class IdfTable {
                 }
             }
             return list;
+        }
+
+        protected T createNew() {
+            maxColumn++;
+
+            TableCell[] cells = new TableCell[tags.size()];
+            int i = 0;
+            for (IdfTag tag : tags) {
+                Integer rIndex = tagToRow.get(tag);
+                if (rIndex == null) {
+                    rIndex = table.getRowCount();
+                    table.getCell(rIndex, 0).setValue(tag.getTitle());
+                }
+                cells[i] = table.getCell(rIndex, maxColumn);
+                i++;
+            }
+            return create(cells);
+        }
+
+        public T getFirst(boolean forceCreate) {
+            List<T> all = getAll();
+            T t = null;
+            if (all.isEmpty()) {
+                t = forceCreate ? createNew() : t;
+            } else {
+                t = all.get(0);
+            }
+            return t;
         }
 
         protected IdfTerm createTerm(TableCell name, TableCell accession, TableCell ref) {

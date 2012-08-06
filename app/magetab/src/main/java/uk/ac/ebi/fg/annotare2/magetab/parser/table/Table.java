@@ -16,12 +16,17 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.common.primitives.Ints;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Ordering.from;
 import static java.lang.Math.max;
 
 /**
@@ -29,33 +34,44 @@ import static java.lang.Math.max;
  */
 class Table {
 
-    private int ncols;
+    private int columnCount;
 
-    private int nrows;
+    private int rowCount;
 
     private Map<Index, TableCell> cells = new HashMap<Index, TableCell>();
 
     public int getRowCount() {
-        return nrows;
+        return rowCount;
     }
 
     public int getColumnCount() {
-        return ncols;
+        return columnCount;
+    }
+
+    public int maxColumnIndex(final int rIndex) {
+        List<Index> ordered = from(Index.COMPARE_BY_COLUMN).reverse().sortedCopy(
+                filter(cells.keySet(), new Predicate<Index>() {
+                    public boolean apply(@Nullable Index input) {
+                        return input.getRow() == rIndex;
+                    }
+                })
+        );
+        return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
     }
 
     void addRow(Collection<String> values) {
         int cIndex = 0;
         for (String v : values) {
             if (!isNullOrEmpty(v)) {
-                addCell(nrows, cIndex, v);
+                addCell(rowCount, cIndex, v);
             }
             cIndex++;
         }
-        nrows++;
+        rowCount++;
     }
 
     private TableCell addCell(int rIndex, int cIndex, String value) {
-        ncols = max(cIndex + 1, ncols);
+        columnCount = max(cIndex + 1, columnCount);
 
         TableCell cell = new TableCell(rIndex, cIndex, value);
         cells.put(new Index(rIndex, cIndex), cell);
@@ -70,21 +86,25 @@ class Table {
         return cell;
     }
 
+    @VisibleForTesting
+    Map<Index, TableCell> getCells() {
+        return cells;
+    }
+
     private static class Index {
-        /*
-                private static Comparator<Location> COMPARE_BY_ROW = new Comparator<Location>() {
-                    public int compare(Location o1, Location o2) {
-                        return Ints.compare(o1.getRow(), o2.getRow());
-                    }
-                };
 
-                private static Comparator<Location> COMPARE_BY_COLUMN = new Comparator<Location>() {
-                    public int compare(Location o1, Location o2) {
-                        return Ints.compare(o1.getCol(), o2.getCol());
-                    }
-                };
+        private static Comparator<Index> COMPARE_BY_ROW = new Comparator<Index>() {
+            public int compare(Index o1, Index o2) {
+                return Ints.compare(o1.getRow(), o2.getRow());
+            }
+        };
 
-        */
+        private static Comparator<Index> COMPARE_BY_COLUMN = new Comparator<Index>() {
+            public int compare(Index o1, Index o2) {
+                return Ints.compare(o1.getCol(), o2.getCol());
+            }
+        };
+
         private int row;
 
         private int col;
@@ -94,6 +114,14 @@ class Table {
             checkArgument(col >= 0, "Column Location can't be negative");
             this.row = row;
             this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
         }
 
         @Override
