@@ -16,28 +16,28 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
  * @author Olga Melnichuk
  */
-public class Normalization {
+public class Info {
 
-    private final Term type;
+    private IdfCell title;
 
-    public Normalization(Term type) {
-        checkArgument(type != null, "Normalization Type could not be null");
-        this.type = type;
+    private IdfCell description;
+
+    public IdfCell getTitle() {
+        return title;
     }
 
-    public Term getType() {
-        return type;
+    public void setTitle(IdfCell title) {
+        this.title = title;
     }
 
-    @Override
-    public String toString() {
-        return "Normalization{" +
-                "type=" + type +
-                '}';
+    public IdfCell getDescription() {
+        return description;
+    }
+
+    public void setDescription(IdfCell description) {
+        this.description = description;
     }
 }

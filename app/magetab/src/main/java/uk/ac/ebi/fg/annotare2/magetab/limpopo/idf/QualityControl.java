@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
-
-import static com.google.common.base.Preconditions.checkArgument;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.idf;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentalDesign {
+public class QualityControl {
 
-    private final Term name;
+    private final Term type;
 
-    public ExperimentalDesign(Term name) {
-        checkArgument(name != null, "Experimental Design name could not be null");
-        this.name = name;
+    public QualityControl(Term type) {
+        this.type = type;
     }
 
-    public Term getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return "ExperimentalDesign{" +
-                "name=" + name +
-                '}';
+    public Term getType() {
+        return type;
     }
 }

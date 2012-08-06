@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.idf;
 
 /**
  * @author Olga Melnichuk
  */
-public class MageTabParseException extends Exception {
+public class Replicate {
 
-    public MageTabParseException(String message) {
-        super(message);
+    private final Term type;
+
+    public Replicate(Term type) {
+        this.type = type;
     }
 
-    public MageTabParseException(Throwable cause) {
-        super(cause);
+    public Term getType() {
+        return type;
     }
 }

@@ -16,109 +16,58 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
-import java.util.List;
-
 /**
  * @author Olga Melnichuk
  */
 public class Person {
 
-    private String firstName;
-    private String lastName;
-    private String midInitials;
-    private String email;
-    private String phone;
-    private String fax;
-    private String address;
-    private String affiliation;
-    private TermList roles;
+    private IdfCell firstName;
 
-    public String getFirstName() {
+    private IdfCell lastName;
+
+    private IdfCell midInitials;
+
+    private IdfCell email;
+
+    private Term roles;
+
+    public IdfCell getFirstName() {
         return firstName;
     }
 
-    public String getLastName() {
+    public void setFirstName(IdfCell firstName) {
+        this.firstName = firstName;
+    }
+
+    public IdfCell getLastName() {
         return lastName;
     }
 
-    public String getMidInitials() {
+    public void setLastName(IdfCell lastName) {
+        this.lastName = lastName;
+    }
+
+    public IdfCell getMidInitials() {
         return midInitials;
     }
 
-    public String getEmail() {
+    public void setMidInitials(IdfCell midInitials) {
+        this.midInitials = midInitials;
+    }
+
+    public IdfCell getEmail() {
         return email;
     }
 
-    public String getPhone() {
-        return phone;
+    public void setEmail(IdfCell email) {
+        this.email = email;
     }
 
-    public String getFax() {
-        return fax;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getAffiliation() {
-        return affiliation;
-    }
-
-    public TermList getRoles() {
+    public Term getRoles() {
         return roles;
     }
 
-    public static class Builder {
-        private final Person person = new Person();
-
-        public Builder setFirstName(String name) {
-            person.firstName = name;
-            return this;
-        }
-
-        public Builder setLastName(String name) {
-            person.lastName = name;
-            return this;
-        }
-
-        public Builder setMidInitials(String str) {
-            person.midInitials = str;
-            return this;
-        }
-
-        public Builder setAddress(String str) {
-            person.address = str;
-            return this;
-        }
-
-        public Builder setAffiliation(String str) {
-            person.affiliation = str;
-            return this;
-        }
-
-        public Builder setEmail(String str) {
-            person.email = str;
-            return this;
-        }
-
-        public Builder setPhone(String str) {
-            person.phone = str;
-            return this;
-        }
-
-        public Builder setFax(String str) {
-            person.fax = str;
-            return this;
-        }
-
-        public Builder setRoles(TermList roles) {
-            person.roles = roles;
-            return this;
-        }
-
-        public Person build() {
-            return person;
-        }
+    public void setRoles(Term roles) {
+        this.roles = roles;
     }
 }

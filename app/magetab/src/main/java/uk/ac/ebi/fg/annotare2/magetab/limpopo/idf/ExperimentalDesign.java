@@ -14,40 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.idf;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * @author Olga Melnichuk
  */
-public class Term {
+public class ExperimentalDesign {
 
-    private IdfCell name;
+    private final Term name;
 
-    private IdfCell accession;
-
-    private IdfCell ref;
-
-    public IdfCell getName() {
-        return name;
-    }
-
-    public void setName(IdfCell name) {
+    public ExperimentalDesign(Term name) {
+        checkArgument(name != null, "Experimental Design name could not be null");
         this.name = name;
     }
 
-    public IdfCell getAccession() {
-        return accession;
+    public Term getName() {
+        return name;
     }
 
-    public void setAccession(IdfCell accession) {
-        this.accession = accession;
-    }
-
-    public IdfCell getRef() {
-        return ref;
-    }
-
-    public void setRef(IdfCell ref) {
-        this.ref = ref;
+    @Override
+    public String toString() {
+        return "ExperimentalDesign{" +
+                "name=" + name +
+                '}';
     }
 }

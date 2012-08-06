@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.idf;
+
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -22,31 +24,29 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentalFactor {
+public class Term {
 
     private final String name;
-    private final Term type;
+    private final String accession;
+    private final TermSource source;
 
-    public ExperimentalFactor(String name, Term type) {
-        checkArgument(!isNullOrEmpty(name), "Experimental Factor Name could not be null or empty");
-        checkArgument(type != null, "Experimental Factor Type could not be null");
+    public Term(@Nullable String name, @Nullable String accession, TermSource source) {
+        checkArgument(!isNullOrEmpty(name) || !isNullOrEmpty(accession), "Both Term Name & Term Accession could not be null or empty simultaneously");
+        checkArgument(source != null, "Term Source could not be null");
         this.name = name;
-        this.type = type;
+        this.accession = accession;
+        this.source = source;
     }
 
     public String getName() {
         return name;
     }
 
-    public Term getType() {
-        return type;
+    public String getAccession() {
+        return accession;
     }
 
-    @Override
-    public String toString() {
-        return "ExperimentalFactor{" +
-                "name='" + name + '\'' +
-                ", type=" + type +
-                '}';
+    public TermSource getSource() {
+        return source;
     }
 }

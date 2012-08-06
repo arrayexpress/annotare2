@@ -14,40 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.limpopo.parser;
 
 /**
  * @author Olga Melnichuk
  */
-public class Term {
+public class MageTabParseException extends Exception {
 
-    private IdfCell name;
-
-    private IdfCell accession;
-
-    private IdfCell ref;
-
-    public IdfCell getName() {
-        return name;
+    public MageTabParseException(String message) {
+        super(message);
     }
 
-    public void setName(IdfCell name) {
-        this.name = name;
-    }
-
-    public IdfCell getAccession() {
-        return accession;
-    }
-
-    public void setAccession(IdfCell accession) {
-        this.accession = accession;
-    }
-
-    public IdfCell getRef() {
-        return ref;
-    }
-
-    public void setRef(IdfCell ref) {
-        this.ref = ref;
+    public MageTabParseException(Throwable cause) {
+        super(cause);
     }
 }

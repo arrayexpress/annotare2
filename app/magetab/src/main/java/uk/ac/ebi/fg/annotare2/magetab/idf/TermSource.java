@@ -16,52 +16,38 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
-import javax.annotation.Nullable;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 /**
  * @author Olga Melnichuk
  */
 public class TermSource {
 
-    public static final TermSource DEFAULT = new TermSource("default", null, "no file");
+    private IdfCell name;
 
-    private final String name;
-    private final String version;
-    private final String file;
+    private IdfCell version;
 
-    public TermSource(String name, @Nullable String version, String file) {
-        checkArgument(!isNullOrEmpty(name), "Term Source Name can't be null or empty");
-        checkArgument(!isNullOrEmpty(file), "Term Source File can't be null or empty");
-        this.name = name;
-        this.version = version;
-        this.file = file;
-    }
+    private IdfCell file;
 
-    public boolean isDefault() {
-        return this == DEFAULT;
-    }
-
-    public String getName() {
+    public IdfCell getName() {
         return name;
     }
 
-    public String getVersion() {
+    public void setName(IdfCell name) {
+        this.name = name;
+    }
+
+    public IdfCell getVersion() {
         return version;
     }
 
-    public String getFile() {
+    public void setVersion(IdfCell version) {
+        this.version = version;
+    }
+
+    public IdfCell getFile() {
         return file;
     }
 
-    @Override
-    public String toString() {
-        return "TermSource{" +
-                "name='" + name + '\'' +
-                ", version='" + version + '\'' +
-                ", file='" + file + '\'' +
-                '}';
+    public void setFile(IdfCell file) {
+        this.file = file;
     }
 }

@@ -14,33 +14,38 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser;
-
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
-import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
-import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 
 import static com.google.common.io.Closeables.closeQuietly;
+import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfParser {
+public class TsvParser {
 
-    public Investigation parse(InputStream in) throws MageTabParseException {
+    public Table parse(InputStream in) throws IOException {
+        final Table table = new Table();
+        BufferedReader br = null;
         try {
-            IDFParser parser = new IDFParser();
-            IDF idf = parser.parse(in);
-            return (new IdfProxy(idf)).toInvestigation();
-        } catch (ParseException e) {
-            throw new MageTabParseException(e);
+            br = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = br.readLine()) != null) {
+                table.addRow(parseRow(line));
+            }
+        } finally {
+            closeQuietly(br);
         }
+        return table;
     }
 
+    private Collection<String> parseRow(String line) {
+        return asList(line.trim().split("\t"));
+    }
 }
