@@ -37,6 +37,8 @@ public class InvestigationTest {
     public void parseTest() throws IOException {
         Investigation idf = Investigation.parse(InvestigationTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
 
+        assertEquals("Transcription profiling by array of Arabidopsis wild type and rbr1-cs plants", idf.getTitle().getValue());
+
         List<TableCell> errors = idf.getErrors();
         System.out.println("Errors: " + errors.size());
         for(TableCell er : errors) {

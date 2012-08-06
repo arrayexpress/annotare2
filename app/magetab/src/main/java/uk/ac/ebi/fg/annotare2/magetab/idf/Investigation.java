@@ -230,7 +230,7 @@ public class Investigation {
 
         public List<T> getAll() {
             List<T> list = newArrayList();
-            for (int j = 1; j < maxColumn; j++) {
+            for (int j = 1; j <= maxColumn; j++) {
                 IdfCell[] cells = new IdfCell[rows.size()];
                 int i = 0, zc = 0;
                 for (IdfRow row : rows) {
