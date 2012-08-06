@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table.om;
-
-import uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfCell;
+package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfTermSource {
+public class TermSource {
 
     private IdfCell name;
 

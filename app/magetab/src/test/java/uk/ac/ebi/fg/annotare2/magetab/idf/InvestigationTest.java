@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table;
+package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import org.junit.Test;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,11 +31,11 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Olga Melnichuk
  */
-public class IdfTableTest {
+public class InvestigationTest {
 
     @Test
     public void parseTest() throws IOException {
-        IdfTable idf = IdfTable.parse(IdfTableTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
+        Investigation idf = Investigation.parse(InvestigationTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
 
         List<TableCell> errors = idf.getErrors();
         System.out.println("Errors: " + errors.size());
@@ -45,7 +47,7 @@ public class IdfTableTest {
     @Test
     public void newTableTest() {
         Table table = new Table();
-        IdfTable idf = new IdfTable(table);
+        Investigation idf = new Investigation(table);
 
         assertTrue(table.getCells().isEmpty());
 

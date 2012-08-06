@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table.om;
-
-import uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfCell;
+package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfPerson {
+public class Person {
 
     private IdfCell firstName;
 
@@ -31,7 +29,7 @@ public class IdfPerson {
 
     private IdfCell email;
 
-    private IdfTerm roles;
+    private Term roles;
 
     public IdfCell getFirstName() {
         return firstName;
@@ -65,11 +63,11 @@ public class IdfPerson {
         this.email = email;
     }
 
-    public IdfTerm getRoles() {
+    public Term getRoles() {
         return roles;
     }
 
-    public void setRoles(IdfTerm roles) {
+    public void setRoles(Term roles) {
         this.roles = roles;
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table;
+package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import javax.annotation.Nonnull;
 

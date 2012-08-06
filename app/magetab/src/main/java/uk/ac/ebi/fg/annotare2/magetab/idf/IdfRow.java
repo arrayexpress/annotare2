@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table;
+package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfRow {
+class IdfRow {
 
     private final String tag;
 

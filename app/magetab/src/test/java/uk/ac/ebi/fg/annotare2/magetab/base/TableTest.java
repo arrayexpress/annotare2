@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table;
+package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.base.Function;
 import org.junit.Test;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
 import javax.annotation.Nullable;
 import java.util.Collections;

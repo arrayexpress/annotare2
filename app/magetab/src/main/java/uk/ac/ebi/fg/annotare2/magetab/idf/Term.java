@@ -14,32 +14,40 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table.om;
-
-import uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfCell;
+package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfGeneralInfo {
+public class Term {
 
-    private IdfCell title;
+    private IdfCell name;
 
-    private IdfCell description;
+    private IdfCell accession;
 
-    public IdfCell getTitle() {
-        return title;
+    private IdfCell ref;
+
+    public IdfCell getName() {
+        return name;
     }
 
-    public void setTitle(IdfCell title) {
-        this.title = title;
+    public void setName(IdfCell name) {
+        this.name = name;
     }
 
-    public IdfCell getDescription() {
-        return description;
+    public IdfCell getAccession() {
+        return accession;
     }
 
-    public void setDescription(IdfCell description) {
-        this.description = description;
+    public void setAccession(IdfCell accession) {
+        this.accession = accession;
+    }
+
+    public IdfCell getRef() {
+        return ref;
+    }
+
+    public void setRef(IdfCell ref) {
+        this.ref = ref;
     }
 }

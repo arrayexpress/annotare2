@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table;
+package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.base.Predicate;
 import com.google.common.primitives.Ints;
@@ -31,45 +31,17 @@ import static com.google.common.collect.Ordering.from;
 /**
  * @author Olga Melnichuk
  */
-class Table {
-
-    static class Value {
-
-        private String value;
-
-        private String error;
-
-        private Value(String value) {
-            this.value = value;
-        }
-
-        private Value(String value, String error) {
-            this.value = value;
-            this.error = error;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public String getError() {
-            return error;
-        }
-
-        public boolean isEmpty() {
-            return isNullOrEmpty(value) && isNullOrEmpty(error);
-        }
-    }
+public class Table {
 
     private int rowCount;
 
     private Map<Index, Value> values = new HashMap<Index, Value>();
 
-    int getRowCount() {
+    public int getRowCount() {
         return rowCount;
     }
 
-    int lastColumnIndex(final int rIndex) {
+    public int lastColumnIndex(final int rIndex) {
         List<Index> ordered = from(Index.COMPARE_BY_COLUMN).reverse().sortedCopy(
                 filter(values.keySet(), new Predicate<Index>() {
                     public boolean apply(@Nullable Index input) {
@@ -80,7 +52,7 @@ class Table {
         return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
     }
 
-    int addRow(Collection<String> values) {
+    public int addRow(Collection<String> values) {
         int rIndex = rowCount++;
         int cIndex = 0;
         for (String v : values) {
@@ -90,12 +62,12 @@ class Table {
         return rIndex;
     }
 
-    void setValueAt(int rIndex, int cIndex, String value) {
+    public void setValueAt(int rIndex, int cIndex, String value) {
         Index index = indexFor(rIndex, cIndex);
         setValueAt(index, new Value(value));
     }
 
-    void setErrorAt(int rIndex, int cIndex, String error) {
+    public void setErrorAt(int rIndex, int cIndex, String error) {
         Index index = indexFor(rIndex, cIndex);
         Value v = values.get(index);
         setValueAt(index,
@@ -104,11 +76,11 @@ class Table {
                         new Value(v.getValue(), error));
     }
 
-    Value getValueAt(int rIndex, int cIndex) {
+    public Value getValueAt(int rIndex, int cIndex) {
         return values.get(new Index(rIndex, cIndex));
     }
 
-    List<TableCell> getCells() {
+    public List<TableCell> getCells() {
         List<TableCell> cells = newArrayList();
         for(Index i : values.keySet()) {
             Value v = values.get(i);
@@ -135,27 +107,6 @@ class Table {
         return new Index(rIndex, cIndex);
     }
 
-    /* private TableCell addCell(int rIndex, int cIndex, String value) {
-        columnCount = max(cIndex + 1, columnCount);
-
-        TableCell cell = new TableCell(rIndex, cIndex, value);
-        cells.put(new Index(rIndex, cIndex), cell);
-        return cell;
-    }
-
-    public TableCell getCell(int rIndex, int cIndex) {
-        TableCell cell = cells.get(new Index(rIndex, cIndex));
-        if (cell == null) {
-            cell = addCell(rIndex, cIndex, "");
-        }
-        return cell;
-    }
-
-    @VisibleForTesting
-    Map<Index, TableCell> getCells() {
-        return cells;
-    }*/
-
     private static class Index {
 
         private static Comparator<Index> COMPARE_BY_ROW = new Comparator<Index>() {
@@ -175,8 +126,8 @@ class Table {
         private int col;
 
         Index(int row, int col) {
-            checkArgument(row >= 0, "Row Location can't be negative");
-            checkArgument(col >= 0, "Column Location can't be negative");
+            checkArgument(row >= 0, "Row index can't be negative");
+            checkArgument(col >= 0, "Column index can't be negative");
             this.row = row;
             this.col = col;
         }
@@ -207,6 +158,34 @@ class Table {
             int result = row;
             result = 31 * result + col;
             return result;
+        }
+    }
+
+    public static class Value {
+
+        private String value;
+
+        private String error;
+
+        private Value(String value) {
+            this.value = value;
+        }
+
+        private Value(String value, String error) {
+            this.value = value;
+            this.error = error;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public boolean isEmpty() {
+            return isNullOrEmpty(value) && isNullOrEmpty(error);
         }
     }
 }

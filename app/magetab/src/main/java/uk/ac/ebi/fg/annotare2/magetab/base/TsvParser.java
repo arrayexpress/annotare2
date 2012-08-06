@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.parser.table;
+package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,9 +28,9 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-class TsvParser {
+public class TsvParser {
 
-    Table parse(InputStream in) throws IOException {
+    public Table parse(InputStream in) throws IOException {
         final Table table = new Table();
         BufferedReader br = null;
         try {
