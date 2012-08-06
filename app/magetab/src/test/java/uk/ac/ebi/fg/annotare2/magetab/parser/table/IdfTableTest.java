@@ -33,8 +33,7 @@ public class IdfTableTest {
 
     @Test
     public void parseTest() throws IOException {
-        IdfTable idf = new IdfTable();
-        idf.parse(IdfTableTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
+        IdfTable idf = IdfTable.parse(IdfTableTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
 
         List<TableCell> errors = idf.getErrors();
         System.out.println("Errors: " + errors.size());
@@ -53,10 +52,8 @@ public class IdfTableTest {
         assertTrue(idf.getContacts().isEmpty());
         assertTrue(idf.getTermSources().isEmpty());
 
-        assertTrue(table.getCells().isEmpty());
-
         assertNotNull(idf.getTitle());
-        assertEquals("", idf.getTitle().getValue());
-        assertEquals(1, table.getCells().size());
+        assertTrue(idf.getTitle().isEmpty());
+        assertTrue(table.getCells().isEmpty());
     }
 }

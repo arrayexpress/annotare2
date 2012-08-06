@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.primitives.Ints;
 
@@ -26,31 +25,53 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Ordering.from;
-import static java.lang.Math.max;
 
 /**
  * @author Olga Melnichuk
  */
 class Table {
 
-    private int columnCount;
+    static class Value {
+
+        private String value;
+
+        private String error;
+
+        private Value(String value) {
+            this.value = value;
+        }
+
+        private Value(String value, String error) {
+            this.value = value;
+            this.error = error;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public boolean isEmpty() {
+            return isNullOrEmpty(value) && isNullOrEmpty(error);
+        }
+    }
 
     private int rowCount;
 
-    private Map<Index, TableCell> cells = new HashMap<Index, TableCell>();
+    private Map<Index, Value> values = new HashMap<Index, Value>();
 
-    public int getRowCount() {
+    int getRowCount() {
         return rowCount;
     }
 
-    public int getColumnCount() {
-        return columnCount;
-    }
-
-    public int maxColumnIndex(final int rIndex) {
+    int lastColumnIndex(final int rIndex) {
         List<Index> ordered = from(Index.COMPARE_BY_COLUMN).reverse().sortedCopy(
-                filter(cells.keySet(), new Predicate<Index>() {
+                filter(values.keySet(), new Predicate<Index>() {
                     public boolean apply(@Nullable Index input) {
                         return input.getRow() == rIndex;
                     }
@@ -59,18 +80,62 @@ class Table {
         return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
     }
 
-    void addRow(Collection<String> values) {
+    int addRow(Collection<String> values) {
+        int rIndex = rowCount++;
         int cIndex = 0;
         for (String v : values) {
-            if (!isNullOrEmpty(v)) {
-                addCell(rowCount, cIndex, v);
-            }
+            setValueAt(rIndex, cIndex, v);
             cIndex++;
         }
-        rowCount++;
+        return rIndex;
     }
 
-    private TableCell addCell(int rIndex, int cIndex, String value) {
+    void setValueAt(int rIndex, int cIndex, String value) {
+        Index index = indexFor(rIndex, cIndex);
+        setValueAt(index, new Value(value));
+    }
+
+    void setErrorAt(int rIndex, int cIndex, String error) {
+        Index index = indexFor(rIndex, cIndex);
+        Value v = values.get(index);
+        setValueAt(index,
+                v == null ?
+                        new Value("", error) :
+                        new Value(v.getValue(), error));
+    }
+
+    Value getValueAt(int rIndex, int cIndex) {
+        return values.get(new Index(rIndex, cIndex));
+    }
+
+    List<TableCell> getCells() {
+        List<TableCell> cells = newArrayList();
+        for(Index i : values.keySet()) {
+            Value v = values.get(i);
+            cells.add(new TableCell(i.getRow(), i.getCol(), v.getValue(), v.getError()));
+        }
+        return cells;
+    }
+
+    private void setValueAt(Index index, Value v) {
+        if (v.isEmpty()) {
+            values.remove(index);
+        } else {
+            values.put(index, v);
+        }
+    }
+
+    private Index indexFor(int rIndex, int cIndex) {
+        if (rIndex < 0 || rIndex > rowCount) {
+            throw new IndexOutOfBoundsException("Row index " + rIndex + " is out of range [0," + rowCount + "]");
+        }
+        if (cIndex < 0) {
+            throw new IndexOutOfBoundsException("Column index could not be less than 0: " + cIndex);
+        }
+        return new Index(rIndex, cIndex);
+    }
+
+    /* private TableCell addCell(int rIndex, int cIndex, String value) {
         columnCount = max(cIndex + 1, columnCount);
 
         TableCell cell = new TableCell(rIndex, cIndex, value);
@@ -89,7 +154,7 @@ class Table {
     @VisibleForTesting
     Map<Index, TableCell> getCells() {
         return cells;
-    }
+    }*/
 
     private static class Index {
 

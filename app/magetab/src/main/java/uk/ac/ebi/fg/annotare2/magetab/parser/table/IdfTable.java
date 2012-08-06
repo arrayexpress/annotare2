@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.magetab.parser.table;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfGeneralInfo;
 import uk.ac.ebi.fg.annotare2.magetab.parser.table.om.IdfPerson;
@@ -31,15 +32,15 @@ import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.filter;
 import static com.google.common.collect.Sets.newHashSet;
-import static uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfTable.IdfTag.*;
 
 /**
  * @author Olga Melnichuk
  */
 public class IdfTable {
 
-    protected enum IdfTag {
+    /* protected enum IdfTag {
         INVESTIGATION_TITLE("Investigation Title"),
         EXPERIMENT_DESCRIPTION("Experiment Description"),
         PERSON_LAST_NAME("Person Last Name"),
@@ -66,7 +67,21 @@ public class IdfTable {
         public boolean identifies(TableCell cell) {
             return title.equals(cell.getValue());
         }
-    }
+    }*/
+
+    public static final IdfRow INVESTIGATION_TITLE = new IdfRow("Investigation Title");
+    public static final IdfRow EXPERIMENT_DESCRIPTION = new IdfRow("Experiment Description");
+    public static final IdfRow PERSON_LAST_NAME = new IdfRow("Person Last Name");
+    public static final IdfRow PERSON_FIRST_NAME = new IdfRow("Person First Name");
+    public static final IdfRow PERSON_MID_INITIALS = new IdfRow("Person Mid Initials");
+    public static final IdfRow PERSON_EMAIL = new IdfRow("Person Email");
+    public static final IdfRow PERSON_ROLES = new IdfRow("Person Roles");
+    public static final IdfRow PERSON_ROLES_TERM_ACCESSION_NUMBER = new IdfRow("Person Roles Term Accession Number");
+    public static final IdfRow PERSON_ROLES_TERM_SOURCE_REF = new IdfRow("Person Roles Term Source REF");
+    public static final IdfRow TERM_SOURCE_NAME = new IdfRow("Term Source Name");
+    public static final IdfRow TERM_SOURCE_FILE = new IdfRow("Term Source File");
+    public static final IdfRow TERM_SOURCE_VERSION = new IdfRow("Term Source Version");
+
 
     private ContactList contactList = new ContactList();
 
@@ -102,15 +117,15 @@ public class IdfTable {
         mappedRows.addAll(generalInfoList.getMappedRows());
 
         for (int i = 0; i < table.getRowCount(); i++) {
-            TableCell firstCell = table.getCell(i, 0);
-            if (!firstCell.isEmpty() && !mappedRows.contains(i)) {
-                table.getCell(i, 0).setError("unrecognized row specification");
+            Table.Value value = table.getValueAt(i, 0);
+            if (!value.isEmpty() && !mappedRows.contains(i)) {
+                table.setErrorAt(i, 0, "unrecognized row specification");
             }
         }
 
         Map<String, IdfTermSource> termSources = newHashMap();
         for (IdfTermSource source : getTermSources()) {
-            TableCell cell = source.getName();
+            IdfCell cell = source.getName();
             if (cell.isEmpty()) {
                 continue;
             }
@@ -129,18 +144,18 @@ public class IdfTable {
         }));
 
         for (IdfTerm term : terms) {
-            TableCell cell = term.getRef();
+            IdfCell cell = term.getRef();
             if (!cell.isEmpty() && !termSources.containsKey(cell.getValue())) {
                 cell.setError("Term source is not defined");
             }
         }
     }
 
-    public TableCell getTitle() {
+    public IdfCell getTitle() {
         return generalInfoList.getFirst(true).getTitle();
     }
 
-    public TableCell getDescription() {
+    public IdfCell getDescription() {
         return generalInfoList.getFirst(true).getDescription();
     }
 
@@ -159,7 +174,7 @@ public class IdfTable {
         }
 
         @Override
-        protected IdfGeneralInfo create(TableCell[] cells) {
+        protected IdfGeneralInfo create(IdfCell[] cells) {
             IdfGeneralInfo generalInfo = new IdfGeneralInfo();
             generalInfo.setTitle(cells[0]);
             generalInfo.setDescription(cells[1]);
@@ -175,7 +190,7 @@ public class IdfTable {
         }
 
         @Override
-        public IdfTermSource create(TableCell[] cells) {
+        public IdfTermSource create(IdfCell[] cells) {
             IdfTermSource termSource = new IdfTermSource();
             termSource.setName(cells[0]);
             termSource.setVersion(cells[1]);
@@ -196,7 +211,7 @@ public class IdfTable {
         }
 
         @Override
-        public IdfPerson create(TableCell[] cells) {
+        public IdfPerson create(IdfCell[] cells) {
             IdfPerson p = new IdfPerson();
             p.setFirstName(cells[0]);
             p.setLastName(cells[1]);
@@ -209,30 +224,32 @@ public class IdfTable {
 
     private abstract static class AbstractIdfList<T> {
 
-        private final Map<IdfTag, Integer> tagToRow = newHashMap();
+        private final Map<IdfRow, Integer> rowToIndex = newHashMap();
 
-        private final List<IdfTag> tags;
+        private final List<IdfRow> rows;
 
         private Table table;
 
         private int maxColumn = 0;
 
-        protected AbstractIdfList(IdfTag... tags) {
-            this.tags = newArrayList(tags);
+        protected AbstractIdfList(IdfRow... rows) {
+            this.rows = newArrayList(rows);
         }
 
         public void init(Table table) {
             for (int i = 0; i < table.getRowCount(); i++) {
-                TableCell firstCell = table.getCell(i, 0);
-                for (IdfTag tag : tags) {
-                    if (tag.identifies(firstCell)) {
-                        if (tagToRow.containsKey(tag)) {
-                            firstCell.setError("Duplicated row");
+                Table.Value firstCell = table.getValueAt(i, 0);
+                if (firstCell == null || firstCell.isEmpty()) {
+                    continue;
+                }
+                for (IdfRow row : rows) {
+                    if (row.identifies(firstCell.getValue())) {
+                        if (rowToIndex.containsKey(row)) {
+                            table.setErrorAt(i, 0, "Duplicated row");
                             return;
                         }
-                        int rIndex = firstCell.getRow();
-                        tagToRow.put(tag, rIndex);
-                        maxColumn = Math.max(maxColumn, table.maxColumnIndex(rIndex));
+                        rowToIndex.put(row, i);
+                        maxColumn = Math.max(maxColumn, table.lastColumnIndex(i));
                     }
                 }
             }
@@ -240,21 +257,16 @@ public class IdfTable {
         }
 
         public Collection<Integer> getMappedRows() {
-            return Collections.unmodifiableCollection(tagToRow.values());
+            return Collections.unmodifiableCollection(rowToIndex.values());
         }
 
         public List<T> getAll() {
             List<T> list = newArrayList();
             for (int j = 1; j < maxColumn; j++) {
-                TableCell[] cells = new TableCell[tags.size()];
+                IdfCell[] cells = new IdfCell[rows.size()];
                 int i = 0, zc = 0;
-                for (IdfTag tag : tags) {
-                    Integer rIndex = tagToRow.get(tag);
-                    if (rIndex == null) {
-                        rIndex = table.getRowCount();
-                        table.getCell(rIndex, 0).setValue(tag.getTitle());
-                    }
-                    cells[i] = table.getCell(rIndex, j);
+                for (IdfRow row : rows) {
+                    cells[i] = idfCell(row, j);
                     if (cells[i].isEmpty()) {
                         zc++;
                     }
@@ -270,18 +282,57 @@ public class IdfTable {
         protected T createNew() {
             maxColumn++;
 
-            TableCell[] cells = new TableCell[tags.size()];
+            IdfCell[] cells = new IdfCell[rows.size()];
             int i = 0;
-            for (IdfTag tag : tags) {
-                Integer rIndex = tagToRow.get(tag);
-                if (rIndex == null) {
-                    rIndex = table.getRowCount();
-                    table.getCell(rIndex, 0).setValue(tag.getTitle());
-                }
-                cells[i] = table.getCell(rIndex, maxColumn);
+            for (IdfRow row : rows) {
+                cells[i] = idfCell(row, maxColumn);
                 i++;
             }
             return create(cells);
+        }
+
+        private IdfCell idfCell(IdfRow row, int columnIndex) {
+            return new IdfCell(row, columnIndex) {
+                @Override
+                protected Integer getRowIndex(IdfRow row) {
+                    return rowToIndex.get(row);
+                }
+
+                @Override
+                protected String getValue(IdfRow row, int columnIndex) {
+                    Table.Value value = this.getValueAndError(row, columnIndex);
+                    return value == null ? null : value.getValue();
+                }
+
+                @Override
+                protected void setValue(IdfRow row, int columnIndex, String value) {
+                    table.setValueAt(getOrCreateRow(row), columnIndex, value);
+                }
+
+                @Override
+                protected String getError(IdfRow row, int columnIndex) {
+                    Table.Value value = this.getValueAndError(row, columnIndex);
+                    return value == null ? null : value.getError();
+                }
+
+                @Override
+                protected void setError(IdfRow row, int columnIndex, String error) {
+                   table.setErrorAt(getOrCreateRow(row), columnIndex, error);
+                }
+
+                private Table.Value getValueAndError(IdfRow row, Integer columnIndex) {
+                    Integer rowIndex = rowToIndex.get(row);
+                    return rowIndex == null ? null : table.getValueAt(rowIndex, columnIndex);
+                }
+
+                private Integer getOrCreateRow(IdfRow row) {
+                    Integer rowIndex = rowToIndex.get(row);
+                    if (rowIndex == null) {
+                        rowIndex = table.addRow(Arrays.asList(row.getTag()));
+                    }
+                    return rowIndex;
+                }
+            };
         }
 
         public T getFirst(boolean forceCreate) {
@@ -295,7 +346,7 @@ public class IdfTable {
             return t;
         }
 
-        protected IdfTerm createTerm(TableCell name, TableCell accession, TableCell ref) {
+        protected IdfTerm createTerm(IdfCell name, IdfCell accession, IdfCell ref) {
             IdfTerm term = new IdfTerm();
             term.setName(name);
             term.setAccession(accession);
@@ -303,21 +354,15 @@ public class IdfTable {
             return term;
         }
 
-        protected abstract T create(TableCell[] cells);
+        protected abstract T create(IdfCell[] cells);
     }
 
-
     public List<TableCell> getErrors() {
-        List<TableCell> errors = newArrayList();
-        for (int i = 0; i < table.getRowCount(); i++) {
-            for (int j = 0; j < table.getColumnCount(); j++) {
-                TableCell cell = table.getCell(i, j);
-                if (cell.getError() != null) {
-                    errors.add(cell);
-                }
+        return newArrayList(Collections2.filter(table.getCells(), new Predicate<TableCell>() {
+            public boolean apply(@Nullable TableCell input) {
+                return input.hasError();
             }
-        }
-        return errors;
+        }));
     }
 
 

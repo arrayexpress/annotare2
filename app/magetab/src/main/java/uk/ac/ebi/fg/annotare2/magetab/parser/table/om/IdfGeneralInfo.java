@@ -16,30 +16,30 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table.om;
 
-import uk.ac.ebi.fg.annotare2.magetab.parser.table.TableCell;
+import uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfCell;
 
 /**
  * @author Olga Melnichuk
  */
 public class IdfGeneralInfo {
 
-    private TableCell title;
+    private IdfCell title;
 
-    private TableCell description;
+    private IdfCell description;
 
-    public TableCell getTitle() {
+    public IdfCell getTitle() {
         return title;
     }
 
-    public void setTitle(TableCell title) {
+    public void setTitle(IdfCell title) {
         this.title = title;
     }
 
-    public TableCell getDescription() {
+    public IdfCell getDescription() {
         return description;
     }
 
-    public void setDescription(TableCell description) {
+    public void setDescription(IdfCell description) {
         this.description = description;
     }
 }

@@ -34,10 +34,11 @@ public class TableCell {
 
     private String error;
 
-    public TableCell(int row, int column, String value) {
+    public TableCell(int row, int column, String value, String error) {
         this.row = row;
         this.column = column;
         this.value = value;
+        this.error = error;
     }
 
     public int getRow() {
@@ -52,23 +53,15 @@ public class TableCell {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public String getError() {
         return error;
     }
 
-    public void setError(String msg) {
-        error = msg;
-    }
-
-    public void clearError() {
-        error = null;
-    }
-
     public boolean isEmpty() {
         return isNullOrEmpty(value);
+    }
+
+    public boolean hasError() {
+        return !isNullOrEmpty(error);
     }
 }

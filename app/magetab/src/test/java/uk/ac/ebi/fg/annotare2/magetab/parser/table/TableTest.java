@@ -26,8 +26,7 @@ import java.util.List;
 import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.primitives.Ints.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Olga Melnichuk
@@ -84,16 +83,16 @@ public class TableTest {
                 }));
 
         assertEquals(rows.size(), table.getRowCount());
-        assertEquals(columnCount, table.getColumnCount());
 
         for (int i = 0; i < rows.size(); i++) {
             List<String> row = rows.get(i);
             for (int j = 0; j < columnCount; j++) {
-                TableCell cell = table.getCell(i, j);
+                Table.Value cell = table.getValueAt(i, j);
                 if (j < row.size()) {
+                    assertNotNull(cell);
                     assertEquals(row.get(j), cell.getValue());
                 } else {
-                    assertTrue(cell.isEmpty());
+                    assertNull(cell);
                 }
             }
         }

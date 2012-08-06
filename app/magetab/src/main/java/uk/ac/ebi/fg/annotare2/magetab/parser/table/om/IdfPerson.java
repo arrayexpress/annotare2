@@ -16,52 +16,52 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.parser.table.om;
 
-import uk.ac.ebi.fg.annotare2.magetab.parser.table.TableCell;
+import uk.ac.ebi.fg.annotare2.magetab.parser.table.IdfCell;
 
 /**
  * @author Olga Melnichuk
  */
 public class IdfPerson {
 
-    private TableCell firstName;
+    private IdfCell firstName;
 
-    private TableCell lastName;
+    private IdfCell lastName;
 
-    private TableCell midInitials;
+    private IdfCell midInitials;
 
-    private TableCell email;
+    private IdfCell email;
 
     private IdfTerm roles;
 
-    public TableCell getFirstName() {
+    public IdfCell getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(TableCell firstName) {
+    public void setFirstName(IdfCell firstName) {
         this.firstName = firstName;
     }
 
-    public TableCell getLastName() {
+    public IdfCell getLastName() {
         return lastName;
     }
 
-    public void setLastName(TableCell lastName) {
+    public void setLastName(IdfCell lastName) {
         this.lastName = lastName;
     }
 
-    public TableCell getMidInitials() {
+    public IdfCell getMidInitials() {
         return midInitials;
     }
 
-    public void setMidInitials(TableCell midInitials) {
+    public void setMidInitials(IdfCell midInitials) {
         this.midInitials = midInitials;
     }
 
-    public TableCell getEmail() {
+    public IdfCell getEmail() {
         return email;
     }
 
-    public void setEmail(TableCell email) {
+    public void setEmail(IdfCell email) {
         this.email = email;
     }
 
