@@ -23,8 +23,6 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
-import uk.ac.ebi.fg.annotare2.magetab.parser.IdfParser;
-import uk.ac.ebi.fg.annotare2.magetab.parser.MageTabParseException;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.om.User;
@@ -60,21 +58,13 @@ class DataObjects {
     static Function<Submission, UISubmissionRow> SUBMISSION_ROW = new Function<Submission, UISubmissionRow>() {
         public UISubmissionRow apply(@Nullable Submission submission) {
             checkNotNull(submission);
-            try {
-                Investigation investigation = getInvestigation(submission);
-                return new UISubmissionRow(
-                        submission.getId(),
-                        investigation.getAccession().getAccession(),
-                        investigation.getTitle(),
-                        submission.getCreated(),
-                        uiSubmissionStatus(submission.getStatus())
-                );
-            } catch (IOException e) {
-                log.error("Can't parse investigation data from a submissionId (id=" + submission.getId() + ")", e);
-            } catch (MageTabParseException e) {
-                log.error("Can't parse investigation data from a submissionId (id=" + submission.getId() + ")", e);
-            }
-            return null;
+            return new UISubmissionRow(
+                    submission.getId(),
+                    submission.getAccession(),
+                    submission.getTitle(),
+                    submission.getCreated(),
+                    uiSubmissionStatus(submission.getStatus())
+            );
         }
     };
 
@@ -85,22 +75,20 @@ class DataObjects {
                 Investigation investigation = getInvestigation(submission);
                 return new UISubmissionDetails(
                         submission.getId(),
-                        investigation.getAccession().getAccession(),
-                        investigation.getTitle(),
+                        submission.getAccession(),
+                        investigation.getTitle().getValue(),
                         submission.getCreated(),
                         uiSubmissionStatus(submission.getStatus())
                 );
             } catch (IOException e) {
-                log.error("Can't parse investigation data from a submissionId (id=" + submission.getId() + ")", e);
-            } catch (MageTabParseException e) {
                 log.error("Can't parse investigation data from a submissionId (id=" + submission.getId() + ")", e);
             }
             return null;
         }
     };
 
-    private static Investigation getInvestigation(Submission submission) throws IOException, MageTabParseException {
-        return new IdfParser().parse(submission.getInvestigation());
+    private static Investigation getInvestigation(Submission submission) throws IOException{
+        return Investigation.parse(submission.getInvestigation());
     }
 
     static Function<SubmissionStatus, UISubmissionStatus> SUBMISSION_STATUS = new Function<SubmissionStatus, UISubmissionStatus>() {

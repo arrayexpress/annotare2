@@ -74,15 +74,21 @@ public class DummyData {
         try {
             createSubmission(user,
                     SubmissionStatus.IN_PROGRESS,
-                    "E-GEOD-37590.idf.txt");
+                    "E-GEOD-37590.idf.txt",
+                    "E-GEOD-37590",
+                    "Natural genetic variation in yeast longevity");
 
             createSubmission(user,
                     SubmissionStatus.IN_PROGRESS,
-                    "E-MTAB-996.idf.txt");
+                    "E-MTAB-996.idf.txt",
+                    "E-MTAB-996",
+                    "E. coli Anaerobic/aerobic transitions in chemostat");
 
             createSubmission(user,
                     SubmissionStatus.PUBLIC_IN_AE,
-                    "E-GEOD-37372.idf.txt");
+                    "E-GEOD-37372.idf.txt",
+                    "E-GEOD-37372",
+                    "Ewing's sarcoma tumor samples");
         } catch (IOException e) {
             log.error("", e);
         }
@@ -98,11 +104,13 @@ public class DummyData {
         return user;
     }
 
-    private static Submission createSubmission(User user, SubmissionStatus status, String idfName) throws IOException {
+    private static Submission createSubmission(User user, SubmissionStatus status, String idfName, String accession, String title) throws IOException {
         Submission submission = new ExperimentSubmission(user, submissionAcl);
         submission.setStatus(status);
         submission.setInvestigation(
                 CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
+        submission.setTitle(title);
+        submission.setAccession(accession);
         save(submission);
         return submission;
     }

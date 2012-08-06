@@ -45,6 +45,10 @@ public abstract class Submission implements HasEffectiveAcl {
 
     private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
+    private String title;
+
+    private String accession;
+
     protected Submission(SubmissionType type,
                          User createdBy,
                          Acl acl) {
@@ -88,6 +92,22 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public User getCreatedBy() {
         return createdBy;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAccession() {
+        return accession;
+    }
+
+    public void setAccession(String accession) {
+        this.accession = accession;
     }
 
     public EffectiveAcl getEffectiveAcl() {
