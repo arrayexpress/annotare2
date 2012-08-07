@@ -20,8 +20,12 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.IdfContentView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoView;
 
@@ -34,11 +38,15 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
 
     private final PlaceController placeController;
 
+    private final IdfServiceAsync idfService;
+
     @Inject
     public IdfGeneralInfoActivity(IdfGeneralInfoView view,
-                              PlaceController placeController) {
+                              PlaceController placeController,
+                              IdfServiceAsync idfService) {
         this.view = view;
         this.placeController = placeController;
+        this.idfService = idfService;
     }
 
     public IdfGeneralInfoActivity withPlace(Place place) {
@@ -46,13 +54,38 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
         return this;
     }
 
+    @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         //TODO view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        loadAsync();
+    }
+
+    @Override
+    public void onStop() {
+        //TODO save changes here
+        super.onStop();
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    private void loadAsync() {
+        final int submissionId = EditorUtils.getSubmissionId();
+        idfService.getGeneralInfo(submissionId, new AsyncCallbackWrapper<UIGeneralInfo>() {
+            public void onFailure(Throwable caught) {
+                // TODO proper error handling
+                Window.alert("Can't load idf general info for sid: " + submissionId);
+            }
+
+            public void onSuccess(UIGeneralInfo result) {
+                if (result != null) {
+                    view.setTitle(result.getTitle());
+                    view.setDescription(result.getDescription());
+                }
+            }
+        }.wrap());
     }
 }
 

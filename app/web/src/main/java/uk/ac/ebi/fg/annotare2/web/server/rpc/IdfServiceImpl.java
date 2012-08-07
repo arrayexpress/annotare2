@@ -20,44 +20,47 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionServiceImpl extends RemoteServiceBase implements SubmissionService {
+public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     @Inject
     private SubmissionManager submissionManager;
 
-    public UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
+    @Override
+    public UIGeneralInfo getGeneralInfo(int submissionId) throws NoPermissionException, ResourceNotFoundException {
         try {
-            Submission sb = submissionManager.getSubmission(getCurrentUser(), id);
-            return DataObjects.uiSubmissionDetails(sb);
+            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
+            return parseGeneralInfo(submission.getInvestigation());
         } catch (RecordNotFoundException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + "doesn't exist");
+            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
         } catch (AccessControlException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
+            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (IOException e) {
+            log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
         }
+        return null;
     }
 
-    public int createSubmission() throws NoPermissionException {
-        try {
-            Submission sb = submissionManager.createSubmission(getCurrentUser());
-            return sb.getId();
-        } catch (AccessControlException e) {
-            log.warn("createSubmission() failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
-        }
+    private UIGeneralInfo parseGeneralInfo(InputStream in) throws IOException {
+        Investigation inv = Investigation.parse(in);
+        return new UIGeneralInfo(inv.getTitle().getValue(), inv.getDescription().getValue());
     }
 }

@@ -22,4 +22,8 @@ import com.google.gwt.user.client.ui.IsWidget;
  * @author Olga Melnichuk
  */
 public interface IdfGeneralInfoView extends IsWidget {
+
+    public void setTitle(String title);
+
+    public void setDescription(String description);
 }

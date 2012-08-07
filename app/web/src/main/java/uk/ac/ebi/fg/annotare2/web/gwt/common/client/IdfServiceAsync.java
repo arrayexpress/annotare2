@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 
-/**
- * @author Olga Melnichuk
- */
-public class EditorUtils {
+public interface IdfServiceAsync {
 
-    private static final RegExp SUBMISSION_ID = RegExp.compile("\\/([0-9]+)\\/$");
-
-    public static Integer getSubmissionId() {
-        String path = Window.Location.getPath();
-        MatchResult res = SUBMISSION_ID.exec(path);
-        if (res == null) {
-            return null;
-        }
-        return Integer.parseInt(res.getGroup(1));
-    }
+    void getGeneralInfo(int submissionId, AsyncCallback<UIGeneralInfo> async);
 }

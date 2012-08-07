@@ -32,7 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorUtils.getSubmissionId;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk

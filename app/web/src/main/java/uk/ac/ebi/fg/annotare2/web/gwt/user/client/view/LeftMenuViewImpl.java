@@ -114,7 +114,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     }
 
     private void createSubmissionClick() {
-        presenter.onCreateSubmissionClick();
+        presenter.onSubmissionCreateButtonClick();
     }
 
     private void selectItem(Widget item) {

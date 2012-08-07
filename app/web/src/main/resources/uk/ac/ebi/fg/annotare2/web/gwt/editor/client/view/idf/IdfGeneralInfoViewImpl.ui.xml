@@ -22,11 +22,11 @@
         <div style="padding:5px">
             <div>Title:</div>
             <div>
-                <g:TextArea width="99%" visibleLines="4"></g:TextArea>
+                <g:TextArea width="99%" visibleLines="4" ui:field="title"></g:TextArea>
             </div>
             <div>Description:</div>
             <div>
-                <g:TextArea width="99%" visibleLines="4"></g:TextArea>
+                <g:TextArea width="99%" visibleLines="4" ui:field="description"></g:TextArea>
             </div>
         </div>
     </g:HTMLPanel>

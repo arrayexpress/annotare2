@@ -63,15 +63,15 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         gotoSubmissionListViewPlace(filter);
     }
 
-    public void onCreateSubmissionClick() {
-        asyncService.createSubmission(new AsyncCallbackWrapper<UISubmissionDetails>() {
+    public void onSubmissionCreateButtonClick() {
+        asyncService.createSubmission(new AsyncCallbackWrapper<Integer>() {
             public void onFailure(Throwable caught) {
                 //TODO
                 Window.alert("Can't create new submission");
             }
 
-            public void onSuccess(UISubmissionDetails result) {
-                gotoSubmissionViewPlace(result.getId());
+            public void onSuccess(Integer submissionId) {
+                gotoSubmissionViewPlace(submissionId);
             }
         }.wrap());
     }

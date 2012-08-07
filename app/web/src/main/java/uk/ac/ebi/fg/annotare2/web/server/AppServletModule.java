@@ -23,10 +23,12 @@ import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.CurrentUserAccountServiceImpl;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.IdfServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.SubmissionListServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.SubmissionServiceImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
@@ -69,6 +71,8 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService("UserApp", CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class);
         serveAndBindRpcService("UserApp", SubmissionListService.NAME, SubmissionListServiceImpl.class);
         serveAndBindRpcService("UserApp", SubmissionService.NAME, SubmissionServiceImpl.class);
+
+        serveAndBindRpcService("EditorApp", IdfService.NAME, IdfServiceImpl.class);
 
         bind(SubmissionListServiceImpl.class).in(Scopes.SINGLETON);
 

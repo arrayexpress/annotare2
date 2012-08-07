@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface LeftMenuView extends IsWidget {
-    
-    void setPresenter(Presenter presenter);
+public class UIGeneralInfo implements Serializable {
 
-    void setFilter(SubmissionListFilter filter);
+    private String title;
 
-    public interface Presenter {
+    private String description;
 
-        void onSubmissionFilterClick(SubmissionListFilter filter);
+    public UIGeneralInfo() {
+    }
 
-        void onSubmissionCreateButtonClick();
+    public UIGeneralInfo(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

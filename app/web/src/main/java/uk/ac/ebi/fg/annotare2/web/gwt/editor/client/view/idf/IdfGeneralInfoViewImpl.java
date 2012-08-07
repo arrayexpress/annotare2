@@ -18,8 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * @author Olga Melnichuk
@@ -29,9 +31,22 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
     interface Binder extends UiBinder<HTMLPanel, IdfGeneralInfoViewImpl> {
     }
 
+    @UiField
+    TextArea title;
+
+    @UiField
+    TextArea description;
+
     public IdfGeneralInfoViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
 
+    public void setTitle(String title) {
+        this.title.setText(title);
+    }
+
+    public void setDescription(String description) {
+        this.description.setText(description);
+    }
 }

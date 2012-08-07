@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 
 /**
  * @author Olga Melnichuk
  */
-public interface LeftMenuView extends IsWidget {
-    
-    void setPresenter(Presenter presenter);
+@RemoteServiceRelativePath(IdfService.NAME)
+public interface IdfService extends RemoteService {
 
-    void setFilter(SubmissionListFilter filter);
+    public static final String NAME = "idfService";
 
-    public interface Presenter {
-
-        void onSubmissionFilterClick(SubmissionListFilter filter);
-
-        void onSubmissionCreateButtonClick();
-    }
+    UIGeneralInfo getGeneralInfo(int submissionId) throws NoPermissionException, ResourceNotFoundException;
 }

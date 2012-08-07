@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.Window;
 
 /**
  * @author Olga Melnichuk
  */
-public interface LeftMenuView extends IsWidget {
-    
-    void setPresenter(Presenter presenter);
+public class EditorUtils {
 
-    void setFilter(SubmissionListFilter filter);
+    private static final RegExp SUBMISSION_ID = RegExp.compile("\\/([0-9]+)\\/$");
 
-    public interface Presenter {
-
-        void onSubmissionFilterClick(SubmissionListFilter filter);
-
-        void onSubmissionCreateButtonClick();
+    public static Integer getSubmissionId() {
+        String path = Window.Location.getPath();
+        MatchResult res = SUBMISSION_ID.exec(path);
+        if (res == null) {
+            return null;
+        }
+        return Integer.parseInt(res.getGroup(1));
     }
 }

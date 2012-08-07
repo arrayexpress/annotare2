@@ -30,5 +30,5 @@ public interface SubmissionService extends RemoteService {
 
     UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    UISubmissionDetails createSubmission() throws NoPermissionException;
+    int createSubmission() throws NoPermissionException;
 }
