@@ -32,7 +32,7 @@ public class User {
 
     private String password;
 
-    private List<Role> roles;
+    private List<Role> roles = Collections.emptyList();
 
     public User(int id, String email, String password) {
         this.id = id;
