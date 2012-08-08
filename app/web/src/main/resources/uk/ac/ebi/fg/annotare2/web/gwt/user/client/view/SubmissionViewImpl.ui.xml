@@ -34,7 +34,6 @@
         }
 
         .submissionView {
-            border: 1px solid #ddd;
             padding: 10px;
         }
 
@@ -61,6 +60,7 @@
         <div class="{style.submissionView}">
             <div class="{style.submissionTitle}">
                 <table cellpadding="0" cellspacing="0">
+                    <tbody>
                     <tr>
                         <td style="padding-left:0">
                             <h1 ui:field="accession"></h1>
@@ -73,6 +73,7 @@
                             </span>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
             <div style="padding-top:10px; padding-bottom:10px">
@@ -82,11 +83,9 @@
                 <g:TextArea width="99%" visibleLines="2"></g:TextArea>
                 <div style="margin-bottom:5px;">
                     <g:Button>Submit</g:Button>
-
                     The investigation data specified is not complete. Please
                     <a href="#">complete</a>
                     it before submit.
-
                 </div>
             </div>
         </div>
