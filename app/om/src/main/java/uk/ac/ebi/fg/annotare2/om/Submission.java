@@ -75,7 +75,8 @@ public abstract class Submission implements HasEffectiveAcl {
     }
 
     public InputStream getInvestigation() throws IOException {
-        return new ByteArrayInputStream(investigation.getBytes(Charsets.UTF_8));
+        String str = (investigation == null) ? "" : investigation;
+        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
     }
 
     public Date getCreated() {
