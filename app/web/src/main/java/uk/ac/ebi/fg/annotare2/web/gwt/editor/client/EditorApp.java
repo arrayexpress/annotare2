@@ -48,8 +48,6 @@ public class EditorApp implements EntryPoint {
     }
 
     private void loadModule(HasWidgets root) {
-        Window.alert(getSubmissionId() + "");
-
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 
