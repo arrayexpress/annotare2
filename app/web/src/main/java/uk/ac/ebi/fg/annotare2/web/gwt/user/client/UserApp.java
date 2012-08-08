@@ -22,6 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -45,6 +46,14 @@ public class UserApp implements EntryPoint {
     }
 
     private void loadModule(HasWidgets root) {
+        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+            @Override
+            public void onUncaughtException(Throwable e) {
+                Window.alert("Uncaught Exception: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 

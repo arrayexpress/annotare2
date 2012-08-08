@@ -48,6 +48,14 @@ public class EditorApp implements EntryPoint {
     }
 
     private void loadModule(HasWidgets root) {
+        GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
+            @Override
+            public void onUncaughtException(Throwable e) {
+                Window.alert("Uncaught Exception: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 
