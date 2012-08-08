@@ -25,11 +25,13 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.editorUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.launcherUrl;
 
 /**
  * @author Olga Melnichuk
@@ -64,6 +66,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     }
 
     public void onSubmissionCreateButtonClick() {
+        prepareEditor(launcherUrl());
         asyncService.createSubmission(new AsyncCallbackWrapper<Integer>() {
             public void onFailure(Throwable caught) {
                 //TODO
@@ -72,6 +75,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
             public void onSuccess(Integer submissionId) {
                 gotoSubmissionViewPlace(submissionId);
+                openEditor(editorUrl(submissionId));
             }
         }.wrap());
     }
@@ -91,4 +95,37 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         place.setSubmissionId(id);
         goTo(place);
     }
+
+    private native void prepareEditor(String url) /*-{
+        this.editorWindow = $wnd.open(url, "_blank", "");
+    }-*/;
+
+    private native void openEditor(String url) /*-{
+        var editorWindow = this.editorWindow;
+        if (!editorWindow) {
+            return;
+        }
+
+        var func = function () {
+            if (editorWindow.launch) {
+                editorWindow.launch(url);
+                return true;
+            }
+            var callee = arguments.callee;
+            callee.attempt = (callee.attempt || 0) + 1;
+            return false;
+        };
+
+        setTimeout(function () {
+            if (!func()) {
+                if (func.attempt <= 5) {
+                    console.log("warn: Editor is not ready; attempt: " + func.attempt);
+                    setTimeout(arguments.callee(), 1000);
+                } else {
+                    $wnd.alert("Sorry, can't open submission editing page. Please, try again later.");
+                    editorWindow.close();
+                }
+            }
+        }, 1000);
+    }-*/;
 }

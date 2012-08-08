@@ -29,10 +29,20 @@ public class Utils {
         if (!GWT.isProdMode()) {
             url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
         }*/
+        Window.open(editorUrl(submissionId), "_blank", "");
+    }
 
+    public static String editorUrl(int submissionId) {
         UrlBuilder builder = Window.Location.createUrlBuilder();
         builder.setPath("edit/" + submissionId + "/");
         builder.setHash(null);
-        Window.open(builder.buildString(), "_blank", "");
+        return builder.buildString();
+    }
+
+    public static String launcherUrl() {
+        UrlBuilder builder = Window.Location.createUrlBuilder();
+        builder.setPath("launcher.jsp");
+        builder.setHash(null);
+        return builder.buildString();
     }
 }

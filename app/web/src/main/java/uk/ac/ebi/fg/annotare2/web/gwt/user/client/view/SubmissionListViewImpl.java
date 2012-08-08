@@ -64,7 +64,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         cellTable.addColumn(new TextColumn<UISubmissionRow>() {
             @Override
             public String getValue(UISubmissionRow object) {
-                return getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(object.getCreated());
+                return getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(object.getCreated());
             }
         }, new TextHeader("Created"));
 

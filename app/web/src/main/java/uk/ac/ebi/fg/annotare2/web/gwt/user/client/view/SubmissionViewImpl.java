@@ -56,8 +56,6 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     @UiField
     Button editButton;
 
-    private int submissionId;
-
     public SubmissionViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -72,12 +70,11 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
         title.setInnerText(submission.getTitle());
         created.setInnerText(submission.getCreated().toString());
         status.setInnerText(submission.getStatus().getTitle());
-        submissionId = submission.getId();
     }
 
     @UiHandler("editButton")
     public void onViewEditButtonClick(ClickEvent event) {
-        openSubmissionEditor(submissionId);
+        presenter.onEditButtonClick();
     }
 
 }

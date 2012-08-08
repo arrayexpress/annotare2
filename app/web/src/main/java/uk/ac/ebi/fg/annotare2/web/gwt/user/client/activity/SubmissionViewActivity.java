@@ -31,6 +31,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionView;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.openSubmissionEditor;
+
 /**
  * @author Olga Melnichuk
  */
@@ -78,5 +80,12 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
                 view.setSubmission(result);
             }
         }.wrap());
+    }
+
+    public void onEditButtonClick() {
+        if (submissionId != null) {
+            openSubmissionEditor(submissionId);
+        }
+        //TODO log or show error otherwise
     }
 }
