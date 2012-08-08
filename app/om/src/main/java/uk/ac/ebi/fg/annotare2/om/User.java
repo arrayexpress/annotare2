@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.om;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public class User {
 
     private String password;
 
-    private List<? extends Role> roles;
+    private List<Role> roles;
 
     public User(int id, String email, String password) {
         this.id = id;
@@ -63,8 +64,8 @@ public class User {
         return obj.getEffectiveAcl().hasPermission(this, permission);
     }
 
-    public List<? extends Role> getRoles() {
-        return roles;
+    public List<Role> getRoles() {
+        return Collections.unmodifiableList(roles);
     }
 
     @Override
