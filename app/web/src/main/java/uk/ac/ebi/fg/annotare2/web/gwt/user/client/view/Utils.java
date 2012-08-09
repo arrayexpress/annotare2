@@ -37,7 +37,6 @@ public class Utils {
         UrlBuilder builder = Window.Location.createUrlBuilder();
         builder.setPath(Window.Location.getPath() + "edit/" + submissionId + "/");
         builder.setHash(null);
-        Window.alert(Window.Location.getPath() + "edit/" + submissionId + "/");
         return builder.buildString();
     }
 
@@ -45,7 +44,6 @@ public class Utils {
         UrlBuilder builder = Window.Location.createUrlBuilder();
         builder.setPath(Window.Location.getPath() + "launcher.jsp");
         builder.setHash(null);
-        Window.alert(Window.Location.getPath() + "launcher.jsp");
         return builder.buildString();
     }
 }
