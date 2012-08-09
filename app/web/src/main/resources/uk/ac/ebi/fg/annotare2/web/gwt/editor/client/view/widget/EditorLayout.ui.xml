@@ -21,7 +21,7 @@
 
     <ui:style>
         .border {
-            border: 1px solid black;
+            border: 1px solid #48877C;
         }
     </ui:style>
 
@@ -44,7 +44,7 @@
                             <g:SimplePanel ui:field="tabBarDisplay" />
                         </g:north>
                         <g:west size="200">
-                            <my:MinimizableScrollPanel size="200" height="100%" addStyleNames="{style.border}" ui:field="leftMenuDisplay"/>
+                            <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
                             <g:ScrollPanel height="100%" addStyleNames="{style.border}" ui:field="contentDisplay"/>
