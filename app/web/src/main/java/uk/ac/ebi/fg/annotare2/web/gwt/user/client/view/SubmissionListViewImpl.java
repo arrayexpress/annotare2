@@ -71,9 +71,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         cellTable.addColumn(new TextColumn<UISubmissionRow>() {
             @Override
             public String getValue(UISubmissionRow object) {
-                //TODO
-                String accession = object.getAccession();
-                return accession == null ? "UNACCESSIONED" : accession;
+               return object.getAccession();
             }
         }, new TextHeader("Accession"));
 
@@ -101,8 +99,8 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
                 };
 
         editIconColumn.setFieldUpdater(new FieldUpdater<UISubmissionRow, ImageResource>() {
-            public void update(int index, UISubmissionRow object, ImageResource value) {
-                openSubmissionEditor(0);
+            public void update(int index, UISubmissionRow row, ImageResource value) {
+                openSubmissionEditor(row.getId());
             }
         });
 
