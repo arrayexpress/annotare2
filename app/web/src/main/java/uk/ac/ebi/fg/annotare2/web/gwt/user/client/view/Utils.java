@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 
@@ -34,14 +35,14 @@ public class Utils {
 
     public static String editorUrl(int submissionId) {
         UrlBuilder builder = Window.Location.createUrlBuilder();
-        builder.setPath("edit/" + submissionId + "/");
+        builder.setPath(Window.Location.getPath() + "edit/" + submissionId + "/");
         builder.setHash(null);
         return builder.buildString();
     }
 
     public static String launcherUrl() {
         UrlBuilder builder = Window.Location.createUrlBuilder();
-        builder.setPath("launcher.jsp");
+        builder.setPath(Window.Location.getPath() + "launcher.jsp");
         builder.setHash(null);
         return builder.buildString();
     }
