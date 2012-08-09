@@ -38,18 +38,20 @@ import static com.google.common.collect.Sets.newHashSet;
  */
 public class Investigation {
 
-    public static final IdfRow INVESTIGATION_TITLE = new IdfRow("Investigation Title");
-    public static final IdfRow EXPERIMENT_DESCRIPTION = new IdfRow("Experiment Description");
-    public static final IdfRow PERSON_LAST_NAME = new IdfRow("Person Last Name");
-    public static final IdfRow PERSON_FIRST_NAME = new IdfRow("Person First Name");
-    public static final IdfRow PERSON_MID_INITIALS = new IdfRow("Person Mid Initials");
-    public static final IdfRow PERSON_EMAIL = new IdfRow("Person Email");
-    public static final IdfRow PERSON_ROLES = new IdfRow("Person Roles");
-    public static final IdfRow PERSON_ROLES_TERM_ACCESSION_NUMBER = new IdfRow("Person Roles Term Accession Number");
-    public static final IdfRow PERSON_ROLES_TERM_SOURCE_REF = new IdfRow("Person Roles Term Source REF");
-    public static final IdfRow TERM_SOURCE_NAME = new IdfRow("Term Source Name");
-    public static final IdfRow TERM_SOURCE_FILE = new IdfRow("Term Source File");
-    public static final IdfRow TERM_SOURCE_VERSION = new IdfRow("Term Source Version");
+    private static final IdfRow INVESTIGATION_TITLE = new IdfRow("Investigation Title");
+    private static final IdfRow EXPERIMENT_DESCRIPTION = new IdfRow("Experiment Description");
+    private static final IdfRow DATE_OF_EXPERIMENT = new IdfRow("Date of Experiment");
+    private static final IdfRow DATE_OF_PUBLIC_RELEASE = new IdfRow("Public Release Date");
+    private static final IdfRow PERSON_LAST_NAME = new IdfRow("Person Last Name");
+    private static final IdfRow PERSON_FIRST_NAME = new IdfRow("Person First Name");
+    private static final IdfRow PERSON_MID_INITIALS = new IdfRow("Person Mid Initials");
+    private static final IdfRow PERSON_EMAIL = new IdfRow("Person Email");
+    private static final IdfRow PERSON_ROLES = new IdfRow("Person Roles");
+    private static final IdfRow PERSON_ROLES_TERM_ACCESSION_NUMBER = new IdfRow("Person Roles Term Accession Number");
+    private static final IdfRow PERSON_ROLES_TERM_SOURCE_REF = new IdfRow("Person Roles Term Source REF");
+    private static final IdfRow TERM_SOURCE_NAME = new IdfRow("Term Source Name");
+    private static final IdfRow TERM_SOURCE_FILE = new IdfRow("Term Source File");
+    private static final IdfRow TERM_SOURCE_VERSION = new IdfRow("Term Source Version");
 
     private ContactList contactList = new ContactList();
 
@@ -127,6 +129,14 @@ public class Investigation {
         return generalInfoList.getFirst(true).getDescription();
     }
 
+    public IdfCell getDateOfExperiment() {
+        return generalInfoList.getFirst(true).getDateOfExperiment();
+    }
+
+    public IdfCell getDateOfPublicRelease() {
+        return generalInfoList.getFirst(true).getDateOfPublicRelease();
+    }
+
     public List<Person> getContacts() {
         return contactList.getAll();
     }
@@ -138,7 +148,9 @@ public class Investigation {
     private static class GeneralInfoList extends AbstractIdfList<Info> {
         private GeneralInfoList() {
             super(INVESTIGATION_TITLE,
-                    EXPERIMENT_DESCRIPTION);
+                    EXPERIMENT_DESCRIPTION,
+                    DATE_OF_EXPERIMENT,
+                    DATE_OF_PUBLIC_RELEASE);
         }
 
         @Override
@@ -146,6 +158,8 @@ public class Investigation {
             Info generalInfo = new Info();
             generalInfo.setTitle(cells[0]);
             generalInfo.setDescription(cells[1]);
+            generalInfo.setDateOfExperiment(cells[2]);
+            generalInfo.setDateOfPublicRelease(cells[3]);
             return generalInfo;
         }
     }

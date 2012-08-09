@@ -25,6 +25,10 @@ public class Info {
 
     private IdfCell description;
 
+    private IdfCell dateOfExperiment;
+
+    private IdfCell dateOfPublicRelease;
+
     public IdfCell getTitle() {
         return title;
     }
@@ -39,5 +43,21 @@ public class Info {
 
     public void setDescription(IdfCell description) {
         this.description = description;
+    }
+
+    public IdfCell getDateOfExperiment() {
+        return dateOfExperiment;
+    }
+
+    public void setDateOfExperiment(IdfCell dateOfExperiment) {
+        this.dateOfExperiment = dateOfExperiment;
+    }
+
+    public IdfCell getDateOfPublicRelease() {
+        return dateOfPublicRelease;
+    }
+
+    public void setDateOfPublicRelease(IdfCell dateOfPublicRelease) {
+        this.dateOfPublicRelease = dateOfPublicRelease;
     }
 }
