@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Olga Melnichuk
@@ -27,12 +28,19 @@ public class UIGeneralInfo implements Serializable {
 
     private String description;
 
+    private Date dateOfExperiment;
+
+    private Date dateOfPublicRelease;
+
+
     public UIGeneralInfo() {
     }
 
-    public UIGeneralInfo(String title, String description) {
+    public UIGeneralInfo(String title, String description, Date dateOfExperiment, Date dateOfPublicRelease) {
         this.title = title;
         this.description = description;
+        this.dateOfExperiment = dateOfExperiment;
+        this.dateOfPublicRelease = dateOfPublicRelease;
     }
 
     public String getTitle() {
@@ -41,5 +49,13 @@ public class UIGeneralInfo implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public Date getDateOfExperiment() {
+        return dateOfExperiment;
+    }
+
+    public Date getDateOfPublicRelease() {
+        return dateOfPublicRelease;
     }
 }

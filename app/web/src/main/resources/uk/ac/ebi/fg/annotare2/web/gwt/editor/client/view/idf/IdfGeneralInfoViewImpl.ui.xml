@@ -18,17 +18,59 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+    <ui:style>
+        .form {
+            margin: 5px;
+        }
+
+        .form td {
+            padding-bottom: 10px;
+        }
+
+        .form td.title {
+            width: 140px;
+            text-align: right;
+            padding-right: 10px;
+        }
+    </ui:style>
+
     <g:HTMLPanel>
-        <div style="padding:5px">
-            <div>Title:</div>
-            <div>
-                <g:TextArea width="99%" visibleLines="4" ui:field="title"></g:TextArea>
-            </div>
-            <div>Description:</div>
-            <div>
-                <g:TextArea width="99%" visibleLines="4" ui:field="description"></g:TextArea>
-            </div>
-        </div>
+        <table width="98%" class="{style.form}">
+            <tbody>
+                <tr>
+                    <td class="{style.title}">
+                        Title
+                    </td>
+                    <td>
+                        <g:TextArea width="90%" visibleLines="2" ui:field="title"></g:TextArea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="{style.title}">
+                        Description
+                    </td>
+                    <td>
+                        <g:TextArea width="90%" visibleLines="4" ui:field="description"></g:TextArea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="{style.title}">
+                        Date of Experiment
+                    </td>
+                    <td>
+                        <g:TextBox ui:field="dateOfExperiment"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="{style.title}">
+                        Date of Public Release
+                    </td>
+                    <td>
+                        <g:TextBox ui:field="dateOfPublicRelease"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </g:HTMLPanel>
 </ui:UiBinder>
 

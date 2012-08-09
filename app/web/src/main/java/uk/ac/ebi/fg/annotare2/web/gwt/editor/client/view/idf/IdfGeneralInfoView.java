@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+import java.util.Date;
+
 /**
  * @author Olga Melnichuk
  */
@@ -26,4 +28,8 @@ public interface IdfGeneralInfoView extends IsWidget {
     public void setTitle(String title);
 
     public void setDescription(String description);
+
+    public void setDateOfExperiment(Date date);
+
+    public void setDateOfPublicRelease(Date date);
 }

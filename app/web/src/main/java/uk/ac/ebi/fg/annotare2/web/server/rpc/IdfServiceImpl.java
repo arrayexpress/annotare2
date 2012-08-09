@@ -31,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 /**
  * @author Olga Melnichuk
@@ -61,6 +62,10 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
 
     private UIGeneralInfo parseGeneralInfo(InputStream in) throws IOException {
         Investigation inv = Investigation.parse(in);
-        return new UIGeneralInfo(inv.getTitle().getValue(), inv.getDescription().getValue());
+        return new UIGeneralInfo(
+                inv.getTitle().getValue(),
+                inv.getDescription().getValue(),
+                new Date(),
+                new Date());  //TODO propagate proper values here
     }
 }

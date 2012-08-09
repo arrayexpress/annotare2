@@ -83,6 +83,8 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
                 if (result != null) {
                     view.setTitle(result.getTitle());
                     view.setDescription(result.getDescription());
+                    view.setDateOfExperiment(result.getDateOfExperiment());
+                    view.setDateOfPublicRelease(result.getDateOfPublicRelease());
                 }
             }
         }.wrap());
