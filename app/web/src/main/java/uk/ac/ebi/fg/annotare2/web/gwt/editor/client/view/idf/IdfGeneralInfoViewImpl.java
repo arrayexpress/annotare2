@@ -17,13 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.datepicker.client.DateBox;
+import com.google.inject.Inject;
 
 import java.util.Date;
 
@@ -31,8 +32,6 @@ import java.util.Date;
  * @author Olga Melnichuk
  */
 public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoView {
-
-    private static DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd");
 
     interface Binder extends UiBinder<HTMLPanel, IdfGeneralInfoViewImpl> {
     }
@@ -44,14 +43,18 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
     TextArea description;
 
     @UiField
-    TextBox dateOfExperiment;
+    DateBox dateOfExperiment;
 
     @UiField
-    TextBox dateOfPublicRelease;
+    DateBox dateOfPublicRelease;
 
+    @Inject
     public IdfGeneralInfoViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+        DateBox.DefaultFormat format = new DateBox.DefaultFormat(DateTimeFormat.getFormat("yyyy-MM-dd"));
+        dateOfExperiment.setFormat(format);
+        dateOfPublicRelease.setFormat(format);
     }
 
     @Override
@@ -66,15 +69,11 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
 
     @Override
     public void setDateOfExperiment(Date date) {
-        this.dateOfExperiment.setValue(dateToString(date));
+        this.dateOfExperiment.setValue(date);
     }
 
     @Override
     public void setDateOfPublicRelease(Date date) {
-        this.dateOfPublicRelease.setValue(dateToString(date));
-    }
-
-    private static String dateToString(Date date) {
-        return date == null ? "" : DATE_FORMAT.format(date);
+        this.dateOfPublicRelease.setValue(date);
     }
 }
