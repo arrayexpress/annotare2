@@ -16,50 +16,52 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
+import uk.ac.ebi.fg.annotare2.magetab.base.Row;
+
 /**
  * @author Olga Melnichuk
  */
 public class Person {
 
-    private IdfCell firstName;
+    private Row.Cell firstName;
 
-    private IdfCell lastName;
+    private Row.Cell lastName;
 
-    private IdfCell midInitials;
+    private Row.Cell midInitials;
 
-    private IdfCell email;
+    private Row.Cell email;
 
     private Term roles;
 
-    public IdfCell getFirstName() {
+    public Row.Cell getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(IdfCell firstName) {
+    public void setFirstName(Row.Cell firstName) {
         this.firstName = firstName;
     }
 
-    public IdfCell getLastName() {
+    public Row.Cell getLastName() {
         return lastName;
     }
 
-    public void setLastName(IdfCell lastName) {
+    public void setLastName(Row.Cell lastName) {
         this.lastName = lastName;
     }
 
-    public IdfCell getMidInitials() {
+    public Row.Cell getMidInitials() {
         return midInitials;
     }
 
-    public void setMidInitials(IdfCell midInitials) {
+    public void setMidInitials(Row.Cell midInitials) {
         this.midInitials = midInitials;
     }
 
-    public IdfCell getEmail() {
+    public Row.Cell getEmail() {
         return email;
     }
 
-    public void setEmail(IdfCell email) {
+    public void setEmail(Row.Cell email) {
         this.email = email;
     }
 

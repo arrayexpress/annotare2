@@ -194,13 +194,14 @@ public class Investigation {
 
         @Override
         public Person create(IdfCell[] cells) {
-            Person p = new Person();
+            /*Person p = new Person();
             p.setFirstName(cells[0]);
             p.setLastName(cells[1]);
             p.setMidInitials(cells[2]);
             p.setEmail(cells[3]);
             p.setRoles(createTerm(cells[4], cells[5], cells[6]));
-            return p;
+            return p;*/
+            return null;
         }
     }
 

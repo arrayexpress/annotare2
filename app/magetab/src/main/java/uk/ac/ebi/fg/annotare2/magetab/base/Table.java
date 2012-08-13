@@ -62,6 +62,10 @@ public class Table {
         return rIndex;
     }
 
+    public int addRow() {
+        return addRow(Collections.<String>emptyList());
+    }
+
     public void setValueAt(int rIndex, int cIndex, String value) {
         Index index = indexFor(rIndex, cIndex);
         setValueAt(index, new Value(value));
