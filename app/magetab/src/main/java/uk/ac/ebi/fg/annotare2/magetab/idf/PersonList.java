@@ -17,20 +17,17 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import uk.ac.ebi.fg.annotare2.magetab.base.Row;
-import uk.ac.ebi.fg.annotare2.magetab.base.RowSet;
 import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.magetab.idf.PersonList.Tag.*;
 
 /**
  * @author Olga Melnichuk
  */
-public class PersonList {
+public class PersonList extends ObjectList<Person> {
 
     static enum Tag implements RowTag {
         PERSON_FIRST_NAME("Person First Name"),
@@ -53,52 +50,17 @@ public class PersonList {
         }
     }
 
-    private final RowSet<Tag> rowSet;
-
-    private final List<Person> list = new ArrayList<Person>();
-
     public PersonList(Table table) {
-        rowSet = new RowSet<Tag>(Tag.values());
-        rowSet.addAll(table);
-        for (int i=0; i<rowSet.getColumnCount(); i++) {
-            list.add(get(i));
-        }
+        super(table, Tag.values());
     }
 
-    public Person add() {
-        int column = rowSet.addColumn();
-        return get(column);
-    }
-
-    private Person get(int i) {
-        // TODO check index
+    @Override
+    protected Person get(Map<RowTag, Row.Cell> map) {
         Person p = new Person();
-        p.setFirstName(cellAt(PERSON_FIRST_NAME, i));
-        p.setLastName(cellAt(PERSON_LAST_NAME, i));
-        p.setMidInitials(cellAt(PERSON_MID_INITIALS, i));
-        p.setEmail(cellAt(PERSON_EMAIL, i));
+        p.setFirstName(map.get(PERSON_FIRST_NAME));
+        p.setLastName(map.get(PERSON_LAST_NAME));
+        p.setMidInitials(map.get(PERSON_MID_INITIALS));
+        p.setEmail(map.get(PERSON_EMAIL));
         return p;
-    }
-
-    private Row.Cell cellAt(Tag tag, int i) {
-        return rowSet.rowAt(tag).cellAt(i);
-    }
-
-    public void move(Person p, int index) {
-        //TODO
-    }
-
-    public void remove(Person person) {
-        list.indexOf(person);
-        remove(list.indexOf(person));
-    }
-
-    public void remove(int index) {
-        rowSet.removeColumn(index);
-        list.remove(index);
-    }
-
-    public List<Person> getAll() {
-        return Collections.unmodifiableList(list);
     }
 }

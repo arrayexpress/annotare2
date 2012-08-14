@@ -19,13 +19,13 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 /**
  * @author Olga Melnichuk
  */
-public class TaggedRow<T extends RowTag> extends Row {
+public class TaggedRow extends Row {
 
-    private final T tag;
+    private final RowTag tag;
 
     private Cell tagCell;
 
-    public TaggedRow(Table table, T tag) {
+    public TaggedRow(Table table, RowTag tag) {
         super(table, findRowIn(table, tag));
         this.tag = tag;
         if (!exists()) {

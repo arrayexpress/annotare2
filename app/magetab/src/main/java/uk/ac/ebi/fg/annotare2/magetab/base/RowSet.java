@@ -21,24 +21,24 @@ import java.util.*;
 /**
  * @author Olga Melnichuk
  */
-public class RowSet<T extends RowTag> {
+public class RowSet {
 
-    private final Map<T, Integer> map = new HashMap<T, Integer>();
+    private final Map<RowTag, Integer> map = new HashMap<RowTag, Integer>();
 
     private final List<Row> rows = new ArrayList<Row>();
 
-    private final List<T> tags = new ArrayList<T>();
+    private final List<RowTag> tags = new ArrayList<RowTag>();
 
     private int columnCount = 0;
 
-    public RowSet(T... tags) {
+    public RowSet(RowTag... tags) {
         this.tags.addAll(Arrays.asList(tags));
     }
 
     public void addAll(Table table) {
         int count = 0;
-        for (T t : tags) {
-            TaggedRow<T> row = new TaggedRow<T>(table, t);
+        for (RowTag t : tags) {
+            TaggedRow row = new TaggedRow(table, t);
             map.put(t, rows.size());
             rows.add(row);
             count = Math.max(count, row.getColumnCount());
@@ -64,7 +64,7 @@ public class RowSet<T extends RowTag> {
         return columnCount++;
     }
 
-    public Row rowAt(T tag) {
+    public Row rowAt(RowTag tag) {
         return rows.get(map.get(tag));
     }
 }
