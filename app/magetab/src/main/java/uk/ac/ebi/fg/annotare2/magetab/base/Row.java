@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * @author Olga Melnichuk
  */
@@ -90,6 +92,10 @@ public class Row {
 
         public String getValue() {
             return getValueFor(this);
+        }
+
+        public boolean isEmpty() {
+            return isNullOrEmpty(getValue());
         }
     }
 }

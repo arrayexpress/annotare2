@@ -55,7 +55,7 @@ public class PersonList extends ObjectList<Person> {
     }
 
     @Override
-    protected Person get(Map<RowTag, Row.Cell> map) {
+    protected Person create(Map<RowTag, Row.Cell> map) {
         Person p = new Person();
         p.setFirstName(map.get(PERSON_FIRST_NAME));
         p.setLastName(map.get(PERSON_LAST_NAME));

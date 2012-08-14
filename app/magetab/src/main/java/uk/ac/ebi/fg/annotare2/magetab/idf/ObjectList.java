@@ -41,7 +41,7 @@ public abstract class ObjectList<T> {
         rowSet = new RowSet(rowTags);
         rowSet.addAll(table);
         for (int i=0; i<rowSet.getColumnCount(); i++) {
-            list.add(get(i));
+            list.add(create(i));
         }
     }
 
@@ -49,9 +49,15 @@ public abstract class ObjectList<T> {
         return Collections.unmodifiableList(list);
     }
 
+    public T get(int index) {
+        return list.get(index);
+    }
+
     public T add() {
         int column = rowSet.addColumn();
-        return get(column);
+        T t = create(column);
+        list.add(t);
+        return t;
     }
 
     public void remove(T t) {
@@ -64,13 +70,17 @@ public abstract class ObjectList<T> {
         list.remove(index);
     }
 
-    private T get(int i) {
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+
+    private T create(int i) {
         Map<RowTag, Row.Cell> map = new HashMap<RowTag, Row.Cell>();
         for (RowTag tag : tags) {
             map.put(tag, rowSet.rowAt(tag).cellAt(i));
         }
-        return get(map);
+        return create(map);
     }
 
-    protected abstract T get(Map<RowTag, Row.Cell> map);
+    protected abstract T create(Map<RowTag, Row.Cell> map);
 }
