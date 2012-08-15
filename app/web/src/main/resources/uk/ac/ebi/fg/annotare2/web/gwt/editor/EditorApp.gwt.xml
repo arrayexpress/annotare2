@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   ~ Copyright 2009-2012 European Molecular Biology Laboratory
   ~
@@ -15,6 +16,8 @@
   ~ limitations under the License.
   -->
 <module rename-to="EditorApp">
+
+    <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab" />
 
     <inherits name="com.google.gwt.user.User"/>
 
