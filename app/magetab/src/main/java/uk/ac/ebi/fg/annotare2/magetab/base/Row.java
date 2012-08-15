@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
+import com.google.common.annotations.GwtCompatible;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public class Row {
 
     private final Table table;

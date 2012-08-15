@@ -16,9 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public interface RowTag {
 
     String getName();

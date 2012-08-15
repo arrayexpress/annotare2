@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
+import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 import uk.ac.ebi.fg.annotare2.magetab.base.RowSet;
 import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
@@ -28,6 +29,7 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public abstract class ObjectList<T> {
 
     private final List<RowTag> tags = new ArrayList<RowTag>();

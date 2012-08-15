@@ -16,11 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
+import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public class Term {
 
     private Row.Cell name;
