@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
 import java.io.IOException;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,6 +39,9 @@ public class InvestigationTest {
         Investigation idf = Investigation.parse(InvestigationTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
 
         assertEquals("Transcription profiling by array of Arabidopsis wild type and rbr1-cs plants", idf.getTitle().getValue());
+        assertEquals("Wild-type and rbr1-cs plants were grown on MS plates for 3 days. RNA was extracted from both genotypes and hybridized to ATH1 arrays.", idf.getDescription().getValue());
+        assertEquals("2010-12-31", idf.getDateOfPublicRelease().getValue());
+        assertTrue(isNullOrEmpty(idf.getDateOfExperiment().getValue()));
 
         List<TableCell> errors = idf.getErrors();
         System.out.println("Errors: " + errors.size());

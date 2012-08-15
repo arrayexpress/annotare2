@@ -16,28 +16,50 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
+import uk.ac.ebi.fg.annotare2.magetab.base.Row;
+
 /**
  * @author Olga Melnichuk
  */
 public class Info {
 
-    private IdfCell title;
+    private Row.Cell title;
 
-    private IdfCell description;
+    private Row.Cell description;
 
-    public IdfCell getTitle() {
+    private Row.Cell dateOfExperiment;
+
+    private Row.Cell dateOfPublicRelease;
+
+    public Row.Cell getTitle() {
         return title;
     }
 
-    public void setTitle(IdfCell title) {
+    public void setTitle(Row.Cell title) {
         this.title = title;
     }
 
-    public IdfCell getDescription() {
+    public Row.Cell getDescription() {
         return description;
     }
 
-    public void setDescription(IdfCell description) {
+    public void setDescription(Row.Cell description) {
         this.description = description;
+    }
+
+    public Row.Cell getDateOfExperiment() {
+        return dateOfExperiment;
+    }
+
+    public void setDateOfExperiment(Row.Cell dateOfExperiment) {
+        this.dateOfExperiment = dateOfExperiment;
+    }
+
+    public Row.Cell getDateOfPublicRelease() {
+        return dateOfPublicRelease;
+    }
+
+    public void setDateOfPublicRelease(Row.Cell dateOfPublicRelease) {
+        this.dateOfPublicRelease = dateOfPublicRelease;
     }
 }

@@ -16,38 +16,40 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
+import uk.ac.ebi.fg.annotare2.magetab.base.Row;
+
 /**
  * @author Olga Melnichuk
  */
 public class Term {
 
-    private IdfCell name;
+    private Row.Cell name;
 
-    private IdfCell accession;
+    private Row.Cell accession;
 
-    private IdfCell ref;
+    private Row.Cell ref;
 
-    public IdfCell getName() {
+    public Row.Cell getName() {
         return name;
     }
 
-    public void setName(IdfCell name) {
+    public void setName(Row.Cell name) {
         this.name = name;
     }
 
-    public IdfCell getAccession() {
+    public Row.Cell getAccession() {
         return accession;
     }
 
-    public void setAccession(IdfCell accession) {
+    public void setAccession(Row.Cell accession) {
         this.accession = accession;
     }
 
-    public IdfCell getRef() {
+    public Row.Cell getRef() {
         return ref;
     }
 
-    public void setRef(IdfCell ref) {
+    public void setRef(Row.Cell ref) {
         this.ref = ref;
     }
 }

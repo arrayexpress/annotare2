@@ -17,45 +17,61 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
-import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
+import uk.ac.ebi.fg.annotare2.magetab.base.*;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
-import static com.google.common.collect.Sets.newHashSet;
+import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
+
 
 /**
  * @author Olga Melnichuk
  */
 public class Investigation {
 
-    public static final IdfRow INVESTIGATION_TITLE = new IdfRow("Investigation Title");
-    public static final IdfRow EXPERIMENT_DESCRIPTION = new IdfRow("Experiment Description");
-    public static final IdfRow PERSON_LAST_NAME = new IdfRow("Person Last Name");
-    public static final IdfRow PERSON_FIRST_NAME = new IdfRow("Person First Name");
-    public static final IdfRow PERSON_MID_INITIALS = new IdfRow("Person Mid Initials");
-    public static final IdfRow PERSON_EMAIL = new IdfRow("Person Email");
-    public static final IdfRow PERSON_ROLES = new IdfRow("Person Roles");
-    public static final IdfRow PERSON_ROLES_TERM_ACCESSION_NUMBER = new IdfRow("Person Roles Term Accession Number");
-    public static final IdfRow PERSON_ROLES_TERM_SOURCE_REF = new IdfRow("Person Roles Term Source REF");
-    public static final IdfRow TERM_SOURCE_NAME = new IdfRow("Term Source Name");
-    public static final IdfRow TERM_SOURCE_FILE = new IdfRow("Term Source File");
-    public static final IdfRow TERM_SOURCE_VERSION = new IdfRow("Term Source Version");
+    static enum Tag implements RowTag {
+        INVESTIGATION_TITLE("Investigation Title"),
+        EXPERIMENT_DESCRIPTION("Experiment Description"),
+        DATE_OF_EXPERIMENT("Date of Experiment"),
+        DATE_OF_PUBLIC_RELEASE("Public Release Date"),
 
-    private ContactList contactList = new ContactList();
+        PERSON_FIRST_NAME("Person First Name"),
+        PERSON_LAST_NAME("Person Last Name"),
+        PERSON_MID_INITIALS("Person Mid Initials"),
+        PERSON_EMAIL("Person Email"),
+        PERSON_ROLES("Person Roles"),
+        PERSON_ROLES_TERM_ACCESSION_NUMBER("Person Roles Term Accession Number"),
+        PERSON_ROLES_TERM_SOURCE_REF("Person Roles Term Source REF"),
 
-    private TermSourceList termSourceList = new TermSourceList();
+        TERM_SOURCE_NAME("Term Source Name"),
+        TERM_SOURCE_FILE("Term Source File"),
+        TERM_SOURCE_VERSION("Term Source Version");
 
-    private GeneralInfoList generalInfoList = new GeneralInfoList();
+        private String tagName;
+
+        private Tag(String title) {
+            this.tagName = title;
+        }
+
+        @Override
+        public String getName() {
+            return tagName;
+        }
+    }
+
+    private final GeneralInfoList generalInfoList;
+
+    private final ContactList contactList;
+
+    private TermSourceList termSourceList;
+
 
     private Table table;
 
@@ -67,9 +83,13 @@ public class Investigation {
     Investigation(Table table) {
         this.table = table;
 
-        contactList.init(table);
-        termSourceList.init(table);
-        generalInfoList.init(table);
+        generalInfoList = new GeneralInfoList(table);
+        contactList = new ContactList(table);
+        termSourceList = new TermSourceList(table);
+
+        if (generalInfoList.isEmpty()) {
+            generalInfoList.add();
+        }
     }
 
     public static Investigation parse(InputStream in) throws IOException {
@@ -79,6 +99,8 @@ public class Investigation {
     }
 
     public void check() {
+        /*
+        TODO
         Set<Integer> mappedRows = newHashSet();
         mappedRows.addAll(contactList.getMappedRows());
         mappedRows.addAll(termSourceList.getMappedRows());
@@ -116,15 +138,23 @@ public class Investigation {
             if (!cell.isEmpty() && !termSources.containsKey(cell.getValue())) {
                 cell.setError("Term source is not defined");
             }
-        }
+        }*/
     }
 
-    public IdfCell getTitle() {
-        return generalInfoList.getFirst(true).getTitle();
+    public Row.Cell getTitle() {
+        return generalInfoList.get(0).getTitle();
     }
 
-    public IdfCell getDescription() {
-        return generalInfoList.getFirst(true).getDescription();
+    public Row.Cell getDescription() {
+        return generalInfoList.get(0).getDescription();
+    }
+
+    public Row.Cell getDateOfExperiment() {
+        return generalInfoList.get(0).getDateOfExperiment();
+    }
+
+    public Row.Cell getDateOfPublicRelease() {
+        return generalInfoList.get(0).getDateOfPublicRelease();
     }
 
     public List<Person> getContacts() {
@@ -135,41 +165,51 @@ public class Investigation {
         return termSourceList.getAll();
     }
 
-    private static class GeneralInfoList extends AbstractIdfList<Info> {
-        private GeneralInfoList() {
-            super(INVESTIGATION_TITLE,
-                    EXPERIMENT_DESCRIPTION);
+    private static class GeneralInfoList extends ObjectList<Info> {
+
+        private GeneralInfoList(Table table) {
+            super(table,
+                    INVESTIGATION_TITLE,
+                    EXPERIMENT_DESCRIPTION,
+                    DATE_OF_EXPERIMENT,
+                    DATE_OF_PUBLIC_RELEASE);
         }
 
         @Override
-        protected Info create(IdfCell[] cells) {
+        protected Info create(Map<RowTag, Row.Cell> map) {
             Info generalInfo = new Info();
-            generalInfo.setTitle(cells[0]);
-            generalInfo.setDescription(cells[1]);
+            generalInfo.setTitle(map.get(INVESTIGATION_TITLE));
+            generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
+            generalInfo.setDateOfExperiment(map.get(DATE_OF_EXPERIMENT));
+            generalInfo.setDateOfPublicRelease(map.get(DATE_OF_PUBLIC_RELEASE));
             return generalInfo;
         }
     }
 
-    private static class TermSourceList extends AbstractIdfList<TermSource> {
-        protected TermSourceList() {
-            super(TERM_SOURCE_NAME,
+    private static class TermSourceList extends ObjectList<TermSource> {
+
+        protected TermSourceList(Table table) {
+            super(table,
+                    TERM_SOURCE_NAME,
                     TERM_SOURCE_VERSION,
                     TERM_SOURCE_FILE);
         }
 
         @Override
-        public TermSource create(IdfCell[] cells) {
+        protected TermSource create(Map<RowTag, Row.Cell> map) {
             TermSource termSource = new TermSource();
-            termSource.setName(cells[0]);
-            termSource.setVersion(cells[1]);
-            termSource.setFile(cells[2]);
+            termSource.setName(map.get(TERM_SOURCE_NAME));
+            termSource.setVersion(map.get(TERM_SOURCE_VERSION));
+            termSource.setFile(map.get(TERM_SOURCE_FILE));
             return termSource;
         }
     }
 
-    private static class ContactList extends AbstractIdfList<Person> {
-        protected ContactList() {
-            super(PERSON_FIRST_NAME,
+    private static class ContactList extends ObjectList<Person> {
+
+        private ContactList(Table table) {
+            super(table,
+                    PERSON_FIRST_NAME,
                     PERSON_LAST_NAME,
                     PERSON_MID_INITIALS,
                     PERSON_EMAIL,
@@ -179,150 +219,14 @@ public class Investigation {
         }
 
         @Override
-        public Person create(IdfCell[] cells) {
+        protected Person create(Map<RowTag, Row.Cell> map) {
             Person p = new Person();
-            p.setFirstName(cells[0]);
-            p.setLastName(cells[1]);
-            p.setMidInitials(cells[2]);
-            p.setEmail(cells[3]);
-            p.setRoles(createTerm(cells[4], cells[5], cells[6]));
+            p.setFirstName(map.get(PERSON_FIRST_NAME));
+            p.setLastName(map.get(PERSON_LAST_NAME));
+            p.setMidInitials(map.get(PERSON_MID_INITIALS));
+            p.setEmail(map.get(PERSON_EMAIL));
             return p;
         }
-    }
-
-    private abstract static class AbstractIdfList<T> {
-
-        private final Map<IdfRow, Integer> rowToIndex = newHashMap();
-
-        private final List<IdfRow> rows;
-
-        private Table table;
-
-        private int maxColumn = 0;
-
-        protected AbstractIdfList(IdfRow... rows) {
-            this.rows = newArrayList(rows);
-        }
-
-        public void init(Table table) {
-            for (int i = 0; i < table.getRowCount(); i++) {
-                Table.Value firstCell = table.getValueAt(i, 0);
-                if (firstCell == null || firstCell.isEmpty()) {
-                    continue;
-                }
-                for (IdfRow row : rows) {
-                    if (row.identifies(firstCell.getValue())) {
-                        if (rowToIndex.containsKey(row)) {
-                            table.setErrorAt(i, 0, "Duplicated row");
-                            return;
-                        }
-                        rowToIndex.put(row, i);
-                        maxColumn = Math.max(maxColumn, table.lastColumnIndex(i));
-                    }
-                }
-            }
-            this.table = table;
-        }
-
-        public Collection<Integer> getMappedRows() {
-            return Collections.unmodifiableCollection(rowToIndex.values());
-        }
-
-        public List<T> getAll() {
-            List<T> list = newArrayList();
-            for (int j = 1; j <= maxColumn; j++) {
-                IdfCell[] cells = new IdfCell[rows.size()];
-                int i = 0, zc = 0;
-                for (IdfRow row : rows) {
-                    cells[i] = idfCell(row, j);
-                    if (cells[i].isEmpty()) {
-                        zc++;
-                    }
-                    i++;
-                }
-                if (zc < cells.length) {
-                    list.add(create(cells));
-                }
-            }
-            return list;
-        }
-
-        protected T createNew() {
-            maxColumn++;
-
-            IdfCell[] cells = new IdfCell[rows.size()];
-            int i = 0;
-            for (IdfRow row : rows) {
-                cells[i] = idfCell(row, maxColumn);
-                i++;
-            }
-            return create(cells);
-        }
-
-        private IdfCell idfCell(IdfRow row, int columnIndex) {
-            return new IdfCell(row, columnIndex) {
-                @Override
-                protected Integer getRowIndex(IdfRow row) {
-                    return rowToIndex.get(row);
-                }
-
-                @Override
-                protected String getValue(IdfRow row, int columnIndex) {
-                    Table.Value value = this.getValueAndError(row, columnIndex);
-                    return value == null ? null : value.getValue();
-                }
-
-                @Override
-                protected void setValue(IdfRow row, int columnIndex, String value) {
-                    table.setValueAt(getOrCreateRow(row), columnIndex, value);
-                }
-
-                @Override
-                protected String getError(IdfRow row, int columnIndex) {
-                    Table.Value value = this.getValueAndError(row, columnIndex);
-                    return value == null ? null : value.getError();
-                }
-
-                @Override
-                protected void setError(IdfRow row, int columnIndex, String error) {
-                   table.setErrorAt(getOrCreateRow(row), columnIndex, error);
-                }
-
-                private Table.Value getValueAndError(IdfRow row, Integer columnIndex) {
-                    Integer rowIndex = rowToIndex.get(row);
-                    return rowIndex == null ? null : table.getValueAt(rowIndex, columnIndex);
-                }
-
-                private Integer getOrCreateRow(IdfRow row) {
-                    Integer rowIndex = rowToIndex.get(row);
-                    if (rowIndex == null) {
-                        rowIndex = table.addRow(Arrays.asList(row.getTag()));
-                    }
-                    return rowIndex;
-                }
-            };
-        }
-
-        public T getFirst(boolean forceCreate) {
-            List<T> all = getAll();
-            T t = null;
-            if (all.isEmpty()) {
-                t = forceCreate ? createNew() : t;
-            } else {
-                t = all.get(0);
-            }
-            return t;
-        }
-
-        protected Term createTerm(IdfCell name, IdfCell accession, IdfCell ref) {
-            Term term = new Term();
-            term.setName(name);
-            term.setAccession(accession);
-            term.setRef(ref);
-            return term;
-        }
-
-        protected abstract T create(IdfCell[] cells);
     }
 
     public List<TableCell> getErrors() {

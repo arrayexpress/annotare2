@@ -52,6 +52,11 @@ public class Table {
         return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
     }
 
+    public int lastColumnIndex() {
+        List<Index> ordered = from(Index.COMPARE_BY_COLUMN).reverse().sortedCopy(values.keySet());
+        return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
+    }
+
     public int addRow(Collection<String> values) {
         int rIndex = rowCount++;
         int cIndex = 0;
@@ -60,6 +65,10 @@ public class Table {
             cIndex++;
         }
         return rIndex;
+    }
+
+    public int addRow() {
+        return addRow(Collections.<String>emptyList());
     }
 
     public void setValueAt(int rIndex, int cIndex, String value) {

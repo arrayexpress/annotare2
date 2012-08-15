@@ -14,42 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
-
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
+package uk.ac.ebi.fg.annotare2.magetab.base;
 
 /**
  * @author Olga Melnichuk
  */
-public class TermSource {
+public interface RowTag {
 
-    private Row.Cell name;
-
-    private Row.Cell version;
-
-    private Row.Cell file;
-
-    public Row.Cell getName() {
-        return name;
-    }
-
-    public void setName(Row.Cell name) {
-        this.name = name;
-    }
-
-    public Row.Cell getVersion() {
-        return version;
-    }
-
-    public void setVersion(Row.Cell version) {
-        this.version = version;
-    }
-
-    public Row.Cell getFile() {
-        return file;
-    }
-
-    public void setFile(Row.Cell file) {
-        this.file = file;
-    }
+    String getName();
 }
