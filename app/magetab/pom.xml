@@ -24,7 +24,7 @@
     <artifactId>annotare2-magetab</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
-    <name>MageTab Generator</name>
+    <name>MageTab Lib</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
@@ -54,6 +54,19 @@
 
     <build>
         <plugins>
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

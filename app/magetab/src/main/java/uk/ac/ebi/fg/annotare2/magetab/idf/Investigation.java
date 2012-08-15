@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
+import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -34,6 +35,7 @@ import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public class Investigation {
 
     static enum Tag implements RowTag {
@@ -79,8 +81,7 @@ public class Investigation {
         this(new Table());
     }
 
-    @VisibleForTesting
-    Investigation(Table table) {
+    public Investigation(Table table) {
         this.table = table;
 
         generalInfoList = new GeneralInfoList(table);

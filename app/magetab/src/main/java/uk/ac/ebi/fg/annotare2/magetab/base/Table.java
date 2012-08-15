@@ -16,10 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
+import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -31,7 +34,8 @@ import static com.google.common.collect.Ordering.from;
 /**
  * @author Olga Melnichuk
  */
-public class Table {
+@GwtCompatible(serializable = true)
+public class Table implements Serializable {
 
     private int rowCount;
 
@@ -42,7 +46,7 @@ public class Table {
     }
 
     public int lastColumnIndex(final int rIndex) {
-        List<Index> ordered = from(Index.COMPARE_BY_COLUMN).reverse().sortedCopy(
+        List<Index> ordered = Index.COMPARE_BY_COLUMN.reverse().sortedCopy(
                 filter(values.keySet(), new Predicate<Index>() {
                     public boolean apply(@Nullable Index input) {
                         return input.getRow() == rIndex;
@@ -53,7 +57,7 @@ public class Table {
     }
 
     public int lastColumnIndex() {
-        List<Index> ordered = from(Index.COMPARE_BY_COLUMN).reverse().sortedCopy(values.keySet());
+        List<Index> ordered = Index.COMPARE_BY_COLUMN.reverse().sortedCopy(values.keySet());
         return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
     }
 
@@ -118,13 +122,13 @@ public class Table {
 
     private static class Index {
 
-        private static Comparator<Index> COMPARE_BY_ROW = new Comparator<Index>() {
+        private static Ordering<Index> COMPARE_BY_ROW = new Ordering<Index>() {
             public int compare(Index o1, Index o2) {
                 return Ints.compare(o1.getRow(), o2.getRow());
             }
         };
 
-        private static Comparator<Index> COMPARE_BY_COLUMN = new Comparator<Index>() {
+        private static Ordering<Index> COMPARE_BY_COLUMN = new Ordering<Index>() {
             public int compare(Index o1, Index o2) {
                 return Ints.compare(o1.getCol(), o2.getCol());
             }

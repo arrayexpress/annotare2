@@ -16,11 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
+import com.google.common.annotations.GwtCompatible;
+
 import java.util.*;
 
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public class RowSet {
 
     private final Map<RowTag, Integer> map = new HashMap<RowTag, Integer>();
