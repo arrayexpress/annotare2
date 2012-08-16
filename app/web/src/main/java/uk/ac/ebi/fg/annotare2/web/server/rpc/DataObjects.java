@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.magetab.idf.IdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
@@ -86,7 +87,7 @@ class DataObjects {
     };
 
     private static Investigation getInvestigation(Submission submission) throws IOException{
-        return Investigation.parse(submission.getInvestigation());
+        return IdfParser.parse(submission.getInvestigation());
     }
 
     static Function<SubmissionStatus, UISubmissionStatus> SUBMISSION_STATUS = new Function<SubmissionStatus, UISubmissionStatus>() {

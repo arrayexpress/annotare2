@@ -20,6 +20,9 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
+import uk.ac.ebi.fg.annotare2.magetab.idf.IdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfService;
@@ -60,8 +63,25 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
         return null;
     }
 
+    @Override
+    public Table loadInvestigation(int submissionId) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
+            return new TsvParser().parse(submission.getInvestigation());
+        } catch (RecordNotFoundException e) {
+            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
+        } catch (AccessControlException e) {
+            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (IOException e) {
+            log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
+        }
+        return null;
+    }
+
     private UIGeneralInfo parseGeneralInfo(InputStream in) throws IOException {
-        Investigation inv = Investigation.parse(in);
+        Investigation inv = IdfParser.parse(in);
         return new UIGeneralInfo(
                 inv.getTitle().getValue(),
                 inv.getDescription().getValue(),

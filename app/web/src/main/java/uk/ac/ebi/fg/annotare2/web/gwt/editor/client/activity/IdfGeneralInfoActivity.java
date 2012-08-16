@@ -23,6 +23,8 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils;
@@ -42,8 +44,8 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
 
     @Inject
     public IdfGeneralInfoActivity(IdfGeneralInfoView view,
-                              PlaceController placeController,
-                              IdfServiceAsync idfService) {
+                                  PlaceController placeController,
+                                  IdfServiceAsync idfService) {
         this.view = view;
         this.placeController = placeController;
         this.idfService = idfService;
@@ -73,7 +75,27 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
 
     private void loadAsync() {
         final int submissionId = EditorUtils.getSubmissionId();
-        idfService.getGeneralInfo(submissionId, new AsyncCallbackWrapper<UIGeneralInfo>() {
+        idfService.loadInvestigation(submissionId, new AsyncCallbackWrapper<Table>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load Investigation Data.");
+            }
+
+            @Override
+            public void onSuccess(Table result) {
+                if (result != null) {
+                    Investigation inv = new Investigation(result);
+
+                    view.setTitle(inv.getTitle().getValue());
+                    view.setDescription(inv.getDescription().getValue());
+                    //view.setDateOfExperiment(inv.getDateOfExperiment().getValue());
+                    //view.setDateOfPublicRelease(inv.getDateOfPublicRelease().getValue());
+                }
+            }
+        }.wrap());
+
+        /*idfService.getGeneralInfo(submissionId, new AsyncCallbackWrapper<UIGeneralInfo>() {
             public void onFailure(Throwable caught) {
                 // TODO proper error handling
                 Window.alert("Can't load idf general info for sid: " + submissionId);
@@ -87,7 +109,7 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
                     view.setDateOfPublicRelease(result.getDateOfPublicRelease());
                 }
             }
-        }.wrap());
+        }.wrap());*/
     }
 }
 

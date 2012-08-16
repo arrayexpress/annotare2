@@ -160,7 +160,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=PRETTY</extraJvmArgs>
+                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
                             <modules>
                                 <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
                                 <module>uk.ac.ebi.fg.annotare2.web.gwt.editor.EditorApp</module>
