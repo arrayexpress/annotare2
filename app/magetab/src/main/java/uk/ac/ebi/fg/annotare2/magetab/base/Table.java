@@ -121,7 +121,7 @@ public class Table implements Serializable {
         return new Index(rIndex, cIndex);
     }
 
-    private static class Index implements Serializable {
+    public static class Index implements Serializable {
 
         private static Ordering<Index> COMPARE_BY_ROW = new Ordering<Index>() {
             public int compare(Index o1, Index o2) {
