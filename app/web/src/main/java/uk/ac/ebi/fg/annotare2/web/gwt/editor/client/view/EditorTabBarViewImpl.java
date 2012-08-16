@@ -69,7 +69,7 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
         this.presenter = presenter;
     }
 
-    public void selectTab(EditorTabType tabType) {
+    public void setTab(EditorTabType tabType) {
         tabBar.selectTab(indexOf(tabType), false);
     }
 

@@ -49,7 +49,7 @@ public class EditorTabBarActivity extends AbstractActivity implements EditorTabB
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.selectTab(tabType);
+        view.setTab(tabType);
         containerWidget.setWidget(view.asWidget());
     }
 

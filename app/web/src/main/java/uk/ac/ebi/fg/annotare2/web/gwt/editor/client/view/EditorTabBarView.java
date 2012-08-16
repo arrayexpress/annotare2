@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface EditorTabBarView extends IsWidget {
 
-    void selectTab(EditorTabType tabType);
+    void setTab(EditorTabType tabType);
 
     void setPresenter(Presenter presenter);
 
