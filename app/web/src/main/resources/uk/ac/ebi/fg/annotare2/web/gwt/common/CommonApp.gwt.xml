@@ -15,9 +15,12 @@
   -->
 <module>
 
-    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab"/>
 
-    <source path='client' />
-    <source path="shared" />
+    <inherits name="com.google.gwt.user.User"/>
+
+    <source path="client"/>
+
+    <source path="shared"/>
 
 </module>
