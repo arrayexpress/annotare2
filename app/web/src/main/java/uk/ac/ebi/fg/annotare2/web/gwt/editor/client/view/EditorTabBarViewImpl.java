@@ -70,7 +70,7 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
     }
 
     public void selectTab(EditorTabType tabType) {
-        tabBar.selectTab(indexOf(tabType));
+        tabBar.selectTab(indexOf(tabType), false);
     }
 
     private void onTabSelect(Integer typeIndex) {
