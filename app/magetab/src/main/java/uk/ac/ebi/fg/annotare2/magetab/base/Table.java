@@ -42,6 +42,10 @@ public class Table implements Serializable {
         return rowCount;
     }
 
+    public Table() {
+        // required by GWT serialization policy
+    }
+
     public int lastColumnIndex(final int rIndex) {
         List<Index> ordered = Index.COMPARE_BY_COLUMN.reverse().sortedCopy(
                 filter(values.keySet(), new Predicate<Index>() {
@@ -92,7 +96,7 @@ public class Table implements Serializable {
 
     public List<TableCell> getCells() {
         List<TableCell> cells = new ArrayList<TableCell>();
-        for(Index i : values.keySet()) {
+        for (Index i : values.keySet()) {
             Value v = values.get(i);
             cells.add(new TableCell(i.getRow(), i.getCol(), v.getValue(), v.getError()));
         }
@@ -135,7 +139,11 @@ public class Table implements Serializable {
 
         private int col;
 
-        Index(int row, int col) {
+        public Index() {
+            // required by GWT serialization policy
+        }
+
+        public Index(int row, int col) {
             checkArgument(row >= 0, "Row index can't be negative");
             checkArgument(col >= 0, "Column index can't be negative");
             this.row = row;
@@ -177,11 +185,15 @@ public class Table implements Serializable {
 
         private String error;
 
-        private Value(String value) {
+        public Value() {
+            // required by GWT serialization policy
+        }
+
+        public Value(String value) {
             this.value = value;
         }
 
-        private Value(String value, String error) {
+        public Value(String value, String error) {
             this.value = value;
             this.error = error;
         }
