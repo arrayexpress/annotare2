@@ -17,4 +17,5 @@
     <source path="base"/>
     <source path="idf"/>
     <inherits name="com.google.common.base.Base"/>
+    <inherits name="com.google.common.collect.Collect"/>
 </module>

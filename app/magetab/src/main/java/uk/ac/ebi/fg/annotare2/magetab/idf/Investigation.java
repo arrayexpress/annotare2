@@ -17,18 +17,18 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import uk.ac.ebi.fg.annotare2.magetab.base.*;
+import uk.ac.ebi.fg.annotare2.magetab.base.Row;
+import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
 
 
@@ -74,7 +74,6 @@ public class Investigation {
 
     private TermSourceList termSourceList;
 
-
     private Table table;
 
     public Investigation() {
@@ -91,12 +90,8 @@ public class Investigation {
         if (generalInfoList.isEmpty()) {
             generalInfoList.add();
         }
-    }
 
-    public static Investigation parse(InputStream in) throws IOException {
-        Investigation table = new Investigation(new TsvParser().parse(in));
-        table.check();
-        return table;
+        //check();
     }
 
     public void check() {
@@ -231,7 +226,7 @@ public class Investigation {
     }
 
     public List<TableCell> getErrors() {
-        return newArrayList(Collections2.filter(table.getCells(), new Predicate<TableCell>() {
+        return new ArrayList<TableCell>(Collections2.filter(table.getCells(), new Predicate<TableCell>() {
             public boolean apply(@Nullable TableCell input) {
                 return input.hasError();
             }

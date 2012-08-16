@@ -36,7 +36,7 @@ public class InvestigationTest {
 
     @Test
     public void parseTest() throws IOException {
-        Investigation idf = Investigation.parse(InvestigationTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
+        Investigation idf = IdfParser.parse(InvestigationTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
 
         assertEquals("Transcription profiling by array of Arabidopsis wild type and rbr1-cs plants", idf.getTitle().getValue());
         assertEquals("Wild-type and rbr1-cs plants were grown on MS plates for 3 days. RNA was extracted from both genotypes and hybridized to ATH1 arrays.", idf.getDescription().getValue());
