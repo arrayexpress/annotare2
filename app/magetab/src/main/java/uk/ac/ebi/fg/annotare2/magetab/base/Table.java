@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Ordering;
-import com.google.common.primitives.Ints;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -28,8 +27,6 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Ordering.from;
 
 /**
  * @author Olga Melnichuk
@@ -94,7 +91,7 @@ public class Table implements Serializable {
     }
 
     public List<TableCell> getCells() {
-        List<TableCell> cells = newArrayList();
+        List<TableCell> cells = new ArrayList<TableCell>();
         for(Index i : values.keySet()) {
             Value v = values.get(i);
             cells.add(new TableCell(i.getRow(), i.getCol(), v.getValue(), v.getError()));
@@ -120,17 +117,17 @@ public class Table implements Serializable {
         return new Index(rIndex, cIndex);
     }
 
-    private static class Index {
+    private static class Index implements Serializable {
 
         private static Ordering<Index> COMPARE_BY_ROW = new Ordering<Index>() {
             public int compare(Index o1, Index o2) {
-                return Ints.compare(o1.getRow(), o2.getRow());
+                return Integer.valueOf(o1.getRow()).compareTo(o2.getRow());
             }
         };
 
         private static Ordering<Index> COMPARE_BY_COLUMN = new Ordering<Index>() {
             public int compare(Index o1, Index o2) {
-                return Ints.compare(o1.getCol(), o2.getCol());
+                return Integer.valueOf(o1.getCol()).compareTo(o2.getCol());
             }
         };
 
@@ -174,7 +171,7 @@ public class Table implements Serializable {
         }
     }
 
-    public static class Value {
+    public static class Value implements Serializable {
 
         private String value;
 

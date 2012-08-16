@@ -25,10 +25,10 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
 
 
@@ -226,7 +226,7 @@ public class Investigation {
     }
 
     public List<TableCell> getErrors() {
-        return newArrayList(Collections2.filter(table.getCells(), new Predicate<TableCell>() {
+        return new ArrayList<TableCell>(Collections2.filter(table.getCells(), new Predicate<TableCell>() {
             public boolean apply(@Nullable TableCell input) {
                 return input.hasError();
             }
