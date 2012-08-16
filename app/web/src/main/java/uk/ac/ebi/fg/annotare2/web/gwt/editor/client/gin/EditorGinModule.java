@@ -24,6 +24,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorContentDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorLeftMenuDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabBarDisplay;
@@ -53,6 +54,8 @@ public class EditorGinModule extends AbstractGinModule {
         bind(IdfGeneralInfoView.class).to(IdfGeneralInfoViewImpl.class);
         bind(IdfContentView.class).to(IdfContentViewImpl.class);
         bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
+
+        bind(InvestigationData.class).in(Singleton.class);
     }
 
     @Provides

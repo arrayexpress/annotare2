@@ -28,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.IdfContentView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoView;
 
@@ -40,19 +41,18 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
 
     private final PlaceController placeController;
 
-    private final IdfServiceAsync idfService;
+    private final InvestigationData investigationData;
 
     @Inject
     public IdfGeneralInfoActivity(IdfGeneralInfoView view,
                                   PlaceController placeController,
-                                  IdfServiceAsync idfService) {
+                                  InvestigationData investigationData) {
         this.view = view;
         this.placeController = placeController;
-        this.idfService = idfService;
+        this.investigationData = investigationData;
     }
 
     public IdfGeneralInfoActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
         return this;
     }
 
@@ -74,8 +74,7 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
     }
 
     private void loadAsync() {
-        final int submissionId = EditorUtils.getSubmissionId();
-        idfService.loadInvestigation(submissionId, new AsyncCallbackWrapper<Table>() {
+        investigationData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -83,10 +82,8 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
             }
 
             @Override
-            public void onSuccess(Table result) {
-                if (result != null) {
-                    Investigation inv = new Investigation(result);
-
+            public void onSuccess(Investigation inv) {
+                if (inv != null) {
                     view.setTitle(inv.getTitle().getValue());
                     view.setDescription(inv.getDescription().getValue());
                     //view.setDateOfExperiment(inv.getDateOfExperiment().getValue());
@@ -94,22 +91,6 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
                 }
             }
         }.wrap());
-
-        /*idfService.getGeneralInfo(submissionId, new AsyncCallbackWrapper<UIGeneralInfo>() {
-            public void onFailure(Throwable caught) {
-                // TODO proper error handling
-                Window.alert("Can't load idf general info for sid: " + submissionId);
-            }
-
-            public void onSuccess(UIGeneralInfo result) {
-                if (result != null) {
-                    view.setTitle(result.getTitle());
-                    view.setDescription(result.getDescription());
-                    view.setDateOfExperiment(result.getDateOfExperiment());
-                    view.setDateOfPublicRelease(result.getDateOfPublicRelease());
-                }
-            }
-        }.wrap());*/
     }
 }
 
