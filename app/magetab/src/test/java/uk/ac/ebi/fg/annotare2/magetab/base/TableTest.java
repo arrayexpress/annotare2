@@ -17,16 +17,19 @@
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.primitives.Ints.asList;
+import static com.google.common.primitives.Ints.lastIndexOf;
 import static org.junit.Assert.*;
 
 /**
@@ -35,7 +38,7 @@ import static org.junit.Assert.*;
 public class TableTest {
 
     @Test
-    public void test() {
+    public void testTableCreation() {
         testTable(
                 asList(),
                 asList());
@@ -53,6 +56,35 @@ public class TableTest {
                 asList(0, 1, 2),
                 asList(),
                 asList(0, 1));
+    }
+
+    @Test
+    public void testTableChanges() {
+        final Table table1 = new Table();
+        final Table table2 = new Table();
+
+        table1.addChangeListener(new ChangeListener() {
+            @Override
+            public void onChange(List<Operation> operations) {
+                table2.applyChanges(operations);
+            }
+        });
+
+        table1.addRow(Arrays.asList("1", "2", "3"));
+        table1.addRow(Arrays.asList("1", "2", "3"));
+
+        assertEquals(table1.getRowCount(), table2.getRowCount());
+        assertEquals(table1.lastColumnIndex(), table2.lastColumnIndex());
+
+        for (int i = 0; i < table1.getRowCount(); i++) {
+            int maxIndex = table1.lastColumnIndex(i);
+            assertEquals(maxIndex, table2.lastColumnIndex(i));
+            for (int j = 0; j <= maxIndex; j++) {
+                Table.Value v1 = table1.getValueAt(i, j);
+                Table.Value v2 = table2.getValueAt(i, j);
+                assertEquals(v1, v2);
+            }
+        }
     }
 
     private void testTable(List<Integer>... rows) {
