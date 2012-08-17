@@ -31,12 +31,16 @@ import static com.google.common.collect.Collections2.filter;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible(serializable = true)
+@GwtCompatible
 public class Table implements Serializable {
 
     private int rowCount;
 
     private Map<Index, Value> values = new HashMap<Index, Value>();
+
+    private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+
+    private transient List<Operation> currentChanges;
 
     public int getRowCount() {
         return rowCount;
@@ -64,6 +68,8 @@ public class Table implements Serializable {
 
     public int addRow(Collection<String> values) {
         int rIndex = rowCount++;
+        addChange(Operation.addRow());
+
         int cIndex = 0;
         for (String v : values) {
             setValueAt(rIndex, cIndex, v);
@@ -103,12 +109,54 @@ public class Table implements Serializable {
         return cells;
     }
 
+    public void applyChanges(List<Operation> operations) {
+        for(Operation op : operations) {
+            op.apply(this);
+        }
+    }
+
+    public void addChangeListener(ChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeChangeListener(ChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyListeners(List<Operation> changes) {
+        for (ChangeListener listener : listeners) {
+            listener.onChange(changes);
+        }
+    }
+
+    private void addChange(Operation op) {
+        if (currentChanges == null) {
+            List<Operation> changes = new ArrayList<Operation>();
+            changes.add(op);
+            notifyListeners(changes);
+        } else {
+            currentChanges.add(op);
+        }
+    }
+
+    void startChanging() {
+        if (currentChanges != null) {
+            throw new IllegalStateException("The list of changes is not empty; clean these changes first");
+        }
+    }
+
+    void stopChanging() {
+        notifyListeners(currentChanges);
+        currentChanges = null;
+    }
+
     private void setValueAt(Index index, Value v) {
         if (v.isEmpty()) {
             values.remove(index);
         } else {
             values.put(index, v);
         }
+        addChange(Operation.updateCell(index.getRow(), index.getCol(), v.getValue()));
     }
 
     private Index indexFor(int rIndex, int cIndex) {
@@ -208,6 +256,23 @@ public class Table implements Serializable {
 
         public boolean isEmpty() {
             return isNullOrEmpty(value) && isNullOrEmpty(error);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Value)) return false;
+
+            Value value1 = (Value) o;
+
+            if (value != null ? !value.equals(value1.value) : value1.value != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return value != null ? value.hashCode() : 0;
         }
     }
 }

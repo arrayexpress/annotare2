@@ -26,11 +26,13 @@ import java.util.*;
 @GwtCompatible
 public class RowSet {
 
-    private final Map<RowTag, Integer> map = new HashMap<RowTag, Integer>();
+    private List<RowTag> tags = new ArrayList<RowTag>();
 
-    private final List<Row> rows = new ArrayList<Row>();
+    private Map<RowTag, Integer> map;
 
-    private final List<RowTag> tags = new ArrayList<RowTag>();
+    private List<Row> rows;
+
+    private Table table;
 
     private int columnCount = 0;
 
@@ -38,7 +40,11 @@ public class RowSet {
         this.tags.addAll(Arrays.asList(tags));
     }
 
-    public void addAll(Table table) {
+    public void addAll(Table aTable) {
+        map = new HashMap<RowTag, Integer>();
+        rows = new ArrayList<Row>();
+        table = aTable;
+
         int count = 0;
         for (RowTag t : tags) {
             TaggedRow row = new TaggedRow(table, t);
@@ -54,13 +60,17 @@ public class RowSet {
     }
 
     public void removeColumn(int i) {
-       for(Row row : rows) {
-          row.removeCell(row.cellAt(i));
-       }
+        table.startChanging();
+        for (Row row : rows) {
+            row.removeCell(row.cellAt(i));
+        }
+        table.stopChanging();
     }
 
     public void moveColumn(int i) {
-       // TODO
+        table.startChanging();
+        // TODO
+        table.stopChanging();
     }
 
     public int addColumn() {
