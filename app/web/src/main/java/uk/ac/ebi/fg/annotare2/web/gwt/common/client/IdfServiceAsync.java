@@ -19,12 +19,17 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.magetab.base.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
+
+import java.util.List;
 
 public interface IdfServiceAsync {
 
     void getGeneralInfo(int submissionId, AsyncCallback<UIGeneralInfo> async);
 
     void loadInvestigation(int submissionId, AsyncCallback<Table> async);
+
+    void updateInvestigation(int submissionId, List<Operation> operations, AsyncCallback<Void> async);
 }

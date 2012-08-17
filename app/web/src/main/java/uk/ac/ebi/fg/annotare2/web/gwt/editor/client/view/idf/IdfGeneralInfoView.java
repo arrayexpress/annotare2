@@ -32,4 +32,13 @@ public interface IdfGeneralInfoView extends IsWidget {
     public void setDateOfExperiment(Date date);
 
     public void setDateOfPublicRelease(Date date);
+
+    public void setPresenter(Presenter presenter);
+
+    public interface Presenter {
+
+        void setTitle(String title);
+
+        void setDescription(String description);
+    }
 }

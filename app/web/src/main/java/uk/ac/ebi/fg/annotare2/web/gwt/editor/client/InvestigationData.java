@@ -16,12 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.magetab.base.ChangeListener;
+import uk.ac.ebi.fg.annotare2.magetab.base.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfServiceAsync;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -36,9 +44,19 @@ public class InvestigationData {
 
     private Investigation investigation;
 
+    private Queue<List<Operation>> changes = new LinkedList<List<Operation>>();
+
+    private static final int MAX_SIZE = 100;
+
     @Inject
     public InvestigationData(IdfServiceAsync idfService) {
         this.idfService = idfService;
+        new Timer() {
+            @Override
+            public void run() {
+               sendChanges();
+            }
+        }.scheduleRepeating(2000);
     }
 
     public void getInvestigation(AsyncCallback<Investigation> callback) {
@@ -58,10 +76,46 @@ public class InvestigationData {
 
             @Override
             public void onSuccess(Table result) {
-                table = result;
-                investigation = new Investigation(table);
-                callback.onSuccess(investigation);
+                callback.onSuccess(setTable(result));
             }
         }.wrap());
     }
+
+    private Investigation setTable(Table table) {
+        this.table = table;
+        this.investigation = new Investigation(table);
+        this.table.addChangeListener(new ChangeListener() {
+            @Override
+            public void onChange(List<Operation> operations) {
+                if (changes.size() < MAX_SIZE) {
+                    changes.add(operations);
+                } else {
+                    //TODO use local storage?
+                    Window.alert("Cache of changes exceeded");
+                }
+            }
+        });
+        return this.investigation;
+    }
+
+    private void sendChanges() {
+        if (changes.isEmpty()) {
+            return;
+        }
+
+        List<Operation> next = changes.peek();
+        idfService.updateInvestigation(getSubmissionId(), next, new AsyncCallbackWrapper<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't save changes on the server");
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                changes.poll();
+            }
+        }.wrap());
+    }
+
 }

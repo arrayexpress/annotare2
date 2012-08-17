@@ -23,6 +23,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
@@ -35,13 +36,15 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoView;
 /**
  * @author Olga Melnichuk
  */
-public class IdfGeneralInfoActivity extends AbstractActivity {
+public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGeneralInfoView.Presenter {
 
     private final IdfGeneralInfoView view;
 
     private final PlaceController placeController;
 
     private final InvestigationData investigationData;
+
+    private Investigation investigation;
 
     @Inject
     public IdfGeneralInfoActivity(IdfGeneralInfoView view,
@@ -58,7 +61,7 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //TODO view.setPresenter(this);
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
     }
@@ -84,6 +87,7 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
             @Override
             public void onSuccess(Investigation inv) {
                 if (inv != null) {
+                    investigation = inv;
                     view.setTitle(inv.getTitle().getValue());
                     view.setDescription(inv.getDescription().getValue());
                     //view.setDateOfExperiment(inv.getDateOfExperiment().getValue());
@@ -91,6 +95,20 @@ public class IdfGeneralInfoActivity extends AbstractActivity {
                 }
             }
         }.wrap());
+    }
+
+    @Override
+    public void setTitle(String title) {
+        if (investigation != null) {
+            investigation.getTitle().setValue(title);
+        }
+    }
+
+    @Override
+    public void setDescription(String description) {
+        if (investigation != null) {
+            investigation.getDescription().setValue(description);
+        }
     }
 }
 

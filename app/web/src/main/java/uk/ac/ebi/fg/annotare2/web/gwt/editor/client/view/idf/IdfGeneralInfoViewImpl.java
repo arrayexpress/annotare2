@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -48,6 +50,8 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
     @UiField
     DateBox dateOfPublicRelease;
 
+    private Presenter presenter;
+
     @Inject
     public IdfGeneralInfoViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -55,6 +59,20 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(DateTimeFormat.getFormat("yyyy-MM-dd"));
         dateOfExperiment.setFormat(format);
         dateOfPublicRelease.setFormat(format);
+
+        title.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                presenter.setTitle(title.getValue());
+            }
+        });
+
+        description.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                presenter.setDescription(description.getValue());
+            }
+        });
     }
 
     @Override
@@ -75,5 +93,10 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
     @Override
     public void setDateOfPublicRelease(Date date) {
         this.dateOfPublicRelease.setValue(date);
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 }
