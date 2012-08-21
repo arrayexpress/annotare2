@@ -25,45 +25,45 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 @GwtCompatible
 public class Person {
 
-    private Row.Cell firstName;
+    private Row.Cell<String> firstName;
 
-    private Row.Cell lastName;
+    private Row.Cell<String> lastName;
 
-    private Row.Cell midInitials;
+    private Row.Cell<String> midInitials;
 
-    private Row.Cell email;
+    private Row.Cell<String> email;
 
     private Term roles;
 
-    public Row.Cell getFirstName() {
+    public Row.Cell<String> getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(Row.Cell firstName) {
+    public void setFirstName(Row.Cell<String> firstName) {
         this.firstName = firstName;
     }
 
-    public Row.Cell getLastName() {
+    public Row.Cell<String> getLastName() {
         return lastName;
     }
 
-    public void setLastName(Row.Cell lastName) {
+    public void setLastName(Row.Cell<String> lastName) {
         this.lastName = lastName;
     }
 
-    public Row.Cell getMidInitials() {
+    public Row.Cell<String> getMidInitials() {
         return midInitials;
     }
 
-    public void setMidInitials(Row.Cell midInitials) {
+    public void setMidInitials(Row.Cell<String> midInitials) {
         this.midInitials = midInitials;
     }
 
-    public Row.Cell getEmail() {
+    public Row.Cell<String> getEmail() {
         return email;
     }
 
-    public void setEmail(Row.Cell email) {
+    public void setEmail(Row.Cell<String> email) {
         this.email = email;
     }
 

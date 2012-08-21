@@ -25,33 +25,33 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 @GwtCompatible
 public class Term {
 
-    private Row.Cell name;
+    private Row.Cell<String> name;
 
-    private Row.Cell accession;
+    private Row.Cell<String> accession;
 
-    private Row.Cell ref;
+    private Row.Cell<String> ref;
 
-    public Row.Cell getName() {
+    public Row.Cell<String> getName() {
         return name;
     }
 
-    public void setName(Row.Cell name) {
+    public void setName(Row.Cell<String> name) {
         this.name = name;
     }
 
-    public Row.Cell getAccession() {
+    public Row.Cell<String> getAccession() {
         return accession;
     }
 
-    public void setAccession(Row.Cell accession) {
+    public void setAccession(Row.Cell<String> accession) {
         this.accession = accession;
     }
 
-    public Row.Cell getRef() {
+    public Row.Cell<String> getRef() {
         return ref;
     }
 
-    public void setRef(Row.Cell ref) {
+    public void setRef(Row.Cell<String> ref) {
         this.ref = ref;
     }
 }

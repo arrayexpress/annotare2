@@ -26,7 +26,7 @@ public class TaggedRow extends Row {
 
     private final RowTag tag;
 
-    private Cell tagCell;
+    private Cell<String> tagCell;
 
     public TaggedRow(Table table, RowTag tag) {
         super(table, findRowIn(table, tag));
@@ -47,7 +47,7 @@ public class TaggedRow extends Row {
     }
 
     @Override
-    public Cell cellAt(int index) {
+    public Cell<String> cellAt(int index) {
         return super.cellAt(index + 1);
     }
 
@@ -58,7 +58,7 @@ public class TaggedRow extends Row {
     }
 
     @Override
-    public void setValueFor(Cell cell, String s) {
+    public void setValueFor(Cell<String> cell, String s) {
         if (!exists()) {
             super.setValueFor(tagCell, tag.getName());
         }
