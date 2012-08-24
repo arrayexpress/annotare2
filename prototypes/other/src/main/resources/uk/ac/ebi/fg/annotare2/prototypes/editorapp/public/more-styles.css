@@ -1,0 +1,12 @@
+@sprite .draggable-icon {
+    gwt-image: 'draggableIcon';
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    cursor: move;
+}
+
+@sprite .triangle-icon {
+    gwt-image: 'triangleIcon';
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='EditorApp'>
 
+    <inherits name="com.google.gwt.resources.Resources"/>
+
     <!-- Inherit the core Web Toolkit stuff.                        -->
-    <inherits name='com.google.gwt.user.User' />
+    <inherits name='com.google.gwt.user.User'/>
 
     <!-- Inherit the default GWT style sheet.  You can change       -->
     <!-- the theme of your GWT application by uncommenting          -->
@@ -12,11 +14,12 @@
     <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.EditorApp' />
+    <entry-point class='uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.EditorApp'/>
 
     <!-- Specify the paths for translatable code                    -->
-    <source path='client' />
-    <source path='shared' />
+    <source path='client'/>
+    <source path='shared'/>
+    <source path='public'/>
 
     <!--stylesheet src='../layout.css' /-->
 

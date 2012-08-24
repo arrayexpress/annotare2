@@ -1,88 +1,61 @@
 package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiConstructor;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Olga Melnichuk
  */
 public class ContactView extends Composite implements IsWidget {
 
-    interface Binder extends UiBinder<Widget, ContactView> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
 
-    @UiField
-    DisclosurePanel disclosurePanel;
+   DisclosurePanel disclosurePanel = new DisclosurePanel();
 
-    @UiField
-    TextBoxWithPlaceHolder firstNameBox;
+   ContactDetails contactDetails = new ContactDetails();
 
-    @UiField
-    TextBoxWithPlaceHolder initialsBox;
+   SortableListHeader header = new SortableListHeader();
 
-    @UiField
-    TextBoxWithPlaceHolder lastNameBox;
-
-    private Header header = new Header();
-
-    @UiConstructor
     public ContactView() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
+
+        disclosurePanel.setWidth("100%");
+        disclosurePanel.addStyleName("my-ContactView");
+
+        disclosurePanel.setHeader(header);
+        disclosurePanel.setContent(contactDetails);
+        /*disclosurePanel.addOpenHandler(new OpenHandler<DisclosurePanel>() {
+            public void onOpen(OpenEvent<DisclosurePanel> event) {
+                header.setOpened();
+            }
+        });
+
+        disclosurePanel.addCloseHandler(new CloseHandler<DisclosurePanel>() {
+            public void onClose(CloseEvent<DisclosurePanel> event) {
+                header.setClosed();
+            }
+        });*/
+
+        initWidget(disclosurePanel);
+        setFirstName("Test");
+        setLastName("Test");
+        setInitials("T");
     }
 
     private void updateHeader() {
-        disclosurePanel.getHeaderTextAccessor().setText(header.toString());
+       header.setText(contactDetails.getTitle());
     }
 
     public void setFirstName(String name) {
-        firstNameBox.setValue(name);
-        header.setFirstName(name);
+        contactDetails.setFirstName(name);
         updateHeader();
     }
 
     public void setLastName(String name) {
-        lastNameBox.setValue(name);
-        header.setLastName(name);
+        contactDetails.setLastName(name);
         updateHeader();
     }
 
     public void setInitials(String initials){
-        initialsBox.setValue(initials);
-        header.setInitials(initials);
+        contactDetails.setInitials(initials);
         updateHeader();
-    }
-
-    private static class Header {
-        private String firstName = "";
-        private String lastName = "";
-        private String initials = "";
-
-        @Override
-        public String toString() {
-            return isEmpty() ? "Empty" : firstName + " " + initials + " " + lastName;
-        }
-
-        private boolean isEmpty() {
-            return firstName.isEmpty() && lastName.isEmpty() && initials.isEmpty();
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName == null ? "" : firstName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName == null ? "" : lastName;
-        }
-
-        public void setInitials(String initials) {
-            this.initials = initials == null ? "" : initials;
-        }
     }
 }

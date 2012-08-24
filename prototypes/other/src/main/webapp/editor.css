@@ -50,6 +50,31 @@
     border: 1px solid #ccc;
 }
 
+.my-ContactView {
+    background-color: #efefef;
+}
+
 .my-ContactView .my-content td {
     padding-left: 15px;
+}
+
+.dnd-container {
+    border-top: 2px dotted white;
+}
+
+.dnd-over {
+    border-top: 2px dotted blue;
+}
+
+.dnd-opacity {
+    opacity: 0.4;
+    -webkit-appearance: none;
+}
+
+/* Prevent the text contents of draggable elements from being selectable. */
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
