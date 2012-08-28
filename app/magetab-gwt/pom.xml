@@ -122,6 +122,9 @@
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>
+                <directory>src/main/java</directory>
+            </resource>
+            <resource>
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
