@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public class GwtTextFormatterTest extends GWTTestCase {
+public class GwtTextFormatterGwtTest extends GWTTestCase {
 
     public void testParseDate() {
         TextFormatter tf = new GwtTextFormatter();
