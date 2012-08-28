@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf.format;
 
+import com.google.common.annotations.GwtCompatible;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 import java.util.Date;
@@ -23,17 +24,22 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public class DefaultDateFormat implements DateFormat {
+@GwtCompatible
+public class GwtTextFormatter extends TextFormatter {
 
     private DateTimeFormat dateFormat = DateTimeFormat.getFormat(DATE_FORMAT);
 
+    public static void init() {
+        TextFormatter.setDelegate(new GwtTextFormatter());
+    }
+
     @Override
-    public Date parse(String str) {
+    public Date parseDate(String str) {
         return dateFormat.parse(str);
     }
 
     @Override
-    public String format(Date date) {
+    public String formatDate(Date date) {
         return dateFormat.format(date);
     }
 }
