@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab;
+package uk.ac.ebi.fg.annotare2.magetab.init;
 
-import uk.ac.ebi.fg.annotare2.magetab.idf.format.GwtTextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.idf.format.JseTextFormatter;
 
 /**
- * To initialise GWT specific code run {@code GwtMagetab.init()} in the your application's initialisation routine.
+ * Magetab library can be used in both JSE and GWT environments. This class helps to initialise JSE specific code;
+ * <code>Magetab.init()</code> should be run in your application's initialisation routine.
+ * <p/>
+ * Note: To use Magetab in GWT use <code>GwtMagetab.init()</code> from the corresponding <code>magetab-gwt</code>
+ * library.
  *
  * @author Olga Melnichuk
  */
-public class GwtMagetab {
+public class Magetab {
 
     public static void init() {
-        GwtTextFormatter.init();
+        JseTextFormatter.init();
     }
 }
