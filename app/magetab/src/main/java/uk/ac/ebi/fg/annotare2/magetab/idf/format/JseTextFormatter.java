@@ -20,6 +20,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * @author Olga Melnichuk
  */
@@ -34,7 +36,7 @@ public class JseTextFormatter extends TextFormatter {
     @Override
     public Date parseDate(String str) {
         try {
-            return str == null ? null : dateFormat.parse(str);
+            return isNullOrEmpty(str) ? null : dateFormat.parse(str);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Date is in the wrong format: " + str);
         }

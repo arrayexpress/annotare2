@@ -21,6 +21,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 import java.util.Date;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * @author Olga Melnichuk
  */
@@ -35,11 +37,11 @@ public class GwtTextFormatter extends TextFormatter {
 
     @Override
     public Date parseDate(String str) {
-        return dateFormat.parse(str);
+        return isNullOrEmpty(str) ? null : dateFormat.parse(str);
     }
 
     @Override
     public String formatDate(Date date) {
-        return dateFormat.format(date);
+        return date == null ? null : dateFormat.format(date);
     }
 }
