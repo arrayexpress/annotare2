@@ -23,15 +23,12 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.IdfContentView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoView;
+
+import java.util.Date;
 
 /**
  * @author Olga Melnichuk
@@ -108,6 +105,20 @@ public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGener
     public void setDescription(String description) {
         if (investigation != null) {
             investigation.getDescription().setValue(description);
+        }
+    }
+
+    @Override
+    public void setDateOfExperiment(Date date) {
+        if (investigation != null) {
+            //investigation.getDateOfExperiment().setValue();
+        }
+    }
+
+    @Override
+    public void setDateOfPublicRelease(Date date) {
+        if (investigation != null) {
+            //investigation.getDateOfPublicRelease().setValue();
         }
     }
 }

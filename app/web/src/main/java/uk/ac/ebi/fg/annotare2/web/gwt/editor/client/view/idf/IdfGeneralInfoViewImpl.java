@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -29,6 +31,9 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
 
 import java.util.Date;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
 
 /**
  * @author Olga Melnichuk
@@ -56,9 +61,13 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
     public IdfGeneralInfoViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
-        DateBox.DefaultFormat format = new DateBox.DefaultFormat(DateTimeFormat.getFormat("yyyy-MM-dd"));
+
+        DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
         dateOfExperiment.setFormat(format);
+        dateOfExperiment.getElement().setPropertyString("placeholder", dateTimeFormatPlaceholder());
+
         dateOfPublicRelease.setFormat(format);
+        dateOfPublicRelease.getElement().setPropertyString("placeholder",  dateTimeFormatPlaceholder());
 
         title.addChangeHandler(new ChangeHandler() {
             @Override
@@ -71,6 +80,20 @@ public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoV
             @Override
             public void onChange(ChangeEvent event) {
                 presenter.setDescription(description.getValue());
+            }
+        });
+
+        dateOfExperiment.addValueChangeHandler(new ValueChangeHandler<Date>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Date> event) {
+                presenter.setDateOfExperiment(event.getValue());
+            }
+        });
+
+        dateOfPublicRelease.addValueChangeHandler(new ValueChangeHandler<Date>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Date> event) {
+                presenter.setDateOfPublicRelease(event.getValue());
             }
         });
     }

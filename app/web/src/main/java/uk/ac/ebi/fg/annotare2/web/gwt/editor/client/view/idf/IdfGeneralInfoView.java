@@ -40,5 +40,9 @@ public interface IdfGeneralInfoView extends IsWidget {
         void setTitle(String title);
 
         void setDescription(String description);
+
+        void setDateOfExperiment(Date date);
+
+        void setDateOfPublicRelease(Date date);
     }
 }
