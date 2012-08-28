@@ -29,7 +29,7 @@ import uk.ac.ebi.fg.annotare2.magetab.idf.format.JseTextFormatter;
  */
 public class Magetab {
 
-    public void init() {
+    public static void init() {
         JseTextFormatter.init();
     }
 }
