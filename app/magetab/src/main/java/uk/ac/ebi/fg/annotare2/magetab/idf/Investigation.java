@@ -23,7 +23,7 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
-import uk.ac.ebi.fg.annotare2.magetab.idf.format.DefaultDateFormat;
+import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -186,8 +186,6 @@ public class Investigation {
         private Row.Cell<Date> asDateCell(final Row.Cell<String> cell) {
             return new Row.Cell<Date>() {
 
-                private DefaultDateFormat dateFormat = new DefaultDateFormat();
-
                 @Override
                 public void setValue(Date date) {
                     cell.setValue(format(date));
@@ -204,11 +202,11 @@ public class Investigation {
                 }
 
                 private String format(Date date) {
-                    return dateFormat.format(date);
+                    return TextFormatter.getInstance().formatDate(date);
                 }
 
                 private Date parse(String s) {
-                    return dateFormat.parse(s);
+                    return TextFormatter.getInstance().parseDate(s);
                 }
             };
         }

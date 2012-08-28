@@ -14,28 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf.format;
+package uk.ac.ebi.fg.annotare2.magetab;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import uk.ac.ebi.fg.annotare2.magetab.idf.format.GwtTextFormatter;
 
 /**
+ * To initialise GWT specific code run {@code GwtMagetab.init()} in the your application's initialisation routine.
+ *
  * @author Olga Melnichuk
  */
-public class DefaultDateFormat implements DateFormat {
+public class GwtMagetab {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DateFormat.DATE_FORMAT);
-
-    public Date parse(String str) {
-        try {
-            return str == null ? null : dateFormat.parse(str);
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Date is in the wrong format: " + str);
-        }
-    }
-
-    public String format(Date date) {
-        return date == null ? null : dateFormat.format(date);
+    public static void init() {
+        GwtTextFormatter.init();
     }
 }
