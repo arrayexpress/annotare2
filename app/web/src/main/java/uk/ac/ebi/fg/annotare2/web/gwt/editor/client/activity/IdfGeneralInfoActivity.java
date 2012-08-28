@@ -87,8 +87,8 @@ public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGener
                     investigation = inv;
                     view.setTitle(inv.getTitle().getValue());
                     view.setDescription(inv.getDescription().getValue());
-                    //view.setDateOfExperiment(inv.getDateOfExperiment().getValue());
-                    //view.setDateOfPublicRelease(inv.getDateOfPublicRelease().getValue());
+                    view.setDateOfExperiment(inv.getDateOfExperiment().getValue());
+                    view.setDateOfPublicRelease(inv.getDateOfPublicRelease().getValue());
                 }
             }
         }.wrap());
@@ -111,14 +111,14 @@ public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGener
     @Override
     public void setDateOfExperiment(Date date) {
         if (investigation != null) {
-            //investigation.getDateOfExperiment().setValue();
+            investigation.getDateOfExperiment().setValue(date);
         }
     }
 
     @Override
     public void setDateOfPublicRelease(Date date) {
         if (investigation != null) {
-            //investigation.getDateOfPublicRelease().setValue();
+            investigation.getDateOfPublicRelease().setValue(date);
         }
     }
 }

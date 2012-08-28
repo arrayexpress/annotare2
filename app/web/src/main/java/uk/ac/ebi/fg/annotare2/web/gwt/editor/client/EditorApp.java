@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
@@ -53,6 +54,8 @@ public class EditorApp implements EntryPoint {
                 e.printStackTrace();
             }
         });
+
+        GwtMagetab.init();
 
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();

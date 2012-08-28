@@ -20,11 +20,22 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
+import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
+
+import javax.servlet.ServletContextEvent;
 
 /**
  * @author Olga Melnichuk
  */
 public class AppServletContextListener extends GuiceServletContextListener {
+
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        super.contextInitialized(servletContextEvent);
+
+        Magetab.init();
+    }
+
     @Override
     protected Injector getInjector() {
         return Guice.createInjector(Stage.DEVELOPMENT, new AppServletModule());
