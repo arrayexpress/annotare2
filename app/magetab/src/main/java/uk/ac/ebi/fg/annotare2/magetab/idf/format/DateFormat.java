@@ -14,44 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.idf.format;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
+
+import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class TermSource {
+public interface DateFormat {
 
-    private Row.Cell<String> name;
+    public static String DATE_FORMAT = "yyyy-MM-dd";
 
-    private Row.Cell<String> version;
+    Date parse(String str);
 
-    private Row.Cell<String> file;
+    String format(Date date);
 
-    public Row.Cell<String> getName() {
-        return name;
-    }
-
-    public void setName(Row.Cell<String> name) {
-        this.name = name;
-    }
-
-    public Row.Cell<String> getVersion() {
-        return version;
-    }
-
-    public void setVersion(Row.Cell<String> version) {
-        this.version = version;
-    }
-
-    public Row.Cell<String> getFile() {
-        return file;
-    }
-
-    public void setFile(Row.Cell<String> file) {
-        this.file = file;
-    }
 }

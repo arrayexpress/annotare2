@@ -19,49 +19,51 @@ package uk.ac.ebi.fg.annotare2.magetab.idf;
 import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 
+import java.util.Date;
+
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
 public class Info {
 
-    private Row.Cell title;
+    private Row.Cell<String> title;
 
-    private Row.Cell description;
+    private Row.Cell<String> description;
 
-    private Row.Cell dateOfExperiment;
+    private Row.Cell<Date> dateOfExperiment;
 
-    private Row.Cell dateOfPublicRelease;
+    private Row.Cell<Date> dateOfPublicRelease;
 
-    public Row.Cell getTitle() {
+    public Row.Cell<String> getTitle() {
         return title;
     }
 
-    public void setTitle(Row.Cell title) {
+    public void setTitle(Row.Cell<String> title) {
         this.title = title;
     }
 
-    public Row.Cell getDescription() {
+    public Row.Cell<String> getDescription() {
         return description;
     }
 
-    public void setDescription(Row.Cell description) {
+    public void setDescription(Row.Cell<String> description) {
         this.description = description;
     }
 
-    public Row.Cell getDateOfExperiment() {
+    public Row.Cell<Date> getDateOfExperiment() {
         return dateOfExperiment;
     }
 
-    public void setDateOfExperiment(Row.Cell dateOfExperiment) {
+    public void setDateOfExperiment(Row.Cell<Date> dateOfExperiment) {
         this.dateOfExperiment = dateOfExperiment;
     }
 
-    public Row.Cell getDateOfPublicRelease() {
+    public Row.Cell<Date> getDateOfPublicRelease() {
         return dateOfPublicRelease;
     }
 
-    public void setDateOfPublicRelease(Row.Cell dateOfPublicRelease) {
+    public void setDateOfPublicRelease(Row.Cell<Date> dateOfPublicRelease) {
         this.dateOfPublicRelease = dateOfPublicRelease;
     }
 }

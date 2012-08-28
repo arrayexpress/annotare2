@@ -33,14 +33,14 @@ public class Row {
 
     private int rIndex;
 
-    private final List<Cell> cells = new ArrayList<Cell>();
+    private final List<Cell<String>> cells = new ArrayList<Cell<String>>();
 
     public Row(Table table, int rIndex) {
         this.table = table;
         this.rIndex = rIndex;
     }
 
-    public String getValueFor(Cell cell) {
+    public String getValueFor(Cell<String> cell) {
         if (!exists()) {
             return null;
         }
@@ -49,7 +49,7 @@ public class Row {
         return v == null ? null : v.getValue();
     }
 
-    public void setValueFor(Cell cell, String s) {
+    public void setValueFor(Cell<String> cell, String s) {
         if (!exists()) {
             rIndex = table.addRow();
         }
@@ -57,22 +57,34 @@ public class Row {
         table.setValueAt(rIndex, cIndex, s);
     }
 
-    public Cell cellAt(int index) {
-        while(index >= cells.size()) {
+    public Cell<String> cellAt(int index) {
+        while (index >= cells.size()) {
             addCell();
         }
         return cells.get(index);
     }
 
-    public Cell addCell() {
-        Cell cell = new Cell();
+    public Cell<String> addCell() {
+        Cell<String> cell = new Cell<String>() {
+            public void setValue(String s) {
+                setValueFor(this, s);
+            }
+
+            public String getValue() {
+                return getValueFor(this);
+            }
+
+            public boolean isEmpty() {
+                return isNullOrEmpty(getValue());
+            }
+        };
         cells.add(cell);
         return cell;
     }
 
-    public void removeCell(Cell cell) {
+    public void removeCell(Cell<String> cell) {
         int index = cells.indexOf(cell);
-        for (int i = index; i < cells.size() -1; i++) {
+        for (int i = index; i < cells.size() - 1; i++) {
             String v = getValueFor(cells.get(i));
             table.setValueAt(rIndex, i + 1, v);
         }
@@ -80,25 +92,19 @@ public class Row {
     }
 
     public boolean exists() {
-        return rIndex >=0 && rIndex < table.getRowCount();
+        return rIndex >= 0 && rIndex < table.getRowCount();
     }
 
     int getColumnCount() {
         return exists() ? table.lastColumnIndex(rIndex) + 1 : 0;
     }
 
-    public class Cell {
+    public static interface Cell<T> {
 
-        public void setValue(String s) {
-            setValueFor(this, s);
-        }
+        public void setValue(T t);
 
-        public String getValue() {
-            return getValueFor(this);
-        }
+        public T getValue();
 
-        public boolean isEmpty() {
-            return isNullOrEmpty(getValue());
-        }
+        public boolean isEmpty();
     }
 }

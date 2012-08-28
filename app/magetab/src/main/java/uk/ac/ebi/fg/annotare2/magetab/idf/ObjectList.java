@@ -77,12 +77,12 @@ public abstract class ObjectList<T> {
     }
 
     private T create(int i) {
-        Map<RowTag, Row.Cell> map = new HashMap<RowTag, Row.Cell>();
+        Map<RowTag, Row.Cell<String>> map = new HashMap<RowTag, Row.Cell<String>>();
         for (RowTag tag : tags) {
             map.put(tag, rowSet.rowAt(tag).cellAt(i));
         }
         return create(map);
     }
 
-    protected abstract T create(Map<RowTag, Row.Cell> map);
+    protected abstract T create(Map<RowTag, Row.Cell<String>> map);
 }
