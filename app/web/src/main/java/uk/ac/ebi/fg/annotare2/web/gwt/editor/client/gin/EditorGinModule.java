@@ -31,6 +31,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabBar
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTitleBarDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoViewImpl;
 
@@ -53,6 +55,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(IdfNavigationView.class).to(IdfNavigationViewImpl.class);
         bind(IdfGeneralInfoView.class).to(IdfGeneralInfoViewImpl.class);
         bind(IdfContentView.class).to(IdfContentViewImpl.class);
+        bind(IdfContactListView.class).to(IdfContactListViewImpl.class);
         bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
 
         bind(InvestigationData.class).in(Singleton.class);

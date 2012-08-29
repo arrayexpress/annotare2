@@ -21,6 +21,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContactListActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContentActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfGeneralInfoActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfContentActivity;
@@ -35,14 +36,19 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
     private final Provider<IdfContentActivity> idfContentActivityProvider;
     private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
+    private final Provider<IdfContactListActivity> idfContactListActivityProvider;
+
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
 
     @Inject
     public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
                                        Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
+                                       Provider<IdfContactListActivity> idfContactListActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
+        this.idfContactListActivityProvider = idfContactListActivityProvider;
+
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
     }
 
@@ -52,6 +58,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
             switch (section) {
                 case GENERAL_INFO:
                     return (idfGeneralInfoActivityProvider.get()).withPlace(place);
+                case CONTACTS:
+                    return (idfContactListActivityProvider.get()).withPlace(place);
                 default:
                     return (idfContentActivityProvider.get()).withPlace(place);
             }
