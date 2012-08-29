@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactListItem;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfContactListViewImpl extends Composite implements IdfContactListView {
+public class DisclosurePanelHeader extends Composite {
 
-    interface Binder extends UiBinder<Widget, IdfContactListViewImpl> {
+    interface Binder extends UiBinder<Widget, DisclosurePanelHeader> {
     }
 
     @UiField
-    VerticalPanel listPanel;
+    Label label;
 
-    public IdfContactListViewImpl() {
+    public DisclosurePanelHeader() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+    }
 
-        listPanel.add(new ContactListItem());
-        listPanel.add(new ContactListItem());
-        listPanel.add(new ContactListItem());
-        listPanel.add(new ContactListItem());
+    public void setTitle(String title) {
+        label.setTitle(title);
     }
 }

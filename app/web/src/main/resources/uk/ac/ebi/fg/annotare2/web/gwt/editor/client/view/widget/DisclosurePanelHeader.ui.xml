@@ -19,19 +19,17 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <g:HTMLPanel width="100%">
-        <table>
+        <table width="100%">
             <tr>
+                <td width="20px">icon</td>
                 <td>
-                    <g:Button>create</g:Button>
+                    <g:Label ui:field="label" text="Some title"/>
                 </td>
-                <td>
-                    <g:Button>delete</g:Button>
+                <td></td>
+                <td width="20px">
+                    <g:CheckBox/>
                 </td>
             </tr>
         </table>
-        <div>
-           <g:VerticalPanel ui:field="listPanel" width="100%"/>
-        </div>
     </g:HTMLPanel>
-
 </ui:UiBinder>
