@@ -18,8 +18,15 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+    <ui:style>
+        .disclosureHeader {
+            border-top: 1px solid #fff;
+            background-color: #eee;
+        }
+    </ui:style>
+
     <g:HTMLPanel width="100%">
-        <table width="100%">
+        <table width="100%" class="{style.disclosureHeader}">
             <tr>
                 <td width="20px">icon</td>
                 <td>

@@ -18,19 +18,26 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <g:HTMLPanel width="100%">
-        <table>
-            <tr>
-                <td>
-                    <g:Button>create</g:Button>
-                </td>
-                <td>
-                    <g:Button>delete</g:Button>
-                </td>
-            </tr>
-        </table>
-        <div>
-           <g:VerticalPanel ui:field="listPanel" width="100%"/>
+    <ui:style>
+        .contactListView {
+            padding: 0;
+        }
+
+        .buttons {
+            padding-top: 10px;
+            padding-bottom: 20px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    </ui:style>
+
+    <g:HTMLPanel width="100%" addStyleNames="{style.contactListView}">
+        <div class="{style.buttons}">
+            <g:Button>create</g:Button>
+            <g:Button>delete</g:Button>
+        </div>
+        <div style="padding-left:10px;padding-right:10px">
+            <g:VerticalPanel ui:field="listPanel" width="100%"/>
         </div>
     </g:HTMLPanel>
 
