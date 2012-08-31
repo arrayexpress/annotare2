@@ -36,7 +36,19 @@
         <guice.version>3.0</guice.version>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <webapp.log.appender.ref>server-log</webapp.log.appender.ref>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <webapp.log.appender.ref>console</webapp.log.appender.ref>
+            </properties>
+        </profile>
+
+    </profiles>
 
     <dependencies>
 
@@ -150,6 +162,12 @@
 
     <build>
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 
         <plugins>
 
