@@ -51,18 +51,18 @@
             <tr>
                 <td class="{style.label}">First Name</td>
                 <td style="width:250px">
-                    <g:TextBox width="100%"/>
+                    <g:TextBox width="100%" ui:field="firstName"/>
                 </td>
                 <td class="{style.label}">Middle Initial</td>
                 <td style="width:30px">
-                    <g:TextBox width="100%"/>
+                    <g:TextBox width="100%" ui:field="midInitial"/>
                 </td>
                 <td rowspan="2" valign="top" align="right">
                     <table class="{style.formLayout}" style="height:100%;">
                         <tr>
                             <td class="{style.label}">Affiliation</td>
                             <td>
-                                <g:TextArea visibleLines="3"/>
+                                <g:TextArea visibleLines="3" ui:field="affiliation"/>
                             </td>
                         </tr>
                     </table>
@@ -71,7 +71,7 @@
             <tr>
                 <td class="{style.label}">Last Name</td>
                 <td colspan="3">
-                    <g:TextBox width="100%"/>
+                    <g:TextBox width="100%" ui:field="lastName"/>
                 </td>
             </tr>
             <tr>
@@ -81,13 +81,13 @@
                         <tr>
                             <td class="{style.label}">Address</td>
                             <td>
-                                <g:TextArea visibleLines="3"/>
+                                <g:TextArea visibleLines="3" ui:field="address"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="{style.label}">Roles</td>
                             <td style="padding-bottom:0">
-                                <g:TextArea visibleLines="2"/>
+                                <g:TextArea visibleLines="2" ui:field="roles"/>
                             </td>
                         </tr>
                     </table>
@@ -96,19 +96,19 @@
             <tr>
                 <td class="{style.label}">Email</td>
                 <td colspan="3">
-                    <g:TextBox width="100%"/>
+                    <g:TextBox width="100%" ui:field="email"/>
                 </td>
             </tr>
             <tr>
                 <td class="{style.label}">Phone</td>
                 <td colspan="3">
-                    <g:TextBox width="100%"/>
+                    <g:TextBox width="100%" ui:field="phone"/>
                 </td>
             </tr>
             <tr>
                 <td class="{style.label}">Fax</td>
                 <td colspan="3">
-                    <g:TextBox width="100%"/>
+                    <g:TextBox width="100%" ui:field="fax"/>
                 </td>
             </tr>
         </table>

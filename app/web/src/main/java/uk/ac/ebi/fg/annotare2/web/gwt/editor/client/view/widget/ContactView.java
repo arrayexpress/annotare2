@@ -18,7 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -29,6 +32,33 @@ public class ContactView extends Composite {
     interface Binder extends UiBinder<Widget, ContactView> {
         Binder BINDER = GWT.create(Binder.class);
     }
+
+    @UiField
+    TextBox firstName;
+
+    @UiField
+    TextBox midInitial;
+
+    @UiField
+    TextBox lastName;
+
+    @UiField
+    TextBox phone;
+
+    @UiField
+    TextBox fax;
+
+    @UiField
+    TextBox email;
+
+    @UiField
+    TextArea affiliation;
+
+    @UiField
+    TextArea address;
+
+    @UiField
+    TextArea roles;
 
     public ContactView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
