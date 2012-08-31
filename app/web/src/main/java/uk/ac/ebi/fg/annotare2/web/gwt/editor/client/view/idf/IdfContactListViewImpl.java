@@ -18,10 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactListItem;
 
 /**
@@ -44,4 +46,11 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
         listPanel.add(new ContactListItem());
         listPanel.add(new ContactListItem());
     }
+
+    @UiFactory
+    public EditorResources getResources() {
+        EditorResources.INSTANCE.editorStyles().ensureInjected();
+        return EditorResources.INSTANCE;
+    }
+
 }

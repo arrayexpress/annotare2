@@ -34,6 +34,12 @@ public interface EditorResources extends ClientBundle {
     @Source("../../public/images/collapse-icon.png")
     public ImageResource collapseIcon();
 
+    @Source("../../public/images/trash-icon.png")
+    public ImageResource trashIcon();
+
+    @Source("../../public/images/plus-icon.png")
+    public ImageResource plusIcon();
+
     @Source("../../public/editor-bundled.css")
     public EditorBundledStyles editorStyles();
 }

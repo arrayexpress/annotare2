@@ -18,6 +18,8 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+    <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
+
     <ui:style>
         .contactListView {
             padding: 0;
@@ -33,8 +35,9 @@
 
     <g:HTMLPanel width="100%" addStyleNames="{style.contactListView}">
         <div class="{style.buttons}">
-            <g:Button>create</g:Button>
-            <g:Button>delete</g:Button>
+            <g:Image resource="{res.plusIcon}"/>
+            &nbsp;
+            <g:Image resource="{res.trashIcon}"/>
         </div>
         <div style="padding-left:10px;padding-right:10px">
             <g:VerticalPanel ui:field="listPanel" width="100%"/>
