@@ -17,17 +17,20 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactView extends Composite {
+public class ContactView extends DisclosurePanelContent {
 
     interface Binder extends UiBinder<Widget, ContactView> {
         Binder BINDER = GWT.create(Binder.class);
@@ -37,7 +40,7 @@ public class ContactView extends Composite {
     TextBox firstName;
 
     @UiField
-    TextBox midInitial;
+    TextBox midInitials;
 
     @UiField
     TextBox lastName;
@@ -62,5 +65,35 @@ public class ContactView extends Composite {
 
     public ContactView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+
+        ChangeHandler nameChangeHandler = new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                onRecordChange();
+            }
+        };
+
+        firstName.addChangeHandler(nameChangeHandler);
+        midInitials.addChangeHandler(nameChangeHandler);
+        lastName.addChangeHandler(nameChangeHandler);
     }
+
+    public void update(Person p) {
+        firstName.setValue(p.getFirstName().getValue());
+        midInitials.setValue(p.getMidInitials().getValue());
+        lastName.setValue(p.getLastName().getValue());
+        //TODO
+        onRecordChange();
+    }
+
+    private void onRecordChange() {
+        String fn = firstName.getValue();
+        String mi = midInitials.getValue();
+        String ln = lastName.getValue();
+        fireRecordChangeEvent(
+                (fn.isEmpty() ? "" : fn + " ") +
+                        (mi.isEmpty() ? "" : mi + " ") +
+                        (ln.isEmpty() ? "" : ln));
+    }
+
 }

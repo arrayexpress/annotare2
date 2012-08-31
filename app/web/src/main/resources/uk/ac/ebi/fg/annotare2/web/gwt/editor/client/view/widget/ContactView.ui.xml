@@ -53,9 +53,9 @@
                 <td style="width:250px">
                     <g:TextBox width="100%" ui:field="firstName"/>
                 </td>
-                <td class="{style.label}">Middle Initial</td>
+                <td class="{style.label}">Middle Initials</td>
                 <td style="width:30px">
-                    <g:TextBox width="100%" ui:field="midInitial"/>
+                    <g:TextBox width="100%" ui:field="midInitials"/>
                 </td>
                 <td rowspan="2" valign="top" align="right">
                     <table class="{style.formLayout}" style="height:100%;">

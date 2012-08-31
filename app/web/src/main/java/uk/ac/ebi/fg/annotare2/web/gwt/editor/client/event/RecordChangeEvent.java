@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
-
-import java.util.List;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * @author Olga Melnichuk
  */
-public interface IdfContactListView extends IsWidget {
+public class RecordChangeEvent extends GwtEvent<RecordChangeEventHandler> {
 
-    void setContacts(List<Person> contacts);
+    public static Type<RecordChangeEventHandler> TYPE = new Type<RecordChangeEventHandler>();
+
+    private final String value;
+
+    public RecordChangeEvent(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public Type<RecordChangeEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(RecordChangeEventHandler handler) {
+        handler.onRecordChange(value);
+    }
 }

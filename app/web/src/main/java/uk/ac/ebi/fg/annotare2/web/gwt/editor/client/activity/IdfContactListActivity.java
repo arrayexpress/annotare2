@@ -20,8 +20,12 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
 
 /**
@@ -33,11 +37,17 @@ public class IdfContactListActivity extends AbstractActivity {
 
     private final PlaceController placeController;
 
+    private final InvestigationData investigationData;
+
+    private Investigation investigation;
+
     @Inject
     public IdfContactListActivity(IdfContactListView view,
-                                  PlaceController placeController) {
+                                  PlaceController placeController,
+                                  InvestigationData investigationData) {
         this.view = view;
         this.placeController = placeController;
+        this.investigationData = investigationData;
     }
 
     public IdfContactListActivity withPlace(Place place) {
@@ -48,6 +58,7 @@ public class IdfContactListActivity extends AbstractActivity {
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         // TODO view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        loadAsync();
     }
 
     @Override
@@ -58,6 +69,24 @@ public class IdfContactListActivity extends AbstractActivity {
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    private void loadAsync() {
+        investigationData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load Investigation Data.");
+            }
+
+            @Override
+            public void onSuccess(Investigation inv) {
+                if (inv != null) {
+                    investigation = inv;
+                    view.setContacts(inv.getContacts());
+                }
+            }
+        }.wrap());
     }
 
 }

@@ -23,8 +23,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactListItem;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -40,17 +43,24 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
     public IdfContactListViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
-
-        listPanel.add(new ContactListItem());
-        listPanel.add(new ContactListItem());
-        listPanel.add(new ContactListItem());
-        listPanel.add(new ContactListItem());
     }
 
     @UiFactory
     public EditorResources getResources() {
         EditorResources.INSTANCE.editorStyles().ensureInjected();
         return EditorResources.INSTANCE;
+    }
+
+    public void setContacts(List<Person> contacts) {
+        for(Person p:contacts) {
+            addListItem(p);
+        }
+    }
+
+    private void addListItem(Person p) {
+        ContactListItem item = new ContactListItem();
+        item.update(p);
+        listPanel.add(item);
     }
 
 }

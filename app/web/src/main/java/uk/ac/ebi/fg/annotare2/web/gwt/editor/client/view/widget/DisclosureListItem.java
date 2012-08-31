@@ -23,6 +23,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEventHandler;
 
 /**
  * @author Olga Melnichuk
@@ -54,7 +55,13 @@ public class DisclosureListItem extends Composite {
         });
     }
 
-    public void setContent(Widget w) {
+    public void setContent(DisclosurePanelContent w) {
+        w.addContentChangeHandler(new RecordChangeEventHandler() {
+            @Override
+            public void onRecordChange(String value) {
+                header.setTitle(value);
+            }
+        });
         panel.setContent(w);
     }
 }

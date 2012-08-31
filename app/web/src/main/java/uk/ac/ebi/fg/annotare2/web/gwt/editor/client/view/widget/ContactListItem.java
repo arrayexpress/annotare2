@@ -17,15 +17,22 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 
 /**
  * @author Olga Melnichuk
  */
 public class ContactListItem extends Composite {
 
+    private final ContactView contactView = new ContactView();
+
     public ContactListItem() {
         DisclosureListItem listItem = new DisclosureListItem();
-        listItem.setContent(new ContactView());
+        listItem.setContent(contactView);
         initWidget(listItem);
+    }
+
+    public void update(Person p) {
+        contactView.update(p);
     }
 }

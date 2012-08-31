@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
-
-import java.util.List;
+import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public interface IdfContactListView extends IsWidget {
+public class DisclosurePanelContent extends Composite {
 
-    void setContacts(List<Person> contacts);
+    public void addContentChangeHandler(RecordChangeEventHandler handler) {
+        addHandler(handler, RecordChangeEvent.TYPE);
+    }
+
+    void fireRecordChangeEvent(String newValue) {
+        fireEvent(new RecordChangeEvent(newValue));
+    }
 }

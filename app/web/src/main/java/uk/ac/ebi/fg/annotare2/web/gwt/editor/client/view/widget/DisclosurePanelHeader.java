@@ -58,7 +58,7 @@ public class DisclosurePanelHeader extends Composite {
     }
 
     public void setTitle(String title) {
-        label.setTitle(title);
+        label.setText(title.isEmpty() ? "No name" : title);
     }
 
     public void setExpanded() {
