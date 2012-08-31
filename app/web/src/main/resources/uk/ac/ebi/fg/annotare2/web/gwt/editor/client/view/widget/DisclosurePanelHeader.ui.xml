@@ -35,9 +35,6 @@
                     <g:Label ui:field="label" text="Some title"/>
                 </td>
                 <td></td>
-                <td width="20px">
-                    <g:CheckBox/>
-                </td>
             </tr>
         </table>
     </g:HTMLPanel>
