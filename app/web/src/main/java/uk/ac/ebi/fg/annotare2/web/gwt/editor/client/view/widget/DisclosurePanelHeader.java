@@ -29,14 +29,14 @@ import com.google.gwt.user.client.ui.Widget;
 public class DisclosurePanelHeader extends Composite {
 
     interface Binder extends UiBinder<Widget, DisclosurePanelHeader> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
     Label label;
 
     public DisclosurePanelHeader() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
     public void setTitle(String title) {

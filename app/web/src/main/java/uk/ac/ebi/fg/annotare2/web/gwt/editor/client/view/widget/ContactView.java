@@ -27,10 +27,10 @@ import com.google.gwt.user.client.ui.Widget;
 public class ContactView extends Composite {
 
     interface Binder extends UiBinder<Widget, ContactView> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
     public ContactView() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget(Binder.BINDER.createAndBindUi(this));
     }
 }
