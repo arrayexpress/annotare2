@@ -18,6 +18,8 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+    <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
+
     <ui:style>
         .disclosureHeader {
             border-top: 1px solid #fff;
@@ -28,7 +30,7 @@
     <g:HTMLPanel width="100%">
         <table width="100%" class="{style.disclosureHeader}">
             <tr>
-                <td width="20px">icon</td>
+                <td width="20px" class="{res.editorStyles.expandIconClass}" ui:field="expandCollapseIcon"></td>
                 <td>
                     <g:Label ui:field="label" text="Some title"/>
                 </td>

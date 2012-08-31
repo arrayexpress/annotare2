@@ -15,6 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <module rename-to="EditorApp">
 
     <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab" />
@@ -38,7 +39,7 @@
 
     <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorApp"/>
 
-    <stylesheet src="EditorApp.css"/>
+    <stylesheet src="editor.css"/>
 
     <source path="client"/>
     <source path="shared"/>

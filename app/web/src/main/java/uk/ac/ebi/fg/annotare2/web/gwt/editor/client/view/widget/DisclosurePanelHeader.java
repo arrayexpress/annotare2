@@ -17,11 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 
 /**
  * @author Olga Melnichuk
@@ -35,11 +38,37 @@ public class DisclosurePanelHeader extends Composite {
     @UiField
     Label label;
 
+    @UiField
+    TableCellElement expandCollapseIcon;
+
+    private final String collapseClassName;
+
+    private final String expandClassName;
+
     public DisclosurePanelHeader() {
+        EditorResources.INSTANCE.editorStyles().ensureInjected();
+        collapseClassName = EditorResources.INSTANCE.editorStyles().collapseIconClass();
+        expandClassName = EditorResources.INSTANCE.editorStyles().expandIconClass();
         initWidget(Binder.BINDER.createAndBindUi(this));
+    }
+
+    @UiFactory
+    public EditorResources getResources() {
+        return EditorResources.INSTANCE;
     }
 
     public void setTitle(String title) {
         label.setTitle(title);
     }
+
+    public void setExpanded() {
+        expandCollapseIcon.removeClassName(expandClassName);
+        expandCollapseIcon.addClassName(collapseClassName);
+    }
+
+    public void setCollapsed() {
+        expandCollapseIcon.removeClassName(collapseClassName);
+        expandCollapseIcon.addClassName(expandClassName);
+    }
+
 }
