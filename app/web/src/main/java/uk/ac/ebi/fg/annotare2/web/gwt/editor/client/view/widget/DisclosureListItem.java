@@ -35,6 +35,7 @@ public class DisclosureListItem extends Composite {
 
     public DisclosureListItem() {
         panel.setWidth("100%");
+        panel.addStyleName("app-IdfItemList");
         panel.setHeader(header);
         initWidget(panel);
 
