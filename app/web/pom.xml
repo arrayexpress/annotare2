@@ -47,8 +47,40 @@
                 <webapp.log.appender.ref>console</webapp.log.appender.ref>
             </properties>
         </profile>
-
+        <profile>
+            <id>noclover</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>2.4.0</version>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
+                                    <modules>
+                                        <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
+                                        <module>uk.ac.ebi.fg.annotare2.web.gwt.editor.EditorApp</module>
+                                        <!--<module>uk.ac.ebi.fg.annotare2.web.AdminApp</module>-->
+                                    </modules>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                    <goal>test</goal>
+                                    <!--                            <goal>generateAsync</goal>-->
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
+
 
     <dependencies>
 
@@ -170,30 +202,6 @@
         </resources>
 
         <plugins>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
-                            <modules>
-                                <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
-                                <module>uk.ac.ebi.fg.annotare2.web.gwt.editor.EditorApp</module>
-                                <!--<module>uk.ac.ebi.fg.annotare2.web.AdminApp</module>-->
-                            </modules>
-                        </configuration>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>test</goal>
-<!--                            <goal>generateAsync</goal>-->
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
