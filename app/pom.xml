@@ -129,6 +129,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*GwtTest.java</exclude>
+                    </excludes>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.surefire</groupId>
@@ -149,6 +154,7 @@
                         <!-- GWT classes -->
                         <exclude>**/client/**/*.java</exclude>
                         <exclude>**/shared/**/*.java</exclude>
+                        <exclude>**/*GwtTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>

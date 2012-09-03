@@ -24,7 +24,7 @@
     </appender>
 
     <appender name="server-log" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${catalina.home}/logs/annotare.log" />
+        <param name="File" value="${catalina.base}/logs/annotare.log" />
         <param name="MaxFileSize" value="100KB" />
         <param name="MaxBackupIndex" value="3" />
         <param name="Append" value="false" />
@@ -35,12 +35,12 @@
 
     <category name="uk.ac.ebi.fg.annotare2.web.server" additivity="false">
         <priority value="DEBUG" />
-        <appender-ref ref="server-log" />
+        <appender-ref ref="${webapp.log.appender.ref}" />
     </category>
 
     <root>
         <level value ="INFO"/>
-        <appender-ref ref="server-log"/>
+        <appender-ref ref="${webapp.log.appender.ref}"/>
     </root>
 
 </log4j:configuration>
