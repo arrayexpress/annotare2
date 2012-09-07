@@ -20,6 +20,8 @@ import com.google.common.annotations.GwtCompatible;
 
 import java.util.*;
 
+import static uk.ac.ebi.fg.annotare2.magetab.base.TaggedRow.shift;
+
 /**
  * @author Olga Melnichuk
  */
@@ -28,56 +30,68 @@ public class RowSet {
 
     private List<RowTag> tags = new ArrayList<RowTag>();
 
-    private Map<RowTag, Integer> map;
-
-    private List<Row> rows;
+    private Map<RowTag, TaggedRow> map;
 
     private Table table;
-
-    private int columnCount = 0;
 
     public RowSet(RowTag... tags) {
         this.tags.addAll(Arrays.asList(tags));
     }
 
-    public void addAll(Table aTable) {
-        map = new HashMap<RowTag, Integer>();
-        rows = new ArrayList<Row>();
-        table = aTable;
+    public void addAll(Table table) {
+        this.table = table;
+        this.map = new HashMap<RowTag, TaggedRow>();
 
-        int count = 0;
-        for (RowTag t : tags) {
-            TaggedRow row = new TaggedRow(table, t);
-            map.put(t, rows.size());
-            rows.add(row);
-            count = Math.max(count, row.getColumnCount());
+        for (RowTag tag : tags) {
+            map.put(tag, new TaggedRow(table, tag));
         }
-        columnCount = count;
     }
 
-    public int getColumnCount() {
-        return columnCount;
+    public int getWidth() {
+        int res = 0;
+        for (TaggedRow r : map.values()) {
+            int size = r.getSize();
+            res = res < size ? size : res;
+        }
+        return res;
     }
 
     public void removeColumn(int i) {
-        table.startChanging();
-        for (Row row : rows) {
-            row.removeCell(row.cellAt(i));
+        checkColumnIndices(i);
+        table.removeColumn(rows(), shift(i));
+    }
+
+    public void moveColumn(int fromIndex, int toIndex) {
+        checkColumnIndices(fromIndex, toIndex);
+        table.moveColumn(rows(), shift(fromIndex), shift(toIndex));
+    }
+
+    public Map<RowTag, Row.Cell<String>> addColumn() {
+        return getColumn(getWidth());
+    }
+
+    public Map<RowTag, Row.Cell<String>> getColumn(int i) {
+        Map<RowTag, Row.Cell<String>> column = new HashMap<RowTag, Row.Cell<String>>();
+        for (RowTag tag : tags) {
+            column.put(tag, map.get(tag).cellAt(i));
         }
-        table.stopChanging();
+        return column;
     }
 
-    public void moveColumn(int i) {
-        table.startChanging();
-        // TODO
-        table.stopChanging();
+    private void checkColumnIndices(int... indices) {
+        int width = getWidth();
+        for (int i : indices) {
+            if (i < 0 || i >= width) {
+                throw new IndexOutOfBoundsException("Column index is out of bounds [0, " + width + "): " + i);
+            }
+        }
     }
 
-    public int addColumn() {
-        return columnCount++;
-    }
-
-    public Row rowAt(RowTag tag) {
-        return rows.get(map.get(tag));
+    private List<Row> rows() {
+        List<Row> rows = new ArrayList<Row>();
+        for (TaggedRow r : map.values()) {
+            rows.add(r.getRow());
+        }
+        return rows;
     }
 }

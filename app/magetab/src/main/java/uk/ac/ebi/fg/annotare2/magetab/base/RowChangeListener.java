@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.magetab.base;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
+import com.google.common.annotations.GwtCompatible;
 
-import java.util.List;
+/**
+ * @author Olga Melnichuk
+ */
+@GwtCompatible
+public interface RowChangeListener {
 
-public interface IdfServiceAsync {
-
-    void getGeneralInfo(int submissionId, AsyncCallback<UIGeneralInfo> async);
-
-    void loadInvestigation(int submissionId, AsyncCallback<Table> async);
-
-    void updateInvestigation(int submissionId, Operation operation, AsyncCallback<Void> async);
+    /**
+     * Called when cell is changed in a row.
+     *
+     * @param row a row instance, where the change happened
+     * @param columnIndex a column index of changed cell
+     * @param newValue a new value
+     */
+    void onRowValueChange(Row row, int columnIndex, String newValue);
 }

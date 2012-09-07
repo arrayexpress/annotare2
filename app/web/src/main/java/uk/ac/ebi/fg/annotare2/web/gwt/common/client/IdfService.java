@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.magetab.base.Operation;
+import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 
@@ -36,5 +36,5 @@ public interface IdfService extends RemoteService {
 
     Table loadInvestigation(int submissionId) throws NoPermissionException, ResourceNotFoundException;
 
-    void updateInvestigation(int submissionId, List<Operation> operations) throws NoPermissionException, ResourceNotFoundException;
+    void updateInvestigation(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException;
 }

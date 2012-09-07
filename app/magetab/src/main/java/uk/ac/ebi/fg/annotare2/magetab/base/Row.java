@@ -18,7 +18,9 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.annotations.GwtCompatible;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -27,76 +29,142 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class Row {
+public class Row implements Serializable {
 
-    private final Table table;
+    private List<Value> values = new ArrayList<Value>();
 
-    private int rIndex;
+    private transient List<RowChangeListener> listeners = new ArrayList<RowChangeListener>();
 
-    private final List<Cell<String>> cells = new ArrayList<Cell<String>>();
-
-    public Row(Table table, int rIndex) {
-        this.table = table;
-        this.rIndex = rIndex;
+    public Row() {
+        //required by GWT serialization policy
     }
 
-    public String getValueFor(Cell<String> cell) {
-        if (!exists()) {
-            return null;
+    public Row(RowChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public int getSize() {
+        return values.size();
+    }
+
+    public int getTrimmedSize() {
+        for (int i = values.size() - 1; i >= 0; i--) {
+            Value v = values.get(i);
+            if (!v.isEmpty()) {
+                return i + 1;
+            }
         }
-        int cIndex = cells.indexOf(cell);
-        Table.Value v = table.getValueAt(rIndex, cIndex);
-        return v == null ? null : v.getValue();
+        return 0;
     }
 
-    public void setValueFor(Cell<String> cell, String s) {
-        if (!exists()) {
-            rIndex = table.addRow();
+    public void removeColumn(int colIndex) {
+        checkColumnIndex(colIndex);
+        values.remove(colIndex);
+    }
+
+    public void moveColumn(int fromIndex, int toIndex) {
+        if (fromIndex == toIndex) {
+            return;
         }
-        int cIndex = cells.indexOf(cell);
-        table.setValueAt(rIndex, cIndex, s);
-    }
+        checkColumnIndex(fromIndex);
+        checkColumnIndex(toIndex);
 
-    public Cell<String> cellAt(int index) {
-        while (index >= cells.size()) {
-            addCell();
+        Value cell = values.remove(fromIndex);
+        if (toIndex < fromIndex) {
+            values.add(toIndex, cell);
+        } else {
+            values.add(toIndex - 1, cell);
         }
-        return cells.get(index);
     }
 
-    public Cell<String> addCell() {
-        Cell<String> cell = new Cell<String>() {
+    public Cell<String> cellAt(int colIndex) {
+        checkColumnIndex(colIndex);
+        final Value v = values.get(colIndex);
+
+        return new Cell<String>() {
+            @Override
             public void setValue(String s) {
-                setValueFor(this, s);
+                setValueFor(v, s, true);
             }
 
+            @Override
             public String getValue() {
-                return getValueFor(this);
+                return v.get();
             }
 
+            @Override
             public boolean isEmpty() {
-                return isNullOrEmpty(getValue());
+                return v.isEmpty();
             }
         };
-        cells.add(cell);
-        return cell;
     }
 
-    public void removeCell(Cell<String> cell) {
-        int index = cells.indexOf(cell);
-        for (int i = index; i < cells.size() - 1; i++) {
-            String v = getValueFor(cells.get(i));
-            table.setValueAt(rIndex, i + 1, v);
+    public String getValue(int colIndex) {
+        checkColumnIndex(colIndex);
+        return values.get(colIndex).get();
+    }
+
+    public void setValue(int colIndex, String value, boolean notify) {
+        checkColumnIndex(colIndex);
+        setValueFor(values.get(colIndex), value, notify);
+    }
+
+    private void setValueFor(Value v, String newValue, boolean notify) {
+        v.set(newValue);
+        if (notify) {
+            notifyValueUpdated(values.indexOf(v), newValue);
         }
-        cells.remove(index);
     }
 
-    public boolean exists() {
-        return rIndex >= 0 && rIndex < table.getRowCount();
+    private void notifyValueUpdated(int colIndex, String newValue) {
+        for(RowChangeListener listener :  listeners) {
+            listener.onRowValueChange(this, colIndex, newValue);
+        }
     }
 
-    int getColumnCount() {
-        return exists() ? table.lastColumnIndex(rIndex) + 1 : 0;
+    private void checkColumnIndex(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("Column index can not be less than zero: " + index);
+        }
+        while (index >= values.size()) {
+            values.add(new Value());
+        }
+    }
+
+    public static class Value implements Serializable {
+
+        private String value;
+
+        private String error;
+
+        public Value() {
+            // required by GWT serialization policy
+        }
+
+        public Value(String value) {
+            this.value = value;
+        }
+
+        public Value(String value, String error) {
+            this.value = value;
+            this.error = error;
+        }
+
+        public String get() {
+            return value;
+        }
+
+        public void set(String value) {
+            this.value = value;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public boolean isEmpty() {
+            return isNullOrEmpty(value) && isNullOrEmpty(error);
+        }
     }
 
     public static interface Cell<T> {
@@ -108,3 +176,5 @@ public class Row {
         public boolean isEmpty();
     }
 }
+
+

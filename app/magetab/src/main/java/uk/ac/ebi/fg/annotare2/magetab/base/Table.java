@@ -17,102 +17,105 @@
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Ordering;
+import uk.ac.ebi.fg.annotare2.magetab.base.operation.*;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Collections2.filter;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class Table implements Serializable {
+public class Table implements Serializable, RowChangeListener {
 
-    private int rowCount;
-
-    private Map<Index, Value> values = new HashMap<Index, Value>();
+    private List<Row> rows = new ArrayList<Row>();
 
     private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-
-    private transient List<Operation> currentChanges;
-
-    public int getRowCount() {
-        return rowCount;
-    }
 
     public Table() {
         // required by GWT serialization policy
     }
 
-    public int lastColumnIndex(final int rIndex) {
-        List<Index> ordered = Index.COMPARE_BY_COLUMN.reverse().sortedCopy(
-                filter(values.keySet(), new Predicate<Index>() {
-                    public boolean apply(@Nullable Index input) {
-                        return input.getRow() == rIndex;
-                    }
-                })
-        );
-        return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
+    public int getHeight() {
+        return rows.size();
     }
 
-    public int lastColumnIndex() {
-        List<Index> ordered = Index.COMPARE_BY_COLUMN.reverse().sortedCopy(values.keySet());
-        return ordered.isEmpty() ? 0 : ordered.get(0).getCol();
-    }
-
-    public int addRow(Collection<String> values) {
-        int rIndex = rowCount++;
-        addChange(Operation.addRow());
-
-        int cIndex = 0;
-        for (String v : values) {
-            setValueAt(rIndex, cIndex, v);
-            cIndex++;
+    public int getWidth() {
+        int w = 0;
+        for (Row r : rows) {
+            int rowWidth = r.getSize();
+            w = w < rowWidth ? rowWidth : w;
         }
-        return rIndex;
+        return w;
     }
 
-    public int addRow() {
-        return addRow(Collections.<String>emptyList());
+    public int getTrimmedWidth() {
+        int w = 0;
+        for (Row r : rows) {
+            int rowWidth = r.getTrimmedSize();
+            w = w < rowWidth ? rowWidth : w;
+        }
+        return w;
+    }
+
+    public boolean isEmpty() {
+        return rows.isEmpty();
+    }
+
+    public Row addRow(Collection<String> strings) {
+        Row row = new Row(this);
+        rows.add(row);
+        int colIndex = 0;
+        for (String s : strings) {
+            if (!isNullOrEmpty(s)) {
+                row.setValue(colIndex, s, true);
+            }
+            colIndex++;
+        }
+        return row;
+    }
+
+    public Row addRow() {
+        Row row = new Row(this);
+        rows.add(row);
+        return row;
+    }
+
+    public void removeColumn(Collection<Row> rowSet, int colIndex) {
+        doRemoveColumn(rowSet, colIndex);
+        notifyListeners(Operations.removeColumn(toRowIndices(rowSet), colIndex));
+    }
+
+    public void moveColumn(Collection<Row> rowSet, int fromColIndex, int toColIndex) {
+        if (fromColIndex == toColIndex) {
+            return;
+        }
+        doMoveColumn(rowSet, fromColIndex, toColIndex);
+        notifyListeners(Operations.moveColumn(toRowIndices(rowSet), fromColIndex, toColIndex));
     }
 
     public void setValueAt(int rIndex, int cIndex, String value) {
-        Index index = indexFor(rIndex, cIndex);
-        setValueAt(index, new Value(value));
+        doUpdateCell(rIndex, cIndex, value, true);
     }
 
-    public void setErrorAt(int rIndex, int cIndex, String error) {
-        Index index = indexFor(rIndex, cIndex);
-        Value v = values.get(index);
-        setValueAt(index,
-                v == null ?
-                        new Value("", error) :
-                        new Value(v.getValue(), error));
+
+    public String getValueAt(int rIndex, int cIndex) {
+        checkRowIndex(rIndex);
+        return rows.get(rIndex).getValue(cIndex);
     }
 
-    public Value getValueAt(int rIndex, int cIndex) {
-        return values.get(new Index(rIndex, cIndex));
+    public Row getRow(int rIndex) {
+        checkRowIndex(rIndex);
+        return rows.get(rIndex);
     }
 
-    public List<TableCell> getCells() {
-        List<TableCell> cells = new ArrayList<TableCell>();
-        for (Index i : values.keySet()) {
-            Value v = values.get(i);
-            cells.add(new TableCell(i.getRow(), i.getCol(), v.getValue(), v.getError()));
-        }
-        return cells;
-    }
-
-    public void applyChanges(List<Operation> operations) {
-        for(Operation op : operations) {
-            op.apply(this);
-        }
+    @Override
+    public void onRowValueChange(Row row, int columnIndex, String newValue) {
+        notifyListeners(Operations.updateCell(rows.indexOf(row), columnIndex, newValue));
     }
 
     public void addChangeListener(ChangeListener listener) {
@@ -123,156 +126,63 @@ public class Table implements Serializable {
         listeners.remove(listener);
     }
 
-    private void notifyListeners(List<Operation> changes) {
+    public void apply(UpdateCellOperation op) {
+        doUpdateCell(op.getRowIndex(), op.getColIndex(), op.getValue(), false);
+    }
+
+    public void apply(RemoveColumnOperation op) {
+        doRemoveColumn(toRows(op.getRowIndices()), op.getColumnIndex());
+    }
+
+    public void apply(MoveColumnOperation op) {
+        doMoveColumn(toRows(op.getRowIndices()), op.getFromIndex(), op.getToIndex());
+    }
+
+    private void notifyListeners(Operation change) {
         for (ChangeListener listener : listeners) {
-            listener.onChange(changes);
+            listener.onChange(change);
         }
     }
 
-    private void addChange(Operation op) {
-        if (currentChanges == null) {
-            List<Operation> changes = new ArrayList<Operation>();
-            changes.add(op);
-            notifyListeners(changes);
-        } else {
-            currentChanges.add(op);
+    private List<Integer> toRowIndices(Collection<Row> rowSet) {
+        List<Integer> rowIndices = new ArrayList<Integer>();
+        for (Row r : rowSet) {
+            rowIndices.add(rows.indexOf(r));
+        }
+        return rowIndices;
+    }
+
+    private List<Row> toRows(List<Integer> indices) {
+        List<Row> rowSet = new ArrayList<Row>();
+        for (Integer rowIndex : indices) {
+            rowSet.add(rows.get(rowIndex));
+        }
+        return rowSet;
+    }
+
+    private void checkRowIndex(int rIndex) {
+        if (rIndex < 0) {
+            throw new IndexOutOfBoundsException("Row index is out of bounds [0," + rows.size() + "] : " + rIndex);
+        }
+        while (rIndex >= rows.size()) {
+            addRow();
         }
     }
 
-    void startChanging() {
-        if (currentChanges != null) {
-            throw new IllegalStateException("The list of changes is not empty; clean these changes first");
+    private void doUpdateCell(int rIndex, int cIndex, String value, boolean notify) {
+        checkRowIndex(rIndex);
+        rows.get(rIndex).setValue(cIndex, value, notify);
+    }
+
+    private void doRemoveColumn(Collection<Row> rowSet, int colIndex) {
+        for (Row r : rowSet) {
+            r.removeColumn(colIndex);
         }
     }
 
-    void stopChanging() {
-        notifyListeners(currentChanges);
-        currentChanges = null;
-    }
-
-    private void setValueAt(Index index, Value v) {
-        if (v.isEmpty()) {
-            values.remove(index);
-        } else {
-            values.put(index, v);
-        }
-        addChange(Operation.updateCell(index.getRow(), index.getCol(), v.getValue()));
-    }
-
-    private Index indexFor(int rIndex, int cIndex) {
-        if (rIndex < 0 || rIndex > rowCount) {
-            throw new IndexOutOfBoundsException("Row index " + rIndex + " is out of range [0," + rowCount + "]");
-        }
-        if (cIndex < 0) {
-            throw new IndexOutOfBoundsException("Column index could not be less than 0: " + cIndex);
-        }
-        return new Index(rIndex, cIndex);
-    }
-
-    public static class Index implements Serializable {
-
-        private static Ordering<Index> COMPARE_BY_ROW = new Ordering<Index>() {
-            public int compare(Index o1, Index o2) {
-                return Integer.valueOf(o1.getRow()).compareTo(o2.getRow());
-            }
-        };
-
-        private static Ordering<Index> COMPARE_BY_COLUMN = new Ordering<Index>() {
-            public int compare(Index o1, Index o2) {
-                return Integer.valueOf(o1.getCol()).compareTo(o2.getCol());
-            }
-        };
-
-        private int row;
-
-        private int col;
-
-        public Index() {
-            // required by GWT serialization policy
-        }
-
-        public Index(int row, int col) {
-            checkArgument(row >= 0, "Row index can't be negative");
-            checkArgument(col >= 0, "Column index can't be negative");
-            this.row = row;
-            this.col = col;
-        }
-
-        public int getRow() {
-            return row;
-        }
-
-        public int getCol() {
-            return col;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Index)) return false;
-
-            Index index = (Index) o;
-
-            if (col != index.col) return false;
-            if (row != index.row) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = row;
-            result = 31 * result + col;
-            return result;
-        }
-    }
-
-    public static class Value implements Serializable {
-
-        private String value;
-
-        private String error;
-
-        public Value() {
-            // required by GWT serialization policy
-        }
-
-        public Value(String value) {
-            this.value = value;
-        }
-
-        public Value(String value, String error) {
-            this.value = value;
-            this.error = error;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public String getError() {
-            return error;
-        }
-
-        public boolean isEmpty() {
-            return isNullOrEmpty(value) && isNullOrEmpty(error);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Value)) return false;
-
-            Value value1 = (Value) o;
-
-            if (value != null ? !value.equals(value1.value) : value1.value != null) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return value != null ? value.hashCode() : 0;
+    private void doMoveColumn(Collection<Row> rowSet, int fromIndex, int toIndex) {
+        for (Row r : rowSet) {
+            r.moveColumn(fromIndex, toIndex);
         }
     }
 }

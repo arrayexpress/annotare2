@@ -60,13 +60,10 @@ public class InvestigationTest {
         Table table = new Table();
         Investigation idf = new Investigation(table);
 
-        assertTrue(table.getCells().isEmpty());
-
         assertTrue(idf.getContacts().isEmpty());
         assertTrue(idf.getTermSources().isEmpty());
 
         assertNotNull(idf.getTitle());
         assertTrue(idf.getTitle().isEmpty());
-        assertTrue(table.getCells().isEmpty());
     }
 }

@@ -52,18 +52,18 @@ public class TsvParserTest {
 
         Table table = (new TsvParser()).parse(new ByteArrayInputStream(sb.toString().getBytes(Charsets.UTF_8)));
 
-        assertEquals(rows.size(), table.getRowCount());
-        for (int i = 0; i < table.getRowCount(); i++) {
+        assertEquals(rows.size(), table.getHeight());
+        for (int i = 0; i < table.getHeight(); i++) {
             List<String> row = rows.get(i);
             if (row.isEmpty()) {
-                assertEquals(0, table.lastColumnIndex(i));
+                assertEquals(0, table.getRow(i).getTrimmedSize());
             }
             for (int j = 0; j < row.size(); j++) {
                 String value = row.get(j);
                 if (isNullOrEmpty(value)) {
                     assertNull(table.getValueAt(i, j));
                 } else {
-                    assertEquals(value, table.getValueAt(i, j).getValue());
+                    assertEquals(value, table.getValueAt(i, j));
                 }
             }
         }
