@@ -33,6 +33,14 @@ public class Person {
 
     private Row.Cell<String> email;
 
+    private Row.Cell<String> phone;
+
+    private Row.Cell<String> fax;
+
+    private Row.Cell<String> affiliation;
+
+    private Row.Cell<String> address;
+
     private Term roles;
 
     public Row.Cell<String> getFirstName() {
@@ -65,6 +73,38 @@ public class Person {
 
     public void setEmail(Row.Cell<String> email) {
         this.email = email;
+    }
+
+    public Row.Cell<String> getPhone() {
+        return phone;
+    }
+
+    public void setPhone(Row.Cell<String> phone) {
+        this.phone = phone;
+    }
+
+    public Row.Cell<String> getFax() {
+        return fax;
+    }
+
+    public void setFax(Row.Cell<String> fax) {
+        this.fax = fax;
+    }
+
+    public Row.Cell<String> getAffiliation() {
+        return affiliation;
+    }
+
+    public void setAffiliation(Row.Cell<String> affiliation) {
+        this.affiliation = affiliation;
+    }
+
+    public Row.Cell<String> getAddress() {
+        return address;
+    }
+
+    public void setAddress(Row.Cell<String> address) {
+        this.address = address;
     }
 
     public Term getRoles() {
