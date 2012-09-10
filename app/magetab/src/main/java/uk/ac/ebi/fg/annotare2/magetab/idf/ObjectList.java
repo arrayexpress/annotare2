@@ -61,12 +61,19 @@ public abstract class ObjectList<T> {
 
     public void remove(T t) {
         list.indexOf(t);
-        remove(list.indexOf(t));
+        list.remove(list.indexOf(t));
     }
 
-    public void remove(int index) {
-        rowSet.removeColumn(index);
-        list.remove(index);
+    public void remove(List<Integer> indices) {
+        List<Integer> sorted = new ArrayList<Integer>();
+        sorted.addAll(indices);
+        Collections.sort(sorted);
+        Collections.reverse(sorted);
+
+        rowSet.removeColumn(sorted);
+        for (Integer i : sorted) {
+            list.remove(i);
+        }
     }
 
     public boolean isEmpty() {
