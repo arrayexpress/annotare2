@@ -21,7 +21,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.base.ChangeListener;
-import uk.ac.ebi.fg.annotare2.magetab.base.Operation;
+import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
@@ -44,7 +44,7 @@ public class InvestigationData {
 
     private Investigation investigation;
 
-    private Queue<List<Operation>> changes = new LinkedList<List<Operation>>();
+    private Queue<Operation> changes = new LinkedList<Operation>();
 
     private static final int MAX_SIZE = 100;
 
@@ -86,9 +86,9 @@ public class InvestigationData {
         this.investigation = new Investigation(table);
         this.table.addChangeListener(new ChangeListener() {
             @Override
-            public void onChange(List<Operation> operations) {
+            public void onChange(Operation operation) {
                 if (changes.size() < MAX_SIZE) {
-                    changes.add(operations);
+                    changes.add(operation);
                 } else {
                     //TODO use local storage?
                     Window.alert("Cache of changes exceeded");
@@ -103,7 +103,7 @@ public class InvestigationData {
             return;
         }
 
-        List<Operation> next = changes.peek();
+        Operation next = changes.peek();
         idfService.updateInvestigation(getSubmissionId(), next, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {

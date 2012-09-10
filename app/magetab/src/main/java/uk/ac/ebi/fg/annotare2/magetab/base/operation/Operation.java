@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.magetab.base.operation;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
+import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface IdfServiceAsync {
+/**
+ * @author Olga Melnichuk
+ */
+@GwtCompatible
+public interface Operation extends Serializable {
 
-    void getGeneralInfo(int submissionId, AsyncCallback<UIGeneralInfo> async);
-
-    void loadInvestigation(int submissionId, AsyncCallback<Table> async);
-
-    void updateInvestigation(int submissionId, Operation operation, AsyncCallback<Void> async);
+    void apply(Table table);
 }

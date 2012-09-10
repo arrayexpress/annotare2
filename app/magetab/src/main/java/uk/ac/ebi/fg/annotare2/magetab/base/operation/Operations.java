@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.base;
+package uk.ac.ebi.fg.annotare2.magetab.base.operation;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public interface ChangeListener {
+public class Operations {
 
-    /**
-     * Called when table is changed.
-     *
-     * @param operation an operation which changed the table
-     */
-    void onChange(Operation operation);
+    public static Operation updateCell(final int row, final int col, final String value) {
+        return new UpdateCellOperation(row, col, value);
+    }
+
+    public static Operation removeColumn(List<Integer> rowIndices, int colIndex) {
+        return new RemoveColumnOperation(rowIndices, colIndex);
+    }
+
+    public static Operation moveColumn(List<Integer> rowIndices, int fromColIndex, int toColIndex) {
+        return new MoveColumnOperation(rowIndices, fromColIndex, toColIndex);
+    }
 }

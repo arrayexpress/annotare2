@@ -22,9 +22,10 @@ import uk.ac.ebi.fg.annotare2.magetab.base.RowSet;
 import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
-import java.util.*;
-
-import static java.util.Arrays.asList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -32,18 +33,15 @@ import static java.util.Arrays.asList;
 @GwtCompatible
 public abstract class ObjectList<T> {
 
-    private final List<RowTag> tags = new ArrayList<RowTag>();
-
     private final RowSet rowSet;
 
     private final List<T> list = new ArrayList<T>();
 
     public ObjectList(Table table, RowTag... rowTags) {
-        tags.addAll(asList(rowTags));
         rowSet = new RowSet(rowTags);
         rowSet.addAll(table);
-        for (int i=0; i<rowSet.getColumnCount(); i++) {
-            list.add(create(i));
+        for (int i=0; i<rowSet.getWidth(); i++) {
+            list.add(create(rowSet.getColumn(i)));
         }
     }
 
@@ -56,8 +54,7 @@ public abstract class ObjectList<T> {
     }
 
     public T add() {
-        int column = rowSet.addColumn();
-        T t = create(column);
+        T t = create(rowSet.addColumn());
         list.add(t);
         return t;
     }
@@ -74,14 +71,6 @@ public abstract class ObjectList<T> {
 
     public boolean isEmpty() {
         return list.isEmpty();
-    }
-
-    private T create(int i) {
-        Map<RowTag, Row.Cell<String>> map = new HashMap<RowTag, Row.Cell<String>>();
-        for (RowTag tag : tags) {
-            map.put(tag, rowSet.rowAt(tag).cellAt(i));
-        }
-        return create(map);
     }
 
     protected abstract T create(Map<RowTag, Row.Cell<String>> map);

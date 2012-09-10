@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Joiner.on;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * @author Olga Melnichuk
@@ -38,13 +39,13 @@ public class TsvGenerator {
 
     public void generate(OutputStream out) throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-        int numberOfColumns = table.lastColumnIndex() + 1;
+        int numberOfColumns = table.getTrimmedWidth();
 
-        for (int i = 0; i < table.getRowCount(); i++) {
+        for (int i = 0; i < table.getHeight(); i++) {
             List<String> row = new ArrayList<String>();
             for (int j = 0; j < numberOfColumns; j++) {
-                Table.Value v = table.getValueAt(i, j);
-                row.add(v == null || v.isEmpty() ? "" : v.getValue());
+                String v = table.getValueAt(i, j);
+                row.add(isNullOrEmpty(v) ? "" : v);
             }
             writer.write(on("\t").join(row) + "\n");
         }

@@ -17,15 +17,12 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
 import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -256,10 +253,7 @@ public class Investigation {
     }
 
     public List<TableCell> getErrors() {
-        return new ArrayList<TableCell>(Collections2.filter(table.getCells(), new Predicate<TableCell>() {
-            public boolean apply(@Nullable TableCell input) {
-                return input.hasError();
-            }
-        }));
+        //TODO
+        return new ArrayList<TableCell>();
     }
 }

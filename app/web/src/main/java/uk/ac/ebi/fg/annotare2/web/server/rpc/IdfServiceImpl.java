@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.magetab.base.Operation;
+import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
@@ -87,11 +87,11 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     }
 
     @Override
-    public void updateInvestigation(int submissionId, List<Operation> operations) throws NoPermissionException, ResourceNotFoundException {
+    public void updateInvestigation(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException {
         try {
             Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
             Table table = new TsvParser().parse(submission.getInvestigation());
-            table.applyChanges(operations);
+            operation.apply(table);
             submission.setInvestigation(asString(table));
         } catch (RecordNotFoundException e) {
             log.warn("getGeneralInfo(" + submissionId + ") failure", e);

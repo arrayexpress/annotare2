@@ -22,47 +22,68 @@ import com.google.common.annotations.GwtCompatible;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class TaggedRow extends Row {
+public class TaggedRow {
 
     private final RowTag tag;
 
-    private Cell<String> tagCell;
+    private final Row row;
+
+    private Row.Cell<String> tagCell;
 
     public TaggedRow(Table table, RowTag tag) {
-        super(table, findRowIn(table, tag));
+        this.row = findRow(table, tag);
         this.tag = tag;
-        if (!exists()) {
-            this.tagCell = addCell();
-        }
+        this.tagCell = this.row.cellAt(0);
     }
 
-    private static <T extends RowTag> int findRowIn(Table table, T t) {
-        for (int i = 0; i < table.getRowCount(); i++) {
-            String s = table.getValueAt(i, 0).getValue();
-            if (t.getName().equals(s)) {
-                return i;
+    private static Row findRow(Table table, RowTag tag) {
+        for (int i = 0; i < table.getHeight(); i++) {
+            Row r = table.getRow(i);
+            if (tag.getName().equals(r.getValue(0))) {
+                return r;
             }
         }
-        return -1;
+        return table.addRow();
     }
 
-    @Override
-    public Cell<String> cellAt(int index) {
-        return super.cellAt(index + 1);
+    public Row.Cell<String> cellAt(int index) {
+        final Row.Cell<String> cell = row.cellAt(shift(index));
+        return new Row.Cell<String>() {
+
+            @Override
+            public void setValue(String s) {
+                if (tagCell.isEmpty()) {
+                    tagCell.setValue(tag.getName());
+                }
+                cell.setValue(s);
+            }
+
+            @Override
+            public String getValue() {
+                return cell.getValue();
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return cell.isEmpty();
+            }
+        };
     }
 
-    @Override
-    int getColumnCount() {
-        int count = super.getColumnCount();
-        return count == 0 ? 0 : count - 1;
-    }
-
-    @Override
-    public void setValueFor(Cell<String> cell, String s) {
-        if (!exists()) {
-            super.setValueFor(tagCell, tag.getName());
+    static int shift(int idx){
+        if (idx < 0) {
+            throw new IndexOutOfBoundsException("Column index could not be negative:" + idx);
         }
-        super.setValueFor(cell, s);
+        // zero index is reserved for the tag
+        return idx + 1;
     }
 
+    int getSize() {
+        int size = row.getSize();
+        return  size > 0 ? size - 1 : 0;
+    }
+
+    Row getRow() {
+        return row;
+    }
 }

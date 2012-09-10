@@ -17,19 +17,16 @@
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Collections2.transform;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.primitives.Ints.asList;
-import static com.google.common.primitives.Ints.lastIndexOf;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 /**
@@ -39,23 +36,28 @@ public class TableTest {
 
     @Test
     public void testTableCreation() {
-        testTable(
-                asList(),
-                asList());
 
-        testTable(
-                asList(),
-                asList(0),
-                asList(0, 1),
-                asList(0, 1, 2));
+        createAndTest(
+                Collections.<String>emptyList(),
+                Collections.<String>emptyList());
 
-        testTable(
-                asList(),
-                asList(0),
-                asList(0, 1),
-                asList(0, 1, 2),
-                asList(),
-                asList(0, 1));
+        createAndTest(
+                Collections.<String>emptyList(),
+                asList("0"),
+                asList("0", "1"),
+                asList("0", "1", "2"));
+
+        createAndTest(
+                Collections.<String>emptyList(),
+                asList("0"),
+                asList("0", "1"),
+                asList("0", "1", "2"),
+                Collections.<String>emptyList(),
+                asList("0", "1"));
+
+        createAndTest(
+                asList("", "", "", null)
+        );
     }
 
     @Test
@@ -65,69 +67,88 @@ public class TableTest {
 
         table1.addChangeListener(new ChangeListener() {
             @Override
-            public void onChange(List<Operation> operations) {
-                table2.applyChanges(operations);
+            public void onChange(Operation operation) {
+                operation.apply(table2);
             }
         });
 
-        table1.addRow(Arrays.asList("1", "2", "3"));
-        table1.addRow(Arrays.asList("1", "2", "3"));
+        table1.addRow(asList("1", "2", "3"));
+        table1.addRow(asList("1", "2", "3"));
 
-        assertEquals(table1.getRowCount(), table2.getRowCount());
-        assertEquals(table1.lastColumnIndex(), table2.lastColumnIndex());
+        assertTablesEqual("Tables should be equal after adding new rows", table1, table2);
 
-        for (int i = 0; i < table1.getRowCount(); i++) {
-            int maxIndex = table1.lastColumnIndex(i);
-            assertEquals(maxIndex, table2.lastColumnIndex(i));
-            for (int j = 0; j <= maxIndex; j++) {
-                Table.Value v1 = table1.getValueAt(i, j);
-                Table.Value v2 = table2.getValueAt(i, j);
-                assertEquals(v1, v2);
+        table1.setValueAt(2, 0, "4");
+
+        assertTablesEqual("Tables should be equal after setting a value", table1, table2);
+    }
+
+    private static void assertTablesEqual(String msg, Table table1, Table table2) {
+        assertEquals(msg + "; heights should be equal", table1.getHeight(), table2.getHeight());
+        assertEquals(msg + "; trimmed widths should be equal", table1.getTrimmedWidth(), table2.getTrimmedWidth());
+
+        for (int i = 0; i < table1.getHeight(); i++) {
+            int trimmedSize = table1.getRow(i).getTrimmedSize();
+            assertEquals(msg + "; row trimmed sizes should be equal", trimmedSize, table2.getRow(i).getTrimmedSize());
+            for (int j = 0; j <= trimmedSize; j++) {
+                String v1 = table1.getValueAt(i, j);
+                String v2 = table2.getValueAt(i, j);
+                assertEquals(msg + "; values should be equal", v1, v2);
             }
         }
     }
 
-    private void testTable(List<Integer>... rows) {
+    private void createAndTest(List<String>... rows) {
         Table table = new Table();
-        List<List<String>> stringRows = newArrayList();
-        for (List<Integer> row : rows) {
-            List<String> strings = newArrayList(transform(row, new Function<Integer, String>() {
-                public String apply(@Nullable Integer input) {
-                    return input.toString();
-                }
-            }));
-            table.addRow(strings);
-            stringRows.add(strings);
+        for (List<String> row : rows) {
+            table.addRow(row);
         }
-        assertTableEquals(table, stringRows);
+        assertTableEqualsTo(table, asList(rows));
     }
 
-    private void assertTableEquals(Table table, List<List<String>> rows) {
+    private void assertTableEqualsTo(Table table, List<List<String>> rows) {
         if (rows.isEmpty()) {
-            assertEquals(0, table.getRowCount());
+            assertEquals("An empty table should correspond to the empty set of input rows", 0, table.getHeight());
             return;
         }
 
-        int columnCount = Collections.max(
+        int trimmedWidth = Collections.max(
                 transform(rows, new Function<List<String>, Integer>() {
                     public Integer apply(@Nullable List<String> input) {
-                        return input.size();
+                        int size = 0;
+                        for (String s : input) {
+                            if (!isNullOrEmpty(s)) {
+                                size++;
+                            }
+                        }
+                        return size;
                     }
                 }));
 
-        assertEquals(rows.size(), table.getRowCount());
+        assertEquals("The height of the table should be equal to the number of input rows",
+                rows.size(), table.getHeight());
+        assertEquals("The trimmed width of the table should be equal to the max trimmed width of the input rows",
+                trimmedWidth, table.getTrimmedWidth());
 
         for (int i = 0; i < rows.size(); i++) {
             List<String> row = rows.get(i);
-            for (int j = 0; j < columnCount; j++) {
-                Table.Value cell = table.getValueAt(i, j);
-                if (j < row.size()) {
-                    assertNotNull(cell);
-                    assertEquals(row.get(j), cell.getValue());
+            int rowSize = 0;
+            for (int j = 0; j < row.size(); j++) {
+                String value = table.getValueAt(i, j);
+                if (!isNullOrEmpty(row.get(j))) {
+                    assertNotNull("Not empty values should be added to the table", value);
+                    assertEquals("Not empty values should be equal to the corresponding values in the input",
+                            row.get(j), value);
+                    rowSize++;
                 } else {
-                    assertNull(cell);
+                    assertNull("Empty or null values should be ignored in the table (until you set it intentionally)", value);
                 }
             }
+
+            assertEquals("Untrimmed width of a row should be exactly equal to the size of corresponding input row",
+                    row.size(), table.getRow(i).getSize());
+
+            assertEquals("Table should be able to trim out empty values",
+                    rowSize, table.getRow(i).getTrimmedSize());
         }
     }
 }
