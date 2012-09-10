@@ -17,10 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
@@ -40,9 +43,22 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
     @UiField
     VerticalPanel listPanel;
 
+    @UiField
+    Image addIcon;
+
+    @UiField
+    Image removeIcon;
+
     public IdfContactListViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+
+        addIcon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                addNewContact();
+            }
+        });
     }
 
     @UiFactory
@@ -57,10 +73,16 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
         }
     }
 
+    private void addNewContact() {
+       addListItem(null);
+    }
+
     private void addListItem(Person p) {
         ContactListItem item = new ContactListItem();
-        item.update(p);
-        listPanel.add(item);
+        if (p != null) {
+            item.update(p);
+        }
+        listPanel.insert(item, 0);
     }
 
 }

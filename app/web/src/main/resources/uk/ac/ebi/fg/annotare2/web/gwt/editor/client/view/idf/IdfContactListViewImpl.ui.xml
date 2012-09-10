@@ -13,6 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
@@ -35,9 +36,9 @@
 
     <g:HTMLPanel width="100%" addStyleNames="{style.contactListView}">
         <div class="{style.buttons}">
-            <g:Image resource="{res.plusIcon}"/>
+            <g:Image resource="{res.plusIcon}" ui:field="addIcon"/>
             &nbsp;
-            <g:Image resource="{res.trashIcon}"/>
+            <g:Image resource="{res.trashIcon}" ui:field="removeIcon"/>
         </div>
         <div style="padding-left:10px;padding-right:10px">
             <g:VerticalPanel ui:field="listPanel" width="100%"/>
