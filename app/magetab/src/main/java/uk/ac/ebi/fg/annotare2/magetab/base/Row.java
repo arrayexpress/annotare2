@@ -73,7 +73,7 @@ public class Row implements Serializable {
         if (toIndex < fromIndex) {
             values.add(toIndex, cell);
         } else {
-            values.add(toIndex - 1, cell);
+            values.add(toIndex, cell);
         }
     }
 
