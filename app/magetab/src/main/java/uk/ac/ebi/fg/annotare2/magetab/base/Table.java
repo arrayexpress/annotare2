@@ -127,7 +127,7 @@ public class Table implements Serializable, RowChangeListener {
     }
 
     public void apply(UpdateCellOperation op) {
-        doUpdateCell(op.getRowIndex(), op.getColIndex(), op.getValue(), false);
+        doUpdateCell(op.getRowIndex(), op.getColumnIndex(), op.getValue(), false);
     }
 
     public void apply(RemoveColumnOperation op) {

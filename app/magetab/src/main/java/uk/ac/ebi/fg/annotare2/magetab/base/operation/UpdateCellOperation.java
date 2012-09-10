@@ -50,7 +50,7 @@ public class UpdateCellOperation implements Operation {
         return rowIndex;
     }
 
-    public int getColIndex() {
+    public int getColumnIndex() {
         return colIndex;
     }
 
