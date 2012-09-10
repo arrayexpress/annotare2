@@ -152,6 +152,14 @@ public class Investigation {
         return generalInfoList.get(0).getDateOfPublicRelease();
     }
 
+    public void removeContact(int index) {
+       contactList.remove(index);
+    }
+
+    public Person addContact() {
+        return contactList.add();
+    }
+
     public List<Person> getContacts() {
         return contactList.getAll();
     }
