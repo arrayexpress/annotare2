@@ -156,8 +156,8 @@ public class Investigation {
         return generalInfoList.get(0).getDateOfPublicRelease();
     }
 
-    public void removeContact(int index) {
-       contactList.remove(index);
+    public void removeContact(List<Integer> indices) {
+       contactList.remove(indices);
     }
 
     public Person addContact() {
