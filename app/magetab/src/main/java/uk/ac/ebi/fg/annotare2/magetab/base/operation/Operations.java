@@ -30,8 +30,8 @@ public class Operations {
         return new UpdateCellOperation(row, col, value);
     }
 
-    public static Operation removeColumn(List<Integer> rowIndices, int colIndex) {
-        return new RemoveColumnOperation(rowIndices, colIndex);
+    public static Operation removeColumn(List<Integer> rowIndices, List<Integer> colIndices) {
+        return new RemoveColumnOperation(rowIndices, colIndices);
     }
 
     public static Operation moveColumn(List<Integer> rowIndices, int fromColIndex, int toColIndex) {

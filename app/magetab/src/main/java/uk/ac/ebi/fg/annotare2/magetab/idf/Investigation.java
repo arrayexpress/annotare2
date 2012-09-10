@@ -47,6 +47,10 @@ public class Investigation {
         PERSON_LAST_NAME("Person Last Name"),
         PERSON_MID_INITIALS("Person Mid Initials"),
         PERSON_EMAIL("Person Email"),
+        PERSON_PHONE("Person Phone"),
+        PERSON_FAX("Person Fax"),
+        PERSON_ADDRESS("Person Address"),
+        PERSON_AFFILIATION("Person Affiliation"),
         PERSON_ROLES("Person Roles"),
         PERSON_ROLES_TERM_ACCESSION_NUMBER("Person Roles Term Accession Number"),
         PERSON_ROLES_TERM_SOURCE_REF("Person Roles Term Source REF"),
@@ -244,6 +248,10 @@ public class Investigation {
                     PERSON_LAST_NAME,
                     PERSON_MID_INITIALS,
                     PERSON_EMAIL,
+                    PERSON_PHONE,
+                    PERSON_FAX,
+                    PERSON_AFFILIATION,
+                    PERSON_ADDRESS,
                     PERSON_ROLES,
                     PERSON_ROLES_TERM_ACCESSION_NUMBER,
                     PERSON_ROLES_TERM_SOURCE_REF);
@@ -256,6 +264,10 @@ public class Investigation {
             p.setLastName(map.get(PERSON_LAST_NAME));
             p.setMidInitials(map.get(PERSON_MID_INITIALS));
             p.setEmail(map.get(PERSON_EMAIL));
+            p.setPhone(map.get(PERSON_PHONE));
+            p.setFax(map.get(PERSON_FAX));
+            p.setAffiliation(map.get(PERSON_AFFILIATION));
+            p.setAddress(map.get(PERSON_ADDRESS));
             return p;
         }
     }

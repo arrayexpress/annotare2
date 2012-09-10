@@ -20,6 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static uk.ac.ebi.fg.annotare2.magetab.base.TaggedRow.shift;
 
 /**
@@ -56,13 +57,17 @@ public class RowSet {
         return res;
     }
 
-    public void removeColumn(int i) {
-        checkColumnIndices(i);
-        table.removeColumn(rows(), shift(i));
+    public void removeColumn(List<Integer> indices) {
+        checkColumnIndices(indices);
+        List<Integer> shifted = new ArrayList<Integer>();
+        for (Integer i : indices) {
+            shifted.add(shift(i));
+        }
+        table.removeColumn(rows(), shifted);
     }
 
     public void moveColumn(int fromIndex, int toIndex) {
-        checkColumnIndices(fromIndex, toIndex);
+        checkColumnIndices(asList(fromIndex, toIndex));
         table.moveColumn(rows(), shift(fromIndex), shift(toIndex));
     }
 
@@ -78,7 +83,7 @@ public class RowSet {
         return column;
     }
 
-    private void checkColumnIndices(int... indices) {
+    private void checkColumnIndices(List<Integer> indices) {
         int width = getWidth();
         for (int i : indices) {
             if (i < 0 || i >= width) {
