@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactListItem extends DisclosureListItem {
-
-    private final ContactView contactView = new ContactView();
-
-    public ContactListItem() {
-        setContent(contactView);
-    }
-
-    public void update(Person p) {
-        contactView.update(p);
-    }
+public interface ItemSelectionEventHandler extends EventHandler {
 }

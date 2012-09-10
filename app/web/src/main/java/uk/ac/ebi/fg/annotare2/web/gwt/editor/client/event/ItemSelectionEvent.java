@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactListItem extends DisclosureListItem {
+public class ItemSelectionEvent extends GwtEvent<ItemSelectionEventHandler> {
 
-    private final ContactView contactView = new ContactView();
+    public static Type<ItemSelectionEventHandler> TYPE = new Type<ItemSelectionEventHandler>();
 
-    public ContactListItem() {
-        setContent(contactView);
+    @Override
+    public Type<ItemSelectionEventHandler> getAssociatedType() {
+        return TYPE;
     }
 
-    public void update(Person p) {
-        contactView.update(p);
+    @Override
+    protected void dispatch(ItemSelectionEventHandler handler) {
+        // todo
     }
 }

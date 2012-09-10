@@ -16,13 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEventHandler;
 
 /**
@@ -39,6 +35,7 @@ public class DisclosureListItem extends Composite {
         panel.addStyleName("app-IdfItemList");
         panel.setHeader(header);
         initWidget(panel);
+
 
         panel.addOpenHandler(new OpenHandler<DisclosurePanel>() {
             @Override
@@ -63,5 +60,9 @@ public class DisclosureListItem extends Composite {
             }
         });
         panel.setContent(w);
+    }
+
+    public void addItemSelectionHandler() {
+        //TODO addHandler()
     }
 }

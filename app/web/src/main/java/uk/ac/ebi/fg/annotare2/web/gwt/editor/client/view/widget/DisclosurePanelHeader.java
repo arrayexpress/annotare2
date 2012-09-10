@@ -18,9 +18,16 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableCellElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,6 +48,9 @@ public class DisclosurePanelHeader extends Composite {
     @UiField
     TableCellElement expandCollapseIcon;
 
+    @UiField
+    CheckBox checkbox;
+
     private final String collapseClassName;
 
     private final String expandClassName;
@@ -50,6 +60,20 @@ public class DisclosurePanelHeader extends Composite {
         collapseClassName = EditorResources.INSTANCE.editorStyles().collapseIconClass();
         expandClassName = EditorResources.INSTANCE.editorStyles().expandIconClass();
         initWidget(Binder.BINDER.createAndBindUi(this));
+
+        checkbox.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                event.stopPropagation();
+            }
+        });
+
+        checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                // TODO fireEvent();
+            }
+        });
     }
 
     @UiFactory
