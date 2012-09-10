@@ -82,15 +82,16 @@ public class RemoveColumnOperationTest {
     public void testApplyOperation() {
         Table table = new Table();
         table.addRow();
-        table.addRow(asList("2"));
+        table.addRow(asList("2", "3"));
 
         assertEquals(2, table.getHeight());
-        assertEquals(1, table.getWidth());
+        assertEquals(2, table.getWidth());
 
         table.apply(new RemoveColumnOperation(asList(0, 1), 0));
 
+        assertEquals("3", table.getValueAt(1, 0));
         assertEquals(2, table.getHeight());
-        assertEquals(0, table.getWidth());
+        assertEquals(1, table.getWidth());
     }
 
 }
