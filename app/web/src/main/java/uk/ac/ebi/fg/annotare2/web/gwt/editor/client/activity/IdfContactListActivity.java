@@ -29,6 +29,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
 
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
@@ -96,7 +98,7 @@ public class IdfContactListActivity extends AbstractActivity implements IdfConta
     }
 
     @Override
-    public void removeContact(int index) {
-        investigation.removeContact(index);
+    public void removeContacts(List<Integer> indices) {
+        investigation.removeContact(indices);
     }
 }

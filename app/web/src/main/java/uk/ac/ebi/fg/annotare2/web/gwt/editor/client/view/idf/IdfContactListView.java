@@ -34,6 +34,6 @@ public interface IdfContactListView extends IsWidget {
 
         Person addContact();
 
-        void removeContact(int index);
+        void removeContacts(List<Integer> indices);
     }
 }
