@@ -19,9 +19,7 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 import com.google.common.annotations.GwtCompatible;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -57,9 +55,15 @@ public class Row implements Serializable {
         return 0;
     }
 
-    public void removeColumn(int colIndex) {
-        checkColumnIndex(colIndex);
-        values.remove(colIndex);
+    public void removeColumn(Collection<Integer> colIndices) {
+        checkColumnIndices(colIndices);
+        List<Integer> tmp = new ArrayList<Integer>();
+        tmp.addAll(colIndices);
+        Collections.sort(tmp);
+        Collections.reverse(tmp);
+        for (Integer i : tmp) {
+            values.remove(i.intValue());
+        }
     }
 
     public void moveColumn(int fromIndex, int toIndex) {
@@ -117,8 +121,14 @@ public class Row implements Serializable {
     }
 
     private void notifyValueUpdated(int colIndex, String newValue) {
-        for(RowChangeListener listener :  listeners) {
+        for (RowChangeListener listener : listeners) {
             listener.onRowValueChange(this, colIndex, newValue);
+        }
+    }
+
+    private void checkColumnIndices(Collection<Integer> indices) {
+        for (Integer i : indices) {
+            checkColumnIndex(i);
         }
     }
 

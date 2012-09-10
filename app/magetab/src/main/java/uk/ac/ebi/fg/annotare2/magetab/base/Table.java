@@ -85,9 +85,9 @@ public class Table implements Serializable, RowChangeListener {
         return row;
     }
 
-    public void removeColumn(Collection<Row> rowSet, int colIndex) {
-        doRemoveColumn(rowSet, colIndex);
-        notifyListeners(Operations.removeColumn(toRowIndices(rowSet), colIndex));
+    public void removeColumn(Collection<Row> rowSet, List<Integer> colIndices) {
+        doRemoveColumn(rowSet, colIndices);
+        notifyListeners(Operations.removeColumn(toRowIndices(rowSet), colIndices));
     }
 
     public void moveColumn(Collection<Row> rowSet, int fromColIndex, int toColIndex) {
@@ -131,7 +131,7 @@ public class Table implements Serializable, RowChangeListener {
     }
 
     public void apply(RemoveColumnOperation op) {
-        doRemoveColumn(toRows(op.getRowIndices()), op.getColumnIndex());
+        doRemoveColumn(toRows(op.getRowIndices()), op.getColumnIndices());
     }
 
     public void apply(MoveColumnOperation op) {
@@ -174,9 +174,9 @@ public class Table implements Serializable, RowChangeListener {
         rows.get(rIndex).setValue(cIndex, value, notify);
     }
 
-    private void doRemoveColumn(Collection<Row> rowSet, int colIndex) {
+    private void doRemoveColumn(Collection<Row> rowSet, Collection<Integer> colIndices) {
         for (Row r : rowSet) {
-            r.removeColumn(colIndex);
+            r.removeColumn(colIndices);
         }
     }
 

@@ -75,11 +75,11 @@ public class RowSetTest {
         rowSet.addAll(table);
         assertEquals(1, rowSet.getWidth());
 
-        rowSet.removeColumn(0);
+        rowSet.removeColumn(asList(0));
         assertEquals(0, rowSet.getWidth());
 
         try{
-            rowSet.removeColumn(0);
+            rowSet.removeColumn(asList(0));
             fail("It should not be possible to remove row with an invalid index");
         } catch (IndexOutOfBoundsException e) {
             //OK

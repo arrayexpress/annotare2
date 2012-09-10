@@ -30,15 +30,15 @@ public class RemoveColumnOperation implements Operation {
 
     private List<Integer> rowIndices = new ArrayList<Integer>();
 
-    private int columnIndex;
+    private List<Integer> columnIndices = new ArrayList<Integer>();
 
     public RemoveColumnOperation() {
         //required by GWT Serialization Policy
     }
 
-    public RemoveColumnOperation(List<Integer> rowIndices, int columnIndex) {
+    public RemoveColumnOperation(List<Integer> rowIndices, List<Integer> columnIndices) {
         this.rowIndices.addAll(rowIndices);
-        this.columnIndex = columnIndex;
+        this.columnIndices.addAll(columnIndices);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class RemoveColumnOperation implements Operation {
         return rowIndices;
     }
 
-    public int getColumnIndex() {
-        return columnIndex;
+    public List<Integer> getColumnIndices() {
+        return columnIndices;
     }
 }

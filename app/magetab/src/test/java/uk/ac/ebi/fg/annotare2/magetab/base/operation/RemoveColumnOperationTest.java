@@ -53,7 +53,7 @@ public class RemoveColumnOperationTest {
         final Queue<Operation> operations = new ArrayDeque<Operation>();
         Table table = new Table();
         table.addRow(asList(ROW_TAG_1.getName()));
-        table.addRow(asList(ROW_TAG_2.getName(), "2"));
+        table.addRow(asList(ROW_TAG_2.getName(), "2", "3"));
 
         RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2);
         rowSet.addAll(table);
@@ -65,14 +65,17 @@ public class RemoveColumnOperationTest {
             }
         });
 
-        rowSet.removeColumn(0);
+        rowSet.removeColumn(asList(0,1));
         assertFalse(operations.isEmpty());
 
         Operation op = operations.poll();
         assertTrue(op instanceof RemoveColumnOperation);
 
         RemoveColumnOperation removeOp = (RemoveColumnOperation) op;
-        assertEquals(1, removeOp.getColumnIndex());
+        assertEquals(2, removeOp.getColumnIndices().size());
+        assertTrue(removeOp.getColumnIndices().contains(1));
+        assertTrue(removeOp.getColumnIndices().contains(2));
+
         assertEquals(2, removeOp.getRowIndices().size());
         assertTrue(removeOp.getRowIndices().contains(0));
         assertTrue(removeOp.getRowIndices().contains(1));
@@ -82,12 +85,12 @@ public class RemoveColumnOperationTest {
     public void testApplyOperation() {
         Table table = new Table();
         table.addRow();
-        table.addRow(asList("2", "3"));
+        table.addRow(asList("1", "2", "3"));
 
         assertEquals(2, table.getHeight());
-        assertEquals(2, table.getWidth());
+        assertEquals(3, table.getWidth());
 
-        table.apply(new RemoveColumnOperation(asList(0, 1), 0));
+        table.apply(new RemoveColumnOperation(asList(0, 1), asList(0, 1)));
 
         assertEquals("3", table.getValueAt(1, 0));
         assertEquals(2, table.getHeight());
