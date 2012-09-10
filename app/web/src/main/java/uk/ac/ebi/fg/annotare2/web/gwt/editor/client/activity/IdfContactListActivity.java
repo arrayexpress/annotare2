@@ -24,6 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
@@ -31,7 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
 /**
  * @author Olga Melnichuk
  */
-public class IdfContactListActivity extends AbstractActivity {
+public class IdfContactListActivity extends AbstractActivity implements IdfContactListView.Presenter {
 
     private final IdfContactListView view;
 
@@ -56,7 +57,7 @@ public class IdfContactListActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        // TODO view.setPresenter(this);
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
     }
@@ -89,4 +90,13 @@ public class IdfContactListActivity extends AbstractActivity {
         }.wrap());
     }
 
+    @Override
+    public Person addContact() {
+        return investigation.addContact();
+    }
+
+    @Override
+    public void removeContact(int index) {
+        investigation.removeContact(index);
+    }
 }

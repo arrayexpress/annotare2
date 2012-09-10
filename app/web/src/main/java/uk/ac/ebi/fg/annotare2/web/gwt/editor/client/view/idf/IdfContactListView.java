@@ -27,4 +27,13 @@ import java.util.List;
 public interface IdfContactListView extends IsWidget {
 
     void setContacts(List<Person> contacts);
+
+    void setPresenter(Presenter presenter);
+
+    public interface Presenter {
+
+        Person addContact();
+
+        void removeContact(int index);
+    }
 }

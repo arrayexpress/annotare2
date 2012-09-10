@@ -49,6 +49,8 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
     @UiField
     Image removeIcon;
 
+    private Presenter presenter;
+
     public IdfContactListViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -73,15 +75,18 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
         }
     }
 
+    @Override
+    public void setPresenter(Presenter presenter) {
+       this.presenter = presenter;
+    }
+
     private void addNewContact() {
-       addListItem(null);
+       addListItem(presenter.addContact());
     }
 
     private void addListItem(Person p) {
         ContactListItem item = new ContactListItem();
-        if (p != null) {
-            item.update(p);
-        }
+        item.update(p);
         listPanel.insert(item, 0);
     }
 

@@ -21,7 +21,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -63,22 +62,44 @@ public class ContactView extends DisclosurePanelContent {
     @UiField
     TextArea roles;
 
+    private Person person;
+
     public ContactView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        ChangeHandler nameChangeHandler = new ChangeHandler() {
+        firstName.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
                 onRecordChange();
+                if (person != null) {
+                    person.getFirstName().setValue(firstName.getValue());
+                }
             }
-        };
+        });
 
-        firstName.addChangeHandler(nameChangeHandler);
-        midInitials.addChangeHandler(nameChangeHandler);
-        lastName.addChangeHandler(nameChangeHandler);
+        midInitials.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                onRecordChange();
+                if (person != null) {
+                    person.getMidInitials().setValue(midInitials.getValue());
+                }
+            }
+        });
+
+        lastName.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                onRecordChange();
+                if (person != null) {
+                    person.getLastName().setValue(lastName.getValue());
+                }
+            }
+        });
     }
 
     public void update(Person p) {
+        this.person = p;
         firstName.setValue(p.getFirstName().getValue());
         midInitials.setValue(p.getMidInitials().getValue());
         lastName.setValue(p.getLastName().getValue());
