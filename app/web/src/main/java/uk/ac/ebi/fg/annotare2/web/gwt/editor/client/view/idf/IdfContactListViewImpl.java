@@ -32,7 +32,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactListItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -80,7 +79,7 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
         return EditorResources.INSTANCE;
     }
 
-    public void setContacts(List<Person> contacts) {
+    public void setContacts(ArrayList<Person> contacts) {
         for (Person p : contacts) {
             addListItem(p);
         }
