@@ -22,4 +22,6 @@ import com.google.gwt.event.shared.EventHandler;
  * @author Olga Melnichuk
  */
 public interface ItemSelectionEventHandler extends EventHandler {
+
+    public void onSelect(boolean selected);
 }

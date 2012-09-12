@@ -20,17 +20,17 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 
 /**
@@ -71,7 +71,7 @@ public class DisclosurePanelHeader extends Composite {
         checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                // TODO fireEvent();
+                fireEvent(new ItemSelectionEvent(checkbox.isEnabled()));
             }
         });
     }
@@ -82,7 +82,7 @@ public class DisclosurePanelHeader extends Composite {
     }
 
     public void setTitle(String title) {
-        label.setText(title.isEmpty() ? "No name" : title);
+        label.setText(title.isEmpty() ? "" : title);
     }
 
     public void setExpanded() {
@@ -95,4 +95,11 @@ public class DisclosurePanelHeader extends Composite {
         expandCollapseIcon.addClassName(expandClassName);
     }
 
+    public void addItemSelectionHandler(ItemSelectionEventHandler handler) {
+        addHandler(handler, ItemSelectionEvent.TYPE);
+    }
+
+    public boolean isSelected() {
+        return checkbox.getValue();
+    }
 }

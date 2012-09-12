@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEventHandler;
 
 /**
@@ -36,7 +38,6 @@ public class DisclosureListItem extends Composite {
         panel.setHeader(header);
         initWidget(panel);
 
-
         panel.addOpenHandler(new OpenHandler<DisclosurePanel>() {
             @Override
             public void onOpen(OpenEvent<DisclosurePanel> event) {
@@ -48,6 +49,13 @@ public class DisclosureListItem extends Composite {
             @Override
             public void onClose(CloseEvent<DisclosurePanel> event) {
                 header.setCollapsed();
+            }
+        });
+
+        header.addItemSelectionHandler(new ItemSelectionEventHandler() {
+            @Override
+            public void onSelect(boolean selected) {
+                fireEvent(new ItemSelectionEvent(selected));
             }
         });
     }
@@ -62,7 +70,11 @@ public class DisclosureListItem extends Composite {
         panel.setContent(w);
     }
 
-    public void addItemSelectionHandler() {
-        //TODO addHandler()
+    public void addItemSelectionHandler(ItemSelectionEventHandler handler) {
+        addHandler(handler, ItemSelectionEvent.TYPE);
+    }
+
+    public boolean isSelected() {
+        return header.isSelected();
     }
 }

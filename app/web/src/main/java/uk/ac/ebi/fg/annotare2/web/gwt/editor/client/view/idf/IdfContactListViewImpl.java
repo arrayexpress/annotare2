@@ -27,9 +27,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +53,8 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
 
     private Presenter presenter;
 
+    private int selection = 0;
+
     public IdfContactListViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -59,6 +63,13 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
             @Override
             public void onClick(ClickEvent event) {
                 addNewContact();
+            }
+        });
+
+        removeIcon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                removeSelectedContacts();
             }
         });
     }
@@ -70,24 +81,55 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
     }
 
     public void setContacts(List<Person> contacts) {
-        for(Person p:contacts) {
+        for (Person p : contacts) {
             addListItem(p);
         }
     }
 
     @Override
     public void setPresenter(Presenter presenter) {
-       this.presenter = presenter;
+        this.presenter = presenter;
     }
 
     private void addNewContact() {
-       addListItem(presenter.addContact());
+        ContactListItem item = addListItem(presenter.addContact());
+        //todo scroll + item.open();
     }
 
-    private void addListItem(Person p) {
+    private ContactListItem addListItem(Person p) {
         ContactListItem item = new ContactListItem();
         item.update(p);
-        listPanel.insert(item, 0);
+        listPanel.add(item);
+
+        item.addItemSelectionHandler(new ItemSelectionEventHandler() {
+            @Override
+            public void onSelect(boolean selected) {
+                if (selected) {
+                    selection++;
+                } else if (selection > 0) {
+                    selection--;
+                }
+            }
+        });
+        return item;
     }
 
+    private void removeSelectedContacts() {
+        if (selection == 0) {
+            return;
+        }
+
+        ArrayList<Integer> selected = new ArrayList<Integer>();
+        int size = listPanel.getWidgetCount();
+        for (int i = size - 1; i >=0; i--) {
+            ContactListItem item = (ContactListItem) listPanel.getWidget(i);
+            if (item.isSelected()) {
+                selected.add(i);
+            }
+        }
+        presenter.removeContacts(selected);
+        for (Integer i : selected) {
+            listPanel.remove(i);
+        }
+    }
 }

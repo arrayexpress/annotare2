@@ -25,6 +25,12 @@ public class ItemSelectionEvent extends GwtEvent<ItemSelectionEventHandler> {
 
     public static Type<ItemSelectionEventHandler> TYPE = new Type<ItemSelectionEventHandler>();
 
+    private boolean selected;
+
+    public ItemSelectionEvent(boolean selected) {
+        this.selected = selected;
+    }
+
     @Override
     public Type<ItemSelectionEventHandler> getAssociatedType() {
         return TYPE;
@@ -32,6 +38,6 @@ public class ItemSelectionEvent extends GwtEvent<ItemSelectionEventHandler> {
 
     @Override
     protected void dispatch(ItemSelectionEventHandler handler) {
-        // todo
+            handler.onSelect(selected);
     }
 }
