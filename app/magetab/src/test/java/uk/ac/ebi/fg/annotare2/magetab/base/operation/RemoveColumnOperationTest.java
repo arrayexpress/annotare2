@@ -25,14 +25,13 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
+import static uk.ac.ebi.fg.annotare2.magetab.TestUtils.asList;
 
 /**
  * @author Olga Melnichuk
  */
 public class RemoveColumnOperationTest {
-
 
     private static final RowTag ROW_TAG_1 = new RowTag() {
         @Override

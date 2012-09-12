@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.base.operation;
-
-import com.google.common.annotations.GwtCompatible;
+package uk.ac.ebi.fg.annotare2.magetab;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 /**
+ * Utility methods to help writing unit tests in GWT compatible code.
+ *
  * @author Olga Melnichuk
  */
-@GwtCompatible
-public class Operations {
+public class TestUtils {
 
-    public static Operation updateCell(final int row, final int col, final String value) {
-        return new UpdateCellOperation(row, col, value);
+    public static <T> ArrayList<T> asList(T... array) {
+        ArrayList<T> list = new ArrayList<T>();
+        Collections.addAll(list, array);
+        return list;
     }
 
-    public static Operation removeColumn(ArrayList<Integer> rowIndices, ArrayList<Integer> colIndices) {
-        return new RemoveColumnOperation(rowIndices, colIndices);
-    }
-
-    public static Operation moveColumn(ArrayList<Integer> rowIndices, int fromColIndex, int toColIndex) {
-        return new MoveColumnOperation(rowIndices, fromColIndex, toColIndex);
-    }
 }

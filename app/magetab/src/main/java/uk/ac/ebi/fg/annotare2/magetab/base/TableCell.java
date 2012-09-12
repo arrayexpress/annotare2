@@ -18,9 +18,6 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.annotations.GwtCompatible;
 
-import javax.annotation.Nonnull;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**

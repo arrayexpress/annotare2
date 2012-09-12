@@ -18,33 +18,24 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 
-import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.base.Joiner.on;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static uk.ac.ebi.fg.annotare2.magetab.TestUtils.asList;
 
 /**
  * @author Olga Melnichuk
  */
-public class TsvGeneratorTest {
+public class GwtQuirksTest {
 
     @Test
-    public void test() throws IOException {
-        String[] row = new String[]{"1", "2", "", "3"};
-        String s = on("\t").join(row) + "\n";
-        s += s;
+    public void removeElementsTest() {
+        ArrayList<Integer> list1 = asList(0,1,2,3);
+        ArrayList<Integer> list2 = GwtQuirks.remove(list1, new ArrayList<Integer>());
+        assertFalse(list1 == list2);
 
-        Table table = new Table();
-        table.addRow(asList(row));
-        table.addRow(asList(row));
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new TsvGenerator(table).generate(out);
-
-        String s1 = out.toString(UTF_8.name());
-        assertEquals(s, s1);
+        ArrayList<Integer> list3 = GwtQuirks.remove(list1, asList(1,3));
+        assertEquals(asList(0,2), list3);
     }
 }

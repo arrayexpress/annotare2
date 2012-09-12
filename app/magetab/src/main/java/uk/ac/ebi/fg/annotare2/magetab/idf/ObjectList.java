@@ -17,14 +17,9 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
-import uk.ac.ebi.fg.annotare2.magetab.base.RowSet;
-import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.base.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,18 +30,20 @@ public abstract class ObjectList<T> {
 
     private final RowSet rowSet;
 
-    private final List<T> list = new ArrayList<T>();
+    private ArrayList<T> list = new ArrayList<T>();
 
     public ObjectList(Table table, RowTag... rowTags) {
         rowSet = new RowSet(rowTags);
         rowSet.addAll(table);
-        for (int i=0; i<rowSet.getWidth(); i++) {
+        for (int i = 0; i < rowSet.getWidth(); i++) {
             list.add(create(rowSet.getColumn(i)));
         }
     }
 
-    public List<T> getAll() {
-        return Collections.unmodifiableList(list);
+    public ArrayList<T> getAll() {
+        ArrayList<T> copy = new ArrayList<T>();
+        copy.addAll(list);
+        return copy;
     }
 
     public T get(int index) {
@@ -64,16 +61,12 @@ public abstract class ObjectList<T> {
         list.remove(list.indexOf(t));
     }
 
-    public void remove(List<Integer> indices) {
-        List<Integer> sorted = new ArrayList<Integer>();
-        sorted.addAll(indices);
-        Collections.sort(sorted);
-        Collections.reverse(sorted);
-
-        rowSet.removeColumn(sorted);
-        for (Integer i : sorted) {
-            list.remove(i);
+    public void remove(ArrayList<Integer> indices) {
+        if (indices.isEmpty()) {
+            return;
         }
+        list = GwtQuirks.remove(list, indices);
+        rowSet.removeColumn(indices);
     }
 
     public boolean isEmpty() {

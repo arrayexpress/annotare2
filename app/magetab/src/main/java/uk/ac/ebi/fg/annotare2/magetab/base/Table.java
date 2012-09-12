@@ -21,8 +21,6 @@ import uk.ac.ebi.fg.annotare2.magetab.base.operation.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -32,9 +30,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @GwtCompatible
 public class Table implements Serializable, RowChangeListener {
 
-    private List<Row> rows = new ArrayList<Row>();
+    private ArrayList<Row> rows = new ArrayList<Row>();
 
-    private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private transient ArrayList<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     public Table() {
         // required by GWT serialization policy
@@ -66,7 +64,7 @@ public class Table implements Serializable, RowChangeListener {
         return rows.isEmpty();
     }
 
-    public Row addRow(Collection<String> strings) {
+    public Row addRow(ArrayList<String> strings) {
         Row row = new Row(this);
         rows.add(row);
         int colIndex = 0;
@@ -85,12 +83,12 @@ public class Table implements Serializable, RowChangeListener {
         return row;
     }
 
-    public void removeColumn(Collection<Row> rowSet, List<Integer> colIndices) {
+    public void removeColumn(ArrayList<Row> rowSet, ArrayList<Integer> colIndices) {
         doRemoveColumn(rowSet, colIndices);
         notifyListeners(Operations.removeColumn(toRowIndices(rowSet), colIndices));
     }
 
-    public void moveColumn(Collection<Row> rowSet, int fromColIndex, int toColIndex) {
+    public void moveColumn(ArrayList<Row> rowSet, int fromColIndex, int toColIndex) {
         if (fromColIndex == toColIndex) {
             return;
         }
@@ -144,16 +142,16 @@ public class Table implements Serializable, RowChangeListener {
         }
     }
 
-    private List<Integer> toRowIndices(Collection<Row> rowSet) {
-        List<Integer> rowIndices = new ArrayList<Integer>();
+    private ArrayList<Integer> toRowIndices(ArrayList<Row> rowSet) {
+        ArrayList<Integer> rowIndices = new ArrayList<Integer>();
         for (Row r : rowSet) {
             rowIndices.add(rows.indexOf(r));
         }
         return rowIndices;
     }
 
-    private List<Row> toRows(List<Integer> indices) {
-        List<Row> rowSet = new ArrayList<Row>();
+    private ArrayList<Row> toRows(ArrayList<Integer> indices) {
+        ArrayList<Row> rowSet = new ArrayList<Row>();
         for (Integer rowIndex : indices) {
             rowSet.add(rows.get(rowIndex));
         }
@@ -174,13 +172,13 @@ public class Table implements Serializable, RowChangeListener {
         rows.get(rIndex).setValue(cIndex, value, notify);
     }
 
-    private void doRemoveColumn(Collection<Row> rowSet, Collection<Integer> colIndices) {
+    private void doRemoveColumn(ArrayList<Row> rowSet, ArrayList<Integer> colIndices) {
         for (Row r : rowSet) {
             r.removeColumn(colIndices);
         }
     }
 
-    private void doMoveColumn(Collection<Row> rowSet, int fromIndex, int toIndex) {
+    private void doMoveColumn(ArrayList<Row> rowSet, int fromIndex, int toIndex) {
         for (Row r : rowSet) {
             r.moveColumn(fromIndex, toIndex);
         }
