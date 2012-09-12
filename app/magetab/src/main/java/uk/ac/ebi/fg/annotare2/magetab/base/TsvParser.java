@@ -20,7 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
+import java.util.ArrayList;
 
 import static com.google.common.io.Closeables.closeQuietly;
 import static java.util.Arrays.asList;
@@ -45,7 +45,9 @@ public class TsvParser {
         return table;
     }
 
-    private Collection<String> parseRow(String line) {
-        return asList(line.trim().split("\t"));
+    private ArrayList<String> parseRow(String line) {
+        ArrayList<String> list = new ArrayList<String>();
+        list.addAll(asList(line.trim().split("\t")));
+        return list;
     }
 }

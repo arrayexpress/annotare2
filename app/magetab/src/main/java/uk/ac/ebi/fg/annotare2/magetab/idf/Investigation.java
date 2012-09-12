@@ -25,7 +25,6 @@ import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
@@ -156,7 +155,7 @@ public class Investigation {
         return generalInfoList.get(0).getDateOfPublicRelease();
     }
 
-    public void removeContact(List<Integer> indices) {
+    public void removeContact(ArrayList<Integer> indices) {
        contactList.remove(indices);
     }
 
@@ -164,11 +163,11 @@ public class Investigation {
         return contactList.add();
     }
 
-    public List<Person> getContacts() {
+    public ArrayList<Person> getContacts() {
         return contactList.getAll();
     }
 
-    public List<TermSource> getTermSources() {
+    public ArrayList<TermSource> getTermSources() {
         return termSourceList.getAll();
     }
 
@@ -272,7 +271,7 @@ public class Investigation {
         }
     }
 
-    public List<TableCell> getErrors() {
+    public ArrayList<TableCell> getErrors() {
         //TODO
         return new ArrayList<TableCell>();
     }

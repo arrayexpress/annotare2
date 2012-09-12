@@ -20,10 +20,8 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static uk.ac.ebi.fg.annotare2.magetab.TestUtils.asList;
 
 /**
  * @author Olga Melnichuk
@@ -78,7 +76,7 @@ public class RowSetTest {
         rowSet.removeColumn(asList(0));
         assertEquals(0, rowSet.getWidth());
 
-        try{
+        try {
             rowSet.removeColumn(asList(0));
             fail("It should not be possible to remove row with an invalid index");
         } catch (IndexOutOfBoundsException e) {

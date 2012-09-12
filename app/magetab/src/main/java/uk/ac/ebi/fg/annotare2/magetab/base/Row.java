@@ -29,9 +29,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @GwtCompatible
 public class Row implements Serializable {
 
-    private List<Value> values = new ArrayList<Value>();
+    private ArrayList<Value> values = new ArrayList<Value>();
 
-    private transient List<RowChangeListener> listeners = new ArrayList<RowChangeListener>();
+    private transient ArrayList<RowChangeListener> listeners = new ArrayList<RowChangeListener>();
 
     public Row() {
         //required by GWT serialization policy
@@ -55,15 +55,9 @@ public class Row implements Serializable {
         return 0;
     }
 
-    public void removeColumn(Collection<Integer> colIndices) {
+    public void removeColumn(ArrayList<Integer> colIndices) {
         checkColumnIndices(colIndices);
-        List<Integer> tmp = new ArrayList<Integer>();
-        tmp.addAll(colIndices);
-        Collections.sort(tmp);
-        Collections.reverse(tmp);
-        for (Integer i : tmp) {
-            values.remove(i.intValue());
-        }
+        values = GwtQuirks.remove(values, colIndices);
     }
 
     public void moveColumn(int fromIndex, int toIndex) {
@@ -126,7 +120,7 @@ public class Row implements Serializable {
         }
     }
 
-    private void checkColumnIndices(Collection<Integer> indices) {
+    private void checkColumnIndices(ArrayList<Integer> indices) {
         for (Integer i : indices) {
             checkColumnIndex(i);
         }

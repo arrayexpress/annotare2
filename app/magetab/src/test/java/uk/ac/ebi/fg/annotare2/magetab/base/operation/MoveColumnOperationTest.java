@@ -25,10 +25,10 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static uk.ac.ebi.fg.annotare2.magetab.TestUtils.asList;
 
 /**
  * @author Olga Melnichuk

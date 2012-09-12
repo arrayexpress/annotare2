@@ -21,13 +21,14 @@ import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Collections2.transform;
-import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
+import static uk.ac.ebi.fg.annotare2.magetab.TestUtils.asList;
 
 /**
  * @author Olga Melnichuk
@@ -38,21 +39,21 @@ public class TableTest {
     public void testTableCreation() {
 
         createAndTest(
-                Collections.<String>emptyList(),
-                Collections.<String>emptyList());
+                new ArrayList<String>(),
+                new ArrayList<String>());
 
         createAndTest(
-                Collections.<String>emptyList(),
+                new ArrayList<String>(),
                 asList("0"),
                 asList("0", "1"),
                 asList("0", "1", "2"));
 
         createAndTest(
-                Collections.<String>emptyList(),
+                new ArrayList<String>(),
                 asList("0"),
                 asList("0", "1"),
                 asList("0", "1", "2"),
-                Collections.<String>emptyList(),
+                new ArrayList<String>(),
                 asList("0", "1"));
 
         createAndTest(
@@ -97,15 +98,15 @@ public class TableTest {
         }
     }
 
-    private void createAndTest(List<String>... rows) {
+    private void createAndTest(ArrayList<String>... rows) {
         Table table = new Table();
-        for (List<String> row : rows) {
+        for (ArrayList<String> row : rows) {
             table.addRow(row);
         }
         assertTableEqualsTo(table, asList(rows));
     }
 
-    private void assertTableEqualsTo(Table table, List<List<String>> rows) {
+    private void assertTableEqualsTo(Table table, ArrayList<ArrayList<String>> rows) {
         if (rows.isEmpty()) {
             assertEquals("An empty table should correspond to the empty set of input rows", 0, table.getHeight());
             return;

@@ -18,10 +18,10 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import org.junit.Test;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static uk.ac.ebi.fg.annotare2.magetab.TestUtils.asList;
 
 /**
  * @author Olga Melnichuk

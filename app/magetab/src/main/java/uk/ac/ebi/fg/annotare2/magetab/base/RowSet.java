@@ -18,9 +18,10 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 
 import com.google.common.annotations.GwtCompatible;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static uk.ac.ebi.fg.annotare2.magetab.base.TaggedRow.shift;
 
 /**
@@ -29,14 +30,16 @@ import static uk.ac.ebi.fg.annotare2.magetab.base.TaggedRow.shift;
 @GwtCompatible
 public class RowSet {
 
-    private List<RowTag> tags = new ArrayList<RowTag>();
+    private ArrayList<RowTag> tags = new ArrayList<RowTag>();
 
     private Map<RowTag, TaggedRow> map;
 
     private Table table;
 
     public RowSet(RowTag... tags) {
-        this.tags.addAll(Arrays.asList(tags));
+        for (RowTag t : tags) {
+            this.tags.add(t);
+        }
     }
 
     public void addAll(Table table) {
@@ -57,9 +60,9 @@ public class RowSet {
         return res;
     }
 
-    public void removeColumn(List<Integer> indices) {
+    public void removeColumn(ArrayList<Integer> indices) {
         checkColumnIndices(indices);
-        List<Integer> shifted = new ArrayList<Integer>();
+        ArrayList<Integer> shifted = new ArrayList<Integer>();
         for (Integer i : indices) {
             shifted.add(shift(i));
         }
@@ -67,7 +70,10 @@ public class RowSet {
     }
 
     public void moveColumn(int fromIndex, int toIndex) {
-        checkColumnIndices(asList(fromIndex, toIndex));
+        ArrayList<Integer> indices = new ArrayList<Integer>();
+        indices.add(fromIndex);
+        indices.add(toIndex);
+        checkColumnIndices(indices);
         table.moveColumn(rows(), shift(fromIndex), shift(toIndex));
     }
 
@@ -83,7 +89,7 @@ public class RowSet {
         return column;
     }
 
-    private void checkColumnIndices(List<Integer> indices) {
+    private void checkColumnIndices(ArrayList<Integer> indices) {
         int width = getWidth();
         for (int i : indices) {
             if (i < 0 || i >= width) {
@@ -92,8 +98,8 @@ public class RowSet {
         }
     }
 
-    private List<Row> rows() {
-        List<Row> rows = new ArrayList<Row>();
+    private ArrayList<Row> rows() {
+        ArrayList<Row> rows = new ArrayList<Row>();
         for (TaggedRow r : map.values()) {
             rows.add(r.getRow());
         }
