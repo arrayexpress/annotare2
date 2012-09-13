@@ -46,8 +46,8 @@
                         <h1>E-MEXP-12345</h1>
                     </td>
                     <td width="200px" style="text-align:right">
-                        <g:Button>Save</g:Button>
-                        <g:Button>Validate</g:Button>
+                        <g:Button enabled="false">Save</g:Button>
+                        <g:Button enabled="false">Validate</g:Button>
                     </td>
                 </tr>
             </table>

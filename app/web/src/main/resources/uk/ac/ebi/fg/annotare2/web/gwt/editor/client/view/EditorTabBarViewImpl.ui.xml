@@ -26,9 +26,8 @@
                     <h3 ui:field="tabTitle">Tab Title</h3>
                 </td>
                 <td>
-                    <g:Button>Create</g:Button>
-                    <g:Button>Import</g:Button>
-                    <g:Button>Export</g:Button>
+                    <g:Button enabled="false">Import</g:Button>
+                    <g:Button enabled="false">Export</g:Button>
                 </td>
             </tr>
         </table>
