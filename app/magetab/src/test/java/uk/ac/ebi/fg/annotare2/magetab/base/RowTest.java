@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -60,34 +61,31 @@ public class RowTest {
 
     @Test
     public void testRowChangeNotification() {
-        final List<Integer> changedColumns = new ArrayList<Integer>();
-        final List<String> changedValues = new ArrayList<String>();
-
-        Row row = new Row(new RowChangeListener() {
-            @Override
-            public void onRowValueChange(Row row, int columnIndex, String newValue) {
-                changedColumns.add(columnIndex);
-                changedValues.add(newValue);
-            }
-        });
-
         List<Integer> columnsToChange = Arrays.asList(2, 3, 4);
         List<String> valuesToChange = Arrays.asList("A", "B", "C");
         assertEquals(columnsToChange.size(), valuesToChange.size());
 
+        Table table1 = createMock(Table.class);
+        replay(table1);
+
+        Row row1 = new Row(table1);
         for (int i = 0; i < columnsToChange.size(); i++) {
-            row.setValue(columnsToChange.get(i), valuesToChange.get(i), false);
+            row1.setValue(columnsToChange.get(i), valuesToChange.get(i), false);
         }
+        verify(table1);
 
-        assertTrue(changedColumns.isEmpty());
-        assertTrue(changedValues.isEmpty());
-
+        Table table2 = createMock(Table.class);
         for (int i = 0; i < columnsToChange.size(); i++) {
-            row.setValue(columnsToChange.get(i), valuesToChange.get(i), true);
+            table2.notifyRowValueUpdated(isA(Row.class), eq(columnsToChange.get(i).intValue()), eq(valuesToChange.get(i)));
+            expectLastCall().once();
         }
+        replay(table2);
 
-        assertEquals(columnsToChange, changedColumns);
-        assertEquals(valuesToChange, changedValues);
+        Row row2 = new Row(table2);
+        for (int i = 0; i < columnsToChange.size(); i++) {
+            row2.setValue(columnsToChange.get(i), valuesToChange.get(i), true);
+        }
+        verify(table2);
     }
 
     @Test
