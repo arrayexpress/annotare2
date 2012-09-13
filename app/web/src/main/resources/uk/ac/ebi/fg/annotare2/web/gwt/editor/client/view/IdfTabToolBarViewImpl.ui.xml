@@ -19,16 +19,14 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <g:HTMLPanel>
-        <g:TabBar ui:field="tabBar"/>
         <table>
             <tr>
                 <td style="width:250px">
-                    <h3 ui:field="tabTitle">Tab Title</h3>
+                    <h3 ui:field="tabTitle">Investigation Design</h3>
                 </td>
                 <td>
-                    <g:Button>Create</g:Button>
-                    <g:Button>Import</g:Button>
-                    <g:Button>Export</g:Button>
+                    <g:Button enabled="false">Import</g:Button>
+                    <g:Button enabled="false">Export</g:Button>
                 </td>
             </tr>
         </table>

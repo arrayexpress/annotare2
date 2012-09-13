@@ -25,10 +25,7 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorContentDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorLeftMenuDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTabBarDisplay;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.EditorTitleBarDisplay;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
@@ -47,6 +44,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(PlaceHistoryMapper.class).to(EditorPlaceHistoryMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTitleBarDisplay.class).to(EditorTitleBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTabBarDisplay.class).to(EditorTabBarActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorTabToolBarDisplay.class).to(EditorTabToolBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLeftMenuDisplay.class).to(EditorLeftMenuActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorContentDisplay.class).to(EditorContentActivityMapper.class).in(Singleton.class);
 
@@ -56,6 +54,8 @@ public class EditorGinModule extends AbstractGinModule {
         bind(IdfGeneralInfoView.class).to(IdfGeneralInfoViewImpl.class);
         bind(IdfContentView.class).to(IdfContentViewImpl.class);
         bind(IdfContactListView.class).to(IdfContactListViewImpl.class);
+        bind(IdfTabToolBarView.class).to(IdfTabToolBarViewImpl.class);
+        bind(SdrfTabToolBarView.class).to(SdrfTabToolBarViewImpl.class);
         bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
 
         bind(InvestigationData.class).in(Singleton.class);

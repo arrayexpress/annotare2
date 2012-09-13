@@ -41,7 +41,14 @@
                 <g:center>
                     <g:DockLayoutPanel>
                         <g:north size="120">
-                            <g:SimplePanel ui:field="tabBarDisplay" />
+                            <g:DockLayoutPanel>
+                                <g:north size="60">
+                                    <g:SimplePanel ui:field="tabBarDisplay" />
+                                </g:north>
+                                <g:center>
+                                    <g:SimplePanel ui:field="tabToolBarDisplay"/>
+                                </g:center>
+                            </g:DockLayoutPanel>
                         </g:north>
                         <g:west size="200">
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>

@@ -16,14 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TabBar;
 
 import java.util.ArrayList;
@@ -34,22 +29,14 @@ import java.util.ArrayList;
  */
 public class EditorTabBarViewImpl extends Composite implements EditorTabBarView {
 
-    interface Binder extends UiBinder<HTMLPanel, EditorTabBarViewImpl> {
-    }
-
-    @UiField
-    TabBar tabBar;
-
-    @UiField
-    HeadingElement tabTitle;
+    private TabBar tabBar = new TabBar();
 
     private ArrayList<EditorTabType> tabTypes = new ArrayList<EditorTabType>();
 
     private Presenter presenter;
 
     public EditorTabBarViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget(tabBar);
 
         tabTypes.add(EditorTabType.IDF);
         tabTypes.add(EditorTabType.SDRF);
@@ -79,9 +66,6 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
         if (presenter != null) {
             presenter.onTabSelect(tabType);
         }
-
-        //TODO move this code into separate method
-        tabTitle.setInnerText(tabType.getTitle());
     }
 
     private int indexOf(EditorTabType desiredType) {
