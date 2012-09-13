@@ -28,7 +28,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class Table implements Serializable, RowChangeListener {
+public class Table implements Serializable {
 
     private ArrayList<Row> rows = new ArrayList<Row>();
 
@@ -111,8 +111,7 @@ public class Table implements Serializable, RowChangeListener {
         return rows.get(rIndex);
     }
 
-    @Override
-    public void onRowValueChange(Row row, int columnIndex, String newValue) {
+    public void notifyRowValueUpdated(Row row, int columnIndex, String newValue) {
         notifyListeners(Operations.updateCell(rows.indexOf(row), columnIndex, newValue));
     }
 

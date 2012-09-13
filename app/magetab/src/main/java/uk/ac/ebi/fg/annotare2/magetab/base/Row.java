@@ -31,14 +31,14 @@ public class Row implements Serializable {
 
     private ArrayList<Value> values = new ArrayList<Value>();
 
-    private transient ArrayList<RowChangeListener> listeners = new ArrayList<RowChangeListener>();
+   private Table table;
 
     public Row() {
         //required by GWT serialization policy
     }
 
-    public Row(RowChangeListener listener) {
-        listeners.add(listener);
+    public Row(Table table) {
+        this.table = table;
     }
 
     public int getSize() {
@@ -115,8 +115,8 @@ public class Row implements Serializable {
     }
 
     private void notifyValueUpdated(int colIndex, String newValue) {
-        for (RowChangeListener listener : listeners) {
-            listener.onRowValueChange(this, colIndex, newValue);
+        if (table != null) {
+            table.notifyRowValueUpdated(this, colIndex, newValue);
         }
     }
 
