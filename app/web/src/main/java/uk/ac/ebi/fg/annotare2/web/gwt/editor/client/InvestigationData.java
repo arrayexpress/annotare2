@@ -21,14 +21,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.base.ChangeListener;
-import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfServiceAsync;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
