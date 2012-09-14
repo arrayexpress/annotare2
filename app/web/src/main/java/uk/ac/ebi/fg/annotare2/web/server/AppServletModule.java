@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
+import gwtupload.server.UploadServlet;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
@@ -60,6 +61,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
+        serveRegex(".*\\.gupld").with(UploadServlet.class);
 
         bind(SecurityFilter.class).in(Scopes.SINGLETON);
         bind(LoginServlet.class).in(Scopes.SINGLETON);
@@ -67,6 +69,7 @@ public class AppServletModule extends ServletModule {
         bind(HomeServlet.class).in(Scopes.SINGLETON);
         bind(EditorServlet.class).in(Scopes.SINGLETON);
         bind(WelcomeServlet.class).in(Scopes.SINGLETON);
+        bind(UploadServlet.class).in(Scopes.SINGLETON);
 
         serveAndBindRpcService("UserApp", CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class);
         serveAndBindRpcService("UserApp", SubmissionListService.NAME, SubmissionListServiceImpl.class);

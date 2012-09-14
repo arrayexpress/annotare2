@@ -161,9 +161,9 @@
             <version>${guice.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sencha.gxt</groupId>
-            <artifactId>gxt</artifactId>
-            <version>3.0.0</version>
+            <groupId>com.googlecode.gwtupload</groupId>
+            <artifactId>gwtupload</artifactId>
+            <version>0.6.4</version>
         </dependency>
 
         <!-- jstl support-->

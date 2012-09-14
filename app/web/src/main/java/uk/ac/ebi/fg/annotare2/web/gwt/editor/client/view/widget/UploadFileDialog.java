@@ -14,37 +14,40 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.UploadFileDialog;
+import com.google.gwt.user.client.ui.DialogBox;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarView {
+public class UploadFileDialog extends DialogBox {
 
-    interface Binder extends UiBinder<HTMLPanel, IdfTabToolBarViewImpl> {
-    }
+    public UploadFileDialog() {
+        setText("Import Investigation Data");
 
-    @UiField
-    Button importButton;
+        UploadFileDialogPanel panel = new UploadFileDialogPanel();
+        setWidget(panel);
 
-    public IdfTabToolBarViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
-        importButton.addClickHandler(new ClickHandler() {
+        panel.getOkButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new UploadFileDialog()).show();
+               //TODO import
             }
         });
+
+        panel.getCancelButton().addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+
+        center();
+
+        setGlassEnabled(true);
     }
+
 }

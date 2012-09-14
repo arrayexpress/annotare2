@@ -18,8 +18,15 @@
 
 <module rename-to="EditorApp">
 
+    <!-- Include GWTUpload library -->
+    <inherits name="gwtupload.GWTUpload"/>
+
+    <stylesheet src="Upload.css"/>
+
+    <!-- Include MageTab library -->
     <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab" />
 
+    <!-- Include GWT libraries -->
     <inherits name="com.google.gwt.user.User"/>
 
     <inherits name="com.google.gwt.activity.Activity"/>

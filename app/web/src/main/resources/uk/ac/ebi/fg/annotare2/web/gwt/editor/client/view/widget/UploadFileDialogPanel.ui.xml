@@ -18,17 +18,17 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <g:HTMLPanel>
-        <table>
-            <tr>
-                <td style="width:250px">
-                    <h3 ui:field="tabTitle">Investigation Design</h3>
-                </td>
-                <td>
-                    <g:Button ui:field="importButton">Import</g:Button>
-                    <g:Button enabled="false">Export</g:Button>
-                </td>
-            </tr>
-        </table>
-    </g:HTMLPanel>
+    <g:VerticalPanel>
+        <g:SimplePanel ui:field="content"/>
+        <g:HTMLPanel>
+            <table width="100%">
+                <tr>
+                    <td align="right">
+                        <g:Button ui:field="cancelButton">Cancel</g:Button>
+                        <g:Button ui:field="okButton">Import</g:Button>
+                    </td>
+                </tr>
+            </table>
+        </g:HTMLPanel>
+    </g:VerticalPanel>
 </ui:UiBinder>
