@@ -24,7 +24,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.UploadFileDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog;
 
 /**
  * @author Olga Melnichuk
@@ -43,7 +43,7 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
         importButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new UploadFileDialog()).show();
+                (new ImportFileDialog()).show();
             }
         });
     }

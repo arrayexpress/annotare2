@@ -19,35 +19,34 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DialogBox;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportFileEventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class UploadFileDialog extends DialogBox {
+public class ImportFileDialog extends DialogBox {
 
-    public UploadFileDialog() {
-        setText("Import Investigation Data");
+    public ImportFileDialog() {
+        setGlassEnabled(true);
 
-        UploadFileDialogPanel panel = new UploadFileDialogPanel();
+        setText("Import Investigation Design...");
+
+        ImportFileDialogContent panel = new ImportFileDialogContent();
         setWidget(panel);
 
-        panel.getOkButton().addClickHandler(new ClickHandler() {
+        panel.addImportFileHandler(new ImportFileEventHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-               //TODO import
-            }
-        });
-
-        panel.getCancelButton().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
+            public void onCancel() {
                 hide();
+            }
+
+            @Override
+            public void onImport(String fileName) {
+                //TODO
             }
         });
 
         center();
-
-        setGlassEnabled(true);
     }
 
 }
