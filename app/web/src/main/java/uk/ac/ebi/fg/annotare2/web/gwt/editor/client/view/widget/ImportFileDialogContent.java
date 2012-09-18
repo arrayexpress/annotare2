@@ -88,7 +88,7 @@ public class ImportFileDialogContent extends Composite {
         okButton.setEnabled(false);
 
         final MultiUploader uploader = new MultiUploader();
-        uploader.getStatusWidget().setI18Constants(new Constants());
+        uploader.setStatusWidget(new UploadStatus());
         uploader.setMaximumFiles(1);
         uploader.setAutoSubmit(true);
 
@@ -132,52 +132,5 @@ public class ImportFileDialogContent extends Composite {
 
     public HandlerRegistration addImportFileHandler(ImportFileEventHandler handler) {
         return addHandler(handler, ImportFileEvent.TYPE);
-    }
-
-    private static class Constants implements IUploadStatus.UploadStatusConstants {
-        @Override
-        public String uploadLabelCancel() {
-            return " ";
-        }
-
-        @Override
-        public String uploadStatusCanceled() {
-            return "Canceled";
-        }
-
-        @Override
-        public String uploadStatusCanceling() {
-            return "Canceling...";
-        }
-
-        @Override
-        public String uploadStatusDeleted() {
-            return "Deleted";
-        }
-
-        @Override
-        public String uploadStatusError() {
-            return "Error";
-        }
-
-        @Override
-        public String uploadStatusInProgress() {
-            return "In progress";
-        }
-
-        @Override
-        public String uploadStatusQueued() {
-            return "Queued";
-        }
-
-        @Override
-        public String uploadStatusSubmitting() {
-            return "Submitting...";
-        }
-
-        @Override
-        public String uploadStatusSuccess() {
-            return "100%";
-        }
     }
 }

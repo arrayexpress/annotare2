@@ -109,3 +109,15 @@
     color: white;
     font-size: 16px;
 }
+
+/* upload status */
+
+.wgt-cancelIcon {
+    padding-left: 16px;
+    background: url(images/cancel-icon.png) no-repeat;
+    cursor: pointer;
+}
+
+table.GWTUpld {
+    width: 100%;
+}
