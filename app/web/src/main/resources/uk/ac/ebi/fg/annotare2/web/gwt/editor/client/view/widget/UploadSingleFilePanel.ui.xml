@@ -18,29 +18,8 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <ui:style>
-        .outer {
-            height: 2em;
-            text-align: left;
-            overflow: hidden;
-            border: 1px solid #DDD;
-            background: #EEE;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-            -ms-border-radius: 4px;
-            -o-border-radius: 4px;
-        }
-
-        .inner {
-            height: 100%;
-            margin: -1px;
-            width: 37%;
-            border: 1px solid #E78F08;
-            background: #E5A066;
-            text-align: left;
-        }
-    </ui:style>
-    <g:HTMLPanel addStyleNames="{style.outer}">
-        <div class="{style.inner}" ui:field="progress"></div>
+    <g:HTMLPanel>
+        <div style="font-style: italic; padding-bottom: 5px;">File to be imported:</div>
+        <g:SimplePanel ui:field="placeholder"/>
     </g:HTMLPanel>
 </ui:UiBinder>

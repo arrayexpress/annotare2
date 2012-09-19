@@ -26,7 +26,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploader;
-import gwtupload.client.MultiUploader;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportFileEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportFileEventHandler;
 
@@ -47,7 +46,7 @@ public class ImportFileDialogContent extends Composite {
     @UiField
     Button cancelButton;
 
-    private MultiUploader uploader;
+    private UploadSingleFilePanel uploadFilePanel;
 
     private boolean confirmed;
 
@@ -59,7 +58,7 @@ public class ImportFileDialogContent extends Composite {
 
         if (!confirmed) {
             content.setWidget(
-                    new Label("Please, note that the data will be overridden with the file contents."));
+                    new Label("Please note that the current data will be overridden with the new file contents."));
             okButton.setText("Continue >>");
         }
 
@@ -87,11 +86,7 @@ public class ImportFileDialogContent extends Composite {
         okButton.setText("Import");
         okButton.setEnabled(false);
 
-        final MultiUploader uploader = new MultiUploader();
-        uploader.setStatusWidget(new UploadStatus());
-        uploader.setMaximumFiles(1);
-        uploader.setAutoSubmit(true);
-
+        uploadFilePanel = new UploadSingleFilePanel();
         IUploader.OnCancelUploaderHandler onCancelUploaderHandler = new IUploader.OnCancelUploaderHandler() {
             @Override
             public void onCancel(IUploader widgets) {
@@ -113,15 +108,15 @@ public class ImportFileDialogContent extends Composite {
             }
         };
 
-        uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
-        uploader.addOnCancelUploadHandler(onCancelUploaderHandler);
+        uploadFilePanel.addOnFinishUploadHandler(onFinishUploaderHandler);
+        uploadFilePanel.addOnCancelUploadHandler(onCancelUploaderHandler);
 
-        content.setWidget(uploader);
+        content.setWidget(uploadFilePanel);
     }
 
     private void doCancel() {
-        if (uploader != null) {
-            uploader.cancel();
+        if (uploadFilePanel != null) {
+            uploadFilePanel.cancel();
         }
         fireEvent(ImportFileEvent.importCancelled());
     }

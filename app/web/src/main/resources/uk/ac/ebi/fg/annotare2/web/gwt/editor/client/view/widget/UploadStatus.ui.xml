@@ -27,20 +27,46 @@
             font-weight: normal;
             color: #999;
         }
+        .roundBorder {
+            border: 1px solid #48877C;
+            padding: 10px 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            -o-border-radius: 5px;
+        }
+        .fileName {
+            font-weight: normal;
+        }
     </ui:style>
 
-    <g:HTMLPanel ui:field="panel">
+    <g:HTMLPanel ui:field="panel" styleName="{style.roundBorder}">
         <table width="100%">
             <tr>
-                <td width="16px"><g:Anchor ui:field="cancelIcon"><div class="wgt-cancelIcon">&nbsp;</div></g:Anchor></td>
-                <td colspan="2"><g:Label ui:field="fileName"/></td>
+                <td width="16px">
+                    <g:Anchor ui:field="cancelIcon" styleName="wgt-button">
+                        <span class="wgt-cancelIcon"/>
+                    </g:Anchor>
+                </td>
+                <td colspan="2">
+                    <g:Label ui:field="fileName" styleName="{style.fileName}"/>
+                </td>
             </tr>
             <tr>
-                <td colspan="2"><my:ProgressBar ui:field="progressBar"/></td>
-                <td width="50px"><g:Label ui:field="progressLabel"/></td>
+                <td colspan="2">
+                    <my:ProgressBar ui:field="progressBar"/>
+                </td>
+                <td width="50px">
+                    <g:Label ui:field="progressLabel"/>
+                </td>
             </tr>
             <tr>
-                <td colspan="3"><g:Label ui:field="statusLabel" addStyleNames="{style.status}"/>&nbsp;</td>
+                <td colspan="3">
+                    <g:Label ui:field="statusLabel" addStyleNames="{style.status}" text=" "/>
+                </td>
             </tr>
         </table>
     </g:HTMLPanel>

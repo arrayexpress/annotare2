@@ -66,47 +66,47 @@ public class UploadStatus extends Composite implements IUploadStatus {
             new IUploadStatus.UploadStatusConstants() {
                 @Override
                 public String uploadLabelCancel() {
-                    return "";
+                    return " ";
                 }
 
                 @Override
                 public String uploadStatusCanceled() {
-                    return "Canceled";
+                    return "canceled";
                 }
 
                 @Override
                 public String uploadStatusCanceling() {
-                    return "Canceling...";
+                    return "canceling...";
                 }
 
                 @Override
                 public String uploadStatusDeleted() {
-                    return "Deleted";
+                    return "deleted";
                 }
 
                 @Override
                 public String uploadStatusError() {
-                    return "Error";
+                    return "error";
                 }
 
                 @Override
                 public String uploadStatusInProgress() {
-                    return "In progress";
+                    return " ";
                 }
 
                 @Override
                 public String uploadStatusQueued() {
-                    return "Queued";
+                    return "queued";
                 }
 
                 @Override
                 public String uploadStatusSubmitting() {
-                    return "Submitting...";
+                    return "submitting...";
                 }
 
                 @Override
                 public String uploadStatusSuccess() {
-                    return "";
+                    return " ";
                 }
             };
 
@@ -159,10 +159,10 @@ public class UploadStatus extends Composite implements IUploadStatus {
 
     @Override
     public void setI18Constants(UploadStatusConstants strs) {
-        if (strs == null) {
+        /*if (strs == null) {
             throw new NullPointerException("Upload status constants can't be null");
         }
-        i18nStrs = strs;
+        i18nStrs = strs;*/
     }
 
     @Override
@@ -197,9 +197,6 @@ public class UploadStatus extends Composite implements IUploadStatus {
                 break;
             case CANCELING:
                 updateStatusLabel(i18nStrs.uploadStatusCanceling());
-                if (cancelCfg.contains(CancelBehavior.REMOVE_CANCELLED_FROM_LIST)) {
-                    getWidget().removeFromParent();
-                }
                 break;
             case CANCELED:
                 updateStatusLabel(i18nStrs.uploadStatusCanceled());
