@@ -117,12 +117,17 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
             Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
             ArrayList<FileItem> items = (ArrayList<FileItem>) getSession().getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
             if (items.isEmpty()) {
-               throw new DataImportException("Can't find file '" + fileName + "' to import");
+               throw new DataImportException("Can't find the file to import.");
             }
             FileItem item = items.get(0);
-            String newInvestigation = item.getString(Charsets.UTF_8.name());
-            Table table = new TsvParser().parse(submission.getInvestigation());
+            Table table = new TsvParser().parse(item.getInputStream());
             //TODO validation
+            if (table.isEmpty()) {
+                throw new DataImportException("Can't import an empty file.");
+            }
+            if (table.getWidth() <= 1 || table.getHeight() <= 1) {
+                throw new DataImportException("The file contents don't look like a valid IDF data.");
+            }
             //TODO submission.setInvestigation(newInvestigation);
         } catch (RecordNotFoundException e) {
             log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
