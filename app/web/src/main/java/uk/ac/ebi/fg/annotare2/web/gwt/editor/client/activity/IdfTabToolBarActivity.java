@@ -22,21 +22,29 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.IdfTabToolBarView;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfTabToolBarActivity extends AbstractActivity {
+public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToolBarView.Presenter {
 
     private final IdfTabToolBarView view;
     private final PlaceController placeController;
+    private final IdfServiceAsync idfService;
 
     @Inject
     public IdfTabToolBarActivity(IdfTabToolBarView view,
-                                  PlaceController placeController) {
+                                 PlaceController placeController,
+                                 IdfServiceAsync idfService) {
         this.view = view;
         this.placeController = placeController;
+        this.idfService = idfService;
     }
 
     public IdfTabToolBarActivity withPlace(Place place) {
@@ -45,11 +53,36 @@ public class IdfTabToolBarActivity extends AbstractActivity {
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //TODO view.setPresenter(this);
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    @Override
+    public void importFile(String fileName, final AsyncEventFinishListener listener) {
+        idfService.importInvestigation(getSubmissionId(), fileName, new AsyncCallbackWrapper<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                String errMsg = "";
+                if (caught instanceof NoPermissionException) {
+                    errMsg = "Sorry, you do not have permission to change this submission";
+                } else if (caught instanceof ResourceNotFoundException) {
+                    errMsg = "Sorry, submission you are trying to change doesn't exist";
+                } else if (caught instanceof DataImportException) {
+                    errMsg = caught.getMessage();
+                } else {
+                    errMsg = "Unexpected error happened. Please try again later.";
+                }
+                listener.onError(errMsg);
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                listener.onSuccess();
+            }
+        }.wrap());
     }
 }

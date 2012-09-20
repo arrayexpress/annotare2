@@ -16,18 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
+/**
+ * @author Olga Melnichuk
+ */
+public class DataImportException extends Exception {
 
-public interface IdfServiceAsync {
+    public DataImportException() {
+    }
 
-    void getGeneralInfo(int submissionId, AsyncCallback<UIGeneralInfo> async);
+    public DataImportException(String message) {
+        super(message);
+    }
 
-    void loadInvestigation(int submissionId, AsyncCallback<Table> async);
-
-    void updateInvestigation(int submissionId, Operation operation, AsyncCallback<Void> async);
-
-    void importInvestigation(int submissionId, String fileName, AsyncCallback<Void> async);
+    public DataImportException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

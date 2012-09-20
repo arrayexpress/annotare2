@@ -21,37 +21,17 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * @author Olga Melnichuk
  */
-public class ImportFileEvent extends GwtEvent<ImportFileEventHandler> {
+public class FinishEvent extends GwtEvent<FinishEventHandler> {
 
-    public static Type<ImportFileEventHandler> TYPE = new Type<ImportFileEventHandler>();
-
-    private String fileName;
-
-    private boolean cancelled;
+    public static Type<FinishEventHandler> TYPE = new Type<FinishEventHandler>();
 
     @Override
-    public Type<ImportFileEventHandler> getAssociatedType() {
+    public Type<FinishEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(ImportFileEventHandler handler) {
-        if (cancelled) {
-            handler.onCancel();
-        } else {
-            handler.onImport(fileName);
-        }
-    }
-
-    public static ImportFileEvent importCancelled() {
-        ImportFileEvent event = new ImportFileEvent();
-        event.cancelled = true;
-        return event;
-    }
-
-    public static ImportFileEvent importFile(String fileName) {
-        ImportFileEvent event = new ImportFileEvent();
-        event.fileName = fileName;
-        return event;
+    protected void dispatch(FinishEventHandler handler) {
+        handler.onFinish();
     }
 }

@@ -22,17 +22,123 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploader;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportFileEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportFileEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.FinishEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.FinishEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEventHandler;
 
 /**
  * @author Olga Melnichuk
  */
 public class ImportFileDialogContent extends Composite {
+
+    private static enum DialogState {
+        NOT_CONFIRMED() {
+            @Override
+            void init(ImportFileDialogContent dialogContent) {
+                dialogContent.content.setWidget(
+                        new Label("Please note that the current data will be overridden with the new file contents."));
+                dialogContent.okButton.setText("Continue >>");
+            }
+
+            @Override
+            void proceed(ImportFileDialogContent dialogContent) {
+                dialogContent.gotoState(CONFIRMED);
+            }
+        },
+        CONFIRMED() {
+            @Override
+            void init(final ImportFileDialogContent dialogContent) {
+                final Button okButton = dialogContent.okButton;
+                okButton.setText("Import");
+                okButton.setEnabled(false);
+
+                UploadSingleFilePanel uploadFilePanel = new UploadSingleFilePanel();
+                IUploader.OnCancelUploaderHandler onCancelUploaderHandler = new IUploader.OnCancelUploaderHandler() {
+                    @Override
+                    public void onCancel(IUploader widgets) {
+                        okButton.setEnabled(false);
+                    }
+                };
+
+                IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
+                    @Override
+                    public void onFinish(IUploader uploader) {
+                        if (uploader.getStatus() == IUploadStatus.Status.SUCCESS) {
+                            IUploader.UploadedInfo info = uploader.getServerInfo();
+                            dialogContent.fileName = info.name;
+                            okButton.setEnabled(true);
+                        }
+                    }
+                };
+
+                uploadFilePanel.addOnFinishUploadHandler(onFinishUploaderHandler);
+                uploadFilePanel.addOnCancelUploadHandler(onCancelUploaderHandler);
+
+                dialogContent.uploadFilePanel = uploadFilePanel;
+                dialogContent.content.setWidget(uploadFilePanel);
+            }
+
+            @Override
+            void cancel(ImportFileDialogContent dialogContent) {
+                dialogContent.uploadFilePanel.cancel();
+            }
+
+            @Override
+            void proceed(ImportFileDialogContent dialogContent) {
+                dialogContent.gotoState(READY);
+            }
+        },
+        READY () {
+            @Override
+            void init(final ImportFileDialogContent dialogContent) {
+                dialogContent.cancelButton.removeFromParent();
+                dialogContent.okButton.setText("Close");
+                dialogContent.okButton.setEnabled(false);
+
+                final WaitingPanel waitingPanel = new WaitingPanel("Please wait while the file is importing...");
+                dialogContent.content.setWidget(waitingPanel);
+                dialogContent.fireEvent(new ProceedEvent(new AsyncEventFinishListener() {
+
+                    @Override
+                    public void onSuccess() {
+                        waitingPanel.showSuccess();
+                        dialogContent.okButton.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onError(String msg) {
+                        waitingPanel.showError(msg);
+                        dialogContent.okButton.setEnabled(true);
+                    }
+                }));
+            }
+
+            @Override
+            void proceed(ImportFileDialogContent dialogContent) {
+                dialogContent.fireEvent(new FinishEvent());
+            }
+        };
+
+        abstract void init(ImportFileDialogContent dialogContent);
+
+        void proceed(ImportFileDialogContent dialogContent) {
+           // do nothing by default
+        }
+
+        void cancel(ImportFileDialogContent dialogContent) {
+            // do nothing by default
+        }
+    }
+
+    private void gotoState(DialogState state) {
+        this.state = state;
+        state.init(this);
+    }
 
     interface Binder extends UiBinder<Widget, ImportFileDialogContent> {
     }
@@ -48,84 +154,41 @@ public class ImportFileDialogContent extends Composite {
 
     private UploadSingleFilePanel uploadFilePanel;
 
-    private boolean confirmed;
-
     private String fileName;
+
+    private DialogState state = DialogState.NOT_CONFIRMED;
 
     public ImportFileDialogContent() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
 
-        if (!confirmed) {
-            content.setWidget(
-                    new Label("Please note that the current data will be overridden with the new file contents."));
-            okButton.setText("Continue >>");
-        }
+        state.init(this);
 
         okButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (!confirmed) {
-                    doConfirm();
-                } else {
-                    doImport();
-                }
+                state.proceed(ImportFileDialogContent.this);
             }
         });
 
         cancelButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                doCancel();
+                state.cancel(ImportFileDialogContent.this);
+                fireEvent(new FinishEvent());
             }
         });
     }
 
-    private void doConfirm() {
-        confirmed = true;
-        okButton.setText("Import");
-        okButton.setEnabled(false);
-
-        uploadFilePanel = new UploadSingleFilePanel();
-        IUploader.OnCancelUploaderHandler onCancelUploaderHandler = new IUploader.OnCancelUploaderHandler() {
-            @Override
-            public void onCancel(IUploader widgets) {
-                okButton.setEnabled(false);
-            }
-        };
-
-        IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
-            @Override
-            public void onFinish(IUploader uploader) {
-                if (uploader.getStatus() == IUploadStatus.Status.SUCCESS) {
-                    IUploader.UploadedInfo info = uploader.getServerInfo();
-                    Window.alert("File name " + info.name + "\n"
-                            + "File content-type " + info.ctype + "\n"
-                            + "File size " + info.size + "\n"
-                            + "Server message " + info.message);
-                    okButton.setEnabled(true);
-                }
-            }
-        };
-
-        uploadFilePanel.addOnFinishUploadHandler(onFinishUploaderHandler);
-        uploadFilePanel.addOnCancelUploadHandler(onCancelUploaderHandler);
-
-        content.setWidget(uploadFilePanel);
+    public String getFileName() {
+        return fileName;
     }
 
-    private void doCancel() {
-        if (uploadFilePanel != null) {
-            uploadFilePanel.cancel();
-        }
-        fireEvent(ImportFileEvent.importCancelled());
+    public HandlerRegistration addImportFinishEventHandler(FinishEventHandler handler) {
+        return addHandler(handler, FinishEvent.TYPE);
     }
 
-    private void doImport() {
-        fireEvent(ImportFileEvent.importFile(fileName));
-    }
-
-    public HandlerRegistration addImportFileHandler(ImportFileEventHandler handler) {
-        return addHandler(handler, ImportFileEvent.TYPE);
+    public HandlerRegistration addImportProceedEventHandler(ProceedEventHandler handler) {
+        return addHandler(handler, ProceedEvent.TYPE);
     }
 }

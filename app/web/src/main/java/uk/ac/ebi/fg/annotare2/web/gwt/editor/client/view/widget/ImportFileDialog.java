@@ -16,37 +16,47 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DialogBox;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportFileEventHandler;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.FinishEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEventHandler;
 
 /**
  * @author Olga Melnichuk
  */
 public class ImportFileDialog extends DialogBox {
 
-    public ImportFileDialog() {
+    private final ImportFileDialogContent content;
+
+    public ImportFileDialog(String title) {
         setGlassEnabled(true);
 
-        setText("Import Investigation Design...");
+        setText(title);
 
-        ImportFileDialogContent panel = new ImportFileDialogContent();
-        setWidget(panel);
+        content = new ImportFileDialogContent();
+        setWidget(content);
 
-        panel.addImportFileHandler(new ImportFileEventHandler() {
+        content.addImportFinishEventHandler(new FinishEventHandler() {
             @Override
-            public void onCancel() {
+            public void onFinish() {
                 hide();
-            }
-
-            @Override
-            public void onImport(String fileName) {
-                //TODO
             }
         });
 
         center();
+    }
+
+    public HandlerRegistration addImportFileDialogHandler(final Handler handler) {
+        return content.addImportProceedEventHandler(new ProceedEventHandler() {
+            public void onProceed(AsyncEventFinishListener listener) {
+                handler.onImport(content.getFileName(), listener);
+            }
+        });
+    }
+
+    public static interface Handler {
+        void onImport(String fileName, AsyncEventFinishListener listener);
     }
 
 }

@@ -14,19 +14,31 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.event.shared.GwtEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
 
 /**
  * @author Olga Melnichuk
  */
-public interface IdfTabToolBarView extends IsWidget {
+public class ProceedEvent extends GwtEvent<ProceedEventHandler> {
 
-    public void setPresenter(Presenter presenter);
+    public static Type<ProceedEventHandler> TYPE = new Type<ProceedEventHandler>();
 
-    public static interface Presenter {
-        void importFile(String file, AsyncEventFinishListener listener);
+    private final AsyncEventFinishListener listener;
+
+    public ProceedEvent(AsyncEventFinishListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Type<ProceedEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(ProceedEventHandler handler) {
+        handler.onProceed(listener);
     }
 }

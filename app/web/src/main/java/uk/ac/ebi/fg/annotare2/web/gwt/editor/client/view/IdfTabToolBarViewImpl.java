@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog;
 
 /**
@@ -37,14 +38,30 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
     @UiField
     Button importButton;
 
+    private Presenter presenter;
+
+    private ImportFileDialog importFileDialog;
+
     public IdfTabToolBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+
         importButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new ImportFileDialog()).show();
+                importFileDialog = new ImportFileDialog("Import Investigation Design...");
+                importFileDialog.addImportFileDialogHandler(new ImportFileDialog.Handler() {
+                    public void onImport(String fileName, AsyncEventFinishListener listener) {
+                        presenter.importFile(fileName, listener);
+                    }
+                });
+                importFileDialog.show();
             }
         });
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 }

@@ -16,7 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.base.Charsets;
 import com.google.inject.Inject;
+import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
@@ -27,6 +29,7 @@ import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
 import uk.ac.ebi.fg.annotare2.magetab.idf.IdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -37,8 +40,9 @@ import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Vector;
 
 import static com.google.common.base.Charsets.UTF_8;
 
@@ -48,6 +52,8 @@ import static com.google.common.base.Charsets.UTF_8;
 public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
+
+    private static final String GWTUPLOAD_ATTRIBUTE_NAME = "LAST_FILES";
 
     @Inject
     private SubmissionManager submissionManager;
@@ -101,6 +107,32 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
             throw new NoPermissionException("Sorry, you do not have access to this resource");
         } catch (IOException e) {
             log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
+        }
+    }
+
+    @Override
+    public void importInvestigation(int submissionId, String fileName) throws NoPermissionException,
+            ResourceNotFoundException, DataImportException {
+        try {
+            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
+            ArrayList<FileItem> items = (ArrayList<FileItem>) getSession().getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+            if (items.isEmpty()) {
+               throw new DataImportException("Can't find file '" + fileName + "' to import");
+            }
+            FileItem item = items.get(0);
+            String newInvestigation = item.getString(Charsets.UTF_8.name());
+            Table table = new TsvParser().parse(submission.getInvestigation());
+            //TODO validation
+            //TODO submission.setInvestigation(newInvestigation);
+        } catch (RecordNotFoundException e) {
+            log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
+        } catch (AccessControlException e) {
+            log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (IOException e) {
+            log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
+            throw new DataImportException("Sorry, you do not have access to this resource");
         }
     }
 
