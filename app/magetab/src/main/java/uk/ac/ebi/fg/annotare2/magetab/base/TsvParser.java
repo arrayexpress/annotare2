@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
+import com.google.common.base.Charsets;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +36,7 @@ public class TsvParser {
         final Table table = new Table();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(in));
+            br = new BufferedReader(new InputStreamReader(in, Charsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
                 table.addRow(parseRow(line));
