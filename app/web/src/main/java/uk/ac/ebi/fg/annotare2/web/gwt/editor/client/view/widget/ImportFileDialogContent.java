@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploader;
@@ -106,7 +107,7 @@ public class ImportFileDialogContent extends Composite {
 
                     @Override
                     public void onSuccess() {
-                        waitingPanel.showSuccess();
+                        waitingPanel.showSuccess("The file was imported successfully.");
                         dialogContent.okButton.setEnabled(true);
                     }
 
@@ -121,6 +122,7 @@ public class ImportFileDialogContent extends Composite {
             @Override
             void proceed(ImportFileDialogContent dialogContent) {
                 dialogContent.fireEvent(new FinishEvent());
+                Window.Location.reload();
             }
         };
 
