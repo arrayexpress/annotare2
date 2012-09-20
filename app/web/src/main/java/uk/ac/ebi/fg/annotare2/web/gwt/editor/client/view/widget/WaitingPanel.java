@@ -40,8 +40,8 @@ public class WaitingPanel extends Composite {
         label.setText(message);
     }
 
-    public void showSuccess() {
-        label.setText("Success");
+    public void showSuccess(String msg) {
+        label.setText(msg);
     }
 
     public void showError(String msg) {
