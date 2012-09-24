@@ -22,21 +22,29 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SdrfServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SdrfTabToolBarView;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk
  */
-public class SdrfTabToolBarActivity extends AbstractActivity {
+public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabToolBarView.Presenter {
 
     private final SdrfTabToolBarView view;
     private final PlaceController placeController;
+    private final SdrfServiceAsync sdrfService;
 
     @Inject
     public SdrfTabToolBarActivity(SdrfTabToolBarView view,
-                                 PlaceController placeController) {
+                                 PlaceController placeController,
+                                 SdrfServiceAsync sdrfService) {
         this.view = view;
         this.placeController = placeController;
+        this.sdrfService = sdrfService;
     }
 
     public SdrfTabToolBarActivity withPlace(Place place) {
@@ -45,11 +53,27 @@ public class SdrfTabToolBarActivity extends AbstractActivity {
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //TODO view.setPresenter(this);
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    @Override
+    public void importFile(String fileName, final AsyncEventFinishListener listener) {
+        sdrfService.importData(getSubmissionId(), fileName, new AsyncCallbackWrapper<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                // TODO
+                listener.onError(caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                listener.onSuccess();
+            }
+        }.wrap());
     }
 }

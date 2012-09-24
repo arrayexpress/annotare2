@@ -13,6 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
@@ -25,9 +26,8 @@
                     <h3 ui:field="tabTitle">Sample and Data Relationship</h3>
                 </td>
                 <td>
-                    <g:Button>Create</g:Button>
-                    <g:Button>Import</g:Button>
-                    <g:Button>Export</g:Button>
+                    <g:Button ui:field="importButton">Import</g:Button>
+                    <g:Button enabled="false">Export</g:Button>
                 </td>
             </tr>
         </table>

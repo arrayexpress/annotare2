@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-/**
- * @author Olga Melnichuk
- */
-public interface SdrfTabToolBarView extends IsWidget {
-
-    void setPresenter(Presenter presenter);
-
-    public static interface Presenter {
-
-        void importFile(String fileName, AsyncEventFinishListener listener);
-    }
+public interface SdrfServiceAsync {
+    void importData(int submissionId, String fileName, AsyncCallback<Void> async);
 }

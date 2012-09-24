@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SdrfService;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SdrfTabToolBarView extends IsWidget {
+public class SdrfServiceImpl extends RemoteServiceBase implements SdrfService {
 
-    void setPresenter(Presenter presenter);
-
-    public static interface Presenter {
-
-        void importFile(String fileName, AsyncEventFinishListener listener);
+    @Override
+    public void importData(int submissionId, String fileName) throws NoPermissionException, ResourceNotFoundException, DataImportException {
+        // TODO
     }
 }
