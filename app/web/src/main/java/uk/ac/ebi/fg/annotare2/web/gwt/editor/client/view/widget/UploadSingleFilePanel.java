@@ -47,6 +47,7 @@ public class UploadSingleFilePanel extends Composite {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         uploader = new MultiUploader();
+        uploader.avoidRepeatFiles(false);
         Set<IUploadStatus.CancelBehavior> cancelBehaviors = new HashSet<IUploadStatus.CancelBehavior>();
         cancelBehaviors.add(IUploadStatus.CancelBehavior.REMOVE_CANCELLED_FROM_LIST);
         cancelBehaviors.add(IUploadStatus.CancelBehavior.STOP_CURRENT);
