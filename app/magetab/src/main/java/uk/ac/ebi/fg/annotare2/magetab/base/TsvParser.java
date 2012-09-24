@@ -65,6 +65,7 @@ public class TsvParser {
         private int recognized;
 
         public void add(String text) {
+            text = text.replaceAll("\\s", "");
             total += text.length();
             for (int i = 0; i < text.length(); i++) {
                 recognized += recognize(text.charAt(i));
