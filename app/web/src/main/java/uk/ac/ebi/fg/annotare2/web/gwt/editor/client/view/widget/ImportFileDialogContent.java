@@ -94,7 +94,7 @@ public class ImportFileDialogContent extends Composite {
                 dialogContent.gotoState(READY);
             }
         },
-        READY () {
+        READY() {
             @Override
             void init(final ImportFileDialogContent dialogContent) {
                 dialogContent.cancelButton.removeFromParent();
@@ -109,12 +109,14 @@ public class ImportFileDialogContent extends Composite {
                     public void onSuccess() {
                         waitingPanel.showSuccess("The file was imported successfully.");
                         dialogContent.okButton.setEnabled(true);
+                        dialogContent.success = true;
                     }
 
                     @Override
                     public void onError(String msg) {
                         waitingPanel.showError(msg);
                         dialogContent.okButton.setEnabled(true);
+                        dialogContent.success = false;
                     }
                 }));
             }
@@ -122,14 +124,16 @@ public class ImportFileDialogContent extends Composite {
             @Override
             void proceed(ImportFileDialogContent dialogContent) {
                 dialogContent.fireEvent(new FinishEvent());
-                Window.Location.reload();
+                if (dialogContent.success) {
+                    Window.Location.reload();
+                }
             }
         };
 
         abstract void init(ImportFileDialogContent dialogContent);
 
         void proceed(ImportFileDialogContent dialogContent) {
-           // do nothing by default
+            // do nothing by default
         }
 
         void cancel(ImportFileDialogContent dialogContent) {
@@ -159,6 +163,8 @@ public class ImportFileDialogContent extends Composite {
     private String fileName;
 
     private DialogState state = DialogState.NOT_CONFIRMED;
+
+    private boolean success;
 
     public ImportFileDialogContent() {
         Binder uiBinder = GWT.create(Binder.class);
