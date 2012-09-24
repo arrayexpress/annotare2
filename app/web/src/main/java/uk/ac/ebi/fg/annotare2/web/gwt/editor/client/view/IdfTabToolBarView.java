@@ -27,6 +27,6 @@ public interface IdfTabToolBarView extends IsWidget {
     public void setPresenter(Presenter presenter);
 
     public static interface Presenter {
-        void importFile(String file, AsyncEventFinishListener listener);
+        void importFile(AsyncEventFinishListener listener);
     }
 }

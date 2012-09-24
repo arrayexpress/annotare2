@@ -29,5 +29,5 @@ public interface IdfServiceAsync {
 
     void updateInvestigation(int submissionId, Operation operation, AsyncCallback<Void> async);
 
-    void importInvestigation(int submissionId, String fileName, AsyncCallback<Void> async);
+    void importInvestigation(int submissionId, AsyncCallback<Void> async);
 }

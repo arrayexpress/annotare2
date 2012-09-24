@@ -52,7 +52,7 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
                 importFileDialog = new ImportFileDialog("Import Investigation Design...");
                 importFileDialog.addImportFileDialogHandler(new ImportFileDialog.Handler() {
                     public void onImport(String fileName, AsyncEventFinishListener listener) {
-                        presenter.importFile(fileName, listener);
+                        presenter.importFile(listener);
                     }
                 });
                 importFileDialog.show();

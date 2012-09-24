@@ -62,8 +62,8 @@ public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToo
     }
 
     @Override
-    public void importFile(String fileName, final AsyncEventFinishListener listener) {
-        idfService.importInvestigation(getSubmissionId(), fileName, new AsyncCallbackWrapper<Void>() {
+    public void importFile(final AsyncEventFinishListener listener) {
+        idfService.importInvestigation(getSubmissionId(), new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 String errMsg = "";

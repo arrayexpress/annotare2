@@ -36,5 +36,13 @@ public interface IdfService extends RemoteService {
 
     void updateInvestigation(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException;
 
-    void importInvestigation(int submissionId, String fileName) throws NoPermissionException, ResourceNotFoundException, DataImportException;
+    /**
+     * Imports investigation data from a file stored in the current session.
+     *
+     * @param submissionId a submission identifier to replace investigation data in
+     * @throws NoPermissionException     If the user doesn't have permission to change the submission content
+     * @throws ResourceNotFoundException If the submission or the imported file doesn't exist
+     * @throws DataImportException       If any error happened during the data import process
+     */
+    void importInvestigation(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException;
 }

@@ -109,7 +109,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     }
 
     @Override
-    public void importInvestigation(int submissionId, String fileName) throws NoPermissionException,
+    public void importInvestigation(int submissionId) throws NoPermissionException,
             ResourceNotFoundException, DataImportException {
         try {
             Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
@@ -128,13 +128,13 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
             }
             submission.setInvestigation(asString(table));
         } catch (RecordNotFoundException e) {
-            log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
+            log.warn("importInvestigation(" + submissionId + " failure", e);
             throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
         } catch (AccessControlException e) {
-            log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
+            log.warn("importInvestigation(" + submissionId + ") failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");
         } catch (IOException e) {
-            log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
+            log.warn("importInvestigation(" + submissionId + ") failure", e);
             throw new DataImportException(e.getMessage());
         }
     }
