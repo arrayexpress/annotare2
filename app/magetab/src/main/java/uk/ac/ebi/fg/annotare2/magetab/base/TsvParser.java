@@ -33,6 +33,7 @@ import static java.util.Arrays.asList;
 public class TsvParser {
 
     public Table parse(InputStream in) throws IOException {
+        final CharacterStats stats = new CharacterStats();
         final Table table = new Table();
         BufferedReader br = null;
         try {
@@ -40,9 +41,13 @@ public class TsvParser {
             String line;
             while ((line = br.readLine()) != null) {
                 table.addRow(parseRow(line));
+                stats.add(line);
             }
         } finally {
             closeQuietly(br);
+        }
+        if (!stats.isReadable()) {
+            throw new IOException("The file content doesn't look like a text");
         }
         return table;
     }
@@ -51,5 +56,27 @@ public class TsvParser {
         ArrayList<String> list = new ArrayList<String>();
         list.addAll(asList(line.trim().split("\t")));
         return list;
+    }
+
+    private static class CharacterStats {
+
+        private int total;
+
+        private int recognized;
+
+        public void add(String text) {
+            total += text.length();
+            for (int i = 0; i < text.length(); i++) {
+                recognized += recognize(text.charAt(i));
+            }
+        }
+
+        private int recognize(Character ch) {
+            return Character.isLetterOrDigit(ch) ? 1 : 0;
+        }
+
+        public boolean isReadable() {
+            return (1.0 * recognized / total) > 0.7;
+        }
     }
 }

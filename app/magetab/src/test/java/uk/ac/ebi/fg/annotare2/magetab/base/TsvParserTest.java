@@ -30,6 +30,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * @author Olga Melnichuk
@@ -66,6 +67,22 @@ public class TsvParserTest {
                     assertEquals(value, table.getValueAt(i, j));
                 }
             }
+        }
+    }
+
+    @Test
+    public void textVsBinaryTest() {
+        try {
+            (new TsvParser()).parse(TsvParserTest.class.getResourceAsStream("/E-TABM-1009.idf.txt"));
+        } catch (IOException e) {
+            fail();
+        }
+
+        try {
+            (new TsvParser()).parse(TsvParserTest.class.getResourceAsStream("/image.png"));
+            fail();
+        } catch (IOException e) {
+            // OK
         }
     }
 }
