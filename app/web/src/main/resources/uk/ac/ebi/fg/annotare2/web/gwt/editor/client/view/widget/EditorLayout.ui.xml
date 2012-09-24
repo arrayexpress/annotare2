@@ -50,7 +50,7 @@
                                 </g:center>
                             </g:DockLayoutPanel>
                         </g:north>
-                        <g:west size="200">
+                        <g:west size="0">
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
