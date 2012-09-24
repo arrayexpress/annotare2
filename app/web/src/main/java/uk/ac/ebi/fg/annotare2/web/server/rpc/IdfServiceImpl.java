@@ -16,16 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
+import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.idf.IdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.om.Submission;
@@ -42,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 
 import static com.google.common.base.Charsets.UTF_8;
 
