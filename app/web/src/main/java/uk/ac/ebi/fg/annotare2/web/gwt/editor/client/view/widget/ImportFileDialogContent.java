@@ -42,7 +42,7 @@ public class ImportFileDialogContent extends Composite {
             @Override
             void init(ImportFileDialogContent dialogContent) {
                 dialogContent.content.setWidget(
-                        new Label("Please note that the current data will be overridden with the new file contents."));
+                        new Label("Please note that the current data will be overridden with the new file content."));
                 dialogContent.okButton.setText("Continue >>");
             }
 
