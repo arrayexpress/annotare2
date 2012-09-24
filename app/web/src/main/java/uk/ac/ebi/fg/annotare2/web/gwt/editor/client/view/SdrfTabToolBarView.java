@@ -28,6 +28,6 @@ public interface SdrfTabToolBarView extends IsWidget {
 
     public static interface Presenter {
 
-        void importFile(String fileName, AsyncEventFinishListener listener);
+        void importFile(AsyncEventFinishListener listener);
     }
 }

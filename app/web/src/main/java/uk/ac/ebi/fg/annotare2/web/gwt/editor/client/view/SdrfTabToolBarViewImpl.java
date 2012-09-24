@@ -53,7 +53,7 @@ public class SdrfTabToolBarViewImpl extends Composite implements SdrfTabToolBarV
                 importFileDialog = new ImportFileDialog("Import Sample and Data Relationship data...");
                 importFileDialog.addImportFileDialogHandler(new ImportFileDialog.Handler() {
                     public void onImport(String fileName, AsyncEventFinishListener listener) {
-                        presenter.importFile(fileName, listener);
+                        presenter.importFile(listener);
                     }
                 });
                 importFileDialog.show();

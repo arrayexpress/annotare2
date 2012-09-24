@@ -40,8 +40,8 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
 
     @Inject
     public SdrfTabToolBarActivity(SdrfTabToolBarView view,
-                                 PlaceController placeController,
-                                 SdrfServiceAsync sdrfService) {
+                                  PlaceController placeController,
+                                  SdrfServiceAsync sdrfService) {
         this.view = view;
         this.placeController = placeController;
         this.sdrfService = sdrfService;
@@ -62,8 +62,8 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
     }
 
     @Override
-    public void importFile(String fileName, final AsyncEventFinishListener listener) {
-        sdrfService.importData(getSubmissionId(), fileName, new AsyncCallbackWrapper<Void>() {
+    public void importFile(final AsyncEventFinishListener listener) {
+        sdrfService.importData(getSubmissionId(), new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 // TODO

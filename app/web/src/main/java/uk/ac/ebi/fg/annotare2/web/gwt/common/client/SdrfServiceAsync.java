@@ -21,5 +21,5 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 public interface SdrfServiceAsync {
-    void importData(int submissionId, String fileName, AsyncCallback<Void> async);
+    void importData(int submissionId, AsyncCallback<Void> async);
 }

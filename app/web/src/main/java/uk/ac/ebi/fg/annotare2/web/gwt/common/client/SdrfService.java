@@ -27,5 +27,5 @@ public interface SdrfService extends RemoteService {
 
     public static final String NAME = "sdrfService";
 
-    void importData(int submissionId, String fileName) throws NoPermissionException, ResourceNotFoundException, DataImportException;
+    void importData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException;
 }

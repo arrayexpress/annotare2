@@ -27,7 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SdrfService;
 public class SdrfServiceImpl extends RemoteServiceBase implements SdrfService {
 
     @Override
-    public void importData(int submissionId, String fileName) throws NoPermissionException, ResourceNotFoundException, DataImportException {
+    public void importData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException {
         // TODO
     }
 }
