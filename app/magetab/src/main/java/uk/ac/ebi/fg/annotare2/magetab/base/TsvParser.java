@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
+import com.google.common.base.Charsets;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,16 +33,21 @@ import static java.util.Arrays.asList;
 public class TsvParser {
 
     public Table parse(InputStream in) throws IOException {
+        final CharacterStats stats = new CharacterStats();
         final Table table = new Table();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(in));
+            br = new BufferedReader(new InputStreamReader(in, Charsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
                 table.addRow(parseRow(line));
+                stats.add(line);
             }
         } finally {
             closeQuietly(br);
+        }
+        if (!stats.isReadable()) {
+            throw new IOException("The file content doesn't look like a text");
         }
         return table;
     }
@@ -49,5 +56,27 @@ public class TsvParser {
         ArrayList<String> list = new ArrayList<String>();
         list.addAll(asList(line.trim().split("\t")));
         return list;
+    }
+
+    private static class CharacterStats {
+
+        private int total;
+
+        private int recognized;
+
+        public void add(String text) {
+            total += text.length();
+            for (int i = 0; i < text.length(); i++) {
+                recognized += recognize(text.charAt(i));
+            }
+        }
+
+        private int recognize(Character ch) {
+            return Character.isLetterOrDigit(ch) ? 1 : 0;
+        }
+
+        public boolean isReadable() {
+            return (1.0 * recognized / total) > 0.7;
+        }
     }
 }
