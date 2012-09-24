@@ -121,14 +121,14 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
             }
             FileItem item = items.get(0);
             Table table = new TsvParser().parse(item.getInputStream());
-            //TODO validation
+            //TODO add more clever IDF content validation here
             if (table.isEmpty()) {
                 throw new DataImportException("Can't import an empty file.");
             }
             if (table.getWidth() <= 1 || table.getHeight() <= 1) {
                 throw new DataImportException("The file contents don't look like a valid IDF data.");
             }
-            //TODO submission.setInvestigation(newInvestigation);
+            submission.setInvestigation(asString(table));
         } catch (RecordNotFoundException e) {
             log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
@@ -137,7 +137,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
             throw new NoPermissionException("Sorry, you do not have access to this resource");
         } catch (IOException e) {
             log.warn("importInvestigation(" + submissionId + "," + fileName + ") failure", e);
-            throw new DataImportException("Sorry, you do not have access to this resource");
+            throw new DataImportException(e.getMessage());
         }
     }
 
