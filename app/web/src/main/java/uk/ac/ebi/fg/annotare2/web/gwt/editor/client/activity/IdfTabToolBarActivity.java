@@ -85,4 +85,9 @@ public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToo
             }
         }.wrap());
     }
+
+    @Override
+    public void switchToSheetMode(boolean value) {
+        // TODO
+    }
 }

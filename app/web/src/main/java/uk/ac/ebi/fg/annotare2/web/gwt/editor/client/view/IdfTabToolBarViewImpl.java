@@ -19,11 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog;
 
@@ -38,6 +41,9 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
     @UiField
     Button importButton;
 
+    @UiField(provided = true)
+    ToggleButton viewModeButton = new ToggleButton("Sheet Mode On", "Sheet Mode Off");
+
     private Presenter presenter;
 
     private ImportFileDialog importFileDialog;
@@ -45,6 +51,13 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
     public IdfTabToolBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+
+        viewModeButton.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                presenter.switchToSheetMode(event.getValue());
+            }
+        });
 
         importButton.addClickHandler(new ClickHandler() {
             @Override
@@ -63,5 +76,10 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setSheetMode(boolean onOff) {
+        this.viewModeButton.setValue(onOff, false);
     }
 }

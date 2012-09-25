@@ -42,7 +42,7 @@
                     <g:DockLayoutPanel>
                         <g:north size="120">
                             <g:DockLayoutPanel>
-                                <g:north size="60">
+                                <g:north size="50">
                                     <g:SimplePanel ui:field="tabBarDisplay" />
                                 </g:north>
                                 <g:center>
