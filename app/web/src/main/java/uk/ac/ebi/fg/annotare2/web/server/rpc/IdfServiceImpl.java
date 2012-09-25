@@ -35,11 +35,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -50,8 +50,6 @@ import static com.google.common.base.Charsets.UTF_8;
 public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
-
-    private static final String GWTUPLOAD_ATTRIBUTE_NAME = "LAST_FILES";
 
     @Inject
     private SubmissionManager submissionManager;
@@ -94,9 +92,11 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     public void updateInvestigation(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException {
         try {
             Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
+            //TODO check for UPDATE permission
+
             Table table = new TsvParser().parse(submission.getInvestigation());
             operation.apply(table);
-            submission.setInvestigation(asString(table));
+            submission.setInvestigation(new TsvGenerator(table).generateString());
         } catch (RecordNotFoundException e) {
             log.warn("getGeneralInfo(" + submissionId + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
@@ -113,12 +113,11 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
             ResourceNotFoundException, DataImportException {
         try {
             Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
-            ArrayList<FileItem> items = (ArrayList<FileItem>) getSession().getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
-            if (items.isEmpty()) {
-               throw new DataImportException("Can't find the file to import.");
-            }
-            FileItem item = items.get(0);
+            //TODO check for UPDATE permission
+
+            FileItem item = UploadedFiles.getOne(getSession());
             Table table = new TsvParser().parse(item.getInputStream());
+
             //TODO add more clever IDF content validation here
             if (table.isEmpty()) {
                 throw new DataImportException("Can't import an empty file.");
@@ -126,7 +125,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
             if (table.getWidth() <= 1 || table.getHeight() <= 1) {
                 throw new DataImportException("The file contents don't look like a valid IDF data.");
             }
-            submission.setInvestigation(asString(table));
+            submission.setInvestigation(new TsvGenerator(table).generateString());
         } catch (RecordNotFoundException e) {
             log.warn("importInvestigation(" + submissionId + " failure", e);
             throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
@@ -146,12 +145,5 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
                 inv.getDescription().getValue(),
                 new Date(),
                 new Date());  //TODO propagate proper values here
-    }
-
-    //TODO move this functionality in the proper place
-    private String asString(Table table) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new TsvGenerator(table).generate(out);
-        return out.toString(UTF_8.name());
     }
 }

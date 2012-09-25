@@ -43,6 +43,8 @@ public abstract class Submission implements HasEffectiveAcl {
 
     private String investigation;
 
+    private String sample2Data;
+
     private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
     private String title;
@@ -66,6 +68,10 @@ public abstract class Submission implements HasEffectiveAcl {
         this.investigation = text;
     }
 
+    public void setSample2Data(String sample2Data) {
+        this.sample2Data = sample2Data;
+    }
+
     public void setStatus(SubmissionStatus status) {
         this.status = status;
     }
@@ -76,6 +82,11 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public InputStream getInvestigation() throws IOException {
         String str = (investigation == null) ? "" : investigation;
+        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
+    }
+
+    public InputStream getSample2Data() {
+        String str = (sample2Data == null) ? "" : sample2Data;
         return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
     }
 
