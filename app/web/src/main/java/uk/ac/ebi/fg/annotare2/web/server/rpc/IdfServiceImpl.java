@@ -87,9 +87,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     @Override
     public void updateInvestigation(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException {
         try {
-            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
-            //TODO check for UPDATE permission
-
+            Submission submission = submissionManager.getSubmission2Update(getCurrentUser(), submissionId);
             Table table = new TsvParser().parse(submission.getInvestigation());
             operation.apply(table);
             submission.setInvestigation(new TsvGenerator(table).generateString());
@@ -108,8 +106,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     public void importInvestigation(int submissionId) throws NoPermissionException,
             ResourceNotFoundException, DataImportException {
         try {
-            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
-            //TODO check for UPDATE permission
+            Submission submission = submissionManager.getSubmission2Update(getCurrentUser(), submissionId);
 
             FileItem item = UploadedFiles.getOne(getSession());
             Table table = new TsvParser().parse(item.getInputStream());

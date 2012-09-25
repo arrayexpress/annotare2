@@ -60,6 +60,14 @@ public class SubmissionManager {
         return sb;
     }
 
+    public Submission getSubmission2Update(User user, int id) throws AccessControlException, RecordNotFoundException {
+        Submission sb = getSubmission(user, id);
+        if (!user.isAllowed(sb, Permission.UPDATE)) {
+            throw new AccessControlException("User " + user + " doesn't have a permission to update the submission " + sb);
+        }
+        return sb;
+    }
+
     public Submission createSubmission(User user) throws AccessControlException {
         SubmissionFactory factory = submissionDao.getSubmissionFactory(user);
         if (!user.isAllowed(factory, Permission.CREATE)) {

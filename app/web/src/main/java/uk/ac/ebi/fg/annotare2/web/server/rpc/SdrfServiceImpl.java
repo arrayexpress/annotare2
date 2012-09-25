@@ -48,8 +48,7 @@ public class SdrfServiceImpl extends RemoteServiceBase implements SdrfService {
     @Override
     public void importData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException {
         try {
-            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
-            //TODO check for UPDATE permission
+            Submission submission = submissionManager.getSubmission2Update(getCurrentUser(), submissionId);
 
             FileItem item = UploadedFiles.getOne(getSession());
             Table table = new TsvParser().parse(item.getInputStream());
