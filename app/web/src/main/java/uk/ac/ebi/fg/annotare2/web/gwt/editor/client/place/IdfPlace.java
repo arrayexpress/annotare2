@@ -18,8 +18,11 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.CompositeToken;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 
@@ -29,6 +32,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 public class IdfPlace extends EditorPlace {
 
     private IdfSection idfSection;
+
+    private boolean sheetModeOn;
 
     public IdfPlace() {
         setIdfSection(null);
@@ -42,12 +47,20 @@ public class IdfPlace extends EditorPlace {
         return idfSection;
     }
 
+    public boolean isSheetModeOn() {
+        return sheetModeOn;
+    }
+
     public void setIdfSection(IdfSection idfSection) {
         setIdfSection(idfSection, IdfSection.GENERAL_INFO);
     }
 
     public void setIdfSection(IdfSection idfSection, IdfSection defaultValue) {
         this.idfSection = idfSection == null ? defaultValue : idfSection;
+    }
+
+    public void setSheetModeOn(boolean on) {
+        this.sheetModeOn = on;
     }
 
     public EditorTabType getTabType() {
@@ -65,17 +78,32 @@ public class IdfPlace extends EditorPlace {
         }
 
         public String getToken(IdfPlace place) {
-            return place.getIdfSection().name();
+            return new CompositeToken()
+                    .add(place.getIdfSection().name())
+                    .add(place.isSheetModeOn())
+                    .toString();
         }
 
         public IdfPlace getPlace(String token) {
-            IdfSection section = IdfSection.getIfPresent(token);
-            if (section == null) {
+            CompositeToken.Reader reader = new CompositeToken(token).reader();
+            try {
+                IdfPlace place = placeProvider.get();
+
+                String sectionToken = reader.nextString();
+
+                IdfSection section = IdfSection.getIfPresent(sectionToken);
+                if (section == null) {
+                    throw new TokenReaderException("Unrecognized IDF section token: " + sectionToken);
+                }
+
+                place.setIdfSection(section);
+                place.setSheetModeOn(reader.nextBoolean());
+                return place;
+            } catch (TokenReaderException e) {
+                //TODO log
+                Window.alert(e.getMessage());
                 return null;
             }
-            IdfPlace place = placeProvider.get();
-            place.setIdfSection(section);
-            return place;
         }
     }
 }

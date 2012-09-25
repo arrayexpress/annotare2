@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.place;
 
 import java.util.ArrayList;
 
@@ -23,26 +23,31 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class Token {
+public class CompositeToken {
 
     private static final String DELIMITER = ",";
 
     private ArrayList<String> tokens = new ArrayList<String>();
 
-    public Token(String token) {
+    public CompositeToken(String token) {
         this.tokens = new ArrayList<String>(asList(token.split(DELIMITER)));
     }
 
-    public Token() {
+    public CompositeToken() {
     }
 
-    public Token add(String t) {
+    public CompositeToken add(String t) {
         tokens.add(t);
         return this;
     }
 
-    public Token add(int t) {
+    public CompositeToken add(int t) {
         tokens.add(Integer.toString(t));
+        return this;
+    }
+
+    public CompositeToken add(boolean t) {
+        tokens.add(Boolean.toString(t));
         return this;
     }
 
@@ -58,14 +63,26 @@ public class Token {
         return sb.toString();
     }
 
-    public TokenReader reader() {
+    public Reader reader() {
 
-        return new TokenReader() {
+        return new Reader() {
 
             private int i = 0;
 
+            @Override
+            public boolean nextBoolean() throws TokenReaderException {
+                checkIndex(i);
+                String t = tokens.get(i++);
+                try {
+                    return Boolean.parseBoolean(t);
+                } catch (NumberFormatException e) {
+                    throw new TokenReaderException("Bad boolean token: '" + t + "'");
+                }
+            }
+
+            @Override
             public int nextInt() throws TokenReaderException {
-                checkIndexBounds(i);
+                checkIndex(i);
                 String t = tokens.get(i++);
                 try {
                     return Integer.parseInt(t);
@@ -74,23 +91,26 @@ public class Token {
                 }
             }
 
+            @Override
             public String nextString() throws TokenReaderException {
-                checkIndexBounds(i);
+                checkIndex(i);
                 return tokens.get(i++);
             }
 
-            private void checkIndexBounds(int i) throws TokenReaderException {
+            private void checkIndex(int i) throws TokenReaderException {
                 if (i >= tokens.size()) {
-                    throw new TokenReaderException("Index out of bound exception; >= " + tokens.size());
+                    throw new TokenReaderException("Token index out of bound:" + i + " >= " + tokens.size());
                 }
             }
         };
     }
 
-    public static interface TokenReader {
+    public static interface Reader {
 
         int nextInt() throws TokenReaderException;
 
         String nextString() throws TokenReaderException;
+
+        boolean nextBoolean() throws TokenReaderException;
     }
 }
