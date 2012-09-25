@@ -37,12 +37,8 @@ import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
-
-import static com.google.common.base.Charsets.UTF_8;
 
 /**
  * @author Olga Melnichuk
@@ -143,7 +139,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
         return new UIGeneralInfo(
                 inv.getTitle().getValue(),
                 inv.getDescription().getValue(),
-                new Date(),
-                new Date());  //TODO propagate proper values here
+                inv.getDateOfExperiment().getValue(),
+                inv.getDateOfPublicRelease().getValue());
     }
 }
