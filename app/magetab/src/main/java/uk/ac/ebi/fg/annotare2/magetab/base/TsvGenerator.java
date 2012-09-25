@@ -16,13 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.base;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -50,5 +48,11 @@ public class TsvGenerator {
             writer.write(on("\t").join(row) + "\n");
         }
         writer.flush();
+    }
+
+    public String generateString() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new TsvGenerator(table).generate(out);
+        return out.toString(UTF_8.name());
     }
 }
