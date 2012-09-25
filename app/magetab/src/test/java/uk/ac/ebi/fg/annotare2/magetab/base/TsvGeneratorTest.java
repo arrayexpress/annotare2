@@ -43,8 +43,10 @@ public class TsvGeneratorTest {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         new TsvGenerator(table).generate(out);
-
         String s1 = out.toString(UTF_8.name());
         assertEquals(s, s1);
+
+        String s2 = new TsvGenerator(table).generateString();
+        assertEquals(s, s2);
     }
 }
