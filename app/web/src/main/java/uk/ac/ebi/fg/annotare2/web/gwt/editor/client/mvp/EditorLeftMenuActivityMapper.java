@@ -38,7 +38,10 @@ public class EditorLeftMenuActivityMapper implements ActivityMapper {
 
     public Activity getActivity(Place place) {
         if (place instanceof IdfPlace) {
-            return (activityProvider.get()).withPlace((IdfPlace)place);
+            IdfPlace idfPlace = (IdfPlace) place;
+            if (!idfPlace.isSheetModeOn()) {
+                return (activityProvider.get()).withPlace(idfPlace);
+            }
         }
         // hide left menu
         return null;

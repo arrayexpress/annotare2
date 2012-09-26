@@ -28,10 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListViewImpl;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.*;
 
 /**
  * @author Olga Melnichuk
@@ -50,11 +47,14 @@ public class EditorGinModule extends AbstractGinModule {
 
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
         bind(EditorTabBarView.class).to(EditorTabBarViewImpl.class);
+
         bind(IdfNavigationView.class).to(IdfNavigationViewImpl.class);
-        bind(IdfGeneralInfoView.class).to(IdfGeneralInfoViewImpl.class);
-        bind(IdfContentView.class).to(IdfContentViewImpl.class);
-        bind(IdfContactListView.class).to(IdfContactListViewImpl.class);
         bind(IdfTabToolBarView.class).to(IdfTabToolBarViewImpl.class);
+        bind(IdfContentView.class).to(IdfContentViewImpl.class);
+        bind(IdfSheetModeView.class).to(IdfSheetModeViewImpl.class);
+        bind(IdfGeneralInfoView.class).to(IdfGeneralInfoViewImpl.class);
+        bind(IdfContactListView.class).to(IdfContactListViewImpl.class);
+
         bind(SdrfTabToolBarView.class).to(SdrfTabToolBarViewImpl.class);
         bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
 

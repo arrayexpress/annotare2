@@ -21,10 +21,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContactListActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContentActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfGeneralInfoActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfContentActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
@@ -35,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 public class EditorContentActivityMapper implements ActivityMapper {
 
     private final Provider<IdfContentActivity> idfContentActivityProvider;
+    private final Provider<IdfSheetModeActivity> idfSheetModeActivityProvider;
     private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
     private final Provider<IdfContactListActivity> idfContactListActivityProvider;
 
@@ -42,10 +40,12 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
     @Inject
     public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
+                                       Provider<IdfSheetModeActivity> idfSheetModeActivityProvider,
                                        Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
                                        Provider<IdfContactListActivity> idfContactListActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
+        this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
         this.idfContactListActivityProvider = idfContactListActivityProvider;
 
@@ -54,7 +54,13 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
     public Activity getActivity(Place place) {
         if (place instanceof IdfPlace) {
-            IdfSection section = ((IdfPlace) place).getIdfSection();
+
+            IdfPlace idfPlace = (IdfPlace) place;
+            if (idfPlace.isSheetModeOn()) {
+                return (idfSheetModeActivityProvider.get()).withPlace(place);
+            }
+
+            IdfSection section = idfPlace.getIdfSection();
             switch (section) {
                 case GENERAL_INFO:
                     return (idfGeneralInfoActivityProvider.get()).withPlace(place);
