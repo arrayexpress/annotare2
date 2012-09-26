@@ -44,6 +44,11 @@ public class IdfPlace extends EditorPlace {
         setIdfSection(idfSection);
     }
 
+    public IdfPlace(IdfPlace other) {
+        setIdfSection(other.getIdfSection());
+        setSheetModeOn(other.isSheetModeOn());
+    }
+
     public IdfSection getIdfSection() {
         return idfSection;
     }

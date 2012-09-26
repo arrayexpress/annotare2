@@ -222,22 +222,22 @@
 }
 .gwt-ToggleButton-up {
     background: white none;
-    color: #E5A066;
-    border:1px solid #E5A066;
+    color: #48877C;
+    border:1px solid #48877C;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-up-hovering {
     background: white none;
-    color: #996a44;
-    border: 1px solid #996a44;
+    color: #17584D;
+    border: 1px solid #17584D;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-up-disabled {
     background: #eee none;
-    color: #E5A066;
-    border: 1px solid #E5A066;
+    color: #48877C;
+    border: 1px solid #48877C;
     cursor: default;
     opacity: .5;
     zoom: 1;
@@ -250,21 +250,22 @@
 }
 .gwt-ToggleButton-down {
     background: white none;
-    border: 1px inset #48877C;
-    color: #48877C;
+    border: 1px inset #E5A066;
+    color: #E5A066;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-down-hovering {
     background: white none;
-    border: 1px inset #17584D;
-    color: #17584D;
+    border: 1px inset #996a44;
+    color: #996a44;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-down-disabled {
     background: #eee none;
-    border: 1px inset #48877C;
+    border: 1px inset #E5A066;
+    color: #E5A066;
     cursor: default;
     opacity: .5;
     zoom: 1;
