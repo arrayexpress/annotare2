@@ -21,7 +21,8 @@ import com.google.gwt.place.shared.Prefix;
 import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.CompositeToken;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
@@ -78,14 +79,14 @@ public class IdfPlace extends EditorPlace {
         }
 
         public String getToken(IdfPlace place) {
-            return new CompositeToken()
+            return new TokenBuilder()
                     .add(place.getIdfSection().name())
                     .add(place.isSheetModeOn())
                     .toString();
         }
 
         public IdfPlace getPlace(String token) {
-            CompositeToken.Reader reader = new CompositeToken(token).reader();
+            TokenReader reader = new TokenReader(token);
             try {
                 IdfPlace place = placeProvider.get();
 
