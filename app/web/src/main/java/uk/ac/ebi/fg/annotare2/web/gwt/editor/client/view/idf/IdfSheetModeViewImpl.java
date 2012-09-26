@@ -16,8 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
+import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.view.client.ListDataProvider;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.ResizableHeader;
+
+import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -25,6 +31,25 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class IdfSheetModeViewImpl extends Composite implements IdfSheetModeView {
 
     public IdfSheetModeViewImpl() {
-        initWidget(new SimplePanel());
+        CellTable<String> cellTable = new CellTable<String>();
+        //cellTable.setWidth("100%", true);
+
+        for (int i = 0; i < 5; i++) {
+            Column<String, String> column = new Column<String, String>(new TextCell()) {
+                @Override
+                public String getValue(String object) {
+                    return object;
+                }
+            };
+            cellTable.addColumn(column, new ResizableHeader<String>("test", cellTable, column));
+        }
+
+        ListDataProvider<String> dataProvider = new ListDataProvider<String>();
+        dataProvider.setList(asList("1", "2", "3", "4", "5"));
+        dataProvider.setList(asList("1", "2", "3", "4", "5"));
+        dataProvider.setList(asList("1", "2", "3", "4", "5"));
+        dataProvider.addDataDisplay(cellTable);
+
+        initWidget(cellTable);
     }
 }
