@@ -203,8 +203,9 @@
 .gwt-ToggleButton-down,
 .gwt-ToggleButton-down-hovering,
 .gwt-ToggleButton-down-disabled {
-    margin: 0;
+    text-align: center;
     text-decoration: none;
+    margin: 0;
     background-image: none;
     border-radius: 3px;
     -moz-border-radius: 3px;
@@ -220,24 +221,23 @@
     padding: 3px 5px 3px 5px;
 }
 .gwt-ToggleButton-up {
-    background: #48877C none;
-    color: white;
-    border:1px solid #48877C;
-    border-bottom: 1px solid #a0a0a0;
+    background: white none;
+    color: #E5A066;
+    border:1px solid #E5A066;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-up-hovering {
-    background: #48877C none;
-    color: white;
-    border: 1px solid #939393;
+    background: white none;
+    color: #996a44;
+    border: 1px solid #996a44;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-up-disabled {
-    background: #48877C none;
-    color: white;
-    border: 1px solid #bbb;
+    background: #eee none;
+    color: #E5A066;
+    border: 1px solid #E5A066;
     cursor: default;
     opacity: .5;
     zoom: 1;
@@ -251,19 +251,20 @@
 .gwt-ToggleButton-down {
     background: white none;
     border: 1px inset #48877C;
+    color: #48877C;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-down-hovering {
     background: white none;
-    border: 1px inset;
-    border-color: #9cf #69e #69e #7af;
+    border: 1px inset #17584D;
+    color: #17584D;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-down-disabled {
     background: #eee none;
-    border: 1px inset #ccc;
+    border: 1px inset #48877C;
     cursor: default;
     opacity: .5;
     zoom: 1;
