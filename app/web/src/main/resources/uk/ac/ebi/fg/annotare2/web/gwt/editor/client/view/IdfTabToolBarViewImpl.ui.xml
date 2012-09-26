@@ -23,9 +23,6 @@
         <table style="width:100%">
             <tr>
                 <td style="width:200px">
-                    <h3 ui:field="tabTitle">Investigation Design</h3>
-                </td>
-                <td style="width:115px">
                     <g:ToggleButton ui:field="viewModeButton"/>
                 </td>
                 <td align="right">

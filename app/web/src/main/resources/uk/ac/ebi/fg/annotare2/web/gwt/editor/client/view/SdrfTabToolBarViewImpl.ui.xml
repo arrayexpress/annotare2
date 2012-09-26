@@ -20,12 +20,9 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <g:HTMLPanel>
-        <table>
+        <table width="100%">
             <tr>
-                <td style="width:250px">
-                    <h3 ui:field="tabTitle">Sample and Data Relationship</h3>
-                </td>
-                <td>
+                <td align="right">
                     <g:Button ui:field="importButton">Import</g:Button>
                     <g:Button enabled="false">Export</g:Button>
                 </td>

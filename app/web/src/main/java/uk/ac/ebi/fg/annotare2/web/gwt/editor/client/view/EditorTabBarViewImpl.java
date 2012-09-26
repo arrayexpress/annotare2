@@ -42,7 +42,7 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
         tabTypes.add(EditorTabType.SDRF);
 
         for(EditorTabType type : tabTypes) {
-            tabBar.addTab(type.name());
+            tabBar.addTab(type.getTitle());
         }
 
         tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
