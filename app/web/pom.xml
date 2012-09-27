@@ -33,6 +33,7 @@
     </parent>
 
     <properties>
+        <gxt.version>3.0.1</gxt.version>
         <guice.version>3.0</guice.version>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -81,6 +82,13 @@
         </profile>
     </profiles>
 
+    <repositories>
+        <repository>
+            <id>sencha-gpl-release</id>
+            <name>Open source licensed Sencha artifacts</name>
+            <url>https://maven.sencha.com/repo/gpl-release/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
 
@@ -166,6 +174,14 @@
             <version>0.6.4</version>
         </dependency>
 
+        <!-- Sencha GXT 3.0 -->
+
+        <dependency>
+            <groupId>com.sencha.gxt</groupId>
+            <artifactId>gxt</artifactId>
+            <version>${gxt.version}</version>
+        </dependency>
+
         <!-- jstl support-->
 
         <dependency>
@@ -189,6 +205,7 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
+
 
     </dependencies>
 

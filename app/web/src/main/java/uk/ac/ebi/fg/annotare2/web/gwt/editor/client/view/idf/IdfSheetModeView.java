@@ -17,9 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
 /**
  * @author Olga Melnichuk
  */
 public interface IdfSheetModeView extends IsWidget {
+
+    void setTable(Table table);
 }

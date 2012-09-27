@@ -92,5 +92,7 @@ public class EditorApp implements EntryPoint {
         root.add(appWidget);
 
         historyHandler.handleCurrentHistory();
+
+        // TODO good to have: DOM.getElementById("loading").removeFromParent();
     }
 }

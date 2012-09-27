@@ -58,15 +58,32 @@ public class InvestigationData {
         }.scheduleRepeating(2000);
     }
 
-    public void getInvestigation(AsyncCallback<Investigation> callback) {
+    public void getInvestigation(final AsyncCallback<Investigation> callback) {
         if (investigation != null) {
             callback.onSuccess(investigation);
             return;
         }
+        load(new AsyncCallback<Table>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(Table result) {
+                callback.onSuccess(investigation);
+            }
+        });
+    }
+
+    public void getTable(AsyncCallback<Table> callback) {
+        if (table != null) {
+            callback.onSuccess(table);
+        }
         load(callback);
     }
 
-    private void load(final AsyncCallback<Investigation> callback) {
+    private void load(final AsyncCallback<Table> callback) {
         idfService.loadInvestigation(getSubmissionId(), new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -75,12 +92,13 @@ public class InvestigationData {
 
             @Override
             public void onSuccess(Table result) {
-                callback.onSuccess(setTable(result));
+                setTable(result);
+                callback.onSuccess(table);
             }
         }.wrap());
     }
 
-    private Investigation setTable(Table table) {
+    private void setTable(Table table) {
         this.table = table;
         this.investigation = new Investigation(table);
         this.table.addChangeListener(new ChangeListener() {
@@ -94,7 +112,6 @@ public class InvestigationData {
                 }
             }
         });
-        return this.investigation;
     }
 
     private void sendChanges() {

@@ -20,8 +20,13 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSheetModeView;
 
 /**
@@ -33,16 +38,22 @@ public class IdfSheetModeActivity extends AbstractActivity {
 
     private final PlaceController placeController;
 
+    private final InvestigationData investigationData;
+
     @Inject
-    public IdfSheetModeActivity(IdfSheetModeView view, PlaceController placeController) {
+    public IdfSheetModeActivity(IdfSheetModeView view,
+                                PlaceController placeController,
+                                InvestigationData investigationData) {
         this.view = view;
         this.placeController = placeController;
+        this.investigationData = investigationData;
     }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         //TODO view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        initAsync();
     }
 
     public IdfSheetModeActivity withPlace(Place place) {
@@ -52,5 +63,20 @@ public class IdfSheetModeActivity extends AbstractActivity {
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    private void initAsync() {
+        investigationData.getTable(new AsyncCallbackWrapper<Table>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load IDF table: " + caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Table result) {
+                view.setTable(result);
+            }
+        }.wrap());
     }
 }

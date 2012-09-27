@@ -250,21 +250,21 @@
 }
 .gwt-ToggleButton-down {
     background: white none;
-    border: 1px inset #E5A066;
+    border: 1px solid #E5A066;
     color: #E5A066;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-down-hovering {
     background: white none;
-    border: 1px inset #996a44;
+    border: 1px solid #996a44;
     color: #996a44;
     cursor: pointer;
     cursor: hand;
 }
 .gwt-ToggleButton-down-disabled {
     background: #eee none;
-    border: 1px inset #E5A066;
+    border: 1px solid #E5A066;
     color: #E5A066;
     cursor: default;
     opacity: .5;
