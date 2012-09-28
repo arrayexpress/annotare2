@@ -16,13 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.DataGrid;
-import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -35,8 +31,6 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
 import java.util.ArrayList;
 
-import static java.util.Arrays.asList;
-
 /**
  * @author Olga Melnichuk
  */
@@ -46,36 +40,20 @@ public class IdfSheetModeViewImpl extends Composite implements IdfSheetModeView 
 
     public IdfSheetModeViewImpl() {
         panel = new HorizontalPanel();
-        //panel.setHeight("100%");
-        //panel.setWidth("100%");
         initWidget(panel);
     }
 
     @Override
     public void setTable(Table table) {
-        //DataGrid<Row> dataGrid = new DataGrid<Row>();
-        //dataGrid.setEmptyTableWidget(new Label("No data found"));
-        //CellTable<Row> cellTable = new CellTable<Row>();
-        //cellTable.setWidth("100%", true);
 
         int tableWidth = table.getTrimmedWidth();
         int tableHeight = table.getHeight();
-        //cellTable.setVisibleRange(0, tableHeight);
-       // dataGrid.setVisibleRange(0, tableHeight);
 
         ArrayList<ColumnConfig<Row, ?>> columnConfigs = new ArrayList<ColumnConfig<Row, ?>>();
 
         for (int i = 0; i < tableWidth; i++) {
             final int colIndex = i;
-            Column<Row, String> column = new Column<Row, String>(new TextCell()) {
-                @Override
-                public String getValue(Row row) {
-                    return row.getValue(colIndex);
-                }
-            };
-            //cellTable.addColumn(column, new TextHeader(""));
-      //      dataGrid.addColumn(column, new TextHeader("test"));
-      //      dataGrid.setColumnWidth(column, 100, Style.Unit.PX);
+
             ColumnConfig<Row, String> config = new ColumnConfig<Row, String>(new ValueProvider<Row, String>() {
                 @Override
                 public String getValue(Row row) {
@@ -92,7 +70,12 @@ public class IdfSheetModeViewImpl extends Composite implements IdfSheetModeView 
                     return null;
                 }
             });
-            config.setHeader(" ");
+            config.setHeader(new SafeHtml() {
+                @Override
+                public String asString() {
+                    return "&nbsp;";
+                }
+            });
             config.setSortable(false);
             config.setMenuDisabled(true);
             columnConfigs.add(config);
@@ -106,10 +89,6 @@ public class IdfSheetModeViewImpl extends Composite implements IdfSheetModeView 
 
         ListDataProvider<Row> dataProvider = new ListDataProvider<Row>();
         dataProvider.setList(rows);
-        //dataProvider.addDataDisplay(cellTable);
-        //panel.setWidget(cellTable);
-      //  dataProvider.addDataDisplay(dataGrid);
-       // panel.setWidget(dataGrid);
 
         ListStore<Row> store = new ListStore<Row>(new ModelKeyProvider<Row>() {
             @Override
@@ -123,8 +102,10 @@ public class IdfSheetModeViewImpl extends Composite implements IdfSheetModeView 
 
         Grid<Row> grid = new Grid<Row>(store, columnModel);
         grid.setColumnReordering(false);
+
+        if (panel.getWidgetCount() >0) {
+            panel.remove(0);
+        }
         panel.add(grid);
-
-
     }
 }

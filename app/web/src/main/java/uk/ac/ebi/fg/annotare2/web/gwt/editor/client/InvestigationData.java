@@ -79,6 +79,7 @@ public class InvestigationData {
     public void getTable(AsyncCallback<Table> callback) {
         if (table != null) {
             callback.onSuccess(table);
+            return;
         }
         load(callback);
     }
