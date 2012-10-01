@@ -51,14 +51,9 @@ public abstract class ObjectList<T> {
     }
 
     public T add() {
-        T t = create(rowSet.addColumn());
+        T t = create(rowSet.getColumn(list.size()));
         list.add(t);
         return t;
-    }
-
-    public void remove(T t) {
-        list.indexOf(t);
-        list.remove(list.indexOf(t));
     }
 
     public void remove(ArrayList<Integer> indices) {
