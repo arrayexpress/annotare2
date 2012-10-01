@@ -90,10 +90,9 @@ public class RowSet {
     }
 
     private void checkColumnIndices(ArrayList<Integer> indices) {
-        int width = getWidth();
         for (int i : indices) {
-            if (i < 0 || i >= width) {
-                throw new IndexOutOfBoundsException("Column index is out of bounds [0, " + width + "): " + i);
+            if (i < 0) {
+                throw new IndexOutOfBoundsException("Column index could not be negative: " + i);
             }
         }
     }

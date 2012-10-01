@@ -57,10 +57,14 @@ public class RowSetTest {
         assertEquals("2", column.get(ROW_TAG_2).getValue());
 
         rowSet.addColumn();
-        assertEquals(2, rowSet.getWidth());
+        assertEquals(1, rowSet.getWidth());
+
         column = rowSet.getColumn(1);
         assertNull(column.get(ROW_TAG_1).getValue());
         assertNull(column.get(ROW_TAG_2).getValue());
+
+        column.get(ROW_TAG_1).setValue("1");
+        assertEquals(2, rowSet.getWidth());
     }
 
     @Test
@@ -78,6 +82,13 @@ public class RowSetTest {
 
         try {
             rowSet.removeColumn(asList(0));
+            //OK
+        } catch (IndexOutOfBoundsException e) {
+            fail("It is okay to remove any column with index >= 0, even if it doesn't exist ");
+        }
+
+        try {
+            rowSet.removeColumn(asList(-1));
             fail("It should not be possible to remove row with an invalid index");
         } catch (IndexOutOfBoundsException e) {
             //OK
