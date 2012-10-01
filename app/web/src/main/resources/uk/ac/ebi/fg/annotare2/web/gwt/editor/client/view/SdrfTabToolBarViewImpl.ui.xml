@@ -22,6 +22,9 @@
     <g:HTMLPanel>
         <table width="100%">
             <tr>
+                <td style="width:200px">
+                    <g:ToggleButton ui:field="viewModeButton"/>
+                </td>
                 <td align="right">
                     <g:Button ui:field="importButton">Import</g:Button>
                     <g:Button enabled="false">Export</g:Button>
