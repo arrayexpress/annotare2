@@ -125,7 +125,7 @@ public class InvestigationData {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't save changes on the server");
+                Window.alert("Can't save changes on the server: " + caught.getMessage());
             }
 
             @Override
