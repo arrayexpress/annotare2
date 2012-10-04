@@ -39,9 +39,7 @@ public class IdfData {
 
     private final IdfServiceAsync idfService;
 
-    private Table table;
-
-    private Investigation investigation;
+    private InvestigationData data;
 
     private Queue<Operation> changes = new LinkedList<Operation>();
 
@@ -59,32 +57,42 @@ public class IdfData {
     }
 
     public void getInvestigation(final AsyncCallback<Investigation> callback) {
-        if (investigation != null) {
-            callback.onSuccess(investigation);
+        if (data != null) {
+            callback.onSuccess(data.getInvestigation());
             return;
         }
-        load(new AsyncCallback<Table>() {
+        load(new AsyncCallback<InvestigationData>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(Table result) {
-                callback.onSuccess(investigation);
+            public void onSuccess(InvestigationData result) {
+                callback.onSuccess(result.getInvestigation());
             }
         });
     }
 
-    public void getTable(AsyncCallback<Table> callback) {
-        if (table != null) {
-            callback.onSuccess(table);
+    public void getTable(final AsyncCallback<Table> callback) {
+        if (data != null) {
+            callback.onSuccess(data.getTable());
             return;
         }
-        load(callback);
+        load(new AsyncCallback<InvestigationData>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(InvestigationData result) {
+                callback.onSuccess(result.getTable());
+            }
+        });
     }
 
-    private void load(final AsyncCallback<Table> callback) {
+    private void load(final AsyncCallback<InvestigationData> callback) {
         idfService.loadInvestigation(getSubmissionId(), new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -93,16 +101,14 @@ public class IdfData {
 
             @Override
             public void onSuccess(Table result) {
-                setTable(result);
-                callback.onSuccess(table);
+                callback.onSuccess(setTable(result));
             }
         }.wrap());
     }
 
-    private void setTable(Table table) {
-        this.table = table;
-        this.investigation = new Investigation(table);
-        this.table.addChangeListener(new ChangeListener() {
+    private InvestigationData setTable(Table table) {
+        this.data = new InvestigationData(table);
+        this.data.addChangeListener(new ChangeListener() {
             @Override
             public void onChange(Operation operation) {
                 if (changes.size() < MAX_SIZE) {
@@ -113,6 +119,7 @@ public class IdfData {
                 }
             }
         });
+        return this.data;
     }
 
     private void sendChanges() {
@@ -133,6 +140,30 @@ public class IdfData {
                 changes.poll();
             }
         }.wrap());
+    }
+
+    private static class InvestigationData {
+
+        private final Table table;
+
+        private final Investigation investigation;
+
+        public InvestigationData(Table table) {
+            this.table = table;
+            this.investigation = new Investigation(table);
+        }
+
+        public Investigation getInvestigation() {
+            return investigation;
+        }
+
+        public Table getTable() {
+            return table;
+        }
+
+        public void addChangeListener(ChangeListener listener) {
+            this.table.addChangeListener(listener);
+        }
     }
 
 }
