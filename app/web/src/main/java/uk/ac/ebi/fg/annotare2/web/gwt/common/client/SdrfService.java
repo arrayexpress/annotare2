@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
 /**
  * @author Olga Melnichuk
@@ -27,5 +28,15 @@ public interface SdrfService extends RemoteService {
 
     public static final String NAME = "sdrfService";
 
+    Table loadData(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+
+    /**
+     * Imports SDRF data from a file stored in the current session.
+     *
+     * @param submissionId a submission identifier to replace investigation data in
+     * @throws NoPermissionException     If the user doesn't have permission to change the submission content
+     * @throws ResourceNotFoundException If the submission or the imported file doesn't exist
+     * @throws DataImportException       If any error happened during the data import process
+     */
     void importData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException;
 }

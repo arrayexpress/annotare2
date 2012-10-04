@@ -25,12 +25,11 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.SdrfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.sdrf.SdrfSheetModeView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.sdrf.SdrfSheetModeViewImpl;
 
 /**
  * @author Olga Melnichuk
@@ -50,18 +49,19 @@ public class EditorGinModule extends AbstractGinModule {
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
         bind(EditorTabBarView.class).to(EditorTabBarViewImpl.class);
 
+        bind(SheetModeView.class).to(SheetModeViewImpl.class);
+
         bind(IdfNavigationView.class).to(IdfNavigationViewImpl.class);
         bind(IdfTabToolBarView.class).to(IdfTabToolBarViewImpl.class);
         bind(IdfContentView.class).to(IdfContentViewImpl.class);
-        bind(IdfSheetModeView.class).to(IdfSheetModeViewImpl.class);
         bind(IdfGeneralInfoView.class).to(IdfGeneralInfoViewImpl.class);
         bind(IdfContactListView.class).to(IdfContactListViewImpl.class);
 
         bind(SdrfTabToolBarView.class).to(SdrfTabToolBarViewImpl.class);
-        bind(SdrfSheetModeView.class).to(SdrfSheetModeViewImpl.class);
         bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
 
         bind(IdfData.class).in(Singleton.class);
+        bind(SdrfData.class).in(Singleton.class);
     }
 
     @Provides

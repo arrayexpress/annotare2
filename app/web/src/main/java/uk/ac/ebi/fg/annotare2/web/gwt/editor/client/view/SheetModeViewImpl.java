@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -34,17 +36,21 @@ import java.util.ArrayList;
 /**
  * @author Olga Melnichuk
  */
-public class IdfSheetModeViewImpl extends Composite implements IdfSheetModeView {
+public class SheetModeViewImpl extends Composite implements SheetModeView {
 
     private final HorizontalPanel panel;
 
-    public IdfSheetModeViewImpl() {
+    public SheetModeViewImpl() {
         panel = new HorizontalPanel();
         initWidget(panel);
     }
 
     @Override
     public void setTable(Table table) {
+        if (table == null || table.isEmpty()) {
+            setContent(new Label("There's no data yet, come later"));
+            return;
+        }
 
         int tableWidth = table.getTrimmedWidth();
         int tableHeight = table.getHeight();
@@ -103,9 +109,13 @@ public class IdfSheetModeViewImpl extends Composite implements IdfSheetModeView 
         Grid<Row> grid = new Grid<Row>(store, columnModel);
         grid.setColumnReordering(false);
 
-        if (panel.getWidgetCount() >0) {
+        setContent(grid);
+    }
+
+    private void setContent(Widget w) {
+        if (panel.getWidgetCount() > 0) {
             panel.remove(0);
         }
-        panel.add(grid);
+        panel.add(w);
     }
 }

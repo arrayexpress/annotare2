@@ -17,13 +17,10 @@
 package uk.ac.ebi.fg.annotare2.om;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Date;
 
 /**
@@ -43,7 +40,7 @@ public abstract class Submission implements HasEffectiveAcl {
 
     private String investigation;
 
-    private String sample2Data;
+    private String sampleAndDataRel;
 
     private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
@@ -68,8 +65,8 @@ public abstract class Submission implements HasEffectiveAcl {
         this.investigation = text;
     }
 
-    public void setSample2Data(String sample2Data) {
-        this.sample2Data = sample2Data;
+    public void setSampleAndDataRelationship(String rel) {
+        this.sampleAndDataRel = rel;
     }
 
     public void setStatus(SubmissionStatus status) {
@@ -85,8 +82,8 @@ public abstract class Submission implements HasEffectiveAcl {
         return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
     }
 
-    public InputStream getSample2Data() {
-        String str = (sample2Data == null) ? "" : sample2Data;
+    public InputStream getSampleAndDataRelationship() {
+        String str = (sampleAndDataRel == null) ? "" : sampleAndDataRel;
         return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
     }
 

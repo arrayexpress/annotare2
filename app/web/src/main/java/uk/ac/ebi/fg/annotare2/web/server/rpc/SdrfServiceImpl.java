@@ -46,6 +46,23 @@ public class SdrfServiceImpl extends RemoteServiceBase implements SdrfService {
     private SubmissionManager submissionManager;
 
     @Override
+    public Table loadData(int submissionId) throws NoPermissionException, ResourceNotFoundException {
+        try {
+            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
+            return new TsvParser().parse(submission.getSampleAndDataRelationship());
+        } catch (RecordNotFoundException e) {
+            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
+        } catch (AccessControlException e) {
+            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (IOException e) {
+            log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
+        }
+        return null;
+    }
+
+    @Override
     public void importData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException {
         try {
             Submission submission = submissionManager.getSubmission2Update(getCurrentUser(), submissionId);
@@ -60,7 +77,7 @@ public class SdrfServiceImpl extends RemoteServiceBase implements SdrfService {
             if (table.getWidth() <= 1 || table.getHeight() <= 1) {
                 throw new DataImportException("The file contents don't look like a valid SDRF data.");
             }
-            submission.setSample2Data(new TsvGenerator(table).generateString());
+            submission.setSampleAndDataRelationship(new TsvGenerator(table).generateString());
         } catch (RecordNotFoundException e) {
             log.warn("importInvestigation(" + submissionId + " failure", e);
             throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");

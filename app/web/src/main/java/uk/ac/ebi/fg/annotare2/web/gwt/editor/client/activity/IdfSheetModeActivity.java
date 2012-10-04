@@ -26,21 +26,21 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSheetModeView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SheetModeView;
 
 /**
  * @author Olga Melnichuk
  */
 public class IdfSheetModeActivity extends AbstractActivity {
 
-    private final IdfSheetModeView view;
+    private final SheetModeView view;
 
     private final PlaceController placeController;
 
     private final IdfData idfData;
 
     @Inject
-    public IdfSheetModeActivity(IdfSheetModeView view,
+    public IdfSheetModeActivity(SheetModeView view,
                                 PlaceController placeController,
                                 IdfData idfData) {
         this.view = view;
