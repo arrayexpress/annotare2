@@ -24,9 +24,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSheetModeView;
 
 /**
@@ -38,15 +37,15 @@ public class IdfSheetModeActivity extends AbstractActivity {
 
     private final PlaceController placeController;
 
-    private final InvestigationData investigationData;
+    private final IdfData idfData;
 
     @Inject
     public IdfSheetModeActivity(IdfSheetModeView view,
                                 PlaceController placeController,
-                                InvestigationData investigationData) {
+                                IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
-        this.investigationData = investigationData;
+        this.idfData = idfData;
     }
 
     @Override
@@ -66,7 +65,7 @@ public class IdfSheetModeActivity extends AbstractActivity {
     }
 
     private void initAsync() {
-        investigationData.getTable(new AsyncCallbackWrapper<Table>() {
+        idfData.getTable(new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO

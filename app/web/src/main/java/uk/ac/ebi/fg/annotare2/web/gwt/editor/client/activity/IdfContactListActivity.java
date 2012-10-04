@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfContactListView;
 
 import java.util.ArrayList;
@@ -40,17 +40,17 @@ public class IdfContactListActivity extends AbstractActivity implements IdfConta
 
     private final PlaceController placeController;
 
-    private final InvestigationData investigationData;
+    private final IdfData idfData;
 
     private Investigation investigation;
 
     @Inject
     public IdfContactListActivity(IdfContactListView view,
                                   PlaceController placeController,
-                                  InvestigationData investigationData) {
+                                  IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
-        this.investigationData = investigationData;
+        this.idfData = idfData;
     }
 
     public IdfContactListActivity withPlace(Place place) {
@@ -75,7 +75,7 @@ public class IdfContactListActivity extends AbstractActivity implements IdfConta
     }
 
     private void loadAsync() {
-        investigationData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
+        idfData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO

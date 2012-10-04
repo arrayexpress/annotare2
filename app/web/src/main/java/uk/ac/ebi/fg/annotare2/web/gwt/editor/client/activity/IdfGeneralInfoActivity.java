@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.InvestigationData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfGeneralInfoView;
 
 import java.util.Date;
@@ -39,17 +39,17 @@ public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGener
 
     private final PlaceController placeController;
 
-    private final InvestigationData investigationData;
+    private final IdfData idfData;
 
     private Investigation investigation;
 
     @Inject
     public IdfGeneralInfoActivity(IdfGeneralInfoView view,
                                   PlaceController placeController,
-                                  InvestigationData investigationData) {
+                                  IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
-        this.investigationData = investigationData;
+        this.idfData = idfData;
     }
 
     public IdfGeneralInfoActivity withPlace(Place place) {
@@ -74,7 +74,7 @@ public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGener
     }
 
     private void loadAsync() {
-        investigationData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
+        idfData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO

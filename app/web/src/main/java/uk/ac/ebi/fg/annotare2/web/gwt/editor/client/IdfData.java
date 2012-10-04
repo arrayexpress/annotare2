@@ -35,7 +35,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
-public class InvestigationData {
+public class IdfData {
 
     private final IdfServiceAsync idfService;
 
@@ -48,7 +48,7 @@ public class InvestigationData {
     private static final int MAX_SIZE = 100;
 
     @Inject
-    public InvestigationData(IdfServiceAsync idfService) {
+    public IdfData(IdfServiceAsync idfService) {
         this.idfService = idfService;
         new Timer() {
             @Override
