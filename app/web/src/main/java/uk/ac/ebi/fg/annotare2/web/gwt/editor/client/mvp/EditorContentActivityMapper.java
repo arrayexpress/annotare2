@@ -36,6 +36,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
     private final Provider<IdfContactListActivity> idfContactListActivityProvider;
 
+    private final Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider;
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
 
     @Inject
@@ -43,12 +44,14 @@ public class EditorContentActivityMapper implements ActivityMapper {
                                        Provider<IdfSheetModeActivity> idfSheetModeActivityProvider,
                                        Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
                                        Provider<IdfContactListActivity> idfContactListActivityProvider,
+                                       Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
         this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
         this.idfContactListActivityProvider = idfContactListActivityProvider;
 
+        this.sdrfSheetModeActivityProvider = sdrfSheetModeActivityProvider;
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
     }
 
@@ -70,6 +73,12 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (idfContentActivityProvider.get()).withPlace(place);
             }
         } else if (place instanceof SdrfPlace) {
+
+            SdrfPlace sdrfPlace = (SdrfPlace) place;
+            if (sdrfPlace.isSheetModeOn()) {
+                return (sdrfSheetModeActivityProvider.get()).withPlace(place);
+            }
+
             return (sdrfContentActivityProvider.get()).withPlace(place);
         }
 

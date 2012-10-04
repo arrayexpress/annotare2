@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.sdrf;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SdrfTabToolBarView extends IsWidget {
+public class SdrfSheetModeViewImpl extends Composite implements SdrfSheetModeView {
 
-    void setPresenter(Presenter presenter);
+    private final HorizontalPanel panel;
 
-    void setSheetModeOn(boolean sheetModeOn);
-
-    public static interface Presenter {
-
-        void importFile(AsyncEventFinishListener listener);
-
-        void switchToSheetMode(boolean value);
+    public SdrfSheetModeViewImpl() {
+        panel = new HorizontalPanel();
+        initWidget(panel);
     }
 }

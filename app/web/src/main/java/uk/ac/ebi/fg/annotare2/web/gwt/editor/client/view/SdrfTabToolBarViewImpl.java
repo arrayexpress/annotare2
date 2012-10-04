@@ -55,7 +55,7 @@ public class SdrfTabToolBarViewImpl extends Composite implements SdrfTabToolBarV
         viewModeButton.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                // TODO presenter.switchToSheetMode(event.getValue());
+                presenter.switchToSheetMode(event.getValue());
             }
         });
 
@@ -76,5 +76,10 @@ public class SdrfTabToolBarViewImpl extends Composite implements SdrfTabToolBarV
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setSheetModeOn(boolean sheetModeOn) {
+        viewModeButton.setValue(sheetModeOn, false);
     }
 }

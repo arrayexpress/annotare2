@@ -18,8 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 
 /**
@@ -27,14 +31,21 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
  */
 public class SdrfPlace extends EditorPlace {
 
-    private String placeName;
+    private boolean sheetModeOn;
 
-    public String getPlaceName() {
-        return placeName;
+    public SdrfPlace() {
     }
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
+    public SdrfPlace(SdrfPlace other) {
+        setSheetModeOn(other.isSheetModeOn());
+    }
+
+    public boolean isSheetModeOn() {
+        return sheetModeOn;
+    }
+
+    public void setSheetModeOn(boolean on) {
+        this.sheetModeOn = on;
     }
 
     public EditorTabType getTabType() {
@@ -52,13 +63,22 @@ public class SdrfPlace extends EditorPlace {
         }
 
         public String getToken(SdrfPlace place) {
-            return place.getPlaceName();
+            return new TokenBuilder()
+                    .add(place.isSheetModeOn())
+                    .toString();
         }
 
         public SdrfPlace getPlace(String token) {
-            SdrfPlace place = placeProvider.get();
-            place.setPlaceName(token);
-            return place;
+            TokenReader reader = new TokenReader(token);
+            try {
+                SdrfPlace place = placeProvider.get();
+                place.setSheetModeOn(reader.nextBoolean());
+                return place;
+            } catch (TokenReaderException e) {
+                //TODO log
+                Window.alert(e.getMessage());
+                return null;
+            }
         }
     }
 }

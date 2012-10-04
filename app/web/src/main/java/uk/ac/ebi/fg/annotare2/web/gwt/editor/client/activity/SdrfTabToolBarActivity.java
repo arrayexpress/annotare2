@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SdrfServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SdrfTabToolBarView;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -35,8 +36,12 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabToolBarView.Presenter {
 
     private final SdrfTabToolBarView view;
+
     private final PlaceController placeController;
+
     private final SdrfServiceAsync sdrfService;
+
+    private SdrfPlace place;
 
     @Inject
     public SdrfTabToolBarActivity(SdrfTabToolBarView view,
@@ -48,12 +53,13 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
     }
 
     public SdrfTabToolBarActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
+        this.place = (SdrfPlace) place;
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
+        view.setSheetModeOn(place.isSheetModeOn());
         containerWidget.setWidget(view.asWidget());
     }
 
@@ -75,5 +81,12 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
                 listener.onSuccess();
             }
         }.wrap());
+    }
+
+    @Override
+    public void switchToSheetMode(boolean yesNo) {
+        SdrfPlace newPlace = new SdrfPlace(place);
+        newPlace.setSheetModeOn(yesNo);
+        goTo(newPlace);
     }
 }
