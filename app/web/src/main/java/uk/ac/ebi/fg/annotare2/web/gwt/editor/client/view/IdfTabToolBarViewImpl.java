@@ -42,7 +42,7 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
     Button importButton;
 
     @UiField(provided = true)
-    ToggleButton viewModeButton = new ToggleButton("Sheet Mode is Off", "Sheet Mode is On");
+    ToggleButton viewModeButton = new ToggleButton("Switch to table", "Switch to structure");
 
     private Presenter presenter;
 
