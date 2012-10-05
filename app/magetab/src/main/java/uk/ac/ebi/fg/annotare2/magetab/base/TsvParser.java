@@ -25,23 +25,34 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import static com.google.common.io.Closeables.closeQuietly;
-import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
  */
 public class TsvParser {
 
+    private Table table;
+
+    private CharacterStats stats;
+
+    private StringBuilder buff;
+
+    private boolean escape;
+
+    private Character prev;
+
+    private ArrayList<String> values;
+
     public Table parse(InputStream in) throws IOException {
-        final CharacterStats stats = new CharacterStats();
-        final Table table = new Table();
+        init();
+
         BufferedReader br = null;
+
         try {
             br = new BufferedReader(new InputStreamReader(in, Charsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
-                table.addRow(parseRow(line));
-                stats.add(line);
+                processLine(line);
             }
         } finally {
             closeQuietly(br);
@@ -52,10 +63,74 @@ public class TsvParser {
         return table;
     }
 
-    private ArrayList<String> parseRow(String line) {
-        ArrayList<String> list = new ArrayList<String>();
-        list.addAll(asList(line.trim().split("\t")));
-        return list;
+    private void init() {
+        stats = new CharacterStats();
+        table = new Table();
+        buff = new StringBuilder();
+        values = new ArrayList<String>();
+    }
+
+    private void processLine(String line) {
+        for (int i = 0; i < line.length(); i++) {
+            processCharacter(line.charAt(i));
+        }
+        processCharacter('\n');
+    }
+
+    private void processCharacter(char ch) {
+        switch (ch) {
+            case '"':
+                if (prev != null && prev == '\\') {
+                    replaceLastChar('"');
+                } else {
+                    escape = !escape;
+                }
+                break;
+            case '\t':
+                if (escape) {
+                    addChar('\t');
+                } else {
+                    addValue();
+                }
+                break;
+            case '\n':
+                if (escape) {
+                    addChar('\n');
+                } else {
+                    addValue();
+                    addNewLine();
+                }
+                break;
+            default:
+                addChar(ch);
+        }
+        prev = ch;
+    }
+
+    private void addChar(char ch) {
+        addOrReplaceChar(ch, false);
+    }
+
+    private void replaceLastChar(char ch) {
+        addOrReplaceChar(ch, true);
+    }
+
+    private void addOrReplaceChar(char ch, boolean replaceLast) {
+        if (replaceLast) {
+            buff.delete(buff.length() - 1, buff.length());
+        }
+        buff.append(ch);
+        stats.addCharacter(ch);
+    }
+
+    private void addValue() {
+        values.add(buff.toString());
+        buff = new StringBuilder();
+    }
+
+    private void addNewLine() {
+        table.addRow(values);
+        values = new ArrayList<String>();
     }
 
     private static class CharacterStats {
@@ -64,16 +139,11 @@ public class TsvParser {
 
         private int recognized;
 
-        public void add(String text) {
-            text = text.replaceAll("\\s", "");
-            total += text.length();
-            for (int i = 0; i < text.length(); i++) {
-                recognized += recognize(text.charAt(i));
+        public void addCharacter(char ch) {
+            if (!Character.isSpaceChar(ch)) {
+                recognized += (Character.isLetterOrDigit(ch) ? 1 : 0);
+                total++;
             }
-        }
-
-        private int recognize(Character ch) {
-            return Character.isLetterOrDigit(ch) ? 1 : 0;
         }
 
         public boolean isReadable() {

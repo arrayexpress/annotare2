@@ -94,4 +94,37 @@ public class TsvParserTest {
             fail();
         }
     }
+
+    @Test
+    public void testTabEscape() throws IOException {
+        Table table = (new TsvParser()).parse(new ByteArrayInputStream("value\t\"value\tvalue\"".getBytes()));
+        assertEquals(2, table.getWidth());
+        assertEquals(1, table.getHeight());
+
+        Row r = table.getRow(0);
+        assertEquals("value", r.getValue(0));
+        assertEquals("value\tvalue", r.getValue(1));
+    }
+
+    @Test
+    public void testNewLineEscape() throws IOException {
+        Table table = (new TsvParser()).parse(new ByteArrayInputStream("value\t\"value\nvalue\"".getBytes()));
+        assertEquals(2, table.getWidth());
+        assertEquals(1, table.getHeight());
+
+        Row r = table.getRow(0);
+        assertEquals("value", r.getValue(0));
+        assertEquals("value\nvalue", r.getValue(1));
+    }
+
+    @Test
+    public void testDoubleQuoteEscape() throws IOException {
+        Table table = (new TsvParser()).parse(new ByteArrayInputStream("value\t\"value\\\"value\"".getBytes()));
+        assertEquals(2, table.getWidth());
+        assertEquals(1, table.getHeight());
+
+        Row r = table.getRow(0);
+        assertEquals("value", r.getValue(0));
+        assertEquals("value\"value", r.getValue(1));
+    }
 }
