@@ -74,7 +74,7 @@ public class IdfSheetModeActivity extends AbstractActivity {
 
             @Override
             public void onSuccess(Table result) {
-                view.setTable(result);
+                view.setTable(result, false);
             }
         }.wrap());
     }

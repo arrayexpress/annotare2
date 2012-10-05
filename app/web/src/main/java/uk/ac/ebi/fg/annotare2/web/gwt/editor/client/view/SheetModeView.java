@@ -24,6 +24,6 @@ import uk.ac.ebi.fg.annotare2.magetab.base.Table;
  */
 public interface SheetModeView extends IsWidget {
 
-    void setTable(Table table);
+    void setTable(Table table, boolean headers);
 
 }

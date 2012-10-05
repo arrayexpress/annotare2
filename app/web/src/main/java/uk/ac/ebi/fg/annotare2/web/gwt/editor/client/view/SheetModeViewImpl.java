@@ -46,7 +46,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView {
     }
 
     @Override
-    public void setTable(Table table) {
+    public void setTable(Table table, boolean hasHeaders) {
         if (table == null || table.isEmpty()) {
             setContent(new Label("There's no data yet, come later"));
             return;
@@ -56,6 +56,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView {
         int tableHeight = table.getHeight();
 
         ArrayList<ColumnConfig<Row, ?>> columnConfigs = new ArrayList<ColumnConfig<Row, ?>>();
+        Row headers = table.getRow(0);
 
         for (int i = 0; i < tableWidth; i++) {
             final int colIndex = i;
@@ -76,12 +77,17 @@ public class SheetModeViewImpl extends Composite implements SheetModeView {
                     return null;
                 }
             });
-            config.setHeader(new SafeHtml() {
-                @Override
-                public String asString() {
-                    return "&nbsp;";
-                }
-            });
+
+            if (hasHeaders) {
+                config.setHeader(headers.getValue(i));
+            } else {
+                config.setHeader(new SafeHtml() {
+                    @Override
+                    public String asString() {
+                        return "&nbsp;";
+                    }
+                });
+            }
             config.setSortable(false);
             config.setMenuDisabled(true);
             columnConfigs.add(config);
@@ -89,7 +95,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView {
 
         //TODO move this to the Table
         ArrayList<Row> rows = new ArrayList<Row>();
-        for (int j = 0; j < tableHeight; j++) {
+        for (int j = hasHeaders ? 1 : 0; j < tableHeight; j++) {
             rows.add(table.getRow(j));
         }
 
