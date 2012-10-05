@@ -124,7 +124,7 @@ public class TsvParser {
     }
 
     private void addValue() {
-        values.add(buff.toString());
+        values.add(buff.toString().trim());
         buff = new StringBuilder();
     }
 
