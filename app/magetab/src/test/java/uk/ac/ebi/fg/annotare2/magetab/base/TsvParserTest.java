@@ -85,4 +85,13 @@ public class TsvParserTest {
             // OK
         }
     }
+
+    @Test
+    public void emptyTextTest() {
+        try {
+            (new TsvParser()).parse(new ByteArrayInputStream(" ".getBytes()));
+        } catch (IOException e) {
+            fail();
+        }
+    }
 }

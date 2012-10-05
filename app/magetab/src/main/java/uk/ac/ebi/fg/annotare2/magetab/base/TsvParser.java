@@ -77,7 +77,7 @@ public class TsvParser {
         }
 
         public boolean isReadable() {
-            return (1.0 * recognized / total) > 0.7;
+            return total == 0 || (1.0 * recognized / total) > 0.7;
         }
     }
 }
