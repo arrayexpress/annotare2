@@ -46,13 +46,14 @@ public class Row implements Serializable {
     }
 
     public int getTrimmedSize() {
-        for (int i = values.size() - 1; i >= 0; i--) {
+        int idx = -1;
+        for (int i = 0; i < values.size(); i++) {
             Value v = values.get(i);
             if (!v.isEmpty()) {
-                return i + 1;
+                idx = i;
             }
         }
-        return 0;
+        return idx + 1;
     }
 
     public void removeColumn(ArrayList<Integer> colIndices) {

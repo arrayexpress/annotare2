@@ -79,7 +79,7 @@ public class TaggedRow {
     }
 
     int getSize() {
-        int size = row.getSize();
+        int size = row.getTrimmedSize();
         return  size > 0 ? size - 1 : 0;
     }
 
