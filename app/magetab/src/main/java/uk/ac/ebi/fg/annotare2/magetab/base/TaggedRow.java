@@ -26,14 +26,17 @@ public class TaggedRow {
 
     private final RowTag tag;
 
-    private final Row row;
+    private Row row;
 
-    private Row.Cell<String> tagCell;
+    private final Table table;
+
+    //private Row.Cell<String> tagCell;
 
     public TaggedRow(Table table, RowTag tag) {
         this.row = findRow(table, tag);
         this.tag = tag;
-        this.tagCell = this.row.cellAt(0);
+        this.table = table;
+        //     this.tagCell = this.row.cellAt(0);
     }
 
     private static Row findRow(Table table, RowTag tag) {
@@ -43,34 +46,44 @@ public class TaggedRow {
                 return r;
             }
         }
-        return table.addRow();
+        return null;
     }
 
-    public Row.Cell<String> cellAt(int index) {
-        final Row.Cell<String> cell = row.cellAt(shift(index));
+    private Row.Cell<String> getCell(int index, boolean create) {
+        if (row == null) {
+            if (create) {
+                row = table.addRow();
+                row.cellAt(0).setValue(tag.getName());
+            } else {
+                return null;
+            }
+        }
+        return row.cellAt(shift(index));
+    }
+
+    public Row.Cell<String> cellAt(final int index) {
         return new Row.Cell<String>() {
 
             @Override
             public void setValue(String s) {
-                if (tagCell.isEmpty()) {
-                    tagCell.setValue(tag.getName());
-                }
-                cell.setValue(s);
+                getCell(index, true).setValue(s);
             }
 
             @Override
             public String getValue() {
-                return cell.getValue();
+                Row.Cell<String> cell = getCell(index, false);
+                return cell == null ? null : cell.getValue();
             }
 
             @Override
             public boolean isEmpty() {
-                return cell.isEmpty();
+                Row.Cell<String> cell = getCell(index, false);
+                return cell == null || cell.isEmpty();
             }
         };
     }
 
-    static int shift(int idx){
+    static int shift(int idx) {
         if (idx < 0) {
             throw new IndexOutOfBoundsException("Column index could not be negative:" + idx);
         }
@@ -79,8 +92,8 @@ public class TaggedRow {
     }
 
     int getSize() {
-        int size = row.getTrimmedSize();
-        return  size > 0 ? size - 1 : 0;
+        int size = row == null ? 0 : row.getTrimmedSize();
+        return size > 0 ? size - 1 : 0;
     }
 
     Row getRow() {

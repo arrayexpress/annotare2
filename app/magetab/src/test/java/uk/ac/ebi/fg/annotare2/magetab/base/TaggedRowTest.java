@@ -40,10 +40,9 @@ public class TaggedRowTest {
         Table table = new Table();
 
         TaggedRow taggedRow = new TaggedRow(table, ROW_TAG);
-        assertNotNull(taggedRow.getRow());
+        assertNull(taggedRow.getRow());
         assertEquals(0, taggedRow.getSize());
-        assertEquals(1, taggedRow.getRow().getSize());
-        assertNull(taggedRow.getRow().getValue(0));
+        assertNull(taggedRow.cellAt(0).getValue());
 
         taggedRow.cellAt(0).setValue("A");
         assertEquals(1, taggedRow.getSize());

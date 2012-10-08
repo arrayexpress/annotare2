@@ -100,7 +100,10 @@ public class RowSet {
     private ArrayList<Row> rows() {
         ArrayList<Row> rows = new ArrayList<Row>();
         for (TaggedRow r : map.values()) {
-            rows.add(r.getRow());
+            Row rr = r.getRow();
+            if (rr != null) {
+                rows.add(rr);
+            }
         }
         return rows;
     }
