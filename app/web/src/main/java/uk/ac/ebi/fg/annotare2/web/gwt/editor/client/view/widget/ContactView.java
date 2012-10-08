@@ -26,6 +26,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 
+import java.util.ArrayList;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
+
 /**
  * @author Olga Melnichuk
  */
@@ -64,57 +68,156 @@ public class ContactView extends DisclosurePanelContent {
 
     private Person person;
 
+    private final ArrayList<EditableField<Person, ?>> allFields = new ArrayList<EditableField<Person, ?>>();
+
+    private final ArrayList<HasChangeableValue<?>> titleValues = new ArrayList<HasChangeableValue<?>>();
+
     public ContactView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        firstName.addChangeHandler(new ChangeHandler() {
+        titleValues.add(hasChangeableValue(firstName));
+        titleValues.add(hasChangeableValue(midInitials));
+        titleValues.add(hasChangeableValue(lastName));
+
+        for (HasChangeableValue<?> v : titleValues) {
+            trackTitleValueChanges(v);
+        }
+
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(firstName)) {
             @Override
-            public void onChange(ChangeEvent event) {
-                onRecordChange();
-                if (person != null) {
-                    person.getFirstName().setValue(firstName.getValue());
-                }
+            protected String getValue(Person p) {
+                return p.getFirstName().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getFirstName().setValue(value);
             }
         });
 
-        midInitials.addChangeHandler(new ChangeHandler() {
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(midInitials)) {
             @Override
-            public void onChange(ChangeEvent event) {
-                onRecordChange();
-                if (person != null) {
-                    person.getMidInitials().setValue(midInitials.getValue());
-                }
+            protected String getValue(Person p) {
+                return p.getMidInitials().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getMidInitials().setValue(value);
             }
         });
 
-        lastName.addChangeHandler(new ChangeHandler() {
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(lastName)) {
             @Override
-            public void onChange(ChangeEvent event) {
-                onRecordChange();
-                if (person != null) {
-                    person.getLastName().setValue(lastName.getValue());
-                }
+            protected String getValue(Person p) {
+                return p.getLastName().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getLastName().setValue(value);
+            }
+        });
+
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(phone)) {
+            @Override
+            protected String getValue(Person p) {
+                return p.getPhone().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getPhone().setValue(value);
+            }
+        });
+
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(fax)) {
+            @Override
+            protected String getValue(Person p) {
+                return p.getFax().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getFax().setValue(value);
+            }
+        });
+
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(email)) {
+            @Override
+            protected String getValue(Person p) {
+                return p.getEmail().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getEmail().setValue(value);
+            }
+        });
+
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(affiliation)) {
+            @Override
+            protected String getValue(Person p) {
+                return p.getAffiliation().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getAffiliation().setValue(value);
+            }
+        });
+
+        allFields.add(new EditableField<Person, String>(hasChangeableValue(address)) {
+            @Override
+            protected String getValue(Person p) {
+                return p.getAddress().getValue();
+            }
+
+            @Override
+            protected void setValue(Person p, String value) {
+                p.getAddress().setValue(value);
+            }
+        });
+
+        for (EditableField<Person, ?> f : allFields) {
+            trackFieldValueChanges(f);
+        }
+    }
+
+    private void trackFieldValueChanges(final EditableField<Person, ?> field) {
+        field.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent changeEvent) {
+                field.saveValueTo(person);
+            }
+        });
+    }
+
+    private void trackTitleValueChanges(HasChangeableValue<?> value) {
+        value.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent changeEvent) {
+                fireTitleChangedEvent();
             }
         });
     }
 
     public void update(Person p) {
         this.person = p;
-        firstName.setValue(p.getFirstName().getValue());
-        midInitials.setValue(p.getMidInitials().getValue());
-        lastName.setValue(p.getLastName().getValue());
-        //TODO
-        onRecordChange();
+        for (EditableField<Person, ?> f : allFields) {
+            f.readValueFrom(p);
+        }
+        fireTitleChangedEvent();
     }
 
-    private void onRecordChange() {
-        String fn = firstName.getValue();
-        String mi = midInitials.getValue();
-        String ln = lastName.getValue();
-        fireRecordChangeEvent(
-                (fn.isEmpty() ? "" : fn + " ") +
-                        (mi.isEmpty() ? "" : mi + " ") +
-                        (ln.isEmpty() ? "" : ln));
+    private void fireTitleChangedEvent() {
+        StringBuilder sb = new StringBuilder();
+        int i = titleValues.size();
+        for (HasChangeableValue<?> w : titleValues) {
+            String value = w.getValue().toString();
+            sb.append(value).append(--i > 0 ? " " : "");
+        }
+        fireRecordChangeEvent(sb.toString());
     }
-
 }
+
