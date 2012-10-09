@@ -65,12 +65,13 @@ public class AppServletModule extends ServletModule {
         bind(WelcomeServlet.class).in(Scopes.SINGLETON);
         bind(UploadServlet.class).in(Scopes.SINGLETON);
 
-        serveAndBindRpcService("UserApp", CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class);
-        serveAndBindRpcService("UserApp", SubmissionListService.NAME, SubmissionListServiceImpl.class);
-        serveAndBindRpcService("UserApp", SubmissionService.NAME, SubmissionServiceImpl.class);
+        serveAndBindRpcService(CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class, "UserApp");
+        serveAndBindRpcService(SubmissionListService.NAME, SubmissionListServiceImpl.class, "UserApp");
 
-        serveAndBindRpcService("EditorApp", IdfService.NAME, IdfServiceImpl.class);
-        serveAndBindRpcService("EditorApp", SdrfService.NAME, SdrfServiceImpl.class);
+        serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "UserApp", "EditorApp");
+
+        serveAndBindRpcService(IdfService.NAME, IdfServiceImpl.class, "EditorApp");
+        serveAndBindRpcService(SdrfService.NAME, SdrfServiceImpl.class, "EditorApp");
 
         bind(SubmissionListServiceImpl.class).in(Scopes.SINGLETON);
 
@@ -83,13 +84,14 @@ public class AppServletModule extends ServletModule {
         bind(AllRpcServicePaths.class).toInstance(allRpc);
     }
 
-    private void serveAndBindRpcService(String moduleName, String serviceName, Class<? extends HttpServlet> implClass) {
-        String servicePath = "/" + moduleName + "/" + serviceName;
+    private void serveAndBindRpcService(String serviceName, Class<? extends HttpServlet> implClass, String... moduleNames) {
+        for(String moduleName : moduleNames) {
+            String servicePath = "/" + moduleName + "/" + serviceName;
+            serve(servicePath).with(implClass);
+            allRpc.awareOf(servicePath);
+        }
 
-        serve(servicePath).with(implClass);
         bind(implClass).in(Scopes.SINGLETON);
-
-        allRpc.awareOf(servicePath);
     }
 
     static class AllRpcServicePathsImpl implements AllRpcServicePaths {
