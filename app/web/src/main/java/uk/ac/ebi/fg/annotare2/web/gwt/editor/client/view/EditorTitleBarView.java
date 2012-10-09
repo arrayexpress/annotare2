@@ -22,4 +22,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  * @author Olga Melnichuk
  */
 public interface EditorTitleBarView extends IsWidget {
+
+    void setAccession(String accession);
 }

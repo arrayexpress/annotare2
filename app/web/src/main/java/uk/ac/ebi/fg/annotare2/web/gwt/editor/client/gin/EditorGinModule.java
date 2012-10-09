@@ -24,9 +24,12 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.SdrfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.provider.SubmissionServiceProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.*;
@@ -62,6 +65,8 @@ public class EditorGinModule extends AbstractGinModule {
 
         bind(IdfData.class).in(Singleton.class);
         bind(SdrfData.class).in(Singleton.class);
+
+        bind(SubmissionServiceAsync.class).toProvider(SubmissionServiceProvider.class);
     }
 
     @Provides
