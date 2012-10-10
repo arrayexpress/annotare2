@@ -44,7 +44,7 @@
     <scm>
         <url>https://github.com/arrayexpress/annotare2</url>
         <connection>scm:git:git://github.com/arrayexpress/annotare2.git</connection>
-        <developerConnection>scm:git:git://github.com/arrayexpress/annotare2.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com/arrayexpress/annotare2.git</developerConnection>
     </scm>
 
     <properties>
