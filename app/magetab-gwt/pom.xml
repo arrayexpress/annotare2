@@ -23,13 +23,13 @@
     <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
     <artifactId>annotare2-magetab-gwt</artifactId>
     <packaging>jar</packaging>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>MageTab Lib (GWT Compatible)</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
     </parent>
 
     <properties>

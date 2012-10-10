@@ -23,13 +23,13 @@
     <groupId>uk.ac.ebi.fg.annotare2.web</groupId>
     <artifactId>annotare2-web</artifactId>
     <packaging>war</packaging>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>Annotare 2.0 Web</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.5-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
             <artifactId>annotare2-om</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -105,19 +105,19 @@
             <artifactId>annotare2-om</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
             <artifactId>annotare2-magetab</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
             <artifactId>annotare2-magetab-gwt</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
 
         <!-- Web specific dependencies -->
