@@ -41,6 +41,12 @@
         </license>
     </licenses>
 
+    <scm>
+        <url>https://github.com/arrayexpress/annotare2</url>
+        <connection>scm:git:git://github.com/arrayexpress/annotare2.git</connection>
+        <developerConnection>scm:git:git://github.com/arrayexpress/annotare2.git</developerConnection>
+    </scm>
+
     <properties>
         <gwt.version>2.4.0</gwt.version>
         <guava.version>12.0</guava.version>
