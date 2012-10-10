@@ -1,0 +1,335 @@
+/*
+ * Copyright 2009-2012 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.gwt-TabBar {
+    background-color: white;
+    padding-top: 6px;
+}
+
+.gwt-TabBar .gwt-TabBarFirst {
+    width: 5px;
+}
+
+.gwt-TabBar .gwt-TabBarFirst-wrapper {
+    border-bottom: 1px solid #48877c;
+}
+
+.gwt-TabBar .gwt-TabBarRest {
+}
+
+.gwt-TabBar .gwt-TabBarRest-wrapper {
+    border-bottom: 1px solid #48877c;
+}
+
+.gwt-TabBar .gwt-TabBarItem {
+    background: #48877c;
+    margin-left: 4px;
+    padding: 4px 8px 4px 8px;
+    cursor: pointer;
+    cursor: hand;
+    color: white;
+    font-weight: normal;
+    text-align: center;
+
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    -ms-border-radius: 3px 3px 0 0;
+    -o-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+    border: 1px solid #48877c;
+}
+
+.gwt-TabBar .gwt-TabBarItem-wrapper {
+    border-bottom: 1px solid #48877c;
+}
+
+.gwt-TabBar .gwt-TabBarItem-wrapper-selected {
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected {
+    position: relative;
+    bottom: -1px;
+    cursor: default;
+    background: white;
+    font-weight: normal;
+    color: #48877c;
+    border-bottom: 2px solid white;
+    outline: none;
+}
+
+/* Dialogs */
+
+.gwt-DialogBox .Caption {
+    background: #48877C;
+    padding: 4px 8px 4px 4px;
+    cursor: default;
+    font-family: Arial Unicode MS, Arial, sans-serif;
+    font-weight: bold;
+    border-bottom: 1px solid #42655F;
+    border-top: 1px solid #91C3BB;
+    color: white;
+}
+
+.gwt-DialogBox .dialogTopLeft {
+    background: #48877C none;
+    border-bottom: 1px solid #42655F;
+    border-top: 1px solid #91C3BB;
+    border-top-left-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -ms-border-top-left-radius: 5px;
+    -o-border-top-left-radius: 5px;
+}
+
+.gwt-DialogBox .dialogTopRight {
+    background: #48877C none;
+    border-bottom: 1px solid #42655F;
+    border-top: 1px solid #91C3BB;
+    border-top-right-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -ms-border-top-right-radius: 5px;
+    -o-border-top-right-radius: 5px;
+}
+
+.gwt-DialogBox .dialogBottomRight {
+    background: white none;
+    border-right: 1px solid #48877C;
+    border-bottom: 1px solid #48877C;
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -ms-border-bottom-right-radius: 5px;
+    -o-border-bottom-right-radius: 5px;
+}
+
+.gwt-DialogBox .dialogBottomLeft {
+    background: white none;
+    border-left: 1px solid #48877C;
+    border-bottom: 1px solid #48877C;
+    border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -ms-border-bottom-left-radius: 5px;
+    -o-border-bottom-left-radius: 5px;
+}
+
+.gwt-DialogBox .dialogMiddleLeft {
+    background: white none;
+    border-left: 1px solid #48877C;
+}
+
+.gwt-DialogBox .dialogMiddleRight {
+    background: white none;
+    border-right: 1px solid #48877C;
+}
+
+.gwt-DialogBox .dialogBottomCenter {
+    background: white none;
+    border-bottom: 1px solid #48877C;
+}
+
+.gwt-DialogBox .dialogContent {
+    padding: 10px 0 0 0;
+}
+
+/* Button */
+
+.gwt-Button {
+    margin: 0;
+    padding: 5px 7px;
+    text-decoration: none;
+    cursor: pointer;
+    cursor: hand;
+    font-size: small;
+    background: white none;
+    border: 1px solid #48877C;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    color: #000;
+}
+
+.gwt-Button:hover {
+    border: 1px outset #17584d;
+}
+
+.gwt-Button:active {
+    border: 1px inset #48877C;
+}
+
+.gwt-Button[disabled] {
+    cursor: default;
+    color: #999;
+    border: 1px solid #999;
+}
+
+.gwt-Button[disabled]:hover {
+    border: 1px outset #ccc;
+}
+
+.gwt-Button.ok {
+    color: white;
+    background: #48877C none;
+}
+
+.gwt-Button.ok[disabled] {
+    cursor: default;
+    background-color: #eee;
+    color: #999;
+}
+
+/* Toggle Button */
+
+.gwt-ToggleButton-up,
+.gwt-ToggleButton-up-hovering,
+.gwt-ToggleButton-up-disabled,
+.gwt-ToggleButton-down,
+.gwt-ToggleButton-down-hovering,
+.gwt-ToggleButton-down-disabled {
+    text-align: center;
+    text-decoration: none;
+    margin: 0;
+    background-image: none;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+/*    outline-style: hidden;
+    -moz-outline-style: hidden;*/
+}
+.gwt-ToggleButton-up,
+.gwt-ToggleButton-up-hovering,
+.gwt-ToggleButton-up-disabled {
+    padding: 3px 5px 3px 5px;
+}
+.gwt-ToggleButton-up {
+    background: white none;
+    color: #48877C;
+    border:1px solid #48877C;
+    cursor: pointer;
+    cursor: hand;
+}
+.gwt-ToggleButton-up-hovering {
+    background: white none;
+    color: #17584D;
+    border: 1px solid #17584D;
+    cursor: pointer;
+    cursor: hand;
+}
+.gwt-ToggleButton-up-disabled {
+    background: #eee none;
+    color: #48877C;
+    border: 1px solid #48877C;
+    cursor: default;
+    opacity: .5;
+    zoom: 1;
+    filter: alpha(opacity=45);
+}
+.gwt-ToggleButton-down,
+.gwt-ToggleButton-down-hovering,
+.gwt-ToggleButton-down-disabled {
+    padding: 4px 4px 2px 6px;
+}
+.gwt-ToggleButton-down {
+    background: white none;
+    border: 1px solid #E5A066;
+    color: #E5A066;
+    cursor: pointer;
+    cursor: hand;
+}
+.gwt-ToggleButton-down-hovering {
+    background: white none;
+    border: 1px solid #996a44;
+    color: #996a44;
+    cursor: pointer;
+    cursor: hand;
+}
+.gwt-ToggleButton-down-disabled {
+    background: #eee none;
+    border: 1px solid #E5A066;
+    color: #E5A066;
+    cursor: default;
+    opacity: .5;
+    zoom: 1;
+    filter: alpha(opacity=45);
+}
+
+/* Idf Item List */
+.gwt-DisclosurePanel.app-IdfItemList .content {
+    border-left: 2px solid #E7E7E7;
+    border-right: 2px solid #E7E7E7;
+    border-bottom: 2px solid #E7E7E7;
+    padding: 4px 0 4px 8px;
+    margin-left: 6px;
+}
+
+/* Idf Navigation */
+
+.app-IdfNavigation {
+
+}
+
+.app-IdfNavigationItem {
+    padding: 10px 5px 10px 15px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
+
+.app-IdfNavigationItem:hover {
+    background-color: #F3F7FB;
+    cursor: pointer;
+    color: black;
+}
+
+.app-IdfNavigationItem:active {
+    color: #888;
+}
+
+.app-IdfNavigationItem.selected {
+    background-color: #48877c;
+    color: white;
+    font-size: 16px;
+}
+
+/* upload status */
+
+a.wgt-button {
+    display: block;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+a.wgt-button :hover {
+    text-decoration: none;
+}
+
+.wgt-cancelIcon {
+    background: url(images/cancel-icon.png) no-repeat;
+    padding-left: 16px;
+}
+
+table.GWTUpld {
+    width: 100%;
+}

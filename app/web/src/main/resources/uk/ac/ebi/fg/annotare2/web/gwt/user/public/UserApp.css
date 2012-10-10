@@ -1,0 +1,223 @@
+/*
+ * Copyright 2009-2012 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* Styling App Header */
+
+.app-Header {
+    padding: 0;
+    font-family: 'Arial Unicode MS', Arial, sans-serif;
+    border-bottom: 1px solid #898989;
+}
+
+.app-Header table {
+    border-collapse: collapse;
+}
+
+.app-Header table td {
+    padding-left: 15px;
+}
+
+.app-Header h1.logo {
+    font-size: 23px;
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+}
+
+.app-Header .logotext {
+    color: #787878;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+.app-TopicHeader {
+    padding: 10px 15px;
+}
+
+/* Styling Main Layout */
+
+.app-ListContent {
+    padding:0;
+    border-left: 1px solid #898989;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    vertical-align: top;
+}
+
+.app-MenuContent {
+    padding:0;
+    vertical-align: top;
+}
+
+/* Styling Left Menu */
+
+.app-LeftMenu {
+    padding: 0;
+}
+
+.app-LeftMenuItem {
+    padding: 10px 5px 10px 15px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
+
+.app-LeftMenuItem:hover {
+    background-color: #F3F7FB;
+    cursor: pointer;
+    color: black;
+}
+
+.app-LeftMenuItem:active {
+    color: #888;
+}
+
+.app-LeftMenuItem.selectedItem {
+    background-color: #48877c;
+    color: white;
+    font-size: 16px;
+}
+
+.app-LeftMenu .createButton {
+    padding: 10px 5px 10px 15px;
+}
+
+/* Styling Submission List */
+
+.app-SubmissionList {
+}
+
+.app-SubmissionList td div {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.no-cell-borders td {
+    border-style: none;
+}
+
+/* Styling MenuButton */
+
+.wgt-MenuButton {
+    background-color: #E5A066;
+    border: 1px solid #E5A066;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    color: white;
+    line-height: 1;
+    padding: 0 0;
+    text-align: center;
+    text-shadow: 0 1px 0 #eee;
+}
+
+.wgt-MenuButton:hover {
+    background-color: #E5A066;
+    cursor: pointer;
+    text-shadow: 0 1px 0 #ddd;
+    -webkit-box-shadow: inset 0 0 5px white;
+    -moz-box-shadow: inset 0 0 5px white;
+    box-shadow: inset 0 0 5px  white;
+}
+
+.wgt-MenuButton:active {
+    border: 1px solid #aaa;
+    border-bottom: 1px solid #888;
+}
+
+.wgt-MenuButton .label {
+    margin: 5px 7px;
+    font-size: 16px;
+    font-family: 'Arial Unicode MS', Arial, sans-serif;
+    font-weight: normal;
+}
+
+.wgt-MenuButton-icon {
+    background: url("images/white-triangle-icon.gif") 50% 50% no-repeat;
+    width: 10px;
+    border-left: 1px solid #F2D0B2;
+}
+
+.wgt-MenuButtonPopup {
+    border: 1px solid #898989;
+}
+
+.wgt-MenuButtonPopup .popupContent {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupMiddleCenter {
+    padding: 0;
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupTopCenter {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupBottomCenter {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupMiddleLeft {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupMiddleRight {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupTopLeft {
+   background: white;
+}
+
+.wgt-MenuButtonPopup .popupTopRight {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupBottomLeft {
+    background: white;
+}
+
+.wgt-MenuButtonPopup .popupBottomRight {
+    background: white;
+}
+
+.wgt-MenuButtonItem {
+    border: none;
+    padding: 7px 7px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.wgt-MenuButtonItem:hover {
+    background-color: #F3F7FB;
+    cursor: pointer;
+}
+
+.wgt-MenuButtonItem:active {
+    border: none;
+    color: #888;
+}
+
+.wgt-MenuButtonItem .label {
+}

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2009-2012 European Molecular Biology Laboratory
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>uk.ac.ebi.fg.annotare2.web</groupId>
+    <artifactId>annotare2-web</artifactId>
+    <packaging>war</packaging>
+    <version>0.9</version>
+    <name>Annotare 2.0 Web</name>
+
+    <parent>
+        <groupId>uk.ac.ebi.fg.annotare2</groupId>
+        <artifactId>annotare2</artifactId>
+        <version>0.9</version>
+    </parent>
+
+    <properties>
+        <gxt.version>3.0.1</gxt.version>
+        <guice.version>3.0</guice.version>
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <webapp.log.appender.ref>server-log</webapp.log.appender.ref>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <webapp.log.appender.ref>console</webapp.log.appender.ref>
+            </properties>
+        </profile>
+        <profile>
+            <id>noclover</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>2.4.0</version>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
+                                    <modules>
+                                        <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
+                                        <module>uk.ac.ebi.fg.annotare2.web.gwt.editor.EditorApp</module>
+                                        <!--<module>uk.ac.ebi.fg.annotare2.web.AdminApp</module>-->
+                                    </modules>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                    <goal>test</goal>
+                                    <!--                            <goal>generateAsync</goal>-->
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>sencha-gpl-release</id>
+            <name>Open source licensed Sencha artifacts</name>
+            <url>https://maven.sencha.com/repo/gpl-release/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+        <!-- Annotare dependencies -->
+
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
+            <artifactId>annotare2-om</artifactId>
+            <version>0.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
+            <artifactId>annotare2-om</artifactId>
+            <scope>test</scope>
+            <type>test-jar</type>
+            <version>0.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
+            <artifactId>annotare2-magetab</artifactId>
+            <version>0.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
+            <artifactId>annotare2-magetab-gwt</artifactId>
+            <version>0.9</version>
+        </dependency>
+
+        <!-- Web specific dependencies -->
+
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwt.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>1.5.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.inject.extensions</groupId>
+                    <artifactId>guice-assistedinject</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.gwt</groupId>
+                    <artifactId>gwt-servlet</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.gwtupload</groupId>
+            <artifactId>gwtupload</artifactId>
+            <version>0.6.4</version>
+        </dependency>
+
+        <!-- Sencha GXT 3.0 -->
+
+        <dependency>
+            <groupId>com.sencha.gxt</groupId>
+            <artifactId>gxt</artifactId>
+            <version>${gxt.version}</version>
+        </dependency>
+
+        <!-- jstl support-->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <webappDirectory>${webappDirectory}</webappDirectory>
+                    <!--packagingExcludes>**/client/**</packagingExcludes-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+

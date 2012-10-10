@@ -1,0 +1,57 @@
+Comment[ArrayExpressAccession]	E-GEOD-37372
+Public Release Date	2012-06-11																																																		
+Investigation Title	Ewing's sarcoma tumor samples																																																		
+Comment[Submitted Name]	Ewing's sarcoma tumor samples
+Experiment Description	This SuperSeries is composed of the following subset Series: GSE37370: microRNA expression data from Ewing's sarcoma tumor samples GSE37371: Expression data from Ewing's sarcoma tumor samples Refer to individual Series																																																		
+Date of Experiment																																																			
+Term Source Name	EFO
+Term Source Version																																																			
+Term Source File	http://www.ebi.ac.uk/efo/efo.owl																																																		
+Person Last Name	Martignetti																																																		
+Person First Name	Loredana																																																		
+Person Mid Initials																																																			
+Person Email	loredana.martignetti@curie.fr																																																		
+Person Affiliation	Insitut Curie/ INSERM U900 / Mines Paris Tech 																																																		
+Person Phone																																																			
+Person Fax																																																			
+Person Address	Insitut Curie/ INSERM U900 / Mines Paris Tech , 26, rue d'Ulm, Paris, France																																																		
+Person Roles	submitter																																																		
+Person Roles Term Source REF																																																			
+Person Roles Term Accession Number																																																			
+Normalization Type																																																			
+Normalization Term Accession Number																																																			
+Normalization Term Source REF																																																			
+Replicate Type																																																			
+Replicate Term Accession Number																																																			
+Replicate Term Source REF																																																			
+Experimental Design																																																			
+Experimental Design Term Accession Number																																																			
+Experimental Design Term Source REF																																																			
+Quality Control Type																																																			
+Quality Control Term Accession Number																																																			
+Quality Control Term Source REF																																																			
+Protocol Name	P-GSE37372-27	P-GSE37372-20	P-GSE37372-2	P-GSE37372-17	P-GSE37372-23	P-GSE37372-36	P-GSE37372-21	P-GSE37372-25	P-GSE37372-15	P-GSE37372-3	P-GSE37372-16	P-GSE37372-30	P-GSE37372-38	P-GSE37372-31	P-GSE37372-37	P-GSE37372-5	P-GSE37372-39	P-GSE37372-4	P-GSE37372-12	P-GSE37372-14	P-GSE37372-26	P-GSE37372-6	P-GSE37372-33	P-GSE37372-13	P-GSE37372-40	P-GSE37372-22	P-GSE37372-32	P-GSE37372-24	P-GSE37372-8	P-GSE37372-10	P-GSE37372-1	P-GSE37372-35	P-GSE37372-11	P-GSE37372-19	P-GSE37372-28	P-GSE37372-29	P-GSE37372-18	P-GSE37372-34	P-GSE37372-9	P-GSE37372-7	P-GSE37372-49	P-GSE37372-44	P-GSE37372-51	P-GSE37372-46	P-GSE37372-47	P-GSE37372-45	P-GSE37372-50	P-GSE37372-41	P-GSE37372-42	P-GSE37372-48	P-GSE37372-43
+Protocol Description	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW135.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW189.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW02.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW163.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW66.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW249.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW19.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW83.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW142.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW09.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW158.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW207.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW251.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW208.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW250.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW24.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW252.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW17.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW116.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW137.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW124.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW27.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW236.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW128.DetectionPval = 	ID_REF = <br>VALUE = log2 RMA normalized signal of probes commone to the 2 arrays	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW48.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW212.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW98.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW36.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW53.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW01.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW248.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW110.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW175.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW204.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW206.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW168.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW247.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW41.DetectionPval = 	ID_REF = <br>VALUE = Average-normalized signal intensity<br>EW29.DetectionPval = 	As according to the manufacturer's instructions	standard Illumina protocol	Data were normalized and combined using R 2.13.0 environment. We used the combineAffyBatch function in the matchprobes library to merge data from HG-U133A and HG-U133Plus2 GeneChips and we applied RMA normalization to the merged dataset	Probes were average-normalized to correct for between-sample variation.	None	BeadStudio 1.5	GCOS 1.4	FrozenTumor biopsy	Trizol extraction of total RNA was performed according to the manufacturer's instructions	Biotinylated cRNA were prepared according to the standard Affymetrix protocol from 2µg total RNA	100ng of RNA is polyadenylated and converted to cDNA according to the standard Illumina protocol
+Protocol Software																																																			
+Protocol Hardware																																																			
+Protocol Contact																																																			
+Protocol Type	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	bioassay_data_transformation	hybridization	hybridization	feature_extraction	feature_extraction	grow	image_aquisition	image_aquisition	specified_biomaterial_action	nucleic_acid_extraction	labeling	labeling
+Protocol Term Source REF																																																			
+Protocol Term Accession Number																																																			
+Experimental Factor Name																																																			
+Experimental Factor Type																																																			
+Experimental Factor Term Source REF																																																			
+Experimental Factor Term Accession Number																																																			
+Publication Title																																																			
+Publication Author List																																																			
+PubMed ID																																																			
+Publication DOI																																																			
+Publication Status																																																			
+Publication Status Term Source REF																																																			
+Publication Status Term Accession Number																																																			
+Comment[SecondaryAccession]	GSE37372																																																		
+Comment[GEOLastUpdateDate]	2012-06-12
+Comment[AEExperimentType]	transcription profiling by array																																																		
+Comment[GEOReleaseDate]	2012-06-10
+Comment[ArrayExpressSubmissionDate]	2012-04-16
+SDRF File	E-GEOD-37372.sdrf.txt
