@@ -14,22 +14,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
     <artifactId>annotare2-magetab-gwt</artifactId>
     <packaging>jar</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9</version>
     <name>MageTab Lib (GWT Compatible)</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.9-SNAPSHOT</version>
+        <version>0.9</version>
     </parent>
 
     <properties>
@@ -135,13 +132,13 @@
                         </goals>
                         <configuration>
                             <target name="copy-gwt-resources">
-                                <echo message="Test"/>
+                                <echo message="Test" />
                                 <copy toDir="${project.build.directory}/magetab-gwt-sources" verbose="true">
                                     <fileset dir="${project.build.directory}/magetab-sources">
                                         <and>
-                                            <contains text="@GwtCompatible"/>
+                                            <contains text="@GwtCompatible" />
                                             <not>
-                                                <contains text="emulated = true"/>
+                                                <contains text="emulated = true" />
                                             </not>
                                         </and>
                                     </fileset>
