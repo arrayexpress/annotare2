@@ -20,22 +20,23 @@
 
     <ui:style>
         .editorHeader {
+            padding: 5px 3px;
         }
 
         .editorHeader h1 {
             margin: 0;
-            padding: 3px 5px;
+            padding: 0;
             font-size: 23px;
             font-weight: normal;
         }
 
-        .globalSuccessMessage {
+        /* .globalSuccessMessage {
             position: relative;
             bottom: -1px;
             left: 0;
             background-color: #afc96c;
             padding: 2px 5px;
-        }
+        }*/
     </ui:style>
 
     <g:HTMLPanel height="100%">
@@ -47,13 +48,13 @@
                     </td>
                     <td width="200px" style="text-align:right">
                         <g:Button enabled="false">Save</g:Button>
-                        <g:Button enabled="false">Validate</g:Button>
+                        <g:Button ui:field="validateButton">Validate</g:Button>
                     </td>
                 </tr>
             </table>
         </div>
-        <div class="{style.globalSuccessMessage}">
+        <!--div class="{style.globalSuccessMessage}">
             Validation successful.
-        </div>
+        </div-->
     </g:HTMLPanel>
 </ui:UiBinder>
