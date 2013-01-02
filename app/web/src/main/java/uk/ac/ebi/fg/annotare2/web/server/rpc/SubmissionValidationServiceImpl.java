@@ -36,17 +36,17 @@ public class SubmissionValidationServiceImpl extends RemoteServiceBase implement
     @Override
     public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
         //TODO add real validation code here
-        ArrayList<String> errors = generate(3, "error");
-        ArrayList<String> warnings = generate(2, "warning");
+        ArrayList<String> errors = generate(3);
+        ArrayList<String> warnings = generate(2);
         return new ValidationResult(errors, warnings);
     }
 
-    private ArrayList<String> generate(int n, String prefix) {
+    private ArrayList<String> generate(int n) {
         ArrayList<String> list = newArrayList();
         for (int i = 0; i < n; i++) {
             int r = random.nextInt();
             if (r % 2 == 0) {
-                list.add(prefix + " " + i);
+                list.add("generated text " + r);
             }
         }
         return list;

@@ -46,6 +46,9 @@ public class EditorLayout extends Composite {
     @UiField
     HasOneWidget contentDisplay;
 
+    @UiField
+    HasOneWidget logBarDisplay;
+
     public EditorLayout() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -69,5 +72,9 @@ public class EditorLayout extends Composite {
 
     public HasOneWidget getContentDisplay() {
         return contentDisplay;
+    }
+
+    public HasOneWidget getLogBarDisplay() {
+        return logBarDisplay;
     }
 }

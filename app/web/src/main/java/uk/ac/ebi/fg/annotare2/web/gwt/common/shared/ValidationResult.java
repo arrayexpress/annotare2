@@ -24,26 +24,22 @@ import java.util.ArrayList;
  */
 public class ValidationResult implements Serializable {
 
-    private final ArrayList<String> errors = new ArrayList<String>();
+    private ArrayList<String> errors = new ArrayList<String>();
 
-    private final ArrayList<String> warnings = new ArrayList<String>();
+    private ArrayList<String> warnings = new ArrayList<String>();
 
-    private final ArrayList<String> failures = new ArrayList<String>();
+    private ArrayList<String> failures = new ArrayList<String>();
 
     public ValidationResult() {
     }
 
     public ValidationResult(Throwable throwable) {
-
+         failures.add(throwable.getMessage());
     }
 
     public ValidationResult(ArrayList<String> errors, ArrayList<String> warnings) {
         this.errors.addAll(errors);
         this.warnings.addAll(warnings);
-    }
-
-    public boolean hasErrors() {
-        return errors.isEmpty();
     }
 
     public ArrayList<String> getErrors() {
@@ -52,5 +48,9 @@ public class ValidationResult implements Serializable {
 
     public ArrayList<String> getWarnings() {
         return warnings;
+    }
+
+    public ArrayList<String> getFailures() {
+        return failures;
     }
 }

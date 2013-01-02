@@ -80,6 +80,10 @@ public class EditorApp implements EntryPoint {
         ActivityManager contentActivityManager = new ActivityManager(contentActivityMapper, eventBus);
         contentActivityManager.setDisplay(appWidget.getContentDisplay());
 
+        ActivityMapper logBarActivityMapper = injector.getLogBarActivityMapper();
+        ActivityManager logBarActivityManager = new ActivityManager(logBarActivityMapper, eventBus);
+        logBarActivityManager.setDisplay(appWidget.getLogBarDisplay());
+
         EditorPlaceFactory factory = injector.getPlaceFactory();
         IdfPlace defaultPlace = factory.getIdfPlace();
 

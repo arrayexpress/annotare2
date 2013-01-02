@@ -45,9 +45,11 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ActivityMapper.class).annotatedWith(EditorTabToolBarDisplay.class).to(EditorTabToolBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLeftMenuDisplay.class).to(EditorLeftMenuActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorContentDisplay.class).to(EditorContentActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorLogBarDisplay.class).to(EditorLogBarActivityMapper.class).in(Singleton.class);
 
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
         bind(EditorTabBarView.class).to(EditorTabBarViewImpl.class);
+        bind(EditorLogBarView.class).to(EditorLogBarViewImpl.class);
 
         bind(SheetModeView.class).to(SheetModeViewImpl.class);
 
