@@ -24,11 +24,17 @@ import java.util.ArrayList;
  */
 public class ValidationResult implements Serializable {
 
-    private ArrayList<String> errors = new ArrayList<String>();
+    private final ArrayList<String> errors = new ArrayList<String>();
 
-    private ArrayList<String> warnings = new ArrayList<String>();
+    private final ArrayList<String> warnings = new ArrayList<String>();
+
+    private final ArrayList<String> failures = new ArrayList<String>();
 
     public ValidationResult() {
+    }
+
+    public ValidationResult(Throwable throwable) {
+
     }
 
     public ValidationResult(ArrayList<String> errors, ArrayList<String> warnings) {

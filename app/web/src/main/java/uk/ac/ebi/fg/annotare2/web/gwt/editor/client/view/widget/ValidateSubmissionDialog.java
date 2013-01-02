@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorTitleBarView extends IsWidget {
+public class ValidateSubmissionDialog extends DialogBox {
 
-    void setAccession(String accession);
+    public ValidateSubmissionDialog() {
+        setGlassEnabled(true);
 
-    void setPresenter(Presenter presenter);
+        setText("Validating...");
 
-    public interface Presenter {
+        setWidget(new Label("Please wait while submission is validating..."));
 
-        void validateSubmission(ValidationHandler handler);
-    }
-
-    public interface ValidationHandler {
-
-        void onValidationFinished();
+        center();
     }
 }

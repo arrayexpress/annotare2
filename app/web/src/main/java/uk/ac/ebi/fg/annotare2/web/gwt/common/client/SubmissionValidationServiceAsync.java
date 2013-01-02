@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 
-/**
- * @author Olga Melnichuk
- */
-public interface EditorTitleBarView extends IsWidget {
-
-    void setAccession(String accession);
-
-    void setPresenter(Presenter presenter);
-
-    public interface Presenter {
-
-        void validateSubmission(ValidationHandler handler);
-    }
-
-    public interface ValidationHandler {
-
-        void onValidationFinished();
-    }
+public interface SubmissionValidationServiceAsync {
+    void validate(int submissionId, AsyncCallback<ValidationResult> async);
 }

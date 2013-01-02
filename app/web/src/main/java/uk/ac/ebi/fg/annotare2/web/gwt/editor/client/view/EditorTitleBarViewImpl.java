@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 
 /**
  * @author Olga Melnichuk
@@ -41,6 +42,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiField
     Button validateButton;
 
+    private Presenter presenter;
+
     public EditorTitleBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -51,8 +54,22 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         accessionLabel.setText(accession);
     }
 
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
     @UiHandler("validateButton")
     public void OnValidateButtonClick(ClickEvent clickEvent) {
-        Window.alert("validate");
+        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
+        presenter.validateSubmission(new ValidationHandler() {
+
+            @Override
+            public void onValidationFinished() {
+                dialog.hide();
+                //TODO show success/error/failure message ?
+            }
+
+        });
     }
 }
