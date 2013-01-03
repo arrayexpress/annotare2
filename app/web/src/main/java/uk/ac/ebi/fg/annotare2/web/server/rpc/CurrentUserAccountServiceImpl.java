@@ -16,13 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
+import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 
 /**
  * @author Olga Melnichuk
  */
-public class CurrentUserAccountServiceImpl extends RemoteServiceBase implements CurrentUserAccountService {
+public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implements CurrentUserAccountService {
+
+    @Inject
+    public CurrentUserAccountServiceImpl(AuthService authService) {
+        super(authService);
+    }
 
     public UIUser me() {
         return DataObjects.uiUser(getCurrentUser());

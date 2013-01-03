@@ -20,7 +20,6 @@ import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
@@ -33,7 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
+import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
@@ -43,24 +42,19 @@ import java.io.InputStream;
 /**
  * @author Olga Melnichuk
  */
-public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
+public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     @Inject
-    private SubmissionManager submissionManager;
+    public IdfServiceImpl(AuthService authService, SubmissionManager submissionManager) {
+        super(authService, submissionManager);
+    }
 
     @Override
     public UIGeneralInfo getGeneralInfo(int submissionId) throws NoPermissionException, ResourceNotFoundException {
         try {
-            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
-            return parseGeneralInfo(submission.getInvestigation());
-        } catch (RecordNotFoundException e) {
-            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
-        } catch (AccessControlException e) {
-            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            return parseGeneralInfo(getMySubmission(submissionId).getInvestigation());
         } catch (IOException e) {
             log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
         }
@@ -70,14 +64,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     @Override
     public Table loadInvestigation(int submissionId) throws ResourceNotFoundException, NoPermissionException {
         try {
-            Submission submission = submissionManager.getSubmission(getCurrentUser(), submissionId);
-            return new TsvParser().parse(submission.getInvestigation());
-        } catch (RecordNotFoundException e) {
-            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
-        } catch (AccessControlException e) {
-            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            return new TsvParser().parse(getMySubmission(submissionId).getInvestigation());
         } catch (IOException e) {
             log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
         }
@@ -87,16 +74,10 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     @Override
     public void updateInvestigation(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException {
         try {
-            Submission submission = submissionManager.getSubmission2Update(getCurrentUser(), submissionId);
+            Submission submission = getMySubmission2Update(submissionId);
             Table table = new TsvParser().parse(submission.getInvestigation());
             operation.apply(table);
             submission.setInvestigation(new TsvGenerator(table).generateString());
-        } catch (RecordNotFoundException e) {
-            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
-        } catch (AccessControlException e) {
-            log.warn("getGeneralInfo(" + submissionId + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
         } catch (IOException e) {
             log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
         }
@@ -106,7 +87,7 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
     public void importInvestigation(int submissionId) throws NoPermissionException,
             ResourceNotFoundException, DataImportException {
         try {
-            Submission submission = submissionManager.getSubmission2Update(getCurrentUser(), submissionId);
+            Submission submission = getMySubmission2Update(submissionId);
 
             FileItem item = UploadedFiles.getOne(getSession());
             Table table = new TsvParser().parse(item.getInputStream());
@@ -119,12 +100,6 @@ public class IdfServiceImpl extends RemoteServiceBase implements IdfService {
                 throw new DataImportException("The file contents don't look like a valid IDF data.");
             }
             submission.setInvestigation(new TsvGenerator(table).generateString());
-        } catch (RecordNotFoundException e) {
-            log.warn("importInvestigation(" + submissionId + " failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + submissionId + "doesn't exist");
-        } catch (AccessControlException e) {
-            log.warn("importInvestigation(" + submissionId + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
         } catch (IOException e) {
             log.warn("importInvestigation(" + submissionId + ") failure", e);
             throw new DataImportException(e.getMessage());

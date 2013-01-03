@@ -42,7 +42,13 @@ public class ValidationResult implements Serializable {
         this.warnings.addAll(warnings);
     }
 
-    public ArrayList<String> getErrors() {
+    public ValidationResult(ArrayList<String> errors, ArrayList<String> warnings, ArrayList<String> failures) {
+        this.errors.addAll(errors);
+        this.warnings.addAll(warnings);
+        this.failures.addAll(failures);
+    }
+
+        public ArrayList<String> getErrors() {
         return errors;
     }
 

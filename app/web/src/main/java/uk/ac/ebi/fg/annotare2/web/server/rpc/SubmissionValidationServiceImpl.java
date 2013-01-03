@@ -16,39 +16,74 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.fg.annotare2.magetab.UndefinedInvestigationTypeException;
+import uk.ac.ebi.fg.annotare2.magetab.checker.CheckResult;
+import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionValidator;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
-
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.Collection;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionValidationServiceImpl extends RemoteServiceBase implements SubmissionValidationService {
+public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteService implements SubmissionValidationService {
 
-    private static final Random random = new Random(123);
+    private static final Logger log = LoggerFactory.getLogger(SubmissionValidationServiceImpl.class);
+
+
+    private final SubmissionValidator validator;
+
+    @Inject
+    public SubmissionValidationServiceImpl(AuthService authService,
+                                           SubmissionManager submissionManager,
+                                           SubmissionValidator validator) {
+        super(authService, submissionManager);
+        this.validator = validator;
+    }
 
     @Override
     public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
-        //TODO add real validation code here
-        ArrayList<String> errors = generate(3);
-        ArrayList<String> warnings = generate(15);
-        return new ValidationResult(errors, warnings);
-    }
-
-    private ArrayList<String> generate(int n) {
-        ArrayList<String> list = newArrayList();
-        for (int i = 0; i < n; i++) {
-            int r = random.nextInt();
-            if (r % 2 == 0) {
-                list.add("generated text " + r);
+        Submission subm = getMySubmission(submissionId);
+        ArrayList<String> errors = new ArrayList<String>();
+        ArrayList<String> warnings = new ArrayList<String>();
+        ArrayList<String> failures = new ArrayList<String>();
+        try {
+            Collection<CheckResult> results = validator.validate(subm);
+            for (CheckResult cr : results) {
+                switch (cr.getStatus()) {
+                    case WARNING:
+                        warnings.add(cr.asString());
+                        break;
+                    case ERROR:
+                        errors.add(cr.asString());
+                        break;
+                    case FAILURE:
+                        errors.add(cr.asString());
+                        break;
+                }
             }
+        } catch (IOException e) {
+            log.error("Validation failure", e);
+            failures.add(e.getMessage());
+        } catch (ParseException e) {
+            log.error("Validation failure", e);
+            failures.add(e.getMessage());
+        } catch (UndefinedInvestigationTypeException e) {
+            log.error("Validation failure", e);
+            failures.add(e.getMessage());
         }
-        return list;
+        return new ValidationResult(errors, warnings, failures);
     }
 }
