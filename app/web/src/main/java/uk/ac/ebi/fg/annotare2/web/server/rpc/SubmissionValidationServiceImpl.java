@@ -37,7 +37,7 @@ public class SubmissionValidationServiceImpl extends RemoteServiceBase implement
     public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
         //TODO add real validation code here
         ArrayList<String> errors = generate(3);
-        ArrayList<String> warnings = generate(2);
+        ArrayList<String> warnings = generate(15);
         return new ValidationResult(errors, warnings);
     }
 

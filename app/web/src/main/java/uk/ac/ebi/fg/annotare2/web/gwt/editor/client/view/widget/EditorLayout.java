@@ -19,9 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * @author Olga Melnichuk
@@ -48,6 +46,9 @@ public class EditorLayout extends Composite {
 
     @UiField
     HasOneWidget logBarDisplay;
+
+    @UiField
+    SplitLayoutPanel splitPanel;
 
     public EditorLayout() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -76,5 +77,13 @@ public class EditorLayout extends Composite {
 
     public HasOneWidget getLogBarDisplay() {
         return logBarDisplay;
+    }
+
+    public void expandLogBar(double size) {
+        Widget w = splitPanel.getWidget(0);
+        double widgetSize = splitPanel.getWidgetSize(w);
+        if (widgetSize < size) {
+            splitPanel.setWidgetSize(w, size);
+        }
     }
 }

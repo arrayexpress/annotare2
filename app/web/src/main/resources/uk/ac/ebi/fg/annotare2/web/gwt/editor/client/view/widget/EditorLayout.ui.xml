@@ -30,7 +30,7 @@
             <g:SimplePanel ui:field="titleBarDisplay"/>
         </g:north>
         <g:center>
-            <g:SplitLayoutPanel>
+            <g:SplitLayoutPanel ui:field="splitPanel">
                 <g:south size="40">
                     <g:ScrollPanel ui:field="logBarDisplay" height="100%" addStyleNames="{style.border}">
                     </g:ScrollPanel>
