@@ -35,6 +35,8 @@ public class Info {
 
     private Row.Cell<Date> dateOfPublicRelease;
 
+    private Row.Cell<String> sdrfFile;
+
     public Row.Cell<String> getTitle() {
         return title;
     }
@@ -65,5 +67,13 @@ public class Info {
 
     public void setDateOfPublicRelease(Row.Cell<Date> dateOfPublicRelease) {
         this.dateOfPublicRelease = dateOfPublicRelease;
+    }
+
+    public Row.Cell<String> getSdrfFile() {
+        return sdrfFile;
+    }
+
+    public void setSdrfFile(Row.Cell<String> sdrfFile) {
+        this.sdrfFile = sdrfFile;
     }
 }

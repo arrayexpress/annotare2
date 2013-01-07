@@ -42,14 +42,14 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
         panel.add(new Label("Failures: " + result.getFailures().size() +
                 ", Errors: " + result.getErrors().size() +
                 ", Warnings: " + result.getWarnings().size()));
-        addAll(result.getFailures(), "Failure");
-        addAll(result.getErrors(), "Error");
-        addAll(result.getWarnings(), "Warning");
+        addAll(result.getFailures());
+        addAll(result.getErrors());
+        addAll(result.getWarnings());
     }
 
-    private void addAll(ArrayList<String> list, String prefix) {
+    private void addAll(ArrayList<String> list) {
         for (String item : list) {
-            panel.add(new Label(prefix + ": " + item));
+            panel.add(new Label(item));
         }
     }
 

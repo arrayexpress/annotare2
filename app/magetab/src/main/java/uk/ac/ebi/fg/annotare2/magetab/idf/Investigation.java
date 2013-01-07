@@ -41,6 +41,7 @@ public class Investigation {
         EXPERIMENT_DESCRIPTION("Experiment Description"),
         DATE_OF_EXPERIMENT("Date of Experiment"),
         DATE_OF_PUBLIC_RELEASE("Public Release Date"),
+        SDRF_FILE("SDRF File"),
 
         PERSON_FIRST_NAME("Person First Name"),
         PERSON_LAST_NAME("Person Last Name"),
@@ -155,6 +156,10 @@ public class Investigation {
         return generalInfoList.get(0).getDateOfPublicRelease();
     }
 
+    public Row.Cell<String> getSdrfFile() {
+        return generalInfoList.get(0).getSdrfFile();
+    }
+
     public void removeContact(ArrayList<Integer> indices) {
        contactList.remove(indices);
     }
@@ -178,7 +183,8 @@ public class Investigation {
                     INVESTIGATION_TITLE,
                     EXPERIMENT_DESCRIPTION,
                     DATE_OF_EXPERIMENT,
-                    DATE_OF_PUBLIC_RELEASE);
+                    DATE_OF_PUBLIC_RELEASE,
+                    SDRF_FILE);
         }
 
         @Override
@@ -188,6 +194,7 @@ public class Investigation {
             generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
             generalInfo.setDateOfExperiment(asDateCell(map.get(DATE_OF_EXPERIMENT)));
             generalInfo.setDateOfPublicRelease(asDateCell(map.get(DATE_OF_PUBLIC_RELEASE)));
+            generalInfo.setSdrfFile(map.get(SDRF_FILE));
             return generalInfo;
         }
 
