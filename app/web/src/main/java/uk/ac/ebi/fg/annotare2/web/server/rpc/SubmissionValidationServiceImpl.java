@@ -76,13 +76,13 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
             }
         } catch (IOException e) {
             log.error("Validation failure", e);
-            failures.add(e.getMessage());
+            failures.add("Failure: " + e.getMessage());
         } catch (ParseException e) {
             log.error("Validation failure", e);
-            failures.add(e.getMessage());
+            failures.add("Failure: " + e.getMessage());
         } catch (UndefinedInvestigationTypeException e) {
             log.error("Validation failure", e);
-            failures.add(e.getMessage());
+            failures.add("Failure: " + e.getMessage());
         }
         return new ValidationResult(errors, warnings, failures);
     }

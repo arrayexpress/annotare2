@@ -20,6 +20,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
+import uk.ac.ebi.fg.annotare2.magetab.CheckerModule;
+import uk.ac.ebi.fg.annotare2.magetab.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
 
 import javax.servlet.ServletContextEvent;

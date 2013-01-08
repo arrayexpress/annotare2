@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
@@ -34,12 +35,10 @@ import uk.ac.ebi.fg.annotare2.magetab.modelimpl.limpopo.idf.LimpopoIdfDataProxy;
 import uk.ac.ebi.fg.annotare2.magetab.modelimpl.limpopo.sdrf.LimpopoBasedSdrfGraph;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Collection;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static com.google.common.io.Closeables.closeQuietly;
 
@@ -48,14 +47,26 @@ import static com.google.common.io.Closeables.closeQuietly;
  */
 public class SubmissionValidator {
 
-    public Collection<CheckResult> validate(Submission submission) throws IOException, ParseException, UndefinedInvestigationTypeException {
+    //TODO move it
+    private static final String IDF_FILE_NAME = "idf";
+
+    //TODO use injector
+    private final MageTabChecker checker;
+
+    public SubmissionValidator() {
+        Injector injector = Guice.createInjector(new CheckerModule());
+        checker = new MageTabChecker(injector);
+    }
+
+    public Collection<CheckResult> validate(Submission submission) throws IOException,
+            ParseException, UndefinedInvestigationTypeException {
+
         File tmp = copy(submission);
+
         MAGETABParser parser = new MAGETABParser();
-        MAGETABInvestigation inv = parser.parse(new File(tmp, "idf"));
+        MAGETABInvestigation inv = parser.parse(new File(tmp, IDF_FILE_NAME));
         IdfData idf = new LimpopoIdfDataProxy(inv.IDF);
 
-        Injector injector = Guice.createInjector(new CheckerModule());
-        MageTabChecker checker = new MageTabChecker(injector);
         Collection<CheckResult> results = checker.check(idf, new LimpopoBasedSdrfGraph(inv.SDRF, idf));
         return natural().sortedCopy(results);
     }
@@ -65,16 +76,29 @@ public class SubmissionValidator {
         String sdrfFileRef = inv.getSdrfFile().getValue();
 
         File tmp = Files.createTempDir();
+        File idfFile = new File(tmp, IDF_FILE_NAME);
 
-        copyStream(submission.getInvestigation(), new File(tmp, "idf"));
-        copyStream(submission.getSampleAndDataRelationship(), new File(tmp, sdrfFileRef));
+        if (0 == copyStream(submission.getInvestigation(), idfFile)) {
+            throw new IOException("No IDF data");
+        }
+
+        if (!isNullOrEmpty(sdrfFileRef)) {
+            if (0 == copyStream(submission.getSampleAndDataRelationship(), new File(tmp, sdrfFileRef))) {
+                /* A workaround: limpopo parser hands when the content of a file is empty */
+                throw new IOException("No SDRF data");
+            }
+        }
+
         return tmp;
     }
 
-    private void copyStream(InputStream from, File file) throws IOException {
+    private long copyStream(InputStream from, File file) throws IOException {
+        if (from == null) {
+            return 0;
+        }
         FileOutputStream to = new FileOutputStream(file);
         try {
-            ByteStreams.copy(from, to);
+            return ByteStreams.copy(from, to);
         } finally {
             closeQuietly(to);
             closeQuietly(from);
