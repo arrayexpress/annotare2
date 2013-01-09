@@ -23,14 +23,14 @@ public enum IdfSection {
     GENERAL_INFO("General Information"),
     CONTACTS("Contacts"),
     PUBLICATIONS("Publications"),
-    TERM_DEF_SOURCES("Term Definition Sources"),
     EXP_DESIGN("Experimental Designs"),
-    EXP_FACTORS("Experimental Factors"),
-    QUALITY_CONTROLS("Quality Controls"),
+    EXP_FACTORS("Experimental Factor Types"),
+    QUALITY_CONTROLS("Quality Control Types"),
     PROTOCOLS("Protocols"),
-    REPLICATES("Replicates"),
-    NORMALIZATION("Normalizations"),
-    COMMENTS("Comments");
+    REPLICATES("Replicate Types"),
+    NORMALIZATION("Normalization Types"),
+    COMMENTS("Comments"),
+    TERM_DEF_SOURCES("Term Sources");
 
     private final String title;
 
