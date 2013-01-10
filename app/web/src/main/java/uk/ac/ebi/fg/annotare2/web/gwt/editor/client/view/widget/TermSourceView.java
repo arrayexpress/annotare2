@@ -47,13 +47,46 @@ public class TermSourceView extends IdfItemView<TermSource> {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         addTitleField(hasChangeableValue(nameBox));
+
+        addField(new EditableField<TermSource, String>(hasChangeableValue(nameBox)) {
+
+            @Override
+            protected String getValue(TermSource obj) {
+                return obj.getName().getValue();
+            }
+
+            @Override
+            protected void setValue(TermSource obj, String value) {
+                obj.getName().setValue(value);
+            }
+        });
+
+        addField(new EditableField<TermSource, String>(hasChangeableValue(urlBox)) {
+            @Override
+            protected String getValue(TermSource obj) {
+                return obj.getFile().getValue();
+            }
+
+            @Override
+            protected void setValue(TermSource obj, String value) {
+                obj.getFile().setValue(value);
+            }
+        });
+
+        addField(new EditableField<TermSource, String>(hasChangeableValue(versionBox)) {
+            @Override
+            protected String getValue(TermSource obj) {
+                return obj.getVersion().getValue();
+            }
+
+            @Override
+            protected void setValue(TermSource obj, String value) {
+                obj.getVersion().setValue(value);
+            }
+        });
     }
 
     public void update(TermSource ts) {
         setItem(ts);
-        nameBox.setValue(ts.getName().getValue());
-        urlBox.setValue(ts.getFile().getValue());
-        versionBox.setValue(ts.getVersion().getValue());
-        fireTitleChangedEvent();
     }
 }

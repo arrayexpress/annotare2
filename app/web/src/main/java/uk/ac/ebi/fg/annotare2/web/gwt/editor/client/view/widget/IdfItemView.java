@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 
-
 import java.util.ArrayList;
 
 /**
@@ -42,6 +41,10 @@ public class IdfItemView<T> extends DisclosurePanelContent {
 
     protected void setItem(T item) {
         this.item = item;
+        for (EditableField<T, ?> f : fields) {
+            f.readValueFrom(item);
+        }
+        fireTitleChangedEvent();
     }
 
     protected void addField(final EditableField<T, ?> field) {
@@ -59,7 +62,7 @@ public class IdfItemView<T> extends DisclosurePanelContent {
         field.addChangeHandler(titleChangeHandler);
     }
 
-    protected void fireTitleChangedEvent() {
+    private void fireTitleChangedEvent() {
         StringBuilder sb = new StringBuilder();
         int i = title.size();
         for (HasChangeableValue<?> w : title) {

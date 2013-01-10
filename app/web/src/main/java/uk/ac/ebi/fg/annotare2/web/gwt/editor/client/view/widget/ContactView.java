@@ -172,10 +172,6 @@ public class ContactView extends IdfItemView<Person> {
 
     public void update(Person p) {
         setItem(p);
-        for (EditableField<Person, ?> f : allFields) {
-            f.readValueFrom(p);
-        }
-        fireTitleChangedEvent();
     }
 }
 
