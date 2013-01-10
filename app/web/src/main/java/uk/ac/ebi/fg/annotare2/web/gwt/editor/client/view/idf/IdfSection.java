@@ -24,7 +24,7 @@ public enum IdfSection {
     CONTACTS("Contacts"),
     PUBLICATIONS("Publications"),
     EXP_DESIGN("Experimental Designs"),
-    EXP_FACTORS("Experimental Factor Types"),
+    EXP_FACTORS("Experimental Factors"),
     QUALITY_CONTROLS("Quality Control Types"),
     PROTOCOLS("Protocols"),
     REPLICATES("Replicate Types"),
