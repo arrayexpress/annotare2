@@ -32,9 +32,9 @@ public class DisclosureListItem extends Composite {
 
     private final DisclosurePanelHeader header = new DisclosurePanelHeader();
 
-    public DisclosureListItem() {
+    public DisclosureListItem(DisclosurePanelContent content) {
         panel.setWidth("100%");
-        panel.addStyleName("app-IdfItemList");
+        panel.addStyleName("app-IdfListItem");
         panel.setHeader(header);
         initWidget(panel);
 
@@ -58,6 +58,8 @@ public class DisclosureListItem extends Composite {
                 fireEvent(new ItemSelectionEvent(selected));
             }
         });
+
+        setContent(content);
     }
 
     public void setContent(DisclosurePanelContent w) {

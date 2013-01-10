@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
-import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactListItem extends DisclosureListItem {
+public interface IdfTermSourceListView extends IsWidget {
 
-    private final ContactView contactView = new ContactView();
-
-    public ContactListItem() {
-        setContent(contactView);
-    }
-
-    public void update(Person p) {
-        contactView.update(p);
-    }
+    void setTermSources(ArrayList<TermSource> contacts);
 }

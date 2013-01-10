@@ -29,7 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactListItem;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
 import java.util.ArrayList;
 
@@ -91,13 +92,14 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
     }
 
     private void addNewContact() {
-        ContactListItem item = addListItem(presenter.addContact());
+        DisclosureListItem item = addListItem(presenter.addContact());
         //todo scroll + item.open();
     }
 
-    private ContactListItem addListItem(Person p) {
-        ContactListItem item = new ContactListItem();
-        item.update(p);
+    private DisclosureListItem addListItem(Person p) {
+        ContactView contactView = new ContactView();
+        DisclosureListItem item = new DisclosureListItem(contactView);
+        contactView.update(p);
         listPanel.add(item);
 
         item.addItemSelectionHandler(new ItemSelectionEventHandler() {
@@ -121,7 +123,7 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
         ArrayList<Integer> selected = new ArrayList<Integer>();
         int size = listPanel.getWidgetCount();
         for (int i = size - 1; i >=0; i--) {
-            ContactListItem item = (ContactListItem) listPanel.getWidget(i);
+            DisclosureListItem item = (DisclosureListItem) listPanel.getWidget(i);
             if (item.isSelected()) {
                 selected.add(i);
             }

@@ -19,17 +19,27 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
-
-    <g:HTMLPanel width="100%" addStyleNames="app-IdfListView">
-        <div class="app-Buttons">
-            <g:Image resource="{res.plusIcon}" ui:field="addIcon"/>
-            &nbsp;
-            <g:Image resource="{res.trashIcon}" ui:field="removeIcon"/>
-        </div>
-        <div style="padding-left:10px;padding-right:10px">
-            <g:VerticalPanel ui:field="listPanel" width="100%"/>
-        </div>
+    <g:HTMLPanel>
+        <table class="app-IdfItemFormLayout">
+            <tr>
+                <td class="label">Name</td>
+                <td style="width:400px">
+                    <g:TextBox width="100%" ui:field="nameBox"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">URL</td>
+                <td>
+                    <g:TextBox width="100%" ui:field="urlBox"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Version</td>
+                <td>
+                    <g:TextBox width="50%" ui:field="versionBox"/>
+                </td>
+            </tr>
+        </table>
     </g:HTMLPanel>
 
 </ui:UiBinder>
