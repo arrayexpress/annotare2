@@ -65,9 +65,7 @@ public class IdfContactListViewImpl extends IdfListView<Person> implements IdfCo
     }
 
     private DisclosureListItem addContactView(Person p) {
-        ContactView contactView = new ContactView();
-        contactView.setItem(p);
-        return addListItem(contactView);
+        return addListItem(new ContactView(p));
     }
 
     private void removeSelectedContacts() {

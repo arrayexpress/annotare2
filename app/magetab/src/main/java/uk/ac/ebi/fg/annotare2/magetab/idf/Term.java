@@ -31,6 +31,8 @@ public class Term {
 
     private Row.Cell<String> ref;
 
+    private TermSource termSource;
+
     public Row.Cell<String> getName() {
         return name;
     }
@@ -53,5 +55,14 @@ public class Term {
 
     public void setRef(Row.Cell<String> ref) {
         this.ref = ref;
+    }
+
+    public TermSource getTermSource() {
+        return termSource;
+    }
+
+    public void setTermSource(TermSource termSource) {
+        this.termSource = termSource;
+        this.ref.setValue(termSource == null ? "" : termSource.getName().getValue());
     }
 }

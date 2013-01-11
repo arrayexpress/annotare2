@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
@@ -40,17 +41,7 @@ public class ChangeableValues {
 
             @Override
             public void setValue(String value) {
-                box.setValue(value);
-            }
-
-            @Override
-            public void setValue(String value, boolean fireEvents) {
-                box.setValue(value, fireEvents);
-            }
-
-            @Override
-            public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> stringValueChangeHandler) {
-                return box.addValueChangeHandler(stringValueChangeHandler);
+                box.setValue(value, false);
             }
 
             @Override
@@ -58,5 +49,37 @@ public class ChangeableValues {
                 box.fireEvent(gwtEvent);
             }
         };
+    }
+
+    public static HasChangeableValue<String> hasChangeableValue(final ListBox box) {
+        return new HasChangeableValue<String>() {
+            @Override
+            public HandlerRegistration addChangeHandler(ChangeHandler changeHandler) {
+                return box.addChangeHandler(changeHandler);
+            }
+
+            @Override
+            public String getValue() {
+                return box.getItemText(box.getSelectedIndex());
+            }
+
+            @Override
+            public void setValue(String value) {
+                int count = box.getItemCount();
+                for (int i=0; i<count; i++) {
+                    String text = box.getItemText(i);
+                    if (text.equals(value)) {
+                        box.setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void fireEvent(GwtEvent<?> gwtEvent) {
+                box.fireEvent(gwtEvent);
+            }
+        };
+
     }
 }

@@ -22,5 +22,9 @@ import com.google.gwt.user.client.ui.HasValue;
 /**
  * @author Olga Melnichuk
  */
-public interface HasChangeableValue<T> extends HasValue<T>, HasChangeHandlers {
+public interface HasChangeableValue<T> extends HasChangeHandlers {
+
+    void setValue(T value);
+
+    T getValue();
 }

@@ -25,8 +25,10 @@ import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
 
 
@@ -92,10 +94,10 @@ public class Investigation {
     public Investigation(Table table) {
         this.table = table;
 
+        termSourceList = new TermSourceList(table);
         generalInfoList = new GeneralInfoList(table);
         contactList = new ContactList(table);
         experimentalDesignList = new ExperimentalDesignList(table);
-        termSourceList = new TermSourceList(table);
 
         if (generalInfoList.isEmpty()) {
             generalInfoList.add();
@@ -290,7 +292,7 @@ public class Investigation {
     }
 
 
-    private static class ExperimentalDesignList extends ObjectList<ExperimentalDesign> {
+    private class ExperimentalDesignList extends ObjectList<ExperimentalDesign> {
 
         private ExperimentalDesignList(Table table) {
             super(table,
@@ -305,8 +307,19 @@ public class Investigation {
             d.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
             d.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
             d.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
+            d.setTermSource(getTermSource(d.getRef().getValue()));
             return d;
         }
+    }
+
+    public TermSource getTermSource(String name) {
+        for(TermSource ts : termSourceList.getAll()) {
+            String tsName =  ts.getName().getValue();
+            if (!isNullOrEmpty(tsName) && tsName.equalsIgnoreCase(name)) {
+                return ts;
+            }
+        }
+        return null;
     }
 
     public ArrayList<TableCell> getErrors() {
