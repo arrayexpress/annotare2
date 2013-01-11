@@ -17,16 +17,12 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
-import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
+import uk.ac.ebi.fg.annotare2.magetab.base.*;
 import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
@@ -97,7 +93,7 @@ public class Investigation {
         termSourceList = new TermSourceList(table);
         generalInfoList = new GeneralInfoList(table);
         contactList = new ContactList(table);
-        experimentalDesignList = new ExperimentalDesignList(table);
+        experimentalDesignList = new ExperimentalDesignList(table, termSourceList);
 
         if (generalInfoList.isEmpty()) {
             generalInfoList.add();
@@ -192,77 +188,89 @@ public class Investigation {
     private static class GeneralInfoList extends ObjectList<Info> {
 
         private GeneralInfoList(Table table) {
-            super(table,
+            super(new RowSet(
                     INVESTIGATION_TITLE,
                     EXPERIMENT_DESCRIPTION,
                     DATE_OF_EXPERIMENT,
                     DATE_OF_PUBLIC_RELEASE,
-                    SDRF_FILE);
-        }
+                    SDRF_FILE).from(table),
+                    new ObjectCreator<Info>() {
+                        @Override
+                        public Info create(HashMap<RowTag, Row.Cell<String>> map) {
+                            Info generalInfo = new Info();
+                            generalInfo.setTitle(map.get(INVESTIGATION_TITLE));
+                            generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
+                            generalInfo.setDateOfExperiment(asDateCell(map.get(DATE_OF_EXPERIMENT)));
+                            generalInfo.setDateOfPublicRelease(asDateCell(map.get(DATE_OF_PUBLIC_RELEASE)));
+                            generalInfo.setSdrfFile(map.get(SDRF_FILE));
+                            return generalInfo;
+                        }
 
-        @Override
-        protected Info create(Map<RowTag, Row.Cell<String>> map) {
-            Info generalInfo = new Info();
-            generalInfo.setTitle(map.get(INVESTIGATION_TITLE));
-            generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
-            generalInfo.setDateOfExperiment(asDateCell(map.get(DATE_OF_EXPERIMENT)));
-            generalInfo.setDateOfPublicRelease(asDateCell(map.get(DATE_OF_PUBLIC_RELEASE)));
-            generalInfo.setSdrfFile(map.get(SDRF_FILE));
-            return generalInfo;
-        }
+                        private Row.Cell<Date> asDateCell(final Row.Cell<String> cell) {
+                            return new Row.Cell<Date>() {
 
-        private Row.Cell<Date> asDateCell(final Row.Cell<String> cell) {
-            return new Row.Cell<Date>() {
+                                @Override
+                                public void setValue(Date date) {
+                                    cell.setValue(format(date));
+                                }
 
-                @Override
-                public void setValue(Date date) {
-                    cell.setValue(format(date));
-                }
+                                @Override
+                                public Date getValue() {
+                                    return parse(cell.getValue());
+                                }
 
-                @Override
-                public Date getValue() {
-                    return parse(cell.getValue());
-                }
+                                @Override
+                                public boolean isEmpty() {
+                                    return cell.isEmpty();
+                                }
 
-                @Override
-                public boolean isEmpty() {
-                    return cell.isEmpty();
-                }
+                                private String format(Date date) {
+                                    return TextFormatter.getInstance().formatDate(date);
+                                }
 
-                private String format(Date date) {
-                    return TextFormatter.getInstance().formatDate(date);
-                }
-
-                private Date parse(String s) {
-                    return TextFormatter.getInstance().parseDate(s);
-                }
-            };
+                                private Date parse(String s) {
+                                    return TextFormatter.getInstance().parseDate(s);
+                                }
+                            };
+                        }
+                    });
         }
     }
 
     private static class TermSourceList extends ObjectList<TermSource> {
 
         protected TermSourceList(Table table) {
-            super(table,
+            super(new RowSet(
                     TERM_SOURCE_NAME,
                     TERM_SOURCE_VERSION,
-                    TERM_SOURCE_FILE);
+                    TERM_SOURCE_FILE).from(table),
+                    new ObjectCreator<TermSource>() {
+                        @Override
+                        public TermSource create(HashMap<RowTag, Row.Cell<String>> map) {
+                            TermSource termSource = new TermSource();
+                            termSource.setName(map.get(TERM_SOURCE_NAME));
+                            termSource.setVersion(map.get(TERM_SOURCE_VERSION));
+                            termSource.setFile(map.get(TERM_SOURCE_FILE));
+                            return termSource;
+                        }
+                    });
         }
 
-        @Override
-        protected TermSource create(Map<RowTag, Row.Cell<String>> map) {
-            TermSource termSource = new TermSource();
-            termSource.setName(map.get(TERM_SOURCE_NAME));
-            termSource.setVersion(map.get(TERM_SOURCE_VERSION));
-            termSource.setFile(map.get(TERM_SOURCE_FILE));
-            return termSource;
+        public TermSource getTermSource(String name) {
+            for (TermSource ts : getAll()) {
+                String tsName = ts.getName().getValue();
+                if (!isNullOrEmpty(tsName) && tsName.equalsIgnoreCase(name)) {
+                    return ts;
+                }
+            }
+            return null;
         }
     }
 
     private static class ContactList extends ObjectList<Person> {
 
         private ContactList(Table table) {
-            super(table,
+            super(new RowSet(
                     PERSON_FIRST_NAME,
                     PERSON_LAST_NAME,
                     PERSON_MID_INITIALS,
@@ -273,53 +281,43 @@ public class Investigation {
                     PERSON_ADDRESS,
                     PERSON_ROLES,
                     PERSON_ROLES_TERM_ACCESSION_NUMBER,
-                    PERSON_ROLES_TERM_SOURCE_REF);
-        }
-
-        @Override
-        protected Person create(Map<RowTag, Row.Cell<String>> map) {
-            Person p = new Person();
-            p.setFirstName(map.get(PERSON_FIRST_NAME));
-            p.setLastName(map.get(PERSON_LAST_NAME));
-            p.setMidInitials(map.get(PERSON_MID_INITIALS));
-            p.setEmail(map.get(PERSON_EMAIL));
-            p.setPhone(map.get(PERSON_PHONE));
-            p.setFax(map.get(PERSON_FAX));
-            p.setAffiliation(map.get(PERSON_AFFILIATION));
-            p.setAddress(map.get(PERSON_ADDRESS));
-            return p;
+                    PERSON_ROLES_TERM_SOURCE_REF).from(table),
+                    new ObjectCreator<Person>() {
+                        @Override
+                        public Person create(HashMap<RowTag, Row.Cell<String>> map) {
+                            Person p = new Person();
+                            p.setFirstName(map.get(PERSON_FIRST_NAME));
+                            p.setLastName(map.get(PERSON_LAST_NAME));
+                            p.setMidInitials(map.get(PERSON_MID_INITIALS));
+                            p.setEmail(map.get(PERSON_EMAIL));
+                            p.setPhone(map.get(PERSON_PHONE));
+                            p.setFax(map.get(PERSON_FAX));
+                            p.setAffiliation(map.get(PERSON_AFFILIATION));
+                            p.setAddress(map.get(PERSON_ADDRESS));
+                            return p;
+                        }
+                    });
         }
     }
 
+    private static class ExperimentalDesignList extends ObjectList<ExperimentalDesign> {
 
-    private class ExperimentalDesignList extends ObjectList<ExperimentalDesign> {
-
-        private ExperimentalDesignList(Table table) {
-            super(table,
+        private ExperimentalDesignList(Table table, final TermSourceList termSources) {
+            super(new RowSet(
                     EXPERIMENTAL_DESIGN_NAME,
                     EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER,
-                    EXPERIMENTAL_DESIGN_TERM_SOURCE_REF);
+                    EXPERIMENTAL_DESIGN_TERM_SOURCE_REF).from(table),
+                    new ObjectCreator<ExperimentalDesign>() {
+                        public ExperimentalDesign create(HashMap<RowTag, Row.Cell<String>> map) {
+                            ExperimentalDesign d = new ExperimentalDesign();
+                            d.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
+                            d.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
+                            d.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
+                            d.setTermSource(termSources.getTermSource(d.getRef().getValue()));
+                            return d;
+                        }
+                    });
         }
-
-        @Override
-        protected ExperimentalDesign create(Map<RowTag, Row.Cell<String>> map) {
-            ExperimentalDesign d = new ExperimentalDesign();
-            d.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
-            d.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
-            d.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
-            d.setTermSource(getTermSource(d.getRef().getValue()));
-            return d;
-        }
-    }
-
-    public TermSource getTermSource(String name) {
-        for(TermSource ts : termSourceList.getAll()) {
-            String tsName =  ts.getName().getValue();
-            if (!isNullOrEmpty(tsName) && tsName.equalsIgnoreCase(name)) {
-                return ts;
-            }
-        }
-        return null;
     }
 
     public ArrayList<TableCell> getErrors() {

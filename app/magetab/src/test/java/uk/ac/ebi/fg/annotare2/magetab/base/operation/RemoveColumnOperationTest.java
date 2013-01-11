@@ -54,8 +54,7 @@ public class RemoveColumnOperationTest {
         table.addRow(asList(ROW_TAG_1.getName()));
         table.addRow(asList(ROW_TAG_2.getName(), "2", "3"));
 
-        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2);
-        rowSet.addAll(table);
+        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2).from(table);
 
         table.addChangeListener(new ChangeListener() {
             @Override
