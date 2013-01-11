@@ -66,9 +66,10 @@ public class DisclosureListItem extends Composite {
         w.addContentChangeHandler(new RecordChangeEventHandler() {
             @Override
             public void onRecordChange(String value) {
-                header.setTitle(value);
+                header.setHeaderText(value);
             }
         });
+        header.setHeaderText(w.getHeaderText());
         panel.setContent(w);
     }
 

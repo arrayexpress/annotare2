@@ -81,7 +81,7 @@ public class DisclosurePanelHeader extends Composite {
         return EditorResources.INSTANCE;
     }
 
-    public void setTitle(String title) {
+    public void setHeaderText(String title) {
         label.setText(title.isEmpty() ? "" : title);
     }
 

@@ -25,7 +25,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfTermSourceListView;
 
 /**
  * @author Olga Melnichuk
@@ -37,6 +36,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
     private final Provider<IdfContactListActivity> idfContactListActivityProvider;
     private final Provider<IdfTermSourceListActivity> idfTermSourceListActivityProvider;
+    private final Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider;
+
 
     private final Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider;
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
@@ -47,6 +48,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
                                        Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
                                        Provider<IdfContactListActivity> idfContactListActivityProvider,
                                        Provider<IdfTermSourceListActivity> idfTermSourceListActivityProvider,
+                                       Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider,
                                        Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
@@ -54,6 +56,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
         this.idfContactListActivityProvider = idfContactListActivityProvider;
         this.idfTermSourceListActivityProvider = idfTermSourceListActivityProvider;
+        this.idfExperimentalDesignListActivityProvider = idfExperimentalDesignListActivityProvider;
 
         this.sdrfSheetModeActivityProvider = sdrfSheetModeActivityProvider;
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
@@ -73,6 +76,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (idfGeneralInfoActivityProvider.get()).withPlace(place);
                 case CONTACTS:
                     return (idfContactListActivityProvider.get()).withPlace(place);
+                case EXP_DESIGNS:
+                    return (idfExperimentalDesignListActivityProvider.get()).withPlace(place);
                 case TERM_DEF_SOURCES:
                     return (idfTermSourceListActivityProvider.get()).withPlace(place);
                 default:

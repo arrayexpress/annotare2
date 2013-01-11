@@ -23,12 +23,12 @@ public enum IdfSection {
     GENERAL_INFO("General Information"),
     CONTACTS("Contacts"),
     PUBLICATIONS("Publications"),
-    EXP_DESIGN("Experimental Designs"),
+    EXP_DESIGNS("Experimental Designs"),
     EXP_FACTORS("Experimental Factors"),
     QUALITY_CONTROLS("Quality Control Types"),
     PROTOCOLS("Protocols"),
     REPLICATES("Replicate Types"),
-    NORMALIZATION("Normalization Types"),
+    NORMALIZATION_TYPES("Normalization Types"),
     COMMENTS("Comments"),
     TERM_DEF_SOURCES("Term Sources");
 

@@ -24,8 +24,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 
-import java.util.ArrayList;
-
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
 
 /**
@@ -64,14 +62,12 @@ public class ContactView extends IdfItemView<Person> {
     @UiField
     TextArea roles;
 
-    private final ArrayList<EditableField<Person, ?>> allFields = new ArrayList<EditableField<Person, ?>>();
-
-    public ContactView() {
+    public ContactView(Person person) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        addTitleField(hasChangeableValue(firstName));
-        addTitleField(hasChangeableValue(midInitials));
-        addTitleField(hasChangeableValue(lastName));
+        addHeaderField(hasChangeableValue(firstName));
+        addHeaderField(hasChangeableValue(midInitials));
+        addHeaderField(hasChangeableValue(lastName));
 
         addField(new EditableField<Person, String>(hasChangeableValue(firstName)) {
             @Override
@@ -168,10 +164,8 @@ public class ContactView extends IdfItemView<Person> {
                 p.getAddress().setValue(value);
             }
         });
-    }
 
-    public void update(Person p) {
-        setItem(p);
+        setItem(person);
     }
 }
 

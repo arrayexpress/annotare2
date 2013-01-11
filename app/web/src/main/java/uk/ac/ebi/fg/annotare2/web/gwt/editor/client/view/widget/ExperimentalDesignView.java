@@ -21,67 +21,37 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.magetab.idf.ExperimentalDesign;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
 
 /**
  * @author Olga Melnichuk
  */
-public class TermSourceView extends IdfItemView<TermSource> {
+public class ExperimentalDesignView extends IdfItemView<ExperimentalDesign> {
 
-    interface Binder extends UiBinder<Widget, TermSourceView> {
+    interface Binder extends UiBinder<Widget, ExperimentalDesignView> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
     TextBox nameBox;
 
-    @UiField
-    TextBox urlBox;
-
-    @UiField
-    TextBox versionBox;
-
-    public TermSourceView() {
+    public ExperimentalDesignView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         addHeaderField(hasChangeableValue(nameBox));
 
-        addField(new EditableField<TermSource, String>(hasChangeableValue(nameBox)) {
+        addField(new EditableField<ExperimentalDesign, String>(hasChangeableValue(nameBox)) {
 
             @Override
-            protected String getValue(TermSource obj) {
+            protected String getValue(ExperimentalDesign obj) {
                 return obj.getName().getValue();
             }
 
             @Override
-            protected void setValue(TermSource obj, String value) {
+            protected void setValue(ExperimentalDesign obj, String value) {
                 obj.getName().setValue(value);
-            }
-        });
-
-        addField(new EditableField<TermSource, String>(hasChangeableValue(urlBox)) {
-            @Override
-            protected String getValue(TermSource obj) {
-                return obj.getFile().getValue();
-            }
-
-            @Override
-            protected void setValue(TermSource obj, String value) {
-                obj.getFile().setValue(value);
-            }
-        });
-
-        addField(new EditableField<TermSource, String>(hasChangeableValue(versionBox)) {
-            @Override
-            protected String getValue(TermSource obj) {
-                return obj.getVersion().getValue();
-            }
-
-            @Override
-            protected void setValue(TermSource obj, String value) {
-                obj.getVersion().setValue(value);
             }
         });
     }

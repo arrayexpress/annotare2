@@ -55,6 +55,10 @@ public class Investigation {
         PERSON_ROLES_TERM_ACCESSION_NUMBER("Person Roles Term Accession Number"),
         PERSON_ROLES_TERM_SOURCE_REF("Person Roles Term Source REF"),
 
+        EXPERIMENTAL_DESIGN_NAME("Experimental Design"),
+        EXPERIMENTAL_DESIGN_TERM_SOURCE_REF("Experimental Design Term Source REF"),
+        EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER("Experimental Design Term Accession Number"),
+
         TERM_SOURCE_NAME("Term Source Name"),
         TERM_SOURCE_FILE("Term Source File"),
         TERM_SOURCE_VERSION("Term Source Version");
@@ -75,9 +79,11 @@ public class Investigation {
 
     private final ContactList contactList;
 
-    private TermSourceList termSourceList;
+    private final ExperimentalDesignList experimentalDesignList;
 
-    private Table table;
+    private final TermSourceList termSourceList;
+
+    private final Table table;
 
     public Investigation() {
         this(new Table());
@@ -88,6 +94,7 @@ public class Investigation {
 
         generalInfoList = new GeneralInfoList(table);
         contactList = new ContactList(table);
+        experimentalDesignList = new ExperimentalDesignList(table);
         termSourceList = new TermSourceList(table);
 
         if (generalInfoList.isEmpty()) {
@@ -161,7 +168,7 @@ public class Investigation {
     }
 
     public void removeContact(ArrayList<Integer> indices) {
-       contactList.remove(indices);
+        contactList.remove(indices);
     }
 
     public Person addContact() {
@@ -170,6 +177,10 @@ public class Investigation {
 
     public ArrayList<Person> getContacts() {
         return contactList.getAll();
+    }
+
+    public ArrayList<ExperimentalDesign> getExperimentalDesigns() {
+        return experimentalDesignList.getAll();
     }
 
     public ArrayList<TermSource> getTermSources() {
@@ -275,6 +286,26 @@ public class Investigation {
             p.setAffiliation(map.get(PERSON_AFFILIATION));
             p.setAddress(map.get(PERSON_ADDRESS));
             return p;
+        }
+    }
+
+
+    private static class ExperimentalDesignList extends ObjectList<ExperimentalDesign> {
+
+        private ExperimentalDesignList(Table table) {
+            super(table,
+                    EXPERIMENTAL_DESIGN_NAME,
+                    EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER,
+                    EXPERIMENTAL_DESIGN_TERM_SOURCE_REF);
+        }
+
+        @Override
+        protected ExperimentalDesign create(Map<RowTag, Row.Cell<String>> map) {
+            ExperimentalDesign d = new ExperimentalDesign();
+            d.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
+            d.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
+            d.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
+            return d;
         }
     }
 

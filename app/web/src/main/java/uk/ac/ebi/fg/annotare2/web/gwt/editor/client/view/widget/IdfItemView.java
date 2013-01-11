@@ -28,23 +28,23 @@ public class IdfItemView<T> extends DisclosurePanelContent {
 
     private final ArrayList<EditableField<T, ?>> fields = new ArrayList<EditableField<T, ?>>();
 
-    private final ArrayList<HasChangeableValue<?>> title = new ArrayList<HasChangeableValue<?>>();
+    private final ArrayList<HasChangeableValue<?>> header = new ArrayList<HasChangeableValue<?>>();
 
-    private final ChangeHandler titleChangeHandler = new ChangeHandler() {
+    private final ChangeHandler headerChangeHandler = new ChangeHandler() {
         @Override
         public void onChange(ChangeEvent changeEvent) {
-            fireTitleChangedEvent();
+            fireHeaderChangedEvent();
         }
     };
 
     private T item;
 
-    protected void setItem(T item) {
+    public void setItem(T item) {
         this.item = item;
         for (EditableField<T, ?> f : fields) {
             f.readValueFrom(item);
         }
-        fireTitleChangedEvent();
+        fireHeaderChangedEvent();
     }
 
     protected void addField(final EditableField<T, ?> field) {
@@ -57,19 +57,23 @@ public class IdfItemView<T> extends DisclosurePanelContent {
         });
     }
 
-    protected void addTitleField(HasChangeableValue<String> field) {
-        title.add(field);
-        field.addChangeHandler(titleChangeHandler);
+    protected void addHeaderField(HasChangeableValue<String> field) {
+        header.add(field);
+        field.addChangeHandler(headerChangeHandler);
     }
 
-    private void fireTitleChangedEvent() {
+    private void fireHeaderChangedEvent() {
+        fireRecordChangeEvent(getHeaderText());
+    }
+
+    @Override
+    public String getHeaderText() {
         StringBuilder sb = new StringBuilder();
-        int i = title.size();
-        for (HasChangeableValue<?> w : title) {
+        int i = header.size();
+        for (HasChangeableValue<?> w : header) {
             String value = w.getValue().toString();
             sb.append(value).append(--i > 0 ? " " : "");
         }
-        fireRecordChangeEvent(sb.toString());
+        return sb.toString();
     }
-
 }

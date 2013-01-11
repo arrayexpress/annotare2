@@ -16,19 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
@@ -37,27 +27,11 @@ import java.util.ArrayList;
 /**
  * @author Olga Melnichuk
  */
-public class IdfContactListViewImpl extends Composite implements IdfContactListView {
-
-    interface Binder extends UiBinder<Widget, IdfContactListViewImpl> {
-    }
-
-    @UiField
-    VerticalPanel listPanel;
-
-    @UiField
-    Image addIcon;
-
-    @UiField
-    Image removeIcon;
+public class IdfContactListViewImpl extends IdfListView<Person> implements IdfContactListView {
 
     private Presenter presenter;
 
-    private int selection = 0;
-
     public IdfContactListViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
 
         addIcon.addClickHandler(new ClickHandler() {
             @Override
@@ -74,15 +48,9 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
         });
     }
 
-    @UiFactory
-    public EditorResources getResources() {
-        EditorResources.INSTANCE.editorStyles().ensureInjected();
-        return EditorResources.INSTANCE;
-    }
-
     public void setContacts(ArrayList<Person> contacts) {
         for (Person p : contacts) {
-            addListItem(p);
+            addContactView(p);
         }
     }
 
@@ -92,45 +60,22 @@ public class IdfContactListViewImpl extends Composite implements IdfContactListV
     }
 
     private void addNewContact() {
-        DisclosureListItem item = addListItem(presenter.addContact());
+        DisclosureListItem item = addContactView(presenter.addContact());
         //todo scroll + item.open();
     }
 
-    private DisclosureListItem addListItem(Person p) {
+    private DisclosureListItem addContactView(Person p) {
         ContactView contactView = new ContactView();
-        DisclosureListItem item = new DisclosureListItem(contactView);
-        contactView.update(p);
-        listPanel.add(item);
-
-        item.addItemSelectionHandler(new ItemSelectionEventHandler() {
-            @Override
-            public void onSelect(boolean selected) {
-                if (selected) {
-                    selection++;
-                } else if (selection > 0) {
-                    selection--;
-                }
-            }
-        });
-        return item;
+        contactView.setItem(p);
+        return addListItem(contactView);
     }
 
     private void removeSelectedContacts() {
-        if (selection == 0) {
+        ArrayList<Integer> selected = getSelected();
+        if (selected.isEmpty()) {
             return;
         }
-
-        ArrayList<Integer> selected = new ArrayList<Integer>();
-        int size = listPanel.getWidgetCount();
-        for (int i = size - 1; i >=0; i--) {
-            DisclosureListItem item = (DisclosureListItem) listPanel.getWidget(i);
-            if (item.isSelected()) {
-                selected.add(i);
-            }
-        }
         presenter.removeContacts(selected);
-        for (Integer i : selected) {
-            listPanel.remove(i);
-        }
+        removeItems(selected);
     }
 }

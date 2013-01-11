@@ -16,13 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceView;
@@ -32,38 +25,19 @@ import java.util.ArrayList;
 /**
  * @author Olga Melnichuk
  */
-public class IdfTermSourceListViewImpl extends Composite implements IdfTermSourceListView {
-
-
-    interface Binder extends UiBinder<Widget, IdfTermSourceListViewImpl> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
-
-    @UiField
-    VerticalPanel listPanel;
-
-    @UiField
-    Image addIcon;
-
-    @UiField
-    Image removeIcon;
-
-    public IdfTermSourceListViewImpl() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
-    }
+public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implements IdfTermSourceListView {
 
     @Override
     public void setTermSources(ArrayList<TermSource> termSources) {
         for(TermSource ts : termSources) {
-            addListItem(ts);
+            addTermSourceView(ts);
         }
     }
 
-    private DisclosureListItem addListItem(TermSource t) {
+    private DisclosureListItem addTermSourceView(TermSource ts) {
         TermSourceView itemView = new TermSourceView();
-        DisclosureListItem item = new DisclosureListItem(itemView);
-        itemView.update(t);
-        listPanel.add(item);
+        itemView.setItem(ts);
+        return addListItem(itemView);
 
         /*item.addItemSelectionHandler(new ItemSelectionEventHandler() {
             @Override
@@ -75,7 +49,6 @@ public class IdfTermSourceListViewImpl extends Composite implements IdfTermSourc
                 }
             }
         });*/
-        return item;
     }
 
 }
