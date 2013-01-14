@@ -23,18 +23,22 @@
         <table class="app-IdfItemFormLayout">
             <tr>
                 <td class="label">Name</td>
-                <td style="width:200px">
-                    <g:TextBox width="100%" ui:field="nameBox"/>
-                </td>
-                <td class="label">Accession</td>
-                <td style="width:200px">
-                    <g:TextBox width="100%" ui:field="accessionBox"/>
+                <td style="width:350px">
+                    <div style="margin-right: 3px;">
+                        <div style="padding-right: 3px;">
+                            <g:TextBox width="100%" ui:field="nameBox"/>
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td class="label">Term Source</td>
                 <td colspan="3">
-                    <g:ListBox width="100%" ui:field="termSourceBox"/>
+                    <div style="margin-right: 3px;">
+                        <div style="padding-right: 3px;">
+                            <g:ListBox width="100%" ui:field="termSourceBox"/>
+                        </div>
+                    </div>
                 </td>
             </tr>
         </table>

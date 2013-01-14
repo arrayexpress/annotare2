@@ -40,9 +40,6 @@ public class ExperimentalDesignView extends IdfItemView<ExperimentalDesign> {
     TextBox nameBox;
 
     @UiField
-    TextBox accessionBox;
-
-    @UiField
     ListBox termSourceBox;
 
     public ExperimentalDesignView() {
@@ -66,19 +63,6 @@ public class ExperimentalDesignView extends IdfItemView<ExperimentalDesign> {
             @Override
             protected void setValue(ExperimentalDesign obj, String value) {
                 obj.getName().setValue(value);
-            }
-        });
-
-        addField(new EditableField<ExperimentalDesign, String>(hasChangeableValue(accessionBox)) {
-
-            @Override
-            protected String getValue(ExperimentalDesign obj) {
-                return obj.getAccession().getValue();
-            }
-
-            @Override
-            protected void setValue(ExperimentalDesign obj, String value) {
-                obj.getAccession().setValue(value);
             }
         });
 

@@ -20,17 +20,47 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <g:HTMLPanel>
-        <table class="app-IdfItemFormLayout">
+        <table cellpadding="0" cellspacing="0">
             <tr>
-                <td class="label">First Name</td>
-                <td style="width:250px">
-                    <g:TextBox width="100%" ui:field="firstName"/>
+                <td valign="top">
+                    <table class="app-IdfItemFormLayout">
+                        <tr>
+                            <td class="label">First Name</td>
+                            <td style="width:250px">
+                                <g:TextBox width="100%" ui:field="firstName"/>
+                            </td>
+                            <td class="label">Middle Initials</td>
+                            <td style="width:30px">
+                                <g:TextBox width="100%" ui:field="midInitials"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Last Name</td>
+                            <td colspan="3">
+                                <g:TextBox width="100%" ui:field="lastName"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Email</td>
+                            <td colspan="3">
+                                <g:TextBox width="100%" ui:field="email"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Phone</td>
+                            <td colspan="3">
+                                <g:TextBox width="100%" ui:field="phone"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Fax</td>
+                            <td colspan="3">
+                                <g:TextBox width="100%" ui:field="fax"/>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
-                <td class="label">Middle Initials</td>
-                <td style="width:30px">
-                    <g:TextBox width="100%" ui:field="midInitials"/>
-                </td>
-                <td rowspan="2" valign="top" align="right">
+                <td>
                     <table class="app-IdfItemFormLayout" style="height:100%;">
                         <tr>
                             <td class="label">Affiliation</td>
@@ -38,19 +68,6 @@
                                 <g:TextArea visibleLines="3" ui:field="affiliation"/>
                             </td>
                         </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Last Name</td>
-                <td colspan="3">
-                    <g:TextBox width="100%" ui:field="lastName"/>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4">&nbsp;</td>
-                <td rowspan="4" valign="bottom" align="right">
-                    <table class="app-IdfItemFormLayout" style="height:100%;">
                         <tr>
                             <td class="label">Address</td>
                             <td>
@@ -64,24 +81,6 @@
                             </td>
                         </tr>
                     </table>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Email</td>
-                <td colspan="3">
-                    <g:TextBox width="100%" ui:field="email"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Phone</td>
-                <td colspan="3">
-                    <g:TextBox width="100%" ui:field="phone"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Fax</td>
-                <td colspan="3">
-                    <g:TextBox width="100%" ui:field="fax"/>
                 </td>
             </tr>
         </table>

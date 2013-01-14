@@ -328,10 +328,7 @@
 }
 
 .app-IdfListView .app-Buttons {
-    padding-top: 10px;
-    padding-bottom: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px 10px 20px;
 }
 
 /* Idf List Item */
@@ -341,8 +338,8 @@
 }
 
 .app-IdfItemFormLayout td {
-    padding-right: 10px;
-    padding-left: 10px
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .app-IdfItemFormLayout td.label {
@@ -350,9 +347,10 @@
     padding-right: 3px;
 }
 
-.app-IdfItemFormLayout input {
-    padding-left: 5px;
-    padding-right: 5px;
+.gwt-TextBox {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
 .app-IdfItemFormLayout textarea {
