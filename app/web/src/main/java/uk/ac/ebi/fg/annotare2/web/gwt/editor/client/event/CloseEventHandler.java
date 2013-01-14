@@ -16,22 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class FinishEvent extends GwtEvent<FinishEventHandler> {
+public interface CloseEventHandler extends EventHandler {
 
-    public static Type<FinishEventHandler> TYPE = new Type<FinishEventHandler>();
-
-    @Override
-    public Type<FinishEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(FinishEventHandler handler) {
-        handler.onFinish();
-    }
+    void onClose();
 }

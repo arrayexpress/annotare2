@@ -43,7 +43,7 @@ public class TermSourceView extends IdfItemView<TermSource> {
     @UiField
     TextBox versionBox;
 
-    public TermSourceView() {
+    public TermSourceView(TermSource ts) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         addHeaderField(hasChangeableValue(nameBox));
@@ -84,5 +84,7 @@ public class TermSourceView extends IdfItemView<TermSource> {
                 obj.getVersion().setValue(value);
             }
         });
+
+        setItem(ts);
     }
 }

@@ -16,7 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceTemplatesDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceView;
 
@@ -27,28 +34,47 @@ import java.util.ArrayList;
  */
 public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implements IdfTermSourceListView {
 
+
+    public IdfTermSourceListViewImpl() {
+        addIcon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                showTermSourceTemplates();
+            }
+        });
+    }
+
     @Override
     public void setTermSources(ArrayList<TermSource> termSources) {
-        for(TermSource ts : termSources) {
+        for (TermSource ts : termSources) {
             addTermSourceView(ts);
         }
     }
 
     private DisclosureListItem addTermSourceView(TermSource ts) {
-        TermSourceView itemView = new TermSourceView();
-        itemView.setItem(ts);
-        return addListItem(itemView);
+        return addListItem(new TermSourceView(ts));
+    }
 
-        /*item.addItemSelectionHandler(new ItemSelectionEventHandler() {
+    private void showTermSourceTemplates() {
+        //TODO load templates properly
+        ArrayList<UITermSource> templates = new ArrayList<UITermSource>();
+        templates.add(new UITermSource("ArrayExpress", "", "", "AE description"));
+        templates.add(new UITermSource("EFO", "", "", "EFO description"));
+        templates.add(new UITermSource("MGED Ontology", "", "", " MGED Ontology description"));
+
+        final TermSourceTemplatesDialog dialog = new TermSourceTemplatesDialog(templates);
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
             @Override
-            public void onSelect(boolean selected) {
-                if (selected) {
-                    selection++;
-                } else if (selection > 0) {
-                    selection--;
-                }
+            public void onClose(CloseEvent<PopupPanel> event) {
+               if (!dialog.isCancelled()) {
+                   addTermSources(dialog.getSelection());
+               }
             }
-        });*/
+        });
+    }
+
+    private void addTermSources(ArrayList<UITermSource> selected) {
+        //TODO
     }
 
 }

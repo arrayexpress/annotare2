@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.FinishEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEventHandler;
 
 /**
@@ -37,9 +37,9 @@ public class ImportFileDialog extends DialogBox {
         content = new ImportFileDialogContent();
         setWidget(content);
 
-        content.addImportFinishEventHandler(new FinishEventHandler() {
+        content.addCloseEventHandler(new CloseEventHandler() {
             @Override
-            public void onFinish() {
+            public void onClose() {
                 hide();
             }
         });
