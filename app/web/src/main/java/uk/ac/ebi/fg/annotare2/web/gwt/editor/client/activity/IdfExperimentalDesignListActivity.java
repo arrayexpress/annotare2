@@ -25,13 +25,18 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfExperimentalDesignListView;
+
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfExperimentalDesignListActivity extends AbstractActivity {
+public class IdfExperimentalDesignListActivity extends AbstractActivity
+        implements IdfExperimentalDesignListView.Presenter {
 
     private final IdfExperimentalDesignListView view;
 
@@ -43,8 +48,8 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity {
 
     @Inject
     public IdfExperimentalDesignListActivity(IdfExperimentalDesignListView view,
-                                     PlaceController placeController,
-                                     IdfData idfData) {
+                                             PlaceController placeController,
+                                             IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
         this.idfData = idfData;
@@ -52,6 +57,7 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
     }
@@ -76,5 +82,16 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity {
                 }
             }
         }.wrap());
+    }
+
+    @Override
+    public ArrayList<UITerm> getExperimentalDesignTerms() {
+        // TODO
+        UITermSource ts = new UITermSource("efo", "", "", "aa");
+        ArrayList<UITerm> list = new ArrayList<UITerm>();
+        list.add(new UITerm("case control design", "", ts, "biological variation design"));
+        list.add(new UITerm("all pairs", "", ts, "methodological variation design"));
+        list.add(new UITerm("array platform variation design", "", ts, "methodological variation design"));
+        return list;
     }
 }

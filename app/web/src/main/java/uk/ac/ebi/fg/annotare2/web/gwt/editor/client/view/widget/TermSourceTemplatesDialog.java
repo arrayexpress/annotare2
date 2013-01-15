@@ -30,10 +30,9 @@ public class TermSourceTemplatesDialog extends DialogBox {
     private final TermSourceTemplatesDialogContent content;
 
     public TermSourceTemplatesDialog(ArrayList<UITermSource> templates) {
+        setText("Add Term Source(s)");
         setGlassEnabled(true);
         setModal(true);
-
-        setText("Add Term Source(s)");
 
         content = new TermSourceTemplatesDialogContent(templates);
         content.addCloseHandler(new CloseEventHandler() {
