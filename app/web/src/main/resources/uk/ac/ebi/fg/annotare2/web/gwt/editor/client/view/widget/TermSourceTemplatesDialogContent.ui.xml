@@ -19,8 +19,8 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <g:HTMLPanel>
-        Select:
-        <table width="100%">
+        Select templates:
+        <table>
             <tr>
                 <td style="width:200px">
                     <g:ListBox ui:field="listBox" width="100%"/>
