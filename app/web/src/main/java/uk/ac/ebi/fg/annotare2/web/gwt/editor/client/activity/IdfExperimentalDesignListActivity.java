@@ -24,6 +24,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
+import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
@@ -31,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfExperimentalDesignListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -85,7 +88,7 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
     }
 
     @Override
-    public ArrayList<UITerm> getExperimentalDesignTerms() {
+    public List<UITerm> getExperimentalDesignTerms() {
         // TODO
         UITermSource ts = new UITermSource("efo", "", "", "aa");
         ArrayList<UITerm> list = new ArrayList<UITerm>();
@@ -93,5 +96,15 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
         list.add(new UITerm("all pairs", "", ts, "methodological variation design"));
         list.add(new UITerm("array platform variation design", "", ts, "methodological variation design"));
         return list;
+    }
+
+    @Override
+    public Term addExperimentalDesign() {
+        return investigation.addExperimentalDesign();
+    }
+
+    @Override
+    public TermSource getTermSource(String name) {
+        return investigation.getTermSource(name);
     }
 }

@@ -55,13 +55,13 @@ public class ExpDesignTemplatesDialogContent extends Composite {
 
     private boolean cancelled = false;
 
-    private final Map<Integer, Set<Integer>> selected = new HashMap<Integer, Set<Integer>>();
+    private Map<Integer, Set<Integer>> selected = new HashMap<Integer, Set<Integer>>();
 
     private final List<UITerm> templates = new ArrayList<UITerm>();
 
     private final List<Category> categories = new ArrayList<Category>();
 
-    public ExpDesignTemplatesDialogContent(ArrayList<UITerm> terms) {
+    public ExpDesignTemplatesDialogContent(List<UITerm> terms) {
         templates.addAll(terms);
         categories.addAll(extractCategories(terms));
 
@@ -123,6 +123,7 @@ public class ExpDesignTemplatesDialogContent extends Composite {
         selectNone.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                selected = new HashMap<Integer, Set<Integer>>();
                 fireCloseEvent();
             }
         });
@@ -137,7 +138,7 @@ public class ExpDesignTemplatesDialogContent extends Composite {
         });
     }
 
-    private List<Category> extractCategories(ArrayList<UITerm> terms) {
+    private List<Category> extractCategories(List<UITerm> terms) {
         Set<String> exist = new HashSet<String>();
         List<Category> list = new ArrayList<Category>();
         for (UITerm t : terms) {
@@ -158,6 +159,17 @@ public class ExpDesignTemplatesDialogContent extends Composite {
 
     public boolean isCancelled() {
         return cancelled;
+    }
+
+    public List<UITerm> getSelection() {
+        List<UITerm> list = new ArrayList<UITerm>();
+        for (Integer categoryIndex : selected.keySet()) {
+            Set<Integer> selection = selected.get(categoryIndex);
+            for (Integer termIndex : selection) {
+                list.add(templates.get(termIndex));
+            }
+        }
+        return list;
     }
 
     private static final class Category {

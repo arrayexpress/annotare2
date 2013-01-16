@@ -2,22 +2,24 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.user.client.ui.DialogBox;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExpDesignTemplatesDialog extends DialogBox {
 
-    public ExpDesignTemplatesDialog(ArrayList<UITerm> templates) {
+    private final ExpDesignTemplatesDialogContent content;
+
+    public ExpDesignTemplatesDialog(List<UITerm> templates) {
         setText("Add Experimental Design(s)");
         setGlassEnabled(true);
         setModal(true);
 
-        ExpDesignTemplatesDialogContent content = new ExpDesignTemplatesDialogContent(templates);
+        content = new ExpDesignTemplatesDialogContent(templates);
         content.addCloseHandler(new CloseEventHandler() {
             @Override
             public void onClose() {
@@ -31,10 +33,10 @@ public class ExpDesignTemplatesDialog extends DialogBox {
     }
 
     public boolean isCancelled() {
-        return false; //TODO
+        return content.isCancelled();
     }
 
-    public ArrayList<UITerm> getSelection() {
-        return new ArrayList<UITerm>(); //TODO
+    public List<UITerm> getSelection() {
+        return content.getSelection();
     }
 }

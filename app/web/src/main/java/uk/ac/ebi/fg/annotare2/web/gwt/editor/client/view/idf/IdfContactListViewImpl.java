@@ -22,7 +22,7 @@ import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -48,7 +48,8 @@ public class IdfContactListViewImpl extends IdfListView<Person> implements IdfCo
         });
     }
 
-    public void setContacts(ArrayList<Person> contacts) {
+    @Override
+    public void setContacts(List<Person> contacts) {
         for (Person p : contacts) {
             addContactView(p);
         }
@@ -69,7 +70,7 @@ public class IdfContactListViewImpl extends IdfListView<Person> implements IdfCo
     }
 
     private void removeSelectedContacts() {
-        ArrayList<Integer> selected = getSelected();
+        List<Integer> selected = getSelected();
         if (selected.isEmpty()) {
             return;
         }

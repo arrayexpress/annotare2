@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -29,7 +30,7 @@ public class TermSourceTemplatesDialog extends DialogBox {
 
     private final TermSourceTemplatesDialogContent content;
 
-    public TermSourceTemplatesDialog(ArrayList<UITermSource> templates) {
+    public TermSourceTemplatesDialog(List<UITermSource> templates) {
         setText("Add Term Source(s)");
         setGlassEnabled(true);
         setModal(true);

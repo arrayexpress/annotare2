@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.magetab.base.operation.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -83,12 +84,12 @@ public class Table implements Serializable {
         return row;
     }
 
-    public void removeColumn(ArrayList<Row> rowSet, ArrayList<Integer> colIndices) {
+    public void removeColumn(List<Row> rowSet, List<Integer> colIndices) {
         doRemoveColumn(rowSet, colIndices);
         notifyListeners(Operations.removeColumn(toRowIndices(rowSet), colIndices));
     }
 
-    public void moveColumn(ArrayList<Row> rowSet, int fromColIndex, int toColIndex) {
+    public void moveColumn(List<Row> rowSet, int fromColIndex, int toColIndex) {
         if (fromColIndex == toColIndex) {
             return;
         }
@@ -141,16 +142,16 @@ public class Table implements Serializable {
         }
     }
 
-    private ArrayList<Integer> toRowIndices(ArrayList<Row> rowSet) {
-        ArrayList<Integer> rowIndices = new ArrayList<Integer>();
+    private List<Integer> toRowIndices(List<Row> rowSet) {
+        List<Integer> rowIndices = new ArrayList<Integer>();
         for (Row r : rowSet) {
             rowIndices.add(rows.indexOf(r));
         }
         return rowIndices;
     }
 
-    private ArrayList<Row> toRows(ArrayList<Integer> indices) {
-        ArrayList<Row> rowSet = new ArrayList<Row>();
+    private List<Row> toRows(List<Integer> indices) {
+        List<Row> rowSet = new ArrayList<Row>();
         for (Integer rowIndex : indices) {
             rowSet.add(rows.get(rowIndex));
         }
@@ -171,13 +172,13 @@ public class Table implements Serializable {
         rows.get(rIndex).setValue(cIndex, value, notify);
     }
 
-    private void doRemoveColumn(ArrayList<Row> rowSet, ArrayList<Integer> colIndices) {
+    private void doRemoveColumn(List<Row> rowSet, List<Integer> colIndices) {
         for (Row r : rowSet) {
             r.removeColumn(colIndices);
         }
     }
 
-    private void doMoveColumn(ArrayList<Row> rowSet, int fromIndex, int toIndex) {
+    private void doMoveColumn(List<Row> rowSet, int fromIndex, int toIndex) {
         for (Row r : rowSet) {
             r.moveColumn(fromIndex, toIndex);
         }

@@ -21,18 +21,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
-import uk.ac.ebi.fg.annotare2.magetab.idf.ExperimentalDesign;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
+import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExpDesignTemplatesDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentalDesignView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfExperimentalDesignListViewImpl extends IdfListView<ExperimentalDesign>
+public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
         implements IdfExperimentalDesignListView {
 
     private Presenter presenter;
@@ -47,8 +48,8 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<ExperimentalD
     }
 
     @Override
-    public void setExperimentalDesigns(ArrayList<ExperimentalDesign> designs) {
-        for (ExperimentalDesign d : designs) {
+    public void setExperimentalDesigns(List<Term> designs) {
+        for (Term d : designs) {
             addExperimentalDesignView(d);
         }
     }
@@ -58,7 +59,7 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<ExperimentalD
         this.presenter = presenter;
     }
 
-    private DisclosureListItem addExperimentalDesignView(ExperimentalDesign d) {
+    private DisclosureListItem addExperimentalDesignView(Term d) {
         ExperimentalDesignView view = new ExperimentalDesignView();
         view.setItem(d);
         return addListItem(view);
@@ -77,7 +78,19 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<ExperimentalD
         });
     }
 
-    private void addExperimentDesigns(ArrayList<UITerm> designs) {
-        //TODO
+    private void addExperimentDesigns(List<UITerm> terms) {
+        if (terms.isEmpty()) {
+            addExperimentalDesignView(presenter.addExperimentalDesign());
+            return;
+        }
+
+        for (UITerm term : terms) {
+            Term design = presenter.addExperimentalDesign();
+            TermSource termSource = presenter.getTermSource(term.getTermSource().getName());
+            design.getName().setValue(term.getName());
+            design.getAccession().setValue(term.getAccession());
+            design.setTermSource(termSource);
+            addExperimentalDesignView(design);
+        }
     }
 }

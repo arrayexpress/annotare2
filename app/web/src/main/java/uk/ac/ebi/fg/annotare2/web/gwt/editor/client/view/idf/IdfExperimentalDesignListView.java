@@ -17,23 +17,27 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.ExperimentalDesign;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
+import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public interface IdfExperimentalDesignListView extends IsWidget {
 
-    void setExperimentalDesigns(ArrayList<ExperimentalDesign> designs);
+    void setExperimentalDesigns(List<Term> designs);
 
     void setPresenter(Presenter presenter);
 
     public interface Presenter {
 
-        ArrayList<UITerm> getExperimentalDesignTerms();
+        List<UITerm> getExperimentalDesignTerms();
 
+        Term addExperimentalDesign();
+
+        TermSource getTermSource(String name);
     }
 }

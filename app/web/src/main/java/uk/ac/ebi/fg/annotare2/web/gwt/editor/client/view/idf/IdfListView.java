@@ -14,6 +14,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListIt
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.IdfItemView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -62,12 +63,12 @@ public class IdfListView<T> extends Composite {
         return item;
     }
 
-    protected ArrayList<Integer> getSelected() {
+    protected List<Integer> getSelected() {
         if (selection == 0) {
             return new ArrayList<Integer>();
         }
 
-        ArrayList<Integer> selected = new ArrayList<Integer>();
+        List<Integer> selected = new ArrayList<Integer>();
         int size = listPanel.getWidgetCount();
         for (int i = size - 1; i >=0; i--) {
             DisclosureListItem item = (DisclosureListItem) listPanel.getWidget(i);
@@ -78,7 +79,7 @@ public class IdfListView<T> extends Composite {
         return selected;
     }
 
-    protected int removeItems(ArrayList<Integer> indices) {
+    protected int removeItems(List<Integer> indices) {
         int count = 0;
         for (Integer i : indices) {
             if (listPanel.remove(i)) {

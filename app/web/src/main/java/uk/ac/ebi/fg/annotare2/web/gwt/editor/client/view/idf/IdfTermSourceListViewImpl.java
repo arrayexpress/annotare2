@@ -28,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListIt
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -45,7 +46,7 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
     }
 
     @Override
-    public void setTermSources(ArrayList<TermSource> termSources) {
+    public void setTermSources(List<TermSource> termSources) {
         for (TermSource ts : termSources) {
             addTermSourceView(ts);
         }
@@ -57,7 +58,7 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
 
     private void showTermSourceTemplates() {
         //TODO load templates properly
-        ArrayList<UITermSource> templates = new ArrayList<UITermSource>();
+        List<UITermSource> templates = new ArrayList<UITermSource>();
         templates.add(new UITermSource("ArrayExpress", "", "", "AE description"));
         templates.add(new UITermSource("EFO", "", "", "EFO description"));
         templates.add(new UITermSource("MGED Ontology", "", "", " MGED Ontology description"));

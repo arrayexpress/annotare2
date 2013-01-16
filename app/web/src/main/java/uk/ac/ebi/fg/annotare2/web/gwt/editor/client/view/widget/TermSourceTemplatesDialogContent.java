@@ -29,7 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -57,7 +57,7 @@ public class TermSourceTemplatesDialogContent extends Composite {
 
     private boolean cancelled = false;
 
-    public TermSourceTemplatesDialogContent(final ArrayList<UITermSource> templates) {
+    public TermSourceTemplatesDialogContent(final List<UITermSource> templates) {
         listBox = new ListBox(true);
         listBox.setVisibleItemCount(10);
         for (UITermSource ts : templates) {

@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
+import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.Row;
 import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
 
@@ -24,6 +25,8 @@ import java.util.HashMap;
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 interface ObjectCreator<T> {
+
     T create(HashMap<RowTag, Row.Cell<String>> map);
 }

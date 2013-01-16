@@ -29,7 +29,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @GwtCompatible
 public class Row implements Serializable {
 
-    private ArrayList<Value> values = new ArrayList<Value>();
+    private List<Value> values = new ArrayList<Value>();
 
    private Table table;
 
@@ -56,7 +56,7 @@ public class Row implements Serializable {
         return idx + 1;
     }
 
-    public void removeColumn(ArrayList<Integer> colIndices) {
+    public void removeColumn(List<Integer> colIndices) {
         checkColumnIndices(colIndices);
         values = GwtQuirks.remove(values, colIndices);
     }
@@ -121,7 +121,7 @@ public class Row implements Serializable {
         }
     }
 
-    private void checkColumnIndices(ArrayList<Integer> indices) {
+    private void checkColumnIndices(List<Integer> indices) {
         for (Integer i : indices) {
             checkColumnIndex(i);
         }

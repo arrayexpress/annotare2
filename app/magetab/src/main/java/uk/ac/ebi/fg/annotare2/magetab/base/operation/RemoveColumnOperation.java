@@ -20,6 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -27,15 +28,15 @@ import java.util.ArrayList;
 @GwtCompatible
 public class RemoveColumnOperation implements Operation {
 
-    private ArrayList<Integer> rowIndices = new ArrayList<Integer>();
+    private List<Integer> rowIndices = new ArrayList<Integer>();
 
-    private ArrayList<Integer> columnIndices = new ArrayList<Integer>();
+    private List<Integer> columnIndices = new ArrayList<Integer>();
 
     public RemoveColumnOperation() {
         //required by GWT Serialization Policy
     }
 
-    public RemoveColumnOperation(ArrayList<Integer> rowIndices, ArrayList<Integer> columnIndices) {
+    public RemoveColumnOperation(List<Integer> rowIndices, List<Integer> columnIndices) {
         this.rowIndices.addAll(rowIndices);
         this.columnIndices.addAll(columnIndices);
     }
@@ -45,11 +46,11 @@ public class RemoveColumnOperation implements Operation {
         table.apply(this);
     }
 
-    public ArrayList<Integer> getRowIndices() {
+    public List<Integer> getRowIndices() {
         return rowIndices;
     }
 
-    public ArrayList<Integer> getColumnIndices() {
+    public List<Integer> getColumnIndices() {
         return columnIndices;
     }
 }

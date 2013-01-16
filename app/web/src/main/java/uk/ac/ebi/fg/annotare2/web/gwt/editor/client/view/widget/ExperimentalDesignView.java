@@ -22,7 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.ExperimentalDesign;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
@@ -30,7 +30,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.Changeabl
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentalDesignView extends IdfItemView<ExperimentalDesign> {
+public class ExperimentalDesignView extends IdfItemView<Term> {
 
     interface Binder extends UiBinder<Widget, ExperimentalDesignView> {
         Binder BINDER = GWT.create(Binder.class);
@@ -53,29 +53,29 @@ public class ExperimentalDesignView extends IdfItemView<ExperimentalDesign> {
 
         addHeaderField(hasChangeableValue(nameBox));
 
-        addField(new EditableField<ExperimentalDesign, String>(hasChangeableValue(nameBox)) {
+        addField(new EditableField<Term, String>(hasChangeableValue(nameBox)) {
 
             @Override
-            protected String getValue(ExperimentalDesign obj) {
+            protected String getValue(Term obj) {
                 return obj.getName().getValue();
             }
 
             @Override
-            protected void setValue(ExperimentalDesign obj, String value) {
+            protected void setValue(Term obj, String value) {
                 obj.getName().setValue(value);
             }
         });
 
-        addField(new EditableField<ExperimentalDesign, String>(hasChangeableValue(termSourceBox)) {
+        addField(new EditableField<Term, String>(hasChangeableValue(termSourceBox)) {
 
             @Override
-            protected String getValue(ExperimentalDesign obj) {
+            protected String getValue(Term obj) {
                 TermSource ts = obj.getTermSource();
                 return ts == null ? "none" : ts.getName().getValue();
             }
 
             @Override
-            protected void setValue(ExperimentalDesign obj, String value) {
+            protected void setValue(Term obj, String value) {
                 //obj.setTermSource(ts);
             }
         });

@@ -20,6 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -37,12 +38,12 @@ public class GwtQuirks {
      * @param <T>     a type of elements
      * @return a new list where deleted elements are filtered out
      */
-    public static <T> ArrayList<T> remove(ArrayList<T> list, ArrayList<Integer> indices) {
-        ArrayList<Integer> sorted = new ArrayList<Integer>();
+    public static <T> List<T> remove(List<T> list, List<Integer> indices) {
+        List<Integer> sorted = new ArrayList<Integer>();
         sorted.addAll(indices);
         Collections.sort(sorted);
 
-        ArrayList<T> newList = new ArrayList<T>();
+        List<T> newList = new ArrayList<T>();
         int k = 0, i = sorted.isEmpty() ? -1 : sorted.get(k);
         for (int j = 0; j < list.size(); j++) {
             if (j != i) {

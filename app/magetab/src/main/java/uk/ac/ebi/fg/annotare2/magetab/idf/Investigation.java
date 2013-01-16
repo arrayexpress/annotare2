@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
@@ -165,7 +166,7 @@ public class Investigation {
         return generalInfoList.get(0).getSdrfFile();
     }
 
-    public void removeContact(ArrayList<Integer> indices) {
+    public void removeContact(List<Integer> indices) {
         contactList.remove(indices);
     }
 
@@ -177,12 +178,21 @@ public class Investigation {
         return contactList.getAll();
     }
 
-    public ArrayList<ExperimentalDesign> getExperimentalDesigns() {
+
+    public Term addExperimentalDesign() {
+         return experimentalDesignList.add();
+    }
+
+    public ArrayList<Term> getExperimentalDesigns() {
         return experimentalDesignList.getAll();
     }
 
     public ArrayList<TermSource> getTermSources() {
         return termSourceList.getAll();
+    }
+
+    public TermSource getTermSource(String name) {
+        return termSourceList.getTermSource(name);
     }
 
     private static class GeneralInfoList extends ObjectList<Info> {
@@ -300,27 +310,29 @@ public class Investigation {
         }
     }
 
-    private static class ExperimentalDesignList extends ObjectList<ExperimentalDesign> {
+    private static class ExperimentalDesignList extends ObjectList<Term> {
 
         private ExperimentalDesignList(Table table, final TermSourceList termSources) {
             super(new RowSet(
                     EXPERIMENTAL_DESIGN_NAME,
                     EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER,
                     EXPERIMENTAL_DESIGN_TERM_SOURCE_REF).from(table),
-                    new ObjectCreator<ExperimentalDesign>() {
-                        public ExperimentalDesign create(HashMap<RowTag, Row.Cell<String>> map) {
-                            ExperimentalDesign d = new ExperimentalDesign();
-                            d.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
-                            d.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
-                            d.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
-                            d.setTermSource(termSources.getTermSource(d.getRef().getValue()));
-                            return d;
+                    new ObjectCreator<Term>() {
+                        public Term create(HashMap<RowTag, Row.Cell<String>> map) {
+                            Term.Builder builder = new Term.Builder();
+                            builder.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
+                            builder.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
+                            builder.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
+
+                            Term term = builder.build();
+                            term.setTermSource(termSources.getTermSource(term.getRef().getValue()));
+                            return term;
                         }
                     });
         }
     }
 
-    public ArrayList<TableCell> getErrors() {
+    public List<TableCell> getErrors() {
         //TODO
         return new ArrayList<TableCell>();
     }

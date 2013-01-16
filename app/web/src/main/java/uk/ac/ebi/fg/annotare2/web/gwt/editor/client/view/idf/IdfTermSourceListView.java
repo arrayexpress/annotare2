@@ -19,12 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public interface IdfTermSourceListView extends IsWidget {
 
-    void setTermSources(ArrayList<TermSource> contacts);
+    void setTermSources(List<TermSource> contacts);
 }
