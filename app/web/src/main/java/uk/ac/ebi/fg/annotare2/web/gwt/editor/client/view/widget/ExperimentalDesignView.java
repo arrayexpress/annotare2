@@ -42,7 +42,7 @@ public class ExperimentalDesignView extends IdfItemView<Term> {
     @UiField
     ListBox termSourceBox;
 
-    public ExperimentalDesignView() {
+    public ExperimentalDesignView(Term term) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         //TODO add a proper term source loader
@@ -79,5 +79,7 @@ public class ExperimentalDesignView extends IdfItemView<Term> {
                 //obj.setTermSource(ts);
             }
         });
+
+        setItem(term);
     }
 }

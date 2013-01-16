@@ -67,9 +67,7 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
     }
 
     private DisclosureListItem addExperimentalDesignView(Term d) {
-        ExperimentalDesignView view = new ExperimentalDesignView();
-        view.setItem(d);
-        return addListItem(view);
+        return addListItem(new ExperimentalDesignView(d));
     }
 
     private void showExperimentDesignTemplates() {
