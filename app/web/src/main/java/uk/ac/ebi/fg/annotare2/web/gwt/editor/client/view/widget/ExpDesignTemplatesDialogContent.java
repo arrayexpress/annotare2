@@ -27,8 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -56,15 +55,15 @@ public class ExpDesignTemplatesDialogContent extends Composite {
 
     private boolean cancelled = false;
 
-    private ArrayList<Integer> selected = new ArrayList<Integer>();
+    private final Map<Integer, Set<Integer>> selected = new HashMap<Integer, Set<Integer>>();
 
-    private ArrayList<UITerm> templates = new ArrayList<UITerm>();
+    private final List<UITerm> templates = new ArrayList<UITerm>();
 
-    private ArrayList<Category> categories = new ArrayList<Category>();
+    private final List<Category> categories = new ArrayList<Category>();
 
     public ExpDesignTemplatesDialogContent(ArrayList<UITerm> terms) {
         templates.addAll(terms);
-        categories = extractCategories(terms);
+        categories.addAll(extractCategories(terms));
 
         filterBox = new ListBox();
         filterBox.setVisibleItemCount(10);
@@ -79,12 +78,14 @@ public class ExpDesignTemplatesDialogContent extends Composite {
             @Override
             public void onChange(ChangeEvent changeEvent) {
                 valueBox.clear();
-                Category category = categories.get(filterBox.getSelectedIndex());
+                int idx = filterBox.getSelectedIndex();
+                Category category = categories.get(idx);
+                Set<Integer> selection = selected.get(idx);
                 for (int i = 0; i < templates.size(); i++) {
                     UITerm t = templates.get(i);
                     if (category.contains(t)) {
                         valueBox.addItem(t.getName(), Integer.toString(i));
-                        if (selected.contains(i)) {
+                        if (selection != null && selection.contains(i)) {
                             valueBox.setItemSelected(valueBox.getItemCount() - 1, true);
                         }
                     }
@@ -95,12 +96,13 @@ public class ExpDesignTemplatesDialogContent extends Composite {
         valueBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                selected = new ArrayList<Integer>();
+                Set<Integer> selection = new HashSet<Integer>();
                 for (int i = 0; i < valueBox.getItemCount(); i++) {
                     if (valueBox.isItemSelected(i)) {
-                        selected.add(Integer.parseInt(valueBox.getValue(i)));
+                        selection.add(Integer.parseInt(valueBox.getValue(i)));
                     }
                 }
+                selected.put(filterBox.getSelectedIndex(), selection);
             }
         });
 
@@ -135,9 +137,9 @@ public class ExpDesignTemplatesDialogContent extends Composite {
         });
     }
 
-    private ArrayList<Category> extractCategories(ArrayList<UITerm> terms) {
-        HashSet<String> exist = new HashSet<String>();
-        ArrayList<Category> list = new ArrayList<Category>();
+    private List<Category> extractCategories(ArrayList<UITerm> terms) {
+        Set<String> exist = new HashSet<String>();
+        List<Category> list = new ArrayList<Category>();
         for (UITerm t : terms) {
             if (exist.add(t.getCategory())) {
                 list.add(Category.create(t.getCategory()));
