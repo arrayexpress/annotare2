@@ -107,4 +107,9 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
     public TermSource getTermSource(String name) {
         return investigation.getTermSource(name);
     }
+
+    @Override
+    public void removeExperimentalDesigns(List<Integer> indices) {
+        investigation.removeExperimentalDesigns(indices);
+    }
 }

@@ -178,13 +178,16 @@ public class Investigation {
         return contactList.getAll();
     }
 
-
-    public Term addExperimentalDesign() {
-         return experimentalDesignList.add();
-    }
-
     public ArrayList<Term> getExperimentalDesigns() {
         return experimentalDesignList.getAll();
+    }
+
+    public Term addExperimentalDesign() {
+        return experimentalDesignList.add();
+    }
+
+    public void removeExperimentalDesigns(List<Integer> indices) {
+        experimentalDesignList.remove(indices);
     }
 
     public ArrayList<TermSource> getTermSources() {

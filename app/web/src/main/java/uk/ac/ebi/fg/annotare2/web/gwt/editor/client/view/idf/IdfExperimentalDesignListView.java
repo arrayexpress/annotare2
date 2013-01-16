@@ -39,5 +39,7 @@ public interface IdfExperimentalDesignListView extends IsWidget {
         Term addExperimentalDesign();
 
         TermSource getTermSource(String name);
+
+        void removeExperimentalDesigns(List<Integer> indices);
     }
 }

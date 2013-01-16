@@ -45,6 +45,13 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
                 showExperimentDesignTemplates();
             }
         });
+
+        removeIcon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                removeSelectedExperimentalDesigns();
+            }
+        });
     }
 
     @Override
@@ -93,4 +100,14 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
             addExperimentalDesignView(design);
         }
     }
+
+    private void removeSelectedExperimentalDesigns() {
+        List<Integer> selected = getSelected();
+        if (selected.isEmpty()) {
+            return;
+        }
+        presenter.removeExperimentalDesigns(selected);
+        removeItems(selected);
+    }
+
 }
