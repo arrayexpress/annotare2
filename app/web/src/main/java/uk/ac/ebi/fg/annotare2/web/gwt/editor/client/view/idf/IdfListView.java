@@ -70,7 +70,7 @@ public class IdfListView<T> extends Composite {
 
         List<Integer> selected = new ArrayList<Integer>();
         int size = listPanel.getWidgetCount();
-        for (int i = size - 1; i >=0; i--) {
+        for (int i = size - 1; i >= 0; i--) {
             DisclosureListItem item = (DisclosureListItem) listPanel.getWidget(i);
             if (item.isSelected()) {
                 selected.add(i);

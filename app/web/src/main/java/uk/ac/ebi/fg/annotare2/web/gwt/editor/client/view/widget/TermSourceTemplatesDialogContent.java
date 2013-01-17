@@ -83,7 +83,7 @@ public class TermSourceTemplatesDialogContent extends Composite {
         okButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (listBox.getSelectedIndex() > 0) {
+                if (listBox.getSelectedIndex() >= 0) {
                     fireCloseEvent();
                 }
             }

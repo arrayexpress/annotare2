@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListIt
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceTemplatesDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                showTermSourceTemplates();
+                showTermSourceTemplates(presenter.getTermSourceTemplates());
             }
         });
 
@@ -68,8 +69,13 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
         return addListItem(new TermSourceView(ts));
     }
 
-    private void showTermSourceTemplates() {
-        final TermSourceTemplatesDialog dialog = new TermSourceTemplatesDialog(presenter.getTermSourceTemplates());
+    private void showTermSourceTemplates(List<UITermSource> templates) {
+        if (templates.isEmpty()) {
+            addTermSources(new ArrayList<UITermSource>());
+            return;
+        }
+
+        final TermSourceTemplatesDialog dialog = new TermSourceTemplatesDialog(templates);
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
             @Override
             public void onClose(CloseEvent<PopupPanel> event) {

@@ -86,12 +86,19 @@ public class IdfTermSourceListActivity extends AbstractActivity implements IdfTe
 
     @Override
     public List<UITermSource> getTermSourceTemplates() {
-        //TODO load templates properly
+        //TODO create a service for all known values
         List<UITermSource> templates = new ArrayList<UITermSource>();
         templates.add(new UITermSource("ArrayExpress", "", "", "AE description"));
         templates.add(new UITermSource("EFO", "", "", "EFO description"));
         templates.add(new UITermSource("MGED Ontology", "", "", " MGED Ontology description"));
-        return templates;
+
+        List<UITermSource> filtered = new ArrayList<UITermSource>();
+        for (UITermSource t : templates) {
+             if (null == investigation.getTermSource(t.getName())) {
+                 filtered.add(t);
+             }
+        }
+        return filtered;
     }
 
     @Override

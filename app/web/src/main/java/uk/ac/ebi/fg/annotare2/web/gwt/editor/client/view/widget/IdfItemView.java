@@ -20,15 +20,16 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class IdfItemView<T> extends DisclosurePanelContent {
 
-    private final ArrayList<EditableField<T, ?>> fields = new ArrayList<EditableField<T, ?>>();
+    private final List<EditableField<T, ?>> fields = new ArrayList<EditableField<T, ?>>();
 
-    private final ArrayList<HasChangeableValue<?>> header = new ArrayList<HasChangeableValue<?>>();
+    private final List<HasChangeableValue<?>> header = new ArrayList<HasChangeableValue<?>>();
 
     private final ChangeHandler headerChangeHandler = new ChangeHandler() {
         @Override
