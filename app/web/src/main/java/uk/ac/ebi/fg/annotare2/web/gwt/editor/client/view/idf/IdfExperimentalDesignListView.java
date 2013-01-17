@@ -34,9 +34,9 @@ public interface IdfExperimentalDesignListView extends IsWidget {
 
     public interface Presenter {
 
-        List<UITerm> getExperimentalDesignTerms();
+        List<UITerm> getExperimentalDesignTemplates();
 
-        Term addExperimentalDesign();
+        Term createExperimentalDesign();
 
         TermSource getTermSource(String name);
 

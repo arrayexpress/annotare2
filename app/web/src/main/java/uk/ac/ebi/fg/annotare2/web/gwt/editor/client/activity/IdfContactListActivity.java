@@ -93,8 +93,8 @@ public class IdfContactListActivity extends AbstractActivity implements IdfConta
     }
 
     @Override
-    public Person addContact() {
-        return investigation.addContact();
+    public Person createContact() {
+        return investigation.createContact();
     }
 
     @Override

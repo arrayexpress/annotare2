@@ -23,11 +23,10 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceTemplatesDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceTemplatesDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,12 +34,20 @@ import java.util.List;
  */
 public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implements IdfTermSourceListView {
 
+    private Presenter presenter;
 
     public IdfTermSourceListViewImpl() {
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 showTermSourceTemplates();
+            }
+        });
+
+        removeIcon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                removeSelectedTermSources();
             }
         });
     }
@@ -52,18 +59,17 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
         }
     }
 
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
     private DisclosureListItem addTermSourceView(TermSource ts) {
         return addListItem(new TermSourceView(ts));
     }
 
     private void showTermSourceTemplates() {
-        //TODO load templates properly
-        List<UITermSource> templates = new ArrayList<UITermSource>();
-        templates.add(new UITermSource("ArrayExpress", "", "", "AE description"));
-        templates.add(new UITermSource("EFO", "", "", "EFO description"));
-        templates.add(new UITermSource("MGED Ontology", "", "", " MGED Ontology description"));
-
-        final TermSourceTemplatesDialog dialog = new TermSourceTemplatesDialog(templates);
+        final TermSourceTemplatesDialog dialog = new TermSourceTemplatesDialog(presenter.getTermSourceTemplates());
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
             @Override
             public void onClose(CloseEvent<PopupPanel> event) {
@@ -74,8 +80,28 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
         });
     }
 
-    private void addTermSources(ArrayList<UITermSource> selected) {
-        //TODO
+    private void addTermSources(List<UITermSource> templates) {
+        if (templates.isEmpty()) {
+            addTermSourceView(presenter.createTermSource());
+            return;
+        }
+
+        for(UITermSource t : templates) {
+            TermSource ts = presenter.createTermSource();
+            ts.getName().setValue(t.getName());
+            ts.getVersion().setValue(t.getVersion());
+            ts.getFile().setValue(t.getUrl());
+            addTermSourceView(ts);
+        }
+    }
+
+    private void removeSelectedTermSources() {
+        List<Integer> selected = getSelected();
+        if (selected.isEmpty()) {
+            return;
+        }
+        presenter.removeTermSources(selected);
+        removeItems(selected);
     }
 
 }

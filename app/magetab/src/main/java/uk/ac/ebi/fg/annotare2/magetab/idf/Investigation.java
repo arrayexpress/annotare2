@@ -170,7 +170,7 @@ public class Investigation {
         contactList.remove(indices);
     }
 
-    public Person addContact() {
+    public Person createContact() {
         return contactList.add();
     }
 
@@ -182,7 +182,7 @@ public class Investigation {
         return experimentalDesignList.getAll();
     }
 
-    public Term addExperimentalDesign() {
+    public Term createExperimentalDesign() {
         return experimentalDesignList.add();
     }
 
@@ -196,6 +196,14 @@ public class Investigation {
 
     public TermSource getTermSource(String name) {
         return termSourceList.getTermSource(name);
+    }
+
+    public TermSource createTermSource() {
+        return termSourceList.add();
+    }
+
+    public void removeTermSources(List<Integer> indices) {
+        termSourceList.remove(indices);
     }
 
     private static class GeneralInfoList extends ObjectList<Info> {

@@ -88,7 +88,7 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
     }
 
     @Override
-    public List<UITerm> getExperimentalDesignTerms() {
+    public List<UITerm> getExperimentalDesignTemplates() {
         // TODO
         UITermSource ts = new UITermSource("efo", "", "", "aa");
         ArrayList<UITerm> list = new ArrayList<UITerm>();
@@ -99,8 +99,8 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
     }
 
     @Override
-    public Term addExperimentalDesign() {
-        return investigation.addExperimentalDesign();
+    public Term createExperimentalDesign() {
+        return investigation.createExperimentalDesign();
     }
 
     @Override

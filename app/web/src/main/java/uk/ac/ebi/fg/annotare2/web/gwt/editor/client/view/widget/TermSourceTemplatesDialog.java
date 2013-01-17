@@ -20,7 +20,6 @@ import com.google.gwt.user.client.ui.DialogBox;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,10 +48,10 @@ public class TermSourceTemplatesDialog extends DialogBox {
     }
 
     public boolean isCancelled() {
-        return false; //TODO
+        return content.isCancelled();
     }
 
-    public ArrayList<UITermSource> getSelection() {
-        return new ArrayList<UITermSource>(); //TODO
+    public List<UITermSource> getSelection() {
+        return content.getSelection();
     }
 }

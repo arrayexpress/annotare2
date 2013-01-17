@@ -72,7 +72,7 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
 
     private void showExperimentDesignTemplates() {
         final ExpDesignTemplatesDialog dialog = new ExpDesignTemplatesDialog(
-                presenter.getExperimentalDesignTerms());
+                presenter.getExperimentalDesignTemplates());
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
             @Override
             public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
@@ -85,12 +85,12 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
 
     private void addExperimentDesigns(List<UITerm> terms) {
         if (terms.isEmpty()) {
-            addExperimentalDesignView(presenter.addExperimentalDesign());
+            addExperimentalDesignView(presenter.createExperimentalDesign());
             return;
         }
 
         for (UITerm term : terms) {
-            Term design = presenter.addExperimentalDesign();
+            Term design = presenter.createExperimentalDesign();
             TermSource termSource = presenter.getTermSource(term.getTermSource().getName());
             design.getName().setValue(term.getName());
             design.getAccession().setValue(term.getAccession());

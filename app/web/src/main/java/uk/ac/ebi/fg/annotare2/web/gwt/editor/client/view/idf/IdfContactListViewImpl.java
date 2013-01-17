@@ -61,7 +61,7 @@ public class IdfContactListViewImpl extends IdfListView<Person> implements IdfCo
     }
 
     private void addNewContact() {
-        DisclosureListItem item = addContactView(presenter.addContact());
+        DisclosureListItem item = addContactView(presenter.createContact());
         //todo scroll + item.open();
     }
 

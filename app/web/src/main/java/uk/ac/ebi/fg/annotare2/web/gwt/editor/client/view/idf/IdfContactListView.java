@@ -32,7 +32,7 @@ public interface IdfContactListView extends IsWidget {
 
     public interface Presenter {
 
-        Person addContact();
+        Person createContact();
 
         void removeContacts(List<Integer> indices);
     }

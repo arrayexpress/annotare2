@@ -24,14 +24,19 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfTermSourceListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfTermSourceListActivity extends AbstractActivity {
+public class IdfTermSourceListActivity extends AbstractActivity implements IdfTermSourceListView.Presenter {
 
     private final IdfTermSourceListView view;
 
@@ -52,6 +57,7 @@ public class IdfTermSourceListActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
     }
@@ -78,4 +84,23 @@ public class IdfTermSourceListActivity extends AbstractActivity {
         }.wrap());
     }
 
+    @Override
+    public List<UITermSource> getTermSourceTemplates() {
+        //TODO load templates properly
+        List<UITermSource> templates = new ArrayList<UITermSource>();
+        templates.add(new UITermSource("ArrayExpress", "", "", "AE description"));
+        templates.add(new UITermSource("EFO", "", "", "EFO description"));
+        templates.add(new UITermSource("MGED Ontology", "", "", " MGED Ontology description"));
+        return templates;
+    }
+
+    @Override
+    public TermSource createTermSource() {
+        return investigation.createTermSource();
+    }
+
+    @Override
+    public void removeTermSources(List<Integer> indices) {
+        investigation.removeTermSources(indices);
+    }
 }

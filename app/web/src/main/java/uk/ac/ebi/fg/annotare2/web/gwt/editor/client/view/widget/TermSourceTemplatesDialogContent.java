@@ -29,6 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +58,11 @@ public class TermSourceTemplatesDialogContent extends Composite {
 
     private boolean cancelled = false;
 
+    private List<UITermSource> termSources = new ArrayList<UITermSource>();
+
     public TermSourceTemplatesDialogContent(final List<UITermSource> templates) {
+        termSources.addAll(templates);
+
         listBox = new ListBox(true);
         listBox.setVisibleItemCount(10);
         for (UITermSource ts : templates) {
@@ -108,4 +113,19 @@ public class TermSourceTemplatesDialogContent extends Composite {
     public HandlerRegistration addCloseHandler(CloseEventHandler closeEventHandler) {
         return addHandler(closeEventHandler, CloseEvent.TYPE);
     }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public List<UITermSource> getSelection() {
+        List<UITermSource> list = new ArrayList<UITermSource>();
+        for (int i = 0; i < listBox.getItemCount(); i++) {
+            if (listBox.isItemSelected(i)) {
+                list.add(termSources.get(i));
+            }
+        }
+        return list;
+    }
+
 }

@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 
 import java.util.List;
 
@@ -27,4 +28,15 @@ import java.util.List;
 public interface IdfTermSourceListView extends IsWidget {
 
     void setTermSources(List<TermSource> contacts);
+
+    void setPresenter(Presenter presenter);
+
+    public static interface Presenter {
+
+        List<UITermSource> getTermSourceTemplates();
+
+        TermSource createTermSource();
+
+        void removeTermSources(List<Integer> indices);
+    }
 }
