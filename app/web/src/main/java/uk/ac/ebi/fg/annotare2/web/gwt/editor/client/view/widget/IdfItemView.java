@@ -48,6 +48,10 @@ public class IdfItemView<T> extends DisclosurePanelContent {
         fireHeaderChangedEvent();
     }
 
+    protected T getItem() {
+        return item;
+    }
+
     protected void addField(final EditableField<T, ?> field) {
         fields.add(field);
         field.addChangeHandler(new ChangeHandler() {

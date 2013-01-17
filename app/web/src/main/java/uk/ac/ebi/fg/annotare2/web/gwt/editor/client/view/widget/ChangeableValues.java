@@ -51,28 +51,21 @@ public class ChangeableValues {
         };
     }
 
-    public static HasChangeableValue<String> hasChangeableValue(final ListBox box) {
-        return new HasChangeableValue<String>() {
+    public static HasChangeableValue<Integer> hasChangeableValue(final ListBox box) {
+        return new HasChangeableValue<Integer>() {
             @Override
             public HandlerRegistration addChangeHandler(ChangeHandler changeHandler) {
                 return box.addChangeHandler(changeHandler);
             }
 
             @Override
-            public String getValue() {
-                return box.getItemText(box.getSelectedIndex());
+            public Integer getValue() {
+                return box.getSelectedIndex();
             }
 
             @Override
-            public void setValue(String value) {
-                int count = box.getItemCount();
-                for (int i=0; i<count; i++) {
-                    String text = box.getItemText(i);
-                    if (text.equals(value)) {
-                        box.setSelectedIndex(i);
-                        break;
-                    }
-                }
+            public void setValue(Integer v) {
+                box.setSelectedIndex(v);
             }
 
             @Override

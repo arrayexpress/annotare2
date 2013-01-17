@@ -16,18 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.DynamicList;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExpDesignTemplatesDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentalDesignView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +41,8 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
         implements IdfExperimentalDesignListView {
 
     private Presenter presenter;
+
+    private final DynamicList<TermSource> termSources;
 
     public IdfExperimentalDesignListViewImpl() {
         addIcon.addClickHandler(new ClickHandler() {
@@ -52,6 +58,13 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
                 removeSelectedExperimentalDesigns();
             }
         });
+
+        termSources = new DynamicList<TermSource>() {
+            @Override
+            public List<TermSource> loadValues() {
+                return presenter.getTermSources();
+            }
+        };
     }
 
     @Override
@@ -67,7 +80,7 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
     }
 
     private DisclosureListItem addExperimentalDesignView(Term d) {
-        return addListItem(new ExperimentalDesignView(d));
+        return addListItem(new ExperimentalDesignView(d, termSources));
     }
 
     private void showExperimentDesignTemplates() {
@@ -91,12 +104,14 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
 
         for (UITerm term : terms) {
             Term design = presenter.createExperimentalDesign();
-            TermSource termSource = presenter.getTermSource(term.getTermSource().getName());
+            TermSource termSource = presenter.getOrCreateTermSource(term.getTermSource());
             design.getName().setValue(term.getName());
             design.getAccession().setValue(term.getAccession());
             design.setTermSource(termSource);
             addExperimentalDesignView(design);
         }
+
+        termSources.fireUpdate();
     }
 
     private void removeSelectedExperimentalDesigns() {

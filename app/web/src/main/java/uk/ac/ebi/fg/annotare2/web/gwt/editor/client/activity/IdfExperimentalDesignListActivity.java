@@ -104,12 +104,24 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
     }
 
     @Override
-    public TermSource getTermSource(String name) {
-        return investigation.getTermSource(name);
+    public TermSource getOrCreateTermSource(UITermSource template) {
+        TermSource ts = investigation.getTermSource(template.getName());
+        if (ts == null) {
+            ts = investigation.createTermSource();
+            ts.getName().setValue(template.getName());
+            ts.getVersion().setValue(template.getVersion());
+            ts.getFile().setValue(template.getUrl());
+        }
+        return ts;
     }
 
     @Override
     public void removeExperimentalDesigns(List<Integer> indices) {
         investigation.removeExperimentalDesigns(indices);
+    }
+
+    @Override
+    public List<TermSource> getTermSources() {
+        return investigation.getTermSources();
     }
 }

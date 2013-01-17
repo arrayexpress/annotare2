@@ -24,6 +24,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.DynamicList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
 
@@ -37,19 +41,24 @@ public class ExperimentalDesignView extends IdfItemView<Term> {
     }
 
     @UiField
-    TextBox nameBox;
+    protected TextBox nameBox;
 
     @UiField
-    ListBox termSourceBox;
+    protected ListBox termSourceBox;
 
-    public ExperimentalDesignView(Term term) {
+    private final List<TermSource> termSourceList = new ArrayList<TermSource>();
+
+    public ExperimentalDesignView(Term term, final DynamicList<TermSource> termSources) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        //TODO add a proper term source loader
-        termSourceBox.addItem("unspecified");
-        termSourceBox.addItem("ArrayExpress");
-        termSourceBox.addItem("MGED Ontology");
-        termSourceBox.addItem("EFO");
+        termSources.addChangeHandler(new DynamicList.ChangeHandler() {
+            @Override
+            public void onChange() {
+                updateListBox(termSources, getItem());
+            }
+        });
+
+        updateListBox(termSources, term);
 
         addHeaderField(hasChangeableValue(nameBox));
 
@@ -66,20 +75,37 @@ public class ExperimentalDesignView extends IdfItemView<Term> {
             }
         });
 
-        addField(new EditableField<Term, String>(hasChangeableValue(termSourceBox)) {
+        addField(new EditableField<Term, Integer>(hasChangeableValue(termSourceBox)) {
 
             @Override
-            protected String getValue(Term obj) {
+            protected Integer getValue(Term obj) {
                 TermSource ts = obj.getTermSource();
-                return ts == null ? "none" : ts.getName().getValue();
+                return ts == null ? 0 : termSourceList.indexOf(ts);
             }
 
             @Override
-            protected void setValue(Term obj, String value) {
-                //obj.setTermSource(ts);
+            protected void setValue(Term obj, Integer value) {
+                obj.setTermSource(termSourceList.get(value));
             }
         });
 
         setItem(term);
+    }
+
+    private void updateListBox(DynamicList<TermSource> termSources, Term selected) {
+        String selectedValue = (selected.getTermSource() == null) ? "" : selected.getTermSource().getName().getValue();
+
+        termSourceList.clear();
+        termSourceList.addAll(termSources.getValues());
+
+        termSourceBox.clear();
+        termSourceBox.addItem("none");
+        for (TermSource ts : termSourceList) {
+            String v = ts.getName().getValue();
+            termSourceBox.addItem(v);
+            if (selectedValue.contains(v)) {
+                termSourceBox.setSelectedIndex(termSourceBox.getItemCount() - 1);
+            }
+        }
     }
 }
