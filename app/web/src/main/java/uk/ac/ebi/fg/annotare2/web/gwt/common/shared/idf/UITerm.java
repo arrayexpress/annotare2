@@ -16,10 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf;
 
+import java.io.Serializable;
+
 /**
  * @author Olga Melnichuk
  */
-public class UITerm {
+public class UITerm implements Serializable {
 
     private String category;
 
@@ -28,6 +30,9 @@ public class UITerm {
     private String accession;
 
     private UITermSource termSource;
+
+    public UITerm() {
+    }
 
     public UITerm(String name, String accession, UITermSource termSource) {
         this(name, accession, termSource, null);

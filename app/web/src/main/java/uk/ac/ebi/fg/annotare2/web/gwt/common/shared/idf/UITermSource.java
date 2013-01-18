@@ -16,18 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf;
 
+import java.io.Serializable;
+
 /**
  * @author Olga Melnichuk
  */
-public class UITermSource {
+public class UITermSource implements Serializable {
 
-    private final String name;
+    private String name;
 
-    private final String description;
+    private String description;
 
-    private final String version;
+    private String version;
 
-    private final String url;
+    private String url;
+
+    public UITermSource() {
+    }
 
     public UITermSource(String name,
                         String version,

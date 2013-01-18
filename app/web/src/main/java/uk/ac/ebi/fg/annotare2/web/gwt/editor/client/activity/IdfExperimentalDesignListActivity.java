@@ -21,12 +21,14 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.VocabularyServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
@@ -43,19 +45,19 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
 
     private final IdfExperimentalDesignListView view;
 
-    private final PlaceController placeController;
-
     private final IdfData idfData;
+
+    private final VocabularyServiceAsync vocabulary;
 
     private Investigation investigation;
 
     @Inject
     public IdfExperimentalDesignListActivity(IdfExperimentalDesignListView view,
-                                             PlaceController placeController,
+                                             VocabularyServiceAsync vocabulary,
                                              IdfData idfData) {
         this.view = view;
-        this.placeController = placeController;
         this.idfData = idfData;
+        this.vocabulary = vocabulary;
     }
 
     @Override
@@ -88,14 +90,18 @@ public class IdfExperimentalDesignListActivity extends AbstractActivity
     }
 
     @Override
-    public List<UITerm> getExperimentalDesignTemplates() {
-        // TODO
-        UITermSource ts = new UITermSource("efo", "", "", "aa");
-        ArrayList<UITerm> list = new ArrayList<UITerm>();
-        list.add(new UITerm("case control design", "", ts, "biological variation design"));
-        list.add(new UITerm("all pairs", "", ts, "methodological variation design"));
-        list.add(new UITerm("array platform variation design", "", ts, "methodological variation design"));
-        return list;
+    public void getExperimentalDesignTemplatesAsync(final AsyncCallback<ArrayList<UITerm>> callback) {
+        vocabulary.getExperimentalDesigns(new AsyncCallbackWrapper<ArrayList<UITerm>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ArrayList<UITerm> result) {
+                callback.onSuccess(result);
+            }
+        }.wrap());
     }
 
     @Override

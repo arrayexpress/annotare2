@@ -16,12 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
@@ -84,14 +84,23 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
     }
 
     private void showExperimentDesignTemplates() {
-        final ExpDesignTemplatesDialog dialog = new ExpDesignTemplatesDialog(
-                presenter.getExperimentalDesignTemplates());
-        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+        presenter.getExperimentalDesignTemplatesAsync(new AsyncCallback<ArrayList<UITerm>>() {
             @Override
-            public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
-                if (!dialog.isCancelled()) {
-                    addExperimentDesigns(dialog.getSelection());
-                }
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: can't load experimental design templates");
+            }
+
+            @Override
+            public void onSuccess(ArrayList<UITerm> result) {
+                final ExpDesignTemplatesDialog dialog = new ExpDesignTemplatesDialog(result);
+                dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+                    @Override
+                    public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
+                        if (!dialog.isCancelled()) {
+                            addExperimentDesigns(dialog.getSelection());
+                        }
+                    }
+                });
             }
         });
     }

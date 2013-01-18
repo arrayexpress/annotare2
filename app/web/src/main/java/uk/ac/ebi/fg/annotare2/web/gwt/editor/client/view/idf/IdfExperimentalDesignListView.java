@@ -16,12 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +37,7 @@ public interface IdfExperimentalDesignListView extends IsWidget {
 
     public interface Presenter {
 
-        List<UITerm> getExperimentalDesignTemplates();
+        void getExperimentalDesignTemplatesAsync(AsyncCallback<ArrayList<UITerm>> callback);
 
         Term createExperimentalDesign();
 
