@@ -80,12 +80,16 @@ public class ExperimentalDesignView extends IdfItemView<Term> {
             @Override
             protected Integer getValue(Term obj) {
                 TermSource ts = obj.getTermSource();
-                return ts == null ? 0 : termSourceList.indexOf(ts);
+                return ts == null ? 0 : indexOf(ts.getName().getValue());
             }
 
             @Override
             protected void setValue(Term obj, Integer value) {
-                obj.setTermSource(termSourceList.get(value));
+                if (value > 0) {
+                    obj.setTermSource(termSourceList.get(value - 1));
+                } else {
+                    obj.setTermSource(null);
+                }
             }
         });
 
@@ -93,19 +97,29 @@ public class ExperimentalDesignView extends IdfItemView<Term> {
     }
 
     private void updateListBox(DynamicList<TermSource> termSources, Term selected) {
-        String selectedValue = (selected.getTermSource() == null) ? "" : selected.getTermSource().getName().getValue();
-
         termSourceList.clear();
         termSourceList.addAll(termSources.getValues());
 
         termSourceBox.clear();
         termSourceBox.addItem("none");
         for (TermSource ts : termSourceList) {
-            String v = ts.getName().getValue();
-            termSourceBox.addItem(v);
-            if (selectedValue.contains(v)) {
-                termSourceBox.setSelectedIndex(termSourceBox.getItemCount() - 1);
-            }
+            termSourceBox.addItem(ts.getName().getValue());
         }
+
+        int selectedIndex = (selected.getTermSource() == null) ? 0 :
+                indexOf(selected.getTermSource().getName().getValue());
+        termSourceBox.setSelectedIndex(selectedIndex);
+    }
+
+    private int indexOf(String name) {
+        int i = 0;
+        for (TermSource t : termSourceList) {
+            String v = t.getName().getValue();
+            if (name.equals(v)) {
+                return i + 1;
+            }
+            i++;
+        }
+        return 0;
     }
 }
