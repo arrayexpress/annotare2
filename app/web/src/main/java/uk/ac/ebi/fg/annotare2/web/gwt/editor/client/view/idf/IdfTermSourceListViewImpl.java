@@ -20,6 +20,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
@@ -41,7 +43,7 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                showTermSourceTemplates(presenter.getTermSourceTemplates());
+                showTermSourceTemplates();
             }
         });
 
@@ -69,19 +71,29 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
         return addListItem(new TermSourceView(ts));
     }
 
-    private void showTermSourceTemplates(List<UITermSource> templates) {
-        if (templates.isEmpty()) {
-            addTermSources(new ArrayList<UITermSource>());
-            return;
-        }
-
-        final TermSourceTemplatesDialog dialog = new TermSourceTemplatesDialog(templates);
-        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+    private void showTermSourceTemplates() {
+        presenter.getTermSourceTemplates(new AsyncCallback<List<UITermSource>>() {
             @Override
-            public void onClose(CloseEvent<PopupPanel> event) {
-               if (!dialog.isCancelled()) {
-                   addTermSources(dialog.getSelection());
-               }
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: can't load term source templates");
+            }
+
+            @Override
+            public void onSuccess(List<UITermSource> result) {
+                if (result.isEmpty()) {
+                    addTermSources(new ArrayList<UITermSource>());
+                    return;
+                }
+
+                final TermSourceTemplatesDialog dialog = new TermSourceTemplatesDialog(result);
+                dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+                    @Override
+                    public void onClose(CloseEvent<PopupPanel> event) {
+                        if (!dialog.isCancelled()) {
+                            addTermSources(dialog.getSelection());
+                        }
+                    }
+                });
             }
         });
     }
@@ -92,7 +104,7 @@ public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implement
             return;
         }
 
-        for(UITermSource t : templates) {
+        for (UITermSource t : templates) {
             TermSource ts = presenter.createTermSource();
             ts.getName().setValue(t.getName());
             ts.getVersion().setValue(t.getVersion());

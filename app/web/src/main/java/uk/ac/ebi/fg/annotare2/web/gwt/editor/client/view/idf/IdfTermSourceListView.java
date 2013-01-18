@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
@@ -33,7 +34,7 @@ public interface IdfTermSourceListView extends IsWidget {
 
     public static interface Presenter {
 
-        List<UITermSource> getTermSourceTemplates();
+        void getTermSourceTemplates(AsyncCallback<List<UITermSource>> callback);
 
         TermSource createTermSource();
 

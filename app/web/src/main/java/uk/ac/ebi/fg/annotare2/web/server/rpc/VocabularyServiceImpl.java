@@ -24,4 +24,15 @@ public class VocabularyServiceImpl extends RemoteServiceServlet implements Vocab
         list.add(new UITerm("array specific design", "", ts, "methodological variation design"));
         return list;
     }
+
+    @Override
+    public ArrayList<UITermSource> getTermSources() {
+        //TODO create a service for all known values
+        ArrayList<UITermSource> list = new ArrayList<UITermSource>();
+        list.add(new UITermSource("ArrayExpress", "", "", "AE description"));
+        list.add(new UITermSource("EFO", "", "", "EFO description"));
+        list.add(new UITermSource("MGED Ontology", "", "", " MGED Ontology description"));
+        return list;
+    }
+
 }

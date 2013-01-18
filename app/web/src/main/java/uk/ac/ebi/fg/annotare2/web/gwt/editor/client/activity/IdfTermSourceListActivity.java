@@ -19,13 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
 import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.VocabularyServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfTermSourceListView;
@@ -40,19 +41,19 @@ public class IdfTermSourceListActivity extends AbstractActivity implements IdfTe
 
     private final IdfTermSourceListView view;
 
-    private final PlaceController placeController;
-
     private final IdfData idfData;
+
+    private final VocabularyServiceAsync vocabulary;
 
     private Investigation investigation;
 
     @Inject
     public IdfTermSourceListActivity(IdfTermSourceListView view,
-                                     PlaceController placeController,
-                                     IdfData idfData) {
+                                     IdfData idfData,
+                                     VocabularyServiceAsync vocabulary) {
         this.view = view;
-        this.placeController = placeController;
         this.idfData = idfData;
+        this.vocabulary = vocabulary;
     }
 
     @Override
@@ -85,20 +86,24 @@ public class IdfTermSourceListActivity extends AbstractActivity implements IdfTe
     }
 
     @Override
-    public List<UITermSource> getTermSourceTemplates() {
-        //TODO create a service for all known values
-        List<UITermSource> templates = new ArrayList<UITermSource>();
-        templates.add(new UITermSource("ArrayExpress", "", "", "AE description"));
-        templates.add(new UITermSource("EFO", "", "", "EFO description"));
-        templates.add(new UITermSource("MGED Ontology", "", "", " MGED Ontology description"));
+    public void getTermSourceTemplates(final AsyncCallback<List<UITermSource>> callback) {
+        vocabulary.getTermSources(new AsyncCallbackWrapper<ArrayList<UITermSource>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-        List<UITermSource> filtered = new ArrayList<UITermSource>();
-        for (UITermSource t : templates) {
-             if (null == investigation.getTermSource(t.getName())) {
-                 filtered.add(t);
-             }
-        }
-        return filtered;
+            @Override
+            public void onSuccess(ArrayList<UITermSource> result) {
+                List<UITermSource> filtered = new ArrayList<UITermSource>();
+                for (UITermSource t : result) {
+                    if (null == investigation.getTermSource(t.getName())) {
+                        filtered.add(t);
+                    }
+                }
+                callback.onSuccess(filtered);
+            }
+        }.wrap());
     }
 
     @Override
