@@ -20,11 +20,12 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
-import uk.ac.ebi.fg.annotare2.magetab.CheckerModule;
-import uk.ac.ebi.fg.annotare2.magetab.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
+import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 
 import javax.servlet.ServletContextEvent;
+
+import static com.google.inject.util.Modules.override;
 
 /**
  * @author Olga Melnichuk
@@ -40,6 +41,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     protected Injector getInjector() {
-        return Guice.createInjector(Stage.DEVELOPMENT, new AppServletModule());
+        return Guice.createInjector(Stage.DEVELOPMENT,
+                override(new CheckerModule()).with(new AppServletModule()));
     }
 }
