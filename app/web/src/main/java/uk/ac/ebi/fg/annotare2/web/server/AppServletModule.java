@@ -16,13 +16,18 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
+import com.google.common.io.Files;
 import com.google.inject.Scopes;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import gwtupload.server.UploadServlet;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
@@ -30,8 +35,12 @@ import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import javax.servlet.http.HttpServlet;
+import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * @author Olga Melnichuk
@@ -41,6 +50,12 @@ public class AppServletModule extends ServletModule {
     private final AllRpcServicePathsImpl allRpc = new AllRpcServicePathsImpl();
 
     private static final String JSESSIONID = "(?:;jsessionid=[A-Za-z0-9]+)?";
+
+    private final Set<URL> libPaths = newHashSet();
+
+    public AppServletModule(Set<URL> libPaths) {
+        this.libPaths.addAll(libPaths);
+    }
 
     @Override
     protected void configureServlets() {
@@ -84,10 +99,20 @@ public class AppServletModule extends ServletModule {
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(Scopes.SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);
+
+        overrideMageTabCheck();
+    }
+
+    private void overrideMageTabCheck() {
+        bind(new TypeLiteral<Set<URL>>() {
+        }).annotatedWith(Names.named("libPaths")).toInstance(libPaths);
+
+        bind(new TypeLiteral<List<CheckDefinition>>() {
+        }).toProvider(AnnotareCheckListProvider.class).in(Scopes.SINGLETON);
     }
 
     private void serveAndBindRpcService(String serviceName, Class<? extends HttpServlet> implClass, String... moduleNames) {
-        for(String moduleName : moduleNames) {
+        for (String moduleName : moduleNames) {
             String servicePath = "/" + moduleName + "/" + serviceName;
             serve(servicePath).with(implClass);
             allRpc.awareOf(servicePath);
