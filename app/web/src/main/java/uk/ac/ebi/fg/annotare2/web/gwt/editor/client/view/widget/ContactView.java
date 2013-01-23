@@ -17,8 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.TextArea;
@@ -26,14 +24,12 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 
-import java.util.ArrayList;
-
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactView extends DisclosurePanelContent {
+public class ContactView extends IdfItemView<Person> {
 
     interface Binder extends UiBinder<Widget, ContactView> {
         Binder BINDER = GWT.create(Binder.class);
@@ -66,24 +62,14 @@ public class ContactView extends DisclosurePanelContent {
     @UiField
     TextArea roles;
 
-    private Person person;
-
-    private final ArrayList<EditableField<Person, ?>> allFields = new ArrayList<EditableField<Person, ?>>();
-
-    private final ArrayList<HasChangeableValue<?>> titleValues = new ArrayList<HasChangeableValue<?>>();
-
-    public ContactView() {
+    public ContactView(Person person) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        titleValues.add(hasChangeableValue(firstName));
-        titleValues.add(hasChangeableValue(midInitials));
-        titleValues.add(hasChangeableValue(lastName));
+        addHeaderField(hasChangeableValue(firstName));
+        addHeaderField(hasChangeableValue(midInitials));
+        addHeaderField(hasChangeableValue(lastName));
 
-        for (HasChangeableValue<?> v : titleValues) {
-            trackTitleValueChanges(v);
-        }
-
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(firstName)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(firstName)) {
             @Override
             protected String getValue(Person p) {
                 return p.getFirstName().getValue();
@@ -95,7 +81,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(midInitials)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(midInitials)) {
             @Override
             protected String getValue(Person p) {
                 return p.getMidInitials().getValue();
@@ -107,7 +93,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(lastName)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(lastName)) {
             @Override
             protected String getValue(Person p) {
                 return p.getLastName().getValue();
@@ -119,7 +105,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(phone)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(phone)) {
             @Override
             protected String getValue(Person p) {
                 return p.getPhone().getValue();
@@ -131,7 +117,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(fax)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(fax)) {
             @Override
             protected String getValue(Person p) {
                 return p.getFax().getValue();
@@ -143,7 +129,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(email)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(email)) {
             @Override
             protected String getValue(Person p) {
                 return p.getEmail().getValue();
@@ -155,7 +141,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(affiliation)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(affiliation)) {
             @Override
             protected String getValue(Person p) {
                 return p.getAffiliation().getValue();
@@ -167,7 +153,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        allFields.add(new EditableField<Person, String>(hasChangeableValue(address)) {
+        addField(new EditableField<Person, String>(hasChangeableValue(address)) {
             @Override
             protected String getValue(Person p) {
                 return p.getAddress().getValue();
@@ -179,45 +165,7 @@ public class ContactView extends DisclosurePanelContent {
             }
         });
 
-        for (EditableField<Person, ?> f : allFields) {
-            trackFieldValueChanges(f);
-        }
-    }
-
-    private void trackFieldValueChanges(final EditableField<Person, ?> field) {
-        field.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent changeEvent) {
-                field.saveValueTo(person);
-            }
-        });
-    }
-
-    private void trackTitleValueChanges(HasChangeableValue<?> value) {
-        value.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent changeEvent) {
-                fireTitleChangedEvent();
-            }
-        });
-    }
-
-    public void update(Person p) {
-        this.person = p;
-        for (EditableField<Person, ?> f : allFields) {
-            f.readValueFrom(p);
-        }
-        fireTitleChangedEvent();
-    }
-
-    private void fireTitleChangedEvent() {
-        StringBuilder sb = new StringBuilder();
-        int i = titleValues.size();
-        for (HasChangeableValue<?> w : titleValues) {
-            String value = w.getValue().toString();
-            sb.append(value).append(--i > 0 ? " " : "");
-        }
-        fireRecordChangeEvent(sb.toString());
+        setItem(person);
     }
 }
 

@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.magetab.base;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,11 +32,11 @@ public class GwtQuirksTest {
 
     @Test
     public void removeElementsTest() {
-        ArrayList<Integer> list1 = asList(0,1,2,3);
-        ArrayList<Integer> list2 = GwtQuirks.remove(list1, new ArrayList<Integer>());
+        List<Integer> list1 = asList(0,1,2,3);
+        List<Integer> list2 = GwtQuirks.remove(list1, new ArrayList<Integer>());
         assertFalse(list1 == list2);
 
-        ArrayList<Integer> list3 = GwtQuirks.remove(list1, asList(1,3));
+        List<Integer> list3 = GwtQuirks.remove(list1, asList(1,3));
         assertEquals(asList(0,2), list3);
     }
 }

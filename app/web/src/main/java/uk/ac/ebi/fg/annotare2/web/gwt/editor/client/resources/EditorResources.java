@@ -30,7 +30,6 @@ public interface EditorResources extends ClientBundle {
     @Source("../../public/images/expand-icon.png")
     public ImageResource expandIcon();
 
-
     @Source("../../public/images/collapse-icon.png")
     public ImageResource collapseIcon();
 

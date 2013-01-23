@@ -27,6 +27,9 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
@@ -80,6 +83,10 @@ public class EditorApp implements EntryPoint {
         ActivityManager contentActivityManager = new ActivityManager(contentActivityMapper, eventBus);
         contentActivityManager.setDisplay(appWidget.getContentDisplay());
 
+        ActivityMapper logBarActivityMapper = injector.getLogBarActivityMapper();
+        ActivityManager logBarActivityManager = new ActivityManager(logBarActivityMapper, eventBus);
+        logBarActivityManager.setDisplay(appWidget.getLogBarDisplay());
+
         EditorPlaceFactory factory = injector.getPlaceFactory();
         IdfPlace defaultPlace = factory.getIdfPlace();
 
@@ -90,6 +97,14 @@ public class EditorApp implements EntryPoint {
         historyHandler.register(placeController, eventBus, defaultPlace);
 
         root.add(appWidget);
+
+        eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
+            @Override
+            public void validationFinished(ValidationResult result) {
+                //TODO not sure about the constant size
+                appWidget.expandLogBar(250);
+            }
+        });
 
         historyHandler.handleCurrentHistory();
 

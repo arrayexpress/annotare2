@@ -48,8 +48,7 @@ public class RowSetTest {
         table.addRow(asList(ROW_TAG_1.getName()));
         table.addRow(asList(ROW_TAG_2.getName(), "2"));
 
-        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2);
-        rowSet.addAll(table);
+        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2).from(table);
 
         assertEquals(1, rowSet.getWidth());
         Map<RowTag, Row.Cell<String>> column = rowSet.getColumn(0);
@@ -73,8 +72,7 @@ public class RowSetTest {
         table.addRow(asList(ROW_TAG_1.getName()));
         table.addRow(asList(ROW_TAG_2.getName(), "2"));
 
-        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2);
-        rowSet.addAll(table);
+        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2).from(table);
         assertEquals(1, rowSet.getWidth());
 
         rowSet.removeColumn(asList(0));
@@ -101,8 +99,7 @@ public class RowSetTest {
         table.addRow(asList(ROW_TAG_1.getName(), "", "1"));
         table.addRow(asList(ROW_TAG_2.getName(), "2"));
 
-        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2);
-        rowSet.addAll(table);
+        RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2).from(table);
         assertEquals(2, rowSet.getWidth());
 
         rowSet.moveColumn(1, 0);

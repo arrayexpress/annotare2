@@ -20,6 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,14 +31,14 @@ public abstract class ObjectList<T> {
 
     private final RowSet rowSet;
 
-    private ArrayList<T> list = new ArrayList<T>();
+    private final ObjectCreator<T> creator;
 
-    public ObjectList(Table table, RowTag... rowTags) {
-        rowSet = new RowSet(rowTags);
-        rowSet.addAll(table);
-        for (int i = 0; i < rowSet.getWidth(); i++) {
-            list.add(create(rowSet.getColumn(i)));
-        }
+    private List<T> list = new ArrayList<T>();
+
+    public ObjectList(RowSet rowSet, ObjectCreator<T> creator) {
+        this.rowSet = rowSet;
+        this.creator = creator;
+        createObjects();
     }
 
     public ArrayList<T> getAll() {
@@ -51,12 +52,12 @@ public abstract class ObjectList<T> {
     }
 
     public T add() {
-        T t = create(rowSet.getColumn(list.size()));
+        T t = creator.create(rowSet.getColumn(list.size()));
         list.add(t);
         return t;
     }
 
-    public void remove(ArrayList<Integer> indices) {
+    public void remove(List<Integer> indices) {
         if (indices.isEmpty()) {
             return;
         }
@@ -68,5 +69,9 @@ public abstract class ObjectList<T> {
         return list.isEmpty();
     }
 
-    protected abstract T create(Map<RowTag, Row.Cell<String>> map);
+    private void createObjects() {
+        for (int i = 0; i < rowSet.getWidth(); i++) {
+            list.add(creator.create(rowSet.getColumn(i)));
+        }
+    }
 }

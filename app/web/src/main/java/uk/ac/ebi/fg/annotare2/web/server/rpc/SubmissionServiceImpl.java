@@ -25,39 +25,28 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionServiceImpl extends RemoteServiceBase implements SubmissionService {
+public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     @Inject
-    private SubmissionManager submissionManager;
+    public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager) {
+        super(authService, submissionManager);
+    }
 
     public UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            Submission sb = submissionManager.getSubmission(getCurrentUser(), id);
-            return DataObjects.uiSubmissionDetails(sb);
-        } catch (RecordNotFoundException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + "doesn't exist");
-        } catch (AccessControlException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
-        }
+        Submission sb = getMySubmission(id);
+        return DataObjects.uiSubmissionDetails(sb);
     }
 
     public int createSubmission() throws NoPermissionException {
-        try {
-            Submission sb = submissionManager.createSubmission(getCurrentUser());
-            return sb.getId();
-        } catch (AccessControlException e) {
-            log.warn("createSubmission() failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
-        }
+        return newSubmission().getId();
     }
 }

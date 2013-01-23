@@ -25,7 +25,10 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -33,27 +36,33 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
-public class EditorTitleBarActivity extends AbstractActivity {
+public class EditorTitleBarActivity extends AbstractActivity implements EditorTitleBarView.Presenter {
 
     private final EditorTitleBarView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
+    private final SubmissionValidationServiceAsync validationService;
+
+    private EventBus eventBus;
 
     @Inject
     public EditorTitleBarActivity(EditorTitleBarView view,
                                   PlaceController placeController,
-                                  SubmissionServiceAsync submissionService) {
+                                  SubmissionServiceAsync submissionService,
+                                  SubmissionValidationServiceAsync validationService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
+        this.validationService = validationService;
     }
 
     public EditorTitleBarActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
+        this.eventBus = eventBus;
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         initAsync();
     }
@@ -75,5 +84,27 @@ public class EditorTitleBarActivity extends AbstractActivity {
                 view.setAccession(result.getAccession());
             }
         }.wrap());
+    }
+
+    @Override
+    public void validateSubmission(final EditorTitleBarView.ValidationHandler handler) {
+       validationService.validate(getSubmissionId(), new AsyncCallbackWrapper<ValidationResult>() {
+           @Override
+           public void onFailure(Throwable throwable) {
+               handler.onValidationFinished();
+               publishValidationResult(new ValidationResult(throwable));
+               //TODO log exception here
+           }
+
+           @Override
+           public void onSuccess(ValidationResult result) {
+               handler.onValidationFinished();
+               publishValidationResult(result);
+           }
+       }.wrap());
+    }
+
+    private void publishValidationResult(ValidationResult result) {
+        eventBus.fireEvent(new ValidationFinishedEvent(result));
     }
 }

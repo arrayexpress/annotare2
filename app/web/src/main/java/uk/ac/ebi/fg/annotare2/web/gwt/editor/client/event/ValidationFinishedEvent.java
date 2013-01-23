@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,28 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 
 /**
  * @author Olga Melnichuk
  */
-public class FinishEvent extends GwtEvent<FinishEventHandler> {
+public class ValidationFinishedEvent extends GwtEvent<ValidationFinishedEventHandler> {
 
-    public static Type<FinishEventHandler> TYPE = new Type<FinishEventHandler>();
+    public static Type<ValidationFinishedEventHandler> TYPE = new Type<ValidationFinishedEventHandler>();
+
+    private final ValidationResult result;
+
+    public ValidationFinishedEvent(ValidationResult result) {
+        this.result = result;
+    }
 
     @Override
-    public Type<FinishEventHandler> getAssociatedType() {
+    public Type<ValidationFinishedEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(FinishEventHandler handler) {
-        handler.onFinish();
+    protected void dispatch(ValidationFinishedEventHandler validationFinishedEventHandler) {
+         validationFinishedEventHandler.validationFinished(result);
     }
 }

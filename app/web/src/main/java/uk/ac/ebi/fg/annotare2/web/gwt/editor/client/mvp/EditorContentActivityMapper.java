@@ -35,6 +35,9 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<IdfSheetModeActivity> idfSheetModeActivityProvider;
     private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
     private final Provider<IdfContactListActivity> idfContactListActivityProvider;
+    private final Provider<IdfTermSourceListActivity> idfTermSourceListActivityProvider;
+    private final Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider;
+
 
     private final Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider;
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
@@ -44,12 +47,16 @@ public class EditorContentActivityMapper implements ActivityMapper {
                                        Provider<IdfSheetModeActivity> idfSheetModeActivityProvider,
                                        Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
                                        Provider<IdfContactListActivity> idfContactListActivityProvider,
+                                       Provider<IdfTermSourceListActivity> idfTermSourceListActivityProvider,
+                                       Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider,
                                        Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
         this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
         this.idfContactListActivityProvider = idfContactListActivityProvider;
+        this.idfTermSourceListActivityProvider = idfTermSourceListActivityProvider;
+        this.idfExperimentalDesignListActivityProvider = idfExperimentalDesignListActivityProvider;
 
         this.sdrfSheetModeActivityProvider = sdrfSheetModeActivityProvider;
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
@@ -69,6 +76,10 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (idfGeneralInfoActivityProvider.get()).withPlace(place);
                 case CONTACTS:
                     return (idfContactListActivityProvider.get()).withPlace(place);
+                case EXP_DESIGNS:
+                    return (idfExperimentalDesignListActivityProvider.get()).withPlace(place);
+                case TERM_DEF_SOURCES:
+                    return (idfTermSourceListActivityProvider.get()).withPlace(place);
                 default:
                     return (idfContentActivityProvider.get()).withPlace(place);
             }

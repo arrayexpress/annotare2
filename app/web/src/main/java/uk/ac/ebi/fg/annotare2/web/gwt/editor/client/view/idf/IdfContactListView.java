@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,14 +26,14 @@ import java.util.List;
  */
 public interface IdfContactListView extends IsWidget {
 
-    void setContacts(ArrayList<Person> contacts);
+    void setContacts(List<Person> contacts);
 
     void setPresenter(Presenter presenter);
 
     public interface Presenter {
 
-        Person addContact();
+        Person createContact();
 
-        void removeContacts(ArrayList<Integer> indices);
+        void removeContacts(List<Integer> indices);
     }
 }

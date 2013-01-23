@@ -23,7 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEventHandl
 /**
  * @author Olga Melnichuk
  */
-public class DisclosurePanelContent extends Composite {
+public abstract class DisclosurePanelContent extends Composite {
 
     public void addContentChangeHandler(RecordChangeEventHandler handler) {
         addHandler(handler, RecordChangeEvent.TYPE);
@@ -32,4 +32,6 @@ public class DisclosurePanelContent extends Composite {
     void fireRecordChangeEvent(String newValue) {
         fireEvent(new RecordChangeEvent(newValue));
     }
+
+    public abstract String getHeaderText();
 }

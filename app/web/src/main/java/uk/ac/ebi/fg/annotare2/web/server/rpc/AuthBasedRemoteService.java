@@ -26,10 +26,13 @@ import javax.servlet.http.HttpSession;
 /**
  * @author Olga Melnichuk
  */
-public abstract class RemoteServiceBase extends RemoteServiceServlet {
+public abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
-    @Inject
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AuthBasedRemoteService(AuthService authService) {
+        this.authService = authService;
+    }
 
     protected User getCurrentUser() {
         return authService.getCurrentUser(getSession());

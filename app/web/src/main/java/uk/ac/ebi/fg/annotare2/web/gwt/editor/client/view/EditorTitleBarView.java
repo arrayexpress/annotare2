@@ -24,4 +24,16 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface EditorTitleBarView extends IsWidget {
 
     void setAccession(String accession);
+
+    void setPresenter(Presenter presenter);
+
+    public interface Presenter {
+
+        void validateSubmission(ValidationHandler handler);
+    }
+
+    public interface ValidationHandler {
+
+        void onValidationFinished();
+    }
 }

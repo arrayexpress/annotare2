@@ -27,8 +27,8 @@ import com.google.gwt.user.client.ui.*;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.FinishEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.FinishEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEventHandler;
 
@@ -123,7 +123,7 @@ public class ImportFileDialogContent extends Composite {
 
             @Override
             void proceed(ImportFileDialogContent dialogContent) {
-                dialogContent.fireEvent(new FinishEvent());
+                dialogContent.fireEvent(new CloseEvent());
                 if (dialogContent.success) {
                     Window.Location.reload();
                 }
@@ -183,7 +183,7 @@ public class ImportFileDialogContent extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 state.cancel(ImportFileDialogContent.this);
-                fireEvent(new FinishEvent());
+                fireEvent(new CloseEvent());
             }
         });
     }
@@ -192,8 +192,8 @@ public class ImportFileDialogContent extends Composite {
         return fileName;
     }
 
-    public HandlerRegistration addImportFinishEventHandler(FinishEventHandler handler) {
-        return addHandler(handler, FinishEvent.TYPE);
+    public HandlerRegistration addCloseEventHandler(CloseEventHandler handler) {
+        return addHandler(handler, CloseEvent.TYPE);
     }
 
     public HandlerRegistration addImportProceedEventHandler(ProceedEventHandler handler) {

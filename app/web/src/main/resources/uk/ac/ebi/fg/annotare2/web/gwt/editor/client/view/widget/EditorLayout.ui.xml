@@ -30,12 +30,9 @@
             <g:SimplePanel ui:field="titleBarDisplay"/>
         </g:north>
         <g:center>
-            <g:SplitLayoutPanel>
+            <g:SplitLayoutPanel ui:field="splitPanel">
                 <g:south size="40">
-                    <g:ScrollPanel height="100%" addStyleNames="{style.border}">
-                        <g:HTML>
-                            <div>Validation logs...errors, warnings etc.</div>
-                        </g:HTML>
+                    <g:ScrollPanel ui:field="logBarDisplay" height="100%" addStyleNames="{style.border}">
                     </g:ScrollPanel>
                 </g:south>
                 <g:center>

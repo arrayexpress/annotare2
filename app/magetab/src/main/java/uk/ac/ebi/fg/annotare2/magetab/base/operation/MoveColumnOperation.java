@@ -20,6 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 @GwtCompatible
 public class MoveColumnOperation implements Operation {
 
-    private ArrayList<Integer> rowIndices = new ArrayList<Integer>();
+    private List<Integer> rowIndices = new ArrayList<Integer>();
 
     private int fromIndex;
 
@@ -37,7 +38,7 @@ public class MoveColumnOperation implements Operation {
         //Required by GWT serialization policy
     }
 
-    public MoveColumnOperation(ArrayList<Integer> rowIndices, int fromColIndex, int toColIndex) {
+    public MoveColumnOperation(List<Integer> rowIndices, int fromColIndex, int toColIndex) {
         this.rowIndices.addAll(rowIndices);
         this.fromIndex = fromColIndex;
         this.toIndex = toColIndex;
@@ -48,7 +49,7 @@ public class MoveColumnOperation implements Operation {
         table.apply(this);
     }
 
-    public ArrayList<Integer> getRowIndices() {
+    public List<Integer> getRowIndices() {
         return rowIndices;
     }
 

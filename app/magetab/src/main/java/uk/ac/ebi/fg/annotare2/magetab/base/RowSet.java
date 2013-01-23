@@ -20,7 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.magetab.base.TaggedRow.shift;
 
@@ -32,7 +32,7 @@ public class RowSet {
 
     private ArrayList<RowTag> tags = new ArrayList<RowTag>();
 
-    private Map<RowTag, TaggedRow> map;
+    private HashMap<RowTag, TaggedRow> map;
 
     private Table table;
 
@@ -42,13 +42,14 @@ public class RowSet {
         }
     }
 
-    public void addAll(Table table) {
+    public RowSet from(Table table) {
         this.table = table;
         this.map = new HashMap<RowTag, TaggedRow>();
 
         for (RowTag tag : tags) {
             map.put(tag, new TaggedRow(table, tag));
         }
+        return this;
     }
 
     public int getWidth() {
@@ -60,7 +61,7 @@ public class RowSet {
         return res;
     }
 
-    public void removeColumn(ArrayList<Integer> indices) {
+    public void removeColumn(List<Integer> indices) {
         checkColumnIndices(indices);
         ArrayList<Integer> shifted = new ArrayList<Integer>();
         for (Integer i : indices) {
@@ -77,19 +78,19 @@ public class RowSet {
         table.moveColumn(rows(), shift(fromIndex), shift(toIndex));
     }
 
-    public Map<RowTag, Row.Cell<String>> addColumn() {
+    public HashMap<RowTag, Row.Cell<String>> addColumn() {
         return getColumn(getWidth());
     }
 
-    public Map<RowTag, Row.Cell<String>> getColumn(int i) {
-        Map<RowTag, Row.Cell<String>> column = new HashMap<RowTag, Row.Cell<String>>();
+    public HashMap<RowTag, Row.Cell<String>> getColumn(int i) {
+        HashMap<RowTag, Row.Cell<String>> column = new HashMap<RowTag, Row.Cell<String>>();
         for (RowTag tag : tags) {
             column.put(tag, map.get(tag).cellAt(i));
         }
         return column;
     }
 
-    private void checkColumnIndices(ArrayList<Integer> indices) {
+    private void checkColumnIndices(List<Integer> indices) {
         for (int i : indices) {
             if (i < 0) {
                 throw new IndexOutOfBoundsException("Column index could not be negative: " + i);
@@ -97,8 +98,8 @@ public class RowSet {
         }
     }
 
-    private ArrayList<Row> rows() {
-        ArrayList<Row> rows = new ArrayList<Row>();
+    private List<Row> rows() {
+        List<Row> rows = new ArrayList<Row>();
         for (TaggedRow r : map.values()) {
             Row rr = r.getRow();
             if (rr != null) {

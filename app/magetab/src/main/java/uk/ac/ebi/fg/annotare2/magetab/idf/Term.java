@@ -31,27 +31,47 @@ public class Term {
 
     private Row.Cell<String> ref;
 
+    private TermSource termSource;
+
     public Row.Cell<String> getName() {
         return name;
-    }
-
-    public void setName(Row.Cell<String> name) {
-        this.name = name;
     }
 
     public Row.Cell<String> getAccession() {
         return accession;
     }
 
-    public void setAccession(Row.Cell<String> accession) {
-        this.accession = accession;
-    }
-
     public Row.Cell<String> getRef() {
         return ref;
     }
 
-    public void setRef(Row.Cell<String> ref) {
-        this.ref = ref;
+    public TermSource getTermSource() {
+        return termSource;
+    }
+
+    public void setTermSource(TermSource termSource) {
+        this.termSource = termSource;
+        this.ref.setValue(termSource == null ? "" : termSource.getName().getValue());
+    }
+
+    public static class Builder {
+
+        private final Term term = new Term();
+
+        public void setName(Row.Cell<String> name) {
+            term.name = name;
+        }
+
+        public void setAccession(Row.Cell<String> accession) {
+            term.accession = accession;
+        }
+
+        public void setRef(Row.Cell<String> ref) {
+            term.ref = ref;
+        }
+
+        public Term build() {
+            return term;
+        }
     }
 }

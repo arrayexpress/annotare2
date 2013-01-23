@@ -20,36 +20,18 @@
     <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
     <artifactId>annotare2-magetab</artifactId>
     <packaging>jar</packaging>
-    <version>0.9</version>
+    <version>0.10</version>
     <name>MageTab Lib</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.9</version>
+        <version>0.10</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <!--
-    <repositories>
-        <repository>
-            <id>limpopo-repo</id>
-            <name>Limpopo Mini-SF Repository</name>
-            <url>http://limpopo.sourceforge.net/maven/repo</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>uk.ac.ebi.arrayexpress2</groupId>
-            <artifactId>limpopo</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-    </dependencies>
-    -->
 
     <build>
         <plugins>

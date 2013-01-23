@@ -31,11 +31,11 @@ public class Operations {
         return new UpdateCellOperation(row, col, value);
     }
 
-    public static Operation removeColumn(ArrayList<Integer> rowIndices, ArrayList<Integer> colIndices) {
+    public static Operation removeColumn(List<Integer> rowIndices, List<Integer> colIndices) {
         return new RemoveColumnOperation(rowIndices, colIndices);
     }
 
-    public static Operation moveColumn(ArrayList<Integer> rowIndices, int fromColIndex, int toColIndex) {
+    public static Operation moveColumn(List<Integer> rowIndices, int fromColIndex, int toColIndex) {
         return new MoveColumnOperation(rowIndices, fromColIndex, toColIndex);
     }
 }

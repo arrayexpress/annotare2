@@ -17,16 +17,15 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
-import uk.ac.ebi.fg.annotare2.magetab.base.RowTag;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
+import uk.ac.ebi.fg.annotare2.magetab.base.*;
 import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
 
 
@@ -41,6 +40,7 @@ public class Investigation {
         EXPERIMENT_DESCRIPTION("Experiment Description"),
         DATE_OF_EXPERIMENT("Date of Experiment"),
         DATE_OF_PUBLIC_RELEASE("Public Release Date"),
+        SDRF_FILE("SDRF File"),
 
         PERSON_FIRST_NAME("Person First Name"),
         PERSON_LAST_NAME("Person Last Name"),
@@ -53,6 +53,10 @@ public class Investigation {
         PERSON_ROLES("Person Roles"),
         PERSON_ROLES_TERM_ACCESSION_NUMBER("Person Roles Term Accession Number"),
         PERSON_ROLES_TERM_SOURCE_REF("Person Roles Term Source REF"),
+
+        EXPERIMENTAL_DESIGN_NAME("Experimental Design"),
+        EXPERIMENTAL_DESIGN_TERM_SOURCE_REF("Experimental Design Term Source REF"),
+        EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER("Experimental Design Term Accession Number"),
 
         TERM_SOURCE_NAME("Term Source Name"),
         TERM_SOURCE_FILE("Term Source File"),
@@ -74,9 +78,11 @@ public class Investigation {
 
     private final ContactList contactList;
 
-    private TermSourceList termSourceList;
+    private final ExperimentalDesignList experimentalDesignList;
 
-    private Table table;
+    private final TermSourceList termSourceList;
+
+    private final Table table;
 
     public Investigation() {
         this(new Table());
@@ -85,9 +91,10 @@ public class Investigation {
     public Investigation(Table table) {
         this.table = table;
 
+        termSourceList = new TermSourceList(table);
         generalInfoList = new GeneralInfoList(table);
         contactList = new ContactList(table);
-        termSourceList = new TermSourceList(table);
+        experimentalDesignList = new ExperimentalDesignList(table, termSourceList);
 
         if (generalInfoList.isEmpty()) {
             generalInfoList.add();
@@ -155,11 +162,15 @@ public class Investigation {
         return generalInfoList.get(0).getDateOfPublicRelease();
     }
 
-    public void removeContact(ArrayList<Integer> indices) {
-       contactList.remove(indices);
+    public Row.Cell<String> getSdrfFile() {
+        return generalInfoList.get(0).getSdrfFile();
     }
 
-    public Person addContact() {
+    public void removeContact(List<Integer> indices) {
+        contactList.remove(indices);
+    }
+
+    public Person createContact() {
         return contactList.add();
     }
 
@@ -167,82 +178,120 @@ public class Investigation {
         return contactList.getAll();
     }
 
+    public ArrayList<Term> getExperimentalDesigns() {
+        return experimentalDesignList.getAll();
+    }
+
+    public Term createExperimentalDesign() {
+        return experimentalDesignList.add();
+    }
+
+    public void removeExperimentalDesigns(List<Integer> indices) {
+        experimentalDesignList.remove(indices);
+    }
+
     public ArrayList<TermSource> getTermSources() {
         return termSourceList.getAll();
+    }
+
+    public TermSource getTermSource(String name) {
+        return termSourceList.getTermSource(name);
+    }
+
+    public TermSource createTermSource() {
+        return termSourceList.add();
+    }
+
+    public void removeTermSources(List<Integer> indices) {
+        termSourceList.remove(indices);
     }
 
     private static class GeneralInfoList extends ObjectList<Info> {
 
         private GeneralInfoList(Table table) {
-            super(table,
+            super(new RowSet(
                     INVESTIGATION_TITLE,
                     EXPERIMENT_DESCRIPTION,
                     DATE_OF_EXPERIMENT,
-                    DATE_OF_PUBLIC_RELEASE);
-        }
+                    DATE_OF_PUBLIC_RELEASE,
+                    SDRF_FILE).from(table),
+                    new ObjectCreator<Info>() {
+                        @Override
+                        public Info create(HashMap<RowTag, Row.Cell<String>> map) {
+                            Info generalInfo = new Info();
+                            generalInfo.setTitle(map.get(INVESTIGATION_TITLE));
+                            generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
+                            generalInfo.setDateOfExperiment(asDateCell(map.get(DATE_OF_EXPERIMENT)));
+                            generalInfo.setDateOfPublicRelease(asDateCell(map.get(DATE_OF_PUBLIC_RELEASE)));
+                            generalInfo.setSdrfFile(map.get(SDRF_FILE));
+                            return generalInfo;
+                        }
 
-        @Override
-        protected Info create(Map<RowTag, Row.Cell<String>> map) {
-            Info generalInfo = new Info();
-            generalInfo.setTitle(map.get(INVESTIGATION_TITLE));
-            generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
-            generalInfo.setDateOfExperiment(asDateCell(map.get(DATE_OF_EXPERIMENT)));
-            generalInfo.setDateOfPublicRelease(asDateCell(map.get(DATE_OF_PUBLIC_RELEASE)));
-            return generalInfo;
-        }
+                        private Row.Cell<Date> asDateCell(final Row.Cell<String> cell) {
+                            return new Row.Cell<Date>() {
 
-        private Row.Cell<Date> asDateCell(final Row.Cell<String> cell) {
-            return new Row.Cell<Date>() {
+                                @Override
+                                public void setValue(Date date) {
+                                    cell.setValue(format(date));
+                                }
 
-                @Override
-                public void setValue(Date date) {
-                    cell.setValue(format(date));
-                }
+                                @Override
+                                public Date getValue() {
+                                    return parse(cell.getValue());
+                                }
 
-                @Override
-                public Date getValue() {
-                    return parse(cell.getValue());
-                }
+                                @Override
+                                public boolean isEmpty() {
+                                    return cell.isEmpty();
+                                }
 
-                @Override
-                public boolean isEmpty() {
-                    return cell.isEmpty();
-                }
+                                private String format(Date date) {
+                                    return TextFormatter.getInstance().formatDate(date);
+                                }
 
-                private String format(Date date) {
-                    return TextFormatter.getInstance().formatDate(date);
-                }
-
-                private Date parse(String s) {
-                    return TextFormatter.getInstance().parseDate(s);
-                }
-            };
+                                private Date parse(String s) {
+                                    return TextFormatter.getInstance().parseDate(s);
+                                }
+                            };
+                        }
+                    });
         }
     }
 
     private static class TermSourceList extends ObjectList<TermSource> {
 
         protected TermSourceList(Table table) {
-            super(table,
+            super(new RowSet(
                     TERM_SOURCE_NAME,
                     TERM_SOURCE_VERSION,
-                    TERM_SOURCE_FILE);
+                    TERM_SOURCE_FILE).from(table),
+                    new ObjectCreator<TermSource>() {
+                        @Override
+                        public TermSource create(HashMap<RowTag, Row.Cell<String>> map) {
+                            TermSource termSource = new TermSource();
+                            termSource.setName(map.get(TERM_SOURCE_NAME));
+                            termSource.setVersion(map.get(TERM_SOURCE_VERSION));
+                            termSource.setFile(map.get(TERM_SOURCE_FILE));
+                            return termSource;
+                        }
+                    });
         }
 
-        @Override
-        protected TermSource create(Map<RowTag, Row.Cell<String>> map) {
-            TermSource termSource = new TermSource();
-            termSource.setName(map.get(TERM_SOURCE_NAME));
-            termSource.setVersion(map.get(TERM_SOURCE_VERSION));
-            termSource.setFile(map.get(TERM_SOURCE_FILE));
-            return termSource;
+        public TermSource getTermSource(String name) {
+            for (TermSource ts : getAll()) {
+                String tsName = ts.getName().getValue();
+                if (!isNullOrEmpty(tsName) && tsName.equalsIgnoreCase(name)) {
+                    return ts;
+                }
+            }
+            return null;
         }
     }
 
     private static class ContactList extends ObjectList<Person> {
 
         private ContactList(Table table) {
-            super(table,
+            super(new RowSet(
                     PERSON_FIRST_NAME,
                     PERSON_LAST_NAME,
                     PERSON_MID_INITIALS,
@@ -253,25 +302,48 @@ public class Investigation {
                     PERSON_ADDRESS,
                     PERSON_ROLES,
                     PERSON_ROLES_TERM_ACCESSION_NUMBER,
-                    PERSON_ROLES_TERM_SOURCE_REF);
-        }
-
-        @Override
-        protected Person create(Map<RowTag, Row.Cell<String>> map) {
-            Person p = new Person();
-            p.setFirstName(map.get(PERSON_FIRST_NAME));
-            p.setLastName(map.get(PERSON_LAST_NAME));
-            p.setMidInitials(map.get(PERSON_MID_INITIALS));
-            p.setEmail(map.get(PERSON_EMAIL));
-            p.setPhone(map.get(PERSON_PHONE));
-            p.setFax(map.get(PERSON_FAX));
-            p.setAffiliation(map.get(PERSON_AFFILIATION));
-            p.setAddress(map.get(PERSON_ADDRESS));
-            return p;
+                    PERSON_ROLES_TERM_SOURCE_REF).from(table),
+                    new ObjectCreator<Person>() {
+                        @Override
+                        public Person create(HashMap<RowTag, Row.Cell<String>> map) {
+                            Person p = new Person();
+                            p.setFirstName(map.get(PERSON_FIRST_NAME));
+                            p.setLastName(map.get(PERSON_LAST_NAME));
+                            p.setMidInitials(map.get(PERSON_MID_INITIALS));
+                            p.setEmail(map.get(PERSON_EMAIL));
+                            p.setPhone(map.get(PERSON_PHONE));
+                            p.setFax(map.get(PERSON_FAX));
+                            p.setAffiliation(map.get(PERSON_AFFILIATION));
+                            p.setAddress(map.get(PERSON_ADDRESS));
+                            return p;
+                        }
+                    });
         }
     }
 
-    public ArrayList<TableCell> getErrors() {
+    private static class ExperimentalDesignList extends ObjectList<Term> {
+
+        private ExperimentalDesignList(Table table, final TermSourceList termSources) {
+            super(new RowSet(
+                    EXPERIMENTAL_DESIGN_NAME,
+                    EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER,
+                    EXPERIMENTAL_DESIGN_TERM_SOURCE_REF).from(table),
+                    new ObjectCreator<Term>() {
+                        public Term create(HashMap<RowTag, Row.Cell<String>> map) {
+                            Term.Builder builder = new Term.Builder();
+                            builder.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
+                            builder.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
+                            builder.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
+
+                            Term term = builder.build();
+                            term.setTermSource(termSources.getTermSource(term.getRef().getValue()));
+                            return term;
+                        }
+                    });
+        }
+    }
+
+    public List<TableCell> getErrors() {
         //TODO
         return new ArrayList<TableCell>();
     }

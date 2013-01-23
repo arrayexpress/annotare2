@@ -36,7 +36,7 @@ public abstract class EditableField<T, S> {
 
     public void readValueFrom(T obj) {
         if (obj != null) {
-            field.setValue(getValue(obj), false);
+            field.setValue(getValue(obj));
         }
     }
 

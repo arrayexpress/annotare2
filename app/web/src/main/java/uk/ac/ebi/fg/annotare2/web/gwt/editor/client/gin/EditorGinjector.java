@@ -50,4 +50,7 @@ public interface EditorGinjector extends Ginjector {
 
     @EditorContentDisplay
     ActivityMapper getContentActivityMapper();
+
+    @EditorLogBarDisplay
+    ActivityMapper getLogBarActivityMapper();
 }
