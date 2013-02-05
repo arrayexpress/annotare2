@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
@@ -41,6 +42,8 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     private final LeftMenuView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync asyncService;
+
+    private JavaScriptObject editorWindow;
 
     @Inject
     public LeftMenuActivity(LeftMenuView view, PlaceController placeController, SubmissionServiceAsync asyncService) {
@@ -97,11 +100,13 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     }
 
     private native void prepareEditor(String url) /*-{
-        this.editorWindow = $wnd.open(url, "_blank", "");
+        var wnd = $wnd.open(url, "_blank", "");
+        wnd.focus();
+        this.@uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity.LeftMenuActivity::editorWindow = wnd;
     }-*/;
 
     private native void openEditor(String url) /*-{
-        var editorWindow = this.editorWindow;
+        var editorWindow = this.@uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity.LeftMenuActivity::editorWindow
         if (!editorWindow) {
             return;
         }
