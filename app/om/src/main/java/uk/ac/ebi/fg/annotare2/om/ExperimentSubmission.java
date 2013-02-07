@@ -16,12 +16,46 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import com.google.common.base.Charsets;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * @author Olga Melnichuk
  */
 public class ExperimentSubmission extends Submission {
 
+    private String investigation;
+
+    private String sampleAndDataRel;
+
     public ExperimentSubmission(User user, Acl acl) {
-        super(SubmissionType.EXPERIMENT, user, acl);
+        super(user, acl);
     }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public void setInvestigation(String text) {
+        this.investigation = text;
+    }
+
+    public void setSampleAndDataRelationship(String rel) {
+        this.sampleAndDataRel = rel;
+    }
+
+    public InputStream getInvestigation() throws IOException {
+        String str = (investigation == null) ? "" : investigation;
+        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
+    }
+
+    public InputStream getSampleAndDataRelationship() {
+        String str = (sampleAndDataRel == null) ? "" : sampleAndDataRel;
+        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
+    }
+
 }

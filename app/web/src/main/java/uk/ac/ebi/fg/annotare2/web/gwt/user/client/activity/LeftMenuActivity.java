@@ -22,10 +22,12 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
@@ -68,9 +70,9 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         gotoSubmissionListViewPlace(filter);
     }
 
-    public void onSubmissionCreateButtonClick() {
-        prepareEditor(launcherUrl());
-        asyncService.createSubmission(new AsyncCallbackWrapper<Integer>() {
+    @Override
+    public void onSubmissionCreateClick(UISubmissionType type) {
+        AsyncCallback<Integer> callback = new AsyncCallbackWrapper<Integer>() {
             public void onFailure(Throwable caught) {
                 //TODO
                 Window.alert("Can't create new submission");
@@ -80,7 +82,21 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                 gotoSubmissionViewPlace(submissionId);
                 openEditor(editorUrl(submissionId));
             }
-        }.wrap());
+        }.wrap();
+
+        prepareEditor(launcherUrl());
+
+        switch (type) {
+            case EXPERIMENT_SUBMISSION_TYPE:
+                asyncService.createExperimentSubmission(callback);
+                return;
+            case ARRAY_DESIGN_SUBMISSION_TYPE:
+                asyncService.createArrayDesignSubmission(callback);
+                return;
+            default:
+                //TODO
+                Window.alert("Unknown submission type: " + type);
+        }
     }
 
     public void goTo(Place place) {

@@ -22,7 +22,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
-import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationService;
@@ -55,7 +56,7 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
 
     @Override
     public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
-        Submission subm = getMySubmission(submissionId);
+        ExperimentSubmission subm = getExperimentSubmission(submissionId, Permission.VIEW);
         ArrayList<String> errors = new ArrayList<String>();
         ArrayList<String> warnings = new ArrayList<String>();
         ArrayList<String> failures = new ArrayList<String>();

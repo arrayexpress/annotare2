@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
@@ -28,7 +29,7 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
-import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,6 +39,7 @@ import java.util.Collection;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
+import static com.google.common.io.Closeables.close;
 import static com.google.common.io.Closeables.closeQuietly;
 
 /**
@@ -55,7 +57,7 @@ public class SubmissionValidator {
         this.checker = checker;
     }
 
-    public Collection<CheckResult> validate(Submission submission) throws IOException,
+    public Collection<CheckResult> validate(ExperimentSubmission submission) throws IOException,
             ParseException, UknownExperimentTypeException {
 
         File tmp = copy(submission);
@@ -67,7 +69,7 @@ public class SubmissionValidator {
         return natural().sortedCopy(results);
     }
 
-    private File copy(Submission submission) throws IOException {
+    private File copy(ExperimentSubmission submission) throws IOException {
         Investigation inv = IdfParser.parse(submission.getInvestigation());
         String sdrfFileRef = inv.getSdrfFile().getValue();
 
@@ -96,8 +98,8 @@ public class SubmissionValidator {
         try {
             return ByteStreams.copy(from, to);
         } finally {
-            closeQuietly(to);
-            closeQuietly(from);
+            close(to, true);
+            close(from, true);
         }
     }
 }

@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -33,15 +34,15 @@ public class EffectiveAclTest {
 
     @Test
     public void testEffectiveAclHasPermission() {
-        Acl acl = new Acl(1, AclType.SUBMISSION);
-        acl.add(new AclEntry(1, Role.AUTHENTICATED, Permission.VIEW));
-        acl.add(new AclEntry(2, Role.OWNER, Permission.VIEW));
-        acl.add(new AclEntry(3, Role.OWNER, Permission.UPDATE));
+        Acl acl = new Acl();
+        acl.add(new AclEntry(Role.AUTHENTICATED, Permission.VIEW));
+        acl.add(new AclEntry(Role.OWNER, Permission.VIEW));
+        acl.add(new AclEntry(Role.OWNER, Permission.UPDATE));
 
         User owner = createUser(asList(Role.AUTHENTICATED));
         User other = createUser(asList(Role.AUTHENTICATED));
 
-        EffectiveAcl effectiveAcl = new EffectiveAcl(acl, owner);
+        EffectiveAcl effectiveAcl = new EffectiveAcl(acl, Optional.of(owner));
 
         assertTrue(effectiveAcl.hasPermission(owner, Permission.VIEW));
         assertTrue(effectiveAcl.hasPermission(owner, Permission.UPDATE));

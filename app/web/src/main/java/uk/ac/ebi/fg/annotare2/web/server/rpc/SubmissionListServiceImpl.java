@@ -17,21 +17,28 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionListServiceImpl extends SubmissionBasedRemoteService implements SubmissionListService {
+public class SubmissionListServiceImpl extends AuthBasedRemoteService implements SubmissionListService {
+    private final SubmissionManager submissionManager;
 
     @Inject
-    public SubmissionListServiceImpl(AuthService authService, SubmissionManager submissionManager) {
-        super(authService, submissionManager);
+    public SubmissionListServiceImpl(AuthService authService,
+                                     SubmissionManager submissionManager) {
+        super(authService);
+        this.submissionManager = submissionManager;
     }
 
     public ArrayList<UISubmissionRow> getAllSubmissions() {
@@ -42,7 +49,26 @@ public class SubmissionListServiceImpl extends SubmissionBasedRemoteService impl
         return DataObjects.uiSubmissionRows(getMyCompletedSubmissions());
     }
 
+
     public ArrayList<UISubmissionRow> getIncompleteSubmissions() {
         return DataObjects.uiSubmissionRows(getMyIncompleteSubmissions());
+    }
+
+    private List<Submission> getMyAllSubmissions() {
+        List<Submission> list = newArrayList();
+        list.addAll(submissionManager.getAllSubmissions(getCurrentUser()));
+        return list;
+    }
+
+    private List<Submission> getMyCompletedSubmissions() {
+        List<Submission> list = newArrayList();
+        list.addAll(submissionManager.getCompletedSubmissions(getCurrentUser()));
+        return list;
+    }
+
+    private List<Submission> getMyIncompleteSubmissions() {
+        List<Submission> list = newArrayList();
+        list.addAll(submissionManager.getIncompleteSubmissions(getCurrentUser()));
+        return list;
     }
 }

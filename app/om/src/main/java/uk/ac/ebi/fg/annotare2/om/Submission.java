@@ -16,31 +16,27 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
 public abstract class Submission implements HasEffectiveAcl {
+    public interface Visitor {
+        void visit(ExperimentSubmission submission);
+
+        void visit(ArrayDesignSubmission submission);
+    }
 
     private int id;
-
-    private SubmissionType type;
 
     private Date created;
 
     private User createdBy;
-    
+
     private Acl acl;
-
-    private String investigation;
-
-    private String sampleAndDataRel;
 
     private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
 
@@ -48,10 +44,7 @@ public abstract class Submission implements HasEffectiveAcl {
 
     private String accession;
 
-    protected Submission(SubmissionType type,
-                         User createdBy,
-                         Acl acl) {
-        this.type = type;
+    protected Submission(User createdBy, Acl acl) {
         this.created = new Date();
         this.createdBy = createdBy;
         this.acl = acl;
@@ -59,14 +52,6 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setInvestigation(String text) {
-        this.investigation = text;
-    }
-
-    public void setSampleAndDataRelationship(String rel) {
-        this.sampleAndDataRel = rel;
     }
 
     public void setStatus(SubmissionStatus status) {
@@ -77,22 +62,8 @@ public abstract class Submission implements HasEffectiveAcl {
         return id;
     }
 
-    public InputStream getInvestigation() throws IOException {
-        String str = (investigation == null) ? "" : investigation;
-        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
-    }
-
-    public InputStream getSampleAndDataRelationship() {
-        String str = (sampleAndDataRel == null) ? "" : sampleAndDataRel;
-        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
-    }
-
     public Date getCreated() {
         return created;
-    }
-
-    public SubmissionType getType() {
-        return type;
     }
 
     public SubmissionStatus getStatus() {
@@ -120,6 +91,8 @@ public abstract class Submission implements HasEffectiveAcl {
     }
 
     public EffectiveAcl getEffectiveAcl() {
-        return new EffectiveAcl(acl, createdBy);
+        return new EffectiveAcl(acl, Optional.of(createdBy));
     }
+
+    public abstract void accept(Visitor visitor);
 }

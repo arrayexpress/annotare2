@@ -33,7 +33,7 @@ public class SubmissionTest {
     @Test
     public void defaultInitializationTest() throws IOException {
         User user = new User(1, "email", "password");
-        Acl acl = new Acl(1, AclType.SUBMISSION);
+        Acl acl = new Acl();
         ExperimentSubmission submission = new ExperimentSubmission(user, acl);
 
         assertEquals(0, submission.getId());

@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.om.*;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,53 +29,69 @@ import java.util.List;
  */
 public class SubmissionManager {
 
-    private SubmissionDao submissionDao;
+    private final SubmissionDao submissionDao;
+    private final SubmissionFactory factory;
 
     @Inject
-    public SubmissionManager(SubmissionDao submissionDao) {
+    public SubmissionManager(SubmissionDao submissionDao, SubmissionFactory factory) {
         this.submissionDao = submissionDao;
+        this.factory = factory;
     }
 
     public List<Submission> getAllSubmissions(User user) {
-        return submissionDao.getSubmissionsByType(user, SubmissionType.EXPERIMENT);
+        return submissionDao.getSubmissions(user);
     }
 
-    public List<Submission> getIncompleteSubmissions(User user) {
+    public Collection<Submission> getIncompleteSubmissions(User user) {
         return submissionDao.getSubmissionsByStatus(user,
                 SubmissionStatus.IN_PROGRESS,
                 SubmissionStatus.IN_CURATION,
                 SubmissionStatus.SUBMITTED);
     }
 
-    public List<Submission> getCompletedSubmissions(User user) {
+    public Collection<Submission> getCompletedSubmissions(User user) {
         return submissionDao.getSubmissionsByStatus(user,
                 SubmissionStatus.PRIVATE_IN_AE,
                 SubmissionStatus.PUBLIC_IN_AE);
     }
 
-    public Submission getSubmission(User user, int id) throws RecordNotFoundException, AccessControlException {
-        Submission sb = submissionDao.getSubmission(id);
-        if(!user.isAllowed(sb, Permission.VIEW)) {
-            throw new AccessControlException("User " + user + " doesn't have a permission to view the submission " + sb);
-        }
-        return sb;
+    public Submission getSubmission(User user, int id) throws AccessControlException, RecordNotFoundException {
+        Submission submission = submissionDao.getSubmission(id);
+        return withPermission(user, Permission.VIEW, submission);
     }
 
-    public Submission getSubmission2Update(User user, int id) throws AccessControlException, RecordNotFoundException {
-        Submission sb = getSubmission(user, id);
-        if (!user.isAllowed(sb, Permission.UPDATE)) {
-            throw new AccessControlException("User " + user + " doesn't have a permission to update the submission " + sb);
-        }
-        return sb;
+    public ExperimentSubmission getExperimentSubmission(User user, int id, Permission permission) throws RecordNotFoundException, AccessControlException {
+        ExperimentSubmission sb = submissionDao.getExperimentSubmission(id);
+        return withPermission(user, permission, sb);
     }
 
-    public Submission createSubmission(User user) throws AccessControlException {
-        SubmissionFactory factory = submissionDao.getSubmissionFactory(user);
+    public ArrayDesignSubmission getArrayDesignSubmission(User user, int id, Permission permission) throws RecordNotFoundException, AccessControlException {
+        ArrayDesignSubmission sb = submissionDao.getArrayDesignSubmission(id);
+        return withPermission(user, permission, sb);
+    }
+
+    public ExperimentSubmission createExperimentSubmission(User user) throws AccessControlException {
         if (!user.isAllowed(factory, Permission.CREATE)) {
             throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
         }
-        Submission submission = factory.createSubmission();
-        submissionDao.save(submission);
-        return submission;
+        ExperimentSubmission sb = factory.createExperimentSubmission(user);
+        submissionDao.save(sb);
+        return sb;
+    }
+
+    public ArrayDesignSubmission createArrayDesignSubmission(User user) throws AccessControlException {
+        if (!user.isAllowed(factory, Permission.CREATE)) {
+            throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
+        }
+        ArrayDesignSubmission sb = factory.createArrayDesignSubmission(user);
+        submissionDao.save(sb);
+        return sb;
+    }
+
+    private <T extends Submission> T withPermission(User user, Permission permission, T sb) throws AccessControlException {
+        if (!user.isAllowed(sb, permission)) {
+            throw new AccessControlException("User " + user + " doesn't have a permission to [" + permission + " ] the submission " + sb);
+        }
+        return sb;
     }
 }

@@ -17,52 +17,50 @@
 package uk.ac.ebi.fg.annotare2.dao.dummy;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.om.*;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static uk.ac.ebi.fg.annotare2.dao.dummy.DummyData.getSubmissions;
 
 /**
  * @author Olga Melnichuk
  */
 public class SubmissionDaoDummy implements SubmissionDao {
-
+    @Override
     public Submission getSubmission(int id) throws RecordNotFoundException {
-        Submission s = DummyData.getSubmission(id);
-        if (s == null) {
-            throw new RecordNotFoundException("Submission with id=" + id + " not found");
-        }
-        return s;
+        return DummyData.getSubmission(id, Submission.class);
     }
 
-    public List<Submission> getSubmissionsByType(User user, final SubmissionType type) {
-        return getSubmissions(user, new Predicate<Submission>() {
+    @Override
+    public ExperimentSubmission getExperimentSubmission(int id) throws RecordNotFoundException {
+        return DummyData.getSubmission(id, ExperimentSubmission.class);
+    }
+
+    @Override
+    public ArrayDesignSubmission getArrayDesignSubmission(int id) throws RecordNotFoundException {
+        return DummyData.getSubmission(id, ArrayDesignSubmission.class);
+    }
+
+    @Override
+    public List<Submission> getSubmissions(User user) {
+        return DummyData.getSubmissions(user);
+    }
+
+    public Collection<Submission> getSubmissionsByStatus(User user, final SubmissionStatus... statuses) {
+        return Collections2.filter(getSubmissions(user), new Predicate<Submission>() {
             public boolean apply(@Nullable Submission input) {
-                return input.getType().equals(type);
+                return input != null && asList(statuses).contains(input.getStatus());
             }
         });
-    }
-
-    public List<Submission> getSubmissionsByStatus(User user, final SubmissionStatus... statuses) {
-        return getSubmissions(user, new Predicate<Submission>() {
-            public boolean apply(@Nullable Submission input) {
-                return asList(statuses).contains(input.getStatus());
-            }
-        });
-    }
-
-    public SubmissionFactory getSubmissionFactory(User user) {
-        return DummyData.getSubmissionFactory(user);
     }
 
     public void save(Submission submission) {
         DummyData.save(submission);
     }
-
-
 }

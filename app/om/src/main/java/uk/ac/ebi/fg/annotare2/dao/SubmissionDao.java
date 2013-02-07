@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.dao;
 
 import uk.ac.ebi.fg.annotare2.om.*;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,13 +26,15 @@ import java.util.List;
  */
 public interface SubmissionDao {
 
-    Submission getSubmission(int id) throws RecordNotFoundException;
+    ExperimentSubmission getExperimentSubmission(int id) throws RecordNotFoundException;
 
-    List<Submission> getSubmissionsByType(User user, SubmissionType type);
+    ArrayDesignSubmission getArrayDesignSubmission(int id) throws RecordNotFoundException;
 
-    List<Submission> getSubmissionsByStatus(User user, SubmissionStatus... status);
+    List<Submission> getSubmissions(User user);
 
-    SubmissionFactory getSubmissionFactory(User user);
+    Collection<Submission> getSubmissionsByStatus(User user, SubmissionStatus... statuses);
 
     void save(Submission submission);
+
+    Submission getSubmission(int id) throws RecordNotFoundException;
 }

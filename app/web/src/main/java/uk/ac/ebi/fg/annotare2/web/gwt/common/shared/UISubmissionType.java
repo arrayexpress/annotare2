@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.om;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 /**
  * @author Olga Melnichuk
  */
-public enum SubmissionType {
-    EXPERIMENT_SUBMISSION_TYPE,
-    ARRAY_DESIGN_SUBMISSION_TYPE
+public enum UISubmissionType {
+    EXPERIMENT_SUBMISSION_TYPE("Experiment Submission"),
+    ARRAY_DESIGN_SUBMISSION_TYPE("Array Design Submission");
+
+    private final String title;
+
+    private UISubmissionType(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

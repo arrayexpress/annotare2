@@ -32,21 +32,46 @@ import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
+public class SubmissionServiceImpl extends AuthBasedRemoteService implements SubmissionService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
+    private final SubmissionManager submissionManager;
+
     @Inject
     public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager) {
-        super(authService, submissionManager);
+        super(authService);
+        this.submissionManager = submissionManager;
     }
 
     public UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
-        Submission sb = getMySubmission(id);
-        return DataObjects.uiSubmissionDetails(sb);
+        try {
+            Submission sb = submissionManager.getSubmission(getCurrentUser(), id);
+            return DataObjects.uiSubmissionDetails(sb);
+        } catch (AccessControlException e) {
+            log.warn("getSubmission(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getSubmission(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        }
     }
 
-    public int createSubmission() throws NoPermissionException {
-        return newSubmission().getId();
+    public int createExperimentSubmission() throws NoPermissionException {
+        try {
+            return submissionManager.createExperimentSubmission(getCurrentUser()).getId();
+        } catch (AccessControlException e) {
+            log.warn("createSubmission() failure", e);
+            throw new NoPermissionException("no permission to create a submission");
+        }
+    }
+
+    public int createArrayDesignSubmission() throws NoPermissionException {
+        try {
+            return submissionManager.createArrayDesignSubmission(getCurrentUser()).getId();
+        } catch (AccessControlException e) {
+            log.warn("createSubmission() failure", e);
+            throw new NoPermissionException("no permission to create a submission");
+        }
     }
 }

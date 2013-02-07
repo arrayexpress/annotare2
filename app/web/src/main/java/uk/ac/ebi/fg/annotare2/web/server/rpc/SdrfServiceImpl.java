@@ -23,7 +23,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetab.base.Table;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
-import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -49,7 +50,7 @@ public class SdrfServiceImpl extends SubmissionBasedRemoteService implements Sdr
     @Override
     public Table loadData(int submissionId) throws NoPermissionException, ResourceNotFoundException {
         try {
-            Submission submission = getMySubmission(submissionId);
+            ExperimentSubmission submission = getExperimentSubmission(submissionId, Permission.VIEW);
             return new TsvParser().parse(submission.getSampleAndDataRelationship());
         } catch (IOException e) {
             log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
@@ -60,7 +61,7 @@ public class SdrfServiceImpl extends SubmissionBasedRemoteService implements Sdr
     @Override
     public void importData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException {
         try {
-            Submission submission = getMySubmission2Update(submissionId);
+            ExperimentSubmission submission = getExperimentSubmission(submissionId, Permission.UPDATE);
 
             FileItem item = UploadedFiles.getOne(getSession());
             Table table = new TsvParser().parse(item.getInputStream());

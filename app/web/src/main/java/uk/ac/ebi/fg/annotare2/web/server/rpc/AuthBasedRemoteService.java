@@ -26,7 +26,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author Olga Melnichuk
  */
-public abstract class AuthBasedRemoteService extends RemoteServiceServlet {
+abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
     private final AuthService authService;
 

@@ -16,9 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import java.util.ArrayList;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+
 import java.util.Collection;
-import java.util.List;
+
+import static com.google.common.collect.ImmutableList.builder;
 
 /**
  * @author Olga Melnichuk
@@ -26,24 +29,24 @@ import java.util.List;
 public class EffectiveAcl {
 
     private Acl acl;
-    
-    private User owner;
 
-    public EffectiveAcl(Acl acl, User owner) {
+    private Optional<User> owner;
+
+    public EffectiveAcl(Acl acl, Optional<User> owner) {
         this.acl = acl;
         this.owner = owner;
     }
-    
+
     public boolean hasPermission(User user, Permission permission) {
         return acl.hasPermission(getEffectiveRoles(user), permission);
     }
-    
+
     private Collection<? extends Role> getEffectiveRoles(User user) {
-        List<Role> roles = new ArrayList<Role>();
+        ImmutableList.Builder<Role> roles = builder();
         roles.addAll(user.getRoles());
-        if (user.equals(owner)) {
+        if (owner.isPresent() && user.equals(owner.get())) {
             roles.add(Role.OWNER);
         }
-        return roles;
+        return roles.build();
     }
 }

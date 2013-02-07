@@ -26,7 +26,8 @@ import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
 import uk.ac.ebi.fg.annotare2.magetab.base.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.idf.IdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
-import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
@@ -54,7 +55,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
     @Override
     public UIGeneralInfo getGeneralInfo(int submissionId) throws NoPermissionException, ResourceNotFoundException {
         try {
-            return parseGeneralInfo(getMySubmission(submissionId).getInvestigation());
+            return parseGeneralInfo(getExperimentSubmission(submissionId, Permission.VIEW).getInvestigation());
         } catch (IOException e) {
             log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
         }
@@ -64,7 +65,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
     @Override
     public Table loadInvestigation(int submissionId) throws ResourceNotFoundException, NoPermissionException {
         try {
-            return new TsvParser().parse(getMySubmission(submissionId).getInvestigation());
+            return new TsvParser().parse(getExperimentSubmission(submissionId, Permission.VIEW).getInvestigation());
         } catch (IOException e) {
             log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
         }
@@ -74,7 +75,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
     @Override
     public void updateInvestigation(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException {
         try {
-            Submission submission = getMySubmission2Update(submissionId);
+            ExperimentSubmission submission = getExperimentSubmission(submissionId, Permission.UPDATE);
             Table table = new TsvParser().parse(submission.getInvestigation());
             operation.apply(table);
             submission.setInvestigation(new TsvGenerator(table).generateString());
@@ -87,7 +88,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
     public void importInvestigation(int submissionId) throws NoPermissionException,
             ResourceNotFoundException, DataImportException {
         try {
-            Submission submission = getMySubmission2Update(submissionId);
+            ExperimentSubmission submission = getExperimentSubmission(submissionId, Permission.UPDATE);
 
             FileItem item = UploadedFiles.getOne(getSession());
             Table table = new TsvParser().parse(item.getInputStream());
@@ -114,4 +115,5 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
                 inv.getDateOfExperiment().getValue(),
                 inv.getDateOfPublicRelease().getValue());
     }
+
 }

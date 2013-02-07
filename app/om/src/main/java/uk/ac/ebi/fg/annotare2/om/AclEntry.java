@@ -22,15 +22,11 @@ import java.util.Collection;
  * @author Olga Melnichuk
  */
 public class AclEntry {
-
-    private int id;
-
     private Role role;
 
     private Permission permission;
 
-    public AclEntry(int id, Role role, Permission permission) {
-        this.id  = id;
+    public AclEntry(Role role, Permission permission) {
         this.role = role;
         this.permission = permission;
     }

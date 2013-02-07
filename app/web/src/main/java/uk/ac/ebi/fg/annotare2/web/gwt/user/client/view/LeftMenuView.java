@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 
 /**
  * @author Olga Melnichuk
@@ -31,6 +32,6 @@ public interface LeftMenuView extends IsWidget {
 
         void onSubmissionFilterClick(SubmissionListFilter filter);
 
-        void onSubmissionCreateButtonClick();
+        void onSubmissionCreateClick(UISubmissionType type);
     }
 }

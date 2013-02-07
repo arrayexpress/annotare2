@@ -16,25 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Olga Melnichuk
  */
 public class Acl {
-
-    private int id;
-
-    private AclType type;
-
-    private List<AclEntry> entries = new ArrayList<AclEntry>();
-
-    public Acl(int id, AclType type) {
-        this.id = id;
-        this.type = type;
-    }
+    private List<AclEntry> entries = newArrayList();
 
     public Acl add(AclEntry entry) {
         entries.add(entry);
@@ -42,7 +33,7 @@ public class Acl {
     }
 
     public boolean hasPermission(Collection<? extends Role> roles, Permission permission) {
-        for(AclEntry p : entries) {
+        for (AclEntry p : entries) {
             if (p.complies(roles, permission)) {
                 return true;
             }

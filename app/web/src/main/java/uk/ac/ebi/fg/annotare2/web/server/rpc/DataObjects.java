@@ -18,10 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.magetab.idf.IdfParser;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.om.User;
@@ -31,8 +28,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
 
 import javax.annotation.Nullable;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +39,6 @@ import static com.google.common.collect.Lists.transform;
  * @author Olga Melnichuk
  */
 class DataObjects {
-
-    private static final Logger log = LoggerFactory.getLogger(DataObjects.class);
 
     static Function<User, UIUser> USER_TRANSFORM = new Function<User, UIUser>() {
         public UIUser apply(@Nullable User user) {
@@ -70,25 +63,15 @@ class DataObjects {
     static Function<Submission, UISubmissionDetails> SUBMISSION_DETAILS = new Function<Submission, UISubmissionDetails>() {
         public UISubmissionDetails apply(@Nullable Submission submission) {
             checkNotNull(submission);
-            try {
-                Investigation investigation = getInvestigation(submission);
-                return new UISubmissionDetails(
-                        submission.getId(),
-                        submission.getAccession(),
-                        investigation.getTitle().getValue(),
-                        submission.getCreated(),
-                        uiSubmissionStatus(submission.getStatus())
-                );
-            } catch (IOException e) {
-                log.error("Can't parse investigation data from a submissionId (id=" + submission.getId() + ")", e);
-            }
-            return null;
+            return new UISubmissionDetails(
+                    submission.getId(),
+                    submission.getAccession(),
+                    submission.getTitle(),
+                    submission.getCreated(),
+                    uiSubmissionStatus(submission.getStatus())
+            );
         }
     };
-
-    private static Investigation getInvestigation(Submission submission) throws IOException{
-        return IdfParser.parse(submission.getInvestigation());
-    }
 
     static Function<SubmissionStatus, UISubmissionStatus> SUBMISSION_STATUS = new Function<SubmissionStatus, UISubmissionStatus>() {
         public UISubmissionStatus apply(@Nullable SubmissionStatus submissionStatus) {
@@ -113,5 +96,4 @@ class DataObjects {
     static UIUser uiUser(User user) {
         return USER_TRANSFORM.apply(user);
     }
-
 }

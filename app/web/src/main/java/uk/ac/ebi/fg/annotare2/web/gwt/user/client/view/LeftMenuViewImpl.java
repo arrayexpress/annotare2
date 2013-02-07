@@ -25,10 +25,14 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.widgets.client.MenuButton;
 
 import java.util.HashMap;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.ARRAY_DESIGN_SUBMISSION_TYPE;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.EXPERIMENT_SUBMISSION_TYPE;
 
 /**
  * @author Olga Melnichuk
@@ -61,22 +65,16 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         initWidget(uiBinder.createAndBindUi(this));
 
         createButton
-                .addMenuButtonItem("Microarray Experiment Submission")
+                .addMenuButtonItem(EXPERIMENT_SUBMISSION_TYPE.getTitle())
                 .addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        createSubmissionClick();
+                        presenter.onSubmissionCreateClick(EXPERIMENT_SUBMISSION_TYPE);
                     }
                 });
-        createButton.addMenuButtonItem("HTS Experiment Submission")
+        createButton.addMenuButtonItem(ARRAY_DESIGN_SUBMISSION_TYPE.getTitle())
                 .addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        createSubmissionClick();
-                    }
-                });
-        createButton.addMenuButtonItem("ADF Submission")
-                .addClickHandler(new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        createSubmissionClick();
+                        presenter.onSubmissionCreateClick(ARRAY_DESIGN_SUBMISSION_TYPE);
                     }
                 });
 
@@ -111,10 +109,6 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     public void setFilter(SubmissionListFilter filter) {
         selectItem(filters.get(filter));
-    }
-
-    private void createSubmissionClick() {
-        presenter.onSubmissionCreateButtonClick();
     }
 
     private void selectItem(Widget item) {

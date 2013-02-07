@@ -16,25 +16,44 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import com.google.common.base.Optional;
+
+import static com.google.common.base.Optional.absent;
+
 /**
  * @author Olga Melnichuk
  */
 public class SubmissionFactory implements HasEffectiveAcl {
+    public static final Optional<User> OWNER = absent();
 
-    private final Acl acl;
+    private static Acl submissionAcl;
 
-    private final User creator;
+    static {
+        submissionAcl = new Acl()
+                .add(createAclEntry(Role.AUTHENTICATED, Permission.CREATE))
 
-    public SubmissionFactory(Acl acl, User creator) {
-        this.acl = acl;
-        this.creator = creator;
+                .add(createAclEntry(Role.OWNER, Permission.VIEW))
+                .add(createAclEntry(Role.OWNER, Permission.UPDATE))
+
+                .add(createAclEntry(Role.CURATOR, Permission.CREATE))
+                .add(createAclEntry(Role.CURATOR, Permission.VIEW))
+                .add(createAclEntry(Role.CURATOR, Permission.UPDATE));
     }
 
-    public Submission createSubmission() {
-        return new ExperimentSubmission(creator, acl);
+    private static AclEntry createAclEntry(Role role, Permission permission) {
+        return new AclEntry(role, permission);
     }
 
+    public ExperimentSubmission createExperimentSubmission(User creator) {
+        return new ExperimentSubmission(creator, submissionAcl);
+    }
+
+    public ArrayDesignSubmission createArrayDesignSubmission(User creator) {
+        return new ArrayDesignSubmission(creator, submissionAcl);
+    }
+
+    @Override
     public EffectiveAcl getEffectiveAcl() {
-        return new EffectiveAcl(acl, creator);
+        return new EffectiveAcl(submissionAcl, OWNER);
     }
 }

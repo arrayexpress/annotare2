@@ -25,7 +25,6 @@ import java.util.List;
  * @author Olga Melnichuk
  */
 public class User {
-
     private int id;
 
     private String email;

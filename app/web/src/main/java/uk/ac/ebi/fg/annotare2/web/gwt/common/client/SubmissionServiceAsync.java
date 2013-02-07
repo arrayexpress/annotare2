@@ -7,5 +7,7 @@ public interface SubmissionServiceAsync {
 
     void getSubmission(int id, AsyncCallback<UISubmissionDetails> async);
 
-    void createSubmission(AsyncCallback<Integer> async);
+    void createExperimentSubmission(AsyncCallback<Integer> async);
+
+    void createArrayDesignSubmission(AsyncCallback<Integer> async);
 }
