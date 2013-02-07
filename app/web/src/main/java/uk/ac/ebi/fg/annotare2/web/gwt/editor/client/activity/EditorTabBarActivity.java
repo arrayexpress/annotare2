@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.EditorPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExperimentPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabBarView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 
@@ -42,7 +42,7 @@ public class EditorTabBarActivity extends AbstractActivity implements EditorTabB
         this.placeController = placeController;
     }
 
-    public EditorTabBarActivity withPlace(EditorPlace place) {
+    public EditorTabBarActivity withPlace(ExperimentPlace place) {
         tabType = place.getTabType();
         return this;
     }
@@ -58,6 +58,6 @@ public class EditorTabBarActivity extends AbstractActivity implements EditorTabB
     }
 
     public void onTabSelect(EditorTabType type) {
-        goTo(EditorPlace.create(type));
+        goTo(ExperimentPlace.create(type));
     }
 }

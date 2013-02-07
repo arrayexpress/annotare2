@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,9 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
 import com.google.gwt.place.shared.Place;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class EditorPlace extends Place {
-    public abstract EditorTabType getTabType();
-
-    public static EditorPlace create(EditorTabType type) {
-        //TODO
-        switch(type) {
-            case IDF: return new IdfPlace();
-            default: return new SdrfPlace();
-        }
-    }
+public class ArrayDesignPlace extends Place {
 }

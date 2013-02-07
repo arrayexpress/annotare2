@@ -22,23 +22,35 @@ import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.EditorTabBarActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.EditorPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.adf.ArrayDesignTabBarActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExperimentPlace;
 
 /**
  * @author Olga Melnichuk
  */
 public class EditorTabBarActivityMapper implements ActivityMapper {
 
-    private final Provider<EditorTabBarActivity> activityProvider;
-    private EditorTabBarActivity currentActivity;
+    private final Provider<EditorTabBarActivity> expActivityProvider;
+    private final Provider<ArrayDesignTabBarActivity> adActivityProvider;
+    private EditorTabBarActivity currExperimentActivity;
+    private ArrayDesignTabBarActivity currArrayDesignActivity;
 
     @Inject
-    public EditorTabBarActivityMapper(Provider<EditorTabBarActivity> activityProvider) {
-        this.activityProvider = activityProvider;
+    public EditorTabBarActivityMapper(Provider<EditorTabBarActivity> expActivityProvider,
+                                      Provider<ArrayDesignTabBarActivity> adActivityProvider) {
+        this.expActivityProvider = expActivityProvider;
+        this.adActivityProvider = adActivityProvider;
     }
 
     public Activity getActivity(Place place) {
-        return (currentActivity == null ? (currentActivity = activityProvider.get()) : currentActivity)
-                .withPlace((EditorPlace)place);
+        if (place instanceof ArrayDesignPlace) {
+            return (currArrayDesignActivity == null ?
+                    (currArrayDesignActivity = adActivityProvider.get()) : currArrayDesignActivity)
+                    .withPlace((ArrayDesignPlace) place);
+        }
+        return (currExperimentActivity == null ?
+                (currExperimentActivity = expActivityProvider.get()) : currExperimentActivity)
+                .withPlace((ExperimentPlace)place);
     }
 }

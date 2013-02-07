@@ -29,7 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
 /**
  * @author Olga Melnichuk
  */
-public class SdrfPlace extends EditorPlace {
+public class SdrfPlace extends ExperimentPlace {
 
     private boolean sheetModeOn;
 

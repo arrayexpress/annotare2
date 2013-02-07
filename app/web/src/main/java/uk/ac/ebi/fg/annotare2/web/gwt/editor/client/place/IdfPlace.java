@@ -30,7 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.idf.IdfSection;
 /**
  * @author Olga Melnichuk
  */
-public class IdfPlace extends EditorPlace {
+public class IdfPlace extends ExperimentPlace {
 
     private IdfSection idfSection;
 
