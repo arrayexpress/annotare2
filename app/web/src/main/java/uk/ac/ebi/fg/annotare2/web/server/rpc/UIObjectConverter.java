@@ -49,7 +49,8 @@ class UIObjectConverter {
                     submission.getAccession(),
                     submission.getTitle(),
                     submission.getCreated(),
-                    SUBMISSION_STATUS.apply(submission.getStatus())
+                    SUBMISSION_STATUS.apply(submission.getStatus()),
+                    SUBMISSION_TYPE.apply(submission)
             );
         }
     };

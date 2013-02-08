@@ -34,15 +34,23 @@ public class UISubmissionRow implements Serializable {
 
     private UISubmissionStatus status;
 
+    private UISubmissionType type;
+
     public UISubmissionRow() {
     }
 
-    public UISubmissionRow(int id, String accession, String title, Date created, UISubmissionStatus status) {
+    public UISubmissionRow(int id,
+                           String accession,
+                           String title,
+                           Date created,
+                           UISubmissionStatus status,
+                           UISubmissionType type) {
         this.id = id;
         this.accession.set(accession);
         this.title = title;
         this.created = created;
         this.status = status;
+        this.type = type;
     }
 
     public int getId() {
@@ -63,5 +71,9 @@ public class UISubmissionRow implements Serializable {
 
     public UISubmissionStatus getStatus() {
         return status;
+    }
+
+    public UISubmissionType getType() {
+        return type;
     }
 }

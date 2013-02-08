@@ -71,6 +71,13 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         cellTable.addColumn(new TextColumn<UISubmissionRow>() {
             @Override
             public String getValue(UISubmissionRow object) {
+                return object.getType().getTitle();
+            }
+        }, new TextHeader("Type"));
+
+        cellTable.addColumn(new TextColumn<UISubmissionRow>() {
+            @Override
+            public String getValue(UISubmissionRow object) {
                return object.getAccession();
             }
         }, new TextHeader("Accession"));
