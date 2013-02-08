@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
-import com.google.gwt.place.shared.Place;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
+import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class ExperimentPlace extends Place {
+public interface IdfContactListView extends IsWidget {
 
-    public abstract ExperimentTab getSelectedTab();
+    void setContacts(List<Person> contacts);
 
-    public static ExperimentPlace create(ExperimentTab tab) {
-        //TODO
-        switch (tab) {
-            case IDF:
-                return new IdfPlace();
-            case SDRF:
-                return new SdrfPlace();
-            default:
-                throw new IllegalStateException("Unknown experiment tab:" + tab);
-        }
+    void setPresenter(Presenter presenter);
+
+    public interface Presenter {
+
+        Person createContact();
+
+        void removeContacts(List<Integer> indices);
     }
 }

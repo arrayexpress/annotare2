@@ -24,7 +24,7 @@ import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 
 /**
  * @author Olga Melnichuk
@@ -48,8 +48,8 @@ public class SdrfPlace extends ExperimentPlace {
         this.sheetModeOn = on;
     }
 
-    public EditorTabType getTabType() {
-        return EditorTabType.SDRF;
+    public ExperimentTab getSelectedTab() {
+        return ExperimentTab.SDRF;
     }
 
     @Prefix("sdrfView")

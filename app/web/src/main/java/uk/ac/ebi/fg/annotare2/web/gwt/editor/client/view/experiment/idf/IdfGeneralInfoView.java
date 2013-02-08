@@ -14,22 +14,35 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
+import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorTabBarView extends IsWidget {
+public interface IdfGeneralInfoView extends IsWidget {
 
-    void initWithTabs(EditorTab... tab);
+    public void setTitle(String title);
 
-    void selectTab(EditorTab tab);
+    public void setDescription(String description);
 
-    void setPresenter(Presenter presenter);
+    public void setDateOfExperiment(Date date);
+
+    public void setDateOfPublicRelease(Date date);
+
+    public void setPresenter(Presenter presenter);
 
     public interface Presenter {
-        void onTabSelect(EditorTab tab);
+
+        void setTitle(String title);
+
+        void setDescription(String description);
+
+        void setDateOfExperiment(Date date);
+
+        void setDateOfPublicRelease(Date date);
     }
 }

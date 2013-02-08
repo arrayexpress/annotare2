@@ -21,8 +21,8 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfTabToolBarActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfTabToolBarActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.IdfTabToolBarActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.SdrfTabToolBarActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 

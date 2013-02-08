@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabBar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -29,20 +30,21 @@ import java.util.ArrayList;
  */
 public class EditorTabBarViewImpl extends Composite implements EditorTabBarView {
 
-    private TabBar tabBar = new TabBar();
+    private final TabBar tabBar = new TabBar();
 
-    private ArrayList<EditorTabType> tabTypes = new ArrayList<EditorTabType>();
+    private List<EditorTab> editorTabs = new ArrayList<EditorTab>();
 
     private Presenter presenter;
 
     public EditorTabBarViewImpl() {
         initWidget(tabBar);
+    }
 
-        tabTypes.add(EditorTabType.IDF);
-        tabTypes.add(EditorTabType.SDRF);
-
-        for(EditorTabType type : tabTypes) {
-            tabBar.addTab(type.getTitle());
+    @Override
+    public void initWithTabs(EditorTab... tabs) {
+        for(EditorTab tab : tabs) {
+            editorTabs.add(tab);
+            tabBar.addTab(tab.getTitle());
         }
 
         tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -52,26 +54,27 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
         });
     }
 
+    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
-    public void setTab(EditorTabType tabType) {
-        tabBar.selectTab(indexOf(tabType), false);
+    @Override
+    public void selectTab(EditorTab tab) {
+        tabBar.selectTab(indexOf(tab), false);
     }
 
     private void onTabSelect(Integer typeIndex) {
-        EditorTabType tabType = tabTypes.get(typeIndex);
-
+        EditorTab tab = editorTabs.get(typeIndex);
         if (presenter != null) {
-            presenter.onTabSelect(tabType);
+            presenter.onTabSelect(tab);
         }
     }
 
-    private int indexOf(EditorTabType desiredType) {
+    private int indexOf(EditorTab target) {
         int i=0;
-        for(EditorTabType type : tabTypes) {
-            if (type.equals(desiredType)) {
+        for(EditorTab tab : editorTabs) {
+            if (tab.getId().equals(target.getId())) {
                 return i;
             }
             i++;

@@ -21,8 +21,8 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.EditorTabBarActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.adf.ArrayDesignTabBarActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.ExperimentTabBarActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.ArrayDesignTabBarActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExperimentPlace;
 
@@ -31,13 +31,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExperimentPlace;
  */
 public class EditorTabBarActivityMapper implements ActivityMapper {
 
-    private final Provider<EditorTabBarActivity> expActivityProvider;
+    private final Provider<ExperimentTabBarActivity> expActivityProvider;
     private final Provider<ArrayDesignTabBarActivity> adActivityProvider;
-    private EditorTabBarActivity currExperimentActivity;
+    private ExperimentTabBarActivity currExperimentActivity;
     private ArrayDesignTabBarActivity currArrayDesignActivity;
 
     @Inject
-    public EditorTabBarActivityMapper(Provider<EditorTabBarActivity> expActivityProvider,
+    public EditorTabBarActivityMapper(Provider<ExperimentTabBarActivity> expActivityProvider,
                                       Provider<ArrayDesignTabBarActivity> adActivityProvider) {
         this.expActivityProvider = expActivityProvider;
         this.adActivityProvider = adActivityProvider;

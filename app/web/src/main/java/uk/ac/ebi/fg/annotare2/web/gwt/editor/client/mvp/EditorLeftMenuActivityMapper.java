@@ -21,7 +21,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfNavigationActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.IdfNavigationActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 
 /**

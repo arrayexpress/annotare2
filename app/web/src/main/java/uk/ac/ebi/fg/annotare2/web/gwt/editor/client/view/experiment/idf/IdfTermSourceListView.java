@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorTabBarView extends IsWidget {
+public interface IdfTermSourceListView extends IsWidget {
 
-    void initWithTabs(EditorTab... tab);
-
-    void selectTab(EditorTab tab);
+    void setTermSources(List<TermSource> contacts);
 
     void setPresenter(Presenter presenter);
 
-    public interface Presenter {
-        void onTabSelect(EditorTab tab);
+    public static interface Presenter {
+
+        void getTermSourceTemplates(AsyncCallback<List<UITermSource>> callback);
+
+        TermSource createTermSource();
+
+        void removeTermSources(List<Integer> indices);
     }
 }

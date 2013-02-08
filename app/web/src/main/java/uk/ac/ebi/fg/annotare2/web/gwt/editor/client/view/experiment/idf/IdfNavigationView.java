@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
-import com.google.gwt.place.shared.Place;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
+import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class ExperimentPlace extends Place {
+public interface IdfNavigationView extends IsWidget {
 
-    public abstract ExperimentTab getSelectedTab();
+    void setPresenter(Presenter presenter);
 
-    public static ExperimentPlace create(ExperimentTab tab) {
-        //TODO
-        switch (tab) {
-            case IDF:
-                return new IdfPlace();
-            case SDRF:
-                return new SdrfPlace();
-            default:
-                throw new IllegalStateException("Unknown experiment tab:" + tab);
-        }
+    void setIdfSection(IdfSection section);
+
+    public interface Presenter {
+        void goTo(IdfSection section);
     }
 }
