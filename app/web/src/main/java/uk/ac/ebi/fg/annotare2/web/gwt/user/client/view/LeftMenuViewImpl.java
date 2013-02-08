@@ -64,13 +64,13 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         initWidget(uiBinder.createAndBindUi(this));
 
         createButton
-                .addMenuButtonItem(EXPERIMENT.getTitle())
+                .addMenuButtonItem(EXPERIMENT.getTitle() + " Submission")
                 .addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
                         presenter.onSubmissionCreateClick(EXPERIMENT);
                     }
                 });
-        createButton.addMenuButtonItem(ARRAY_DESIGN.getTitle())
+        createButton.addMenuButtonItem(ARRAY_DESIGN.getTitle() + " Submission")
                 .addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
                         presenter.onSubmissionCreateClick(ARRAY_DESIGN);

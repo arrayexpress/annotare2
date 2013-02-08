@@ -17,13 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 
 /**
  * @author Olga Melnichuk
  */
 public interface EditorTitleBarView extends IsWidget {
 
-    void setAccession(String accession);
+    void setTitle(UISubmissionType type, String accession);
 
     void setPresenter(Presenter presenter);
 

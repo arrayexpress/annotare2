@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 
 /**
@@ -50,8 +51,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
-    public void setAccession(String accession) {
-        accessionLabel.setText(accession);
+    public void setTitle(UISubmissionType type, String accession) {
+        accessionLabel.setText(type.getTitle() + ": " + accession);
     }
 
     @Override

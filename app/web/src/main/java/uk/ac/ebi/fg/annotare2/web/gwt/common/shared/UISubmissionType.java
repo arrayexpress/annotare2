@@ -20,8 +20,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
  * @author Olga Melnichuk
  */
 public enum UISubmissionType {
-    EXPERIMENT("Experiment Submission"),
-    ARRAY_DESIGN("Array Design Submission");
+    EXPERIMENT("Experiment"),
+    ARRAY_DESIGN("Array Design");
 
     private final String title;
 
