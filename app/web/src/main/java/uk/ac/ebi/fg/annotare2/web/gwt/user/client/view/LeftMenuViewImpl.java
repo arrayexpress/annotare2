@@ -25,14 +25,13 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.widgets.client.MenuButton;
 
 import java.util.HashMap;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.ARRAY_DESIGN_SUBMISSION_TYPE;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.EXPERIMENT_SUBMISSION_TYPE;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.ARRAY_DESIGN;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.EXPERIMENT;
 
 /**
  * @author Olga Melnichuk
@@ -65,16 +64,16 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         initWidget(uiBinder.createAndBindUi(this));
 
         createButton
-                .addMenuButtonItem(EXPERIMENT_SUBMISSION_TYPE.getTitle())
+                .addMenuButtonItem(EXPERIMENT.getTitle())
                 .addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        presenter.onSubmissionCreateClick(EXPERIMENT_SUBMISSION_TYPE);
+                        presenter.onSubmissionCreateClick(EXPERIMENT);
                     }
                 });
-        createButton.addMenuButtonItem(ARRAY_DESIGN_SUBMISSION_TYPE.getTitle())
+        createButton.addMenuButtonItem(ARRAY_DESIGN.getTitle())
                 .addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        presenter.onSubmissionCreateClick(ARRAY_DESIGN_SUBMISSION_TYPE);
+                        presenter.onSubmissionCreateClick(ARRAY_DESIGN);
                     }
                 });
 

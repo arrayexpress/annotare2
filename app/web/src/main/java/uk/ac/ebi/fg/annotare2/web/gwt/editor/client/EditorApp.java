@@ -20,6 +20,7 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
@@ -27,6 +28,11 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
@@ -35,6 +41,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk
@@ -49,7 +57,7 @@ public class EditorApp implements EntryPoint {
         loadModule(RootLayoutPanel.get());
     }
 
-    private void loadModule(HasWidgets root) {
+    private void loadModule(final HasWidgets root) {
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
@@ -60,6 +68,23 @@ public class EditorApp implements EntryPoint {
 
         GwtMagetab.init();
 
+        SubmissionServiceAsync submissionService = injector.getSubmissionService();
+        final int subId = getSubmissionId();
+        submissionService.getSubmission(subId, new AsyncCallbackWrapper<UISubmissionDetails>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load submission " + subId);
+            }
+
+            @Override
+            public void onSuccess(UISubmissionDetails result) {
+                init(root, result.getType());
+            }
+        });
+    }
+
+    private void init(HasWidgets root, UISubmissionType type) {
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 
@@ -88,7 +113,9 @@ public class EditorApp implements EntryPoint {
         logBarActivityManager.setDisplay(appWidget.getLogBarDisplay());
 
         EditorPlaceFactory factory = injector.getPlaceFactory();
-        IdfPlace defaultPlace = factory.getIdfPlace();
+        Place defaultPlace =
+                (type == UISubmissionType.EXPERIMENT) ?
+                        factory.getIdfPlace() : factory.getAdfPlace();
 
         EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);
         historyMapper.setFactory(factory);
@@ -107,7 +134,5 @@ public class EditorApp implements EntryPoint {
         });
 
         historyHandler.handleCurrentHistory();
-
-        // TODO good to have: DOM.getElementById("loading").removeFromParent();
     }
 }

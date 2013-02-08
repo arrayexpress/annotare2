@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 
@@ -38,6 +39,12 @@ public class EditorPlaceFactory {
     @Inject
     Provider<SdrfPlace> sdrfPlaceProvider;
 
+    @Inject
+    ArrayDesignPlace.Tokenizer adfPlaceTokenizer;
+
+    @Inject
+    Provider<ArrayDesignPlace> adfPlaceProvider;
+
     public IdfPlace.Tokenizer getIdfPlaceTokenizer() {
         return idfPlaceTokenizer;
     }
@@ -52,6 +59,15 @@ public class EditorPlaceFactory {
 
     public SdrfPlace getSdrfPlace() {
         return sdrfPlaceProvider.get();
+    }
+
+
+    public ArrayDesignPlace.Tokenizer getAdfPlaceTokenizer() {
+        return adfPlaceTokenizer;
+    }
+
+    public ArrayDesignPlace getAdfPlace() {
+        return adfPlaceProvider.get();
     }
 
 }

@@ -47,7 +47,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = submissionManager.getSubmission(getCurrentUser(), id);
-            return DataObjects.uiSubmissionDetails(sb);
+            return UIObjectConverter.uiSubmissionDetails(sb);
         } catch (AccessControlException e) {
             log.warn("getSubmission(" + id + ") failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");

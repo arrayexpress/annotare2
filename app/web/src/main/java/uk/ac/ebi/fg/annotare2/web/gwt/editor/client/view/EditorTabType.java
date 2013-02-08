@@ -21,9 +21,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
  */
 public enum EditorTabType {
     IDF("Investigation Design"),
-    SDRF("Sample and Data Relationship"),
-    DATA("Data Files"),
-    ADF("Array Design");
+    SDRF("Sample and Data Relationship");
 
     private String title;
 

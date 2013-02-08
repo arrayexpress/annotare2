@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.adf;
+
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TabBar;
 
 /**
  * @author Olga Melnichuk
  */
-public enum UISubmissionType {
-    EXPERIMENT("Experiment Submission"),
-    ARRAY_DESIGN("Array Design Submission");
+public class ArrayDesignTabBarViewImpl extends Composite implements ArrayDesignTabBarView {
 
-    private final String title;
+    private TabBar tabBar = new TabBar();
 
-    private UISubmissionType(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
+    public ArrayDesignTabBarViewImpl() {
+        initWidget(tabBar);
+        tabBar.addTab("Array Design: Header");
+        tabBar.addTab("Array Design: Table");
+        tabBar.selectTab(0, false);
     }
 }

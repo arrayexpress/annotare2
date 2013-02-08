@@ -18,14 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionStatus;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
+import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -38,7 +32,7 @@ import static com.google.common.collect.Lists.transform;
 /**
  * @author Olga Melnichuk
  */
-class DataObjects {
+class UIObjectConverter {
 
     static Function<User, UIUser> USER_TRANSFORM = new Function<User, UIUser>() {
         public UIUser apply(@Nullable User user) {
@@ -55,7 +49,7 @@ class DataObjects {
                     submission.getAccession(),
                     submission.getTitle(),
                     submission.getCreated(),
-                    uiSubmissionStatus(submission.getStatus())
+                    SUBMISSION_STATUS.apply(submission.getStatus())
             );
         }
     };
@@ -68,7 +62,8 @@ class DataObjects {
                     submission.getAccession(),
                     submission.getTitle(),
                     submission.getCreated(),
-                    uiSubmissionStatus(submission.getStatus())
+                    SUBMISSION_STATUS.apply(submission.getStatus()),
+                    SUBMISSION_TYPE.apply(submission)
             );
         }
     };
@@ -80,9 +75,16 @@ class DataObjects {
         }
     };
 
-    static UISubmissionStatus uiSubmissionStatus(SubmissionStatus submissionStatus) {
-        return SUBMISSION_STATUS.apply(submissionStatus);
-    }
+    static Function<Submission, UISubmissionType> SUBMISSION_TYPE = new Function<Submission, UISubmissionType>() {
+        public UISubmissionType apply(@Nullable Submission submission) {
+            checkNotNull(submission);
+            if (submission instanceof ExperimentSubmission)
+                return UISubmissionType.EXPERIMENT;
+            else if (submission instanceof ArrayDesignSubmission)
+                return UISubmissionType.ARRAY_DESIGN;
+            throw new IllegalStateException("Submission is of unknown type: " + submission.getClass());
+        }
+    };
 
     static ArrayList<UISubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<UISubmissionRow>(filter(

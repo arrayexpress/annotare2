@@ -87,10 +87,10 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         prepareEditor(launcherUrl());
 
         switch (type) {
-            case EXPERIMENT_SUBMISSION_TYPE:
+            case EXPERIMENT:
                 asyncService.createExperimentSubmission(callback);
                 return;
-            case ARRAY_DESIGN_SUBMISSION_TYPE:
+            case ARRAY_DESIGN:
                 asyncService.createArrayDesignSubmission(callback);
                 return;
             default:

@@ -42,16 +42,16 @@ public class SubmissionListServiceImpl extends AuthBasedRemoteService implements
     }
 
     public ArrayList<UISubmissionRow> getAllSubmissions() {
-        return DataObjects.uiSubmissionRows(getMyAllSubmissions());
+        return UIObjectConverter.uiSubmissionRows(getMyAllSubmissions());
     }
 
     public ArrayList<UISubmissionRow> getCompletedSubmissions() {
-        return DataObjects.uiSubmissionRows(getMyCompletedSubmissions());
+        return UIObjectConverter.uiSubmissionRows(getMyCompletedSubmissions());
     }
 
 
     public ArrayList<UISubmissionRow> getIncompleteSubmissions() {
-        return DataObjects.uiSubmissionRows(getMyIncompleteSubmissions());
+        return UIObjectConverter.uiSubmissionRows(getMyIncompleteSubmissions());
     }
 
     private List<Submission> getMyAllSubmissions() {

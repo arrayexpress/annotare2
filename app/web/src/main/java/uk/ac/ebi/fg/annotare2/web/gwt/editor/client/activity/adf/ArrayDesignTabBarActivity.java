@@ -19,18 +19,25 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.adf;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.adf.ArrayDesignTabBarView;
 
 /**
  * @author Olga Melnichuk
  */
 public class ArrayDesignTabBarActivity  extends AbstractActivity {
 
-    //private ArrayDesignTabBarView view;
+    private ArrayDesignTabBarView view;
+
+    @Inject
+    public ArrayDesignTabBarActivity(ArrayDesignTabBarView view) {
+        this.view = view;
+    }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-      //  containerWidget.setWidget(view.asWidget());
+        containerWidget.setWidget(view.asWidget());
     }
 
     public ArrayDesignTabBarActivity withPlace(ArrayDesignPlace place) {

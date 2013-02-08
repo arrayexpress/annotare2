@@ -32,7 +32,7 @@ public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implem
     }
 
     public UIUser me() {
-        return DataObjects.uiUser(getCurrentUser());
+        return UIObjectConverter.uiUser(getCurrentUser());
     }
 
     public void logout() {

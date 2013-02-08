@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.adf;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Olga Melnichuk
  */
-public enum UISubmissionType {
-    EXPERIMENT("Experiment Submission"),
-    ARRAY_DESIGN("Array Design Submission");
-
-    private final String title;
-
-    private UISubmissionType(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
+public interface ArrayDesignTabBarView extends IsWidget {
 }
