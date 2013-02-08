@@ -31,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesign
 public class ArrayDesignTabBarActivity  extends AbstractActivity  implements EditorTabBarView.Presenter {
 
     private EditorTabBarView view;
+    private ArrayDesignTab selectedTab;
 
     @Inject
     public ArrayDesignTabBarActivity(EditorTabBarView view) {
@@ -41,10 +42,12 @@ public class ArrayDesignTabBarActivity  extends AbstractActivity  implements Edi
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.initWithTabs(ArrayDesignTab.values());
         view.setPresenter(this);
+        view.selectTab(selectedTab);
         containerWidget.setWidget(view.asWidget());
     }
 
     public ArrayDesignTabBarActivity withPlace(ArrayDesignPlace place) {
+        selectedTab = place.getSelectedTab();
         return this;
     }
 

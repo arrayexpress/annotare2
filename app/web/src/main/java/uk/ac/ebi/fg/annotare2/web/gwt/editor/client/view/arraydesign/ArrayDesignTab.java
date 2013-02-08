@@ -7,9 +7,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTab;
  */
 public enum ArrayDesignTab implements EditorTab {
 
-    Header("ArrayDesign: Header"),
+    Header("ADF Header"),
 
-    Table("ArrayDesign: Table");
+    Table("ADF Table");
 
     private final String title;
 

@@ -21,6 +21,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
 
 /**
  * @author Olga Melnichuk
@@ -28,6 +29,10 @@ import com.google.inject.Provider;
 public class ArrayDesignPlace extends Place {
 
     private String token;
+
+    public ArrayDesignTab getSelectedTab() {
+        return ArrayDesignTab.Header;
+    }
 
     @Prefix("adfView")
     public static class Tokenizer implements PlaceTokenizer<ArrayDesignPlace> {
