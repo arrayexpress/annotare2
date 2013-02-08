@@ -54,8 +54,8 @@ public class EditorGinModule extends AbstractGinModule {
         bind(EditorLogBarView.class).to(EditorLogBarViewImpl.class);
 
         bind(SheetModeView.class).to(SheetModeViewImpl.class);
+        bind(LeftNavigationView.class).to(LeftNavigationViewImpl.class);
 
-        bind(IdfNavigationView.class).to(IdfNavigationViewImpl.class);
         bind(IdfTabToolBarView.class).to(IdfTabToolBarViewImpl.class);
         bind(IdfContentView.class).to(IdfContentViewImpl.class);
         bind(IdfGeneralInfoView.class).to(IdfGeneralInfoViewImpl.class);

@@ -16,10 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
+
 /**
  * @author Olga Melnichuk
  */
-public enum IdfSection {
+public enum IdfSection implements NavigationSection {
     GENERAL_INFO("General Information"),
     CONTACTS("Contacts"),
     PUBLICATIONS("Publications"),
@@ -40,6 +42,10 @@ public enum IdfSection {
 
     public String getTitle() {
         return title;
+    }
+
+    public Object getId() {
+        return this;
     }
 
     public static IdfSection getIfPresent(String token) {

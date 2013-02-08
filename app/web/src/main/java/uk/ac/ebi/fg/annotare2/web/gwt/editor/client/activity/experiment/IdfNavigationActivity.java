@@ -23,22 +23,23 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfNavigationView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfNavigationActivity extends AbstractActivity implements IdfNavigationView.Presenter {
+public class IdfNavigationActivity extends AbstractActivity implements LeftNavigationView.Presenter {
 
-    private final IdfNavigationView view;
+    private final LeftNavigationView view;
 
     private final PlaceController placeController;
 
     private IdfSection section;
 
     @Inject
-    public IdfNavigationActivity(IdfNavigationView view,
+    public IdfNavigationActivity(LeftNavigationView view,
                                  PlaceController placeController) {
         this.view = view;
         this.placeController = placeController;
@@ -51,7 +52,8 @@ public class IdfNavigationActivity extends AbstractActivity implements IdfNaviga
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.setIdfSection(section);
+        view.initSections(IdfSection.values());
+        view.selectSection(section);
         containerWidget.setWidget(view.asWidget());
     }
 
@@ -59,7 +61,7 @@ public class IdfNavigationActivity extends AbstractActivity implements IdfNaviga
         placeController.goTo(place);
     }
 
-    public void goTo(IdfSection section) {
-        goTo(new IdfPlace(section));
+    public void goTo(NavigationSection section) {
+        goTo(new IdfPlace((IdfSection)section));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -23,57 +23,64 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfNavigationViewImpl extends Composite implements IdfNavigationView {
+public class LeftNavigationViewImpl extends Composite implements LeftNavigationView {
+
+    private Map<Object, Label> labelMap = new HashMap<Object, Label>();
+
+    private NavigationSection selected;
+
+    private FlowPanel flowPanel;
 
     private Presenter presenter;
 
-    private HashMap<IdfSection, Label> labelMap = new HashMap<IdfSection, Label>();
-
-    private IdfSection currentSection;
-
-    public IdfNavigationViewImpl() {
-        FlowPanel flowPanel = new FlowPanel();
+    public LeftNavigationViewImpl() {
+        flowPanel = new FlowPanel();
         flowPanel.setStyleName("app-IdfNavigation");
+        initWidget(flowPanel);
+    }
 
-        for(final IdfSection s : IdfSection.values()) {
+    @Override
+    public void initSections(NavigationSection... sections) {
+        for(final NavigationSection s : sections) {
             Label label = new Label(s.getTitle());
             label.setStyleName("app-IdfNavigationItem");
             label.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    onIdfSectionClick(s);
+                    onSectionClick(s);
                 }
             });
-            labelMap.put(s, label);
+            labelMap.put(s.getId(), label);
             flowPanel.add(label);
         }
-
-        initWidget(flowPanel);
     }
 
+    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
-    public void setIdfSection(IdfSection section) {
-        selectNavigationItem(section);
+    @Override
+    public void selectSection(NavigationSection section) {
+        selectLabel(section);
     }
 
-    private void onIdfSectionClick(IdfSection s) {
-        selectNavigationItem(s);
+    private void onSectionClick(NavigationSection s) {
+        selectLabel(s);
         if (presenter != null) {
             presenter.goTo(s);
         }
     }
 
-    private void selectNavigationItem(IdfSection s) {
-        if (currentSection != null) {
-            labelMap.get(currentSection).removeStyleName("selected");
+    private void selectLabel(NavigationSection s) {
+        if (selected != null) {
+            labelMap.get(selected).removeStyleName("selected");
         }
-        labelMap.get(s).addStyleName("selected");
-        currentSection = s;
+        labelMap.get(s.getId()).addStyleName("selected");
+        selected = s;
     }
 }

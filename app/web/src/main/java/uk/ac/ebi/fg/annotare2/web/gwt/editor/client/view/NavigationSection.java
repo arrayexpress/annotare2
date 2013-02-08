@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 /**
  * @author Olga Melnichuk
  */
-public interface IdfNavigationView extends IsWidget {
+public interface NavigationSection {
 
-    void setPresenter(Presenter presenter);
+    String getTitle();
 
-    void setIdfSection(IdfSection section);
-
-    public interface Presenter {
-        void goTo(IdfSection section);
-    }
+    Object getId();
 }
