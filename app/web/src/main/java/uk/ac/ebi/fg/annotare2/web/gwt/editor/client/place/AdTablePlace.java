@@ -16,13 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
-import com.google.gwt.place.shared.Place;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class ArrayDesignPlace extends Place {
+public class AdTablePlace extends ArrayDesignPlace {
 
-    public abstract ArrayDesignTab getSelectedTab();
+    @Override
+    public ArrayDesignTab getSelectedTab() {
+        return ArrayDesignTab.Table;
+    }
 }

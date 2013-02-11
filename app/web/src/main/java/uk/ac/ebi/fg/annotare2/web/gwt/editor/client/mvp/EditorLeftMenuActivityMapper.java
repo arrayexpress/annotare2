@@ -21,7 +21,9 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdHeaderNavigationActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.IdfNavigationActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 
 /**
@@ -29,19 +31,26 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
  */
 public class EditorLeftMenuActivityMapper implements ActivityMapper {
 
-    private final Provider<IdfNavigationActivity> activityProvider;
+    private final Provider<IdfNavigationActivity> idfNavActivityProvider;
+
+    private final Provider<AdHeaderNavigationActivity> adfNavActivityProvider;
 
     @Inject
-    public EditorLeftMenuActivityMapper(Provider<IdfNavigationActivity> activityProvider) {
-        this.activityProvider = activityProvider;
+    public EditorLeftMenuActivityMapper(Provider<IdfNavigationActivity> idfNavActivityProvider,
+                                        Provider<AdHeaderNavigationActivity> adfNavActivityProvider) {
+        this.idfNavActivityProvider = idfNavActivityProvider;
+        this.adfNavActivityProvider = adfNavActivityProvider;
     }
 
     public Activity getActivity(Place place) {
         if (place instanceof IdfPlace) {
             IdfPlace idfPlace = (IdfPlace) place;
             if (!idfPlace.isSheetModeOn()) {
-                return (activityProvider.get()).withPlace(idfPlace);
+                return (idfNavActivityProvider.get()).withPlace(idfPlace);
             }
+        } else if (place instanceof AdHeaderPlace) {
+            AdHeaderPlace adfPlace = (AdHeaderPlace) place;
+            return (adfNavActivityProvider.get()).withPlace(adfPlace);
         }
         // hide left menu
         return null;

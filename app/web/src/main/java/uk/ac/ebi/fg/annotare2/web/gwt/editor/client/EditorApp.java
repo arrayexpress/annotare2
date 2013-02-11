@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
@@ -39,7 +38,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEven
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -115,7 +113,7 @@ public class EditorApp implements EntryPoint {
         EditorPlaceFactory factory = injector.getPlaceFactory();
         Place defaultPlace =
                 (type == UISubmissionType.EXPERIMENT) ?
-                        factory.getIdfPlace() : factory.getAdfPlace();
+                        factory.getIdfPlace() : factory.getAdHeaderPlace();
 
         EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);
         historyMapper.setFactory(factory);

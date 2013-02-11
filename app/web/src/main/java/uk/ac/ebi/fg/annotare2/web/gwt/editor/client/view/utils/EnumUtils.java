@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
-
-import com.google.gwt.place.shared.Place;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class ArrayDesignPlace extends Place {
-
-    public abstract ArrayDesignTab getSelectedTab();
+public class EnumUtils {
+    public static <T extends Enum<T>> T getIfPresent(Class<T> enumType, String value) {
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+        try {
+            return Enum.valueOf(enumType, value);
+        } catch (IllegalArgumentException iae) {
+            return null;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,83 +24,67 @@ import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfPlace extends ExperimentPlace {
+public class AdHeaderPlace extends ArrayDesignPlace {
 
-    private IdfSection idfSection;
+    private AdfSection section;
 
-    private boolean sheetModeOn;
-
-    public IdfPlace() {
-        setIdfSection(null);
+    public AdHeaderPlace() {
+        setSection(null);
     }
 
-    public IdfPlace(IdfSection idfSection) {
-        setIdfSection(idfSection);
+    public AdHeaderPlace(AdfSection section) {
+        setSection(section);
     }
 
-    public IdfPlace(IdfPlace other) {
-        setIdfSection(other.getIdfSection());
-        setSheetModeOn(other.isSheetModeOn());
+    public AdfSection getSection() {
+        return section;
     }
 
-    public IdfSection getIdfSection() {
-        return idfSection;
+    public void setSection(AdfSection section) {
+        this.section = section == null ? AdfSection.GENERAL_INFO : section;
     }
 
-    public boolean isSheetModeOn() {
-        return sheetModeOn;
+    @Override
+    public ArrayDesignTab getSelectedTab() {
+        return ArrayDesignTab.Header;
     }
 
-    public void setIdfSection(IdfSection idfSection) {
-        this.idfSection = idfSection == null ?  IdfSection.GENERAL_INFO : idfSection;
-    }
+    @Prefix("adfHeader")
+    public static class Tokenizer implements PlaceTokenizer<AdHeaderPlace> {
 
-    public void setSheetModeOn(boolean on) {
-        this.sheetModeOn = on;
-    }
-
-    public ExperimentTab getSelectedTab() {
-        return ExperimentTab.IDF;
-    }
-
-    @Prefix("idfView")
-    public static class Tokenizer implements PlaceTokenizer<IdfPlace> {
-
-        private final Provider<IdfPlace> placeProvider;
+        private final Provider<AdHeaderPlace> placeProvider;
 
         @Inject
-        public Tokenizer(Provider<IdfPlace> placeProvider) {
+        public Tokenizer(Provider<AdHeaderPlace> placeProvider) {
             this.placeProvider = placeProvider;
         }
 
-        public String getToken(IdfPlace place) {
+        public String getToken(AdHeaderPlace place) {
             return new TokenBuilder()
-                    .add(place.getIdfSection().name())
-                    .add(place.isSheetModeOn())
+                    .add(place.getSection().name())
                     .toString();
         }
 
-        public IdfPlace getPlace(String token) {
+        public AdHeaderPlace getPlace(String token) {
             TokenReader reader = new TokenReader(token);
             try {
-                IdfPlace place = placeProvider.get();
+                AdHeaderPlace place = placeProvider.get();
 
                 String sectionToken = reader.nextString();
 
-                IdfSection section = EnumUtils.getIfPresent(IdfSection.class, sectionToken);
+                AdfSection section = EnumUtils.getIfPresent(AdfSection.class, sectionToken);
                 if (section == null) {
                     throw new TokenReaderException("Unrecognized IDF section token: " + sectionToken);
                 }
 
-                place.setIdfSection(section);
-                place.setSheetModeOn(reader.nextBoolean());
+                place.setSection(section);
                 return place;
             } catch (TokenReaderException e) {
                 //TODO log

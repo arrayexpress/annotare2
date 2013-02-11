@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,29 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign;
 
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
 
 /**
  * @author Olga Melnichuk
  */
-public enum IdfSection implements NavigationSection {
+public enum AdfSection implements NavigationSection {
     GENERAL_INFO("General Information"),
-    CONTACTS("Contacts"),
-    PUBLICATIONS("Publications"),
-    EXP_DESIGNS("Experimental Designs"),
-    EXP_FACTORS("Experimental Factors"),
-    QUALITY_CONTROLS("Quality Control Types"),
-    PROTOCOLS("Protocols"),
-    REPLICATES("Replicate Types"),
-    NORMALIZATION_TYPES("Normalization Types"),
-    COMMENTS("Comments"),
-    TERM_DEF_SOURCES("Term Sources");
+    PROTOCOLS("Array Protocols");
 
     private final String title;
 
-    private IdfSection(String title) {
+    private AdfSection(String title) {
         this.title = title;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public Object getId() {
         return this;
     }
