@@ -24,7 +24,7 @@ import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
 

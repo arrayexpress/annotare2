@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * @author Olga Melnichuk
  */
-public enum AdfSection implements NavigationSection {
-    GENERAL_INFO("General Information"),
-    PROTOCOLS("Array Protocols");
+public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoView {
 
-    private final String title;
-
-    private AdfSection(String title) {
-        this.title = title;
+    interface Binder extends UiBinder<HTMLPanel, AdfGeneralInfoViewImpl> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
-    public Object getId() {
-        return this;
+    public AdfGeneralInfoViewImpl() {
+        initWidget(Binder.BINDER.createAndBindUi(this));
     }
 }

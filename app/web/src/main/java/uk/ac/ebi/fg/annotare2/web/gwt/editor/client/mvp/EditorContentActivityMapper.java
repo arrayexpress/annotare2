@@ -22,9 +22,13 @@ import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGeneralInfoActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfProtocolListActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
 
 /**
@@ -43,6 +47,9 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider;
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
 
+    private final Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider;
+    private final Provider<AdfProtocolListActivity> adfProtocolListActivityProvider;
+
     @Inject
     public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
                                        Provider<IdfSheetModeActivity> idfSheetModeActivityProvider,
@@ -51,7 +58,9 @@ public class EditorContentActivityMapper implements ActivityMapper {
                                        Provider<IdfTermSourceListActivity> idfTermSourceListActivityProvider,
                                        Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider,
                                        Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
-                                       Provider<SdrfContentActivity> sdrfContentActivityProvider) {
+                                       Provider<SdrfContentActivity> sdrfContentActivityProvider,
+                                       Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider,
+                                       Provider<AdfProtocolListActivity> adfProtocolListActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
         this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
@@ -61,16 +70,17 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
         this.sdrfSheetModeActivityProvider = sdrfSheetModeActivityProvider;
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
+
+        this.adfGeneralInfoActivityProvider = adfGeneralInfoActivityProvider;
+        this.adfProtocolListActivityProvider = adfProtocolListActivityProvider;
     }
 
     public Activity getActivity(Place place) {
         if (place instanceof IdfPlace) {
-
             IdfPlace idfPlace = (IdfPlace) place;
             if (idfPlace.isSheetModeOn()) {
                 return (idfSheetModeActivityProvider.get()).withPlace(place);
             }
-
             IdfSection section = idfPlace.getIdfSection();
             switch (section) {
                 case GENERAL_INFO:
@@ -85,15 +95,22 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (idfContentActivityProvider.get()).withPlace(place);
             }
         } else if (place instanceof SdrfPlace) {
-
             SdrfPlace sdrfPlace = (SdrfPlace) place;
             if (sdrfPlace.isSheetModeOn()) {
                 return (sdrfSheetModeActivityProvider.get()).withPlace(place);
             }
-
             return (sdrfContentActivityProvider.get()).withPlace(place);
-        }
 
+        } else if (place instanceof AdHeaderPlace) {
+            AdHeaderPlace adHeaderPlace = (AdHeaderPlace) place;
+            AdfSection section = adHeaderPlace.getSection();
+            switch (section) {
+                case GENERAL_INFO:
+                    return (adfGeneralInfoActivityProvider.get()).withPlace(adHeaderPlace);
+                case PROTOCOLS:
+                    return (adfProtocolListActivityProvider.get()).withPlace(adHeaderPlace);
+            }
+        }
         //TODO
         return null;
     }

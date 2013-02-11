@@ -18,50 +18,29 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoView;
 
 /**
  * @author Olga Melnichuk
  */
-public class AdHeaderNavigationActivity extends AbstractActivity implements LeftNavigationView.Presenter {
+public class AdfGeneralInfoActivity extends AbstractActivity {
 
-    private PlaceController placeController;
-    private LeftNavigationView view;
-    private AdfSection section;
+    private AdfGeneralInfoView view;
 
     @Inject
-    public AdHeaderNavigationActivity(LeftNavigationView view,
-                                      PlaceController placeController) {
+    public AdfGeneralInfoActivity(AdfGeneralInfoView view) {
         this.view = view;
-        this.placeController = placeController;
     }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        view.setPresenter(this);
-        view.initSections(AdfSection.values());
-        view.selectSection(section);
         containerWidget.setWidget(view.asWidget());
     }
 
-    public AdHeaderNavigationActivity withPlace(AdHeaderPlace place) {
-        section = place.getSection();
+    public AdfGeneralInfoActivity withPlace(AdHeaderPlace adHeaderPlace) {
         return this;
-    }
-
-    @Override
-    public void goTo(NavigationSection section) {
-        goTo(new AdHeaderPlace((AdfSection) section));
-    }
-
-    private void goTo(Place place) {
-        placeController.goTo(place);
     }
 }
