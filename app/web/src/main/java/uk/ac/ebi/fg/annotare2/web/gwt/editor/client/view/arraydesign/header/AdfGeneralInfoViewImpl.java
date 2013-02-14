@@ -18,19 +18,54 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.datepicker.client.DateBox;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ComboBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoView {
 
+    @UiField
+    TextBox adName;
+
+    @UiField
+    TextBox adVersion;
+
+    @UiField(provided = true)
+    ComboBox adTechnologyType;
+
+    @UiField
+    TextBox adSubstrateType;
+
+    @UiField
+    TextBox adSurfaceType;
+
+    @UiField
+    TextBox adSpecies;
+
+    @UiField
+    TextArea adDescription;
+
+    @UiField
+    DateBox adPublicReleaseDate;
+
     interface Binder extends UiBinder<HTMLPanel, AdfGeneralInfoViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
     public AdfGeneralInfoViewImpl() {
+        List<String> techTypes = new ArrayList<String>();
+        techTypes.add("one");
+        techTypes.add("two");
+        techTypes.add("three");
+
+        adTechnologyType = new ComboBox(techTypes);
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 }

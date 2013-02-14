@@ -56,9 +56,9 @@ public class DisclosurePanelHeader extends Composite {
     private final String expandClassName;
 
     public DisclosurePanelHeader() {
-        EditorResources.INSTANCE.editorStyles().ensureInjected();
-        collapseClassName = EditorResources.INSTANCE.editorStyles().collapseIconClass();
-        expandClassName = EditorResources.INSTANCE.editorStyles().expandIconClass();
+        EditorResources.EDITOR_RESOURCES.editorStyles().ensureInjected();
+        collapseClassName = EditorResources.EDITOR_RESOURCES.editorStyles().collapseIconClass();
+        expandClassName = EditorResources.EDITOR_RESOURCES.editorStyles().expandIconClass();
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         checkbox.addClickHandler(new ClickHandler() {
@@ -78,7 +78,7 @@ public class DisclosurePanelHeader extends Composite {
 
     @UiFactory
     public EditorResources getResources() {
-        return EditorResources.INSTANCE;
+        return EditorResources.EDITOR_RESOURCES;
     }
 
     public void setHeaderText(String title) {

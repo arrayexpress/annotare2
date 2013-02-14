@@ -25,13 +25,16 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface EditorResources extends ClientBundle {
 
-    public static final EditorResources INSTANCE = GWT.create(EditorResources.class);
+    public static final EditorResources EDITOR_RESOURCES = GWT.create(EditorResources.class);
 
     @Source("../../public/images/expand-icon.png")
     public ImageResource expandIcon();
 
     @Source("../../public/images/collapse-icon.png")
     public ImageResource collapseIcon();
+
+    @Source("../../public/images/dropdown-icon.png")
+    public ImageResource dropDownIcon();
 
     @Source("../../public/images/trash-icon.png")
     public ImageResource trashIcon();

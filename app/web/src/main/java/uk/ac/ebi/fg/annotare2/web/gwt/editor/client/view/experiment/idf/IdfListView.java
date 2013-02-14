@@ -42,8 +42,8 @@ public class IdfListView<T> extends Composite {
 
     @UiFactory
     public EditorResources getResources() {
-        EditorResources.INSTANCE.editorStyles().ensureInjected();
-        return EditorResources.INSTANCE;
+        EditorResources.EDITOR_RESOURCES.editorStyles().ensureInjected();
+        return EditorResources.EDITOR_RESOURCES;
     }
 
     protected DisclosureListItem addListItem(IdfItemView<T> itemView) {

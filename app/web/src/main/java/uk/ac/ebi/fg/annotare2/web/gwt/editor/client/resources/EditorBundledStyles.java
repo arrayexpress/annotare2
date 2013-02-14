@@ -28,5 +28,4 @@ public interface EditorBundledStyles extends CssResource {
 
     @ClassName("collapse")
     String collapseIconClass();
-
 }

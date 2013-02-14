@@ -18,9 +18,77 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
+        xmlns:dp="urn:import:com.google.gwt.user.datepicker.client"
+        xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
     <g:HTMLPanel>
-        ADF General Info Content here....
+        <table width="98%">
+            <tbody>
+                <tr>
+                    <td>
+                        Array Design Name:
+                    </td>
+                    <td>
+                        <g:TextBox width="90%" ui:field="adName"></g:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Array Version:
+                    </td>
+                    <td>
+                        <g:TextBox width="90%" ui:field="adVersion"></g:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Technology Type:
+                    </td>
+                    <td>
+                        <wgt:ComboBox width="90%" ui:field="adTechnologyType"></wgt:ComboBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Substrate Type:
+                    </td>
+                    <td>
+                        <g:TextBox width="90%" ui:field="adSubstrateType"></g:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Surface Type:
+                    </td>
+                    <td>
+                        <g:TextBox width="90%" ui:field="adSurfaceType"></g:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Species:
+                    </td>
+                    <td>
+                        <g:TextBox width="90%" ui:field="adSpecies"></g:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Description:
+                    </td>
+                    <td>
+                        <g:TextArea width="90%" visibleLines="2" ui:field="adDescription"></g:TextArea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Date of Public Release
+                    </td>
+                    <td>
+                        <dp:DateBox ui:field="adPublicReleaseDate"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </g:HTMLPanel>
 </ui:UiBinder>

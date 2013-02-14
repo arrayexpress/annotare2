@@ -290,6 +290,13 @@
     margin-left: 6px;
 }
 
+/* MenuBar */
+
+.gwt-MenuBar .gwt-MenuItem-selected {
+    background: #48877c;
+    color: white;
+}
+
 /* Idf Navigation */
 
 .app-IdfNavigation {
@@ -376,6 +383,17 @@ a.wgt-button :hover {
 .wgt-cancelIcon {
     background: url(images/cancel-icon.png) no-repeat;
     padding-left: 16px;
+}
+
+.wgt-ComboBoxIcon {
+    background: white url(images/combobox-background.png) right repeat-y;
+    padding-right: 20px;
+}
+
+.wgt-ComboBoxButton {
+    margin:0 0 0 -17px;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 table.GWTUpld {
