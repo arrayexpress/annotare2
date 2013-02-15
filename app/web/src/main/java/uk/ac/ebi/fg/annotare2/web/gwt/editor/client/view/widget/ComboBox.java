@@ -38,30 +38,22 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
 
     private final DropDownDisplay display;
 
-    public ComboBox(List<String> options) {
+    public ComboBox() {
         textBox = new TextBox();
         textBox.addStyleName("wgt-ComboBoxIcon");
         textBox.setWidth("100%");
         addEventsToTextBox(textBox);
-
-        display = new DropDownDisplay(options, new OptionSelectionCallback() {
-            @Override
-            public void onOptionSelected(String option) {
-                setNewSelection(option);
-            }
-        });
 
         Image icon = new Image(EDITOR_RESOURCES.dropDownIcon());
         icon.addStyleName("wgt-ComboBoxButton");
         icon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (display.toggleDropDown(textBox)) {
-                    textBox.setFocus(true);
-                }
+                toggleDropDown();
             }
         });
 
+        display = new DropDownDisplay();
         display.addPopupAutoHidePartner(textBox.getElement());
         display.addPopupAutoHidePartner(icon.getElement());
 
@@ -71,56 +63,13 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
         initWidget(layout);
     }
 
-    private void addEventsToTextBox(final TextBox textBox) {
-        class TextBoxEvents extends HandlesAllKeyEvents implements
-                ValueChangeHandler<String> {
-
-            public void onKeyDown(KeyDownEvent event) {
-                switch (event.getNativeKeyCode()) {
-                    case KeyCodes.KEY_DOWN:
-                        display.moveSelectionDown(textBox);
-                        break;
-                    case KeyCodes.KEY_UP:
-                        display.moveSelectionUp(textBox);
-                        break;
-                    case KeyCodes.KEY_ENTER:
-                    case KeyCodes.KEY_TAB:
-                        String option = display.getCurrentSelection();
-                        if (option == null) {
-                            display.hideDropDown();
-                        } else {
-                            setNewSelection(option);
-                        }
-                        break;
-                    case KeyCodes.KEY_ESCAPE:
-                        display.hideDropDown();
-                        break;
-                }
-                delegateEvent(ComboBox.this, event);
+    public void setOptions(List<String> options) {
+        display.setOptions(options, new OptionSelectionCallback() {
+            @Override
+            public void onOptionSelected(String option) {
+                setNewSelection(option);
             }
-
-            public void onKeyPress(KeyPressEvent event) {
-                delegateEvent(ComboBox.this, event);
-            }
-
-            public void onKeyUp(KeyUpEvent event) {
-                delegateEvent(ComboBox.this, event);
-            }
-
-            public void onValueChange(ValueChangeEvent<String> event) {
-                delegateEvent(ComboBox.this, event);
-            }
-        }
-
-        TextBoxEvents events = new TextBoxEvents();
-        events.addKeyHandlersTo(textBox);
-        textBox.addValueChangeHandler(events);
-    }
-
-    private void setNewSelection(String option) {
-        textBox.setValue(option);
-        display.hideDropDown();
-        fireSelectionEvent(option);
+        });
     }
 
     @Override
@@ -211,31 +160,86 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
         SelectionEvent.fire(this, selected);
     }
 
+    private void addEventsToTextBox(final TextBox textBox) {
+        class TextBoxEvents extends HandlesAllKeyEvents implements
+                ValueChangeHandler<String> {
+
+            public void onKeyDown(KeyDownEvent event) {
+                switch (event.getNativeKeyCode()) {
+                    case KeyCodes.KEY_DOWN:
+                        display.moveSelectionDown(textBox);
+                        break;
+                    case KeyCodes.KEY_UP:
+                        display.moveSelectionUp(textBox);
+                        break;
+                    case KeyCodes.KEY_ENTER:
+                    case KeyCodes.KEY_TAB:
+                        String option = display.getCurrentSelection();
+                        if (option == null) {
+                            display.hideDropDown();
+                        } else {
+                            setNewSelection(option);
+                        }
+                        break;
+                    case KeyCodes.KEY_ESCAPE:
+                        display.hideDropDown();
+                        break;
+                }
+                delegateEvent(ComboBox.this, event);
+            }
+
+            public void onKeyPress(KeyPressEvent event) {
+                delegateEvent(ComboBox.this, event);
+            }
+
+            public void onKeyUp(KeyUpEvent event) {
+                delegateEvent(ComboBox.this, event);
+            }
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+                delegateEvent(ComboBox.this, event);
+            }
+        }
+
+        TextBoxEvents events = new TextBoxEvents();
+        events.addKeyHandlersTo(textBox);
+        textBox.addValueChangeHandler(events);
+    }
+
+    private void setNewSelection(String option) {
+        textBox.setValue(option);
+        display.hideDropDown();
+        fireSelectionEvent(option);
+    }
+
+    private void toggleDropDown() {
+        if (display.isShowing()) {
+            display.hideDropDown();
+        } else {
+            display.showDropDown(textBox);
+            textBox.setFocus(true);
+        }
+    }
+
     private static class DropDownDisplay {
+
+        private static final int SCROLLABLE_HEIGHT = 150;
         private final DropDownMenu menuBar;
         private final PopupPanel popupPanel;
+        private final ScrollPanel scrollPanel;
 
-        private DropDownDisplay(List<String> options, OptionSelectionCallback callback) {
-            menuBar = createMenu(options, callback);
+        private DropDownDisplay() {
+            menuBar = createMenu();
             popupPanel = createPopup();
-            popupPanel.setWidget(menuBar);
+            scrollPanel = new ScrollPanel(menuBar);
+            popupPanel.setWidget(scrollPanel);
             menuBar.setStyleName("gwt-MenuBar");
         }
 
-        private DropDownMenu createMenu(List<String> options, final OptionSelectionCallback callback) {
+        private DropDownMenu createMenu() {
             DropDownMenu mb = new DropDownMenu();
             mb.setStyleName("");
             mb.setFocusOnHoverEnabled(false);
-
-            for (final String option : options) {
-                final DropDownItem menuItem = new DropDownItem(option, false,
-                        new Scheduler.ScheduledCommand() {
-                            public void execute() {
-                                callback.onOptionSelected(option);
-                            }
-                        });
-                mb.addItem(menuItem);
-            }
             return mb;
         }
 
@@ -245,13 +249,22 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
             return p;
         }
 
-        protected boolean toggleDropDown(TextBox textBox) {
-            if (isShowing()) {
-                hideDropDown();
-                return false;
+        protected void setOptions(List<String> options, final OptionSelectionCallback callback) {
+            menuBar.clearItems();
+
+            for (final String option : options) {
+                final DropDownItem menuItem = new DropDownItem(option, false,
+                        new Scheduler.ScheduledCommand() {
+                            public void execute() {
+                                callback.onOptionSelected(option);
+                            }
+                        });
+                menuBar.addItem(menuItem);
             }
-            showDropDown(textBox);
-            return true;
+
+            if (options.size() > 6) {
+                popupPanel.getWidget().setHeight(SCROLLABLE_HEIGHT + "px");
+            }
         }
 
         protected void showDropDown(TextBox textBox) {
@@ -277,6 +290,7 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
         protected void moveSelectionDown(TextBox textBox) {
             if (isShowing()) {
                 menuBar.moveSelectionDown();
+                scrollToSelection();
             } else {
                 showDropDown(textBox);
             }
@@ -300,6 +314,16 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
 
         protected boolean isShowing() {
             return popupPanel.isShowing();
+        }
+
+        private void scrollToSelection() {
+            Element selected = menuBar.getSelectedItem().getElement();
+            int top = selected.getOffsetTop();
+            int height = selected.getOffsetHeight();
+            int pos = scrollPanel.getVerticalScrollPosition();
+            if (top < pos || top + height > pos + SCROLLABLE_HEIGHT) {
+                scrollPanel.setVerticalScrollPosition(top);
+            }
         }
     }
 

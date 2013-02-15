@@ -18,8 +18,18 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
 public interface AdfGeneralInfoView extends IsWidget {
+
+    void setTechnologyTypes(List<String> types);
+
+    void setSubstrateTypes(List<String> types);
+
+    void setSurfaceType(List<String> types);
+
+    void setSpecies(List<String> species);
 }

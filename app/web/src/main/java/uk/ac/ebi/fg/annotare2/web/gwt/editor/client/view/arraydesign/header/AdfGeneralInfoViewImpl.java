@@ -19,11 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ComboBox;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,17 +39,17 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     @UiField
     TextBox adVersion;
 
-    @UiField(provided = true)
+    @UiField
     ComboBox adTechnologyType;
 
     @UiField
-    TextBox adSubstrateType;
+    ComboBox adSubstrateType;
 
     @UiField
-    TextBox adSurfaceType;
+    ComboBox adSurfaceType;
 
     @UiField
-    TextBox adSpecies;
+    ComboBox adSpecies;
 
     @UiField
     TextArea adDescription;
@@ -60,12 +62,27 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     }
 
     public AdfGeneralInfoViewImpl() {
-        List<String> techTypes = new ArrayList<String>();
-        techTypes.add("one");
-        techTypes.add("two");
-        techTypes.add("three");
-
-        adTechnologyType = new ComboBox(techTypes);
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
+
+    @Override
+    public void setTechnologyTypes(List<String> types) {
+        adTechnologyType.setOptions(types);
+    }
+
+    @Override
+    public void setSubstrateTypes(List<String> types) {
+        adSubstrateType.setOptions(types);
+    }
+
+    @Override
+    public void setSurfaceType(List<String> types) {
+        adSurfaceType.setOptions(types);
+    }
+
+    @Override
+    public void setSpecies(List<String> species) {
+        adSpecies.setOptions(species);
+    }
+
 }

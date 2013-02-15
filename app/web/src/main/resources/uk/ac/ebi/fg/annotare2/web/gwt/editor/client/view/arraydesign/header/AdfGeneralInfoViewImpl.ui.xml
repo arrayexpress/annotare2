@@ -21,67 +21,92 @@
         xmlns:dp="urn:import:com.google.gwt.user.datepicker.client"
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
+    <ui:style>
+        .form {
+            margin: 5px;
+        }
+
+        .form td {
+            padding-bottom: 10px;
+        }
+
+        .form td.title {
+            width: 140px;
+            text-align: right;
+            padding-right: 10px;
+        }
+    </ui:style>
+
     <g:HTMLPanel>
-        <table width="98%">
+        <table width="98%" class="{style.form}">
             <tbody>
                 <tr>
-                    <td>
+                    <td class="{style.title}">
                         Array Design Name:
                     </td>
                     <td>
-                        <g:TextBox width="90%" ui:field="adName"></g:TextBox>
+                        <g:TextBox width="400px" ui:field="adName"></g:TextBox>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td></td>
+                    <td style="font-size:10;color:#48877c;">
+                        <b>Suggested naming template:</b>
+                        <span style="font-family:monospace">{Lab} {Species} {Array Name} {# of Features} {Version}
+                        </span>
+                        <br/>E.g.: EMBL M. musculus Iron Chip 0.3K v3
+                    </td>
+                </tr>
+                <tr>
+                    <td class="{style.title}">
                         Array Version:
                     </td>
                     <td>
-                        <g:TextBox width="90%" ui:field="adVersion"></g:TextBox>
+                        <g:TextBox width="250px" ui:field="adVersion"></g:TextBox>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="{style.title}">
                         Technology Type:
                     </td>
                     <td>
-                        <wgt:ComboBox width="90%" ui:field="adTechnologyType"></wgt:ComboBox>
+                        <wgt:ComboBox width="250px" ui:field="adTechnologyType"></wgt:ComboBox>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="{style.title}">
                         Substrate Type:
                     </td>
                     <td>
-                        <g:TextBox width="90%" ui:field="adSubstrateType"></g:TextBox>
+                        <wgt:ComboBox width="250px" ui:field="adSubstrateType"></wgt:ComboBox>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="{style.title}">
                         Surface Type:
                     </td>
                     <td>
-                        <g:TextBox width="90%" ui:field="adSurfaceType"></g:TextBox>
+                        <wgt:ComboBox width="250px" ui:field="adSurfaceType"></wgt:ComboBox>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="{style.title}">
                         Species:
                     </td>
                     <td>
-                        <g:TextBox width="90%" ui:field="adSpecies"></g:TextBox>
+                        <wgt:ComboBox width="250px" ui:field="adSpecies"></wgt:ComboBox>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="{style.title}">
                         Description:
                     </td>
                     <td>
-                        <g:TextArea width="90%" visibleLines="2" ui:field="adDescription"></g:TextArea>
+                        <g:TextArea width="250px" visibleLines="2" ui:field="adDescription"></g:TextArea>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="{style.title}">
                         Date of Public Release
                     </td>
                     <td>
