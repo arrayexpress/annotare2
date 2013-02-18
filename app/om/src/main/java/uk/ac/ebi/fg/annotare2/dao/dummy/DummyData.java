@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.dao.dummy;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import com.google.common.io.CharStreams;
 import org.slf4j.Logger;
@@ -28,11 +28,10 @@ import uk.ac.ebi.fg.annotare2.om.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Arrays.asList;
 
@@ -49,8 +48,9 @@ public class DummyData {
 
     private static final ListMultimap<User, Submission> userSubmissions = ArrayListMultimap.create();
 
-    private static int count = 1;
+    private static final List<ArrayPrintingProtocol> arrayProtocols = newArrayList();
 
+    private static int count = 1;
 
     static {
 
@@ -75,6 +75,17 @@ public class DummyData {
                     "E-GEOD-37372.idf.txt",
                     "E-GEOD-37372",
                     "Ewing's sarcoma tumor samples");
+
+            createAdSubmission(user,
+                    SubmissionStatus.IN_PROGRESS,
+                    "A-MEXP-2196.adf.txt",
+                    "A-MEXP-2196",
+                    "LSTM_An.gambiae_s.s._AGAM15K_V1.0");
+
+            arrayProtocols.add(new ArrayPrintingProtocol("Protocol-1", "<em>Protocol-1 description</em>"));
+            arrayProtocols.add(new ArrayPrintingProtocol("Protocol-2", "<em>Protocol-2 description</em>"));
+            arrayProtocols.add(new ArrayPrintingProtocol("Protocol-3", "<em>Protocol-3 description</em>"));
+
         } catch (IOException e) {
             log.error("", e);
         }
@@ -100,8 +111,24 @@ public class DummyData {
         return submission;
     }
 
+    private static Submission createAdSubmission(User user, SubmissionStatus status, String fileName, String accession, String title) throws IOException {
+        ArrayDesignSubmission submission = new SubmissionFactory().createArrayDesignSubmission(user);
+        submission.setStatus(status);
+        submission.setAccession(accession);
+        submission.setTitle(title);
+        submission.setContent(
+                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(fileName), Charsets.UTF_8))
+        );
+        save(submission);
+        return submission;
+    }
+
     private static int nextId() {
         return count++;
+    }
+
+    public static List<ArrayPrintingProtocol> getAllArrayPrintingProtocols() {
+        return ImmutableList.copyOf(arrayProtocols);
     }
 
     public static User getUserByEmail(String email) {
@@ -110,10 +137,6 @@ public class DummyData {
 
     public static List<Submission> getSubmissions(User user) {
         return userSubmissions.get(user);
-    }
-
-    public static List<Submission> getSubmissions(User user, Predicate<Submission> predicate) {
-        return new ArrayList<Submission>(filter(getSubmissions(user), predicate));
     }
 
     public static <T extends Submission> T getSubmission(int id, Class<T> clazz)

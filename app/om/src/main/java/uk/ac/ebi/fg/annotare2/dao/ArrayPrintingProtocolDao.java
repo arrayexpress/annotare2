@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.om;
+package uk.ac.ebi.fg.annotare2.dao;
+
+import uk.ac.ebi.fg.annotare2.om.ArrayPrintingProtocol;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDesignSubmission extends Submission {
+public interface ArrayPrintingProtocolDao {
 
-    private String content;
-
-    public ArrayDesignSubmission(User createdBy, Acl acl) {
-        super(createdBy, acl);
-    }
-
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getContent() {
-        return content;
-    }
+    List<ArrayPrintingProtocol> getAllProtocols();
 }

@@ -19,24 +19,21 @@ package uk.ac.ebi.fg.annotare2.om;
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDesignSubmission extends Submission {
+public class ArrayPrintingProtocol {
 
-    private String content;
+    private final String name;
+    private final String description;
 
-    public ArrayDesignSubmission(User createdBy, Acl acl) {
-        super(createdBy, acl);
+    public ArrayPrintingProtocol(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
+    public String getName() {
+        return name;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getContent() {
-        return content;
+    public String getDescription() {
+        return description;
     }
 }
