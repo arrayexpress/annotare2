@@ -70,7 +70,7 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     SimplePanel ppDescrEditorDiv;
 
     @UiField
-    Button editModeButton;
+    Image displayButton;
 
     private RichTextArea richTextArea;
     private RichTextToolbar richTextToolbar;
@@ -83,28 +83,34 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     public AdfGeneralInfoViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
+        ppDescrPreview.setVisible(inPreviewMode);
+
         richTextArea = new RichTextArea();
+        richTextArea.setSize("100%", "14em");
         richTextToolbar = new RichTextToolbar(richTextArea);
+        richTextToolbar.setWidth("100%");
 
         // Add the components to a panel
         Grid grid = new Grid(2, 1);
-        //grid.setStyleName("cw-RichText");
+        grid.setStyleName("app-RichTextArea");
         grid.setWidget(0, 0, richTextToolbar);
         grid.setWidget(1, 0, richTextArea);
         ppDescrEditorDiv.setWidget(grid);
 
-        editModeButton.addClickHandler(new ClickHandler() {
+        displayButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (inPreviewMode) {
-                    ppDescrPreview.setHTML("");
-                    ppDescrEditorDiv.setVisible(true);
-                    inPreviewMode = false;
+                    displayButton.getElement().getParentElement().removeClassName("clicked");
                 } else {
-                    ppDescrEditorDiv.setVisible(false);
                     ppDescrPreview.setHTML(richTextArea.getHTML());
-                    inPreviewMode = true;
+                    ppDescrPreview.setWidth(ppDescrEditorDiv.getOffsetWidth() + "px");
+                    ppDescrPreview.setHeight(ppDescrEditorDiv.getOffsetHeight() + "px");
+                    displayButton.getElement().getParentElement().addClassName("clicked");
                 }
+                inPreviewMode = !inPreviewMode;
+                ppDescrPreview.setVisible(inPreviewMode);
+                ppDescrEditorDiv.setVisible(!inPreviewMode);
             }
         });
     }

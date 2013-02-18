@@ -21,6 +21,8 @@
         xmlns:dp="urn:import:com.google.gwt.user.datepicker.client"
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
+    <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
+
     <g:HTMLPanel>
         <table class="app-Form">
             <tbody>
@@ -136,14 +138,17 @@
                                         Description:
                                     </td>
                                     <td>
-                                        <g:Button ui:field="editModeButton">switch mode</g:Button>
+                                        <span class="app-ToggleImage">
+                                            <g:Image ui:field="displayButton" resource="{res.displayIcon}"
+                                                     title="Preview On/Off"/>
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td></td>
                                     <td>
-                                        <g:HTML ui:field="ppDescrPreview"></g:HTML>
-                                        <g:SimplePanel ui:field="ppDescrEditorDiv" addStyleNames="app-RichTextArea"></g:SimplePanel>
+                                        <g:HTML ui:field="ppDescrPreview" addStyleNames="app-Scrollable"></g:HTML>
+                                        <g:SimplePanel ui:field="ppDescrEditorDiv"></g:SimplePanel>
                                     </td>
                                 </tr>
                             </tbody>

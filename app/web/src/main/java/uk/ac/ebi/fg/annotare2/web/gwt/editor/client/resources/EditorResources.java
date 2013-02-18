@@ -42,6 +42,9 @@ public interface EditorResources extends ClientBundle {
     @Source("../../public/images/plus-icon.png")
     public ImageResource plusIcon();
 
+    @Source("../../public/images/display-icon.png")
+    public ImageResource displayIcon();
+
     @Source("../../public/editor-bundled.css")
     public EditorBundledStyles editorStyles();
 }

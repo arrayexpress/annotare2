@@ -391,7 +391,7 @@
 }
 
 .app-Form .app-RichTextArea {
-    border: 1px solid  #48877C;
+    border: 1px solid #48877C;
 }
 
 .gwt-TextBox {
@@ -431,4 +431,28 @@ a.wgt-button :hover {
 
 table.GWTUpld {
     width: 100%;
+}
+
+.app-ToggleImage {
+    padding: 4px;
+    border: 1px solid #fefefe;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    cursor: pointer;
+}
+
+.app-ToggleImage img {
+    vertical-align: middle;
+}
+
+.app-ToggleImage.clicked {
+    border: 1px solid orange;
+}
+
+.app-Scrollable {
+    overflow: auto
 }
