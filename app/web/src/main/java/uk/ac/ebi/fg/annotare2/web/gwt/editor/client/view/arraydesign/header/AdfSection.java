@@ -22,8 +22,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
  * @author Olga Melnichuk
  */
 public enum AdfSection implements NavigationSection {
-    GENERAL_INFO("General Information"),
-    PROTOCOLS("Array Protocols");
+    GENERAL_INFO("General Information");
 
     private final String title;
 

@@ -21,96 +21,133 @@
         xmlns:dp="urn:import:com.google.gwt.user.datepicker.client"
         xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
-    <ui:style>
-        .form {
-            margin: 5px;
-        }
-
-        .form td {
-            padding-bottom: 10px;
-        }
-
-        .form td.title {
-            width: 140px;
-            text-align: right;
-            padding-right: 10px;
-        }
-    </ui:style>
-
     <g:HTMLPanel>
-        <table width="98%" class="{style.form}">
+        <table class="app-Form">
             <tbody>
                 <tr>
-                    <td class="{style.title}">
+                    <td class="app-FormField">
                         Array Design Name:
                     </td>
                     <td>
-                        <g:TextBox width="400px" ui:field="adName"></g:TextBox>
+                        <g:TextBox width="400px" ui:field="designName"></g:TextBox>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="font-size:10;color:#48877c;">
+                    <td class="app-FormComment">
                         <b>Suggested naming template:</b>
-                        <span style="font-family:monospace">{Lab} {Species} {Array Name} {# of Features} {Version}
-                        </span>
+                        <span>{Lab} {Species} {Array Name} {# of Features} {Version}</span>
                         <br/>E.g.: EMBL M. musculus Iron Chip 0.3K v3
                     </td>
                 </tr>
                 <tr>
-                    <td class="{style.title}">
-                        Array Version:
-                    </td>
-                    <td>
-                        <g:TextBox width="250px" ui:field="adVersion"></g:TextBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="{style.title}">
-                        Technology Type:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="adTechnologyType"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="{style.title}">
-                        Substrate Type:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="adSubstrateType"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="{style.title}">
-                        Surface Type:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="adSurfaceType"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="{style.title}">
-                        Species:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="adSpecies"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="{style.title}">
+                    <td class="app-FormField">
                         Description:
                     </td>
                     <td>
-                        <g:TextArea width="250px" visibleLines="2" ui:field="adDescription"></g:TextArea>
+                        <g:TextArea width="400px" visibleLines="2" ui:field="description"></g:TextArea>
                     </td>
                 </tr>
                 <tr>
-                    <td class="{style.title}">
-                        Date of Public Release
+                    <td class="app-FormField">
+                        Array Version:
                     </td>
                     <td>
-                        <dp:DateBox ui:field="adPublicReleaseDate"/>
+                        <g:TextBox width="250px" ui:field="designVersion"></g:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="app-FormField">
+                        Date of Public Release:
+                    </td>
+                    <td>
+                        <dp:DateBox ui:field="publicReleaseDate"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="app-FormFieldSeparator"></td>
+                </tr>
+                <tr>
+                    <td class="app-FormField">
+                        Technology Type:
+                    </td>
+                    <td>
+                        <wgt:ComboBox width="250px" ui:field="technologyType"></wgt:ComboBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="app-FormField">
+                        Substrate Type:
+                    </td>
+                    <td>
+                        <wgt:ComboBox width="250px" ui:field="substrateType"></wgt:ComboBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="app-FormField">
+                        Surface Type:
+                    </td>
+                    <td>
+                        <wgt:ComboBox width="250px" ui:field="surfaceType"></wgt:ComboBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="app-FormField">
+                        Species:
+                    </td>
+                    <td>
+                        <wgt:ComboBox width="250px" ui:field="species"></wgt:ComboBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="app-FormFieldSeparator"></td>
+                </tr>
+                <tr>
+                    <td class="app-FormField">
+                        Printing Protocol:
+                    </td>
+                    <td>
+                        <g:TextBox width="250px" ui:field="printingProtocol"></g:TextBox>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <table class="app-Form">
+                            <tbody>
+                                <tr>
+                                    <td class="app-FormField">
+                                        Name:
+                                    </td>
+                                    <td>
+                                        <g:TextBox width="250px" ui:field="ppName"></g:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="app-FormComment">
+                                        <b>Suggested naming template:</b>
+                                        <span>{Lab} {Type} {Name}</span>
+                                        <br/>E.g.: Sanger Array Protocol
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="app-FormField">
+                                        Description:
+                                    </td>
+                                    <td>
+                                        <g:Button ui:field="editModeButton">switch mode</g:Button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <g:HTML ui:field="ppDescrPreview"></g:HTML>
+                                        <g:SimplePanel ui:field="ppDescrEditorDiv" addStyleNames="app-RichTextArea"></g:SimplePanel>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </td>
                 </tr>
             </tbody>

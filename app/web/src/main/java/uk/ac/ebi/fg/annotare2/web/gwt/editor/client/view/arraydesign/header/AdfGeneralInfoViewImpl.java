@@ -17,14 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ComboBox;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextToolbar;
 
 import java.util.List;
 
@@ -34,28 +34,47 @@ import java.util.List;
 public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoView {
 
     @UiField
-    TextBox adName;
+    TextBox designName;
 
     @UiField
-    TextBox adVersion;
+    TextBox designVersion;
 
     @UiField
-    ComboBox adTechnologyType;
+    ComboBox technologyType;
 
     @UiField
-    ComboBox adSubstrateType;
+    ComboBox substrateType;
 
     @UiField
-    ComboBox adSurfaceType;
+    ComboBox surfaceType;
 
     @UiField
-    ComboBox adSpecies;
+    ComboBox species;
 
     @UiField
-    TextArea adDescription;
+    TextArea description;
 
     @UiField
-    DateBox adPublicReleaseDate;
+    DateBox publicReleaseDate;
+
+    @UiField
+    TextBox printingProtocol;
+
+    @UiField
+    TextBox ppName;
+
+    @UiField
+    HTML ppDescrPreview;
+
+    @UiField
+    SimplePanel ppDescrEditorDiv;
+
+    @UiField
+    Button editModeButton;
+
+    private RichTextArea richTextArea;
+    private RichTextToolbar richTextToolbar;
+    private boolean inPreviewMode = false;
 
     interface Binder extends UiBinder<HTMLPanel, AdfGeneralInfoViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -63,26 +82,51 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
 
     public AdfGeneralInfoViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+
+        richTextArea = new RichTextArea();
+        richTextToolbar = new RichTextToolbar(richTextArea);
+
+        // Add the components to a panel
+        Grid grid = new Grid(2, 1);
+        //grid.setStyleName("cw-RichText");
+        grid.setWidget(0, 0, richTextToolbar);
+        grid.setWidget(1, 0, richTextArea);
+        ppDescrEditorDiv.setWidget(grid);
+
+        editModeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (inPreviewMode) {
+                    ppDescrPreview.setHTML("");
+                    ppDescrEditorDiv.setVisible(true);
+                    inPreviewMode = false;
+                } else {
+                    ppDescrEditorDiv.setVisible(false);
+                    ppDescrPreview.setHTML(richTextArea.getHTML());
+                    inPreviewMode = true;
+                }
+            }
+        });
     }
 
     @Override
     public void setTechnologyTypes(List<String> types) {
-        adTechnologyType.setOptions(types);
+        technologyType.setOptions(types);
     }
 
     @Override
     public void setSubstrateTypes(List<String> types) {
-        adSubstrateType.setOptions(types);
+        substrateType.setOptions(types);
     }
 
     @Override
     public void setSurfaceType(List<String> types) {
-        adSurfaceType.setOptions(types);
+        surfaceType.setOptions(types);
     }
 
     @Override
     public void setSpecies(List<String> species) {
-        adSpecies.setOptions(species);
+        this.species.setOptions(species);
     }
 
 }

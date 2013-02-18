@@ -107,8 +107,6 @@ public class EditorContentActivityMapper implements ActivityMapper {
             switch (section) {
                 case GENERAL_INFO:
                     return (adfGeneralInfoActivityProvider.get()).withPlace(adHeaderPlace);
-                case PROTOCOLS:
-                    return (adfProtocolListActivityProvider.get()).withPlace(adHeaderPlace);
             }
         }
         //TODO

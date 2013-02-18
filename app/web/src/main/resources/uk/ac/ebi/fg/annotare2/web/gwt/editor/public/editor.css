@@ -354,17 +354,50 @@
     padding-right: 3px;
 }
 
-.gwt-TextBox {
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-}
-
 .app-IdfItemFormLayout textarea {
     width: 300px;
     padding-left: 5px;
     padding-right: 5px;
     margin: 0 auto;
+}
+
+/* form */
+
+.app-Form {
+    margin: 5px;
+}
+
+.app-Form td {
+    padding-bottom: 10px;
+}
+
+.app-Form td.app-FormField {
+    text-align: right;
+    padding-right: 10px;
+    padding-left: 5px;
+}
+
+.app-Form td.app-FormFieldSeparator {
+    border-top: 1px solid #eeeeee
+}
+
+.app-Form .app-FormComment {
+    font-size: 10;
+    color: #48877c;
+}
+
+.app-Form .app-FormComment span {
+    font-family: monospace
+}
+
+.app-Form .app-RichTextArea {
+    border: 1px solid  #48877C;
+}
+
+.gwt-TextBox {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
 /* upload status */
@@ -391,7 +424,7 @@ a.wgt-button :hover {
 }
 
 .wgt-ComboBoxButton {
-    margin:0 0 0 -17px;
+    margin: 0 0 0 -17px;
     vertical-align: middle;
     cursor: pointer;
 }
