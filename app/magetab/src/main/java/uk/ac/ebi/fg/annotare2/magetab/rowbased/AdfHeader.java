@@ -23,6 +23,8 @@ import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader.Tag.*;
 
@@ -82,11 +84,17 @@ public class AdfHeader {
 
     private final TermBasedObjectList sequiencePolymerTypeList;
 
+    private final Map<String, CommentList> comments = new HashMap<String, CommentList>();
+
+    private final Table table;
+
     public AdfHeader() {
         this(new Table());
     }
 
     public AdfHeader(Table table) {
+        this.table = table;
+
         termSourceList = new TermSourceList(table,
                 TERM_SOURCE_NAME,
                 TERM_SOURCE_VERSION,
@@ -112,10 +120,10 @@ public class AdfHeader {
                 SUBSTRATE_TYPE_TERM_ACCESSION_NUMBER,
                 SUBSTRATE_TYPE_TERM_SOURCE_REF);
 
-         sequiencePolymerTypeList = new TermBasedObjectList(table, termSourceList,
-                 SEQUENCE_POLYMER_TYPE,
-                 SEQUENCE_POLYMER_TYPE_TERM_ACCESSION_NUMBER,
-                 SEQUENCE_POLYMER_TYPE_TERM_SOURCE_REF);
+        sequiencePolymerTypeList = new TermBasedObjectList(table, termSourceList,
+                SEQUENCE_POLYMER_TYPE,
+                SEQUENCE_POLYMER_TYPE_TERM_ACCESSION_NUMBER,
+                SEQUENCE_POLYMER_TYPE_TERM_SOURCE_REF);
     }
 
     public Row.Cell<String> getArrayDesignName() {
@@ -150,6 +158,27 @@ public class AdfHeader {
         return getFirstOrNull(sequiencePolymerTypeList);
     }
 
+    public List<Row.Cell<String>> getComments(String key, boolean atLeastOneRequired) {
+        CommentList list = getCommentList(key);
+        if (list.isEmpty() && atLeastOneRequired) {
+            createComment(list);
+        }
+        return list.getAll();
+    }
+
+    public Row.Cell<String> addComment(String key) {
+        return createComment(getCommentList(key));
+    }
+
+    private Row.Cell<String> createComment(CommentList list) {
+        return list.add();
+    }
+
+    private CommentList getCommentList(String key) {
+        CommentList list = comments.get(key);
+        return list == null ? new CommentList(table, key) : list;
+    }
+
     private <T> T getFirstOrNull(ObjectList<T> list) {
         return list.isEmpty() ? null : list.get(0);
     }
@@ -164,7 +193,7 @@ public class AdfHeader {
                     PRINTING_PROTOCOL).from(table),
                     new ObjectCreator<AdfInfo>() {
                         @Override
-                        public AdfInfo create(HashMap<RowTag, Row.Cell<String>> map) {
+                        public AdfInfo create(Map<RowTag, Row.Cell<String>> map) {
                             AdfInfo generalInfo = new AdfInfo();
                             generalInfo.setArrayDesignName(map.get(ARRAY_DESIGN_NAME));
                             generalInfo.setVersion(map.get(VERSION));
@@ -173,6 +202,32 @@ public class AdfHeader {
                             return generalInfo;
                         }
                     });
+        }
+    }
+
+    private static class CommentList extends ObjectList<Row.Cell<String>> {
+
+        private CommentList(Table table, String key) {
+            super(new RowSet(new CommentTag(key)).from(table), new ObjectCreator<Row.Cell<String>>() {
+                @Override
+                public Row.Cell<String> create(Map<RowTag, Row.Cell<String>> map) {
+                    return map.entrySet().iterator().next().getValue();
+                }
+            });
+        }
+    }
+
+    private static class CommentTag implements RowTag {
+
+        private final String name;
+
+        private CommentTag(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return "Comment[" + name + "]";
         }
     }
 }

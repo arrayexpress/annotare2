@@ -22,7 +22,7 @@ import uk.ac.ebi.fg.annotare2.magetab.table.RowSet;
 import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -39,7 +39,7 @@ public class TermSourceList extends ObjectList<TermSource> {
                 fileTag).from(table),
                 new ObjectCreator<TermSource>() {
                     @Override
-                    public TermSource create(HashMap<RowTag, Row.Cell<String>> map) {
+                    public TermSource create(Map<RowTag, Row.Cell<String>> map) {
                         TermSource termSource = new TermSource();
                         termSource.setName(map.get(nameTag));
                         termSource.setVersion(map.get(versionTag));

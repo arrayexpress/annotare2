@@ -17,10 +17,13 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import org.junit.Test;
+import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
 import java.io.IOException;
+import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.junit.Assert.*;
 
 /**
@@ -54,6 +57,18 @@ public class AdfHeaderTest {
         assertEquals("glass", substrateType.getName().getValue());
 
         assertNull(adf.getSequencePolymerType());
+
+        List<Row.Cell<String>> comments = adf.getComments("Description", false);
+        assertEquals(1, comments.size());
+        assertEquals("The entire coding transcriptome from An. gambiae s.s. Ensembl version AgamP3.5 (2009) was employed",
+                comments.get(0).getValue());
+
+        List<Row.Cell<String>> dummyComments = adf.getComments("dummy", true);
+        assertEquals(1, dummyComments.size());
+        assertTrue(isNullOrEmpty(dummyComments.get(0).getValue()));
+
+        List<Row.Cell<String>> moreDummyComments = adf.getComments("more dummy", false);
+        assertTrue(moreDummyComments.isEmpty());
     }
 
     @Test

@@ -40,8 +40,8 @@ public abstract class ObjectList<T> {
         createObjects();
     }
 
-    public ArrayList<T> getAll() {
-        ArrayList<T> copy = new ArrayList<T>();
+    public List<T> getAll() {
+        List<T> copy = new ArrayList<T>();
         copy.addAll(list);
         return copy;
     }

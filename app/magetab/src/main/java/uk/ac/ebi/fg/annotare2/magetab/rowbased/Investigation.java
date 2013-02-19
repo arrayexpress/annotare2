@@ -20,10 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.TextFormatter;
 import uk.ac.ebi.fg.annotare2.magetab.table.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation.Tag.*;
 
@@ -176,11 +173,11 @@ public class Investigation {
         return contactList.add();
     }
 
-    public ArrayList<Person> getContacts() {
+    public List<Person> getContacts() {
         return contactList.getAll();
     }
 
-    public ArrayList<Term> getExperimentalDesigns() {
+    public List<Term> getExperimentalDesigns() {
         return experimentalDesignList.getAll();
     }
 
@@ -192,7 +189,7 @@ public class Investigation {
         experimentalDesignList.remove(indices);
     }
 
-    public ArrayList<TermSource> getTermSources() {
+    public List<TermSource> getTermSources() {
         return termSourceList.getAll();
     }
 
@@ -219,7 +216,7 @@ public class Investigation {
                     SDRF_FILE).from(table),
                     new ObjectCreator<Info>() {
                         @Override
-                        public Info create(HashMap<RowTag, Row.Cell<String>> map) {
+                        public Info create(Map<RowTag, Row.Cell<String>> map) {
                             Info generalInfo = new Info();
                             generalInfo.setTitle(map.get(INVESTIGATION_TITLE));
                             generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
@@ -277,7 +274,7 @@ public class Investigation {
                     PERSON_ROLES_TERM_SOURCE_REF).from(table),
                     new ObjectCreator<Person>() {
                         @Override
-                        public Person create(HashMap<RowTag, Row.Cell<String>> map) {
+                        public Person create(Map<RowTag, Row.Cell<String>> map) {
                             Person p = new Person();
                             p.setFirstName(map.get(PERSON_FIRST_NAME));
                             p.setLastName(map.get(PERSON_LAST_NAME));

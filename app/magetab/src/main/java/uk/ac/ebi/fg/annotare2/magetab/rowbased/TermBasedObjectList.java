@@ -22,7 +22,7 @@ import uk.ac.ebi.fg.annotare2.magetab.table.RowSet;
 import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -37,7 +37,7 @@ public class TermBasedObjectList extends ObjectList<Term> {
                 accessionTag,
                 sourceRefTag).from(table),
                 new ObjectCreator<Term>() {
-                    public Term create(HashMap<RowTag, Row.Cell<String>> map) {
+                    public Term create(Map<RowTag, Row.Cell<String>> map) {
                         Term.Builder builder = new Term.Builder();
                         builder.setName(map.get(nameTag));
                         builder.setAccession(map.get(accessionTag));

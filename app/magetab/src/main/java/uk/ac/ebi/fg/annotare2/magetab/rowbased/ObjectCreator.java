@@ -20,7 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -28,5 +28,5 @@ import java.util.HashMap;
 @GwtCompatible
 interface ObjectCreator<T> {
 
-    T create(HashMap<RowTag, Row.Cell<String>> map);
+    T create(Map<RowTag, Row.Cell<String>> map);
 }
