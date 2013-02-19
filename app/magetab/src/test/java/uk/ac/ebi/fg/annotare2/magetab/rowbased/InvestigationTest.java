@@ -56,7 +56,7 @@ public class InvestigationTest {
     }
 
     @Test
-    public void newTableTest() {
+    public void emptyTableTest() {
         Table table = new Table();
         Investigation idf = new Investigation(table);
 

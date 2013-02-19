@@ -17,15 +17,14 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.*;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.TextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.table.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation.Tag.*;
 
 
@@ -78,23 +77,26 @@ public class Investigation {
 
     private final ContactList contactList;
 
-    private final ExperimentalDesignList experimentalDesignList;
+    private final TermBasedObjectList experimentalDesignList;
 
     private final TermSourceList termSourceList;
-
-    private final Table table;
 
     public Investigation() {
         this(new Table());
     }
 
     public Investigation(Table table) {
-        this.table = table;
+        termSourceList = new TermSourceList(table,
+                TERM_SOURCE_NAME,
+                TERM_SOURCE_VERSION,
+                TERM_SOURCE_FILE);
 
-        termSourceList = new TermSourceList(table);
         generalInfoList = new GeneralInfoList(table);
         contactList = new ContactList(table);
-        experimentalDesignList = new ExperimentalDesignList(table, termSourceList);
+        experimentalDesignList = new TermBasedObjectList(table, termSourceList,
+                EXPERIMENTAL_DESIGN_NAME,
+                EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER,
+                EXPERIMENTAL_DESIGN_TERM_SOURCE_REF);
 
         if (generalInfoList.isEmpty()) {
             generalInfoList.add();
@@ -258,36 +260,6 @@ public class Investigation {
         }
     }
 
-    private static class TermSourceList extends ObjectList<TermSource> {
-
-        protected TermSourceList(Table table) {
-            super(new RowSet(
-                    TERM_SOURCE_NAME,
-                    TERM_SOURCE_VERSION,
-                    TERM_SOURCE_FILE).from(table),
-                    new ObjectCreator<TermSource>() {
-                        @Override
-                        public TermSource create(HashMap<RowTag, Row.Cell<String>> map) {
-                            TermSource termSource = new TermSource();
-                            termSource.setName(map.get(TERM_SOURCE_NAME));
-                            termSource.setVersion(map.get(TERM_SOURCE_VERSION));
-                            termSource.setFile(map.get(TERM_SOURCE_FILE));
-                            return termSource;
-                        }
-                    });
-        }
-
-        public TermSource getTermSource(String name) {
-            for (TermSource ts : getAll()) {
-                String tsName = ts.getName().getValue();
-                if (!isNullOrEmpty(tsName) && tsName.equalsIgnoreCase(name)) {
-                    return ts;
-                }
-            }
-            return null;
-        }
-    }
-
     private static class ContactList extends ObjectList<Person> {
 
         private ContactList(Table table) {
@@ -316,28 +288,6 @@ public class Investigation {
                             p.setAffiliation(map.get(PERSON_AFFILIATION));
                             p.setAddress(map.get(PERSON_ADDRESS));
                             return p;
-                        }
-                    });
-        }
-    }
-
-    private static class ExperimentalDesignList extends ObjectList<Term> {
-
-        private ExperimentalDesignList(Table table, final TermSourceList termSources) {
-            super(new RowSet(
-                    EXPERIMENTAL_DESIGN_NAME,
-                    EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER,
-                    EXPERIMENTAL_DESIGN_TERM_SOURCE_REF).from(table),
-                    new ObjectCreator<Term>() {
-                        public Term create(HashMap<RowTag, Row.Cell<String>> map) {
-                            Term.Builder builder = new Term.Builder();
-                            builder.setName(map.get(EXPERIMENTAL_DESIGN_NAME));
-                            builder.setAccession(map.get(EXPERIMENTAL_DESIGN_TERM_ACCESSION_NUMBER));
-                            builder.setRef(map.get(EXPERIMENTAL_DESIGN_TERM_SOURCE_REF));
-
-                            Term term = builder.build();
-                            term.setTermSource(termSources.getTermSource(term.getRef().getValue()));
-                            return term;
                         }
                     });
         }
