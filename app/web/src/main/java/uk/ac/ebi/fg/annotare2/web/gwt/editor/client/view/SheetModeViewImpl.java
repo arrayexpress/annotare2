@@ -28,8 +28,8 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
 import java.util.ArrayList;
 

@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.base.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 
 /**
  * @author Olga Melnichuk

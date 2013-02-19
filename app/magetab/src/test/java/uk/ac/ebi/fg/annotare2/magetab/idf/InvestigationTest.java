@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.magetab.base.Table;
-import uk.ac.ebi.fg.annotare2.magetab.base.TableCell;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.TableCell;
 import uk.ac.ebi.fg.annotare2.magetab.idf.format.JseTextFormatter;
 
 import java.io.IOException;

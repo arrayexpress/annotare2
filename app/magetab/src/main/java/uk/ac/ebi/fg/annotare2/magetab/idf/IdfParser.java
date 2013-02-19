@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
-import uk.ac.ebi.fg.annotare2.magetab.base.TsvParser;
+import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 
 import java.io.IOException;
 import java.io.InputStream;

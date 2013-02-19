@@ -17,11 +17,10 @@
 package uk.ac.ebi.fg.annotare2.magetab.idf;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.base.*;
+import uk.ac.ebi.fg.annotare2.magetab.table.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Olga Melnichuk
