@@ -30,13 +30,10 @@ public class TaggedRow {
 
     private final Table table;
 
-    //private Row.Cell<String> tagCell;
-
     public TaggedRow(Table table, RowTag tag) {
         this.row = findRow(table, tag);
         this.tag = tag;
         this.table = table;
-        //     this.tagCell = this.row.cellAt(0);
     }
 
     private static Row findRow(Table table, RowTag tag) {
