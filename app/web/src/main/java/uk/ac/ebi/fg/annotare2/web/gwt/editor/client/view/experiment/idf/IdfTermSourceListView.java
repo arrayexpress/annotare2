@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 
 import java.util.List;

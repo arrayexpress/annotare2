@@ -22,7 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
 

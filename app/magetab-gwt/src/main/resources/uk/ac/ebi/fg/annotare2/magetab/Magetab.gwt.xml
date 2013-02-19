@@ -14,8 +14,8 @@
   ~ limitations under the License.
   -->
 <module>
-    <source path="base"/>
-    <source path="idf"/>
+    <source path="table"/>
+    <source path="rowbased"/>
     <source path="init"/>
     <inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.common.base.Base"/>

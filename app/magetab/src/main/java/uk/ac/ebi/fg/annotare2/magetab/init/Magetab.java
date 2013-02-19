@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.init;
 
-import uk.ac.ebi.fg.annotare2.magetab.idf.format.JseTextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.JseTextFormatter;
 
 /**
  * Magetab library can be used in both JSE and GWT environments. This class helps to initialise JSE specific code;

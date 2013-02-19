@@ -22,8 +22,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Term;
-import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Term;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.DynamicList;
 
 import java.util.ArrayList;

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
 import uk.ac.ebi.fg.annotare2.magetab.table.*;
-import uk.ac.ebi.fg.annotare2.magetab.idf.format.TextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.TextFormatter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.magetab.idf.Investigation.Tag.*;
+import static uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation.Tag.*;
 
 
 /**

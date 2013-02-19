@@ -23,7 +23,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfGeneralInfoView;

@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 

@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.table.ChangeListener;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.operation.Operation;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfServiceAsync;
 

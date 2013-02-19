@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 

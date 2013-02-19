@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Person;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
 
 import java.util.List;
 

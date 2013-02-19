@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.init;
 
-import uk.ac.ebi.fg.annotare2.magetab.idf.format.GwtTextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.GwtTextFormatter;
 
 /**
  * To initialise GWT specific code run {@code GwtMagetab.init()} in the your application's initialisation routine.

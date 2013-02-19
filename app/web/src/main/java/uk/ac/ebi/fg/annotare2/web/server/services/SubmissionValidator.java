@@ -17,14 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
-import uk.ac.ebi.fg.annotare2.magetab.idf.IdfParser;
-import uk.ac.ebi.fg.annotare2.magetab.idf.Investigation;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.IdfParser;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
@@ -40,7 +39,6 @@ import java.util.Collection;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static com.google.common.io.Closeables.close;
-import static com.google.common.io.Closeables.closeQuietly;
 
 /**
  * @author Olga Melnichuk

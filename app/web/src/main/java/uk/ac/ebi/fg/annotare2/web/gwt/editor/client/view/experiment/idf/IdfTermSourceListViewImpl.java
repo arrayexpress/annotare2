@@ -23,7 +23,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
-import uk.ac.ebi.fg.annotare2.magetab.idf.TermSource;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TermSourceTemplatesDialog;

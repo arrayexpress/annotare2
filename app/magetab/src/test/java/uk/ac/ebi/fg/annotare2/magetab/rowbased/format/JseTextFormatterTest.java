@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf.format;
+package uk.ac.ebi.fg.annotare2.magetab.rowbased.format;
 
 import org.junit.Test;
 import org.slf4j.Logger;

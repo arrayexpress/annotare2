@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf.format;
+package uk.ac.ebi.fg.annotare2.magetab.rowbased.format;
 
 import com.google.common.annotations.GwtCompatible;
 
@@ -24,25 +24,12 @@ import java.util.Date;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public abstract class TextFormatter {
+public interface DateFormat {
 
     public static String DATE_FORMAT = "yyyy-MM-dd";
 
-    private static TextFormatter delegate;
+    Date parse(String str);
 
-    public static void setDelegate(TextFormatter formatter) {
-        delegate = formatter;
-    }
+    String format(Date date);
 
-    public static TextFormatter getInstance() {
-        if (delegate == null) {
-            throw new IllegalStateException("TextFormatter is not initialized; you probably didn't run Magetab.init() or GwtMagetab.init() first");
-        }
-        return delegate;
-    }
-
-    public abstract Date parseDate(String str);
-
-
-    public abstract String formatDate(Date date);
 }

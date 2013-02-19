@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf.format;
+package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
+import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
 
-import java.util.Date;
+import java.util.HashMap;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public interface DateFormat {
+interface ObjectCreator<T> {
 
-    public static String DATE_FORMAT = "yyyy-MM-dd";
-
-    Date parse(String str);
-
-    String format(Date date);
-
+    T create(HashMap<RowTag, Row.Cell<String>> map);
 }

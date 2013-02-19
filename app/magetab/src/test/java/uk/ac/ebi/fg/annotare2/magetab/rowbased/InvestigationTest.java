@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf;
+package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TableCell;
-import uk.ac.ebi.fg.annotare2.magetab.idf.format.JseTextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.JseTextFormatter;
 
 import java.io.IOException;
 import java.util.List;

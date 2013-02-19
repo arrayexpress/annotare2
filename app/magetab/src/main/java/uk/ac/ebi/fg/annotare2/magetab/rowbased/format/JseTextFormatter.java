@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.idf.format;
+package uk.ac.ebi.fg.annotare2.magetab.rowbased.format;
 
-import com.google.common.annotations.GwtCompatible;
-import com.google.gwt.i18n.client.DateTimeFormat;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -26,18 +25,21 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
-public class GwtTextFormatter extends TextFormatter {
+public class JseTextFormatter extends TextFormatter {
 
-    private DateTimeFormat dateFormat = DateTimeFormat.getFormat(DATE_FORMAT);
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat(DateFormat.DATE_FORMAT);
 
     public static void init() {
-        TextFormatter.setDelegate(new GwtTextFormatter());
+        TextFormatter.setDelegate(new JseTextFormatter());
     }
 
     @Override
     public Date parseDate(String str) {
-        return isNullOrEmpty(str) ? null : dateFormat.parse(str);
+        try {
+            return isNullOrEmpty(str) ? null : dateFormat.parse(str);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Date is in the wrong format: " + str);
+        }
     }
 
     @Override
