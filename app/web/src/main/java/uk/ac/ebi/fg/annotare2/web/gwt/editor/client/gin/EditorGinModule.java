@@ -29,6 +29,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.SdrfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolBarView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolBarViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.*;
@@ -69,6 +71,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
 
         bind(AdfGeneralInfoView.class).to(AdfGeneralInfoViewImpl.class);
+        bind(AdfTabToolBarView.class).to(AdfTabToolBarViewImpl.class);
 
         bind(IdfData.class).in(Singleton.class);
         bind(SdrfData.class).in(Singleton.class);

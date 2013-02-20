@@ -23,4 +23,8 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
 public interface AdfServiceAsync {
     void loadData(int submissionId, AsyncCallback<Table> async);
+
+    void importBodyData(int submissionId, AsyncCallback<Void> async);
+
+    void importHeaderData(int submissionId, AsyncCallback<Void> async);
 }

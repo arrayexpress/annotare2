@@ -29,4 +29,8 @@ public interface AdfService extends RemoteService {
     public static final String NAME = "adfService";
 
     Table loadData(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+
+    void importHeaderData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException;
+
+    void importBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException;
 }

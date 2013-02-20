@@ -52,9 +52,10 @@ public class AdfParser {
             public boolean accepts(List<String> values) {
                 if (inHeader) {
                     for (String v : values) {
-                        adfTitles.contains(v);
-                        inHeader = false;
-                        break;
+                        if (adfTitles.contains(v)) {
+                            inHeader = false;
+                            break;
+                        }
                     }
                 }
                 return inHeader;
@@ -70,9 +71,10 @@ public class AdfParser {
             public boolean accepts(List<String> values) {
                 if (!inBody) {
                     for (String v : values) {
-                        adfTitles.contains(v);
-                        inBody = true;
-                        break;
+                        if (adfTitles.contains(v)) {
+                            inBody = true;
+                            break;
+                        }
                     }
                 }
                 return inBody;

@@ -21,8 +21,10 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTabToolBarActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.IdfTabToolBarActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.SdrfTabToolBarActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 
@@ -33,12 +35,15 @@ public class EditorTabToolBarActivityMapper implements ActivityMapper {
 
     private final Provider<IdfTabToolBarActivity> idfToolBarActivityProvider;
     private final Provider<SdrfTabToolBarActivity> sdrfToolBarActivityProvider;
+    private final Provider<AdfTabToolBarActivity> adfTabToolBarActivityProvider;
 
     @Inject
     public EditorTabToolBarActivityMapper(Provider<IdfTabToolBarActivity> idfActivityProvider,
-                                          Provider<SdrfTabToolBarActivity> sdrfActivityProvider) {
+                                          Provider<SdrfTabToolBarActivity> sdrfActivityProvider,
+                                          Provider<AdfTabToolBarActivity> adfTabToolBarActivityProvider) {
         this.idfToolBarActivityProvider = idfActivityProvider;
         this.sdrfToolBarActivityProvider = sdrfActivityProvider;
+        this.adfTabToolBarActivityProvider = adfTabToolBarActivityProvider;
     }
 
     public Activity getActivity(Place place) {
@@ -46,6 +51,8 @@ public class EditorTabToolBarActivityMapper implements ActivityMapper {
             return (idfToolBarActivityProvider.get()).withPlace(place);
         } else if (place instanceof SdrfPlace) {
             return (sdrfToolBarActivityProvider.get()).withPlace(place);
+        } else if (place instanceof ArrayDesignPlace) {
+            return (adfTabToolBarActivityProvider.get()).withPlace((ArrayDesignPlace)place);
         }
         //TODO
         return null;
