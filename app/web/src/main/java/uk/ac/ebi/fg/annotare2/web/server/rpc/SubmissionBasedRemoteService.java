@@ -19,9 +19,9 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Permission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
@@ -47,11 +47,29 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
         try {
             return submissionManager.getExperimentSubmission(getCurrentUser(), id, permission);
         } catch (RecordNotFoundException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchSubmission(id, e);
         } catch (AccessControlException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
-            throw new NoPermissionException("no permission to this resource");
+            throw noSubmssionAccess(id, e);
         }
+    }
+
+    protected ArrayDesignSubmission getArrayDesignSubmission(int id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            return submissionManager.getArrayDesignSubmission(getCurrentUser(), id, permission);
+        } catch (RecordNotFoundException e) {
+            throw noSuchSubmission(id, e);
+        } catch (AccessControlException e) {
+            throw noSubmssionAccess(id, e);
+        }
+    }
+
+    private ResourceNotFoundException noSuchSubmission(int id, RecordNotFoundException e) {
+        log.warn("Can't find submission with id: " + id, e);
+        return new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+    }
+
+    private NoPermissionException noSubmssionAccess(int id, AccessControlException e) {
+        log.warn("Access denied (user: " + getCurrentUser().getId() + ", submission:" + id + ")", e);
+        return new NoPermissionException("You don't have a required permission to this resource");
     }
 }

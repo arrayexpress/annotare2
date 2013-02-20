@@ -1,19 +1,3 @@
-Array Design Name	LSTM_An.gambiae_s.s._AGAM15K_V1.0
-Version	1.0
-Provider	Sara Mitchell (snmitche@hsph.harvard.edu)
-Comment[ArrayExpressAccession]	A-MEXP-2196
-Comment[Description]	The entire coding transcriptome from An. gambiae s.s. Ensembl version AgamP3.5 (2009) was employed along with detoxification genes of interest to produce this 15K Agilent chip using the online eArray software (https://earray.chem.agilent.com/earray/). A single probe was designed for each unique coding transcript from AgamP3.4.  In addition 281 detoxification genes from families linked to insecticide resistance (David et al. 2005), were also submitted for unique probe design in earray.  For these detoxification genes three unique probes were chosen for the array.  25 genes were also selected at random to provide quality control estimates across array hybridisations, these probes were labled CV (Coefficient of Variance). 
-Comment[SubmittedName]	LSTM_An.gambiae_s.s._AGAM15K_V1.0
-Comment[Organism]	Anopheles gambiae
-Comment[ArrayExpressReleaseDate]	2012-04-25
-Comment[ArrayExpressSubmissionDate]	2012-04-23 09:57:57
-Printing Protocol	LSTM Agilent 15K array protocol: Arrays:&lt;br&gt;&lt;br&gt;http://www.genomics.agilent.com/CollectionSubpage.aspx?PageType=Product&amp;SubPageType=ProductDetail&amp;PageID=1511&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;Labelling:&lt;br&gt;&lt;br&gt;http://www.chem.agilent.com/en-US/Search/Library/_layouts/Agilent/PublicationSummary.aspx?whid=48835 
-Technology Type	in_situ_oligo_features
-Surface Type	unknown_surface_type
-Substrate Type	glass
-Term Source Name	vectorbase
-Term Source File	http://www.vectorbase.org
-
 Block Column	Block Row	Column	Row	Reporter Name	Comment[AEReporterName]	Reporter Comment[Reporter Name]	Reporter Sequence	Reporter Database Entry[vectorbase]	Reporter Group[role]	Control Type
 1	1	1	1	GE_BrightCorner	GE_BrightCorner	GE_BrightCorner			Control	control_label
 1	1	2	1	DarkCorner	DarkCorner	DarkCorner			Control	control_empty

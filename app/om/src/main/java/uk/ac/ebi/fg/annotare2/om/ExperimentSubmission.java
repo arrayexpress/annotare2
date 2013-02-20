@@ -49,13 +49,10 @@ public class ExperimentSubmission extends Submission {
     }
 
     public InputStream getInvestigation() throws IOException {
-        String str = (investigation == null) ? "" : investigation;
-        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
+       return asStream(investigation);
     }
 
     public InputStream getSampleAndDataRelationship() {
-        String str = (sampleAndDataRel == null) ? "" : sampleAndDataRel;
-        return new ByteArrayInputStream(str.getBytes(Charsets.UTF_8));
+        return asStream(sampleAndDataRel);
     }
-
 }

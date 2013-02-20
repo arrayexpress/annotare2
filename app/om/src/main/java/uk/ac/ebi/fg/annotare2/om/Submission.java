@@ -16,8 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -92,6 +95,10 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public EffectiveAcl getEffectiveAcl() {
         return new EffectiveAcl(acl, Optional.of(createdBy));
+    }
+
+    protected InputStream asStream(String str) {
+        return new ByteArrayInputStream((str == null ? "" : str).getBytes(Charsets.UTF_8));
     }
 
     public abstract void accept(Visitor visitor);

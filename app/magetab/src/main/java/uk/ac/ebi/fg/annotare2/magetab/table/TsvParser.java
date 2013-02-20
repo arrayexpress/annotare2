@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
+import static com.google.common.io.Closeables.close;
 import static com.google.common.io.Closeables.closeQuietly;
 
 /**
@@ -41,21 +43,29 @@ public class TsvParser {
 
     private Character prev;
 
-    private ArrayList<String> values;
+    private List<String> values;
 
     public Table parse(InputStream in) throws IOException {
+        return parse(in, new TsvLineVisitor() {
+            @Override
+            public boolean accepts(List<String> values) {
+                return true;
+            }
+        });
+    }
+
+    public Table parse(InputStream in, TsvLineVisitor visitor) throws IOException {
         init();
 
         BufferedReader br = null;
-
         try {
             br = new BufferedReader(new InputStreamReader(in, Charsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
-                processLine(line);
+                processLine(line + '\n', visitor);
             }
         } finally {
-            closeQuietly(br);
+            close(br, true);
         }
         if (!stats.isReadable()) {
             throw new IOException("The file content doesn't look like a text");
@@ -70,14 +80,13 @@ public class TsvParser {
         values = new ArrayList<String>();
     }
 
-    private void processLine(String line) {
+    private void processLine(String line, TsvLineVisitor visitor) {
         for (int i = 0; i < line.length(); i++) {
-            processCharacter(line.charAt(i));
+            processCharacter(line.charAt(i), visitor);
         }
-        processCharacter('\n');
     }
 
-    private void processCharacter(char ch) {
+    private void processCharacter(char ch, TsvLineVisitor vistior) {
         switch (ch) {
             case '"':
                 if (prev != null && prev == '\\') {
@@ -98,7 +107,7 @@ public class TsvParser {
                     addChar('\n');
                 } else {
                     addValue();
-                    addNewLine();
+                    addNewLine(vistior);
                 }
                 break;
             default:
@@ -128,8 +137,10 @@ public class TsvParser {
         buff = new StringBuilder();
     }
 
-    private void addNewLine() {
-        table.addRow(values);
+    private void addNewLine(TsvLineVisitor visitor) {
+        if (visitor.accepts(values)) {
+            table.addRow(values);
+        }
         values = new ArrayList<String>();
     }
 

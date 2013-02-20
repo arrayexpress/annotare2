@@ -16,12 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import java.io.InputStream;
+
 /**
  * @author Olga Melnichuk
  */
 public class ArrayDesignSubmission extends Submission {
 
-    private String content;
+    private String header;
+
+    private String body;
 
     public ArrayDesignSubmission(User createdBy, Acl acl) {
         super(createdBy, acl);
@@ -32,11 +36,20 @@ public class ArrayDesignSubmission extends Submission {
         visitor.visit(this);
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setBody(String body) {
+        this.body = body;
     }
 
-    public String getContent() {
-        return content;
+    public InputStream getBody() {
+        return asStream(body);
     }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public InputStream getHeader() {
+        return asStream(body);
+    }
+
 }

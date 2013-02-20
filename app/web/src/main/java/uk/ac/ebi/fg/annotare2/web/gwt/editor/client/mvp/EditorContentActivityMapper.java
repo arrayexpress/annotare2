@@ -24,8 +24,10 @@ import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContentActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfContentActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGeneralInfoActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTableSheetModeActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdTablePlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfSection;
@@ -48,6 +50,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
 
     private final Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider;
+    private final Provider<AdfTableSheetModeActivity> adfTableSheetModeActivityProvider;
 
     @Inject
     public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
@@ -58,7 +61,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
                                        Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider,
                                        Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider,
-                                       Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider) {
+                                       Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider,
+                                       Provider<AdfTableSheetModeActivity> adfTableSheetModeActivityProvider)  {
         this.idfContentActivityProvider = idfContentActivityProvider;
         this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
@@ -70,6 +74,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
 
         this.adfGeneralInfoActivityProvider = adfGeneralInfoActivityProvider;
+        this.adfTableSheetModeActivityProvider = adfTableSheetModeActivityProvider;
     }
 
     public Activity getActivity(Place place) {
@@ -105,6 +110,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
                 case GENERAL_INFO:
                     return (adfGeneralInfoActivityProvider.get()).withPlace(adHeaderPlace);
             }
+        } else if (place instanceof AdTablePlace) {
+            return (adfTableSheetModeActivityProvider.get()).withPlace((AdTablePlace)place);
         }
         //TODO
         return null;

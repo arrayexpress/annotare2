@@ -2,7 +2,7 @@ Array Design Name	LSTM_An.gambiae_s.s._AGAM15K_V1.0
 Version	1.0
 Provider	Sara Mitchell (snmitche@hsph.harvard.edu)
 Comment[ArrayExpressAccession]	A-MEXP-2196
-Comment[Description]	The entire coding transcriptome from An. gambiae s.s. Ensembl version AgamP3.5 (2009) was employed
+Comment[Description]	The entire coding transcriptome from An. gambiae s.s. Ensembl version AgamP3.5 (2009) was employed along with detoxification genes of interest to produce this 15K Agilent chip using the online eArray software (https://earray.chem.agilent.com/earray/). A single probe was designed for each unique coding transcript from AgamP3.4.  In addition 281 detoxification genes from families linked to insecticide resistance (David et al. 2005), were also submitted for unique probe design in earray.  For these detoxification genes three unique probes were chosen for the array.  25 genes were also selected at random to provide quality control estimates across array hybridisations, these probes were labled CV (Coefficient of Variance).
 Comment[SubmittedName]	LSTM_An.gambiae_s.s._AGAM15K_V1.0
 Comment[Organism]	Anopheles gambiae
 Comment[ArrayExpressReleaseDate]	2012-04-25

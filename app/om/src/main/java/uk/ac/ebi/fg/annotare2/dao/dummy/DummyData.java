@@ -78,6 +78,7 @@ public class DummyData {
 
             createAdSubmission(user,
                     SubmissionStatus.IN_PROGRESS,
+                    "A-MEXP-2196.adf.header.txt",
                     "A-MEXP-2196.adf.txt",
                     "A-MEXP-2196",
                     "LSTM_An.gambiae_s.s._AGAM15K_V1.0");
@@ -111,13 +112,16 @@ public class DummyData {
         return submission;
     }
 
-    private static Submission createAdSubmission(User user, SubmissionStatus status, String fileName, String accession, String title) throws IOException {
+    private static Submission createAdSubmission(User user, SubmissionStatus status, String headerFile, String bodyFile, String accession, String title) throws IOException {
         ArrayDesignSubmission submission = new SubmissionFactory().createArrayDesignSubmission(user);
         submission.setStatus(status);
         submission.setAccession(accession);
         submission.setTitle(title);
-        submission.setContent(
-                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(fileName), Charsets.UTF_8))
+        submission.setHeader(
+                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(headerFile), Charsets.UTF_8))
+        );
+        submission.setBody(
+                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(bodyFile), Charsets.UTF_8))
         );
         save(submission);
         return submission;

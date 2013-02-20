@@ -65,7 +65,7 @@ public class Table implements Serializable {
         return rows.isEmpty();
     }
 
-    public Row addRow(ArrayList<String> strings) {
+    public Row addRow(List<String> strings) {
         Row row = new Row(this);
         rows.add(row);
         int colIndex = 0;

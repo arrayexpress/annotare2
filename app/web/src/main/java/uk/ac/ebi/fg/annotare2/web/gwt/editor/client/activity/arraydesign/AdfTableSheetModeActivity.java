@@ -23,57 +23,56 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdTablePlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTab;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabBarView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SheetModeView;
 
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDesignTabBarActivity  extends AbstractActivity  implements EditorTabBarView.Presenter {
+public class AdfTableSheetModeActivity extends AbstractActivity {
 
-    private EditorTabBarView view;
-    private ArrayDesignTab selectedTab;
-    private PlaceController placeController;
+    private final SheetModeView view;
+
+    private final PlaceController placeController;
+
+    private final AdfData adfData;
 
     @Inject
-    public ArrayDesignTabBarActivity(EditorTabBarView view,
-                                     PlaceController placeController) {
+    public AdfTableSheetModeActivity(SheetModeView view, PlaceController placeController, AdfData adfData) {
         this.view = view;
         this.placeController = placeController;
+        this.adfData = adfData;
     }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        view.initWithTabs(ArrayDesignTab.values());
-        view.setPresenter(this);
-        view.selectTab(selectedTab);
         containerWidget.setWidget(view.asWidget());
+        initAsync();
     }
 
-    public ArrayDesignTabBarActivity withPlace(ArrayDesignPlace place) {
-        selectedTab = place.getSelectedTab();
+    public AdfTableSheetModeActivity withPlace(AdTablePlace place) {
         return this;
     }
 
-    private void goTo(Place place) {
+    public void goTo(Place place) {
         placeController.goTo(place);
     }
 
-    @Override
-    public void onTabSelect(EditorTab tab) {
-        ArrayDesignTab adTab = (ArrayDesignTab)tab;
-        switch(adTab) {
-            case Table:
-                goTo(new AdTablePlace());
-                return;
-            case Header:
-                goTo(new AdHeaderPlace());
-                return;
-        }
-        Window.alert("unknown ADF tab: " + tab);
+    private void initAsync() {
+        adfData.getTable(new AsyncCallbackWrapper<Table>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load ADF table: " + caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Table result) {
+                view.setTable(result, true);
+            }
+        }.wrap());
     }
 }
