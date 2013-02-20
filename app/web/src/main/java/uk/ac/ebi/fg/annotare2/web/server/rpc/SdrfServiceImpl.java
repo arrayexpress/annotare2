@@ -40,7 +40,7 @@ import java.io.IOException;
  */
 public class SdrfServiceImpl extends SubmissionBasedRemoteService implements SdrfService {
 
-    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SdrfServiceImpl.class);
 
     @Inject
     public SdrfServiceImpl(AuthService authService, SubmissionManager submissionManager) {
@@ -53,7 +53,7 @@ public class SdrfServiceImpl extends SubmissionBasedRemoteService implements Sdr
             ExperimentSubmission submission = getExperimentSubmission(submissionId, Permission.VIEW);
             return new TsvParser().parse(submission.getSampleAndDataRelationship());
         } catch (IOException e) {
-            log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
+            log.error("Can't parser SDRF (id: " + submissionId + ")", e);
         }
         return null;
     }
@@ -75,7 +75,7 @@ public class SdrfServiceImpl extends SubmissionBasedRemoteService implements Sdr
             }
             submission.setSampleAndDataRelationship(new TsvGenerator(table).generateString());
         } catch (IOException e) {
-            log.warn("importInvestigation(" + submissionId + ") failure", e);
+            log.warn("Can't import SDRF (id: " + submissionId + ")", e);
             throw new DataImportException(e.getMessage());
         }
     }
