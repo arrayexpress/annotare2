@@ -45,7 +45,7 @@ import java.io.InputStream;
  */
 public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfService {
 
-    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(IdfServiceImpl.class);
 
     @Inject
     public IdfServiceImpl(AuthService authService, SubmissionManager submissionManager) {
