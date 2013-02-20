@@ -50,13 +50,11 @@ public class IdfSheetModeActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //TODO view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         initAsync();
     }
 
     public IdfSheetModeActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
         return this;
     }
 

@@ -21,9 +21,9 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContentActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfContentActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGeneralInfoActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfProtocolListActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
@@ -48,7 +48,6 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
 
     private final Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider;
-    private final Provider<AdfProtocolListActivity> adfProtocolListActivityProvider;
 
     @Inject
     public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
@@ -59,8 +58,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
                                        Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider,
                                        Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider,
-                                       Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider,
-                                       Provider<AdfProtocolListActivity> adfProtocolListActivityProvider) {
+                                       Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
         this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
@@ -72,7 +70,6 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
 
         this.adfGeneralInfoActivityProvider = adfGeneralInfoActivityProvider;
-        this.adfProtocolListActivityProvider = adfProtocolListActivityProvider;
     }
 
     public Activity getActivity(Place place) {
