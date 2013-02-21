@@ -24,7 +24,9 @@ import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
+import uk.ac.ebi.fg.annotare2.magetab.table.operation.Operation;
 import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
@@ -49,7 +51,18 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
     }
 
     @Override
-    public Table loadData(int submissionId) throws NoPermissionException, ResourceNotFoundException {
+    public Table loadHeaderData(int submissionId) throws NoPermissionException, ResourceNotFoundException {
+        try {
+            ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.VIEW);
+            return new TsvParser().parse(submission.getHeader());
+        } catch (IOException e) {
+            log.error("Can't load ADF data (submissionId: " + submissionId + ")", e);
+        }
+        return null;
+    }
+
+    @Override
+    public Table loadBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException {
         try {
             ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.VIEW);
             return new TsvParser().parse(submission.getBody());
@@ -100,6 +113,18 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
         } catch (IOException e) {
             log.warn("Can't import ADF body data (submissionId: " + submissionId + ")", e);
             throw new DataImportException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateHeaderData(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException {
+        try {
+            ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.UPDATE);
+            Table table = new TsvParser().parse(submission.getHeader());
+            operation.apply(table);
+            submission.setHeader(new TsvGenerator(table).generateString());
+        } catch (IOException e) {
+            log.error("Can't update ADF header data (submissionId: " + submissionId + ")", e);
         }
     }
 }

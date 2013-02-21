@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.io.Closeables.close;
-import static com.google.common.io.Closeables.closeQuietly;
 
 /**
  * @author Olga Melnichuk

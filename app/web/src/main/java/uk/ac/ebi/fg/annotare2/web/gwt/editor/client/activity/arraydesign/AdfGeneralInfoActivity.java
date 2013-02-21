@@ -18,8 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoView;
 
@@ -31,13 +35,19 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class AdfGeneralInfoActivity extends AbstractActivity {
+public class AdfGeneralInfoActivity extends AbstractActivity implements AdfGeneralInfoView.Presenter {
 
     private AdfGeneralInfoView view;
 
+    private final AdfData adfData;
+
+    private AdfHeader adfHeader;
+
     @Inject
-    public AdfGeneralInfoActivity(AdfGeneralInfoView view) {
+    public AdfGeneralInfoActivity(AdfGeneralInfoView view,
+                                  AdfData adfData) {
         this.view = view;
+        this.adfData = adfData;
     }
 
     @Override
@@ -76,13 +86,43 @@ public class AdfGeneralInfoActivity extends AbstractActivity {
         }
 
         view.setTechnologyTypes(techTypes);
-        view.setSurfaceType(surfTypes);
+        view.setSurfaceTypes(surfTypes);
         view.setSubstrateTypes(subTypes);
         view.setSpecies(species);
         containerWidget.setWidget(view.asWidget());
+        loadAsync();
     }
 
-    public AdfGeneralInfoActivity withPlace(AdHeaderPlace adHeaderPlace) {
+    public AdfGeneralInfoActivity withPlace(AdHeaderPlace place) {
         return this;
     }
+
+    private void loadAsync() {
+        adfData.getHeader(new AsyncCallbackWrapper<AdfHeader>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load ADF Data.");
+            }
+
+            @Override
+            public void onSuccess(AdfHeader header) {
+                if (header != null) {
+                    adfHeader = header;
+                    view.setArrayDesignName(header.getArrayDesignName());
+                    view.setVersion(header.getVersion());
+                    view.setDescription(header.getDescription(true));
+                    view.setReleaseDate(header.getArrayExpressReleaseDate(true));
+                    view.setOrganism(header.getOrganism(true));
+                    view.setPrintingProtocol(header.getPrintingProtocol());
+                    view.setTechnologyType(header.getTechnologyType(true).getName());
+                    view.setSurfaceType(header.getSurfaceType(true).getName());
+                    view.setSubstrateType(header.getSubstrateType(true).getName());
+                }
+            }
+        }.wrap());
+    }
+
+
+
 }

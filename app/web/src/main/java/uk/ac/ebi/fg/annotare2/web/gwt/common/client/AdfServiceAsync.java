@@ -20,11 +20,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.operation.Operation;
 
 public interface AdfServiceAsync {
-    void loadData(int submissionId, AsyncCallback<Table> async);
 
     void importBodyData(int submissionId, AsyncCallback<Void> async);
 
     void importHeaderData(int submissionId, AsyncCallback<Void> async);
+
+    void loadBodyData(int submissionId, AsyncCallback<Table> async);
+
+    void loadHeaderData(int submissionId, AsyncCallback<Table> async);
+
+    void updateHeaderData(int submissionId, Operation operation, AsyncCallback<Void> async);
 }

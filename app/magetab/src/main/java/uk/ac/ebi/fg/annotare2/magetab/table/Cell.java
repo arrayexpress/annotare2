@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.rowbased;
+package uk.ac.ebi.fg.annotare2.magetab.table;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
-import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
-
-import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-interface ObjectCreator<T> {
+public interface Cell<T> {
 
-    T create(Map<RowTag, Cell<String>> map);
+    public void setValue(T t);
+
+    public T getValue();
+
+    public boolean isEmpty();
 }

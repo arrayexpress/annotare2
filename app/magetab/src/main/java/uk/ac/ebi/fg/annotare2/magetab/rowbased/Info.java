@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 
 import java.util.Date;
 
@@ -27,53 +27,53 @@ import java.util.Date;
 @GwtCompatible
 public class Info {
 
-    private Row.Cell<String> title;
+    private Cell<String> title;
 
-    private Row.Cell<String> description;
+    private Cell<String> description;
 
-    private Row.Cell<Date> dateOfExperiment;
+    private Cell<Date> dateOfExperiment;
 
-    private Row.Cell<Date> dateOfPublicRelease;
+    private Cell<Date> dateOfPublicRelease;
 
-    private Row.Cell<String> sdrfFile;
+    private Cell<String> sdrfFile;
 
-    public Row.Cell<String> getTitle() {
+    public Cell<String> getTitle() {
         return title;
     }
 
-    public void setTitle(Row.Cell<String> title) {
+    public void setTitle(Cell<String> title) {
         this.title = title;
     }
 
-    public Row.Cell<String> getDescription() {
+    public Cell<String> getDescription() {
         return description;
     }
 
-    public void setDescription(Row.Cell<String> description) {
+    public void setDescription(Cell<String> description) {
         this.description = description;
     }
 
-    public Row.Cell<Date> getDateOfExperiment() {
+    public Cell<Date> getDateOfExperiment() {
         return dateOfExperiment;
     }
 
-    public void setDateOfExperiment(Row.Cell<Date> dateOfExperiment) {
+    public void setDateOfExperiment(Cell<Date> dateOfExperiment) {
         this.dateOfExperiment = dateOfExperiment;
     }
 
-    public Row.Cell<Date> getDateOfPublicRelease() {
+    public Cell<Date> getDateOfPublicRelease() {
         return dateOfPublicRelease;
     }
 
-    public void setDateOfPublicRelease(Row.Cell<Date> dateOfPublicRelease) {
+    public void setDateOfPublicRelease(Cell<Date> dateOfPublicRelease) {
         this.dateOfPublicRelease = dateOfPublicRelease;
     }
 
-    public Row.Cell<String> getSdrfFile() {
+    public Cell<String> getSdrfFile() {
         return sdrfFile;
     }
 
-    public void setSdrfFile(Row.Cell<String> sdrfFile) {
+    public void setSdrfFile(Cell<String> sdrfFile) {
         this.sdrfFile = sdrfFile;
     }
 }

@@ -78,12 +78,12 @@ public class RowSet {
         table.moveColumn(rows(), shift(fromIndex), shift(toIndex));
     }
 
-    public HashMap<RowTag, Row.Cell<String>> addColumn() {
+    public HashMap<RowTag, Cell<String>> addColumn() {
         return getColumn(getWidth());
     }
 
-    public HashMap<RowTag, Row.Cell<String>> getColumn(int i) {
-        HashMap<RowTag, Row.Cell<String>> column = new HashMap<RowTag, Row.Cell<String>>();
+    public HashMap<RowTag, Cell<String>> getColumn(int i) {
+        HashMap<RowTag, Cell<String>> column = new HashMap<RowTag, Cell<String>>();
         for (RowTag tag : tags) {
             column.put(tag, map.get(tag).cellAt(i));
         }

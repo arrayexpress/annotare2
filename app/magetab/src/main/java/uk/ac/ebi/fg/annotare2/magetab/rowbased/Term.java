@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 
 /**
  * @author Olga Melnichuk
@@ -25,23 +25,23 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 @GwtCompatible
 public class Term {
 
-    private Row.Cell<String> name;
+    private Cell<String> name;
 
-    private Row.Cell<String> accession;
+    private Cell<String> accession;
 
-    private Row.Cell<String> ref;
+    private Cell<String> ref;
 
     private TermSource termSource;
 
-    public Row.Cell<String> getName() {
+    public Cell<String> getName() {
         return name;
     }
 
-    public Row.Cell<String> getAccession() {
+    public Cell<String> getAccession() {
         return accession;
     }
 
-    public Row.Cell<String> getRef() {
+    public Cell<String> getRef() {
         return ref;
     }
 
@@ -58,15 +58,15 @@ public class Term {
 
         private final Term term = new Term();
 
-        public void setName(Row.Cell<String> name) {
+        public void setName(Cell<String> name) {
             term.name = name;
         }
 
-        public void setAccession(Row.Cell<String> accession) {
+        public void setAccession(Cell<String> accession) {
             term.accession = accession;
         }
 
-        public void setRef(Row.Cell<String> ref) {
+        public void setRef(Cell<String> ref) {
             term.ref = ref;
         }
 

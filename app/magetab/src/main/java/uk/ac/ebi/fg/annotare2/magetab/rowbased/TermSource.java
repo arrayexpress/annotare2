@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 
 /**
  * @author Olga Melnichuk
@@ -25,33 +25,33 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 @GwtCompatible
 public class TermSource {
 
-    private Row.Cell<String> name;
+    private Cell<String> name;
 
-    private Row.Cell<String> version;
+    private Cell<String> version;
 
-    private Row.Cell<String> file;
+    private Cell<String> file;
 
-    public Row.Cell<String> getName() {
+    public Cell<String> getName() {
         return name;
     }
 
-    public void setName(Row.Cell<String> name) {
+    public void setName(Cell<String> name) {
         this.name = name;
     }
 
-    public Row.Cell<String> getVersion() {
+    public Cell<String> getVersion() {
         return version;
     }
 
-    public void setVersion(Row.Cell<String> version) {
+    public void setVersion(Cell<String> version) {
         this.version = version;
     }
 
-    public Row.Cell<String> getFile() {
+    public Cell<String> getFile() {
         return file;
     }
 
-    public void setFile(Row.Cell<String> file) {
+    public void setFile(Cell<String> file) {
         this.file = file;
     }
 }

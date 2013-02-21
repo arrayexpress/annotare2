@@ -17,7 +17,8 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.JseTextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
 import java.io.IOException;
@@ -30,6 +31,11 @@ import static org.junit.Assert.*;
  * @author Olga Melnichuk
  */
 public class AdfHeaderTest {
+
+    static {
+        JseTextFormatter.init();
+    }
+
     @Test
     public void parseTest() throws IOException {
 
@@ -43,31 +49,35 @@ public class AdfHeaderTest {
                 "&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;Labelling:&lt;br&gt;&lt;br&gt;" +
                 "http://www.chem.agilent.com/en-US/Search/Library/_layouts/Agilent/PublicationSummary.aspx?whid=48835",
                 adf.getPrintingProtocol().getValue());
+        assertEquals("The entire coding transcriptome from An. gambiae s.s. Ensembl version AgamP3.5 (2009) was employed",
+                adf.getDescription(false).getValue());
+        assertEquals("2012-04-25", new JseTextFormatter().formatDate(adf.getArrayExpressReleaseDate(false).getValue()));
 
-        Term technologyType = adf.getTechnologyType();
+
+        Term technologyType = adf.getTechnologyType(false);
         assertNotNull(technologyType);
         assertEquals("in_situ_oligo_features", technologyType.getName().getValue());
 
-        Term surfaceType = adf.getSurfaceType();
+        Term surfaceType = adf.getSurfaceType(false);
         assertNotNull(surfaceType);
         assertEquals("unknown_surface_type", surfaceType.getName().getValue());
 
-        Term substrateType = adf.getSubstrateType();
+        Term substrateType = adf.getSubstrateType(false);
         assertNotNull(substrateType);
         assertEquals("glass", substrateType.getName().getValue());
 
-        assertNull(adf.getSequencePolymerType());
+        assertNull(adf.getSequencePolymerType(false));
 
-        List<Row.Cell<String>> comments = adf.getComments("Description", false);
+        List<Cell<String>> comments = adf.getComments("Description", false);
         assertEquals(1, comments.size());
         assertEquals("The entire coding transcriptome from An. gambiae s.s. Ensembl version AgamP3.5 (2009) was employed",
                 comments.get(0).getValue());
 
-        List<Row.Cell<String>> dummyComments = adf.getComments("dummy", true);
+        List<Cell<String>> dummyComments = adf.getComments("dummy", true);
         assertEquals(1, dummyComments.size());
         assertTrue(isNullOrEmpty(dummyComments.get(0).getValue()));
 
-        List<Row.Cell<String>> moreDummyComments = adf.getComments("more dummy", false);
+        List<Cell<String>> moreDummyComments = adf.getComments("more dummy", false);
         assertTrue(moreDummyComments.isEmpty());
     }
 
@@ -81,9 +91,9 @@ public class AdfHeaderTest {
         assertTrue(adf.getProvider().isEmpty());
         assertTrue(adf.getPrintingProtocol().isEmpty());
 
-        assertNull(adf.getTechnologyType());
-        assertNull(adf.getSurfaceType());
-        assertNull(adf.getSubstrateType());
-        assertNull(adf.getSequencePolymerType());
+        assertNull(adf.getTechnologyType(false));
+        assertNull(adf.getSurfaceType(false));
+        assertNull(adf.getSubstrateType(false));
+        assertNull(adf.getSequencePolymerType(false));
     }
 }

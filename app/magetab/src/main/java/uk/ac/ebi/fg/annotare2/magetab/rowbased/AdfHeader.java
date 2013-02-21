@@ -17,11 +17,9 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
-import uk.ac.ebi.fg.annotare2.magetab.table.RowSet;
-import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,52 +124,60 @@ public class AdfHeader {
                 SEQUENCE_POLYMER_TYPE_TERM_SOURCE_REF);
     }
 
-    public Row.Cell<String> getArrayDesignName() {
+    public Cell<String> getArrayDesignName() {
         return generalInfoList.get(0).getArrayDesignName();
     }
 
-    public Row.Cell<String> getVersion() {
+    public Cell<String> getVersion() {
         return generalInfoList.get(0).getVersion();
     }
 
-    public Row.Cell<String> getProvider() {
+    public Cell<String> getProvider() {
         return generalInfoList.get(0).getProvider();
     }
 
-    public Row.Cell<String> getPrintingProtocol() {
+    public Cell<String> getPrintingProtocol() {
         return generalInfoList.get(0).getPrintingProtocol();
     }
 
-    public Term getTechnologyType() {
-        return getFirstOrNull(technologyTypeList);
+    public Term getTechnologyType(boolean create) {
+        return getFirst(technologyTypeList, create);
     }
 
-    public Term getSurfaceType() {
-        return getFirstOrNull(surfaceTypeList);
+    public Term getSurfaceType(boolean create) {
+        return getFirst(surfaceTypeList, create);
     }
 
-    public Term getSubstrateType() {
-        return getFirstOrNull(substrateTypeList);
+    public Term getSubstrateType(boolean create) {
+        return getFirst(substrateTypeList, create);
     }
 
-    public Term getSequencePolymerType() {
-        return getFirstOrNull(sequiencePolymerTypeList);
+    public Term getSequencePolymerType(boolean create) {
+        return getFirst(sequiencePolymerTypeList, create);
     }
 
-    public List<Row.Cell<String>> getComments(String key, boolean atLeastOneRequired) {
+    public Cell<String> getDescription(boolean create) {
+        return getFirst(getCommentList("Description"), create);
+    }
+
+    public Cell<String> getOrganism(boolean create) {
+        return getFirst(getCommentList("Organism"), create);
+    }
+
+    public Cell<Date> getArrayExpressReleaseDate(boolean create) {
+        return asDateCell(getFirst(getCommentList("ArrayExpressReleaseDate"), create));
+    }
+
+    private Cell<Date> asDateCell(Cell<String> cell) {
+        return new DateCell(cell);
+    }
+
+    public List<Cell<String>> getComments(String key, boolean atLeastOneRequired) {
         CommentList list = getCommentList(key);
         if (list.isEmpty() && atLeastOneRequired) {
-            createComment(list);
+            list.add();
         }
         return list.getAll();
-    }
-
-    public Row.Cell<String> addComment(String key) {
-        return createComment(getCommentList(key));
-    }
-
-    private Row.Cell<String> createComment(CommentList list) {
-        return list.add();
     }
 
     private CommentList getCommentList(String key) {
@@ -179,8 +185,8 @@ public class AdfHeader {
         return list == null ? new CommentList(table, key) : list;
     }
 
-    private <T> T getFirstOrNull(ObjectList<T> list) {
-        return list.isEmpty() ? null : list.get(0);
+    private <T> T getFirst(ObjectList<T> list, boolean create) {
+        return list.isEmpty() ? (create ? list.add() : null) : list.get(0);
     }
 
     private static class GeneralInfoList extends ObjectList<AdfInfo> {
@@ -193,7 +199,7 @@ public class AdfHeader {
                     PRINTING_PROTOCOL).from(table),
                     new ObjectCreator<AdfInfo>() {
                         @Override
-                        public AdfInfo create(Map<RowTag, Row.Cell<String>> map) {
+                        public AdfInfo create(Map<RowTag, Cell<String>> map) {
                             AdfInfo generalInfo = new AdfInfo();
                             generalInfo.setArrayDesignName(map.get(ARRAY_DESIGN_NAME));
                             generalInfo.setVersion(map.get(VERSION));
@@ -205,12 +211,12 @@ public class AdfHeader {
         }
     }
 
-    private static class CommentList extends ObjectList<Row.Cell<String>> {
+    private static class CommentList extends ObjectList<Cell<String>> {
 
         private CommentList(Table table, String key) {
-            super(new RowSet(new CommentTag(key)).from(table), new ObjectCreator<Row.Cell<String>>() {
+            super(new RowSet(new CommentTag(key)).from(table), new ObjectCreator<Cell<String>>() {
                 @Override
-                public Row.Cell<String> create(Map<RowTag, Row.Cell<String>> map) {
+                public Cell<String> create(Map<RowTag, Cell<String>> map) {
                     return map.entrySet().iterator().next().getValue();
                 }
             });

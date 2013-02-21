@@ -17,10 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
-import uk.ac.ebi.fg.annotare2.magetab.table.RowSet;
-import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.*;
 
 import java.util.Map;
 
@@ -39,7 +36,7 @@ public class TermSourceList extends ObjectList<TermSource> {
                 fileTag).from(table),
                 new ObjectCreator<TermSource>() {
                     @Override
-                    public TermSource create(Map<RowTag, Row.Cell<String>> map) {
+                    public TermSource create(Map<RowTag, Cell<String>> map) {
                         TermSource termSource = new TermSource();
                         termSource.setName(map.get(nameTag));
                         termSource.setVersion(map.get(versionTag));

@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 
 /**
  * @author Olga Melnichuk
@@ -25,85 +25,85 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 @GwtCompatible
 public class Person {
 
-    private Row.Cell<String> firstName;
+    private Cell<String> firstName;
 
-    private Row.Cell<String> lastName;
+    private Cell<String> lastName;
 
-    private Row.Cell<String> midInitials;
+    private Cell<String> midInitials;
 
-    private Row.Cell<String> email;
+    private Cell<String> email;
 
-    private Row.Cell<String> phone;
+    private Cell<String> phone;
 
-    private Row.Cell<String> fax;
+    private Cell<String> fax;
 
-    private Row.Cell<String> affiliation;
+    private Cell<String> affiliation;
 
-    private Row.Cell<String> address;
+    private Cell<String> address;
 
     private Term roles;
 
-    public Row.Cell<String> getFirstName() {
+    public Cell<String> getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(Row.Cell<String> firstName) {
+    public void setFirstName(Cell<String> firstName) {
         this.firstName = firstName;
     }
 
-    public Row.Cell<String> getLastName() {
+    public Cell<String> getLastName() {
         return lastName;
     }
 
-    public void setLastName(Row.Cell<String> lastName) {
+    public void setLastName(Cell<String> lastName) {
         this.lastName = lastName;
     }
 
-    public Row.Cell<String> getMidInitials() {
+    public Cell<String> getMidInitials() {
         return midInitials;
     }
 
-    public void setMidInitials(Row.Cell<String> midInitials) {
+    public void setMidInitials(Cell<String> midInitials) {
         this.midInitials = midInitials;
     }
 
-    public Row.Cell<String> getEmail() {
+    public Cell<String> getEmail() {
         return email;
     }
 
-    public void setEmail(Row.Cell<String> email) {
+    public void setEmail(Cell<String> email) {
         this.email = email;
     }
 
-    public Row.Cell<String> getPhone() {
+    public Cell<String> getPhone() {
         return phone;
     }
 
-    public void setPhone(Row.Cell<String> phone) {
+    public void setPhone(Cell<String> phone) {
         this.phone = phone;
     }
 
-    public Row.Cell<String> getFax() {
+    public Cell<String> getFax() {
         return fax;
     }
 
-    public void setFax(Row.Cell<String> fax) {
+    public void setFax(Cell<String> fax) {
         this.fax = fax;
     }
 
-    public Row.Cell<String> getAffiliation() {
+    public Cell<String> getAffiliation() {
         return affiliation;
     }
 
-    public void setAffiliation(Row.Cell<String> affiliation) {
+    public void setAffiliation(Cell<String> affiliation) {
         this.affiliation = affiliation;
     }
 
-    public Row.Cell<String> getAddress() {
+    public Cell<String> getAddress() {
         return address;
     }
 
-    public void setAddress(Row.Cell<String> address) {
+    public void setAddress(Cell<String> address) {
         this.address = address;
     }
 

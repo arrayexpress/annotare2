@@ -17,10 +17,11 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.TextFormatter;
 import uk.ac.ebi.fg.annotare2.magetab.table.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation.Tag.*;
 
@@ -145,23 +146,23 @@ public class Investigation {
         }*/
     }
 
-    public Row.Cell<String> getTitle() {
+    public Cell<String> getTitle() {
         return generalInfoList.get(0).getTitle();
     }
 
-    public Row.Cell<String> getDescription() {
+    public Cell<String> getDescription() {
         return generalInfoList.get(0).getDescription();
     }
 
-    public Row.Cell<Date> getDateOfExperiment() {
+    public Cell<Date> getDateOfExperiment() {
         return generalInfoList.get(0).getDateOfExperiment();
     }
 
-    public Row.Cell<Date> getDateOfPublicRelease() {
+    public Cell<Date> getDateOfPublicRelease() {
         return generalInfoList.get(0).getDateOfPublicRelease();
     }
 
-    public Row.Cell<String> getSdrfFile() {
+    public Cell<String> getSdrfFile() {
         return generalInfoList.get(0).getSdrfFile();
     }
 
@@ -216,7 +217,7 @@ public class Investigation {
                     SDRF_FILE).from(table),
                     new ObjectCreator<Info>() {
                         @Override
-                        public Info create(Map<RowTag, Row.Cell<String>> map) {
+                        public Info create(Map<RowTag, Cell<String>> map) {
                             Info generalInfo = new Info();
                             generalInfo.setTitle(map.get(INVESTIGATION_TITLE));
                             generalInfo.setDescription(map.get(EXPERIMENT_DESCRIPTION));
@@ -225,33 +226,8 @@ public class Investigation {
                             generalInfo.setSdrfFile(map.get(SDRF_FILE));
                             return generalInfo;
                         }
-
-                        private Row.Cell<Date> asDateCell(final Row.Cell<String> cell) {
-                            return new Row.Cell<Date>() {
-
-                                @Override
-                                public void setValue(Date date) {
-                                    cell.setValue(format(date));
-                                }
-
-                                @Override
-                                public Date getValue() {
-                                    return parse(cell.getValue());
-                                }
-
-                                @Override
-                                public boolean isEmpty() {
-                                    return cell.isEmpty();
-                                }
-
-                                private String format(Date date) {
-                                    return TextFormatter.getInstance().formatDate(date);
-                                }
-
-                                private Date parse(String s) {
-                                    return TextFormatter.getInstance().parseDate(s);
-                                }
-                            };
+                        private Cell<Date> asDateCell(final Cell<String> cell) {
+                            return new DateCell(cell);
                         }
                     });
         }
@@ -274,7 +250,7 @@ public class Investigation {
                     PERSON_ROLES_TERM_SOURCE_REF).from(table),
                     new ObjectCreator<Person>() {
                         @Override
-                        public Person create(Map<RowTag, Row.Cell<String>> map) {
+                        public Person create(Map<RowTag, Cell<String>> map) {
                             Person p = new Person();
                             p.setFirstName(map.get(PERSON_FIRST_NAME));
                             p.setLastName(map.get(PERSON_LAST_NAME));
@@ -288,10 +264,5 @@ public class Investigation {
                         }
                     });
         }
-    }
-
-    public List<TableCell> getErrors() {
-        //TODO
-        return new ArrayList<TableCell>();
     }
 }

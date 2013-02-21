@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
+import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 
 /**
  * @author Olga Melnichuk
@@ -25,43 +25,43 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 @GwtCompatible
 public class AdfInfo {
 
-    private Row.Cell<String> arrayDesignName;
+    private Cell<String> arrayDesignName;
 
-    private Row.Cell<String> version;
+    private Cell<String> version;
 
-    private Row.Cell<String> provider;
+    private Cell<String> provider;
 
-    private Row.Cell<String> printingProtocol;
+    private Cell<String> printingProtocol;
 
-    public Row.Cell<String> getArrayDesignName() {
+    public Cell<String> getArrayDesignName() {
         return arrayDesignName;
     }
 
-    public void setArrayDesignName(Row.Cell<String> arrayDesignName) {
+    public void setArrayDesignName(Cell<String> arrayDesignName) {
         this.arrayDesignName = arrayDesignName;
     }
 
-    public Row.Cell<String> getVersion() {
+    public Cell<String> getVersion() {
         return version;
     }
 
-    public void setVersion(Row.Cell<String> version) {
+    public void setVersion(Cell<String> version) {
         this.version = version;
     }
 
-    public Row.Cell<String> getProvider() {
+    public Cell<String> getProvider() {
         return provider;
     }
 
-    public void setProvider(Row.Cell<String> provider) {
+    public void setProvider(Cell<String> provider) {
         this.provider = provider;
     }
 
-    public Row.Cell<String> getPrintingProtocol() {
+    public Cell<String> getPrintingProtocol() {
         return printingProtocol;
     }
 
-    public void setPrintingProtocol(Row.Cell<String> printingProtocol) {
+    public void setPrintingProtocol(Cell<String> printingProtocol) {
         this.printingProtocol = printingProtocol;
     }
 }

@@ -49,7 +49,7 @@ public class ArrayDesignSubmission extends Submission {
     }
 
     public InputStream getHeader() {
-        return asStream(body);
+        return asStream(header);
     }
 
 }

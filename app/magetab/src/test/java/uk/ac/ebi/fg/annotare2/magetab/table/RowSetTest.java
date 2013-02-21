@@ -51,7 +51,7 @@ public class RowSetTest {
         RowSet rowSet = new RowSet(ROW_TAG_1, ROW_TAG_2).from(table);
 
         assertEquals(1, rowSet.getWidth());
-        Map<RowTag, Row.Cell<String>> column = rowSet.getColumn(0);
+        Map<RowTag, Cell<String>> column = rowSet.getColumn(0);
         assertNull(column.get(ROW_TAG_1).getValue());
         assertEquals("2", column.get(ROW_TAG_2).getValue());
 
@@ -105,7 +105,7 @@ public class RowSetTest {
         rowSet.moveColumn(1, 0);
         assertEquals(2, rowSet.getWidth());
 
-        Map<RowTag, Row.Cell<String>> column = rowSet.getColumn(0);
+        Map<RowTag, Cell<String>> column = rowSet.getColumn(0);
         assertEquals("1", column.get(ROW_TAG_1).getValue());
         assertNull(column.get(ROW_TAG_2).getValue());
 

@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.magetab.table;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static uk.ac.ebi.fg.annotare2.magetab.TestUtils.asList;
 

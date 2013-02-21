@@ -57,7 +57,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
         try {
             return parseGeneralInfo(getExperimentSubmission(submissionId, Permission.VIEW).getInvestigation());
         } catch (IOException e) {
-            log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
+            log.error("Can't parse IDF general info section (submissionId: " + submissionId + ")", e);
         }
         return null;
     }
@@ -67,7 +67,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
         try {
             return new TsvParser().parse(getExperimentSubmission(submissionId, Permission.VIEW).getInvestigation());
         } catch (IOException e) {
-            log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
+            log.error("Can't load IDF table (submissionId: " + submissionId + ")", e);
         }
         return null;
     }
@@ -80,7 +80,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
             operation.apply(table);
             submission.setInvestigation(new TsvGenerator(table).generateString());
         } catch (IOException e) {
-            log.error("Can't parser IDF general info for submissionId=" + submissionId, e);
+            log.error("Can't update IDF (submissionId: " + submissionId + ")", e);
         }
     }
 
@@ -102,7 +102,7 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
             }
             submission.setInvestigation(new TsvGenerator(table).generateString());
         } catch (IOException e) {
-            log.warn("importInvestigation(" + submissionId + ") failure", e);
+            log.warn("Can't import investigation (submissionId: " + submissionId + ")", e);
             throw new DataImportException(e.getMessage());
         }
     }

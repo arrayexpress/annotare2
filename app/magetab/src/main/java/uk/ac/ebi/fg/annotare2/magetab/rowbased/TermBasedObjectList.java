@@ -17,10 +17,7 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import com.google.common.annotations.GwtCompatible;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
-import uk.ac.ebi.fg.annotare2.magetab.table.RowSet;
-import uk.ac.ebi.fg.annotare2.magetab.table.RowTag;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.*;
 
 import java.util.Map;
 
@@ -37,7 +34,7 @@ public class TermBasedObjectList extends ObjectList<Term> {
                 accessionTag,
                 sourceRefTag).from(table),
                 new ObjectCreator<Term>() {
-                    public Term create(Map<RowTag, Row.Cell<String>> map) {
+                    public Term create(Map<RowTag, Cell<String>> map) {
                         Term.Builder builder = new Term.Builder();
                         builder.setName(map.get(nameTag));
                         builder.setAccession(map.get(accessionTag));

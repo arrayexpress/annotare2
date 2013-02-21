@@ -161,8 +161,7 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
     }
 
     private void addEventsToTextBox(final TextBox textBox) {
-        class TextBoxEvents extends HandlesAllKeyEvents implements
-                ValueChangeHandler<String> {
+        class TextBoxEvents extends HandlesAllKeyEvents implements ValueChangeHandler<String> {
 
             public void onKeyDown(KeyDownEvent event) {
                 switch (event.getNativeKeyCode()) {
@@ -207,7 +206,7 @@ public class ComboBox extends Composite implements HasText, Focusable, HasEnable
     }
 
     private void setNewSelection(String option) {
-        textBox.setValue(option);
+        textBox.setValue(option, true);
         display.hideDropDown();
         fireSelectionEvent(option);
     }

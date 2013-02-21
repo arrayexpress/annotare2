@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.operation.Operation;
 
 /**
  * @author Olga Melnichuk
@@ -28,9 +29,13 @@ public interface AdfService extends RemoteService {
 
     public static final String NAME = "adfService";
 
-    Table loadData(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+    Table loadHeaderData(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+
+    Table loadBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException;
 
     void importHeaderData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException;
 
     void importBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException;
+
+    void updateHeaderData(int submissionId, Operation operation) throws NoPermissionException, ResourceNotFoundException;
 }

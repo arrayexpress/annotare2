@@ -17,7 +17,9 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,11 +27,35 @@ import java.util.List;
  */
 public interface AdfGeneralInfoView extends IsWidget {
 
+    void setPresenter(Presenter presenter);
+
     void setTechnologyTypes(List<String> types);
 
     void setSubstrateTypes(List<String> types);
 
-    void setSurfaceType(List<String> types);
+    void setSurfaceTypes(List<String> types);
 
     void setSpecies(List<String> species);
+
+    void setArrayDesignName(Cell<String> cell);
+
+    void setVersion(Cell<String> cell);
+
+    void setPrintingProtocol(Cell<String> cell);
+
+    void setTechnologyType(Cell<String> cell);
+
+    void setSurfaceType(Cell<String> cell);
+
+    void setSubstrateType(Cell<String> cell);
+
+    void setDescription(Cell<String> cell);
+
+    void setReleaseDate(Cell<Date> cell);
+
+    void setOrganism(Cell<String> cell);
+
+    public static interface Presenter {
+         //TODO
+    }
 }

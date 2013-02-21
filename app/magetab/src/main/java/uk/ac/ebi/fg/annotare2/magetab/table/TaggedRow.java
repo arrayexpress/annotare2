@@ -46,7 +46,7 @@ public class TaggedRow {
         return null;
     }
 
-    private Row.Cell<String> getCell(int index, boolean create) {
+    private Cell<String> getCell(int index, boolean create) {
         if (row == null) {
             if (create) {
                 row = table.addRow();
@@ -58,8 +58,8 @@ public class TaggedRow {
         return row.cellAt(shift(index));
     }
 
-    public Row.Cell<String> cellAt(final int index) {
-        return new Row.Cell<String>() {
+    public Cell<String> cellAt(final int index) {
+        return new Cell<String>() {
 
             @Override
             public void setValue(String s) {
@@ -68,13 +68,13 @@ public class TaggedRow {
 
             @Override
             public String getValue() {
-                Row.Cell<String> cell = getCell(index, false);
+                Cell<String> cell = getCell(index, false);
                 return cell == null ? null : cell.getValue();
             }
 
             @Override
             public boolean isEmpty() {
-                Row.Cell<String> cell = getCell(index, false);
+                Cell<String> cell = getCell(index, false);
                 return cell == null || cell.isEmpty();
             }
         };

@@ -171,15 +171,6 @@ public class Row implements Serializable {
             return isNullOrEmpty(value) && isNullOrEmpty(error);
         }
     }
-
-    public static interface Cell<T> {
-
-        public void setValue(T t);
-
-        public T getValue();
-
-        public boolean isEmpty();
-    }
 }
 
 

@@ -17,17 +17,12 @@
 package uk.ac.ebi.fg.annotare2.magetab.rowbased;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
-import uk.ac.ebi.fg.annotare2.magetab.table.TableCell;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.JseTextFormatter;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
 import java.io.IOException;
-import java.util.List;
 
-import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Olga Melnichuk
@@ -47,12 +42,6 @@ public class InvestigationTest {
         assertEquals("Wild-type and rbr1-cs plants were grown on MS plates for 3 days. RNA was extracted from both genotypes and hybridized to ATH1 arrays.", idf.getDescription().getValue());
         assertEquals("2010-12-31", new JseTextFormatter().formatDate(idf.getDateOfPublicRelease().getValue()));
         assertTrue(idf.getDateOfExperiment().isEmpty());
-
-        List<TableCell> errors = idf.getErrors();
-        System.out.println("Errors: " + errors.size());
-        for(TableCell er : errors) {
-            System.out.println(format("%d, %d : %s", er.getRow(), er.getColumn(), er.getError()));
-        }
     }
 
     @Test
