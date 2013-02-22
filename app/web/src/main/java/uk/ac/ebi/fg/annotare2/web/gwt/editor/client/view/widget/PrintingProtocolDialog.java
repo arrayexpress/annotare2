@@ -16,12 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DialogBox;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseHandler;
 
@@ -30,17 +28,17 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class TermSourceTemplatesDialog extends DialogBox implements HasSelectionHandlers<List<UITermSource>> {
+public class PrintingProtocolDialog extends DialogBox implements HasSelectionHandlers<UIPrintingProtocol> {
 
-    public TermSourceTemplatesDialog(List<UITermSource> templates) {
-        setText("Add Term Source(s)");
+    public PrintingProtocolDialog(List<UIPrintingProtocol> protocols, String selected) {
+        setText("Select Printing Protocol");
         setGlassEnabled(true);
         setModal(true);
 
-        TermSourceTemplatesDialogContent content = new TermSourceTemplatesDialogContent(templates);
-        content.addDialogCloseHandler(new DialogCloseHandler<List<UITermSource>>() {
+        PrintingProtocolDialogContent content = new PrintingProtocolDialogContent(protocols, selected);
+        content.addDialogCloseHandler(new DialogCloseHandler<UIPrintingProtocol>() {
             @Override
-            public void onDialogClose(DialogCloseEvent<List<UITermSource>> event) {
+            public void onDialogClose(DialogCloseEvent<UIPrintingProtocol> event) {
                 if (event.hasResult()) {
                     fireSelectionEvent(event.getTarget());
                 }
@@ -51,12 +49,12 @@ public class TermSourceTemplatesDialog extends DialogBox implements HasSelection
         center();
     }
 
-    private void fireSelectionEvent(List<UITermSource> target) {
-        SelectionEvent.fire(this, target);
+    @Override
+    public HandlerRegistration addSelectionHandler(SelectionHandler<UIPrintingProtocol> handler) {
+        return addHandler(handler, SelectionEvent.getType());
     }
 
-    @Override
-    public HandlerRegistration addSelectionHandler(SelectionHandler<List<UITermSource>> handler) {
-        return addHandler(handler, SelectionEvent.getType());
+    private void fireSelectionEvent(UIPrintingProtocol selection) {
+        SelectionEvent.fire(this, selection);
     }
 }

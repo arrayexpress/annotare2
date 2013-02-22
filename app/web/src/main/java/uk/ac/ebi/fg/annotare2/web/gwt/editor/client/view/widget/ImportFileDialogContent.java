@@ -19,23 +19,27 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploader;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasImportEventHandlers;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class ImportFileDialogContent extends Composite {
+public class ImportFileDialogContent extends Composite implements
+        HasCloseHandlers<ImportFileDialogContent>,
+        HasImportEventHandlers {
 
     private static enum DialogState {
         NOT_CONFIRMED() {
@@ -70,8 +74,6 @@ public class ImportFileDialogContent extends Composite {
                     @Override
                     public void onFinish(IUploader uploader) {
                         if (uploader.getStatus() == IUploadStatus.Status.SUCCESS) {
-                            IUploader.UploadedInfo info = uploader.getServerInfo();
-                            dialogContent.fileName = info.name;
                             okButton.setEnabled(true);
                         }
                     }
@@ -103,27 +105,26 @@ public class ImportFileDialogContent extends Composite {
 
                 final WaitingPanel waitingPanel = new WaitingPanel("Please wait while the file is importing...");
                 dialogContent.content.setWidget(waitingPanel);
-                dialogContent.fireEvent(new ProceedEvent(new AsyncEventFinishListener() {
+                dialogContent.fireImportEvent(new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        waitingPanel.showError(caught);
+                        dialogContent.okButton.setEnabled(true);
+                        dialogContent.success = false;
+                    }
 
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(Void result) {
                         waitingPanel.showSuccess("The file was imported successfully.");
                         dialogContent.okButton.setEnabled(true);
                         dialogContent.success = true;
                     }
-
-                    @Override
-                    public void onError(String msg) {
-                        waitingPanel.showError(msg);
-                        dialogContent.okButton.setEnabled(true);
-                        dialogContent.success = false;
-                    }
-                }));
+                });
             }
 
             @Override
             void proceed(ImportFileDialogContent dialogContent) {
-                dialogContent.fireEvent(new CloseEvent());
+                dialogContent.fireCloseEvent();
                 if (dialogContent.success) {
                     Window.Location.reload();
                 }
@@ -160,8 +161,6 @@ public class ImportFileDialogContent extends Composite {
 
     private UploadSingleFilePanel uploadFilePanel;
 
-    private String fileName;
-
     private DialogState state = DialogState.NOT_CONFIRMED;
 
     private boolean success;
@@ -183,20 +182,26 @@ public class ImportFileDialogContent extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 state.cancel(ImportFileDialogContent.this);
-                fireEvent(new CloseEvent());
+                fireCloseEvent();
             }
         });
     }
 
-    public String getFileName() {
-        return fileName;
+    private void fireCloseEvent() {
+        CloseEvent.fire(this, this);
     }
 
-    public HandlerRegistration addCloseEventHandler(CloseEventHandler handler) {
-        return addHandler(handler, CloseEvent.TYPE);
+    private void fireImportEvent(AsyncCallback<Void> callback) {
+        ImportEvent.fire(this, callback);
     }
 
-    public HandlerRegistration addImportProceedEventHandler(ProceedEventHandler handler) {
-        return addHandler(handler, ProceedEvent.TYPE);
+    @Override
+    public HandlerRegistration addCloseHandler(CloseHandler<ImportFileDialogContent> handler) {
+        return addHandler(handler, CloseEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addImportEventHandler(ImportEventHandler handler) {
+        return addHandler(handler, ImportEvent.getType());
     }
 }

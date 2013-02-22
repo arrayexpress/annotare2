@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,11 +28,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ComboBox;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.PrintingProtocolDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextAreaExtended;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextToolbar;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
@@ -79,10 +83,10 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     @UiField
     Image displayButton;
 
-    private RichTextArea richTextArea;
-    private RichTextToolbar richTextToolbar;
+    private RichTextAreaExtended richTextArea;
     private boolean inPreviewMode = false;
-    private Presenter presenter;
+    private List<UIPrintingProtocol> printingProtocols = new ArrayList<UIPrintingProtocol>();
+    private Set<String> protocolNames = new HashSet<String>();
 
     interface Binder extends UiBinder<HTMLPanel, AdfGeneralInfoViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -95,11 +99,18 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
         publicReleaseDate.setFormat(format);
         publicReleaseDate.getElement().setPropertyString("placeholder", dateTimeFormatPlaceholder());
 
+        printingProtocol.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                showPrintingProtocolDialog();
+            }
+        });
+
         ppDescrPreview.setVisible(inPreviewMode);
 
-        richTextArea = new RichTextArea();
+        richTextArea = new RichTextAreaExtended();
         richTextArea.setSize("100%", "14em");
-        richTextToolbar = new RichTextToolbar(richTextArea);
+        RichTextToolbar richTextToolbar = new RichTextToolbar(richTextArea);
         richTextToolbar.setWidth("100%");
 
         // Add the components to a panel
@@ -112,24 +123,62 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
         displayButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (inPreviewMode) {
-                    displayButton.getElement().getParentElement().removeClassName("clicked");
-                } else {
-                    ppDescrPreview.setHTML(richTextArea.getHTML());
-                    ppDescrPreview.setWidth(ppDescrEditorDiv.getOffsetWidth() + "px");
-                    ppDescrPreview.setHeight(ppDescrEditorDiv.getOffsetHeight() + "px");
-                    displayButton.getElement().getParentElement().addClassName("clicked");
-                }
-                inPreviewMode = !inPreviewMode;
-                ppDescrPreview.setVisible(inPreviewMode);
-                ppDescrEditorDiv.setVisible(!inPreviewMode);
+                showPreview(!inPreviewMode);
             }
         });
     }
 
+    private void showPrintingProtocolDialog() {
+        PrintingProtocolDialog dialog = new PrintingProtocolDialog(printingProtocols, printingProtocol.getValue());
+        dialog.addSelectionHandler(new SelectionHandler<UIPrintingProtocol>() {
+            @Override
+            public void onSelection(SelectionEvent<UIPrintingProtocol> event) {
+                showPrintingProtocol(event.getSelectedItem(), true);
+            }
+        });
+        dialog.show();
+    }
+
+    private void showPrintingProtocol(UIPrintingProtocol protocol, boolean fireEvent) {
+        boolean exists = doesProtocolExist(protocol);
+        printingProtocol.setValue(exists ? protocol.getName() : "NEW");
+
+        if (protocol == null) {
+            ppName.setValue("", fireEvent);
+            richTextArea.setValue("", fireEvent);
+        } else {
+            ppName.setValue(protocol.getName(), fireEvent);
+            richTextArea.setValue(protocol.getDescription(), fireEvent);
+        }
+        ppName.setEnabled(!exists);
+        richTextArea.setEnabled(!exists);
+        showPreview(false);
+    }
+
+    private void showPreview(boolean on) {
+        if (on) {
+            ppDescrPreview.setHTML(richTextArea.getHTML());
+            ppDescrPreview.setWidth(ppDescrEditorDiv.getOffsetWidth() + "px");
+            ppDescrPreview.setHeight(ppDescrEditorDiv.getOffsetHeight() + "px");
+            displayButton.getElement().getParentElement().addClassName("clicked");
+        } else {
+            displayButton.getElement().getParentElement().removeClassName("clicked");
+        }
+        ppDescrPreview.setVisible(on);
+        ppDescrEditorDiv.setVisible(!on);
+        inPreviewMode = on;
+    }
+
+    private boolean doesProtocolExist(UIPrintingProtocol target) {
+        return target != null && protocolNames.contains(target.getName());
+    }
+
     @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    public void setPrintingProtocols(List<UIPrintingProtocol> protocols) {
+        for (UIPrintingProtocol protocol : protocols) {
+            protocolNames.add(protocol.getName());
+            printingProtocols.add(protocol);
+        }
     }
 
     @Override
@@ -163,9 +212,17 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     }
 
     @Override
-    public void setPrintingProtocol(Cell<String> cell) {
-        attachCell(printingProtocol, cell);
-        //TODO update protocol name & description
+    public void setPrintingProtocol(final Cell<String> cell) {
+        showPrintingProtocol(UIPrintingProtocol.unsqueeeeze(cell.getValue()), false);
+        ValueChangeHandler<String> handler = new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                cell.setValue(
+                        new UIPrintingProtocol(ppName.getValue(), richTextArea.getHTML()).squeeeeze());
+            }
+        };
+        ppName.addValueChangeHandler(handler);
+        richTextArea.addValueChangeHandler(handler);
     }
 
     @Override

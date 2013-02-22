@@ -19,20 +19,25 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
-import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasDialogCloseHandlers;
 
 import java.util.*;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExpDesignTemplatesDialogContent extends Composite {
+public class ExpDesignTemplatesDialogContent extends Composite
+        implements HasDialogCloseHandlers<List<UITerm>> {
 
     interface Binder extends UiBinder<Widget, ExpDesignTemplatesDialogContent> {
         Binder BINDER = GWT.create(Binder.class);
@@ -52,8 +57,6 @@ public class ExpDesignTemplatesDialogContent extends Composite {
 
     @UiField(provided = true)
     protected ListBox valueBox;
-
-    private boolean cancelled = false;
 
     private Map<Integer, Set<Integer>> selected = new HashMap<Integer, Set<Integer>>();
 
@@ -115,7 +118,7 @@ public class ExpDesignTemplatesDialogContent extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 if (!selected.isEmpty()) {
-                    fireCloseEvent();
+                    fireDialogCloseEvent(getSelection(), true);
                 }
             }
         });
@@ -123,17 +126,14 @@ public class ExpDesignTemplatesDialogContent extends Composite {
         selectNone.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                selected = new HashMap<Integer, Set<Integer>>();
-                fireCloseEvent();
+                fireDialogCloseEvent(new ArrayList<UITerm>(), true);
             }
         });
-
 
         cancelButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                cancelled = true;
-                fireCloseEvent();
+                fireDialogCloseEvent(null, false);
             }
         });
     }
@@ -149,19 +149,16 @@ public class ExpDesignTemplatesDialogContent extends Composite {
         return list;
     }
 
-    private void fireCloseEvent() {
-        fireEvent(new CloseEvent());
+    private void fireDialogCloseEvent(List<UITerm> selection, boolean isOk) {
+        DialogCloseEvent.fire(this, selection, isOk);
     }
 
-    public HandlerRegistration addCloseHandler(CloseEventHandler closeEventHandler) {
-        return addHandler(closeEventHandler, CloseEvent.TYPE);
+    @Override
+    public HandlerRegistration addDialogCloseHandler(DialogCloseHandler<List<UITerm>> handler) {
+        return addHandler(handler, DialogCloseEvent.getType());
     }
 
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public List<UITerm> getSelection() {
+    private List<UITerm> getSelection() {
         List<UITerm> list = new ArrayList<UITerm>();
         for (Integer categoryIndex : selected.keySet()) {
             Set<Integer> selection = selected.get(categoryIndex);
@@ -173,9 +170,7 @@ public class ExpDesignTemplatesDialogContent extends Composite {
     }
 
     private static final class Category {
-
         private static Category OTHER = new Category("Other");
-
         private final String name;
 
         private Category(String name) {

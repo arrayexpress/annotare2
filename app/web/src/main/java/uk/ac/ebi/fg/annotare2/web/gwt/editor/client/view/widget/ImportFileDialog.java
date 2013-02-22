@@ -16,47 +16,38 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.web.bindery.event.shared.HandlerRegistration;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ProceedEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasImportEventHandlers;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class ImportFileDialog extends DialogBox {
+public class ImportFileDialog extends DialogBox implements HasImportEventHandlers {
 
     private final ImportFileDialogContent content;
 
     public ImportFileDialog(String title) {
         setGlassEnabled(true);
-
         setText(title);
 
         content = new ImportFileDialogContent();
         setWidget(content);
 
-        content.addCloseEventHandler(new CloseEventHandler() {
+        content.addCloseHandler(new CloseHandler<ImportFileDialogContent>() {
             @Override
-            public void onClose() {
+            public void onClose(CloseEvent event) {
                 hide();
             }
         });
-
         center();
     }
 
-    public HandlerRegistration addImportFileDialogHandler(final Handler handler) {
-        return content.addImportProceedEventHandler(new ProceedEventHandler() {
-            public void onProceed(AsyncEventFinishListener listener) {
-                handler.onImport(content.getFileName(), listener);
-            }
-        });
+    @Override
+    public HandlerRegistration addImportEventHandler(ImportEventHandler handler) {
+        return content.addImportEventHandler(handler);
     }
-
-    public static interface Handler {
-        void onImport(String fileName, AsyncEventFinishListener listener);
-    }
-
 }

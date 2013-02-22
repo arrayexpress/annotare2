@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 public interface AdfGeneralInfoView extends IsWidget {
 
-    void setPresenter(Presenter presenter);
+    void setPrintingProtocols(List<UIPrintingProtocol> protocols);
 
     void setTechnologyTypes(List<String> types);
 
@@ -54,8 +55,4 @@ public interface AdfGeneralInfoView extends IsWidget {
     void setReleaseDate(Cell<Date> cell);
 
     void setOrganism(Cell<String> cell);
-
-    public static interface Presenter {
-         //TODO
-    }
 }

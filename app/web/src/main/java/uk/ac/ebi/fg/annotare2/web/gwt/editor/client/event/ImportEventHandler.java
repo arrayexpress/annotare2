@@ -17,11 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ProceedEventHandler extends EventHandler {
-    void onProceed(AsyncEventFinishListener listener);
+public interface ImportEventHandler extends EventHandler {
+
+    void onImport(AsyncCallback<Void> callback);
 }

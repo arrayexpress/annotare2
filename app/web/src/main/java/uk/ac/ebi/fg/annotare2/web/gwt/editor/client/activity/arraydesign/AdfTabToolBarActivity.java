@@ -23,7 +23,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolBarView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
@@ -58,35 +57,25 @@ public class AdfTabToolBarActivity extends AbstractActivity implements AdfTabToo
     }
 
     @Override
-    public void importFile(final AsyncEventFinishListener listener) {
-        AsyncCallback<Void> callback = new AsyncCallbackWrapper<Void>() {
+    public void importFile(final AsyncCallback<Void> callback) {
+        AsyncCallback<Void> wrap = new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
-                String errMsg = "";
-                if (caught instanceof NoPermissionException) {
-                    errMsg = "Sorry, you do not have permission to change this submission";
-                } else if (caught instanceof ResourceNotFoundException) {
-                    errMsg = "Sorry, submission you are trying to change doesn't exist";
-                } else if (caught instanceof DataImportException) {
-                    errMsg = caught.getMessage();
-                } else {
-                    errMsg = "Unexpected error happened. Please try again later.";
-                }
-                listener.onError(errMsg);
+                callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(Void result) {
-                listener.onSuccess();
+                callback.onSuccess(result);
             }
         }.wrap();
 
         switch(tab) {
             case Header:
-               adfService.importHeaderData(getSubmissionId(), callback);
+               adfService.importHeaderData(getSubmissionId(), wrap);
                break;
             case Table:
-                adfService.importBodyData(getSubmissionId(), callback);
+                adfService.importBodyData(getSubmissionId(), wrap);
                 break;
             default:
                 Window.alert("Unknown Array Design Tab: " + tab);

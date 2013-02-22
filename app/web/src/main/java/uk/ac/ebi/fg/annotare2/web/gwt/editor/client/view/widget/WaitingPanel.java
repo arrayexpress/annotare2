@@ -22,6 +22,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 
 /**
  * @author Olga Melnichuk
@@ -44,7 +47,17 @@ public class WaitingPanel extends Composite {
         label.setText(msg);
     }
 
-    public void showError(String msg) {
+    public void showError(Throwable caught) {
+        String msg;
+        if (caught instanceof NoPermissionException) {
+            msg = "Sorry, you do not have permission to change this submission";
+        } else if (caught instanceof ResourceNotFoundException) {
+            msg = "Sorry, submission you are trying to change doesn't exist";
+        } else if (caught instanceof DataImportException) {
+            msg = caught.getMessage();
+        } else {
+            msg = "Unexpected error happened. Please try again later.";
+        }
         label.setText("Error: " + msg);
     }
 }

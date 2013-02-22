@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AsyncEventFinishListener {
+public interface DialogCloseHandler<T> extends EventHandler {
 
-    void onSuccess();
-
-    void onError(String msg);
+    void onDialogClose(DialogCloseEvent<T> event);
 }

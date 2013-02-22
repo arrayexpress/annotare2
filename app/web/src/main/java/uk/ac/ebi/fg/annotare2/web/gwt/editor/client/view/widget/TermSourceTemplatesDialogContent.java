@@ -21,13 +21,14 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import com.google.web.bindery.event.shared.HandlerRegistration;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CloseEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasDialogCloseHandlers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,8 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class TermSourceTemplatesDialogContent extends Composite {
+public class TermSourceTemplatesDialogContent extends Composite
+        implements HasDialogCloseHandlers<List<UITermSource>> {
 
     interface Binder extends UiBinder<Widget, TermSourceTemplatesDialogContent> {
         Binder BINDER = GWT.create(Binder.class);
@@ -55,8 +57,6 @@ public class TermSourceTemplatesDialogContent extends Composite {
 
     @UiField
     protected Label label;
-
-    private boolean cancelled = false;
 
     private List<UITermSource> termSources = new ArrayList<UITermSource>();
 
@@ -84,7 +84,7 @@ public class TermSourceTemplatesDialogContent extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 if (listBox.getSelectedIndex() >= 0) {
-                    fireCloseEvent();
+                    fireCloseEvent(getSelection(), true);
                 }
             }
         });
@@ -92,30 +92,25 @@ public class TermSourceTemplatesDialogContent extends Composite {
         selectNone.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                fireCloseEvent();
+                fireCloseEvent(new ArrayList<UITermSource>(), true);
             }
         });
-
 
         cancelButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                cancelled = true;
-                fireCloseEvent();
+                fireCloseEvent(null, false);
             }
         });
     }
 
-    private void fireCloseEvent() {
-        fireEvent(new CloseEvent());
+    private void fireCloseEvent(List<UITermSource> selection, boolean isOk) {
+        DialogCloseEvent.fire(this, selection, isOk);
     }
 
-    public HandlerRegistration addCloseHandler(CloseEventHandler closeEventHandler) {
-        return addHandler(closeEventHandler, CloseEvent.TYPE);
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
+    @Override
+    public HandlerRegistration addDialogCloseHandler(DialogCloseHandler<List<UITermSource>> handler) {
+        return addHandler(handler, DialogCloseEvent.getType());
     }
 
     public List<UITermSource> getSelection() {
@@ -127,5 +122,4 @@ public class TermSourceTemplatesDialogContent extends Composite {
         }
         return list;
     }
-
 }

@@ -20,10 +20,10 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfTabToolBarView;
 
@@ -64,26 +64,16 @@ public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToo
     }
 
     @Override
-    public void importFile(final AsyncEventFinishListener listener) {
+    public void importFile(final AsyncCallback<Void> callback) {
         idfService.importInvestigation(getSubmissionId(), new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
-                String errMsg = "";
-                if (caught instanceof NoPermissionException) {
-                    errMsg = "Sorry, you do not have permission to change this submission";
-                } else if (caught instanceof ResourceNotFoundException) {
-                    errMsg = "Sorry, submission you are trying to change doesn't exist";
-                } else if (caught instanceof DataImportException) {
-                    errMsg = caught.getMessage();
-                } else {
-                    errMsg = "Unexpected error happened. Please try again later.";
-                }
-                listener.onError(errMsg);
+                callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(Void result) {
-                listener.onSuccess();
+                callback.onSuccess(result);
             }
         }.wrap());
     }

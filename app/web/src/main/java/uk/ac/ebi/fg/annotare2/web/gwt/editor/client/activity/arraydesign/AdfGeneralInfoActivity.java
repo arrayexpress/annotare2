@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoView;
@@ -35,7 +36,7 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class AdfGeneralInfoActivity extends AbstractActivity implements AdfGeneralInfoView.Presenter {
+public class AdfGeneralInfoActivity extends AbstractActivity {
 
     private AdfGeneralInfoView view;
 
@@ -80,6 +81,10 @@ public class AdfGeneralInfoActivity extends AbstractActivity implements AdfGener
                 "unknown_substrate_type"
         }));
 
+        List<UIPrintingProtocol> protocols = new ArrayList<UIPrintingProtocol>();
+        protocols.add(new UIPrintingProtocol("protocol-1", "protocol description-1"));
+        protocols.add(new UIPrintingProtocol("protocol-2", "<em>protocol</em> description-2 looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
+
         List<String> species = new ArrayList<String>();
         for (int i = 0; i < 20; i++) {
             species.add("specie-" + i);
@@ -89,6 +94,7 @@ public class AdfGeneralInfoActivity extends AbstractActivity implements AdfGener
         view.setSurfaceTypes(surfTypes);
         view.setSubstrateTypes(subTypes);
         view.setSpecies(species);
+        view.setPrintingProtocols(protocols);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
     }

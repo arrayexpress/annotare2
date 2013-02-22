@@ -20,11 +20,11 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SdrfServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.sdrf.SdrfTabToolBarView;
 
@@ -68,17 +68,17 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
     }
 
     @Override
-    public void importFile(final AsyncEventFinishListener listener) {
+    public void importFile(final AsyncCallback<Void> callback) {
         sdrfService.importData(getSubmissionId(), new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 // TODO
-                listener.onError(caught.getMessage());
+                callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(Void result) {
-                listener.onSuccess();
+                callback.onSuccess(result);
             }
         }.wrap());
     }

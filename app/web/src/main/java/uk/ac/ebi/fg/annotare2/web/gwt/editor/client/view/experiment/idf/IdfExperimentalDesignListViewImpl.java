@@ -18,11 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.PopupPanel;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.Term;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.TermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
@@ -93,12 +92,10 @@ public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
             @Override
             public void onSuccess(ArrayList<UITerm> result) {
                 final ExpDesignTemplatesDialog dialog = new ExpDesignTemplatesDialog(result);
-                dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+                dialog.addSelectionHandler(new SelectionHandler<List<UITerm>>() {
                     @Override
-                    public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
-                        if (!dialog.isCancelled()) {
-                            addExperimentDesigns(dialog.getSelection());
-                        }
+                    public void onSelection(SelectionEvent<List<UITerm>> event) {
+                        addExperimentDesigns(event.getSelectedItem());
                     }
                 });
             }

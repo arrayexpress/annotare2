@@ -17,28 +17,37 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * @author Olga Melnichuk
  */
-public class ProceedEvent extends GwtEvent<ProceedEventHandler> {
+public class ImportEvent extends GwtEvent<ImportEventHandler> {
 
-    public static Type<ProceedEventHandler> TYPE = new Type<ProceedEventHandler>();
+    private static Type<ImportEventHandler> TYPE = new Type<ImportEventHandler>();
 
-    private final AsyncEventFinishListener listener;
+    private AsyncCallback<Void> callback;
 
-    public ProceedEvent(AsyncEventFinishListener listener) {
-        this.listener = listener;
+    private ImportEvent(AsyncCallback<Void> callback) {
+        this.callback = callback;
     }
 
     @Override
-    public Type<ProceedEventHandler> getAssociatedType() {
+    public Type<ImportEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(ProceedEventHandler handler) {
-        handler.onProceed(listener);
+    protected void dispatch(ImportEventHandler handler) {
+        handler.onImport(callback);
+    }
+
+    public static Type<ImportEventHandler> getType() {
+        return TYPE;
+    }
+
+    public static void fire(HasHandlers source, AsyncCallback<Void> callback) {
+        source.fireEvent(new ImportEvent(callback));
     }
 }

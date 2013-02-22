@@ -23,11 +23,12 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.AsyncEventFinishListener;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog;
 
 /**
@@ -63,9 +64,10 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
             @Override
             public void onClick(ClickEvent event) {
                 importFileDialog = new ImportFileDialog("Import Investigation Design...");
-                importFileDialog.addImportFileDialogHandler(new ImportFileDialog.Handler() {
-                    public void onImport(String fileName, AsyncEventFinishListener listener) {
-                        presenter.importFile(listener);
+                importFileDialog.addImportEventHandler(new ImportEventHandler() {
+                    @Override
+                    public void onImport(AsyncCallback<Void> callback) {
+                        presenter.importFile(callback);
                     }
                 });
                 importFileDialog.show();
