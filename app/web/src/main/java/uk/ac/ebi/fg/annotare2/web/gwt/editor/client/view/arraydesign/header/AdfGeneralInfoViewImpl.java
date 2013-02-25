@@ -23,6 +23,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
@@ -148,11 +149,19 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
             richTextArea.setValue("", fireEvent);
         } else {
             ppName.setValue(protocol.getName(), fireEvent);
-            richTextArea.setValue(protocol.getDescription(), fireEvent);
+            richTextArea.setValue(unescapeHtml(protocol.getDescription()), fireEvent);
         }
         ppName.setEnabled(!exists);
         richTextArea.setEnabled(!exists);
         showPreview(false);
+    }
+
+    private String unescapeHtml(String text) {
+        return new HTML(text).getText();
+    }
+
+    private String escapeHtml(String html) {
+        return SafeHtmlUtils.fromString(html).asString();
     }
 
     private void showPreview(boolean on) {
@@ -218,7 +227,7 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 cell.setValue(
-                        new UIPrintingProtocol(ppName.getValue(), richTextArea.getHTML()).squeeeeze());
+                        new UIPrintingProtocol(ppName.getValue(), escapeHtml(richTextArea.getHTML())).squeeeeze());
             }
         };
         ppName.addValueChangeHandler(handler);
