@@ -28,6 +28,8 @@ public interface EditorTitleBarView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
+    void setSubmissionType(UISubmissionType type);
+
     public interface Presenter {
 
         void validateSubmission(ValidationHandler handler);

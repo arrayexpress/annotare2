@@ -60,6 +60,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         this.presenter = presenter;
     }
 
+    @Override
+    public void setSubmissionType(UISubmissionType type) {
+        validateButton.setEnabled(type == UISubmissionType.EXPERIMENT);
+    }
+
     @UiHandler("validateButton")
     public void OnValidateButtonClick(ClickEvent clickEvent) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
