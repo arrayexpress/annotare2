@@ -16,112 +16,90 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.cellview.client.*;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
-import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
-import com.sencha.gxt.widget.core.client.grid.ColumnModel;
-import com.sencha.gxt.widget.core.client.grid.Grid;
 import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import com.google.gwt.user.cellview.client.MyDataGridResources;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class SheetModeViewImpl extends Composite implements SheetModeView {
+public class SheetModeViewImpl extends Composite implements SheetModeView, RequiresResize {
 
-    private final HorizontalPanel panel;
+    private static final int PAGE_SIZE = 100;
+
+    private final DockLayoutPanel panel;
 
     public SheetModeViewImpl() {
-        panel = new HorizontalPanel();
+        panel = new DockLayoutPanel(Style.Unit.PX);
         initWidget(panel);
     }
 
     @Override
     public void setTable(Table table, boolean hasHeaders) {
+        MyDataGridResources resources = GWT.create(MyDataGridResources.class);
+        MyDataGrid<Row> dataGrid = new MyDataGrid<Row>(PAGE_SIZE, resources);
+        dataGrid.setEmptyTableWidget(new Label("There's no data yet, come later"));
+        dataGrid.setMinimumTableWidthInPx(panel.getOffsetWidth());
+
+        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+        SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
+        pager.setDisplay(dataGrid);
+
+        initColumns(table, dataGrid, hasHeaders);
+        initRows(table, dataGrid, hasHeaders);
+
+        panel.addNorth(pager, 40);
+        panel.add(dataGrid);
+    }
+
+    private void initRows(Table table, MyDataGrid<Row> dataGrid, boolean hasHeaders) {
+        ListDataProvider<Row> dataProvider = new ListDataProvider<Row>();
+        dataProvider.addDataDisplay(dataGrid);
+
+        int nRows = table.getHeight();
+        List<Row> rows = new ArrayList<Row>();
+        for (int j = (hasHeaders ? 1 : 0); j < nRows; j++) {
+            rows.add(table.getRow(j));
+        }
+        dataProvider.setList(rows);
+    }
+
+    private void initColumns(Table table, MyDataGrid<Row> dataGrid, boolean hasHeaders) {
         if (table == null || table.isEmpty()) {
-            setContent(new Label("There's no data yet, come later"));
             return;
         }
 
-        int tableWidth = table.getTrimmedWidth();
-        int tableHeight = table.getHeight();
+        int nColumns = table.getTrimmedWidth();
 
-        ArrayList<ColumnConfig<Row, ?>> columnConfigs = new ArrayList<ColumnConfig<Row, ?>>();
-        Row headers = table.getRow(0);
+        Row headerRow = table.getRow(0);
 
-        for (int i = 0; i < tableWidth; i++) {
+        for (int i = 0; i < nColumns; i++) {
             final int colIndex = i;
+            String title = hasHeaders ? headerRow.getValue(colIndex) : i + "";
 
-            ColumnConfig<Row, String> config = new ColumnConfig<Row, String>(new ValueProvider<Row, String>() {
+            Column<Row, String> column = new Column<Row, String>(new TextCell()) {
                 @Override
                 public String getValue(Row row) {
                     return row.getValue(colIndex);
                 }
-
-                @Override
-                public void setValue(Row row, String value) {
-                    row.getValue(colIndex);
-                }
-
-                @Override
-                public String getPath() {
-                    return null;
-                }
-            });
-
-            if (hasHeaders) {
-                config.setHeader(headers.getValue(i));
-            } else {
-                config.setHeader(new SafeHtml() {
-                    @Override
-                    public String asString() {
-                        return "&nbsp;";
-                    }
-                });
-            }
-            config.setSortable(false);
-            config.setMenuDisabled(true);
-            columnConfigs.add(config);
+            };
+            column.setSortable(false);
+            dataGrid.setColumnWidth(i, 150, Style.Unit.PX);
+            dataGrid.addColumn(title, column);
         }
-
-        //TODO move this to the Table
-        ArrayList<Row> rows = new ArrayList<Row>();
-        for (int j = hasHeaders ? 1 : 0; j < tableHeight; j++) {
-            rows.add(table.getRow(j));
-        }
-
-        ListDataProvider<Row> dataProvider = new ListDataProvider<Row>();
-        dataProvider.setList(rows);
-
-        ListStore<Row> store = new ListStore<Row>(new ModelKeyProvider<Row>() {
-            @Override
-            public String getKey(Row item) {
-                return item.toString();
-            }
-        });
-        store.addAll(rows);
-
-        ColumnModel<Row> columnModel = new ColumnModel<Row>(columnConfigs);
-
-        Grid<Row> grid = new Grid<Row>(store, columnModel);
-        grid.setColumnReordering(false);
-
-        setContent(grid);
     }
 
-    private void setContent(Widget w) {
-        if (panel.getWidgetCount() > 0) {
-            panel.remove(0);
-        }
-        panel.add(w);
+    @Override
+    public void onResize() {
+        panel.onResize();
     }
 }

@@ -51,7 +51,7 @@
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
-                            <g:ScrollPanel height="100%" addStyleNames="{style.border}" ui:field="contentDisplay"/>
+                            <g:SimpleLayoutPanel height="100%" addStyleNames="{style.border}" ui:field="contentDisplay"/>
                         </g:center>
                     </g:DockLayoutPanel>
                 </g:center>
