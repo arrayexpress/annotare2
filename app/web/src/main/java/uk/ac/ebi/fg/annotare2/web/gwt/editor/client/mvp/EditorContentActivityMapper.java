@@ -26,10 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfContentActivity
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGeneralInfoActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTableSheetModeActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdTablePlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
 
@@ -105,11 +102,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
         } else if (place instanceof AdHeaderPlace) {
             AdHeaderPlace adHeaderPlace = (AdHeaderPlace) place;
-            AdfSection section = adHeaderPlace.getSection();
-            switch (section) {
-                case GENERAL_INFO:
-                    return (adfGeneralInfoActivityProvider.get()).withPlace(adHeaderPlace);
-            }
+            return (adfGeneralInfoActivityProvider.get()).withPlace(adHeaderPlace);
         } else if (place instanceof AdTablePlace) {
             return (adfTableSheetModeActivityProvider.get()).withPlace((AdTablePlace)place);
         }

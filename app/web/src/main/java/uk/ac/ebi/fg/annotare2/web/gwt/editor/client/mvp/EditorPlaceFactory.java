@@ -43,6 +43,11 @@ public class EditorPlaceFactory {
     @Inject
     Provider<AdHeaderPlace> adHeaderPlaceProvider;
 
+    @Inject
+    AdTablePlace.Tokenizer adTablePlaceTokenizer;
+
+    @Inject
+    Provider<AdTablePlace> adTablePlaceProvider;
 
     public IdfPlace.Tokenizer getIdfPlaceTokenizer() {
         return idfPlaceTokenizer;
@@ -68,4 +73,11 @@ public class EditorPlaceFactory {
         return adHeaderPlaceProvider.get();
     }
 
+    public AdTablePlace.Tokenizer getAdTablePlaceTokenizer() {
+        return adTablePlaceTokenizer;
+    }
+
+    public AdTablePlace getAdTablePlace() {
+        return adTablePlaceProvider.get();
+    }
 }

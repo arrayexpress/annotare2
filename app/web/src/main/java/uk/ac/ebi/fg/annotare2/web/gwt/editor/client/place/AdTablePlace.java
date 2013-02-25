@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
+import com.google.gwt.place.shared.PlaceTokenizer;
+import com.google.gwt.place.shared.Prefix;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
 
 /**
@@ -26,5 +28,17 @@ public class AdTablePlace extends ArrayDesignPlace {
     @Override
     public ArrayDesignTab getSelectedTab() {
         return ArrayDesignTab.Table;
+    }
+
+    @Prefix("adfTable")
+    public static class Tokenizer implements PlaceTokenizer<AdTablePlace> {
+
+        public String getToken(AdTablePlace place) {
+            return "";
+        }
+
+        public AdTablePlace getPlace(String token) {
+            return new AdTablePlace();
+        }
     }
 }

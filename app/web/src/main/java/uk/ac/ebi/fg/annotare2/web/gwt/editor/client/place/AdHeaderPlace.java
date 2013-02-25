@@ -33,24 +33,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
  */
 public class AdHeaderPlace extends ArrayDesignPlace {
 
-    private AdfSection section;
-
-    public AdHeaderPlace() {
-        setSection(null);
-    }
-
-    public AdHeaderPlace(AdfSection section) {
-        setSection(section);
-    }
-
-    public AdfSection getSection() {
-        return section;
-    }
-
-    public void setSection(AdfSection section) {
-        this.section = section == null ? AdfSection.GENERAL_INFO : section;
-    }
-
     @Override
     public ArrayDesignTab getSelectedTab() {
         return ArrayDesignTab.Header;
@@ -59,38 +41,12 @@ public class AdHeaderPlace extends ArrayDesignPlace {
     @Prefix("adfHeader")
     public static class Tokenizer implements PlaceTokenizer<AdHeaderPlace> {
 
-        private final Provider<AdHeaderPlace> placeProvider;
-
-        @Inject
-        public Tokenizer(Provider<AdHeaderPlace> placeProvider) {
-            this.placeProvider = placeProvider;
-        }
-
         public String getToken(AdHeaderPlace place) {
-            return new TokenBuilder()
-                    .add(place.getSection().name())
-                    .toString();
+            return "";
         }
 
         public AdHeaderPlace getPlace(String token) {
-            TokenReader reader = new TokenReader(token);
-            try {
-                AdHeaderPlace place = placeProvider.get();
-
-                String sectionToken = reader.nextString();
-
-                AdfSection section = EnumUtils.getIfPresent(AdfSection.class, sectionToken);
-                if (section == null) {
-                    throw new TokenReaderException("Unrecognized IDF section token: " + sectionToken);
-                }
-
-                place.setSection(section);
-                return place;
-            } catch (TokenReaderException e) {
-                //TODO log
-                Window.alert(e.getMessage());
-                return null;
-            }
+            return new AdHeaderPlace();
         }
     }
 }
