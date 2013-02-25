@@ -21,15 +21,17 @@
 
     <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
 
-    <g:HTMLPanel width="100%" addStyleNames="app-IdfListView">
-        <div class="app-Buttons">
-            <g:Image resource="{res.plusIcon}" ui:field="addIcon"/>
-            &nbsp;
-            <g:Image resource="{res.trashIcon}" ui:field="removeIcon"/>
-        </div>
-        <div style="padding-left:10px;padding-right:10px">
-            <g:VerticalPanel ui:field="listPanel" width="100%"/>
-        </div>
-    </g:HTMLPanel>
+    <g:ScrollPanel height="100%">
+        <g:HTMLPanel width="100%" addStyleNames="app-IdfListView">
+            <div class="app-Buttons">
+                <g:Image resource="{res.plusIcon}" ui:field="addIcon"/>
+                &nbsp;
+                <g:Image resource="{res.trashIcon}" ui:field="removeIcon"/>
+            </div>
+            <div style="padding-left:10px;padding-right:10px">
+                <g:VerticalPanel ui:field="listPanel" width="100%"/>
+            </div>
+        </g:HTMLPanel>
+    </g:ScrollPanel>
 
 </ui:UiBinder>

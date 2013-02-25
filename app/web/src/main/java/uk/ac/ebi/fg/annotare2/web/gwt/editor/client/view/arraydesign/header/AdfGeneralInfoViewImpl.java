@@ -44,6 +44,10 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
  */
 public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoView {
 
+    interface Binder extends UiBinder<Widget, AdfGeneralInfoViewImpl> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
     @UiField
     TextBox designName;
 
@@ -87,10 +91,6 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     private boolean inPreviewMode = false;
     private List<UIPrintingProtocol> printingProtocols = new ArrayList<UIPrintingProtocol>();
     private Set<String> protocolNames = new HashSet<String>();
-
-    interface Binder extends UiBinder<HTMLPanel, AdfGeneralInfoViewImpl> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
 
     public AdfGeneralInfoViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));

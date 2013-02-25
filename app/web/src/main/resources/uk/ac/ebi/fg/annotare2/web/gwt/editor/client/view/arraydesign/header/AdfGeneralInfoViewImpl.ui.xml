@@ -23,139 +23,141 @@
 
     <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
 
-    <g:HTMLPanel>
-        <table class="app-Form">
-            <tbody>
-                <tr>
-                    <td class="app-FormField">
-                        Array Design Name:
-                    </td>
-                    <td>
-                        <g:TextBox width="400px" ui:field="designName"></g:TextBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="app-FormComment">
-                        <b>Suggested naming template:</b>
-                        <span>{Lab} {Species} {Array Name} {# of Features} {Version}</span>
-                        <br/>E.g.: EMBL M. musculus Iron Chip 0.3K v3
-                    </td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Description:
-                    </td>
-                    <td>
-                        <g:TextArea width="400px" visibleLines="2" ui:field="description"></g:TextArea>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Array Version:
-                    </td>
-                    <td>
-                        <g:TextBox width="250px" ui:field="designVersion"></g:TextBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Date of Public Release:
-                    </td>
-                    <td>
-                        <dp:DateBox ui:field="publicReleaseDate"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="app-FormFieldSeparator"></td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Technology Type:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="technologyType"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Substrate Type:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="substrateType"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Surface Type:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="surfaceType"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Species:
-                    </td>
-                    <td>
-                        <wgt:ComboBox width="250px" ui:field="species"></wgt:ComboBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="app-FormFieldSeparator"></td>
-                </tr>
-                <tr>
-                    <td class="app-FormField">
-                        Printing Protocol:
-                    </td>
-                    <td>
-                        <g:TextBox width="250px" ui:field="printingProtocol"></g:TextBox>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <table class="app-Form">
-                            <tbody>
-                                <tr>
-                                    <td class="app-FormField">
-                                        Name:
-                                    </td>
-                                    <td>
-                                        <g:TextBox width="250px" ui:field="ppName"></g:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td class="app-FormComment">
-                                        <b>Suggested naming template:</b>
-                                        <span>{Lab} {Type} {Name}</span>
-                                        <br/>E.g.: Sanger Array Protocol
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="app-FormField">
-                                        Description:
-                                    </td>
-                                    <td>
-                                        <span class="app-ToggleImage">
-                                            <g:Image ui:field="displayButton" resource="{res.displayIcon}"
-                                                     title="Preview On/Off"/>
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <g:HTML ui:field="ppDescrPreview" addStyleNames="app-Scrollable"></g:HTML>
-                                        <g:SimplePanel ui:field="ppDescrEditorDiv"></g:SimplePanel>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </g:HTMLPanel>
+    <g:ScrollPanel height="100%">
+        <g:HTMLPanel>
+            <table class="app-Form">
+                <tbody>
+                    <tr>
+                        <td class="app-FormField">
+                            Array Design Name:
+                        </td>
+                        <td>
+                            <g:TextBox width="400px" ui:field="designName"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="app-FormComment">
+                            <b>Suggested naming template:</b>
+                            <span>{Lab} {Species} {Array Name} {# of Features} {Version}</span>
+                            <br/>E.g.: EMBL M. musculus Iron Chip 0.3K v3
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Description:
+                        </td>
+                        <td>
+                            <g:TextArea width="400px" visibleLines="2" ui:field="description"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Array Version:
+                        </td>
+                        <td>
+                            <g:TextBox width="250px" ui:field="designVersion"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Date of Public Release:
+                        </td>
+                        <td>
+                            <dp:DateBox ui:field="publicReleaseDate"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="app-FormFieldSeparator"/>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Technology Type:
+                        </td>
+                        <td>
+                            <wgt:ComboBox width="250px" ui:field="technologyType"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Substrate Type:
+                        </td>
+                        <td>
+                            <wgt:ComboBox width="250px" ui:field="substrateType"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Surface Type:
+                        </td>
+                        <td>
+                            <wgt:ComboBox width="250px" ui:field="surfaceType"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Species:
+                        </td>
+                        <td>
+                            <wgt:ComboBox width="250px" ui:field="species"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="app-FormFieldSeparator"></td>
+                    </tr>
+                    <tr>
+                        <td class="app-FormField">
+                            Printing Protocol:
+                        </td>
+                        <td>
+                            <g:TextBox width="250px" ui:field="printingProtocol"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <table class="app-Form">
+                                <tbody>
+                                    <tr>
+                                        <td class="app-FormField">
+                                            Name:
+                                        </td>
+                                        <td>
+                                            <g:TextBox width="250px" ui:field="ppName"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="app-FormComment">
+                                            <b>Suggested naming template:</b>
+                                            <span>{Lab} {Type} {Name}</span>
+                                            <br/>E.g.: Sanger Array Protocol
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="app-FormField">
+                                            Description:
+                                        </td>
+                                        <td>
+                                            <span class="app-ToggleImage">
+                                                <g:Image ui:field="displayButton" resource="{res.displayIcon}"
+                                                         title="Preview On/Off"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <g:HTML ui:field="ppDescrPreview" addStyleNames="app-Scrollable"/>
+                                            <g:SimplePanel ui:field="ppDescrEditorDiv"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </g:HTMLPanel>
+    </g:ScrollPanel>
 </ui:UiBinder>

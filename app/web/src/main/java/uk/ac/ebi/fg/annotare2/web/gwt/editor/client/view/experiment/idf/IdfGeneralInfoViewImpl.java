@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
 
@@ -39,7 +40,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
  */
 public class IdfGeneralInfoViewImpl extends Composite implements IdfGeneralInfoView {
 
-    interface Binder extends UiBinder<HTMLPanel, IdfGeneralInfoViewImpl> {
+    interface Binder extends UiBinder<Widget, IdfGeneralInfoViewImpl> {
     }
 
     @UiField
