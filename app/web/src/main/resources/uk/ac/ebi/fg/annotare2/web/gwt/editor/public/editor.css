@@ -245,7 +245,7 @@
     cursor: default;
     opacity: .5;
     zoom: 1;
-    filter: alpha(opacity = 45);
+    filter: alpha(opacity=45);
 }
 
 .gwt-ToggleButton-down,
@@ -277,7 +277,7 @@
     cursor: default;
     opacity: .5;
     zoom: 1;
-    filter: alpha(opacity = 45);
+    filter: alpha(opacity=45);
 }
 
 /* Idf Item List */
