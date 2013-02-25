@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import com.google.gwt.user.cellview.client.MyDataGridResources;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
     @Override
     public void setTable(Table table, boolean hasHeaders) {
         MyDataGridResources resources = GWT.create(MyDataGridResources.class);
-        MyDataGrid<Row> dataGrid = new MyDataGrid<Row>(PAGE_SIZE, resources);
+        MyDataGrid<IndexedRow> dataGrid = new MyDataGrid<IndexedRow>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("There's no data yet, come later"));
         dataGrid.setMinimumTableWidthInPx(panel.getOffsetWidth());
 
@@ -54,26 +55,31 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
         SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
         pager.setDisplay(dataGrid);
 
-        initColumns(table, dataGrid, hasHeaders);
-        initRows(table, dataGrid, hasHeaders);
+        ListDataProvider<IndexedRow> dataProvider = new ListDataProvider<IndexedRow>();
+        dataProvider.addDataDisplay(dataGrid);
+        dataProvider.getList().addAll(getRows(table, hasHeaders));
+
+        ColumnSortEvent.ListHandler<IndexedRow> sortHandler =
+                new ColumnSortEvent.ListHandler<IndexedRow>(dataProvider.getList());
+        dataGrid.addColumnSortHandler(sortHandler);
+
+        initColumns(table, dataGrid, sortHandler, hasHeaders);
 
         panel.addNorth(pager, 40);
         panel.add(dataGrid);
     }
 
-    private void initRows(Table table, MyDataGrid<Row> dataGrid, boolean hasHeaders) {
-        ListDataProvider<Row> dataProvider = new ListDataProvider<Row>();
-        dataProvider.addDataDisplay(dataGrid);
-
+    private List<IndexedRow> getRows(Table table, boolean hasHeaders) {
         int nRows = table.getHeight();
-        List<Row> rows = new ArrayList<Row>();
+        List<IndexedRow> rows = new ArrayList<IndexedRow>();
+        int i = 1;
         for (int j = (hasHeaders ? 1 : 0); j < nRows; j++) {
-            rows.add(table.getRow(j));
+            rows.add(new IndexedRow(table.getRow(j), i++));
         }
-        dataProvider.setList(rows);
+        return rows;
     }
 
-    private void initColumns(Table table, MyDataGrid<Row> dataGrid, boolean hasHeaders) {
+    private void initColumns(Table table, MyDataGrid<IndexedRow> dataGrid, ColumnSortEvent.ListHandler<IndexedRow> sortHandler, boolean hasHeaders) {
         if (table == null || table.isEmpty()) {
             return;
         }
@@ -82,24 +88,79 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
 
         Row headerRow = table.getRow(0);
 
-        for (int i = 0; i < nColumns; i++) {
-            final int colIndex = i;
-            String title = hasHeaders ? headerRow.getValue(colIndex) : i + "";
+        for (int i = 0; i < nColumns + 1; i++) {
+            if (i == 0) {
+                Column<IndexedRow, String> column = new Column<IndexedRow, String>(new TextCell()) {
+                    @Override
+                    public String getValue(IndexedRow row) {
+                        return row.getIndex() + "";
+                    }
+                };
+                sortHandler.setComparator(column, new Comparator<IndexedRow>() {
+                    @Override
+                    public int compare(IndexedRow o1, IndexedRow o2) {
+                        if (o1 == o2) {
+                            return 0;
+                        }
+                        int v1 = o1.getIndex();
+                        int v2 = o2.getIndex();
+                        return new Integer(v1).compareTo(v2);
+                    }
+                });
+                column.setSortable(true);
+                dataGrid.addColumn("N", column);
+                dataGrid.setColumnWidth(i, 50, Style.Unit.PX);
+                continue;
+            }
 
-            Column<Row, String> column = new Column<Row, String>(new TextCell()) {
+            final int colIndex = (i - 1);
+            String title = hasHeaders ? headerRow.getValue(colIndex) : (i + 1) + "";
+            Column<IndexedRow, String> column = new Column<IndexedRow, String>(new TextCell()) {
                 @Override
-                public String getValue(Row row) {
+                public String getValue(IndexedRow row) {
                     return row.getValue(colIndex);
                 }
             };
-            column.setSortable(false);
-            dataGrid.setColumnWidth(i, 150, Style.Unit.PX);
+            sortHandler.setComparator(column, new Comparator<IndexedRow>() {
+                @Override
+                public int compare(IndexedRow o1, IndexedRow o2) {
+                    if (o1 == o2) {
+                        return 0;
+                    }
+                    String v1 = o1.getValue(colIndex);
+                    String v2 = o2.getValue(colIndex);
+                    if (v1 != null) {
+                        return (v2 != null) ? v1.compareTo(v2) : 1;
+                    }
+                    return -1;
+                }
+            });
+            column.setSortable(true);
             dataGrid.addColumn(title, column);
+            dataGrid.setColumnWidth(i, 150, Style.Unit.PX);
         }
     }
 
     @Override
     public void onResize() {
         panel.onResize();
+    }
+
+    public static class IndexedRow {
+        private final int index;
+        private final Row row;
+
+        public IndexedRow(Row row, int index) {
+            this.index = index;
+            this.row = row;
+        }
+
+        public String getValue(int column) {
+            return row.getValue(column);
+        }
+
+        public int getIndex() {
+            return index;
+        }
     }
 }
