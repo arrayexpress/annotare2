@@ -10,6 +10,8 @@ public interface AdfTabToolBarView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
+    void hideImportButtons(boolean hide);
+
     public static interface Presenter {
 
         void importFile(AsyncCallback<Void> callback);

@@ -48,6 +48,7 @@ public class AdfTabToolBarActivity extends AbstractActivity implements AdfTabToo
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
+        view.hideImportButtons(this.tab == ArrayDesignTab.Header);
         containerWidget.setWidget(view.asWidget());
     }
 

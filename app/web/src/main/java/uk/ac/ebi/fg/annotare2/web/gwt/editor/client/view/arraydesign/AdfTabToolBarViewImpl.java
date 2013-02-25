@@ -23,6 +23,9 @@ public class AdfTabToolBarViewImpl extends Composite implements AdfTabToolBarVie
     @UiField
     Button importButton;
 
+    @UiField
+    Button exportButton;
+
     private Presenter presenter;
     private ImportFileDialog importFileDialog;
 
@@ -48,5 +51,11 @@ public class AdfTabToolBarViewImpl extends Composite implements AdfTabToolBarVie
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void hideImportButtons(boolean hidden) {
+        importButton.setVisible(!hidden);
+        exportButton.setVisible(!hidden);
     }
 }

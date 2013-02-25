@@ -24,7 +24,7 @@
             <tr>
                 <td align="right">
                     <g:Button ui:field="importButton">Import</g:Button>
-                    <g:Button enabled="false">Export</g:Button>
+                    <g:Button enabled="false" ui:field="exportButton">Export</g:Button>
                 </td>
             </tr>
         </table>
