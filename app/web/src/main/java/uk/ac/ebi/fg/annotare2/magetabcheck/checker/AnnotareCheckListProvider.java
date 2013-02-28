@@ -26,12 +26,12 @@ public class AnnotareCheckListProvider implements Provider<List<CheckDefinition>
 
     private final List<CheckDefinition> checks = newArrayList();
 
-    private final InstanceProvider instanceProvider;
+    private final ClassInstanceProvider instanceProvider;
 
     @Inject
     public AnnotareCheckListProvider(final Injector injector, @Named("libPaths") Set<URL> libPaths) {
 
-        instanceProvider = new InstanceProvider() {
+        instanceProvider = new ClassInstanceProvider() {
             @Override
             public <T> T newInstance(Class<T> clazz) {
                 return injector.getInstance(clazz);
