@@ -20,11 +20,14 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.*;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.NoSelectionModel;
 import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
-import com.google.gwt.user.cellview.client.MyDataGridResources;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,6 +53,8 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
         MyDataGrid<IndexedRow> dataGrid = new MyDataGrid<IndexedRow>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("There's no data yet, come later"));
         dataGrid.setMinimumTableWidthInPx(panel.getOffsetWidth());
+
+        dataGrid.setSelectionModel(new NoSelectionModel<IndexedRow>());
 
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
@@ -139,6 +144,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
             dataGrid.addColumn(title, column);
             dataGrid.setColumnWidth(i, 150, Style.Unit.PX);
         }
+        dataGrid.getColumnSortList().push(dataGrid.getColumn(0));
     }
 
     @Override

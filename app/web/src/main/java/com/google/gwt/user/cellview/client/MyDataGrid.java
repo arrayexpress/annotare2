@@ -18,6 +18,15 @@ package com.google.gwt.user.cellview.client;
 
 
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.CustomScrollPanel;
+import com.google.gwt.user.client.ui.HeaderPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.view.client.SelectionModel;
+
+import java.util.List;
 
 /**
  * DataGrid with resizable columns.
@@ -28,7 +37,7 @@ public class MyDataGrid<T> extends DataGrid<T> {
 
     private int minWidth;
 
-    private boolean lastColumnAdded = false;
+    private boolean hasLastColumn = false;
 
     public MyDataGrid(int pageSize, Resources resources) {
         super(pageSize, resources);
@@ -37,13 +46,28 @@ public class MyDataGrid<T> extends DataGrid<T> {
         getTableFootElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
     }
 
+    @Override
+    public void setRowData(int start, List<? extends T> values) {
+        HeaderPanel header = (HeaderPanel) getWidget();
+        final CustomScrollPanel scrollPanel = (CustomScrollPanel) header.getContentWidget();
+        final int hPos = scrollPanel.getHorizontalScrollbar().getHorizontalScrollPosition();
+
+        super.setRowData(start, values);
+
+        Scheduler.get().scheduleDeferred(new Command() {
+            public void execute() {
+                scrollPanel.setHorizontalScrollPosition(hPos);
+            }
+        });
+    }
+
     public void setMinimumTableWidthInPx(int width) {
         super.setMinimumTableWidth(width, com.google.gwt.dom.client.Style.Unit.PX);
         minWidth = width;
     }
 
     public void addColumn(String title, Column<T, ?> column) {
-        if (!lastColumnAdded) {
+        if (!hasLastColumn) {
             Column<T, ?> lastColumn = new Column<T, String>(new TextCell()) {
                 @Override
                 public String getValue(T object) {
@@ -51,7 +75,7 @@ public class MyDataGrid<T> extends DataGrid<T> {
                 }
             };
             addColumn(lastColumn, new MyResizableHeader<T>("", lastColumn, this));
-            lastColumnAdded = true;
+            hasLastColumn = true;
         }
         insertColumn(getColumnCount() - 1, column, new MyResizableHeader<T>(title, column, this));
     }
