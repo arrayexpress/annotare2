@@ -27,7 +27,7 @@ public class EditorApp implements EntryPoint {
         DockLayoutPanel hPanel = binder.createAndBindUi(this);
 
         tabPanel.add(new IdfView(), "IDF");
-        tabPanel.add(new SimplePanel(), "SDRF");
+        tabPanel.add(new SdrfView(), "SDRF");
         tabPanel.add(new SimplePanel(), "ADF");
         tabPanel.add(new SimplePanel(), "Data");
 
