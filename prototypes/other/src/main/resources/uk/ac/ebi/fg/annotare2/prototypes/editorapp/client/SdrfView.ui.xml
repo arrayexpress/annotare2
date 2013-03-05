@@ -2,13 +2,60 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.prototypes.editorapp.client"
         >
 
     <ui:style>
-        .contentPane{
+        .contentPane {
             border-left: 1px solid blue;
             padding-top: 15px;
             padding-left: 15px;
+        }
+
+        .verticalScrollOnly {
+            overflow-x: hidden !important;
+        }
+
+        .cell {
+            padding: 0;
+            border-top: 1px solid #eeeeee;
+        }
+
+        .cell div {
+            padding: 10px 5px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1.2em;
+            position:relative;
+        }
+
+        .star {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: gray;
+            color: white;
+            font-size: 1.5em;
+            font-family: monospace;
+        }
+
+        .wall {
+            padding: 0;
+            width: 15px;
+            background-color: #eeeeee
+        }
+
+        .wall.selected {
+            background-color: orange;
+        }
+
+        .add {
+            color: gray;
+            font-size: 1em;
+            border: 1px dotted gray;
+            padding: 5px 5px;
+            cursor: pointer;
+            text-align: center;
         }
     </ui:style>
 
@@ -19,9 +66,40 @@
             </g:HTML>
         </g:north>
         <g:west size="160">
-            <g:HTML>
-                TBA
-            </g:HTML>
+            <g:ScrollPanel addStyleNames="{style.verticalScrollOnly}">
+                <!--<wgt:SdrfNavigationPanel/>-->
+                <g:HTML>
+                    <table cellspacing="0" style="width:100%;table-layout:fixed;">
+                        <tr>
+                            <td class="{style.wall}"/>
+                            <td class="{style.cell}">
+                                <div>Sources
+                                    <span class="{style.star}">*</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="{style.wall} {style.selected}"/>
+                            <td class="{style.cell}">
+                                <div>Samples
+                                    <span class="{style.star}">*</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="{style.wall} {style.selected}"/>
+                            <td class="{style.cell}">
+                                <div>Extracts
+                                    <span class="{style.star}">*</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="{style.add}"><div class="{style.add}">Add</div></td>
+                        </tr>
+                    </table>
+                </g:HTML>
+            </g:ScrollPanel>
         </g:west>
         <g:center>
             <g:ScrollPanel addStyleNames="{style.contentPane}">
