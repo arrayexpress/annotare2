@@ -67,8 +67,8 @@
         </g:north>
         <g:west size="160">
             <g:ScrollPanel addStyleNames="{style.verticalScrollOnly}">
-                <!--<wgt:SdrfNavigationPanel/>-->
-                <g:HTML>
+                <wgt:SdrfNavigationPanel/>
+               <!-- <g:HTML>
                     <table cellspacing="0" style="width:100%;table-layout:fixed;">
                         <tr>
                             <td class="{style.wall}"/>
@@ -98,7 +98,7 @@
                             <td colspan="2" class="{style.add}"><div class="{style.add}">Add</div></td>
                         </tr>
                     </table>
-                </g:HTML>
+                </g:HTML>-->
             </g:ScrollPanel>
         </g:west>
         <g:center>

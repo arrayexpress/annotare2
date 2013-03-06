@@ -1,0 +1,52 @@
+.cell {
+    padding: 10px 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1.2em;
+    position:relative;
+    border-top: 1px solid #eeeeee;
+}
+
+.hoveredCell {
+    background-color: #eeeeee;
+}
+
+.selectedCell {
+    background-color: green;
+}
+
+.tdWall {
+    padding: 0;
+    width: 15px;
+    background-color: #eeeeee;
+    border: 1px solid #eeeeee;
+}
+
+.hoveredTdWall {
+    background-color: orange;
+    border: 1px solid orange;
+}
+
+.selectedTdWall {
+    background-color: brown;
+    border: 1px solid brown;
+}
+
+.removeIcon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: gray;
+    color: white;
+    font-size: 1.5em;
+    font-family: monospace;
+}
+
+.emptyCell {
+    color: gray;
+    font-size: 1em;
+    border: 1px dotted gray;
+    padding: 5px 5px;
+    cursor: pointer;
+    text-align: center;
+}
