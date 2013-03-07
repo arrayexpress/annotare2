@@ -62,7 +62,7 @@
     <g:DockLayoutPanel>
         <g:west size="200">
             <g:ScrollPanel addStyleNames="{style.verticalScrollOnly}">
-                <wgt:SdrfNavigationPanel/>
+                <wgt:SdrfNavigationPanel ui:field="navigation"/>
                 <!-- <g:HTML>
                      <table cellspacing="0" style="width:100%;table-layout:fixed;">
                          <tr>
@@ -97,9 +97,7 @@
             </g:ScrollPanel>
         </g:west>
         <g:center>
-            <g:ScrollPanel addStyleNames="{style.contentPane}">
-                <g:HTML>TBA</g:HTML>
-            </g:ScrollPanel>
+            <g:SimpleLayoutPanel addStyleNames="{style.contentPane}" ui:field="content"/>
         </g:center>
     </g:DockLayoutPanel>
 

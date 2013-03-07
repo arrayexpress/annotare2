@@ -99,6 +99,7 @@
 }
 
 .my-AppNavBarItem.selected.hovered {
+    background-color: white;
     color: black;
 }
 

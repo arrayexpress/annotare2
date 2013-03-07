@@ -12,7 +12,8 @@
 }
 
 .selectedCell {
-    background-color: green;
+    background-color: brown;
+    color: white;
 }
 
 .tdWall {

@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -16,6 +17,9 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.HasSelectionHandlers;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEvent;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,7 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class SdrfNavigationPanel extends FlexTable implements IsWidget {
+public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelectionHandlers<SdrfNavigationPanel.Item> {
 
     public interface Resources extends ClientBundle {
 
@@ -84,7 +88,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
     final FlexTable table;
 
     private int i1 = -1, i2 = -1;
-
+    private int selected1 = -1, selected2 = -1;
 
     private DecoratedPopupPanel popup;
 
@@ -99,6 +103,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
 
         table = this;
         table.setCellSpacing(0);
+        table.setCellPadding(0);
         table.getElement().getStyle().setWidth(100.0, Unit.PCT);
         table.getElement().getStyle().setTableLayout(TableLayout.FIXED);
         addEmptyRow();
@@ -117,6 +122,19 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
                 tdMouseMove(event);
             }
         }, MouseMoveEvent.getType());
+
+        addDomHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                tdClick(event);
+            }
+        }, ClickEvent.getType());
+    }
+
+    private void tdClick(ClickEvent event) {
+        if (i1 >= 0 && i2 >= 0) {
+            changeSelection(i1, i2);
+            fireSelectionEvent(new Item(sections.get(i1), sections.get(i2)));
+        }
     }
 
     private void tdMouseMove(MouseMoveEvent event) {
@@ -246,10 +264,9 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
 
 
     private void addRow(String text) {
-        // todo preserve ordering
         sections.add(text);
 
-        int row = table.insertRow(table.getRowCount() - 1);
+        final int row = table.insertRow(table.getRowCount() - 1);
         table.insertCell(row, 0);
         table.insertCell(row, 0);
 
@@ -261,7 +278,8 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
 
         cell.addDomHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                //todo open section
+                changeSelection(row, -1);
+                fireSelectionEvent(new Item(sections.get(row)));
             }
         }, ClickEvent.getType());
 
@@ -278,9 +296,59 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
         }, MouseOutEvent.getType());
     }
 
+    private void changeSelection(int index1, int index2) {
+        if (selected1 >= 0) {
+            table.getFlexCellFormatter().getElement(selected1, 0).removeClassName(style.selectedTdWall());
+            table.getWidget(selected1, 1).removeStyleName(style.selectedCell());
+        }
+        if (selected2 >= 0) {
+            table.getFlexCellFormatter().getElement(selected2, 0).removeClassName(style.selectedTdWall());
+        }
+        if (index2 < 0) {
+            table.getWidget(index1, 1).addStyleName(style.selectedCell());
+        } else {
+            table.getFlexCellFormatter().getElement(index1, 0).addClassName(style.selectedTdWall());
+            table.getFlexCellFormatter().getElement(index2, 0).addClassName(style.selectedTdWall());
+        }
+        selected1 = index1;
+        selected2 = index2;
+    }
+
+    private void fireSelectionEvent(Item item) {
+        SelectionEvent.fire(this, item);
+    }
+
     private class TableCell extends Cell {
         public TableCell(int row, int column) {
             super(row, column);
+        }
+    }
+
+    public HandlerRegistration addSelectionHandler(SelectionEventHandler<Item> handler) {
+        return addHandler(handler, SelectionEvent.getType());
+    }
+
+    public static class Item {
+        private String section1;
+        private String section2;
+        private boolean pair = false;
+
+        public Item(String section1, String index2) {
+            this.section1 = section1;
+            this.section2 = index2;
+            pair = true;
+        }
+
+        public Item(String section1) {
+            this.section1 = section1;
+        }
+
+        public String getSection1() {
+            return section1;
+        }
+
+        public String getSection2() {
+            return section2;
         }
     }
 }
