@@ -2,8 +2,11 @@ package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 
 /**
@@ -17,7 +20,10 @@ public class EditorApp implements EntryPoint {
     private static final Binder binder = GWT.create(Binder.class);
 
     @UiField
-    TabLayoutPanel tabPanel;
+    SimpleLayoutPanel content;
+
+    @UiField
+    AppNavBar navBar;
 
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
@@ -26,13 +32,48 @@ public class EditorApp implements EntryPoint {
     public void loadModule(final HasWidgets hasWidgets) {
         DockLayoutPanel hPanel = binder.createAndBindUi(this);
 
-        tabPanel.add(new IdfView(), "IDF");
-        tabPanel.add(new SdrfView(), "SDRF");
-        tabPanel.add(new SimplePanel(), "ADF");
-        tabPanel.add(new SimplePanel(), "Data");
-
-        tabPanel.selectTab(0);
+         navBar.addItem("Investigation Details", new Command() {
+             public void execute() {
+                 setContent(new IdfView());
+             }
+         });
+        navBar.addItem("Sample And Data Relationship", new Command() {
+            public void execute() {
+                setContent(new SdrfView());
+            }
+        });
+        navBar.addItem("Data", new Command() {
+            public void execute() {
+                setContent(new SimplePanel());
+            }
+        });
+        navBar.addItem("Import", new Command() {
+            public void execute() {
+                setContent(new SimplePanel());
+            }
+        });
+        navBar.addItem("Export", new Command() {
+            public void execute() {
+                setContent(new SimplePanel());
+            }
+        });
 
         hasWidgets.add(hPanel);
+
+        showNewSubmissionPopup();
+    }
+
+    private void setContent(Widget w) {
+        content.setWidget(w);
+    }
+
+    private void showNewSubmissionPopup() {
+        SubmissionCreateDialog dialog = new SubmissionCreateDialog();
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+            public void onClose(CloseEvent<PopupPanel> event) {
+                navBar.select(0);
+            }
+        });
+        dialog.show();
     }
 }

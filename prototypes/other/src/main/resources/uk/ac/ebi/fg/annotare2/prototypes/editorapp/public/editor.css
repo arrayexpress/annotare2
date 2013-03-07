@@ -78,3 +78,31 @@
     -webkit-user-select: none;
     user-select: none;
 }
+
+.my-AppNavBar {
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+.my-AppNavBarItem {
+    padding: 5px 10px;
+    background-color: gray;
+    border-right: 1px solid gray;
+    cursor: pointer;
+    color: white;
+}
+
+.my-AppNavBarItem.selected {
+    background-color: white;
+    border-right: 1px solid white;
+    color: black;
+    font-weight: bold;
+}
+
+.my-AppNavBarItem.selected.hovered {
+    color: black;
+}
+
+.my-AppNavBarItem.hovered {
+    background-color: #eeeeee;
+    color: #333;
+}

@@ -1,7 +1,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
-        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.prototypes.editorapp.client"
+        >
     <ui:style>
         .border {
             border: 1px solid black;
@@ -11,7 +13,10 @@
     <g:DockLayoutPanel>
         <g:north size="60">
             <g:HTML>
-                <div style="border:1px solid red; height:97%">Header: Submission Accession, Dates, Save Button, Validate Button, Global Messages</div>
+                <div style="height:97%">
+                    <h2 style="color:#48877c;padding-top:3px;margin:0">EXPERIMENT: E-MEXP-12345</h2>
+                    Dates, Save Button, Validate Button, Global Messages
+                </div>
             </g:HTML>
         </g:north>
         <g:center addStyleNames="{style.border}">
@@ -24,7 +29,19 @@
                     </g:ScrollPanel>
                 </g:south>
                 <g:center>
+                    <g:DockLayoutPanel>
+                        <g:north size="40">
+                            <g:SimplePanel>
+                                <my:AppNavBar width="100%" ui:field="navBar"/>
+                            </g:SimplePanel>
+                        </g:north>
+                        <g:center>
+                            <g:SimpleLayoutPanel ui:field="content"/>
+                        </g:center>
+                    </g:DockLayoutPanel>
+<!--
                     <g:TabLayoutPanel ui:field="tabPanel" barHeight="35"></g:TabLayoutPanel>
+-->
                 </g:center>
             </g:SplitLayoutPanel>
         </g:center>

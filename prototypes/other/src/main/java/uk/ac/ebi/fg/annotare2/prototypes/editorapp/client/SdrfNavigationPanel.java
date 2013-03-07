@@ -102,6 +102,15 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
         table.getElement().getStyle().setWidth(100.0, Unit.PCT);
         table.getElement().getStyle().setTableLayout(TableLayout.FIXED);
         addEmptyRow();
+        addRow("Sources");
+        addRow("Samples");
+        addRow("Extracts");
+        addRow("Labeled Extracts");
+        addRow("Assays");
+        addRow("Scans");
+        addRow("Array Data Files");
+        addRow("Normalizations");
+        addRow("Derived Array Data Files");
 
         addDomHandler(new MouseMoveHandler() {
             public void onMouseMove(MouseMoveEvent event) {
@@ -156,8 +165,6 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
             table.getFlexCellFormatter().addStyleName(row2, 0, style.hoveredTdWall());
             i1 = row;
             i2 = row2;
-
-            GWT.log("i1 = " + i1 + ", i2 = " + i2);
         }
     }
 
@@ -225,7 +232,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
             for (final String o : order) {
                 menuBar.addItem(o, new Command() {
                     public void execute() {
-                        addCell(o);
+                        addRow(o);
                         popup.hide();
                     }
                 });
@@ -238,7 +245,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget {
     }
 
 
-    private void addCell(String text) {
+    private void addRow(String text) {
         // todo preserve ordering
         sections.add(text);
 
