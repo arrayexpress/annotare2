@@ -24,6 +24,8 @@ import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEventHa
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.util.Arrays.asList;
 
 /**
@@ -133,7 +135,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
     private void tdClick(ClickEvent event) {
         if (i1 >= 0 && i2 >= 0) {
             changeSelection(i1, i2);
-            fireSelectionEvent(new Item(sections.get(i1), sections.get(i2)));
+            fireSelectionEvent(new Item(sections.get(min(i1, i2)), sections.get(max(i1, i2))));
         }
     }
 
@@ -333,9 +335,9 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         private String section2;
         private boolean pair = false;
 
-        public Item(String section1, String index2) {
+        public Item(String section1, String section2) {
             this.section1 = section1;
-            this.section2 = index2;
+            this.section2 = section2;
             pair = true;
         }
 
@@ -349,6 +351,10 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
 
         public String getSection2() {
             return section2;
+        }
+
+        public boolean isPair() {
+            return pair;
         }
     }
 }

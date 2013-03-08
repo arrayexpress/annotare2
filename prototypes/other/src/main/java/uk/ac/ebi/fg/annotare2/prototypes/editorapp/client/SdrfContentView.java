@@ -28,7 +28,9 @@ public class SdrfContentView extends Composite implements IsWidget {
         navigation.addSelectionHandler(new SelectionEventHandler<SdrfNavigationPanel.Item>() {
             public void onSelection(SelectionEvent<SdrfNavigationPanel.Item> event) {
                 SdrfNavigationPanel.Item sel = event.getSelection();
-                content.setWidget(new Label(sel.getSection1() + " : " + sel.getSection2()));
+                Widget w = sel.isPair() ? new SdrfAssociationView(sel.getSection1(), sel.getSection2()) :
+                        new SdrfSectionView(sel.getSection1());
+                content.setWidget(w);
             }
         });
     }
