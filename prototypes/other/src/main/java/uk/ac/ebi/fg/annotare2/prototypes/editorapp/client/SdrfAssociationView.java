@@ -27,13 +27,14 @@ public class SdrfAssociationView extends Composite implements IsWidget {
     ListBox targetBox;
 
     @UiField
-    Button addMultipleButton;
+    Button advancedAdd;
 
     @UiField
     Button deleteButton;
 
     @UiField(provided = true)
     SuggestBox suggestBox;
+
     @UiField
     Button addButton;
 

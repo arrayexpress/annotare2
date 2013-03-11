@@ -7,7 +7,7 @@
 
     <ui:style>
         .contentPane {
-            border-left: 1px solid blue;
+            border-left: 1px solid gray;
             padding-top: 15px;
             padding-left: 15px;
         }

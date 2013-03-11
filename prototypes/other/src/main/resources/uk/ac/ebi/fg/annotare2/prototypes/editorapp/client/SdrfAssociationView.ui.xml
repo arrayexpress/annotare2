@@ -14,7 +14,8 @@
                 <h2>
                     <g:Label ui:field="title"/>
                 </h2>
-                <g:Button ui:field="addMultipleButton">Add</g:Button>
+                <g:Button ui:field="advancedAdd">Add</g:Button>
+                <g:Button>Draw</g:Button>
             </g:HTMLPanel>
         </g:north>
         <g:center>
@@ -35,14 +36,14 @@
                               <g:HTMLPanel>
                                   <table width="100%">
                                       <tr>
-                                          <td width="150px">
-                                              <g:Button ui:field="deleteButton">Delete Selected</g:Button>
-                                          </td>
-                                          <td>
+                                          <td width="400px">
                                               <g:SuggestBox ui:field="suggestBox" width="100%"/>
                                           </td>
                                           <td width="55px">
-                                              <g:Button ui:field="addButton">Add</g:Button>
+                                              <g:Button ui:field="addButton" width="100%">Add</g:Button>
+                                          </td>
+                                          <td width="150px">
+                                              <g:Button ui:field="deleteButton" width="100%">Delete Selected</g:Button>
                                           </td>
                                       </tr>
                                   </table>
