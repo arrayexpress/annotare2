@@ -1,10 +1,8 @@
 package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Random;
@@ -60,8 +58,8 @@ public class SdrfAssociationView extends Composite implements IsWidget {
         deleteButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 int index;
-                while((index = targetBox.getSelectedIndex()) >= 0) {
-                   targetBox.removeItem(index);
+                while ((index = targetBox.getSelectedIndex()) >= 0) {
+                    targetBox.removeItem(index);
                 }
             }
         });
@@ -71,7 +69,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
                 String value = suggestBox.getValue();
                 if (value.length() > 0) {
                     targetBox.addItem(value);
-                    //todo scroll to the new value
+                    targetBox.setItemSelected(targetBox.getItemCount() - 1, true);
                 }
             }
         });
