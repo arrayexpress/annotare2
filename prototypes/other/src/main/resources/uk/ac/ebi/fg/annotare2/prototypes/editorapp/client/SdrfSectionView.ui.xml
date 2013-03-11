@@ -3,9 +3,14 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
-    <g:ScrollPanel height="100%">
-        <g:HTMLPanel>
-            <h2><g:Label ui:field="title"/></h2>
-        </g:HTMLPanel>
-    </g:ScrollPanel>
+    <g:DockLayoutPanel>
+        <g:north size="100">
+            <g:HTMLPanel>
+                <h2><g:Label ui:field="title"/></h2>
+            </g:HTMLPanel>
+        </g:north>
+        <g:center>
+            <g:DockLayoutPanel ui:field="tablePanel"/>
+        </g:center>
+    </g:DockLayoutPanel>
 </ui:UiBinder>
