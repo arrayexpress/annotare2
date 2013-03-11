@@ -56,7 +56,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         MyDataGridResources resources = com.google.gwt.core.shared.GWT.create(MyDataGridResources.class);
         MyDataGrid<SdrfRow> dataGrid = new MyDataGrid<SdrfRow>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("There's no data yet, come later"));
-        dataGrid.setMinimumTableWidthInPx(tablePanel.getOffsetWidth());
+        //dataGrid.setMinimumTableWidthInPx(tablePanel.getOffsetWidth());
 
         final SelectionModel<SdrfRow> selectionModel =
                 new MultiSelectionModel<SdrfRow>(new ProvidesKey<SdrfRow>() {

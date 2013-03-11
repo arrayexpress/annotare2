@@ -33,8 +33,6 @@ import java.util.List;
  */
 public class MyDataGrid<T> extends DataGrid<T> {
 
-    private int minWidth;
-
     private boolean hasLastColumn = false;
 
     public MyDataGrid(int pageSize, Resources resources) {
@@ -59,13 +57,13 @@ public class MyDataGrid<T> extends DataGrid<T> {
         });
     }
 
-    public int getColumnCount2() {
-        return getColumnCount() == 0 ? 0 : getColumnCount() - 1;
+    private int getVisibleWidth() {
+        HeaderPanel header = (HeaderPanel) getWidget();
+        return ((CustomScrollPanel) header.getContentWidget()).getOffsetWidth();
     }
 
-    public void setMinimumTableWidthInPx(int width) {
-        super.setMinimumTableWidth(width, com.google.gwt.dom.client.Style.Unit.PX);
-        minWidth = width;
+    public int getColumnCount2() {
+        return getColumnCount() == 0 ? 0 : getColumnCount() - 1;
     }
 
     public void addColumn(String title, Column<T, ?> column) {
@@ -91,8 +89,6 @@ public class MyDataGrid<T> extends DataGrid<T> {
     }
 
     protected int getTableBodyHeight() {
-        TableSectionElement body = getTableBodyElement();
-        int h = getTableBodyElement().getOffsetHeight();
         return getTableBodyElement().getOffsetHeight();
     }
 
@@ -117,6 +113,7 @@ public class MyDataGrid<T> extends DataGrid<T> {
         int lastColWidth = getHeaderOffsetWidth(lastColIndex);
         int borderWidth = tableWidth - residualWidth - currColWidth - lastColWidth;
 
+        int minWidth = getVisibleWidth();
         int newTableWidth = residualWidth + colWidth + borderWidth;
         lastColWidth = Math.max(minWidth - newTableWidth, 0);
 
