@@ -94,8 +94,8 @@ public class SdrfSectionView extends Composite implements IsWidget {
         });
         HorizontalPanel tableBar = new HorizontalPanel();
         tableBar.add(columnsButton);
+        tableBar.add(new Button("Add Row"));
         tableBar.add(new Button("1 : 1"));
-        tableBar.add(new Button("* : *"));
         tableBar.add(pager);
 
         tablePanel.addNorth(tableBar, 40);
@@ -105,6 +105,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
     private void initDefaultColumns(MyDataGrid<SdrfRow> dataGrid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
         addIndexColumn(dataGrid, sortHandler);
         addCheckBoxColumn(dataGrid);
+        addNameColumn(dataGrid, sortHandler);
     }
 
     private void addCheckBoxColumn(final MyDataGrid<SdrfRow> dataGrid) {
@@ -137,8 +138,31 @@ public class SdrfSectionView extends Composite implements IsWidget {
             }
         });
         column.setSortable(true);
-        dataGrid.addColumn("+", column);
+        dataGrid.addColumn(column, new TextHeader("N"));
         dataGrid.setColumnWidth(dataGrid.getColumnCount2() - 1, 50, Style.Unit.PX);
+    }
+
+    private void addNameColumn(MyDataGrid<SdrfRow> dataGrid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
+        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new TextCell()) {
+            @Override
+            public String getValue(SdrfRow row) {
+                return row.getName();
+            }
+        };
+        sortHandler.setComparator(column, new Comparator<SdrfRow>() {
+            @Override
+            public int compare(SdrfRow o1, SdrfRow o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+                String v1 = o1.getName();
+                String v2 = o2.getName();
+                return v1.compareTo(v2);
+            }
+        });
+        column.setSortable(true);
+        dataGrid.addResizableColumn(column, "Name");
+        dataGrid.setColumnWidth(dataGrid.getColumnCount2() - 1, 100, Style.Unit.PX);
     }
 
     private void addColumn(SdrfColumn column) {
@@ -204,13 +228,18 @@ public class SdrfSectionView extends Composite implements IsWidget {
     private static class SdrfRow {
         private final Map<SdrfColumn, String> values = new HashMap<SdrfColumn, String>();
         private final int index;
+        private String name;
 
-        private SdrfRow(int index) {
+        private SdrfRow(int index, String name) {
             this.index = index;
         }
 
         public int getIndex() {
             return index;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 
