@@ -7,6 +7,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -34,8 +36,6 @@ public class SdrfSectionView extends Composite implements IsWidget {
     @UiField
     DockLayoutPanel tablePanel;
 
-    private Button columnsButton;
-
     private final List<SdrfRow> allRows = new ArrayList<SdrfRow>();
 
     private final List<SdrfColumn> allColumns = new ArrayList<SdrfColumn>();
@@ -55,8 +55,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
     private void initTable(List<SdrfRow> rows, List<SdrfColumn> columns) {
         MyDataGridResources resources = com.google.gwt.core.shared.GWT.create(MyDataGridResources.class);
         MyDataGrid<SdrfRow> dataGrid = new MyDataGrid<SdrfRow>(PAGE_SIZE, resources);
-        dataGrid.setEmptyTableWidget(new Label("There's no data yet, come later"));
-        //dataGrid.setMinimumTableWidthInPx(tablePanel.getOffsetWidth());
+        dataGrid.setEmptyTableWidget(new Label("No data"));
 
         final SelectionModel<SdrfRow> selectionModel =
                 new MultiSelectionModel<SdrfRow>(new ProvidesKey<SdrfRow>() {
@@ -86,10 +85,18 @@ public class SdrfSectionView extends Composite implements IsWidget {
             addColumn(column);
         }
 
-        columnsButton = new Button();
+        Button columnsButton = new Button("Columns");
+        columnsButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                //addColumn("column");
+            }
+        });
         HorizontalPanel tableBar = new HorizontalPanel();
-        tableBar.add(pager);
         tableBar.add(columnsButton);
+        tableBar.add(new Button("1 : 1"));
+        tableBar.add(new Button("* : *"));
+        tableBar.add(pager);
 
         tablePanel.addNorth(tableBar, 40);
         tablePanel.add(dataGrid);

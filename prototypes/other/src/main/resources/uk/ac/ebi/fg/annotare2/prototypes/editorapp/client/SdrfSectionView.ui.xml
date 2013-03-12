@@ -4,7 +4,7 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
     <g:DockLayoutPanel>
-        <g:north size="100">
+        <g:north size="60">
             <g:HTMLPanel>
                 <h2><g:Label ui:field="title"/></h2>
             </g:HTMLPanel>
