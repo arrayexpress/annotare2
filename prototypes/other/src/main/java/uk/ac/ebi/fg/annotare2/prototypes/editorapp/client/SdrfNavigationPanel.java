@@ -12,8 +12,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
@@ -64,20 +62,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         String emptyCell();
     }
 
-    interface Template extends SafeHtmlTemplates {
-        @SafeHtmlTemplates.Template("<tr onclick=\"\" class=\"{0}\">{1}</tr>")
-        SafeHtml tr(String classes, SafeHtml contents);
-
-        @SafeHtmlTemplates.Template("<td class=\"{0}\">{1}</td>")
-        SafeHtml td(String classes, SafeHtml contents);
-
-        @SafeHtmlTemplates.Template("<div class=\"{0}\">{1}</div>")
-        SafeHtml div(String classes, SafeHtml contents);
-    }
-
     static List<String> order = asList("Sources", "Samples", "Extracts", "Labeled Extracts", "Assays", "Scans", "Array Data Files", "Normalizations", "Derived Array Data Files");
-
-    static Template template;
 
     static Resources DEFAULT_RESOURCES;
 
@@ -98,10 +83,6 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         resources = getDefaultResources();
         style = resources.style();
         style.ensureInjected();
-
-        if (template == null) {
-            template = GWT.create(Template.class);
-        }
 
         table = this;
         table.setCellSpacing(0);

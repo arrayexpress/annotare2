@@ -40,5 +40,4 @@ public class MenuItem extends Composite implements HasText, HasClickHandlers {
     public HandlerRegistration addClickHandler(ClickHandler handler) {
         return addDomHandler(handler, ClickEvent.getType());
     }
-
 }

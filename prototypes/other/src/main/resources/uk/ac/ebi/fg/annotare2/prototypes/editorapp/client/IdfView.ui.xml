@@ -2,24 +2,37 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
+        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.prototypes.editorapp.client">
 
     <ui:style>
-        .clearAll {
-            height: 97%;
+        .idfContentPane {
+            border-left: 1px solid gray;
+            padding-top: 15px;
+            padding-left: 15px;
+        }
+
+        .border {
+            border-bottom: 1px solid gray;
         }
     </ui:style>
-
     <g:DockLayoutPanel>
         <g:north size="18">
-            <g:HTMLPanel addStyleNames="{style.clearAll}">
-                <div style="height:15px;text-align:right;">
-                    <a href="#">Clear All</a>
-                </div>
-            </g:HTMLPanel>
+            <g:HTMLPanel addStyleNames="{style.border}"/>
         </g:north>
         <g:center>
-            <g:TabLayoutPanel ui:field="tabPanel" barHeight="35"/>
+            <g:DockLayoutPanel>
+                <g:west size="200">
+                    <g:FlowPanel>
+                        <my:MenuItem text="General Info" ui:field="generalInfoItem"/>
+                        <my:MenuItem text="Contacts" ui:field="contactsItem"/>
+                        <my:MenuItem text="Publications"/>
+                        <my:MenuItem text="Comments"/>
+                    </g:FlowPanel>
+                </g:west>
+                <g:center>
+                    <g:ScrollPanel addStyleNames="{style.idfContentPane}" ui:field="content"/>
+                </g:center>
+            </g:DockLayoutPanel>
         </g:center>
     </g:DockLayoutPanel>
 

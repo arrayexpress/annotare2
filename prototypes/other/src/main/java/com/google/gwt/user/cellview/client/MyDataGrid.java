@@ -19,7 +19,6 @@ package com.google.gwt.user.cellview.client;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HeaderPanel;
@@ -32,8 +31,6 @@ import java.util.List;
  * @author Olga Melnichuk
  */
 public class MyDataGrid<T> extends DataGrid<T> {
-
-    private boolean hasLastColumn = false;
 
     public MyDataGrid(int pageSize, Resources resources) {
         super(pageSize, resources);
@@ -59,29 +56,29 @@ public class MyDataGrid<T> extends DataGrid<T> {
 
     private int getVisibleWidth() {
         HeaderPanel header = (HeaderPanel) getWidget();
-        return ((CustomScrollPanel) header.getContentWidget()).getOffsetWidth();
+        return header.getContentWidget().getOffsetWidth();
     }
 
     public int getColumnCount2() {
         return getColumnCount() == 0 ? 0 : getColumnCount() - 1;
     }
 
-    public void addColumn(String title, Column<T, ?> column) {
-        if (!hasLastColumn) {
+    public void addResizableColumn(Column<T, ?> column, String title) {
+        addColumn(column, new MyResizableHeader<T>(title, column, this));
+    }
+
+    @Override
+    public void insertColumn(int beforeIndex, Column<T, ?> col, Header<?> header, Header<?> footer) {
+        if (getColumnCount() == 0) {
             Column<T, ?> lastColumn = new Column<T, String>(new TextCell()) {
                 @Override
                 public String getValue(T object) {
                     return "";
                 }
             };
-            addColumn(lastColumn, new MyResizableHeader<T>("", lastColumn, this));
-            hasLastColumn = true;
+            super.insertColumn(0, lastColumn, new MyResizableHeader<T>("", lastColumn, this), null);
+            beforeIndex = 1;
         }
-        addColumn(column, new MyResizableHeader<T>(title, column, this));
-    }
-
-    @Override
-    public void insertColumn(int beforeIndex, Column<T, ?> col, Header<?> header, Header<?> footer) {
         if (getColumnCount() > 0 && beforeIndex == getColumnCount()) {
             beforeIndex -= 1;
         }

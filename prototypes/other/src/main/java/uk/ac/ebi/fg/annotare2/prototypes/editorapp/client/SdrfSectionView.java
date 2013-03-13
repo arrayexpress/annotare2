@@ -36,6 +36,8 @@ public class SdrfSectionView extends Composite implements IsWidget {
     @UiField
     DockLayoutPanel tablePanel;
 
+    private MyDataGrid<SdrfRow> dataGrid;
+
     private final List<SdrfRow> allRows = new ArrayList<SdrfRow>();
 
     private final List<SdrfColumn> allColumns = new ArrayList<SdrfColumn>();
@@ -54,7 +56,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
     private void initTable(List<SdrfRow> rows, List<SdrfColumn> columns) {
         MyDataGridResources resources = com.google.gwt.core.shared.GWT.create(MyDataGridResources.class);
-        MyDataGrid<SdrfRow> dataGrid = new MyDataGrid<SdrfRow>(PAGE_SIZE, resources);
+        dataGrid = new MyDataGrid<SdrfRow>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("No data"));
 
         final SelectionModel<SdrfRow> selectionModel =
@@ -89,36 +91,37 @@ public class SdrfSectionView extends Composite implements IsWidget {
         columnsButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                //addColumn("column");
+                (new SdrfColumnsDialog()).show();
             }
         });
         HorizontalPanel tableBar = new HorizontalPanel();
         tableBar.add(columnsButton);
+        tableBar.add(new Button("Add Row"));
         tableBar.add(new Button("1 : 1"));
-        tableBar.add(new Button("* : *"));
         tableBar.add(pager);
 
         tablePanel.addNorth(tableBar, 40);
         tablePanel.add(dataGrid);
     }
 
-    private void initDefaultColumns(MyDataGrid<SdrfRow> dataGrid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
-        addIndexColumn(dataGrid, sortHandler);
-        addCheckBoxColumn(dataGrid);
+    private void initDefaultColumns(MyDataGrid<SdrfRow> grid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
+        addIndexColumn(grid, sortHandler);
+        addCheckBoxColumn(grid);
+        addNameColumn(grid, sortHandler);
     }
 
-    private void addCheckBoxColumn(final MyDataGrid<SdrfRow> dataGrid) {
+    private void addCheckBoxColumn(final MyDataGrid<SdrfRow> grid) {
         Column<SdrfRow, Boolean> checkboxColumn = new Column<SdrfRow, Boolean>(new CheckboxCell(true, false)) {
             @Override
             public Boolean getValue(SdrfRow object) {
-                return dataGrid.getSelectionModel().isSelected(object);
+                return grid.getSelectionModel().isSelected(object);
             }
         };
-        dataGrid.addColumn(checkboxColumn, new CheckboxHeader());
-        dataGrid.setColumnWidth(dataGrid.getColumnCount2() - 1, 40, Style.Unit.PX);
+        grid.addColumn(checkboxColumn, new CheckboxHeader());
+        grid.setColumnWidth(grid.getColumnCount2() - 1, 40, Style.Unit.PX);
     }
 
-    private void addIndexColumn(MyDataGrid<SdrfRow> dataGrid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
+    private void addIndexColumn(MyDataGrid<SdrfRow> grid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
         Column<SdrfRow, String> column = new Column<SdrfRow, String>(new TextCell()) {
             @Override
             public String getValue(SdrfRow row) {
@@ -137,12 +140,39 @@ public class SdrfSectionView extends Composite implements IsWidget {
             }
         });
         column.setSortable(true);
-        dataGrid.addColumn("+", column);
-        dataGrid.setColumnWidth(dataGrid.getColumnCount2() - 1, 50, Style.Unit.PX);
+        grid.addColumn(column, new TextHeader("N"));
+        grid.setColumnWidth(grid.getColumnCount2() - 1, 50, Style.Unit.PX);
+    }
+
+    private void addNameColumn(MyDataGrid<SdrfRow> dataGrid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
+        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new TextCell()) {
+            @Override
+            public String getValue(SdrfRow row) {
+                return row.getName();
+            }
+        };
+        sortHandler.setComparator(column, new Comparator<SdrfRow>() {
+            @Override
+            public int compare(SdrfRow o1, SdrfRow o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+                String v1 = o1.getName();
+                String v2 = o2.getName();
+                return v1.compareTo(v2);
+            }
+        });
+        column.setSortable(true);
+        dataGrid.addResizableColumn(column, "Name");
+        dataGrid.setColumnWidth(dataGrid.getColumnCount2() - 1, 100, Style.Unit.PX);
     }
 
     private void addColumn(SdrfColumn column) {
         //TODO
+    }
+
+    private void removeColumn() {
+        //TODO dataGrid.removeColumn();
     }
 
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
@@ -204,32 +234,18 @@ public class SdrfSectionView extends Composite implements IsWidget {
     private static class SdrfRow {
         private final Map<SdrfColumn, String> values = new HashMap<SdrfColumn, String>();
         private final int index;
+        private String name;
 
-        private SdrfRow(int index) {
+        private SdrfRow(int index, String name) {
             this.index = index;
         }
 
         public int getIndex() {
             return index;
         }
-    }
 
-    public static enum SdrfColumn {
-        CHARCTERISTIC("Characteristic"),
-        FACTOR_VALUE("Factor Value"),
-        ARRAY_DESIGN("Array Design"),
-        LABEL("Label"),
-        MATERIAL_TYPE("Material Type"),
-        PROVIDER("Provider"),
-        TECHNOLOGY_TYPE("Technology Type"),
-        COMMENT("Comment"),
-        PROTOCOL("Protocol");
-
-        private final String title;
-
-        private SdrfColumn(String title) {
-            this.title = title;
+        public String getName() {
+            return name;
         }
     }
-
 }

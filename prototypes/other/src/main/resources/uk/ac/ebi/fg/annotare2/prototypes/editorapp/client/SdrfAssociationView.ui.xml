@@ -7,50 +7,78 @@
         .padding {
             margin-left: 5px;
         }
+
+        .header3 {
+            margin: 3px;
+            padding: 0;
+        }
     </ui:style>
     <g:DockLayoutPanel height="100%" addStyleNames="{style.padding}">
-        <g:north size="100">
+        <g:north size="60">
             <g:HTMLPanel>
-                <h2>
-                    <g:Label ui:field="title"/>
-                </h2>
-                <g:Button ui:field="advancedAdd">Add</g:Button>
-                <g:Button>Draw</g:Button>
+                <table>
+                    <tr>
+                        <td>
+                            <h2>
+                                <g:Label ui:field="title1"/>
+                            </h2>
+                        </td>
+                        <td>
+                            <g:Button ui:field="directionButton">&#8596;</g:Button>
+                        </td>
+                        <td>
+                            <h2>
+                                <g:Label ui:field="title2"/>
+                            </h2>
+                        </td>
+                    </tr>
+                </table>
             </g:HTMLPanel>
         </g:north>
         <g:center>
             <g:SplitLayoutPanel>
                 <g:west size="300">
-                    <g:HTMLPanel>
-                        <g:ListBox ui:field="sourceBox" height="100%" width="100%" visibleItemCount="10"/>
-                    </g:HTMLPanel>
+                    <g:ListBox ui:field="sourceBox" height="100%" width="100%" visibleItemCount="10"/>
                 </g:west>
                 <g:center>
                     <g:DockLayoutPanel>
                         <g:center>
-                            <g:HTMLPanel>
-                                <g:ListBox ui:field="targetBox" height="100%" width="100%" visibleItemCount="10"/>
-                            </g:HTMLPanel>
+                            <g:ListBox ui:field="targetBox" height="100%" width="100%" visibleItemCount="10"/>
                         </g:center>
-                        <g:south size="100">
-                              <g:HTMLPanel>
-                                  <table width="100%">
-                                      <tr>
-                                          <td width="400px">
-                                              <g:SuggestBox ui:field="suggestBox" width="100%"/>
-                                          </td>
-                                          <td width="55px">
-                                              <g:Button ui:field="addButton" width="100%">Add</g:Button>
-                                          </td>
-                                          <td width="150px">
-                                              <g:Button ui:field="deleteButton" width="100%">Delete Selected</g:Button>
-                                          </td>
-                                      </tr>
-                                  </table>
-                              </g:HTMLPanel>
+                        <g:south size="30">
+                            <g:Button ui:field="deleteButton" width="100%">Delete Selected</g:Button>
                         </g:south>
                     </g:DockLayoutPanel>
                 </g:center>
+                <g:east size="300">
+                    <g:DockLayoutPanel>
+                        <g:north size="30">
+                            <g:HTMLPanel>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <h3 class="{style.header3}">Add</h3>
+                                        </td>
+                                        <td>
+                                            <h3 class="{style.header3}">
+                                                <g:Label ui:field="title3"/>
+                                            </h3>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </g:HTMLPanel>
+                        </g:north>
+                        <g:north size="30">
+                            <g:TextBox ui:field="filterBox" width="100%"/>
+                        </g:north>
+                        <g:center>
+                            <g:ListBox ui:field="suggestBox" height="100%" width="100%" visibleItemCount="10"/>
+                        </g:center>
+                        <g:south size="30">
+                            <g:Button ui:field="addButton" width="100%">Add Selected</g:Button>
+                        </g:south>
+                    </g:DockLayoutPanel>
+                </g:east>
             </g:SplitLayoutPanel>
         </g:center>
     </g:DockLayoutPanel>
