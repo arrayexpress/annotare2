@@ -18,13 +18,13 @@
                 <td valign="top">
                     <g:Button ui:field="moveColumnUp">&#8593;</g:Button><br/>
                     <g:Button ui:field="moveColumnDown">&#8595;</g:Button><br/>
-                    <g:Button>Del</g:Button>
+                    <g:Button width="100%">-</g:Button>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     <g:ListBox ui:field="columnTypes" width="150px" height="100%"/>
-                    <g:Button>Add</g:Button>
+                    <g:Button>+</g:Button>
                 </td>
             </tr>
             <tr>
