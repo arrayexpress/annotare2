@@ -107,3 +107,27 @@
     background-color: #eeeeee;
     color: #333;
 }
+
+.my-MenuItem {
+    font-family: Arial Unicode MS, Arial, sans-serif;
+    text-align: center;
+    background-color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+    color: black;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.my-MenuItem:hover {
+    background-color: #eee;
+    color: black;
+}
+
+.my-MenuItem.selected {
+    background-color: brown;
+    color: white;
+}

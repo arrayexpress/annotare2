@@ -32,14 +32,19 @@ public class EditorApp implements EntryPoint {
     public void loadModule(final HasWidgets hasWidgets) {
         DockLayoutPanel hPanel = binder.createAndBindUi(this);
 
-         navBar.addItem("Investigation Details", new Command() {
+        navBar.addItem("About", new Command() {
              public void execute() {
                  setContent(new IdfView());
              }
          });
-        navBar.addItem("Sample And Data Relationship", new Command() {
+        navBar.addItem("Experiment Design", new Command() {
             public void execute() {
                 setContent(new SdrfView());
+            }
+        });
+        navBar.addItem("Vocabularies", new Command() {
+            public void execute() {
+                setContent(new SimplePanel());
             }
         });
         navBar.addItem("Data", new Command() {

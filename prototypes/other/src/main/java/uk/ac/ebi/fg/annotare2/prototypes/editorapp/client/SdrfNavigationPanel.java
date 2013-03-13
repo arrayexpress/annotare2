@@ -62,7 +62,6 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         String emptyCell();
     }
 
-
     static List<String> order = asList("Sources", "Samples", "Extracts", "Labeled Extracts", "Assays", "Scans", "Array Data Files", "Normalizations", "Derived Array Data Files");
 
     static Resources DEFAULT_RESOURCES;

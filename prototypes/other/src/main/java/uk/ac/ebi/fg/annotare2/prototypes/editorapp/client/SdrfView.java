@@ -22,6 +22,7 @@ public class SdrfView extends Composite implements IsWidget {
         initWidget(widget);
 
         tabPanel.add(new SdrfContentView(), "Edit");
-        tabPanel.add(new Label("Read-only table here"), "Preview");
+        tabPanel.add(new Label("Read-only table here"), "IDF Preview");
+        tabPanel.add(new Label("Read-only table here"), "SDRF Preview");
     }
 }
