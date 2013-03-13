@@ -91,7 +91,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         columnsButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                //TODO addColumn();
+                (new SdrfColumnsDialog()).show();
             }
         });
         HorizontalPanel tableBar = new HorizontalPanel();

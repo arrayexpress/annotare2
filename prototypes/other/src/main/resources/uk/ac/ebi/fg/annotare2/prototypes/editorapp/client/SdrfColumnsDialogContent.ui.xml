@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+        xmlns:ui="urn:ui:com.google.gwt.uibinder"
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        >
+
+    <g:HTMLPanel>
+        <table>
+            <tr>
+                <td>Columns:</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td width="350px">
+                    <g:ListBox ui:field="currentColumns" width="100%" visibleItemCount="9" height="100%"/>
+                    <g:TextBox ui:field="columnKey" width="100%"/>
+                </td>
+                <td valign="top">
+                    <g:Button ui:field="moveColumnUp">&#8593;</g:Button><br/>
+                    <g:Button ui:field="moveColumnDown">&#8595;</g:Button><br/>
+                    <g:Button>Del</g:Button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <g:ListBox ui:field="columnTypes" width="150px" height="100%"/>
+                    <g:Button>Add</g:Button>
+                </td>
+            </tr>
+            <tr>
+                <td align="right" colspan="2">
+                    <g:Button ui:field="cancelButton">Cancel</g:Button>
+                    <g:Button ui:field="okButton">Ok</g:Button>
+                </td>
+            </tr>
+        </table>
+    </g:HTMLPanel>
+</ui:UiBinder>

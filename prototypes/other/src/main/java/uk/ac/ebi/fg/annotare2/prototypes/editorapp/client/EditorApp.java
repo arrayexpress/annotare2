@@ -76,7 +76,7 @@ public class EditorApp implements EntryPoint {
         SubmissionCreateDialog dialog = new SubmissionCreateDialog();
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
             public void onClose(CloseEvent<PopupPanel> event) {
-                navBar.select(0);
+                navBar.select(1);
             }
         });
         dialog.show();
