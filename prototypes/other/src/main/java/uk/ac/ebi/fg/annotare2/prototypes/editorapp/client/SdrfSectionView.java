@@ -9,6 +9,8 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -43,7 +45,9 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
     private final List<SdrfRow> allRows = new ArrayList<SdrfRow>();
 
-    private final List<SdrfColumn> allColumns = new ArrayList<SdrfColumn>();
+    private List<SdrfColumn> allColumns = new ArrayList<SdrfColumn>();
+
+    private int columnOffset;
 
     interface Binder extends UiBinder<Widget, SdrfSectionView> {
     }
@@ -97,7 +101,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         columnsButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new SdrfColumnsDialog(section.getColumnTypes(isSectionFirst))).show();
+                openColumnsDialog();
             }
         });
         HorizontalPanel tableBar = new HorizontalPanel();
@@ -110,10 +114,48 @@ public class SdrfSectionView extends Composite implements IsWidget {
         tablePanel.add(dataGrid);
     }
 
+    private void openColumnsDialog() {
+        SdrfColumnsDialog dialog = new SdrfColumnsDialog(section.getColumnTypes(isSectionFirst), allColumns);
+        dialog.addSelectionHandler(new SelectionHandler<List<SdrfColumn>>() {
+            @Override
+            public void onSelection(SelectionEvent<List<SdrfColumn>> event) {
+                updateColumns(event.getSelectedItem());
+            }
+        });
+        dialog.show();
+    }
+
+    private void updateColumns(List<SdrfColumn> newColumns) {
+        int colIndex = 0;
+        SdrfColumn col = allColumns.size() <= colIndex ? null : allColumns.get(colIndex);
+        for (int i = 0; i < newColumns.size(); i++) {
+            SdrfColumn newColumn = newColumns.get(i);
+            if (col == null) {
+                addColumn(newColumn);
+            } else if (!col.equals(newColumn)) {
+                insertColumn(newColumn, columnOffset + i);
+            } else {
+                if (colIndex + 1 < allColumns.size()) {
+                    col = allColumns.get(++colIndex);
+                } else {
+                    col = null;
+                }
+            }
+        }
+
+        for (int j = allColumns.size() - 1; j >= colIndex; j--) {
+            removeColumn(columnOffset + newColumns.size() + j);
+        }
+
+        allColumns = new ArrayList<SdrfColumn>();
+        allColumns.addAll(newColumns);
+    }
+
     private void initDefaultColumns(MyDataGrid<SdrfRow> grid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
         addIndexColumn(grid, sortHandler);
         addCheckBoxColumn(grid);
         addNameColumn(grid, sortHandler);
+        columnOffset += 3;
     }
 
     private void addCheckBoxColumn(final MyDataGrid<SdrfRow> grid) {
@@ -124,7 +166,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
             }
         };
         grid.addColumn(checkboxColumn, new CheckboxHeader());
-        grid.setColumnWidth(grid.getColumnCount2() - 1, 40, Style.Unit.PX);
+        grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
     }
 
     private void addIndexColumn(MyDataGrid<SdrfRow> grid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
@@ -147,7 +189,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         });
         column.setSortable(true);
         grid.addColumn(column, new TextHeader("N"));
-        grid.setColumnWidth(grid.getColumnCount2() - 1, 50, Style.Unit.PX);
+        grid.setColumnWidth(column, 50, Style.Unit.PX);
     }
 
     private void addNameColumn(MyDataGrid<SdrfRow> dataGrid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
@@ -170,15 +212,27 @@ public class SdrfSectionView extends Composite implements IsWidget {
         });
         column.setSortable(true);
         dataGrid.addResizableColumn(column, "Name");
-        dataGrid.setColumnWidth(dataGrid.getColumnCount2() - 1, 100, Style.Unit.PX);
+        dataGrid.setColumnWidth(column, 100, Style.Unit.PX);
     }
 
-    private void addColumn(SdrfColumn column) {
-        //TODO
+    private void insertColumn(final SdrfColumn sdrfColumn, int beforeIndex) {
+        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new TextCell()) {
+            @Override
+            public String getValue(SdrfRow row) {
+                return row.getValue(sdrfColumn);
+            }
+        };
+        column.setSortable(true);
+        dataGrid.insertResizableColumn(column, sdrfColumn.getTitle(), beforeIndex);
+        dataGrid.setColumnWidth(beforeIndex - 1, 150, Style.Unit.PX);
     }
 
-    private void removeColumn() {
-        //TODO dataGrid.removeColumn();
+    private void addColumn(final SdrfColumn sdrfColumn) {
+        insertColumn(sdrfColumn, dataGrid.getColumnCount());
+    }
+
+    private void removeColumn(int index) {
+        dataGrid.removeColumn(index);
     }
 
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
@@ -252,6 +306,10 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
         public String getName() {
             return name;
+        }
+
+        public String getValue(SdrfColumn column) {
+            return values.get(column);
         }
     }
 }

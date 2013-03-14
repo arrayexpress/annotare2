@@ -59,12 +59,12 @@ public class MyDataGrid<T> extends DataGrid<T> {
         return header.getContentWidget().getOffsetWidth();
     }
 
-    public int getColumnCount2() {
-        return getColumnCount() == 0 ? 0 : getColumnCount() - 1;
+    public void addResizableColumn(Column<T, ?> column, String title) {
+        insertResizableColumn(column, title, getColumnCount());
     }
 
-    public void addResizableColumn(Column<T, ?> column, String title) {
-        addColumn(column, new MyResizableHeader<T>(title, column, this));
+    public void insertResizableColumn(Column<T, ?> column, String title, int beforeIndex) {
+        insertColumn(beforeIndex, column, new MyResizableHeader<T>(title, column, this), null);
     }
 
     @Override

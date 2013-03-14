@@ -2,16 +2,19 @@ package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.DialogCloseEvent;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.DialogCloseHandler;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.HasDialogCloseHandlers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +23,8 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class SdrfColumnsDialogContent extends Composite implements IsWidget, HasCloseHandlers<SdrfColumnsDialogContent> {
+public class SdrfColumnsDialogContent extends Composite implements IsWidget,
+        HasDialogCloseHandlers<List<SdrfColumn>> {
 
     public static final String NO_NAME = "NO NAME";
 
@@ -56,7 +60,7 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
     interface Binder extends UiBinder<Widget, SdrfColumnsDialogContent> {
     }
 
-    public SdrfColumnsDialogContent(List<SdrfColumn.Type> columnTypes) {
+    public SdrfColumnsDialogContent(List<SdrfColumn.Type> columnTypes, List<SdrfColumn> initColumns) {
         columnTypeList = new ValueListBox<SdrfColumn.Type>(new Renderer<SdrfColumn.Type>() {
             @Override
             public String render(SdrfColumn.Type object) {
@@ -75,6 +79,9 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
         Binder uiBinder = GWT.create(Binder.class);
         Widget widget = uiBinder.createAndBindUi(this);
         initWidget(widget);
+
+        this.columns.addAll(initColumns);
+        showColumns();
     }
 
     @UiHandler("columnKey")
@@ -118,7 +125,7 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
             }
         }
         columns.add(column);
-        showColumns(columns);
+        showColumns();
 
         // select new column
         columnList.setItemSelected(columnList.getItemCount() - 1, true);
@@ -146,15 +153,15 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
 
     @UiHandler("okButton")
     public void okButtonClick(ClickEvent event) {
-        close();
+        close(columns, true);
     }
 
     @UiHandler("cancelButton")
     public void cancelButtonClick(ClickEvent event) {
-        close();
+        close(null, false);
     }
 
-    private void showColumns(List<SdrfColumn> columns) {
+    private void showColumns() {
         columnList.clear();
         for (SdrfColumn column : columns) {
             columnList.addItem(column.getTitle());
@@ -162,11 +169,11 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
     }
 
     @Override
-    public HandlerRegistration addCloseHandler(CloseHandler<SdrfColumnsDialogContent> handler) {
-        return addHandler(handler, CloseEvent.getType());
+    public HandlerRegistration addDialogCloseHandler(DialogCloseHandler<List<SdrfColumn>> handler) {
+        return addHandler(handler, DialogCloseEvent.getType());
     }
 
-    public void close() {
-        CloseEvent.fire(this, this);
+    public void close(List<SdrfColumn> columns, boolean isOk) {
+        DialogCloseEvent.fire(this, columns, isOk);
     }
 }
