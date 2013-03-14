@@ -45,12 +45,12 @@ public class SdrfSectionView extends Composite implements IsWidget {
     interface Binder extends UiBinder<Widget, SdrfSectionView> {
     }
 
-    public SdrfSectionView(String section) {
+    public SdrfSectionView(SdrfSection section) {
         Binder uiBinder = GWT.create(Binder.class);
         Widget widget = uiBinder.createAndBindUi(this);
         initWidget(widget);
 
-        title.setText(section);
+        title.setText(section.getTitle());
         initTable(allRows, allColumns);
     }
 

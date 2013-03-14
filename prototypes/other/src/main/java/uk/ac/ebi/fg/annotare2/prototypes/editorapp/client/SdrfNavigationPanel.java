@@ -24,7 +24,6 @@ import java.util.List;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -62,15 +61,13 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         String emptyCell();
     }
 
-    static List<String> order = asList("Sources", "Samples", "Extracts", "Labeled Extracts", "Assays", "Scans", "Array Data Files", "Normalizations", "Derived Array Data Files");
-
     static Resources DEFAULT_RESOURCES;
 
     private final Style style;
 
     private final Resources resources;
 
-    private final List<String> sections = new ArrayList<String>();
+    private final List<SdrfSection> sections = new ArrayList<SdrfSection>();
 
     final FlexTable table;
 
@@ -91,7 +88,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         table.getElement().getStyle().setTableLayout(TableLayout.FIXED);
         addEmptyRow();
         for(SdrfSection s : SdrfSection.values()) {
-            addRow(s.getTitle());
+            addRow(s);
         }
 
         addDomHandler(new MouseMoveHandler() {
@@ -224,8 +221,8 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
     private PopupPanel createPopup() {
         if (popup == null) {
             MenuBar menuBar = new MenuBar(true);
-            for (final String o : order) {
-                menuBar.addItem(o, new Command() {
+            for (final SdrfSection o : SdrfSection.values()) {
+                menuBar.addItem(o.getTitle(), new Command() {
                     public void execute() {
                         addRow(o);
                         popup.hide();
@@ -239,9 +236,8 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         return popup;
     }
 
-
-    private void addRow(String text) {
-        sections.add(text);
+    private void addRow(SdrfSection section) {
+        sections.add(section);
 
         final int row = table.insertRow(table.getRowCount() - 1);
         table.insertCell(row, 0);
@@ -249,7 +245,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
 
         table.getFlexCellFormatter().addStyleName(row, 0, style.tdWall());
 
-        final SimplePanel cell = new SimplePanel(new Label(text));
+        final SimplePanel cell = new SimplePanel(new Label(section.getTitle()));
         cell.addStyleName(style.cell());
         table.setWidget(row, 1, cell);
 
@@ -306,25 +302,25 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
     }
 
     public static class Item {
-        private String section1;
-        private String section2;
+        private SdrfSection section1;
+        private SdrfSection section2;
         private boolean pair = false;
 
-        public Item(String section1, String section2) {
+        public Item(SdrfSection section1, SdrfSection section2) {
             this.section1 = section1;
             this.section2 = section2;
             pair = true;
         }
 
-        public Item(String section1) {
+        public Item(SdrfSection section1) {
             this.section1 = section1;
         }
 
-        public String getSection1() {
+        public SdrfSection getSection1() {
             return section1;
         }
 
-        public String getSection2() {
+        public SdrfSection getSection2() {
             return section2;
         }
 

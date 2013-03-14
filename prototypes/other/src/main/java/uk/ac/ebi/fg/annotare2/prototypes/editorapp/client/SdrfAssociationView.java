@@ -63,7 +63,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
     interface Binder extends UiBinder<Widget, SdrfAssociationView> {
     }
 
-    public SdrfAssociationView(String section1, String section2) {
+    public SdrfAssociationView(SdrfSection from, SdrfSection to) {
         sourceBox = new ListBox(true);
         targetBox = new ListBox(true);
         suggestBox = new ListBox(true);
@@ -147,7 +147,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
                 fillSuggestionBox(newSuggestions);
             }
         });
-        setDirection(section1, section2, false);
+        setDirection(from.getTitle(), to.getTitle(), false);
     }
 
     private static int parseInt(String value) {
