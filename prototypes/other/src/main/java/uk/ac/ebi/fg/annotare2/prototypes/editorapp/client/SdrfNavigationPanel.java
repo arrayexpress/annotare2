@@ -90,15 +90,9 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         table.getElement().getStyle().setWidth(100.0, Unit.PCT);
         table.getElement().getStyle().setTableLayout(TableLayout.FIXED);
         addEmptyRow();
-        addRow("Sources");
-        addRow("Samples");
-        addRow("Extracts");
-        addRow("Labeled Extracts");
-        addRow("Assays");
-        addRow("Scans");
-        addRow("Array Data Files");
-        addRow("Normalizations");
-        addRow("Derived Array Data Files");
+        for(SdrfSection s : SdrfSection.values()) {
+            addRow(s.getTitle());
+        }
 
         addDomHandler(new MouseMoveHandler() {
             public void onMouseMove(MouseMoveEvent event) {
