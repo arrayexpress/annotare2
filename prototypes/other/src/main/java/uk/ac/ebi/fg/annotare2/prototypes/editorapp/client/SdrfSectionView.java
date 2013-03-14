@@ -36,6 +36,8 @@ public class SdrfSectionView extends Composite implements IsWidget {
     @UiField
     DockLayoutPanel tablePanel;
 
+    private final SdrfSection section;
+
     private MyDataGrid<SdrfRow> dataGrid;
 
     private final List<SdrfRow> allRows = new ArrayList<SdrfRow>();
@@ -50,6 +52,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         Widget widget = uiBinder.createAndBindUi(this);
         initWidget(widget);
 
+        this.section = section;
         title.setText(section.getTitle());
         initTable(allRows, allColumns);
     }
@@ -91,7 +94,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         columnsButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new SdrfColumnsDialog()).show();
+                (new SdrfColumnsDialog(section)).show();
             }
         });
         HorizontalPanel tableBar = new HorizontalPanel();

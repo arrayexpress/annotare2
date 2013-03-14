@@ -37,7 +37,7 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
     interface Binder extends UiBinder<Widget, SdrfColumnsDialogContent> {
     }
 
-    public SdrfColumnsDialogContent() {
+    public SdrfColumnsDialogContent(SdrfSection section) {
         Binder uiBinder = GWT.create(Binder.class);
         Widget widget = uiBinder.createAndBindUi(this);
         initWidget(widget);
@@ -56,7 +56,7 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
             }
         });
 
-        for(SdrfColumn.Type type : SdrfColumn.Type.values()) {
+        for(SdrfColumn.Type type : section.getColumnTypes()) {
             columnTypes.addItem(type.getTitle());
         }
     }

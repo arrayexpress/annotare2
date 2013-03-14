@@ -9,11 +9,11 @@ import com.google.gwt.user.client.ui.DialogBox;
  */
 public class SdrfColumnsDialog extends DialogBox {
 
-    public SdrfColumnsDialog() {
+    public SdrfColumnsDialog(SdrfSection section) {
         setText("Add/Delete Columns");
         setGlassEnabled(true);
 
-        SdrfColumnsDialogContent content = new SdrfColumnsDialogContent();
+        SdrfColumnsDialogContent content = new SdrfColumnsDialogContent(section);
         content.addCloseHandler(new CloseHandler<SdrfColumnsDialogContent>() {
             @Override
             public void onClose(CloseEvent<SdrfColumnsDialogContent> event) {
