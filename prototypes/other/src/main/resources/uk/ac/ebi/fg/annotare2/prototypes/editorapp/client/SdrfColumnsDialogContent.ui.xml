@@ -12,8 +12,8 @@
             </tr>
             <tr>
                 <td width="350px">
-                    <g:ListBox ui:field="currentColumns" width="100%" visibleItemCount="9" height="100%"/>
-                    <g:TextBox ui:field="columnKey" width="100%"/>
+                    <g:ListBox ui:field="columnList" width="100%" visibleItemCount="9" height="100%"/>
+                    <g:TextBox ui:field="columnKey" width="100%" enabled="false"/>
                 </td>
                 <td valign="top">
                     <g:Button ui:field="moveUpButton">&#8593;</g:Button><br/>
@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <g:ListBox ui:field="columnTypesBox" width="150px" height="100%"/>
+                    <g:ValueListBox ui:field="columnTypeList" width="150px" height="100%"/>
                     <g:Button ui:field="addButton">+</g:Button>
                 </td>
             </tr>
