@@ -16,15 +16,15 @@
                     <g:TextBox ui:field="columnKey" width="100%"/>
                 </td>
                 <td valign="top">
-                    <g:Button ui:field="moveColumnUp">&#8593;</g:Button><br/>
-                    <g:Button ui:field="moveColumnDown">&#8595;</g:Button><br/>
-                    <g:Button width="100%">-</g:Button>
+                    <g:Button ui:field="moveUpButton">&#8593;</g:Button><br/>
+                    <g:Button ui:field="moveDownButton">&#8595;</g:Button><br/>
+                    <g:Button width="100%" ui:field="removeButton">-</g:Button>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <g:ListBox ui:field="columnTypes" width="150px" height="100%"/>
-                    <g:Button>+</g:Button>
+                    <g:ListBox ui:field="columnTypesBox" width="150px" height="100%"/>
+                    <g:Button ui:field="addButton">+</g:Button>
                 </td>
             </tr>
             <tr>

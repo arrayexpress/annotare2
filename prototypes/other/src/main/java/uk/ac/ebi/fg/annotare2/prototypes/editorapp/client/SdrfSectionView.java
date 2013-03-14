@@ -37,6 +37,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
     DockLayoutPanel tablePanel;
 
     private final SdrfSection section;
+    private final boolean isSectionFirst;
 
     private MyDataGrid<SdrfRow> dataGrid;
 
@@ -47,12 +48,14 @@ public class SdrfSectionView extends Composite implements IsWidget {
     interface Binder extends UiBinder<Widget, SdrfSectionView> {
     }
 
-    public SdrfSectionView(SdrfSection section) {
+    public SdrfSectionView(SdrfSection section, boolean isSectionFirst) {
         Binder uiBinder = GWT.create(Binder.class);
         Widget widget = uiBinder.createAndBindUi(this);
         initWidget(widget);
 
         this.section = section;
+        this.isSectionFirst = isSectionFirst;
+
         title.setText(section.getTitle());
         initTable(allRows, allColumns);
     }
@@ -94,7 +97,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         columnsButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new SdrfColumnsDialog(section)).show();
+                (new SdrfColumnsDialog(section.getColumnTypes(isSectionFirst))).show();
             }
         });
         HorizontalPanel tableBar = new HorizontalPanel();

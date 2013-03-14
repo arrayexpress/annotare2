@@ -55,9 +55,12 @@ public enum SdrfSection {
         return title;
     }
 
-    public List<SdrfColumn.Type> getColumnTypes() {
+    public List<SdrfColumn.Type> getColumnTypes(boolean isFirst) {
         List<SdrfColumn.Type> copy = new ArrayList<SdrfColumn.Type>();
         copy.addAll(columnTypes);
+        if (!isFirst) {
+            copy.add(PROTOCOL);
+        }
         return copy;
     }
 }

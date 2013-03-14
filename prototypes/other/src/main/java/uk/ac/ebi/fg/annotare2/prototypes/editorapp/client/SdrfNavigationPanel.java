@@ -87,7 +87,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         table.getElement().getStyle().setWidth(100.0, Unit.PCT);
         table.getElement().getStyle().setTableLayout(TableLayout.FIXED);
         addEmptyRow();
-        for(SdrfSection s : SdrfSection.values()) {
+        for (SdrfSection s : SdrfSection.values()) {
             addRow(s);
         }
 
@@ -107,7 +107,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
     private void tdClick(ClickEvent event) {
         if (i1 >= 0 && i2 >= 0) {
             changeSelection(i1, i2);
-            fireSelectionEvent(new Item(sections.get(min(i1, i2)), sections.get(max(i1, i2))));
+            fireSelectionEvent(new Item(min(i1, i2), sections.get(min(i1, i2)), sections.get(max(i1, i2))));
         }
     }
 
@@ -252,7 +252,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         cell.addDomHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 changeSelection(row, -1);
-                fireSelectionEvent(new Item(sections.get(row)));
+                fireSelectionEvent(new Item(row, sections.get(row)));
             }
         }, ClickEvent.getType());
 
@@ -302,17 +302,20 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
     }
 
     public static class Item {
+        private int index = -1;
         private SdrfSection section1;
         private SdrfSection section2;
         private boolean pair = false;
 
-        public Item(SdrfSection section1, SdrfSection section2) {
+        public Item(int index, SdrfSection section1, SdrfSection section2) {
+            this.index = index;
             this.section1 = section1;
             this.section2 = section2;
             pair = true;
         }
 
-        public Item(SdrfSection section1) {
+        public Item(int index, SdrfSection section1) {
+            this.index = index;
             this.section1 = section1;
         }
 
@@ -326,6 +329,10 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
 
         public boolean isPair() {
             return pair;
+        }
+
+        public boolean isFirst() {
+            return index == 0;
         }
     }
 }

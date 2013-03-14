@@ -11,6 +11,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
@@ -23,21 +26,29 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
     Button cancelButton;
 
     @UiField
-    ListBox columnTypes;
+    ListBox columnTypesBox;
 
     @UiField
     ListBox currentColumns;
 
     @UiField
-    Button moveColumnDown;
+    Button moveDownButton;
 
     @UiField
-    Button moveColumnUp;
+    Button moveUpButton;
+
+    @UiField
+    Button removeButton;
+
+    @UiField
+    Button addButton;
+
+    private final List<SdrfColumn> columns = new ArrayList<SdrfColumn>();
 
     interface Binder extends UiBinder<Widget, SdrfColumnsDialogContent> {
     }
 
-    public SdrfColumnsDialogContent(SdrfSection section) {
+    public SdrfColumnsDialogContent(List<SdrfColumn.Type> columnTypes) {
         Binder uiBinder = GWT.create(Binder.class);
         Widget widget = uiBinder.createAndBindUi(this);
         initWidget(widget);
@@ -56,9 +67,50 @@ public class SdrfColumnsDialogContent extends Composite implements IsWidget, Has
             }
         });
 
-        for(SdrfColumn.Type type : section.getColumnTypes()) {
-            columnTypes.addItem(type.getTitle());
+        addButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                addColumn();
+            }
+        });
+
+        removeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                removeColumn();
+            }
+        });
+
+        moveUpButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                moveColumnUp();
+            }
+        });
+
+        moveDownButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                moveColumnDown();
+            }
+        });
+
+        for(SdrfColumn.Type type : columnTypes) {
+            columnTypesBox.addItem(type.getTitle());
         }
+    }
+
+    private void moveColumnDown() {
+    }
+
+    private void moveColumnUp() {
+    }
+
+    private void removeColumn() {
+    }
+
+    private void addColumn() {
+
     }
 
     @Override

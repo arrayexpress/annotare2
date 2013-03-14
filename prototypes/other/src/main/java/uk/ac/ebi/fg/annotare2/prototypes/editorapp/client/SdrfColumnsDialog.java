@@ -4,16 +4,18 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.DialogBox;
 
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
 public class SdrfColumnsDialog extends DialogBox {
 
-    public SdrfColumnsDialog(SdrfSection section) {
+    public SdrfColumnsDialog(List<SdrfColumn.Type> columnTypes) {
         setText("Add/Delete Columns");
         setGlassEnabled(true);
 
-        SdrfColumnsDialogContent content = new SdrfColumnsDialogContent(section);
+        SdrfColumnsDialogContent content = new SdrfColumnsDialogContent(columnTypes);
         content.addCloseHandler(new CloseHandler<SdrfColumnsDialogContent>() {
             @Override
             public void onClose(CloseEvent<SdrfColumnsDialogContent> event) {

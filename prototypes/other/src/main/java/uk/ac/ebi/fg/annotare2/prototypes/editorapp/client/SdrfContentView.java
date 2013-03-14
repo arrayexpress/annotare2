@@ -14,6 +14,7 @@ public class SdrfContentView extends Composite implements IsWidget {
 
     @UiField
     SdrfNavigationPanel navigation;
+
     @UiField
     SimpleLayoutPanel content;
 
@@ -29,7 +30,7 @@ public class SdrfContentView extends Composite implements IsWidget {
             public void onSelection(SelectionEvent<SdrfNavigationPanel.Item> event) {
                 SdrfNavigationPanel.Item sel = event.getSelection();
                 Widget w = sel.isPair() ? new SdrfAssociationView(sel.getSection1(), sel.getSection2()) :
-                        new SdrfSectionView(sel.getSection1());
+                        new SdrfSectionView(sel.getSection1(), sel.isFirst());
                 content.setWidget(w);
             }
         });
