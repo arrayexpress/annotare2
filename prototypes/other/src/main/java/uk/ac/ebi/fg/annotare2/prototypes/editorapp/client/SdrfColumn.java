@@ -47,7 +47,7 @@ public class SdrfColumn {
 
     public SdrfColumn(Type type, String key) {
         if (type == null) {
-            throw new NullPointerException("Column type can't be null");
+            throw new IllegalArgumentException("column type == null");
         }
         this.type = type;
         setKey(key);
