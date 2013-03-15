@@ -126,25 +126,12 @@ public class SdrfSectionView extends Composite implements IsWidget {
     }
 
     private void updateColumns(List<SdrfColumn> newColumns) {
-        int colIndex = 0;
-        SdrfColumn col = allColumns.size() <= colIndex ? null : allColumns.get(colIndex);
-        for (int i = 0; i < newColumns.size(); i++) {
-            SdrfColumn newColumn = newColumns.get(i);
-            if (col == null) {
-                addColumn(newColumn);
-            } else if (!col.equals(newColumn)) {
-                insertColumn(newColumn, columnOffset + i);
-            } else {
-                if (colIndex + 1 < allColumns.size()) {
-                    col = allColumns.get(++colIndex);
-                } else {
-                    col = null;
-                }
-            }
+        for (SdrfColumn column : allColumns) {
+            removeColumn(columnOffset);
         }
 
-        for (int j = allColumns.size() - 1; j >= colIndex; j--) {
-            removeColumn(columnOffset + newColumns.size() + j);
+        for (SdrfColumn column : newColumns) {
+            addColumn(column);
         }
 
         allColumns = new ArrayList<SdrfColumn>();
