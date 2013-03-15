@@ -45,9 +45,22 @@
                         <g:center>
                             <g:ListBox ui:field="targetBox" height="100%" width="100%" visibleItemCount="10"/>
                         </g:center>
-                        <g:south size="30">
-                            <g:Button ui:field="deleteButton" width="100%">Delete Selected</g:Button>
-                        </g:south>
+                        <g:east size="30">
+                            <g:HTMLPanel>
+                                <table style="height:100%">
+                                    <tr>
+                                        <td valign="bottom">
+                                            <g:Button ui:field="deleteButton" width="100%" height="50px">&gt;</g:Button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top">
+                                            <g:Button ui:field="addButton" width="100%" height="50px">&lt;</g:Button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </g:HTMLPanel>
+                        </g:east>
                     </g:DockLayoutPanel>
                 </g:center>
                 <g:east size="300">
@@ -74,9 +87,6 @@
                         <g:center>
                             <g:ListBox ui:field="suggestBox" height="100%" width="100%" visibleItemCount="10"/>
                         </g:center>
-                        <g:south size="30">
-                            <g:Button ui:field="addButton" width="100%">Add Selected</g:Button>
-                        </g:south>
                     </g:DockLayoutPanel>
                 </g:east>
             </g:SplitLayoutPanel>
