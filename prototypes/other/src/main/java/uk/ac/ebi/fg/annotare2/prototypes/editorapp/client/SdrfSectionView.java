@@ -2,6 +2,7 @@ package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -43,6 +44,8 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
     private MyDataGrid<SdrfRow> dataGrid;
 
+    private ListDataProvider<SdrfRow> dataProvider;
+
     private final List<SdrfRow> allRows = new ArrayList<SdrfRow>();
 
     private List<SdrfColumn> allColumns = new ArrayList<SdrfColumn>();
@@ -83,7 +86,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
         pager.setDisplay(dataGrid);
 
-        ListDataProvider<SdrfRow> dataProvider = new ListDataProvider<SdrfRow>();
+        dataProvider = new ListDataProvider<SdrfRow>();
         dataProvider.addDataDisplay(dataGrid);
         dataProvider.getList().addAll(rows);
 
@@ -104,14 +107,38 @@ public class SdrfSectionView extends Composite implements IsWidget {
                 openColumnsDialog();
             }
         });
+
+        Button one1Button = new Button("1 : 1");
+        one1Button.setVisible(!isSectionFirst);
+        one1Button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                //TODO one-2-one rows
+            }
+        });
+
+        Button addRowButton = new Button("Add Row");
+        addRowButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                addRow();
+            }
+        });
+
         HorizontalPanel tableBar = new HorizontalPanel();
         tableBar.add(columnsButton);
-        tableBar.add(new Button("Add Row"));
-        tableBar.add(new Button("1 : 1"));
+        tableBar.add(addRowButton);
+        tableBar.add(one1Button);
+        tableBar.add(new Button("Delete Selected Rows"));
         tableBar.add(pager);
 
         tablePanel.addNorth(tableBar, 40);
         tablePanel.add(dataGrid);
+    }
+
+    private void addRow() {
+        List<SdrfRow> list = dataProvider.getList();
+        list.add(new SdrfRow(list.size(), section.getTitle() + "_" + list.size()));
     }
 
     private void openColumnsDialog() {
@@ -180,7 +207,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
     }
 
     private void addNameColumn(MyDataGrid<SdrfRow> dataGrid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
-        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new TextCell()) {
+        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new EditTextCell()) {
             @Override
             public String getValue(SdrfRow row) {
                 return row.getName();
@@ -203,7 +230,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
     }
 
     private void insertColumn(final SdrfColumn sdrfColumn, int beforeIndex) {
-        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new TextCell()) {
+        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new SdrfCell()) {
             @Override
             public String getValue(SdrfRow row) {
                 return row.getValue(sdrfColumn);
@@ -285,6 +312,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
         private SdrfRow(int index, String name) {
             this.index = index;
+            this.name = name;
         }
 
         public int getIndex() {
