@@ -3,14 +3,9 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
-   <g:DockLayoutPanel width="200px" height="150px">
-       <g:center>
-           <g:SimpleLayoutPanel ui:field="center"/>
-       </g:center>
-       <g:south size="40">
-           <g:HTMLPanel>
-               <g:Anchor ui:field="editLink">Edit options</g:Anchor>
-           </g:HTMLPanel>
-       </g:south>
-   </g:DockLayoutPanel>
+    <g:VerticalPanel>
+        <g:SimplePanel ui:field="center"/>
+        <g:Anchor ui:field="createLink" visible="false">option(create)</g:Anchor>
+        <g:Anchor ui:field="editLink">Manage options</g:Anchor>
+    </g:VerticalPanel>
 </ui:UiBinder>
