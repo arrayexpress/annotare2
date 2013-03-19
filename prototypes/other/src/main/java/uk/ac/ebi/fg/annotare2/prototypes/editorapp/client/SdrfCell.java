@@ -4,21 +4,22 @@ import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEvent;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEventHandler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.google.gwt.dom.client.BrowserEvents.*;
@@ -28,10 +29,6 @@ import static java.util.Arrays.asList;
  * @author Olga Melnichuk
  */
 public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
-
-    private final List<String> OPTIONS = asList("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten");
-
-    private static final int ESCAPE = 27;
 
     interface Template extends SafeHtmlTemplates {
         @Template("<input type=\"text\" value=\"{0}\" tabindex=\"-1\" style=\"width:100%;\"></input>")
@@ -98,8 +95,14 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
 
     private final SafeHtmlRenderer<String> renderer;
 
-    private PopupPanel panel;
+    private PopupPanel popup;
     private SdrfCellOptions optionList;
+
+    private final List<String> options;
+    private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
+    private Element lastParent;
+    private Context lastContext;
+    private ValueUpdater<String> valueUpdater;
 
     public SdrfCell() {
         this(SimpleSafeHtmlRenderer.getInstance());
@@ -113,28 +116,50 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
         if (renderer == null) {
             throw new IllegalArgumentException("renderer == null");
         }
+
+        this.options = new ArrayList<String>(asList("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"));
+        int index = 0;
+        for (String option : options) {
+            indexForOption.put(option, index++);
+        }
+
         this.renderer = renderer;
-        this.optionList = new SdrfCellOptions(OPTIONS);
-        this.optionList.addSelectionHandler(new SelectionEventHandler<String>() {
+        optionList = new SdrfCellOptions(options);
+        optionList.addSelectionHandler(new SelectionEventHandler<SdrfCellOptions.Selection>() {
             @Override
-            public void onSelection(SelectionEvent<String> event) {
-                setSelection(event.getSelection());
+            public void onSelection(SelectionEvent<SdrfCellOptions.Selection> event) {
+                SdrfCellOptions.Selection sel = event.getSelection();
+                if (sel.isCreateOption()) {
+                    createOption();
+                } else if (sel.isEditOption()) {
+                    editOptions();
+                } else {
+                   setSelection(sel.getValue());
+                }
             }
         });
-        this.panel = new PopupPanel(false, false);
-        // new PopupPanel(false, false) {
-        //  @Override
-        // protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-        // if (Event.ONKEYUP == event.getTypeInt()) {
-        //    if (event.getNativeEvent().getKeyCode() == ESCAPE) {
-        // Dismiss when escape is pressed
-        //        panel.hide();
-        //    }
-        // }
-        // }
-        // };
-        panel.setPreviewingAllNativeEvents(true);
-        panel.add(optionList);
+
+        popup = new PopupPanel(true, false) /*{
+            @Override
+            protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+                if (Event.ONKEYUP == event.getTypeInt()) {
+                    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                        cancelAndClose();
+                    }
+                }
+            }
+        }*/;
+        popup.addCloseHandler(new CloseHandler<PopupPanel>() {
+            @Override
+            public void onClose(CloseEvent<PopupPanel> event) {
+                if (event.isAutoClosed()) {
+                    cancel();
+                }
+                popupClosed();
+            }
+        });
+        popup.setPreviewingAllNativeEvents(true);
+        popup.add(optionList);
     }
 
     @Override
@@ -180,10 +205,14 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
     @Override
     public void onBrowserEvent(Context context, Element parent, String value,
                                NativeEvent event, ValueUpdater<String> valueUpdater) {
+        lastParent = parent;
+        lastContext = context;
+        this.valueUpdater = valueUpdater;
+
         Object key = context.getKey();
         ViewData viewData = getViewData(key);
         if (viewData != null && viewData.isEditing()) {
-            editEvent(context, parent, value, viewData, event, valueUpdater);
+            editEvent(event, viewData);
         } else {
             String type = event.getType();
             int keyCode = event.getKeyCode();
@@ -201,83 +230,111 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
         }
     }
 
-    protected void editEvent(Context context, Element parent, String value, ViewData viewData, NativeEvent event,
-                             ValueUpdater<String> valueUpdater) {
+    protected void editEvent(NativeEvent event, ViewData viewData) {
         String type = event.getType();
         boolean keyUp = KEYUP.equals(type);
         boolean keyDown = KEYDOWN.equals(type);
         if (keyUp || keyDown) {
             int keyCode = event.getKeyCode();
             if (keyUp && keyCode == KeyCodes.KEY_ENTER) {
-                commit(context, parent, viewData, valueUpdater);
+                setSelection(optionList.getSelectedValue());
             } else if (keyUp && keyCode == KeyCodes.KEY_ESCAPE) {
-                setViewData(context.getKey(), null);
-                cancel(context, parent, value);
+                cancelAndClose();
+            } else if (keyCode == KeyCodes.KEY_UP) {
+                optionList.moveUp();
+            } else if (keyCode == KeyCodes.KEY_DOWN) {
+                optionList.moveDown();
             } else {
-                String v = updateViewData(parent, viewData, true);
-                optionList.filter(v);
+                filterOptionList(updateViewData(lastParent, viewData, true));
             }
-        } else if (BLUR.equals(type)) {
-           /* EventTarget eventTarget = event.getEventTarget();
-            if (Element.is(eventTarget)) {
-                Element target = Element.as(eventTarget);
-                if ("input".equals(target.getTagName().toLowerCase())) {
-                    commit(context, parent, viewData, valueUpdater);
-                } else {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            }*/
         }
     }
 
+    private void createOption() {
+        //TODO
+    }
+
+    private void editOptions() {
+       //TODO
+    }
+
+    private void cancelAndClose() {
+        cancel();
+        popup.hide();
+    }
+
+    private void cancel() {
+        String oldValue = getViewData(lastContext.getKey()).getOriginal();
+        setViewData(lastContext.getKey(), null);
+        setValue(lastContext, lastParent, oldValue);
+    }
+
     private void setSelection(String selection) {
-          // TODO
+        InputElement input = getInputElement(lastParent);
+        input.setValue(selection);
+        commit(lastContext, lastParent, getViewData(lastContext.getKey()), valueUpdater);
+        popup.hide();
     }
 
     private void commit(Context context, Element parent, ViewData viewData, ValueUpdater<String> valueUpdater) {
         String value = updateViewData(parent, viewData, false);
-        clearInput(getInputElement(parent));
         setValue(context, parent, viewData.getOriginal());
         if (valueUpdater != null) {
             valueUpdater.update(value);
         }
     }
 
-    private void cancel(Context context, Element parent, String value) {
-        clearInput(getInputElement(parent));
-        setValue(context, parent, value);
-    }
-
     private String updateViewData(Element parent, ViewData viewData, boolean isEditing) {
-        InputElement input = (InputElement) parent.getFirstChild();
+        InputElement input = getInputElement(parent);
         String value = input.getValue();
         viewData.setText(value);
         viewData.setEditing(isEditing);
         return value;
     }
 
-
     private void edit(Context context, Element parent, String value) {
         setValue(context, parent, value);
         InputElement input = getInputElement(parent);
         showPopup(parent);
         input.focus();
+        filterOptionList("");
+    }
+
+    private void filterOptionList(String v) {
+        optionList.filter(v);
     }
 
     private void showPopup(Element parent) {
         final InputElement input = getInputElement(parent);
-        if (panel.isAttached()) {
-            panel.hide();
+        if (popup.isAttached()) {
+            popup.hide();
         }
-        panel.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+        popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             public void setPosition(int offsetWidth, int offsetHeight) {
-                panel.setPopupPosition(input.getAbsoluteLeft(),
+                popup.setPopupPosition(input.getAbsoluteLeft(),
                         input.getAbsoluteBottom());
             }
         });
+        popup.addAutoHidePartner(input);
     }
 
+    private void popupClosed() {
+        InputElement input = getInputElement(lastParent);
+        popup.removeAutoHidePartner(input);
+        clearInput(input);
+        lastContext = null;
+        lastParent = null;
+    }
+
+/*
+    private int getSelectedIndex(String value) {
+        Integer index = indexForOption.get(value);
+        if (index == null) {
+            return -1;
+        }
+        return index;
+    }
+*/
     private InputElement getInputElement(Element parent) {
         return parent.getFirstChild().cast();
     }
