@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.HasSelectionHandlers;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEvent;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEventHandler;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,7 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
         table.getElement().getStyle().setWidth(100.0, Unit.PCT);
         table.getElement().getStyle().setTableLayout(TableLayout.FIXED);
         addEmptyRow();
-        for (SdrfSection s : SdrfSection.values()) {
+        for (SdrfSection s : SdrfData.get().getSections()) {
             addRow(s);
         }
 
@@ -221,10 +222,10 @@ public class SdrfNavigationPanel extends FlexTable implements IsWidget, HasSelec
     private PopupPanel createPopup() {
         if (popup == null) {
             MenuBar menuBar = new MenuBar(true);
-            for (final SdrfSection o : SdrfSection.values()) {
+            for (final SdrfSection.Type o : SdrfSection.Type.values()) {
                 menuBar.addItem(o.getTitle(), new Command() {
                     public void execute() {
-                        addRow(o);
+                        addRow(SdrfData.get().addSection(o));
                         popup.hide();
                     }
                 });

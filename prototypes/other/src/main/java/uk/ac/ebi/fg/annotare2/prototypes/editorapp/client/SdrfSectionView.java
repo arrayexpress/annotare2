@@ -21,8 +21,8 @@ import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.*;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfData;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfValue;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfValueStorage;
 
 import java.util.*;
 
@@ -95,6 +95,9 @@ public class SdrfSectionView extends Composite implements IsWidget {
         dataGrid.addColumnSortHandler(sortHandler);
 
         initDefaultColumns(dataGrid, sortHandler);
+        for (SdrfColumn col : section.getColumns()) {
+            addColumn(col);
+        }
 
         for (SdrfColumn column : columns) {
             addColumn(column);
@@ -142,11 +145,13 @@ public class SdrfSectionView extends Composite implements IsWidget {
     }
 
     private void openColumnsDialog() {
-        SdrfColumnsDialog dialog = new SdrfColumnsDialog(section.getColumnTypes(isSectionFirst), allColumns);
+        SdrfColumnsDialog dialog = new SdrfColumnsDialog(section.getType().getColumnTypes(isSectionFirst), allColumns);
         dialog.addSelectionHandler(new SelectionHandler<List<SdrfColumn>>() {
             @Override
             public void onSelection(SelectionEvent<List<SdrfColumn>> event) {
-                updateColumns(event.getSelectedItem());
+                List<SdrfColumn> columns = event.getSelectedItem();
+                updateColumns(columns);
+                section.setColumns(columns);
             }
         });
         dialog.show();
@@ -231,7 +236,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
     private void insertColumn(final SdrfColumn sdrfColumn, int beforeIndex) {
         List<String> options = new ArrayList<String>();
-        for(SdrfValue v : SdrfValueStorage.INSTANCE.getAll(section, sdrfColumn)) {
+        for(SdrfValue v : SdrfData.get().getValuesFor(section, sdrfColumn)) {
             options.add(v.getName());
         }
 
@@ -254,7 +259,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
                 dialog.setPresenter(new SdrfCellNewValueDialog.Presenter() {
                     @Override
                     public boolean save(SdrfValue value) {
-                        return SdrfValueStorage.INSTANCE.save(value);
+                        return SdrfData.get().saveValue(value);
                     }
                 });
                 dialog.show();
