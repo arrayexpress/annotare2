@@ -113,7 +113,18 @@ public class SdrfSectionView extends Composite implements IsWidget {
         addRowButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                addRow();
+                if (isSectionFirst) {
+                    addRow();
+                    return;
+                }
+                SdrfSection prev = SdrfData.get().getPrevious(section);
+                AddRowDialog dialog = new AddRowDialog(prev, section);
+                dialog.addSelectionHandler(new SelectionHandler<List<String>>() {
+                    @Override
+                    public void onSelection(SelectionEvent<List<String>> event) {
+                        addRow();
+                    }
+                });
             }
         });
 

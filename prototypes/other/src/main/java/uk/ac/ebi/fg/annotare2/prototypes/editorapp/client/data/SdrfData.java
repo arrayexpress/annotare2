@@ -54,4 +54,14 @@ public class SdrfData {
         return section;
     }
 
+    public SdrfSection getPrevious(SdrfSection section) {
+        SdrfSection prev  = null;
+        for (SdrfSection s : sections) {
+            if (section.equals(s)) {
+                return prev;
+            }
+            prev = s;
+        }
+        return null;
+    }
 }

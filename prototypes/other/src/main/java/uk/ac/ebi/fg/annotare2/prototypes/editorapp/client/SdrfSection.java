@@ -103,4 +103,13 @@ public class SdrfSection {
         rows.add(row);
         return row;
     }
+
+    public List<String> getRowNames() {
+        List<String> names = new ArrayList<String>();
+        for (SdrfRow r : rows) {
+            names.add(r.getName());
+        }
+        return names;
+    }
+
 }

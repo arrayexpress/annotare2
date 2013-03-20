@@ -54,10 +54,10 @@ public class SdrfColumnsDialog extends DialogBox implements HasSelectionHandlers
     @UiField
     TextBox columnKey;
 
-    private final List<SdrfColumn> columns = new ArrayList<SdrfColumn>();
-
     interface Binder extends UiBinder<Widget, SdrfColumnsDialog> {
     }
+
+    private final List<SdrfColumn> columns = new ArrayList<SdrfColumn>();
 
     public SdrfColumnsDialog(List<SdrfColumn.Type> columnTypes, List<SdrfColumn> initColumns) {
         setText("Add/Delete Columns");
