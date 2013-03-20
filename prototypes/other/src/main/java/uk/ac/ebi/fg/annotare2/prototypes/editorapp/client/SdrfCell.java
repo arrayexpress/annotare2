@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.google.gwt.dom.client.BrowserEvents.*;
-import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -99,17 +98,17 @@ public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.Vie
     private PopupPanel popup;
     private SdrfCellOptions optionList;
 
-    private final List<String> options;
+    private final List<String> allOptions = new ArrayList<String>();
     private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
     private Element lastParent;
     private Context lastContext;
     private ValueUpdater<String> valueUpdater;
 
-    public SdrfCell() {
-        this(SimpleSafeHtmlRenderer.getInstance());
+    public SdrfCell(List<String> options) {
+        this(SimpleSafeHtmlRenderer.getInstance(), options);
     }
 
-    public SdrfCell(SafeHtmlRenderer<String> renderer) {
+    public SdrfCell(SafeHtmlRenderer<String> renderer, List<String> options) {
         super(CLICK, KEYUP, KEYDOWN, BLUR);
         if (template == null) {
             template = GWT.create(Template.class);
@@ -118,11 +117,12 @@ public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.Vie
             throw new IllegalArgumentException("renderer == null");
         }
 
-        this.options = new ArrayList<String>(asList("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"));
         int index = 0;
         for (String option : options) {
             indexForOption.put(option, index++);
         }
+
+        allOptions.addAll(options);
 
         this.renderer = renderer;
         optionList = new SdrfCellOptions(options);
@@ -261,8 +261,9 @@ public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.Vie
 
                     @Override
                     public void onSuccess(String result) {
-                        if (!options.contains(result)) {
-                            options.add(result);
+                        if (!allOptions.contains(result)) {
+                            allOptions.add(result);
+                            optionList.setOptions(allOptions);
                         }
                         setSelectionAndClose(result);
                     }

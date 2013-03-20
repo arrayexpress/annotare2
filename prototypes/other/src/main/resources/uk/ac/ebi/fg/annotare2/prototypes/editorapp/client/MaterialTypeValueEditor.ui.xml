@@ -4,6 +4,23 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <g:HTMLPanel>
-        TBA
+       <table>
+           <tr>
+               <td colspan="3">
+                   <g:TextBox enabled="false" ui:field="nameBox" width="100%"/>
+               </td>
+           </tr>
+           <tr>
+               <td>
+                  Value:
+               </td>
+               <td>
+                   <g:TextBox ui:field="valueBox" width="200px"/>
+               </td>
+               <td>
+                   <g:ListBox ui:field="sourceList" width="150px"/>
+               </td>
+           </tr>
+       </table>
     </g:HTMLPanel>
 </ui:UiBinder>

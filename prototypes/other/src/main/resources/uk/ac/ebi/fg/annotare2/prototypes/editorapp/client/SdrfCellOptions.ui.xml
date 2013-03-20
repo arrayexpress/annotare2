@@ -6,6 +6,6 @@
     <g:VerticalPanel>
         <g:SimplePanel ui:field="center"/>
         <g:Anchor ui:field="createLink" visible="false">option(create)</g:Anchor>
-        <g:Anchor ui:field="editLink">Manage options</g:Anchor>
+        <g:Anchor ui:field="editLink">Manage values</g:Anchor>
     </g:VerticalPanel>
 </ui:UiBinder>

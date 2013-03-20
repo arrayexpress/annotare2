@@ -36,7 +36,7 @@ public class SdrfCellOptions extends Composite implements IsWidget, HasSelection
 
     private final ScrollPanel scrollPanel;
 
-    private List<String> options = new ArrayList<String>();
+    private List<String> options;
     private Selection current;
 
     interface Binder extends UiBinder<Widget, SdrfCellOptions> {
@@ -65,8 +65,8 @@ public class SdrfCellOptions extends Composite implements IsWidget, HasSelection
         scrollPanel = new ScrollPanel(optionList);
         center.add(scrollPanel);
 
-        this.options.addAll(options);
-        setOptions(this.options);
+        setOptions(options);
+        renderOptions(this.options);
     }
 
     @Override
@@ -86,7 +86,11 @@ public class SdrfCellOptions extends Composite implements IsWidget, HasSelection
         //TODO
     }
 
-    private void setOptions(List<String> options) {
+    public void setOptions(List<String> options) {
+        this.options = new ArrayList<String>(options);
+    }
+
+    private void renderOptions(List<String> options) {
         scrollPanel.setHeight(options.size() > 5 ? "160px" : "auto");
         optionList.clearItems();
         for (final String o : options) {
@@ -116,8 +120,8 @@ public class SdrfCellOptions extends Composite implements IsWidget, HasSelection
                 }
             }
         }
-        setOptions(filtered);
-        showOptionCreateLink(value, filtered.isEmpty());
+        renderOptions(filtered);
+        showOptionCreateLink(value, filtered.isEmpty() && value.trim().length() > 0);
     }
 
     private void showOptionCreateLink(String value, boolean show) {

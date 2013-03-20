@@ -71,9 +71,9 @@ public class SdrfColumn {
         return type.getTitle(key);
     }
 
-    public SdrfCellValueEditor createEditor(String name) {
+    public SdrfCellValueEditor createEditor(String name, SdrfSection section) {
         switch (type) {
-            case  MATERIAL_TYPE: return new MaterialTypeValueEditor(name);
+            case  MATERIAL_TYPE: return new MaterialTypeValueEditor(name, section, this);
         }
         return null;
     }

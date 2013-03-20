@@ -21,6 +21,8 @@ import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.*;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfValue;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfValueStorage;
 
 import java.util.*;
 
@@ -228,7 +230,12 @@ public class SdrfSectionView extends Composite implements IsWidget {
     }
 
     private void insertColumn(final SdrfColumn sdrfColumn, int beforeIndex) {
-        SdrfCell sdrfCell = new SdrfCell() {
+        List<String> options = new ArrayList<String>();
+        for(SdrfValue v : SdrfValueStorage.INSTANCE.getAll(section, sdrfColumn)) {
+            options.add(v.getName());
+        }
+
+        SdrfCell sdrfCell = new SdrfCell(options) {
             @Override
             protected void editAllOptions() {
                 //TODO
@@ -236,7 +243,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
             @Override
             protected void createOption(String optionName, final Callback<String, String> callback) {
-                SdrfCellNewValueDialog dialog = new SdrfCellNewValueDialog(sdrfColumn, optionName) {
+                SdrfCellNewValueDialog dialog = new SdrfCellNewValueDialog(section, sdrfColumn, optionName) {
                     public void ok(String result) {
                          callback.onSuccess(result);
                     }
@@ -244,7 +251,12 @@ public class SdrfSectionView extends Composite implements IsWidget {
                         callback.onFailure(null);
                     }
                 };
-                //dialog.setPresenter(this);
+                dialog.setPresenter(new SdrfCellNewValueDialog.Presenter() {
+                    @Override
+                    public boolean save(SdrfValue value) {
+                        return SdrfValueStorage.INSTANCE.save(value);
+                    }
+                });
                 dialog.show();
             }
         };
