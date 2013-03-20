@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Olga Melnichuk
  */
 public class MenuItem extends Composite implements HasText, HasClickHandlers {
+
     interface Binder extends UiBinder<Widget, MenuItem> {
         Binder BINDER = GWT.create(Binder.class);
     }

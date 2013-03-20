@@ -71,6 +71,13 @@ public class SdrfColumn {
         return type.getTitle(key);
     }
 
+    public SdrfCellValueEditor createEditor(String name) {
+        switch (type) {
+            case  MATERIAL_TYPE: return new MaterialTypeValueEditor(name);
+        }
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

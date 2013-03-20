@@ -4,16 +4,14 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -230,7 +228,28 @@ public class SdrfSectionView extends Composite implements IsWidget {
     }
 
     private void insertColumn(final SdrfColumn sdrfColumn, int beforeIndex) {
-        Column<SdrfRow, String> column = new Column<SdrfRow, String>(new SdrfCell()) {
+        SdrfCell sdrfCell = new SdrfCell() {
+            @Override
+            protected void editAllOptions() {
+                //TODO
+            }
+
+            @Override
+            protected void createOption(String optionName, final Callback<String, String> callback) {
+                SdrfCellNewValueDialog dialog = new SdrfCellNewValueDialog(sdrfColumn, optionName) {
+                    public void ok(String result) {
+                         callback.onSuccess(result);
+                    }
+                    public  void cancel() {
+                        callback.onFailure(null);
+                    }
+                };
+                //dialog.setPresenter(this);
+                dialog.show();
+            }
+        };
+
+        Column<SdrfRow, String> column = new Column<SdrfRow, String>(sdrfCell) {
             @Override
             public String getValue(SdrfRow row) {
                 return row.getValue(sdrfColumn);

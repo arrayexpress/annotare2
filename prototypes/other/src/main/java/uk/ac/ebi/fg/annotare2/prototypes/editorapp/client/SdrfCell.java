@@ -2,6 +2,7 @@ package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -28,7 +29,7 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
+public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
 
     interface Template extends SafeHtmlTemplates {
         @Template("<input type=\"text\" value=\"{0}\" tabindex=\"-1\" style=\"width:100%;\"></input>")
@@ -134,7 +135,7 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
                 } else if (sel.isEditOption()) {
                     editOptions();
                 } else {
-                   setSelection(sel.getValue());
+                    setSelectionAndClose(sel.getValue());
                 }
             }
         });
@@ -237,7 +238,7 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
         if (keyUp || keyDown) {
             int keyCode = event.getKeyCode();
             if (keyUp && keyCode == KeyCodes.KEY_ENTER) {
-                setSelection(optionList.getSelectedValue());
+                setSelectionAndClose(optionList.getSelectedValue());
             } else if (keyUp && keyCode == KeyCodes.KEY_ESCAPE) {
                 cancelAndClose();
             } else if (keyCode == KeyCodes.KEY_UP) {
@@ -251,11 +252,26 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
     }
 
     private void createOption() {
-        //TODO
+        createOption(getInputElement(lastParent).getValue(),
+                new Callback<String, String>() {
+                    @Override
+                    public void onFailure(String reason) {
+                        cancelAndClose();
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        if (!options.contains(result)) {
+                            options.add(result);
+                        }
+                        setSelectionAndClose(result);
+                    }
+                });
     }
 
     private void editOptions() {
-       //TODO
+        cancelAndClose();
+        editAllOptions();
     }
 
     private void cancelAndClose() {
@@ -269,7 +285,7 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
         setValue(lastContext, lastParent, oldValue);
     }
 
-    private void setSelection(String selection) {
+    private void setSelectionAndClose(String selection) {
         InputElement input = getInputElement(lastParent);
         input.setValue(selection);
         commit(lastContext, lastParent, getViewData(lastContext.getKey()), valueUpdater);
@@ -326,15 +342,15 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
         lastParent = null;
     }
 
-/*
-    private int getSelectedIndex(String value) {
-        Integer index = indexForOption.get(value);
-        if (index == null) {
-            return -1;
+    /*
+        private int getSelectedIndex(String value) {
+            Integer index = indexForOption.get(value);
+            if (index == null) {
+                return -1;
+            }
+            return index;
         }
-        return index;
-    }
-*/
+    */
     private InputElement getInputElement(Element parent) {
         return parent.getFirstChild().cast();
     }
@@ -345,5 +361,9 @@ public class SdrfCell extends AbstractEditableCell<String, SdrfCell.ViewData> {
         else if ($doc.selection)
             $doc.selection.clear();
     }-*/;
+
+    protected abstract void editAllOptions();
+
+    protected abstract void createOption(String optionName, Callback<String, String> callback);
 
 }
