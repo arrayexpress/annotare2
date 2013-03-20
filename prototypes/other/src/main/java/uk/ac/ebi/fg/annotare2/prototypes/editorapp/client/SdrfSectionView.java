@@ -46,10 +46,6 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
     private ListDataProvider<SdrfRow> dataProvider;
 
-    private final List<SdrfRow> allRows = new ArrayList<SdrfRow>();
-
-    private List<SdrfColumn> allColumns = new ArrayList<SdrfColumn>();
-
     private int columnOffset;
 
     interface Binder extends UiBinder<Widget, SdrfSectionView> {
@@ -64,7 +60,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         this.isSectionFirst = isSectionFirst;
 
         title.setText(section.getTitle());
-        initTable(allRows, allColumns);
+        initTable(section.getRows(), section.getColumns());
     }
 
     private void initTable(List<SdrfRow> rows, List<SdrfColumn> columns) {
@@ -95,7 +91,7 @@ public class SdrfSectionView extends Composite implements IsWidget {
         dataGrid.addColumnSortHandler(sortHandler);
 
         initDefaultColumns(dataGrid, sortHandler);
-        for (SdrfColumn col : section.getColumns()) {
+        for (SdrfColumn col : columns) {
             addColumn(col);
         }
 
@@ -141,33 +137,30 @@ public class SdrfSectionView extends Composite implements IsWidget {
 
     private void addRow() {
         List<SdrfRow> list = dataProvider.getList();
-        list.add(new SdrfRow(list.size(), section.getTitle() + "_" + list.size()));
+        list.add(section.addRow(section.getTitle() + "_" + list.size()));
     }
 
     private void openColumnsDialog() {
-        SdrfColumnsDialog dialog = new SdrfColumnsDialog(section.getType().getColumnTypes(isSectionFirst), allColumns);
+        SdrfColumnsDialog dialog = new SdrfColumnsDialog(section.getType().getColumnTypes(isSectionFirst), section.getColumns());
         dialog.addSelectionHandler(new SelectionHandler<List<SdrfColumn>>() {
             @Override
             public void onSelection(SelectionEvent<List<SdrfColumn>> event) {
                 List<SdrfColumn> columns = event.getSelectedItem();
                 updateColumns(columns);
-                section.setColumns(columns);
             }
         });
         dialog.show();
     }
 
     private void updateColumns(List<SdrfColumn> newColumns) {
-        for (SdrfColumn column : allColumns) {
+        for (SdrfColumn column : section.getColumns()) {
             removeColumn(columnOffset);
         }
 
         for (SdrfColumn column : newColumns) {
             addColumn(column);
         }
-
-        allColumns = new ArrayList<SdrfColumn>();
-        allColumns.addAll(newColumns);
+        section.setColumns(newColumns);
     }
 
     private void initDefaultColumns(MyDataGrid<SdrfRow> grid, ColumnSortEvent.ListHandler<SdrfRow> sortHandler) {
@@ -338,29 +331,6 @@ public class SdrfSectionView extends Composite implements IsWidget {
                 handlerManager = new HandlerManager(this);
             }
             return handlerManager;
-        }
-    }
-
-    private static class SdrfRow {
-        private final Map<SdrfColumn, String> values = new HashMap<SdrfColumn, String>();
-        private final int index;
-        private String name;
-
-        private SdrfRow(int index, String name) {
-            this.index = index;
-            this.name = name;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getValue(SdrfColumn column) {
-            return values.get(column);
         }
     }
 }

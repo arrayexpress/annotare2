@@ -72,6 +72,7 @@ public class SdrfSection {
 
     private final Type type;
     private Set<SdrfColumn> columns = new LinkedHashSet<SdrfColumn>();
+    private List<SdrfRow> rows = new ArrayList<SdrfRow>();
 
     public SdrfSection(Type type) {
         this.type = type;
@@ -91,5 +92,15 @@ public class SdrfSection {
 
     public List<SdrfColumn> getColumns() {
         return new ArrayList<SdrfColumn>(columns);
+    }
+
+    public List<SdrfRow> getRows() {
+        return new ArrayList<SdrfRow>(rows);
+    }
+
+    public SdrfRow addRow(String name) {
+        SdrfRow row = new SdrfRow(rows.size(), name);
+        rows.add(row);
+        return row;
     }
 }
