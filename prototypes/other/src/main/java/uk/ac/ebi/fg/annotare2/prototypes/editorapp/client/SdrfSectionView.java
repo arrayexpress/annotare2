@@ -1,9 +1,6 @@
 package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.EditTextCell;
-import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.cell.client.*;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -91,10 +88,6 @@ public class SdrfSectionView extends Composite implements IsWidget {
         dataGrid.addColumnSortHandler(sortHandler);
 
         initDefaultColumns(dataGrid, sortHandler);
-        for (SdrfColumn col : columns) {
-            addColumn(col);
-        }
-
         for (SdrfColumn column : columns) {
             addColumn(column);
         }
@@ -265,6 +258,12 @@ public class SdrfSectionView extends Composite implements IsWidget {
                 return row.getValue(sdrfColumn);
             }
         };
+        column.setFieldUpdater(new FieldUpdater<SdrfRow, String>() {
+            @Override
+            public void update(int index, SdrfRow row, String value) {
+                row.setValue(sdrfColumn, value);
+            }
+        });
         column.setSortable(true);
         dataGrid.insertResizableColumn(column, sdrfColumn.getTitle(), beforeIndex);
         dataGrid.setColumnWidth(beforeIndex - 1, 150, Style.Unit.PX);

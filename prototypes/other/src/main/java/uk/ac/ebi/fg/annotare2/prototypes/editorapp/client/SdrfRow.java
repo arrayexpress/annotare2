@@ -27,4 +27,8 @@ public class SdrfRow {
     public String getValue(SdrfColumn column) {
         return values.get(column);
     }
+
+    public void setValue(SdrfColumn column, String value) {
+        values.put(column, value);
+    }
 }
