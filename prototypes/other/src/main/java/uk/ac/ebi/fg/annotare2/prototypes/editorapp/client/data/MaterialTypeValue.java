@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store;
+package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data;
 
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.SdrfColumn;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.SdrfSection;

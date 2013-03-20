@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.HasSelectionHandlers;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEvent;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEventHandler;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfData;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfData;
 
 import java.util.ArrayList;
 import java.util.List;

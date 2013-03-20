@@ -21,8 +21,8 @@ import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.*;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfData;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfValue;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfData;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfValue;
 
 import java.util.*;
 

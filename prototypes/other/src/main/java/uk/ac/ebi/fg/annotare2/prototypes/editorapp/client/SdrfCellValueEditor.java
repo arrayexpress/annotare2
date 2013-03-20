@@ -1,7 +1,7 @@
 package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfValue;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfValue;
 
 /**
  * @author Olga Melnichuk

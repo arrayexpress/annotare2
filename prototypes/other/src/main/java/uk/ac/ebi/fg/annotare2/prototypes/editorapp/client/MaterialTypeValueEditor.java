@@ -2,12 +2,11 @@ package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.MaterialTypeValue;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.SdrfValue;
-import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.store.ValueSource;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.MaterialTypeValue;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfValue;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.ValueSource;
 
 /**
  * @author Olga Melnichuk
