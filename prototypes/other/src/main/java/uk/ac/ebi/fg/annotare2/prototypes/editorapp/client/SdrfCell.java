@@ -16,6 +16,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.PopupPanel;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfData;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfValue;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEvent;
 import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.event.SelectionEventHandler;
 
@@ -104,11 +106,11 @@ public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.Vie
     private Context lastContext;
     private ValueUpdater<String> valueUpdater;
 
-    public SdrfCell(List<String> options) {
-        this(SimpleSafeHtmlRenderer.getInstance(), options);
+    public SdrfCell(SdrfSection section, SdrfColumn column) {
+        this(SimpleSafeHtmlRenderer.getInstance(), section, column);
     }
 
-    public SdrfCell(SafeHtmlRenderer<String> renderer, List<String> options) {
+    public SdrfCell(SafeHtmlRenderer<String> renderer, SdrfSection section, SdrfColumn column) {
         super(CLICK, KEYUP, KEYDOWN, BLUR);
         if (template == null) {
             template = GWT.create(Template.class);
@@ -118,14 +120,13 @@ public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.Vie
         }
 
         int index = 0;
-        for (String option : options) {
-            indexForOption.put(option, index++);
+        for (SdrfValue v : SdrfData.get().getValuesFor(section, column)) {
+            indexForOption.put(v.getName(), index++);
+            allOptions.add(v.getName());
         }
 
-        allOptions.addAll(options);
-
         this.renderer = renderer;
-        optionList = new SdrfCellOptions(options);
+        optionList = new SdrfCellOptions(allOptions);
         optionList.addSelectionHandler(new SelectionEventHandler<SdrfCellOptions.Selection>() {
             @Override
             public void onSelection(SelectionEvent<SdrfCellOptions.Selection> event) {
@@ -272,7 +273,7 @@ public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.Vie
 
     private void editOptions() {
         cancelAndClose();
-        editAllOptions();
+        manageOptions();
     }
 
     private void cancelAndClose() {
@@ -363,7 +364,7 @@ public abstract class SdrfCell extends AbstractEditableCell<String, SdrfCell.Vie
             $doc.selection.clear();
     }-*/;
 
-    protected abstract void editAllOptions();
+    protected abstract void manageOptions();
 
     protected abstract void createOption(String optionName, Callback<String, String> callback);
 

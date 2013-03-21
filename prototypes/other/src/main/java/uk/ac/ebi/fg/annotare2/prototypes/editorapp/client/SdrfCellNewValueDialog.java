@@ -41,7 +41,7 @@ public class SdrfCellNewValueDialog extends DialogBox {
         setModal(true);
 
         setWidget(Binder.BINDER.createAndBindUi(this));
-        editor = column.createEditor(name, section);
+        editor = column.createEditor(null, name, section);
         content.setWidget(editor);
 
         center();

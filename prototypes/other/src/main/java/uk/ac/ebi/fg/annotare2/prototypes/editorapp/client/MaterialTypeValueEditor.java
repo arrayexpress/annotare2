@@ -30,15 +30,28 @@ public class MaterialTypeValueEditor extends Composite implements SdrfCellValueE
 
     private final SdrfColumn column;
 
-    public MaterialTypeValueEditor(String name, SdrfSection section, SdrfColumn column) {
+    public MaterialTypeValueEditor(MaterialTypeValue value, String name, SdrfSection section, SdrfColumn column) {
         this.section = section;
         this.column = column;
 
         initWidget(Binder.BINDER.createAndBindUi(this));
-        nameBox.setValue(name);
-        valueBox.setValue(name);
         for (ValueSource vs : ValueSource.ALL) {
             sourceList.addItem(vs.getName());
+        }
+
+        if (value == null) {
+            nameBox.setValue(name);
+            valueBox.setValue(name);
+        } else {
+            nameBox.setValue(value.getName());
+            valueBox.setValue(value.getValue());
+            for(int i=0;i<sourceList.getItemCount(); i++) {
+                String source = sourceList.getValue(i);
+                if (source.equals(value.getSource().getName())) {
+                    sourceList.setItemSelected(i, true);
+                    break;
+                }
+            }
         }
     }
 

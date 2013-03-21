@@ -1,5 +1,8 @@
 package uk.ac.ebi.fg.annotare2.prototypes.editorapp.client;
 
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.MaterialTypeValue;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfValue;
+
 /**
  * @author Olga Melnichuk
  */
@@ -71,9 +74,9 @@ public class SdrfColumn {
         return type.getTitle(key);
     }
 
-    public SdrfCellValueEditor createEditor(String name, SdrfSection section) {
+    public SdrfCellValueEditor createEditor(SdrfValue value, String name, SdrfSection section) {
         switch (type) {
-            case  MATERIAL_TYPE: return new MaterialTypeValueEditor(name, section, this);
+            case  MATERIAL_TYPE: return new MaterialTypeValueEditor((MaterialTypeValue)value, name, section, this);
         }
         return null;
     }

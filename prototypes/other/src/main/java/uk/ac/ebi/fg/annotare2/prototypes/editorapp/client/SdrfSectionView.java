@@ -232,15 +232,10 @@ public class SdrfSectionView extends Composite implements IsWidget {
     }
 
     private void insertColumn(final SdrfColumn sdrfColumn, int beforeIndex) {
-        List<String> options = new ArrayList<String>();
-        for(SdrfValue v : SdrfData.get().getValuesFor(section, sdrfColumn)) {
-            options.add(v.getName());
-        }
-
-        SdrfCell sdrfCell = new SdrfCell(options) {
+        SdrfCell sdrfCell = new SdrfCell(section, sdrfColumn) {
             @Override
-            protected void editAllOptions() {
-                //TODO
+            protected void manageOptions() {
+                (new ManageValuesDialog(section)).show();
             }
 
             @Override

@@ -13,13 +13,14 @@ public class SdrfData {
     private static SdrfData INSTANCE = new SdrfData();
 
     private final List<SdrfSection> sections = new ArrayList<SdrfSection>();
+
     {
-        for(SdrfSection.Type t : SdrfSection.Type.values()) {
+        for (SdrfSection.Type t : SdrfSection.Type.values()) {
             sections.add(new SdrfSection(t));
         }
     }
 
-    private final Set<SdrfValue> values = new HashSet<SdrfValue>();
+    private final Set<SdrfValue> values = new LinkedHashSet<SdrfValue>();
 
     private SdrfData() {
     }
@@ -38,11 +39,20 @@ public class SdrfData {
         return list;
     }
 
+    private SdrfValue findValue(String name, SdrfSection section, SdrfColumn column) {
+        List<SdrfValue> values = getValuesFor(section, column);
+        for(SdrfValue v : values) {
+            if (name.equals(v.getName())) {
+                return v;
+            }
+        }
+        return null;
+    }
+
 
     public List<SdrfSection> getSections() {
         return new ArrayList<SdrfSection>(sections);
     }
-
 
     public static SdrfData get() {
         return INSTANCE;
@@ -55,7 +65,7 @@ public class SdrfData {
     }
 
     public SdrfSection getPrevious(SdrfSection section) {
-        SdrfSection prev  = null;
+        SdrfSection prev = null;
         for (SdrfSection s : sections) {
             if (section.equals(s)) {
                 return prev;
@@ -63,5 +73,13 @@ public class SdrfData {
             prev = s;
         }
         return null;
+    }
+
+    public void addOrReplace(String name, SdrfValue value) {
+        SdrfValue old = findValue(name, value.getSection(), value.getColumn());
+        if (old != null) {
+            values.remove(old);
+        }
+        saveValue(value);
     }
 }

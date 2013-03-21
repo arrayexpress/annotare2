@@ -20,6 +20,14 @@ public class MaterialTypeValue extends SdrfValue {
         this.source = source;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public ValueSource getSource() {
+        return source;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

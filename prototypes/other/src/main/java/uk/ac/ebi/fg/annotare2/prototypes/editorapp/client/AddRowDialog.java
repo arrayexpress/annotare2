@@ -38,7 +38,6 @@ public class AddRowDialog extends DialogBox implements HasSelectionHandlers<List
         setText("Add Row");
         setModal(true);
         setGlassEnabled(true);
-        center();
 
         listBox = new ListBox(true);
         for (String value : sourceSec.getRowNames()) {
@@ -46,6 +45,7 @@ public class AddRowDialog extends DialogBox implements HasSelectionHandlers<List
         }
         Binder uiBinder = GWT.create(Binder.class);
         setWidget(uiBinder.createAndBindUi(this));
+        center();
 
         label.setHTML("Select <b>" + single(sourceSec.getTitle()) +
                 "(s)</b> to create a new <b>" + single(targetSec.getTitle()) + "</b> from:");
