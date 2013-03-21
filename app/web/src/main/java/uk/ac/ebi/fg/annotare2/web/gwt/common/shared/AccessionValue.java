@@ -35,6 +35,10 @@ public class AccessionValue implements Serializable {
         this.value = value;
     }
 
+    public boolean isUnaccessioned() {
+        return UNACCESSIONED.equals(value);
+    }
+
     @Override
     public String toString() {
         return get();

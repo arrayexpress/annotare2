@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvGenerator;
@@ -122,7 +123,9 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
             ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.UPDATE);
             Table table = new TsvParser().parse(submission.getHeader());
             operation.apply(table);
+            AdfHeader header = new AdfHeader(table);
             submission.setHeader(new TsvGenerator(table).generateString());
+            submission.setTitle(header.getArrayDesignName().getValue());
         } catch (IOException e) {
             log.error("Can't update ADF header data (submissionId: " + submissionId + ")", e);
         }

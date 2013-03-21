@@ -78,7 +78,9 @@ public class IdfServiceImpl extends SubmissionBasedRemoteService implements IdfS
             ExperimentSubmission submission = getExperimentSubmission(submissionId, Permission.UPDATE);
             Table table = new TsvParser().parse(submission.getInvestigation());
             operation.apply(table);
+            Investigation inv = new Investigation(table);
             submission.setInvestigation(new TsvGenerator(table).generateString());
+            submission.setTitle(inv.getTitle().getValue());
         } catch (IOException e) {
             log.error("Can't update IDF (submissionId: " + submissionId + ")", e);
         }

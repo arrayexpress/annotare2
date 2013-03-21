@@ -77,6 +77,11 @@ public class EditorApp implements EntryPoint {
 
             @Override
             public void onSuccess(UISubmissionDetails result) {
+                String title = result.getTitle();
+                if (title == null || title.isEmpty()) {
+                    title = result.getAccession();
+                }
+                Window.setTitle(result.hasAccession() ? result.getAccession() : title);
                 init(root, result.getType());
             }
         });

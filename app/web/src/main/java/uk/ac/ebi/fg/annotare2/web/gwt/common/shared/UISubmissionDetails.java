@@ -57,6 +57,10 @@ public class UISubmissionDetails implements Serializable {
         return id;
     }
 
+    public boolean hasAccession() {
+        return accession.isUnaccessioned();
+    }
+
     public String getAccession() {
         return accession.get();
     }
