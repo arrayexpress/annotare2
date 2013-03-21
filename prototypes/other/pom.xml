@@ -9,7 +9,7 @@
     <artifactId>protoapp</artifactId>
     <packaging>war</packaging>
     <version>1.0</version>
-    <name>Multi App Prototyping Playground</name>
+    <name>GWT UI Prototyping Playground</name>
 
     <properties>
         <!-- Convenience property to set the GWT version -->
