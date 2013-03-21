@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='MongoApp'>
+
+    <inherits name="com.google.gwt.resources.Resources"/>
+
+    <inherits name='com.google.gwt.user.User'/>
+
+    <inherits name="com.google.gwt.user.theme.clean.Clean"/>
+
+    <entry-point class='uk.ac.ebi.fg.annotare2.prototypes.mongo.client.MongoApp'/>
+
+    <source path='client'/>
+    <source path='shared'/>
+    <source path='public'/>
+
+</module>
