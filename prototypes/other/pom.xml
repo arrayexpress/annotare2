@@ -88,7 +88,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
+                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dgwt.logLevel=DEBUG -Dgwt.style=DETAILED</extraJvmArgs>
                             <module>uk.ac.ebi.fg.annotare2.prototypes.layoutapp.LayoutApp</module>
                             <module>uk.ac.ebi.fg.annotare2.prototypes.editorapp.EditorApp</module>
                         </configuration>
