@@ -3,8 +3,11 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>MAGETAB Editor Playground</title>
-    <script type="text/javascript" src="/EditorApp/EditorApp.nocache.js"></script>
+    <link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/LayoutApp/gwt/standard/standard.css">
+    <link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/layout.css">
+
+    <title>Playing with Layout on GWT</title>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/LayoutApp/LayoutApp.nocache.js"></script>
 </head>
 <body>
 
