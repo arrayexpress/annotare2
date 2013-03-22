@@ -78,7 +78,7 @@ public class SdrfColumn {
         switch (type) {
             case  MATERIAL_TYPE: return new MaterialTypeValueEditor((MaterialTypeValue)value, name, section, this);
         }
-        return null;
+        return new MaterialTypeValueEditor((MaterialTypeValue)value, name, section, this);
     }
 
     @Override
