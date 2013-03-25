@@ -95,18 +95,20 @@ public class SdrfAssociationView extends Composite implements IsWidget {
 
                 List<SdrfRow> rows = getFirstRows();
                 for (int i = 0; i < suggestBox.getItemCount(); i++) {
-                    if (suggestBox.isItemSelected(i)) {
-                        String value = suggestBox.getItemText(i);
-                        int key = parseInt(value);
-                        for (int j = 0; j < sourceBox.getItemCount(); j++) {
-                            if (sourceBox.isItemSelected(j)) {
-                                addToMap(helpMap, j, key);
-                                sourceBox.setItemText(j, sourceItem(rows.get(j).getName(), helpMap.get(j).size()));
-                            }
-                        }
-                        targetBox.addItem(value);
-                        targetBox.setItemSelected(targetBox.getItemCount() - 1, true);
+                    if (!suggestBox.isItemSelected(i)) {
+                        continue;
                     }
+                    String value = suggestBox.getItemText(i);
+                    int key = parseInt(value);
+                    for (int j = 0; j < sourceBox.getItemCount(); j++) {
+                        if (sourceBox.isItemSelected(j)) {
+                            addToMap(helpMap, j, key);
+                            sourceBox.setItemText(j, sourceItem(rows.get(j).getName(), helpMap.get(j).size()));
+                        }
+                    }
+                    targetBox.addItem(value);
+                    targetBox.setItemSelected(targetBox.getItemCount() - 1, true);
+
                 }
             }
         });
@@ -149,9 +151,17 @@ public class SdrfAssociationView extends Composite implements IsWidget {
         setDirection(reverse);
     }
 
-    private static int parseInt(String value) {
-        int k = value.lastIndexOf(" ");
-        return Integer.parseInt(value.substring(k + 1, value.length()));
+    private int parseInt(String value) {
+        List<SdrfRow> list = getSecondRows();
+        int key = -1;
+        for (int i = 0; i < list.size(); i++) {
+            SdrfRow row = list.get(i);
+            if (row.getName().equals(value)) {
+                key = i;
+                break;
+            }
+        }
+        return key;
     }
 
     private void switchDirection() {
