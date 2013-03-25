@@ -4,8 +4,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.prototypes.editorapp.client.data.SdrfData;
 
 import java.util.*;
 
@@ -13,16 +13,6 @@ import java.util.*;
  * @author Olga Melnichuk
  */
 public class SdrfAssociationView extends Composite implements IsWidget {
-
-    private static final int N = 100;
-
-    private static Set<Pair> assosiations = new HashSet<Pair>();
-
-    static {
-        while (assosiations.size() < 2 * N) {
-            assosiations.add(new Pair(Random.nextInt(N), Random.nextInt(N)));
-        }
-    }
 
     @UiField(provided = true)
     ListBox sourceBox;
@@ -54,16 +44,23 @@ public class SdrfAssociationView extends Composite implements IsWidget {
     @UiField
     Label title3;
 
-    private boolean reverse;
-
     private Map<Integer, List<Integer>> helpMap = new HashMap<Integer, List<Integer>>();
 
     private Set<Integer> suggestions = new HashSet<Integer>();
+
+    private Set<SdrfData.Pair<Integer>> associations = new HashSet<SdrfData.Pair<Integer>>();
+
+    private SdrfData.Pair<SdrfSection> sectionPair;
+
+    private boolean reverse;
 
     interface Binder extends UiBinder<Widget, SdrfAssociationView> {
     }
 
     public SdrfAssociationView(SdrfSection from, SdrfSection to) {
+        associations.addAll(SdrfData.get().getAssociations(from, to));
+        sectionPair = new SdrfData.Pair<SdrfSection>(from, to);
+
         sourceBox = new ListBox(true);
         targetBox = new ListBox(true);
         suggestBox = new ListBox(true);
@@ -74,7 +71,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
 
         deleteButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                String prefix = getFirstPrefix();
+                List<SdrfRow> rows = getFirstRows();
                 int index;
                 while ((index = targetBox.getSelectedIndex()) >= 0) {
                     String value = targetBox.getItemText(index);
@@ -82,7 +79,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
                     for (int j = 0; j < sourceBox.getItemCount(); j++) {
                         if (sourceBox.isItemSelected(j)) {
                             removeFromMap(helpMap, j, key);
-                            sourceBox.setItemText(j, sourceItem(prefix, j, helpMap.get(j).size()));
+                            sourceBox.setItemText(j, sourceItem(rows.get(j).getName(), helpMap.get(j).size()));
                         }
                     }
                     targetBox.removeItem(index);
@@ -96,7 +93,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
                     return;
                 }
 
-                String prefix = getFirstPrefix();
+                List<SdrfRow> rows = getFirstRows();
                 for (int i = 0; i < suggestBox.getItemCount(); i++) {
                     if (suggestBox.isItemSelected(i)) {
                         String value = suggestBox.getItemText(i);
@@ -104,7 +101,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
                         for (int j = 0; j < sourceBox.getItemCount(); j++) {
                             if (sourceBox.isItemSelected(j)) {
                                 addToMap(helpMap, j, key);
-                                sourceBox.setItemText(j, sourceItem(prefix, j, helpMap.get(j).size()));
+                                sourceBox.setItemText(j, sourceItem(rows.get(j).getName(), helpMap.get(j).size()));
                             }
                         }
                         targetBox.addItem(value);
@@ -139,15 +136,17 @@ public class SdrfAssociationView extends Composite implements IsWidget {
                     return;
                 }
                 Set<Integer> newSuggestions = new HashSet<Integer>();
-                for (Integer i : suggestions) {
-                    if (Integer.toString(i).startsWith(value)) {
+                List<SdrfRow> rows = getSecondRows();
+                for (int i = 0; i < rows.size(); i++) {
+                    SdrfRow row = rows.get(i);
+                    if (row.getName().startsWith(value)) {
                         newSuggestions.add(i);
                     }
                 }
                 fillSuggestionBox(newSuggestions);
             }
         });
-        setDirection(from.getTitle(), to.getTitle(), false);
+        setDirection(reverse);
     }
 
     private static int parseInt(String value) {
@@ -156,7 +155,7 @@ public class SdrfAssociationView extends Composite implements IsWidget {
     }
 
     private void switchDirection() {
-        setDirection(title2.getText(), title1.getText(), !reverse);
+        setDirection(!reverse);
     }
 
     private Set<String> getTargetItems() {
@@ -178,10 +177,10 @@ public class SdrfAssociationView extends Composite implements IsWidget {
 
         int n = selection.size();
         Set<String> result = new HashSet<String>();
-        String prefix = title2.getText();
+        List<SdrfRow> rows = getSecondRows();
         for (Integer i : map.keySet()) {
             if (map.get(i) == n) {
-                result.add(prefix + " " + i);
+                result.add(rows.get(i).getName());
             }
         }
         return result;
@@ -197,15 +196,17 @@ public class SdrfAssociationView extends Composite implements IsWidget {
         return sel;
     }
 
-    private void setDirection(String from, String to, boolean isreversed) {
-        title1.setText(from);
-        title2.setText(to);
-        title3.setText(to);
+    private void setDirection(boolean isreversed) {
+        SdrfSection from = sectionPair.first(isreversed);
+        SdrfSection to = sectionPair.second(isreversed);
+        title1.setText(from.getTitle());
+        title2.setText(to.getTitle());
+        title3.setText(to.getTitle());
         reverse = isreversed;
 
         suggestions = new HashSet<Integer>();
         helpMap = new HashMap<Integer, List<Integer>>();
-        for (Pair p : assosiations) {
+        for (SdrfData.Pair<Integer> p : associations) {
             int first = p.first(reverse);
             int second = p.second(reverse);
             addToMap(helpMap, first, second);
@@ -213,25 +214,25 @@ public class SdrfAssociationView extends Composite implements IsWidget {
         }
 
         sourceBox.clear();
-        for (int i = 0; i < N; i++) {
+        List<SdrfRow> rows = from.getRows();
+        for (int i = 0; i < rows.size(); i++) {
             List<Integer> list = helpMap.get(i);
-            sourceBox.addItem(sourceItem(from, i, list == null ? 0 : list.size()));
+            sourceBox.addItem(sourceItem(rows.get(i).getName(), list == null ? 0 : list.size()));
         }
-
         fillSuggestionBox(suggestions);
     }
 
-    private String sourceItem(String prefix, int key, int size) {
-        return "( " + size + " ) " + prefix + " " + key;
+    private String sourceItem(String name, int size) {
+        return "( " + size + " ) " + name;
     }
 
     private void fillSuggestionBox(Set<Integer> suggestions) {
-        String prefix = getSecondPrefix();
+        List<SdrfRow> rows = getSecondRows();
         suggestBox.clear();
         List<Integer> suggestionsList = new ArrayList<Integer>(suggestions);
         Collections.sort(suggestionsList);
         for (Integer i : suggestionsList) {
-            suggestBox.addItem(prefix + " " + i);
+            suggestBox.addItem(rows.get(i).getName());
         }
     }
 
@@ -252,49 +253,11 @@ public class SdrfAssociationView extends Composite implements IsWidget {
         list.add(second);
     }
 
-    private String getFirstPrefix() {
-        return title1.getText();
+    private List<SdrfRow> getFirstRows() {
+        return sectionPair.first(reverse).getRows();
     }
 
-    private String getSecondPrefix() {
-        return title2.getText();
-    }
-
-    private static class Pair {
-        private final int first;
-        private final int second;
-
-        private Pair(int first, int second) {
-            this.first = first;
-            this.second = second;
-        }
-
-        public int first(boolean reverse) {
-            return reverse ? second : first;
-        }
-
-        public int second(boolean reverse) {
-            return reverse ? first : second;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Pair pair = (Pair) o;
-
-            if (first != pair.first) return false;
-            if (second != pair.second) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = first;
-            result = 31 * result + second;
-            return result;
-        }
+    private List<SdrfRow> getSecondRows() {
+        return sectionPair.second(reverse).getRows();
     }
 }
