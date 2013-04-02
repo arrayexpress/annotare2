@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
-import com.google.common.io.Files;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
