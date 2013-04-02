@@ -20,7 +20,7 @@
     <groupId>uk.ac.ebi.fg.annotare2</groupId>
     <artifactId>annotare2</artifactId>
     <packaging>pom</packaging>
-    <version>0.12-SNAPSHOT</version>
+    <version>0.12</version>
     <name>Annotare 2.0</name>
 
     <modules>
