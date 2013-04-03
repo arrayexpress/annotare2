@@ -49,7 +49,7 @@ public class SdrfPlace extends ExperimentPlace {
     }
 
     public ExperimentTab getSelectedTab() {
-        return ExperimentTab.SDRF;
+        return ExperimentTab.EXP_DESIGN;
     }
 
     @Prefix("sdrfView")

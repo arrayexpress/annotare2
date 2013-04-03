@@ -29,9 +29,9 @@ public abstract class ExperimentPlace extends Place {
     public static ExperimentPlace create(ExperimentTab tab) {
         //TODO
         switch (tab) {
-            case IDF:
+            case EXP_DESCRIPTION:
                 return new IdfPlace();
-            case SDRF:
+            case EXP_DESIGN:
                 return new SdrfPlace();
             default:
                 throw new IllegalStateException("Unknown experiment tab:" + tab);

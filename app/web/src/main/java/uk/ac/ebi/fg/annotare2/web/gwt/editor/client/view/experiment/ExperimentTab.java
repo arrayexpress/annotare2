@@ -7,9 +7,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTab;
  */
 public enum ExperimentTab implements EditorTab {
 
-    IDF("Investigation Design"),
+    EXP_DESCRIPTION("Experiment Description"),
 
-    SDRF("Sample and Data Relationship");
+    EXP_DESIGN("Sample and Data");
 
     private String title;
 
@@ -21,7 +21,8 @@ public enum ExperimentTab implements EditorTab {
         return title;
     }
 
-    public Object getId() {
-        return this;
+    @Override
+    public boolean isEqualTo(EditorTab other) {
+        return equals(other);
     }
 }

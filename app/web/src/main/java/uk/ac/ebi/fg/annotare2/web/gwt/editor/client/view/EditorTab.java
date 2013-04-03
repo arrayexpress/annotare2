@@ -7,5 +7,5 @@ public interface EditorTab {
 
     String getTitle();
 
-    Object getId();
+    boolean isEqualTo(EditorTab other);
 }

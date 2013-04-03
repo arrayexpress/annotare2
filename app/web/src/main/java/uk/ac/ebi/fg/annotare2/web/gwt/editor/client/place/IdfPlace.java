@@ -67,7 +67,7 @@ public class IdfPlace extends ExperimentPlace {
     }
 
     public ExperimentTab getSelectedTab() {
-        return ExperimentTab.IDF;
+        return ExperimentTab.EXP_DESCRIPTION;
     }
 
     @Prefix("idfView")

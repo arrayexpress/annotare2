@@ -37,7 +37,8 @@ public enum ArrayDesignTab implements EditorTab {
         return title;
     }
 
-    public Object getId() {
-        return this;
+    @Override
+    public boolean isEqualTo(EditorTab other) {
+        return this.equals(other);
     }
 }

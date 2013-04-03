@@ -74,7 +74,7 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
     private int indexOf(EditorTab target) {
         int i=0;
         for(EditorTab tab : editorTabs) {
-            if (tab.getId().equals(target.getId())) {
+            if (tab.isEqualTo(target)) {
                 return i;
             }
             i++;
