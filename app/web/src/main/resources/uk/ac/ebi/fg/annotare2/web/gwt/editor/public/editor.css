@@ -456,3 +456,36 @@ table.GWTUpld {
 .app-Scrollable {
     overflow: auto
 }
+
+.app-TabBar {
+    border-top: 1px solid #E5A066;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.app-TabItem {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-bottom: 1px solid  #eeeeee;
+    border-right: 1px solid  #eeeeee;
+    background-color: #eeeeee;
+    margin: 0;
+    cursor: pointer;
+    color: #000000;
+}
+
+.app-TabItem.selected {
+    margin-top: -3px;
+    background-color: white;
+    border-right: 1px solid #E5A066;
+    border-left: 1px solid #E5A066;
+    border-bottom: 4px solid #E5A066;
+    color: black;
+}
+
+.app-ExportLink {
+    font-size: 14px;
+    padding: 0;
+    margin: 5px 5px 0 5px;
+    text-decoration: underline;
+    cursor: pointer;
+}

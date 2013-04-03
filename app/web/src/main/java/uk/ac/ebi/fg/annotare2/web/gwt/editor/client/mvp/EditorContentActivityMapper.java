@@ -27,8 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGene
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTableSheetModeActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfSection;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
 
 /**
  * @author Olga Melnichuk
@@ -80,16 +79,16 @@ public class EditorContentActivityMapper implements ActivityMapper {
             if (idfPlace.isSheetModeOn()) {
                 return (idfSheetModeActivityProvider.get()).withPlace(place);
             }
-            IdfSection section = idfPlace.getIdfSection();
+            ExpInfoSection section = idfPlace.getExpInfoSection();
             switch (section) {
                 case GENERAL_INFO:
                     return (idfGeneralInfoActivityProvider.get()).withPlace(place);
                 case CONTACTS:
                     return (idfContactListActivityProvider.get()).withPlace(place);
-                case EXP_DESIGNS:
+                /*case EXP_DESIGNS:
                     return (idfExperimentalDesignListActivityProvider.get()).withPlace(place);
                 case TERM_DEF_SOURCES:
-                    return (idfTermSourceListActivityProvider.get()).withPlace(place);
+                    return (idfTermSourceListActivityProvider.get()).withPlace(place);   */
                 default:
                     return (idfContentActivityProvider.get()).withPlace(place);
             }

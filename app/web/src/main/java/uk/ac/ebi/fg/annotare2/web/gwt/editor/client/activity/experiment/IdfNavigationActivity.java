@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
 
 /**
  * @author Olga Melnichuk
@@ -36,7 +36,7 @@ public class IdfNavigationActivity extends AbstractActivity implements LeftNavig
 
     private final PlaceController placeController;
 
-    private IdfSection section;
+    private ExpInfoSection section;
 
     @Inject
     public IdfNavigationActivity(LeftNavigationView view,
@@ -46,13 +46,13 @@ public class IdfNavigationActivity extends AbstractActivity implements LeftNavig
     }
 
     public IdfNavigationActivity withPlace(IdfPlace place) {
-        this.section = place.getIdfSection();
+        this.section = place.getExpInfoSection();
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.initSections(IdfSection.values());
+        view.initSections(ExpInfoSection.values());
         view.selectSection(section);
         containerWidget.setWidget(view.asWidget());
     }
@@ -62,6 +62,6 @@ public class IdfNavigationActivity extends AbstractActivity implements LeftNavig
     }
 
     public void goTo(NavigationSection section) {
-        goTo(new IdfPlace((IdfSection)section));
+        goTo(new IdfPlace((ExpInfoSection)section));
     }
 }

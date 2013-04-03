@@ -25,7 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
 
 /**
@@ -33,33 +33,33 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
  */
 public class IdfPlace extends ExperimentPlace {
 
-    private IdfSection idfSection;
+    private ExpInfoSection expInfoSection;
 
     private boolean sheetModeOn;
 
     public IdfPlace() {
-        setIdfSection(null);
+        setExpInfoSection(null);
     }
 
-    public IdfPlace(IdfSection idfSection) {
-        setIdfSection(idfSection);
+    public IdfPlace(ExpInfoSection expInfoSection) {
+        setExpInfoSection(expInfoSection);
     }
 
     public IdfPlace(IdfPlace other) {
-        setIdfSection(other.getIdfSection());
+        setExpInfoSection(other.getExpInfoSection());
         setSheetModeOn(other.isSheetModeOn());
     }
 
-    public IdfSection getIdfSection() {
-        return idfSection;
+    public ExpInfoSection getExpInfoSection() {
+        return expInfoSection;
     }
 
     public boolean isSheetModeOn() {
         return sheetModeOn;
     }
 
-    public void setIdfSection(IdfSection idfSection) {
-        this.idfSection = idfSection == null ?  IdfSection.GENERAL_INFO : idfSection;
+    public void setExpInfoSection(ExpInfoSection expInfoSection) {
+        this.expInfoSection = expInfoSection == null ?  ExpInfoSection.GENERAL_INFO : expInfoSection;
     }
 
     public void setSheetModeOn(boolean on) {
@@ -82,7 +82,7 @@ public class IdfPlace extends ExperimentPlace {
 
         public String getToken(IdfPlace place) {
             return new TokenBuilder()
-                    .add(place.getIdfSection().name())
+                    .add(place.getExpInfoSection().name())
                     .add(place.isSheetModeOn())
                     .toString();
         }
@@ -94,12 +94,12 @@ public class IdfPlace extends ExperimentPlace {
 
                 String sectionToken = reader.nextString();
 
-                IdfSection section = EnumUtils.getIfPresent(IdfSection.class, sectionToken);
+                ExpInfoSection section = EnumUtils.getIfPresent(ExpInfoSection.class, sectionToken);
                 if (section == null) {
                     throw new TokenReaderException("Unrecognized IDF section token: " + sectionToken);
                 }
 
-                place.setIdfSection(section);
+                place.setExpInfoSection(section);
                 place.setSheetModeOn(reader.nextBoolean());
                 return place;
             } catch (TokenReaderException e) {

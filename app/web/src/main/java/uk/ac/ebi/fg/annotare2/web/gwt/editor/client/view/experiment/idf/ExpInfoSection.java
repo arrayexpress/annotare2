@@ -21,22 +21,14 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
 /**
  * @author Olga Melnichuk
  */
-public enum IdfSection implements NavigationSection {
+public enum ExpInfoSection implements NavigationSection {
     GENERAL_INFO("General Information"),
     CONTACTS("Contacts"),
-    PUBLICATIONS("Publications"),
-    EXP_DESIGNS("Experimental Designs"),
-    EXP_FACTORS("Experimental Factors"),
-    QUALITY_CONTROLS("Quality Control Types"),
-    PROTOCOLS("Protocols"),
-    REPLICATES("Replicate Types"),
-    NORMALIZATION_TYPES("Normalization Types"),
-    COMMENTS("Comments"),
-    TERM_DEF_SOURCES("Term Sources");
+    PUBLICATIONS("Publications");
 
     private final String title;
 
-    private IdfSection(String title) {
+    private ExpInfoSection(String title) {
         this.title = title;
     }
 

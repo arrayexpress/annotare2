@@ -47,13 +47,13 @@ public class EditorTabToolBarActivityMapper implements ActivityMapper {
     }
 
     public Activity getActivity(Place place) {
-        if (place instanceof IdfPlace) {
+        /*if (place instanceof IdfPlace) {
             return (idfToolBarActivityProvider.get()).withPlace(place);
         } else if (place instanceof SdrfPlace) {
             return (sdrfToolBarActivityProvider.get()).withPlace(place);
         } else if (place instanceof ArrayDesignPlace) {
             return (adfTabToolBarActivityProvider.get()).withPlace((ArrayDesignPlace)place);
-        }
+        }*/
         //TODO
         return null;
     }

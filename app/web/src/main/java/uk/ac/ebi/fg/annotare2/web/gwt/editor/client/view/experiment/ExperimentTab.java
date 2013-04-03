@@ -9,7 +9,11 @@ public enum ExperimentTab implements EditorTab {
 
     EXP_DESCRIPTION("Experiment Description"),
 
-    EXP_DESIGN("Sample and Data");
+    EXP_DESIGN("Sample and Data"),
+
+    IDF_PREVIEW("IDF Preview"),
+
+    SDRF_PREVIEW("SDRF Preview");
 
     private String title;
 

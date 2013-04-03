@@ -16,10 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TabBar;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.TabItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,30 +30,59 @@ import java.util.List;
  */
 public class EditorTabBarViewImpl extends Composite implements EditorTabBarView {
 
-    private final TabBar tabBar = new TabBar();
-
+   /* interface Binder extends UiBinder<Widget, EditorTabBarViewImpl> {
+    }
+*/
     private List<EditorTab> editorTabs = new ArrayList<EditorTab>();
+
+    private HorizontalPanel panel = new HorizontalPanel();
+
+    private TabItem selected = null;
 
     private Presenter presenter;
 
     public EditorTabBarViewImpl() {
-        initWidget(tabBar);
+        SimplePanel simple = new SimplePanel();
+        HorizontalPanel hPanel = new HorizontalPanel();
+        hPanel.add(panel);
+        Label anchor = new Label("Export");
+        anchor.addStyleName("app-ExportLink");
+        hPanel.add(anchor);
+        simple.add(hPanel);
+        simple.addStyleName("app-TabBar");
+        initWidget(simple);
     }
 
     @Override
     public void initWithTabs(EditorTab... tabs) {
-        for(EditorTab tab : tabs) {
+        for(final EditorTab tab : tabs) {
             editorTabs.add(tab);
-            tabBar.addTab(tab.getTitle());
+            final TabItem tabItem = new TabItem(tab.getTitle());
+            tabItem.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    setSelected(tabItem);
+                    onTabSelect(tab);
+                }
+            });
+            panel.add(tabItem);
+            //tabBar.addItem(new MenuItem(SafeHtmlUtils.fromString(tab.getTitle())));
         }
 
-        tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
+       /*tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
             public void onSelection(SelectionEvent<Integer> event) {
                 onTabSelect(event.getSelectedItem());
             }
-        });
+        });*/
     }
 
+    private void setSelected(TabItem item) {
+        if (selected != null) {
+            selected.setSelected(false);
+        }
+        item.setSelected(true);
+        selected = item;
+    }
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
@@ -61,11 +90,12 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
 
     @Override
     public void selectTab(EditorTab tab) {
-        tabBar.selectTab(indexOf(tab), false);
+        setSelected((TabItem)panel.getWidget(indexOf(tab)));
+       // tabBar.selectTab(indexOf(tab), false);
     }
 
-    private void onTabSelect(Integer typeIndex) {
-        EditorTab tab = editorTabs.get(typeIndex);
+    private void onTabSelect(EditorTab tab) {
+        //EditorTab tab = editorTabs.get(typeIndex);
         if (presenter != null) {
             presenter.onTabSelect(tab);
         }
@@ -81,4 +111,5 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
         }
         return -1;
     }
+
 }

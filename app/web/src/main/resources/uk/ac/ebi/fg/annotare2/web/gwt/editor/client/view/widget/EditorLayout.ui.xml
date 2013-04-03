@@ -24,6 +24,10 @@
             border: 1px solid #48877C;
         }
 
+        .borderRight {
+            border-right: 1px solid #48877C;
+        }
+
         .annotare {
             padding-left: 3px;
             background-color: #f3f7fb;
@@ -63,18 +67,19 @@
                     <tr>
                         <td>
                             <a class="{style.logo}" href="#">Annotare 2.0</a>
-                            <a class="{style.annotareLink}" href="#">contact us</a>
-                            <a class="{style.annotareLink}" href="#">help</a>
+                            <a class="{style.annotareLink}" href="#">Contact Us</a>
+                            <a class="{style.annotareLink}" href="#">Help</a>
                         </td>
                         <td style="text-align: right; padding-right:5px">
                             <span>Richard Young</span>
-                            &nbsp;<a href="#">log out</a>
+                            &nbsp;
+                            <a href="#">Log out</a>
                         </td>
                     </tr>
                 </table>
             </g:HTMLPanel>
         </g:north>
-        <g:north size="60">
+        <g:north size="50">
             <g:SimplePanel ui:field="titleBarDisplay"/>
         </g:north>
         <g:center>
@@ -85,7 +90,7 @@
                 </g:south>
                 <g:center>
                     <g:DockLayoutPanel>
-                        <g:north size="120">
+                        <g:north size="60">
                             <g:DockLayoutPanel>
                                 <g:north size="50">
                                     <g:SimplePanel ui:field="tabBarDisplay"/>
@@ -96,10 +101,11 @@
                             </g:DockLayoutPanel>
                         </g:north>
                         <g:west size="0">
-                            <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
+                            <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"
+                                                       addStyleNames="{style.borderRight}"/>
                         </g:west>
                         <g:center>
-                            <g:SimpleLayoutPanel height="100%" addStyleNames="{style.border}"
+                            <g:SimpleLayoutPanel height="100%"
                                                  ui:field="contentDisplay"/>
                         </g:center>
                     </g:DockLayoutPanel>
