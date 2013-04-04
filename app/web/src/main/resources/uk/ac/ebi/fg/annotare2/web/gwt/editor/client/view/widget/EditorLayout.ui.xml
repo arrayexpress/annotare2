@@ -24,16 +24,12 @@
             border: 1px solid #48877C;
         }
 
-        .borderRight {
-            border-right: 1px solid #48877C;
-        }
-
         .annotare {
             padding-left: 3px;
             background-color: #f3f7fb;
         }
 
-        .logo, .logo:hover, .logo:active, .logo:link {
+        a.logo, a.logo:hover, a.logo:active, a.logo:link {
             color: #207A7A;
             font-size: 18px;
             font-weight: normal;
@@ -42,7 +38,7 @@
             text-decoration: none;
         }
 
-        .annotareLink, .annotareLink:link {
+        a.annotareLink, a.annotareLink:link {
             font-size: 14px;
             padding-left: 5px;
             padding-right: 5px;
@@ -54,7 +50,7 @@
             margin: 0 1px 0 0;
         }
 
-        .annotareLink:hover {
+        a.annotareLink:hover {
             color: #207A7A;
             background-color: #ffffff;
         }
@@ -71,7 +67,7 @@
                             <a class="{style.annotareLink}" href="#">Help</a>
                         </td>
                         <td style="text-align: right; padding-right:5px">
-                            <span>Richard Young</span>
+                            <span>Fabulous Me</span>
                             &nbsp;
                             <a href="#">Log out</a>
                         </td>
@@ -79,21 +75,17 @@
                 </table>
             </g:HTMLPanel>
         </g:north>
-        <g:north size="50">
+        <g:north size="60">
             <g:SimplePanel ui:field="titleBarDisplay"/>
         </g:north>
         <g:center>
             <g:SplitLayoutPanel ui:field="splitPanel">
-                <g:south size="40">
-                    <g:ScrollPanel ui:field="logBarDisplay" height="100%" addStyleNames="{style.border}">
-                    </g:ScrollPanel>
-                </g:south>
                 <g:center>
                     <g:DockLayoutPanel>
                         <g:north size="60">
                             <g:DockLayoutPanel>
-                                <g:north size="50">
-                                    <g:SimplePanel ui:field="tabBarDisplay"/>
+                                <g:north size="40">
+                                    <g:SimpleLayoutPanel ui:field="tabBarDisplay" height="100%"/>
                                 </g:north>
                                 <g:center>
                                     <g:SimplePanel ui:field="tabToolBarDisplay"/>
@@ -101,15 +93,17 @@
                             </g:DockLayoutPanel>
                         </g:north>
                         <g:west size="0">
-                            <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"
-                                                       addStyleNames="{style.borderRight}"/>
+                            <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay" />
                         </g:west>
                         <g:center>
-                            <g:SimpleLayoutPanel height="100%"
-                                                 ui:field="contentDisplay"/>
+                            <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
                         </g:center>
                     </g:DockLayoutPanel>
                 </g:center>
+                <g:south size="40">
+                    <g:ScrollPanel ui:field="logBarDisplay" height="100%" addStyleNames="{style.border}">
+                    </g:ScrollPanel>
+                </g:south>
             </g:SplitLayoutPanel>
         </g:center>
     </g:DockLayoutPanel>

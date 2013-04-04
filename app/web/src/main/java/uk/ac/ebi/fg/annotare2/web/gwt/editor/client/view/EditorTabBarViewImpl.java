@@ -42,15 +42,20 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
     private Presenter presenter;
 
     public EditorTabBarViewImpl() {
+        HorizontalPanel wrap = new HorizontalPanel();
+        wrap.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
+        wrap.setHeight("100%");
+        wrap.setWidth("100%");
+
         SimplePanel simple = new SimplePanel();
         HorizontalPanel hPanel = new HorizontalPanel();
+        hPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         hPanel.add(panel);
-        Label anchor = new Label("Export");
-        anchor.addStyleName("app-ExportLink");
-        hPanel.add(anchor);
         simple.add(hPanel);
         simple.addStyleName("app-TabBar");
-        initWidget(simple);
+
+        wrap.add(simple);
+        initWidget(wrap);
     }
 
     @Override
