@@ -26,12 +26,8 @@ public interface IdfTabToolBarView extends IsWidget {
 
     public void setPresenter(Presenter presenter);
 
-    void setSheetModeOn(boolean yesNo);
-
     public static interface Presenter {
 
         void importFile(AsyncCallback<Void> callback);
-
-        void switchToSheetMode(boolean value);
     }
 }

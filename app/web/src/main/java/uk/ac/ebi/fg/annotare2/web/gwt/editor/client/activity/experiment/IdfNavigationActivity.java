@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
@@ -45,7 +45,7 @@ public class IdfNavigationActivity extends AbstractActivity implements LeftNavig
         this.placeController = placeController;
     }
 
-    public IdfNavigationActivity withPlace(IdfPlace place) {
+    public IdfNavigationActivity withPlace(ExpInfoPlace place) {
         this.section = place.getExpInfoSection();
         return this;
     }
@@ -62,6 +62,6 @@ public class IdfNavigationActivity extends AbstractActivity implements LeftNavig
     }
 
     public void goTo(NavigationSection section) {
-        goTo(new IdfPlace((ExpInfoSection)section));
+        goTo(new ExpInfoPlace((ExpInfoSection)section));
     }
 }

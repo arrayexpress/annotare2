@@ -118,7 +118,7 @@ public class EditorApp implements EntryPoint {
         EditorPlaceFactory factory = injector.getPlaceFactory();
         Place defaultPlace =
                 (type == UISubmissionType.EXPERIMENT) ?
-                        factory.getIdfPlace() : factory.getAdHeaderPlace();
+                        factory.getExpInfoPlace() : factory.getAdHeaderPlace();
 
         EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);
         historyMapper.setFactory(factory);

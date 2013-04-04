@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfGeneralInfoView;
 
 import java.util.Date;
@@ -52,7 +53,7 @@ public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGener
         this.idfData = idfData;
     }
 
-    public IdfGeneralInfoActivity withPlace(Place place) {
+    public IdfGeneralInfoActivity withPlace(ExpInfoPlace place) {
         return this;
     }
 

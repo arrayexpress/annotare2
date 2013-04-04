@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.IdfNavigationActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 
 /**
  * @author Olga Melnichuk
@@ -37,11 +37,8 @@ public class EditorLeftMenuActivityMapper implements ActivityMapper {
     }
 
     public Activity getActivity(Place place) {
-        if (place instanceof IdfPlace) {
-            IdfPlace idfPlace = (IdfPlace) place;
-            if (!idfPlace.isSheetModeOn()) {
-                return (idfNavActivityProvider.get()).withPlace(idfPlace);
-            }
+        if (place instanceof ExpInfoPlace) {
+            return (idfNavActivityProvider.get()).withPlace((ExpInfoPlace) place);
         }
         // hide left menu
         return null;

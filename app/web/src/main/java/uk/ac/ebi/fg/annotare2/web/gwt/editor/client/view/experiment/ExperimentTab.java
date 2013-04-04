@@ -7,7 +7,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTab;
  */
 public enum ExperimentTab implements EditorTab {
 
-    EXP_DESCRIPTION("Experiment Description"),
+    EXP_INFO("Experiment Description"),
 
     EXP_DESIGN("Sample and Data"),
 

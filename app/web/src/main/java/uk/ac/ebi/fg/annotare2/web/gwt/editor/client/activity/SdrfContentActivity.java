@@ -22,6 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SdrfContentView;
 
 /**
@@ -40,7 +41,7 @@ public class SdrfContentActivity extends AbstractActivity {
         this.placeController = placeController;
     }
 
-    public SdrfContentActivity withPlace(Place place) {
+    public SdrfContentActivity withPlace(ExpDesignPlace place) {
         //this.token = place.getPlaceName();
         return this;
     }

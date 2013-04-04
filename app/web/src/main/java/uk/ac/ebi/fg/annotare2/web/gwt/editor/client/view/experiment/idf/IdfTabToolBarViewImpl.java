@@ -56,7 +56,7 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
         viewModeButton.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                presenter.switchToSheetMode(event.getValue());
+               // presenter.switchToSheetMode(event.getValue());
             }
         });
 
@@ -78,10 +78,5 @@ public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarVie
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public void setSheetModeOn(boolean yesNo) {
-        this.viewModeButton.setValue(yesNo, false);
     }
 }

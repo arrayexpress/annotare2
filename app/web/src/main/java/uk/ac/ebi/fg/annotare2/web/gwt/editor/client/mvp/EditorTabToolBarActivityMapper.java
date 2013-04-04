@@ -24,9 +24,6 @@ import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTabToolBarActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.IdfTabToolBarActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.SdrfTabToolBarActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ArrayDesignPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
 
 /**
  * @author Olga Melnichuk

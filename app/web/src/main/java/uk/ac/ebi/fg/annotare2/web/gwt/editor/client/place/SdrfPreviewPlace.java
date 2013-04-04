@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,29 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
-import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceTokenizer;
+import com.google.gwt.place.shared.Prefix;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class ExperimentPlace extends Place {
+public class SdrfPreviewPlace extends ExperimentPlace {
 
-    public abstract ExperimentTab getSelectedTab();
+    @Override
+    public ExperimentTab getSelectedTab() {
+        return ExperimentTab.SDRF_PREVIEW;
+    }
 
-    public static ExperimentPlace create(ExperimentTab tab) {
-        //TODO
-        switch (tab) {
-            case EXP_INFO:
-                return new ExpInfoPlace();
-            case EXP_DESIGN:
-                return new ExpDesignPlace();
-            case IDF_PREVIEW:
-                return new IdfPreviewPlace();
-            case SDRF_PREVIEW:
-                return new SdrfPreviewPlace();
-            default:
-                throw new IllegalStateException("Unknown experiment tab:" + tab);
+    @Prefix("SDRF_PREVIEW")
+    public static class Tokenizer implements PlaceTokenizer<SdrfPreviewPlace> {
+
+        public String getToken(SdrfPreviewPlace place) {
+            return "";
+        }
+
+        public SdrfPreviewPlace getPlace(String token) {
+            return new SdrfPreviewPlace();
         }
     }
 }

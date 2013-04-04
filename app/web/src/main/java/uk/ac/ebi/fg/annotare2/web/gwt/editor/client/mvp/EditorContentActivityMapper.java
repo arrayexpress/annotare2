@@ -38,9 +38,6 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<IdfSheetModeActivity> idfSheetModeActivityProvider;
     private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
     private final Provider<IdfContactListActivity> idfContactListActivityProvider;
-    private final Provider<IdfTermSourceListActivity> idfTermSourceListActivityProvider;
-    private final Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider;
-
 
     private final Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider;
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
@@ -53,18 +50,14 @@ public class EditorContentActivityMapper implements ActivityMapper {
                                        Provider<IdfSheetModeActivity> idfSheetModeActivityProvider,
                                        Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
                                        Provider<IdfContactListActivity> idfContactListActivityProvider,
-                                       Provider<IdfTermSourceListActivity> idfTermSourceListActivityProvider,
-                                       Provider<IdfExperimentalDesignListActivity> idfExperimentalDesignListActivityProvider,
                                        Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider,
                                        Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider,
-                                       Provider<AdfTableSheetModeActivity> adfTableSheetModeActivityProvider)  {
+                                       Provider<AdfTableSheetModeActivity> adfTableSheetModeActivityProvider) {
         this.idfContentActivityProvider = idfContentActivityProvider;
         this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
         this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
         this.idfContactListActivityProvider = idfContactListActivityProvider;
-        this.idfTermSourceListActivityProvider = idfTermSourceListActivityProvider;
-        this.idfExperimentalDesignListActivityProvider = idfExperimentalDesignListActivityProvider;
 
         this.sdrfSheetModeActivityProvider = sdrfSheetModeActivityProvider;
         this.sdrfContentActivityProvider = sdrfContentActivityProvider;
@@ -74,36 +67,28 @@ public class EditorContentActivityMapper implements ActivityMapper {
     }
 
     public Activity getActivity(Place place) {
-        if (place instanceof IdfPlace) {
-            IdfPlace idfPlace = (IdfPlace) place;
-            if (idfPlace.isSheetModeOn()) {
-                return (idfSheetModeActivityProvider.get()).withPlace(place);
-            }
-            ExpInfoSection section = idfPlace.getExpInfoSection();
+        if (place instanceof ExpInfoPlace) {
+            ExpInfoPlace descrPlace = (ExpInfoPlace) place;
+            ExpInfoSection section = descrPlace.getExpInfoSection();
             switch (section) {
                 case GENERAL_INFO:
-                    return (idfGeneralInfoActivityProvider.get()).withPlace(place);
+                    return (idfGeneralInfoActivityProvider.get()).withPlace(descrPlace);
                 case CONTACTS:
-                    return (idfContactListActivityProvider.get()).withPlace(place);
-                /*case EXP_DESIGNS:
-                    return (idfExperimentalDesignListActivityProvider.get()).withPlace(place);
-                case TERM_DEF_SOURCES:
-                    return (idfTermSourceListActivityProvider.get()).withPlace(place);   */
+                    return (idfContactListActivityProvider.get()).withPlace(descrPlace);
                 default:
                     return (idfContentActivityProvider.get()).withPlace(place);
             }
-        } else if (place instanceof SdrfPlace) {
-            SdrfPlace sdrfPlace = (SdrfPlace) place;
-            if (sdrfPlace.isSheetModeOn()) {
-                return (sdrfSheetModeActivityProvider.get()).withPlace(place);
-            }
-            return (sdrfContentActivityProvider.get()).withPlace(place);
-
+        } else if (place instanceof ExpDesignPlace) {
+            return (sdrfContentActivityProvider.get()).withPlace((ExpDesignPlace) place);
+        } else if (place instanceof IdfPreviewPlace) {
+            return (idfSheetModeActivityProvider.get()).withPlace((IdfPreviewPlace)place);
+        } else if (place instanceof SdrfPreviewPlace) {
+            return (sdrfSheetModeActivityProvider.get()).withPlace(place);
         } else if (place instanceof AdHeaderPlace) {
             AdHeaderPlace adHeaderPlace = (AdHeaderPlace) place;
             return (adfGeneralInfoActivityProvider.get()).withPlace(adHeaderPlace);
         } else if (place instanceof AdTablePlace) {
-            return (adfTableSheetModeActivityProvider.get()).withPlace((AdTablePlace)place);
+            return (adfTableSheetModeActivityProvider.get()).withPlace((AdTablePlace) place);
         }
         //TODO
         return null;

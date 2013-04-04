@@ -25,54 +25,67 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
 
 /**
  * @author Olga Melnichuk
  */
-public class SdrfPlace extends ExperimentPlace {
+public class ExpInfoPlace extends ExperimentPlace {
 
-    private boolean sheetModeOn;
+    private ExpInfoSection expInfoSection;
 
-    public SdrfPlace() {
+    public ExpInfoPlace() {
+        setExpInfoSection(null);
     }
 
-    public SdrfPlace(SdrfPlace other) {
-        setSheetModeOn(other.isSheetModeOn());
+    public ExpInfoPlace(ExpInfoSection expInfoSection) {
+        setExpInfoSection(expInfoSection);
     }
 
-    public boolean isSheetModeOn() {
-        return sheetModeOn;
+    public ExpInfoPlace(ExpInfoPlace other) {
+        setExpInfoSection(other.getExpInfoSection());
     }
 
-    public void setSheetModeOn(boolean on) {
-        this.sheetModeOn = on;
+    public ExpInfoSection getExpInfoSection() {
+        return expInfoSection;
     }
 
+    public void setExpInfoSection(ExpInfoSection expInfoSection) {
+        this.expInfoSection = expInfoSection == null ?  ExpInfoSection.GENERAL_INFO : expInfoSection;
+    }
+
+    @Override
     public ExperimentTab getSelectedTab() {
-        return ExperimentTab.EXP_DESIGN;
+        return ExperimentTab.EXP_INFO;
     }
 
-    @Prefix("sdrfView")
-    public static class Tokenizer implements PlaceTokenizer<SdrfPlace> {
+    @Prefix("INFO")
+    public static class Tokenizer implements PlaceTokenizer<ExpInfoPlace> {
 
-        private final Provider<SdrfPlace> placeProvider;
+        private final Provider<ExpInfoPlace> placeProvider;
 
         @Inject
-        public Tokenizer(Provider<SdrfPlace> placeProvider) {
+        public Tokenizer(Provider<ExpInfoPlace> placeProvider) {
             this.placeProvider = placeProvider;
         }
 
-        public String getToken(SdrfPlace place) {
+        public String getToken(ExpInfoPlace place) {
             return new TokenBuilder()
-                    .add(place.isSheetModeOn())
+                    .add(place.getExpInfoSection().name())
                     .toString();
         }
 
-        public SdrfPlace getPlace(String token) {
+        public ExpInfoPlace getPlace(String token) {
             TokenReader reader = new TokenReader(token);
             try {
-                SdrfPlace place = placeProvider.get();
-                place.setSheetModeOn(reader.nextBoolean());
+                ExpInfoPlace place = placeProvider.get();
+                String sectionToken = reader.nextString();
+                ExpInfoSection section = EnumUtils.getIfPresent(ExpInfoSection.class, reader.nextString());
+                if (section == null) {
+                    throw new TokenReaderException("Unrecognized token: " + sectionToken);
+                }
+                place.setExpInfoSection(section);
                 return place;
             } catch (TokenReaderException e) {
                 //TODO log

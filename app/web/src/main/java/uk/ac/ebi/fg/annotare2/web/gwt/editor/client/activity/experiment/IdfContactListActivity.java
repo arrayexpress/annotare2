@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfContactListView;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class IdfContactListActivity extends AbstractActivity implements IdfConta
         this.idfData = idfData;
     }
 
-    public IdfContactListActivity withPlace(Place place) {
+    public IdfContactListActivity withPlace(ExpInfoPlace place) {
         return this;
     }
 

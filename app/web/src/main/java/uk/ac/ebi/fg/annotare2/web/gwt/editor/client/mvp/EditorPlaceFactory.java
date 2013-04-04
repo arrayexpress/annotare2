@@ -20,49 +20,50 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
 
+import java.security.PrivateKey;
+
 /**
  * @author Olga Melnichuk
  */
 public class EditorPlaceFactory {
 
     @Inject
-    IdfPlace.Tokenizer idfPlaceTokenizer;
-
+    ExpInfoPlace.Tokenizer expInfoPlaceTokenizer;
     @Inject
-    Provider<IdfPlace> idfPlaceProvider;
-
+    ExpDesignPlace.Tokenizer expDesignPlaceTokenizer;
     @Inject
-    SdrfPlace.Tokenizer sdrfPlaceTokenizer;
-
+    IdfPreviewPlace.Tokenizer idfPreviewPlaceTokenizer;
     @Inject
-    Provider<SdrfPlace> sdrfPlaceProvider;
-
+    SdrfPreviewPlace.Tokenizer sdrfPreviewPlaceTokenizer;
     @Inject
     AdHeaderPlace.Tokenizer adHeaderPlaceTokenizer;
-
-    @Inject
-    Provider<AdHeaderPlace> adHeaderPlaceProvider;
-
     @Inject
     AdTablePlace.Tokenizer adTablePlaceTokenizer;
 
     @Inject
+    Provider<ExpInfoPlace> expInfoPlaceProvider;
+    @Inject
+    Provider<ExpDesignPlace> expDesignPlaceProvider;
+    @Inject
+    Provider<IdfPreviewPlace> idfPreviewPlaceProvider;
+    @Inject
+    Provider<SdrfPreviewPlace> sdrfPreviewPlaceProvider;
+    @Inject
+    Provider<AdHeaderPlace> adHeaderPlaceProvider;
+    @Inject
     Provider<AdTablePlace> adTablePlaceProvider;
 
-    public IdfPlace.Tokenizer getIdfPlaceTokenizer() {
-        return idfPlaceTokenizer;
+
+    public ExpInfoPlace.Tokenizer getExpInfoPlaceTokenizer() {
+        return expInfoPlaceTokenizer;
     }
 
-    public IdfPlace getIdfPlace() {
-        return idfPlaceProvider.get();
+    public ExpInfoPlace getExpInfoPlace() {
+        return expInfoPlaceProvider.get();
     }
 
-    public SdrfPlace.Tokenizer getSdrfPlaceTokenizer() {
-        return sdrfPlaceTokenizer;
-    }
-
-    public SdrfPlace getSdrfPlace() {
-        return sdrfPlaceProvider.get();
+    public ExpDesignPlace.Tokenizer getExpDesignPlaceTokenizer() {
+        return expDesignPlaceTokenizer;
     }
 
     public AdHeaderPlace.Tokenizer getAdHeaderPlaceTokenizer() {

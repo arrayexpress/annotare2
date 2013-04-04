@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfTabToolBarView;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -37,7 +37,7 @@ public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToo
     private final IdfTabToolBarView view;
     private final PlaceController placeController;
     private final IdfServiceAsync idfService;
-    private IdfPlace place;
+    private ExpInfoPlace place;
 
     @Inject
     public IdfTabToolBarActivity(IdfTabToolBarView view,
@@ -49,13 +49,12 @@ public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToo
     }
 
     public IdfTabToolBarActivity withPlace(Place place) {
-        this.place = (IdfPlace) place;
+        this.place = (ExpInfoPlace) place;
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.setSheetModeOn(place.isSheetModeOn());
         containerWidget.setWidget(view.asWidget());
     }
 
@@ -76,12 +75,5 @@ public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToo
                 callback.onSuccess(result);
             }
         }.wrap());
-    }
-
-    @Override
-    public void switchToSheetMode(boolean yesNo) {
-        IdfPlace newPlace = new IdfPlace(place);
-        newPlace.setSheetModeOn(yesNo);
-        goTo(newPlace);
     }
 }

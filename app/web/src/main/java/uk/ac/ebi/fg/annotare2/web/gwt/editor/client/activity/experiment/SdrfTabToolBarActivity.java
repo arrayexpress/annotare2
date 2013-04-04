@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SdrfServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.sdrf.SdrfTabToolBarView;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -41,8 +41,6 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
 
     private final SdrfServiceAsync sdrfService;
 
-    private SdrfPlace place;
-
     @Inject
     public SdrfTabToolBarActivity(SdrfTabToolBarView view,
                                   PlaceController placeController,
@@ -52,14 +50,12 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
         this.sdrfService = sdrfService;
     }
 
-    public SdrfTabToolBarActivity withPlace(Place place) {
-        this.place = (SdrfPlace) place;
+    public SdrfTabToolBarActivity withPlace(ExpDesignPlace place) {
         return this;
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.setSheetModeOn(place.isSheetModeOn());
         containerWidget.setWidget(view.asWidget());
     }
 
@@ -85,8 +81,7 @@ public class SdrfTabToolBarActivity extends AbstractActivity implements SdrfTabT
 
     @Override
     public void switchToSheetMode(boolean yesNo) {
-        SdrfPlace newPlace = new SdrfPlace(place);
-        newPlace.setSheetModeOn(yesNo);
+        ExpDesignPlace newPlace = new ExpDesignPlace();
         goTo(newPlace);
     }
 }
