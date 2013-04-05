@@ -19,12 +19,9 @@ package com.google.gwt.user.cellview.client;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HeaderPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.view.client.SelectionModel;
 
 import java.util.List;
 
