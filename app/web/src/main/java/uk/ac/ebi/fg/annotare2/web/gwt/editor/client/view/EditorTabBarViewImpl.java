@@ -54,7 +54,7 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
 
     @Override
     public void selectTab(EditorTab tab) {
-        tabBar.setSelected(tab, false);
+        tabBar.selectTab(tab, false);
     }
 
     private void onTabSelect(EditorTab tab) {

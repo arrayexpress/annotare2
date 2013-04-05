@@ -63,28 +63,28 @@ public class EditorTabBar extends Composite implements IsWidget, HasSelectionHan
             tabItem.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    setSelected(index, true);
+                    selectTab(index, true);
                 }
             });
             panel.add(tabItem);
         }
     }
 
-    public void setSelected(EditorTab tab, boolean fireEvents) {
-        setSelected(indexOf(tab), fireEvents);
+    public void selectTab(EditorTab tab, boolean fireEvents) {
+        selectTab(indexOf(tab), fireEvents);
     }
 
-    private void setSelected(int index, boolean fireEvents) {
+    private void selectTab(int index, boolean fireEvents) {
         if (selected == index) {
             return;
         }
-        setSelected(index);
+        selectTab(index);
         if (fireEvents) {
             SelectionEvent.fire(this, tabs.get(index));
         }
     }
 
-    private void setSelected(int index) {
+    private void selectTab(int index) {
         if (selected >= 0) {
             setSelectedStyle(panel.getWidget(selected), false);
         }
