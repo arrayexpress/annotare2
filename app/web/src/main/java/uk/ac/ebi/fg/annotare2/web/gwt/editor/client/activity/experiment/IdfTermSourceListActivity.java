@@ -29,7 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.VocabularyServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfTermSourceListView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.IdfTermSourceListView;
 
 import java.util.ArrayList;
 import java.util.List;

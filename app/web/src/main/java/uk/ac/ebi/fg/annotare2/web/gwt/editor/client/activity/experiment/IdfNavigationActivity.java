@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
 
 /**
  * @author Olga Melnichuk

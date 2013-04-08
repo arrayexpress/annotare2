@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfTabToolBarView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.IdfTabToolBarView;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 

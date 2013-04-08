@@ -27,7 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGene
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTableSheetModeActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
 
 /**
  * @author Olga Melnichuk

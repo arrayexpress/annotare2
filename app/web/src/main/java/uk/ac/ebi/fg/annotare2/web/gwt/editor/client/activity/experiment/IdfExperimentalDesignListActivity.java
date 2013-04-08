@@ -31,7 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.VocabularyServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfExperimentalDesignListView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.IdfExperimentalDesignListView;
 
 import java.util.ArrayList;
 import java.util.List;

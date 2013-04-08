@@ -25,7 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.ExpInfoSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
 
 /**

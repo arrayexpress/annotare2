@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.IdfContactListView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.IdfContactListView;
 
 import java.util.List;
 
