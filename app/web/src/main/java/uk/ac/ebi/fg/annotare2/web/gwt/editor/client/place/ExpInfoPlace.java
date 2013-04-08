@@ -81,7 +81,7 @@ public class ExpInfoPlace extends ExperimentPlace {
             try {
                 ExpInfoPlace place = placeProvider.get();
                 String sectionToken = reader.nextString();
-                ExpInfoSection section = EnumUtils.getIfPresent(ExpInfoSection.class, reader.nextString());
+                ExpInfoSection section = EnumUtils.getIfPresent(ExpInfoSection.class, sectionToken);
                 if (section == null) {
                     throw new TokenReaderException("Unrecognized token: " + sectionToken);
                 }
