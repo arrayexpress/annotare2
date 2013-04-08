@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SdrfServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.sdrf.SdrfTabToolBarView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SdrfTabToolBarView;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 

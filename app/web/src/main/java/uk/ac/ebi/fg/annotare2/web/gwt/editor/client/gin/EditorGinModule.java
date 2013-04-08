@@ -35,8 +35,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolB
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.idf.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.sdrf.SdrfTabToolBarView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.sdrf.SdrfTabToolBarViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SdrfTabToolBarView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SdrfTabToolBarViewImpl;
 
 /**
  * @author Olga Melnichuk
