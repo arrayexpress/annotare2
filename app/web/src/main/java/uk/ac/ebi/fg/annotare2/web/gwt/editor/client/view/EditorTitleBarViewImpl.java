@@ -21,12 +21,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.NewExpSubmissionDialog;
 
 /**
  * @author Olga Melnichuk
@@ -41,6 +39,9 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiField
     Button validateButton;
+
+    @UiField
+    Anchor createNewLink;
 
     private Presenter presenter;
 
@@ -65,7 +66,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @UiHandler("validateButton")
-    public void OnValidateButtonClick(ClickEvent clickEvent) {
+    public void onValidateButtonClick(ClickEvent clickEvent) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
         presenter.validateSubmission(new ValidationHandler() {
 
@@ -76,5 +77,10 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
             }
 
         });
+    }
+
+    @UiHandler("createNewLink")
+    public void onCreateLinkClick(ClickEvent clickEvent) {
+        new NewExpSubmissionDialog();
     }
 }
