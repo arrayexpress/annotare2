@@ -26,7 +26,7 @@ public class UISubmissionRow implements Serializable {
 
     private int id;
 
-    private AccessionValue accession = new AccessionValue();
+    private Accession accession = new Accession();
 
     private String title;
 

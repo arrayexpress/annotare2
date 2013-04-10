@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
-public class AccessionValue implements Serializable {
+public class Accession implements Serializable {
 
     private static final String UNACCESSIONED = "UNACCESSIONED";
 
