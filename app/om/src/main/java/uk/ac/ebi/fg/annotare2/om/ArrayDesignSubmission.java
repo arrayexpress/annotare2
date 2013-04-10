@@ -31,11 +31,6 @@ public class ArrayDesignSubmission extends Submission {
         super(createdBy, acl);
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
     public void setBody(String body) {
         this.body = body;
     }

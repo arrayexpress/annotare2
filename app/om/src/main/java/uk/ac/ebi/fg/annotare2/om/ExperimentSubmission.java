@@ -35,11 +35,6 @@ public class ExperimentSubmission extends Submission {
         super(user, acl);
     }
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visit(this);
-    }
-
     public void setInvestigation(String text) {
         this.investigation = text;
     }
