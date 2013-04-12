@@ -26,6 +26,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
@@ -40,7 +41,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.StartEditorLayout;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -97,7 +100,48 @@ public class EditorApp implements EntryPoint {
     private void init(HasWidgets root, SubmissionDetails details) {
         EventBus eventBus = injector.getEventBus();
 
+        SubmissionType type = details.getType();
+        Widget layout = (type == EXPERIMENT && details.hasNoData()) ?
+            initStartLayout(eventBus) :
+            initMainLayout(eventBus);
+
+        EditorPlaceFactory factory = injector.getPlaceFactory();
+        Place defaultPlace =
+                (type == EXPERIMENT) ?
+                        factory.getExpInfoPlace() : factory.getAdHeaderPlace();
+
+        EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);
+        historyMapper.setFactory(factory);
+
+        PlaceController placeController = injector.getPlaceController();
+        PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+        historyHandler.register(placeController, eventBus, defaultPlace);
+
+        root.add(layout);
+
+        historyHandler.handleCurrentHistory();
+    }
+
+    private Widget initStartLayout(EventBus eventBus) {
+        StartEditorLayout layout = new StartEditorLayout();
+
+        ActivityMapper startActivityMapper = injector.getStartActivityMapper();
+        ActivityManager startActivityManager = new ActivityManager(startActivityMapper, eventBus);
+        startActivityManager.setDisplay(layout.getDisplay());
+
+        return layout;
+    }
+
+    private Widget initMainLayout(EventBus eventBus) {
         final EditorLayout layout = new EditorLayout();
+
+        eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
+            @Override
+            public void validationFinished(ValidationResult result) {
+                //TODO not sure about the constant size
+                layout.expandLogBar(250);
+            }
+        });
 
         ActivityMapper titleBarActivityMapper = injector.getTitleBarActivityMapper();
         ActivityManager titleBarActivityManager = new ActivityManager(titleBarActivityMapper, eventBus);
@@ -123,28 +167,6 @@ public class EditorApp implements EntryPoint {
         ActivityManager logBarActivityManager = new ActivityManager(logBarActivityMapper, eventBus);
         logBarActivityManager.setDisplay(layout.getLogBarDisplay());
 
-        EditorPlaceFactory factory = injector.getPlaceFactory();
-        Place defaultPlace =
-                (details.getType() == SubmissionType.EXPERIMENT) ?
-                        factory.getExpInfoPlace() : factory.getAdHeaderPlace();
-
-        EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);
-        historyMapper.setFactory(factory);
-
-        PlaceController placeController = injector.getPlaceController();
-        PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
-        historyHandler.register(placeController, eventBus, defaultPlace);
-
-        root.add(layout);
-
-        eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
-            @Override
-            public void validationFinished(ValidationResult result) {
-                //TODO not sure about the constant size
-                layout.expandLogBar(250);
-            }
-        });
-
-        historyHandler.handleCurrentHistory();
+        return layout;
     }
 }

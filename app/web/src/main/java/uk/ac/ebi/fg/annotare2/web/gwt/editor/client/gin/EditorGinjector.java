@@ -56,5 +56,8 @@ public interface EditorGinjector extends Ginjector {
     @EditorLogBarDisplay
     ActivityMapper getLogBarActivityMapper();
 
+    @EditorStartDisplay
+    ActivityMapper getStartActivityMapper();
+
     SubmissionServiceAsync getSubmissionService();
 }

@@ -70,7 +70,8 @@ class UIObjectConverter {
                     submission.getTitle(),
                     submission.getCreated(),
                     submission.getStatus(),
-                    SUBMISSION_TYPE.apply(submission)
+                    SUBMISSION_TYPE.apply(submission),
+                    submission.hasNoData()
             );
         }
     };

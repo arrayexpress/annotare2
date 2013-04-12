@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.om;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * @author Olga Melnichuk
  */
@@ -47,8 +49,9 @@ public class ExperimentSubmission extends Submission {
     public InputStream getSampleAndDataRelationship() {
         return asStream(sampleAndDataRel);
     }
-    
-    public boolean hasData() {
-        return investigation == null || sampleAndDataRel == null;
+
+    @Override
+    public boolean hasNoData() {
+        return isNullOrEmpty(investigation) || isNullOrEmpty(sampleAndDataRel);
     }
 }

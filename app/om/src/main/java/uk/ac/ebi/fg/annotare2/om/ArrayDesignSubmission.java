@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.om;
 
 import java.io.InputStream;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * @author Olga Melnichuk
  */
@@ -47,4 +49,8 @@ public class ArrayDesignSubmission extends Submission {
         return asStream(header);
     }
 
+    @Override
+    public boolean hasNoData() {
+        return isNullOrEmpty(header) || isNullOrEmpty(body);
+    }
 }

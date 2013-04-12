@@ -38,6 +38,8 @@ public class SubmissionDetails implements Serializable {
 
     private SubmissionType type;
 
+    private boolean hasData;
+
     public SubmissionDetails() {
     }
 
@@ -46,13 +48,15 @@ public class SubmissionDetails implements Serializable {
                              String title,
                              Date created,
                              SubmissionStatus status,
-                             SubmissionType type) {
+                             SubmissionType type,
+                             boolean hasData) {
         this.id = id;
         this.accession = new Accession(accession);
         this.title = title;
         this.created = created;
         this.status = status;
         this.type = type;
+        this.hasData = hasData;
     }
 
     public int getId() {
@@ -77,5 +81,9 @@ public class SubmissionDetails implements Serializable {
 
     public SubmissionType getType() {
         return type;
+    }
+
+    public boolean hasNoData() {
+        return hasData;
     }
 }

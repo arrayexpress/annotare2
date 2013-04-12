@@ -96,4 +96,6 @@ public abstract class Submission implements HasEffectiveAcl {
     protected InputStream asStream(String str) {
         return new ByteArrayInputStream((str == null ? "" : str).getBytes(Charsets.UTF_8));
     }
+
+    public abstract boolean hasNoData();
 }
