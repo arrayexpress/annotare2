@@ -30,6 +30,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
@@ -48,8 +49,6 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class EditorApp implements EntryPoint {
 
     private final EditorGinjector injector = GWT.create(EditorGinjector.class);
-
-    private EditorLayout appWidget = new EditorLayout();
 
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
@@ -76,63 +75,73 @@ public class EditorApp implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(SubmissionDetails result) {
-                String title = result.getTitle();
-                if (title == null || title.isEmpty()) {
-                    title = result.getAccession();
-                }
-                Window.setTitle(result.hasAccession() ? result.getAccession() : title);
-                init(root, result.getType());
+            public void onSuccess(SubmissionDetails details) {
+                renameBrowserTab(details);
+                init(root, details);
             }
         });
     }
 
-    private void init(HasWidgets root, SubmissionType type) {
+    private void renameBrowserTab(SubmissionDetails details) {
+        Accession accession = details.getAccession();
+        String tabName = accession.getText();
+        if (!accession.hasValue()) {
+            String title = details.getTitle();
+            if (title != null && title.trim().length() > 0) {
+                tabName = title;
+            }
+        }
+        Window.setTitle(tabName);
+    }
+
+    private void init(HasWidgets root, SubmissionDetails details) {
         EventBus eventBus = injector.getEventBus();
-        PlaceController placeController = injector.getPlaceController();
+
+        final EditorLayout layout = new EditorLayout();
 
         ActivityMapper titleBarActivityMapper = injector.getTitleBarActivityMapper();
         ActivityManager titleBarActivityManager = new ActivityManager(titleBarActivityMapper, eventBus);
-        titleBarActivityManager.setDisplay(appWidget.getTitleBarDisplay());
+        titleBarActivityManager.setDisplay(layout.getTitleBarDisplay());
 
         ActivityMapper tabBarActivityMapper = injector.getTabBarActivityMapper();
         ActivityManager tabBarActivityManager = new ActivityManager(tabBarActivityMapper, eventBus);
-        tabBarActivityManager.setDisplay(appWidget.getTabBarDisplay());
+        tabBarActivityManager.setDisplay(layout.getTabBarDisplay());
 
         ActivityMapper tabToolBarActivityMapper = injector.getTabToolBarActivityMapper();
         ActivityManager tabToolBarActivityManager = new ActivityManager(tabToolBarActivityMapper, eventBus);
-        tabToolBarActivityManager.setDisplay(appWidget.getTabToolBarDisplay());
+        tabToolBarActivityManager.setDisplay(layout.getTabToolBarDisplay());
 
         ActivityMapper leftMenuActivityMapper = injector.getLeftMenuActivityMapper();
         ActivityManager leftMenuActivityManager = new ActivityManager(leftMenuActivityMapper, eventBus);
-        leftMenuActivityManager.setDisplay(appWidget.getLeftMenuDisplay());
+        leftMenuActivityManager.setDisplay(layout.getLeftMenuDisplay());
 
         ActivityMapper contentActivityMapper = injector.getContentActivityMapper();
         ActivityManager contentActivityManager = new ActivityManager(contentActivityMapper, eventBus);
-        contentActivityManager.setDisplay(appWidget.getContentDisplay());
+        contentActivityManager.setDisplay(layout.getContentDisplay());
 
         ActivityMapper logBarActivityMapper = injector.getLogBarActivityMapper();
         ActivityManager logBarActivityManager = new ActivityManager(logBarActivityMapper, eventBus);
-        logBarActivityManager.setDisplay(appWidget.getLogBarDisplay());
+        logBarActivityManager.setDisplay(layout.getLogBarDisplay());
 
         EditorPlaceFactory factory = injector.getPlaceFactory();
         Place defaultPlace =
-                (type == SubmissionType.EXPERIMENT) ?
+                (details.getType() == SubmissionType.EXPERIMENT) ?
                         factory.getExpInfoPlace() : factory.getAdHeaderPlace();
 
         EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);
         historyMapper.setFactory(factory);
 
+        PlaceController placeController = injector.getPlaceController();
         PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
         historyHandler.register(placeController, eventBus, defaultPlace);
 
-        root.add(appWidget);
+        root.add(layout);
 
         eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
             @Override
             public void validationFinished(ValidationResult result) {
                 //TODO not sure about the constant size
-                appWidget.expandLogBar(250);
+                layout.expandLogBar(250);
             }
         });
 

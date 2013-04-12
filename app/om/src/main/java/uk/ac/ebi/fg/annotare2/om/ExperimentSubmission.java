@@ -16,9 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import com.google.common.base.Charsets;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -49,5 +46,9 @@ public class ExperimentSubmission extends Submission {
 
     public InputStream getSampleAndDataRelationship() {
         return asStream(sampleAndDataRel);
+    }
+    
+    public boolean hasData() {
+        return investigation == null || sampleAndDataRel == null;
     }
 }

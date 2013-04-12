@@ -27,20 +27,27 @@ public class Accession implements Serializable {
 
     private String value;
 
-    public String get() {
-        return value == null ? UNACCESSIONED : value;
+    public Accession() {
     }
 
-    public void set(String value) {
+    public Accession(String value) {
         this.value = value;
     }
 
-    public boolean isUnaccessioned() {
-        return UNACCESSIONED.equals(value);
+    public String getText() {
+        return hasValue() ? value : UNACCESSIONED;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public final boolean hasValue() {
+        return value != null && value.trim().length() > 0;
     }
 
     @Override
     public String toString() {
-        return get();
+        return getText();
     }
 }

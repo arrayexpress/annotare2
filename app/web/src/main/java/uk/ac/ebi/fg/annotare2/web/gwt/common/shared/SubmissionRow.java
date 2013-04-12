@@ -28,7 +28,7 @@ public class SubmissionRow implements Serializable {
 
     private int id;
 
-    private Accession accession = new Accession();
+    private Accession accession;
 
     private String title;
 
@@ -48,7 +48,7 @@ public class SubmissionRow implements Serializable {
                          SubmissionStatus status,
                          SubmissionType type) {
         this.id = id;
-        this.accession.set(accession);
+        this.accession = new Accession(accession);
         this.title = title;
         this.created = created;
         this.status = status;
@@ -60,7 +60,7 @@ public class SubmissionRow implements Serializable {
     }
 
     public String getAccession() {
-        return accession.get();
+        return accession.getText();
     }
 
     public String getTitle() {

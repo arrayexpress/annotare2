@@ -28,7 +28,7 @@ public class SubmissionDetails implements Serializable {
 
     private int id;
 
-    private Accession accession = new Accession();
+    private Accession accession;
 
     private String title;
 
@@ -48,7 +48,7 @@ public class SubmissionDetails implements Serializable {
                              SubmissionStatus status,
                              SubmissionType type) {
         this.id = id;
-        this.accession.set(accession);
+        this.accession = new Accession(accession);
         this.title = title;
         this.created = created;
         this.status = status;
@@ -59,12 +59,8 @@ public class SubmissionDetails implements Serializable {
         return id;
     }
 
-    public boolean hasAccession() {
-        return accession.isUnaccessioned();
-    }
-
-    public String getAccession() {
-        return accession.get();
+    public Accession getAccession() {
+        return accession;
     }
 
     public String getTitle() {

@@ -81,7 +81,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
             @Override
             public void onSuccess(SubmissionDetails result) {
-                view.setTitle(result.getType(), result.getAccession());
+                view.setTitle(result.getType(), result.getAccession().getText());
                 view.setSubmissionType(result.getType());
             }
         }.wrap());

@@ -32,7 +32,7 @@ public class SubmissionListPlace extends Place {
 
     {
         /**
-         * When the default constructor is invoked set the default value to the filter.
+         * When the default constructor is invoked setValue the default value to the filter.
          */
         setFilter(null);
     }
