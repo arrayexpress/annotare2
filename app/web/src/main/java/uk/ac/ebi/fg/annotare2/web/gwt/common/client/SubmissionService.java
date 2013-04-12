@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 /**
  * @author Olga Melnichuk
@@ -28,7 +28,7 @@ public interface SubmissionService extends RemoteService {
 
     public static final String NAME = "submissionService";
 
-    UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
+    SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
 
     int createExperimentSubmission() throws NoPermissionException;
 

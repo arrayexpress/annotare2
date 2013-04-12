@@ -25,8 +25,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
@@ -65,8 +64,8 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     private void loadSubmissionListAsync() {
         switch (filter) {
             case ALL_SUBMISSIONS:
-                rpcService.getAllSubmissions(new AsyncCallbackWrapper<ArrayList<UISubmissionRow>>() {
-                    public void onSuccess(ArrayList<UISubmissionRow> result) {
+                rpcService.getAllSubmissions(new AsyncCallbackWrapper<ArrayList<SubmissionRow>>() {
+                    public void onSuccess(ArrayList<SubmissionRow> result) {
                         view.setSubmissions(result);
                     }
 
@@ -78,8 +77,8 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
                 return;
 
             case INCOMPLETE_SUBMISSIONS:
-                rpcService.getIncompleteSubmissions(new AsyncCallbackWrapper<ArrayList<UISubmissionRow>>() {
-                    public void onSuccess(ArrayList<UISubmissionRow> result) {
+                rpcService.getIncompleteSubmissions(new AsyncCallbackWrapper<ArrayList<SubmissionRow>>() {
+                    public void onSuccess(ArrayList<SubmissionRow> result) {
                         view.setSubmissions(result);
                     }
 
@@ -91,8 +90,8 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
                 return;
 
             case COMPLETED_SUBMISSIONS:
-                rpcService.getCompletedSubmissions(new AsyncCallbackWrapper<ArrayList<UISubmissionRow>>() {
-                    public void onSuccess(ArrayList<UISubmissionRow> result) {
+                rpcService.getCompletedSubmissions(new AsyncCallbackWrapper<ArrayList<SubmissionRow>>() {
+                    public void onSuccess(ArrayList<SubmissionRow> result) {
                         view.setSubmissions(result);
                     }
 

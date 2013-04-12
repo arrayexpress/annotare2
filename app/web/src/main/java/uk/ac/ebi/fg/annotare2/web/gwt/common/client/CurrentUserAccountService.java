@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 
 /**
  * @author Olga Melnichuk
@@ -28,7 +28,7 @@ public interface CurrentUserAccountService extends RemoteService {
 
     public static final String NAME = "currentUserAccountService";
 
-    public UIUser me();
+    public UserDto me();
 
     public void logout();
 

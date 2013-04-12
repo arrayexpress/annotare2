@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 
 import java.util.ArrayList;
 
@@ -30,9 +30,9 @@ public interface SubmissionListService extends RemoteService {
 
     public static final String NAME = "submissionListService";
 
-    ArrayList<UISubmissionRow> getAllSubmissions();
+    ArrayList<SubmissionRow> getAllSubmissions();
 
-    ArrayList<UISubmissionRow> getCompletedSubmissions();
+    ArrayList<SubmissionRow> getCompletedSubmissions();
 
-    ArrayList<UISubmissionRow> getIncompleteSubmissions();
+    ArrayList<SubmissionRow> getIncompleteSubmissions();
 }

@@ -22,7 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.NewExpSubmissionDialog;
 
@@ -51,7 +51,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
-    public void setTitle(UISubmissionType type, String accession) {
+    public void setTitle(SubmissionType type, String accession) {
         accessionLabel.setText(type.getTitle() + ": " + accession);
     }
 
@@ -61,8 +61,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
-    public void setSubmissionType(UISubmissionType type) {
-        validateButton.setEnabled(type == UISubmissionType.EXPERIMENT);
+    public void setSubmissionType(SubmissionType type) {
+        validateButton.setEnabled(type == SubmissionType.EXPERIMENT);
     }
 
     @UiHandler("validateButton")

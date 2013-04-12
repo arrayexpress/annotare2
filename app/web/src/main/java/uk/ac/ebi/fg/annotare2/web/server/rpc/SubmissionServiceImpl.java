@@ -24,7 +24,7 @@ import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
@@ -44,7 +44,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         this.submissionManager = submissionManager;
     }
 
-    public UISubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
+    public SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = submissionManager.getSubmission(getCurrentUser(), id);
             return UIObjectConverter.uiSubmissionDetails(sb);

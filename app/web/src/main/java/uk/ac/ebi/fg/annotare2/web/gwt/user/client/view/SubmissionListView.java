@@ -17,8 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public interface SubmissionListView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    void setSubmissions(List<UISubmissionRow> submissions);
+    void setSubmissions(List<SubmissionRow> submissions);
 
     public interface Presenter  {
         void onSubmissionSelected(int id);

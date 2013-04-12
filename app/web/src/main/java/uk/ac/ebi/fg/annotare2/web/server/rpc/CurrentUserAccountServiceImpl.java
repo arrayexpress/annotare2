@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 
 /**
@@ -31,7 +31,7 @@ public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implem
         super(authService);
     }
 
-    public UIUser me() {
+    public UserDto me() {
         return UIObjectConverter.uiUser(getCurrentUser());
     }
 

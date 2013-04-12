@@ -22,10 +22,10 @@ import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -40,17 +40,17 @@ import static com.google.common.collect.Lists.transform;
  */
 class UIObjectConverter {
 
-    static Function<User, UIUser> USER_TRANSFORM = new Function<User, UIUser>() {
-        public UIUser apply(@Nullable User user) {
+    static Function<User, UserDto> USER_TRANSFORM = new Function<User, UserDto>() {
+        public UserDto apply(@Nullable User user) {
             checkNotNull(user);
-            return new UIUser(user.getEmail());
+            return new UserDto(user.getEmail());
         }
     };
 
-    static Function<Submission, UISubmissionRow> SUBMISSION_ROW = new Function<Submission, UISubmissionRow>() {
-        public UISubmissionRow apply(@Nullable Submission submission) {
+    static Function<Submission, SubmissionRow> SUBMISSION_ROW = new Function<Submission, SubmissionRow>() {
+        public SubmissionRow apply(@Nullable Submission submission) {
             checkNotNull(submission);
-            return new UISubmissionRow(
+            return new SubmissionRow(
                     submission.getId(),
                     submission.getAccession(),
                     submission.getTitle(),
@@ -61,10 +61,10 @@ class UIObjectConverter {
         }
     };
 
-    static Function<Submission, UISubmissionDetails> SUBMISSION_DETAILS = new Function<Submission, UISubmissionDetails>() {
-        public UISubmissionDetails apply(@Nullable Submission submission) {
+    static Function<Submission, SubmissionDetails> SUBMISSION_DETAILS = new Function<Submission, SubmissionDetails>() {
+        public SubmissionDetails apply(@Nullable Submission submission) {
             checkNotNull(submission);
-            return new UISubmissionDetails(
+            return new SubmissionDetails(
                     submission.getId(),
                     submission.getAccession(),
                     submission.getTitle(),
@@ -75,27 +75,27 @@ class UIObjectConverter {
         }
     };
 
-    static Function<Submission, UISubmissionType> SUBMISSION_TYPE = new Function<Submission, UISubmissionType>() {
-        public UISubmissionType apply(@Nullable Submission submission) {
+    static Function<Submission, SubmissionType> SUBMISSION_TYPE = new Function<Submission, SubmissionType>() {
+        public SubmissionType apply(@Nullable Submission submission) {
             checkNotNull(submission);
             if (submission instanceof ExperimentSubmission)
-                return UISubmissionType.EXPERIMENT;
+                return SubmissionType.EXPERIMENT;
             else if (submission instanceof ArrayDesignSubmission)
-                return UISubmissionType.ARRAY_DESIGN;
+                return SubmissionType.ARRAY_DESIGN;
             throw new IllegalStateException("Submission is of unknown type: " + submission.getClass());
         }
     };
 
-    static ArrayList<UISubmissionRow> uiSubmissionRows(List<Submission> submissions) {
-        return new ArrayList<UISubmissionRow>(filter(
+    static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
+        return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
     }
 
-    static UISubmissionDetails uiSubmissionDetails(Submission submission) {
+    static SubmissionDetails uiSubmissionDetails(Submission submission) {
         return SUBMISSION_DETAILS.apply(submission);
     }
 
-    static UIUser uiUser(User user) {
+    static UserDto uiUser(User user) {
         return USER_TRANSFORM.apply(user);
     }
 }

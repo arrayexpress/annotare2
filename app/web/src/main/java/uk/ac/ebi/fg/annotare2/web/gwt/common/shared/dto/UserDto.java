@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2012 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto;
+
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public enum UISubmissionType {
-    EXPERIMENT("Experiment"),
-    ARRAY_DESIGN("Array Design");
+public class UserDto implements Serializable {
 
-    private final String title;
+    private String email;
 
-    private UISubmissionType(String title) {
-        this.title = title;
+    public UserDto() {
     }
 
-    public String getTitle() {
-        return title;
+    public UserDto(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

@@ -27,9 +27,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
-
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.openSubmissionEditor;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 /**
  * @author Olga Melnichuk
@@ -65,7 +63,7 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
         this.presenter = presenter;
     }
 
-    public void setSubmission(UISubmissionDetails submission) {
+    public void setSubmission(SubmissionDetails submission) {
         accession.setInnerText(submission.getAccession());
         title.setInnerText(submission.getTitle());
         created.setInnerText(submission.getCreated().toString());

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
@@ -71,7 +71,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     }
 
     @Override
-    public void onSubmissionCreateClick(UISubmissionType type) {
+    public void onSubmissionCreateClick(SubmissionType type) {
         AsyncCallback<Integer> callback = new AsyncCallbackWrapper<Integer>() {
             public void onFailure(Throwable caught) {
                 //TODO

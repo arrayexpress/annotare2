@@ -27,7 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionView;
 
@@ -67,7 +67,7 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     }
 
     private void loadAsync() {
-        rpcService.getSubmission(submissionId, new AsyncCallbackWrapper<UISubmissionDetails>() {
+        rpcService.getSubmission(submissionId, new AsyncCallbackWrapper<SubmissionDetails>() {
             public void onFailure(Throwable caught) {
                 //TODO
                 if (caught instanceof ResourceNotFoundException ||
@@ -76,7 +76,7 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
                 }
             }
 
-            public void onSuccess(UISubmissionDetails result) {
+            public void onSuccess(SubmissionDetails result) {
                 view.setSubmission(result);
             }
         }.wrap());

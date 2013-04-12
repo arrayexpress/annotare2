@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
@@ -72,7 +72,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     private void initAsync() {
-        submissionService.getSubmission(getSubmissionId(), new AsyncCallbackWrapper<UISubmissionDetails>() {
+        submissionService.getSubmission(getSubmissionId(), new AsyncCallbackWrapper<SubmissionDetails>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO add proper logging
@@ -80,7 +80,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
             }
 
             @Override
-            public void onSuccess(UISubmissionDetails result) {
+            public void onSuccess(SubmissionDetails result) {
                 view.setTitle(result.getType(), result.getAccession());
                 view.setSubmissionType(result.getType());
             }

@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
@@ -41,16 +41,16 @@ public class SubmissionListServiceImpl extends AuthBasedRemoteService implements
         this.submissionManager = submissionManager;
     }
 
-    public ArrayList<UISubmissionRow> getAllSubmissions() {
+    public ArrayList<SubmissionRow> getAllSubmissions() {
         return UIObjectConverter.uiSubmissionRows(getMyAllSubmissions());
     }
 
-    public ArrayList<UISubmissionRow> getCompletedSubmissions() {
+    public ArrayList<SubmissionRow> getCompletedSubmissions() {
         return UIObjectConverter.uiSubmissionRows(getMyCompletedSubmissions());
     }
 
 
-    public ArrayList<UISubmissionRow> getIncompleteSubmissions() {
+    public ArrayList<SubmissionRow> getIncompleteSubmissions() {
         return UIObjectConverter.uiSubmissionRows(getMyIncompleteSubmissions());
     }
 

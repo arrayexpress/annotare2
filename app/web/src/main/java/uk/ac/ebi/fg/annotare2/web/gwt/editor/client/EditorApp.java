@@ -30,8 +30,8 @@ import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
@@ -68,7 +68,7 @@ public class EditorApp implements EntryPoint {
 
         SubmissionServiceAsync submissionService = injector.getSubmissionService();
         final int subId = getSubmissionId();
-        submissionService.getSubmission(subId, new AsyncCallbackWrapper<UISubmissionDetails>() {
+        submissionService.getSubmission(subId, new AsyncCallbackWrapper<SubmissionDetails>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -76,7 +76,7 @@ public class EditorApp implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(UISubmissionDetails result) {
+            public void onSuccess(SubmissionDetails result) {
                 String title = result.getTitle();
                 if (title == null || title.isEmpty()) {
                     title = result.getAccession();
@@ -87,7 +87,7 @@ public class EditorApp implements EntryPoint {
         });
     }
 
-    private void init(HasWidgets root, UISubmissionType type) {
+    private void init(HasWidgets root, SubmissionType type) {
         EventBus eventBus = injector.getEventBus();
         PlaceController placeController = injector.getPlaceController();
 
@@ -117,7 +117,7 @@ public class EditorApp implements EntryPoint {
 
         EditorPlaceFactory factory = injector.getPlaceFactory();
         Place defaultPlace =
-                (type == UISubmissionType.EXPERIMENT) ?
+                (type == SubmissionType.EXPERIMENT) ?
                         factory.getExpInfoPlace() : factory.getAdHeaderPlace();
 
         EditorPlaceHistoryMapper historyMapper = GWT.create(EditorPlaceHistoryMapper.class);

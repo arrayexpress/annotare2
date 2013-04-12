@@ -30,8 +30,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.widgets.client.MenuButton;
 
 import java.util.HashMap;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.ARRAY_DESIGN;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType.EXPERIMENT;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.ARRAY_DESIGN;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 
 /**
  * @author Olga Melnichuk

@@ -17,16 +17,15 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 
 import java.util.ArrayList;
 
 public interface SubmissionListServiceAsync {
 
-    void getAllSubmissions(AsyncCallback<ArrayList<UISubmissionRow>> async);
+    void getAllSubmissions(AsyncCallback<ArrayList<SubmissionRow>> async);
 
-    void getCompletedSubmissions(AsyncCallback<ArrayList<UISubmissionRow>> async);
+    void getCompletedSubmissions(AsyncCallback<ArrayList<SubmissionRow>> async);
 
-    void getIncompleteSubmissions(AsyncCallback<ArrayList<UISubmissionRow>> async);
+    void getIncompleteSubmissions(AsyncCallback<ArrayList<SubmissionRow>> async);
 }

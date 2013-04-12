@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public class UISubmissionRow implements Serializable {
+public class SubmissionDetails implements Serializable {
 
     private int id;
 
@@ -36,17 +36,17 @@ public class UISubmissionRow implements Serializable {
 
     private SubmissionStatus status;
 
-    private UISubmissionType type;
+    private SubmissionType type;
 
-    public UISubmissionRow() {
+    public SubmissionDetails() {
     }
 
-    public UISubmissionRow(int id,
-                           String accession,
-                           String title,
-                           Date created,
-                           SubmissionStatus status,
-                           UISubmissionType type) {
+    public SubmissionDetails(int id,
+                             String accession,
+                             String title,
+                             Date created,
+                             SubmissionStatus status,
+                             SubmissionType type) {
         this.id = id;
         this.accession.set(accession);
         this.title = title;
@@ -57,6 +57,10 @@ public class UISubmissionRow implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public boolean hasAccession() {
+        return accession.isUnaccessioned();
     }
 
     public String getAccession() {
@@ -75,7 +79,7 @@ public class UISubmissionRow implements Serializable {
         return status;
     }
 
-    public UISubmissionType getType() {
+    public SubmissionType getType() {
         return type;
     }
 }

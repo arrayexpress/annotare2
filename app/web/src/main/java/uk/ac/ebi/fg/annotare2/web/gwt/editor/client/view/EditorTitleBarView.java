@@ -17,18 +17,18 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 
 /**
  * @author Olga Melnichuk
  */
 public interface EditorTitleBarView extends IsWidget {
 
-    void setTitle(UISubmissionType type, String accession);
+    void setTitle(SubmissionType type, String accession);
 
     void setPresenter(Presenter presenter);
 
-    void setSubmissionType(UISubmissionType type);
+    void setSubmissionType(SubmissionType type);
 
     public interface Presenter {
 
