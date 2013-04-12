@@ -18,45 +18,46 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class ValidationResult implements Serializable {
 
-    private ArrayList<String> errors = new ArrayList<String>();
+    private List<String> errors = new ArrayList<String>();
 
-    private ArrayList<String> warnings = new ArrayList<String>();
+    private List<String> warnings = new ArrayList<String>();
 
-    private ArrayList<String> failures = new ArrayList<String>();
+    private List<String> failures = new ArrayList<String>();
 
     public ValidationResult() {
     }
 
     public ValidationResult(Throwable throwable) {
-         failures.add(throwable.getMessage());
+        failures.add(throwable.getMessage());
     }
 
-    public ValidationResult(ArrayList<String> errors, ArrayList<String> warnings) {
+    public ValidationResult(List<String> errors, List<String> warnings) {
         this.errors.addAll(errors);
         this.warnings.addAll(warnings);
     }
 
-    public ValidationResult(ArrayList<String> errors, ArrayList<String> warnings, ArrayList<String> failures) {
+    public ValidationResult(List<String> errors, List<String> warnings, List<String> failures) {
         this.errors.addAll(errors);
         this.warnings.addAll(warnings);
         this.failures.addAll(failures);
     }
 
-        public ArrayList<String> getErrors() {
+    public List<String> getErrors() {
         return errors;
     }
 
-    public ArrayList<String> getWarnings() {
+    public List<String> getWarnings() {
         return warnings;
     }
 
-    public ArrayList<String> getFailures() {
+    public List<String> getFailures() {
         return failures;
     }
 }

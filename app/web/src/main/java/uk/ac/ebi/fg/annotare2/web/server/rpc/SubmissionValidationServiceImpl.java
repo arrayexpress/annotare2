@@ -35,6 +35,9 @@ import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionValidator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -57,9 +60,9 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
     @Override
     public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
         ExperimentSubmission subm = getExperimentSubmission(submissionId, Permission.VIEW);
-        ArrayList<String> errors = new ArrayList<String>();
-        ArrayList<String> warnings = new ArrayList<String>();
-        ArrayList<String> failures = new ArrayList<String>();
+        List<String> errors = newArrayList();
+        List<String> warnings = newArrayList();
+        List<String> failures = newArrayList();
         try {
             Collection<CheckResult> results = validator.validate(subm);
             for (CheckResult cr : results) {
