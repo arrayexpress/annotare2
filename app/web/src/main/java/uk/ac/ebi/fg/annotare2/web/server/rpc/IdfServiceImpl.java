@@ -27,7 +27,7 @@ import uk.ac.ebi.fg.annotare2.magetab.table.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.IdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Permission;
+import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.IdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;

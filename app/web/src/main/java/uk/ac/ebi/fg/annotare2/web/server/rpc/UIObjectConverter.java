@@ -18,8 +18,14 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import uk.ac.ebi.fg.annotare2.om.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
+import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UISubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIUser;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -49,7 +55,7 @@ class UIObjectConverter {
                     submission.getAccession(),
                     submission.getTitle(),
                     submission.getCreated(),
-                    SUBMISSION_STATUS.apply(submission.getStatus()),
+                    submission.getStatus(),
                     SUBMISSION_TYPE.apply(submission)
             );
         }
@@ -63,16 +69,9 @@ class UIObjectConverter {
                     submission.getAccession(),
                     submission.getTitle(),
                     submission.getCreated(),
-                    SUBMISSION_STATUS.apply(submission.getStatus()),
+                    submission.getStatus(),
                     SUBMISSION_TYPE.apply(submission)
             );
-        }
-    };
-
-    static Function<SubmissionStatus, UISubmissionStatus> SUBMISSION_STATUS = new Function<SubmissionStatus, UISubmissionStatus>() {
-        public UISubmissionStatus apply(@Nullable SubmissionStatus submissionStatus) {
-            checkNotNull(submissionStatus);
-            return UISubmissionStatus.valueOf(submissionStatus.name());
         }
     };
 

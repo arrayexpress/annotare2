@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.om;
+package uk.ac.ebi.fg.annotare2.om.enums;
 
 /**
  * @author Olga Melnichuk
  */
-public enum SubmissionType {
-    EXPERIMENT_SUBMISSION_TYPE,
-    ARRAY_DESIGN_SUBMISSION_TYPE
+public enum AclType {
+    SUBMISSION
 }

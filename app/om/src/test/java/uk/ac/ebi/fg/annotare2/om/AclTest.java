@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.om;
 
 import org.junit.Test;
+import uk.ac.ebi.fg.annotare2.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertFalse;

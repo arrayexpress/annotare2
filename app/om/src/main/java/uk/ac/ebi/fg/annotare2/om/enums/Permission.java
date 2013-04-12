@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.om;
+package uk.ac.ebi.fg.annotare2.om.enums;
 
 /**
  * @author Olga Melnichuk
  */
-public enum AclType {
-    SUBMISSION
+public enum Permission {
+    CREATE,
+    UPDATE,
+    VIEW
 }

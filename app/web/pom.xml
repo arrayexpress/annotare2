@@ -100,9 +100,17 @@
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
             <artifactId>annotare2-om</artifactId>
+            <version>0.13-SNAPSHOT</version>
+            <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
+            <artifactId>annotare2-om</artifactId>
+            <version>0.13-SNAPSHOT</version>
             <scope>test</scope>
             <type>test-jar</type>
-            <version>0.13-SNAPSHOT</version>
         </dependency>
 
         <dependency>

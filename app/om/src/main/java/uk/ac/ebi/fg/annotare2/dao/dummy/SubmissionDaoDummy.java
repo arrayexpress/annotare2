@@ -21,6 +21,7 @@ import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

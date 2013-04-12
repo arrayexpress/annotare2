@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.om.enums;
 
 /**
  * @author Olga Melnichuk
  */
-public enum UISubmissionStatus {
-    IN_PROGRESS("In Progress"),
-    SUBMITTED("Submitted"),
-    IN_CURATION("In Curation"),
-    PRIVATE_IN_AE("Private in ArrayExpress"),
-    PUBLIC_IN_AE("Public in ArrayExpress");
-
-    private final String title;
-
-    private UISubmissionStatus(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
+public enum Role {
+    OWNER,
+    AUTHENTICATED,
+    CURATOR,
+    ADMIN
 }

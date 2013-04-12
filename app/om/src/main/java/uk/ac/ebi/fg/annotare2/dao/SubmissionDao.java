@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.dao;
 
 import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import java.util.Collection;
 import java.util.List;

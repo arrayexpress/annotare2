@@ -20,6 +20,8 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import java.util.Collection;
 import java.util.List;

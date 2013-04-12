@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.om;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

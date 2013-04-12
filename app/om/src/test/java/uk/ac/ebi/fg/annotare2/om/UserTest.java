@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.om;
 
 import org.junit.Test;
+import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
 import static org.junit.Assert.*;
 

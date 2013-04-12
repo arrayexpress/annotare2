@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
+import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -32,7 +34,7 @@ public class UISubmissionRow implements Serializable {
 
     private Date created;
 
-    private UISubmissionStatus status;
+    private SubmissionStatus status;
 
     private UISubmissionType type;
 
@@ -43,7 +45,7 @@ public class UISubmissionRow implements Serializable {
                            String accession,
                            String title,
                            Date created,
-                           UISubmissionStatus status,
+                           SubmissionStatus status,
                            UISubmissionType type) {
         this.id = id;
         this.accession.set(accession);
@@ -69,7 +71,7 @@ public class UISubmissionRow implements Serializable {
         return created;
     }
 
-    public UISubmissionStatus getStatus() {
+    public SubmissionStatus getStatus() {
         return status;
     }
 

@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.om;
 
 import com.google.common.base.Optional;
+import uk.ac.ebi.fg.annotare2.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
 import static com.google.common.base.Optional.absent;
 

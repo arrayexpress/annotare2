@@ -16,6 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import uk.ac.ebi.fg.annotare2.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.om.enums.Role;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
