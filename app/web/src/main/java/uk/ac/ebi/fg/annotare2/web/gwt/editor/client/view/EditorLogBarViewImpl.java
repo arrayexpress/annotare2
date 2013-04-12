@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -47,7 +47,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
         addAll(result.getWarnings());
     }
 
-    private void addAll(ArrayList<String> list) {
+    private void addAll(List<String> list) {
         for (String item : list) {
             panel.add(new Label(item));
         }
