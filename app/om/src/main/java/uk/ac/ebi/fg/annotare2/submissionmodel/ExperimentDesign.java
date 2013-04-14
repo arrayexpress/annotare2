@@ -16,31 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import java.util.Date;
-import java.util.List;
-
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentInfo {
-
-    @JsonProperty("title")
-    private String title;
-
-    @JsonProperty("description")
-    private String description;
-
-    @JsonProperty("experimentDate")
-    private Date experimentDate;
-
-    @JsonProperty("publicReleaseDate")
-    private Date publicReleaseDate;
-
-    @JsonProperty("contacts")
-    private List<Contact> contacts;
-
-    @JsonProperty("publications")
-    private List<Publication> publications;
+public class ExperimentDesign {
 }

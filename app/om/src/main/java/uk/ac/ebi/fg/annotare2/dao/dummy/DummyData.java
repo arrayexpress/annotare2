@@ -27,6 +27,8 @@ import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
+import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -91,6 +93,8 @@ public class DummyData {
 
         } catch (IOException e) {
             log.error("", e);
+        } catch (DataSerializationExcepetion e) {
+            log.error("", e);
         }
     }
 
@@ -103,11 +107,13 @@ public class DummyData {
         return user;
     }
 
-    private static Submission createSubmission(User user, SubmissionStatus status, String idfName, String accession, String title) throws IOException {
+    private static Submission createSubmission(User user, SubmissionStatus status, String idfName, String accession, String title) throws IOException, DataSerializationExcepetion {
         ExperimentSubmission submission = new SubmissionFactory().createExperimentSubmission(user);
         submission.setStatus(status);
         submission.setInvestigation(
                 CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
+        // TODO
+        submission.setExperiment(new Experiment());
         submission.setTitle(title);
         submission.setAccession(accession);
         save(submission);

@@ -16,10 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * @author Olga Melnichuk
  */
 public class Publication {
 
+    @JsonProperty("title")
     private String title;
 }

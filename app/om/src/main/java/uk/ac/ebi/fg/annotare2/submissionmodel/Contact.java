@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -23,22 +25,32 @@ import java.util.List;
  */
 public class Contact {
 
+    @JsonProperty("firstName")
     private String firstName;
 
+    @JsonProperty("lastName")
     private String lastName;
 
+    @JsonProperty("midInitials")
     private String midInitials;
 
+    @JsonProperty("email")
     private String email;
 
+    @JsonProperty("phone")
     private String phone;
 
+    @JsonProperty("fax")
     private String fax;
 
+    @JsonProperty("affiliation")
     private String affiliation;
 
+    @JsonProperty("address")
     private String address;
 
+    @JsonProperty("roles")
     private List<String> roles;
+
 
 }
