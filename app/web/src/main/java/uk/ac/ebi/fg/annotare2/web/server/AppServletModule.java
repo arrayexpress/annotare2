@@ -16,7 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
+import com.google.inject.Provides;
 import com.google.inject.Scopes;
+import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
@@ -31,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.ExpressArrayList;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import javax.servlet.http.HttpServlet;
@@ -96,6 +99,7 @@ public class AppServletModule extends ServletModule {
         bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(Scopes.SINGLETON);
         bind(AccountManager.class).in(Scopes.SINGLETON);
         bind(SubmissionManager.class).in(Scopes.SINGLETON);
+        bind(ExpressArrayList.class).in(Scopes.SINGLETON);
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(Scopes.SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);
