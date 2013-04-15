@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class HighThroughputSeqSettings extends Composite implements SetupExpSubmissionDialog.HasSubmissionSettings {
+public class HighThroughputSeqSettings extends Composite implements SetupExpSubmissionView.HasSubmissionSettings {
 
     public HighThroughputSeqSettings() {
         initWidget(new Label("HTS submission is..."));

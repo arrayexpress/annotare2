@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionView;
 
 /**
  * @author Olga Melnichuk
@@ -26,9 +26,7 @@ public interface StartView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    void start();
-
-    public static interface Presenter extends SetupExpSubmissionDialog.Presenter {
+    public static interface Presenter extends SetupExpSubmissionView.Presenter {
 
     }
 }

@@ -48,7 +48,6 @@ public class StartActivity extends AbstractActivity implements StartView.Present
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
-        view.start();
     }
 
     public StartActivity withPlace(Place place) {

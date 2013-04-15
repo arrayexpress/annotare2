@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class TwoColorMicroarraySettings extends Composite implements SetupExpSubmissionDialog.HasSubmissionSettings {
+public class TwoColorMicroarraySettings extends Composite implements SetupExpSubmissionView.HasSubmissionSettings {
     @UiField
     HTML description;
 
