@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.NewExpSubmissionDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
 
 /**
  * @author Olga Melnichuk
@@ -28,6 +28,6 @@ public class StartViewImpl extends Composite implements StartView {
     public StartViewImpl() {
         initWidget(new Label("Hi there!"));
 
-        new NewExpSubmissionDialog();
+        new SetupExpSubmissionDialog();
     }
 }

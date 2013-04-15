@@ -18,17 +18,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.NewExpSubmissionDialog;
-
-import java.util.Map;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
 
 /**
  * @author Olga Melnichuk
@@ -85,6 +81,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("createNewLink")
     public void onCreateLinkClick(ClickEvent clickEvent) {
-        (new NewExpSubmissionDialog()).setPresenter(presenter);
+        (new SetupExpSubmissionDialog()).setPresenter(presenter);
     }
 }

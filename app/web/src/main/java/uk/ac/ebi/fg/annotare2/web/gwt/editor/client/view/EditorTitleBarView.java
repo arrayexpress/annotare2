@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.NewExpSubmissionDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
 
 /**
  * @author Olga Melnichuk
@@ -31,7 +31,7 @@ public interface EditorTitleBarView extends IsWidget {
 
     void setSubmissionType(SubmissionType type);
 
-    public interface Presenter extends NewExpSubmissionDialog.Presenter {
+    public interface Presenter extends SetupExpSubmissionDialog.Presenter {
 
         void validateSubmission(ValidationHandler handler);
     }

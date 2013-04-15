@@ -22,14 +22,9 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPanel;
@@ -40,9 +35,9 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class NewExpSubmissionDialog extends DialogBox {
+public class SetupExpSubmissionDialog extends DialogBox {
 
-    interface Binder extends UiBinder<Widget, NewExpSubmissionDialog> {
+    interface Binder extends UiBinder<Widget, SetupExpSubmissionDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -64,9 +59,9 @@ public class NewExpSubmissionDialog extends DialogBox {
 
     private Presenter presenter;
 
-    private final Map<String, HasSubmissionProperties> details = new HashMap<String, HasSubmissionProperties>();
+    private final Map<String, HasSubmissionSettings> details = new HashMap<String, HasSubmissionSettings>();
 
-    public NewExpSubmissionDialog() {
+    public SetupExpSubmissionDialog() {
         setModal(true);
         setGlassEnabled(true);
         setText("New Experiment Submission");
@@ -95,7 +90,7 @@ public class NewExpSubmissionDialog extends DialogBox {
     public void onOkButtonClick(ClickEvent event) {
         hide();
         final WaitingPanel w = new WaitingPanel("Creating new submission, please wait...");
-        presenter.createNewSubmission(((HasSubmissionProperties) getWidget()).getProperties(),
+        presenter.createNewSubmission(((HasSubmissionSettings) getWidget()).getSettings(),
                 new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -115,7 +110,7 @@ public class NewExpSubmissionDialog extends DialogBox {
     }
 
     private void showDetails(String key) {
-        HasSubmissionProperties w = details.get(key);
+        HasSubmissionSettings w = details.get(key);
         if (w == null) {
             w = createDetails(key);
             details.put(key, w);
@@ -123,13 +118,13 @@ public class NewExpSubmissionDialog extends DialogBox {
         templateDetails.setWidget(w);
     }
 
-    private HasSubmissionProperties createDetails(String key) {
+    private HasSubmissionSettings createDetails(String key) {
         if (ONE_COLOR.equals(key)) {
-            return new OneColorMicroarrayProperties();
+            return new OneColorMicroarraySettings();
         } else if (TWO_COLOR.equals(key)) {
-            return new TwoColorMicroarrayProperties();
+            return new TwoColorMicroarraySettings();
         } else if (SEQ.equals(key)) {
-            return new HighThroughputSeqProperties();
+            return new HighThroughputSeqSettings();
         } else {
             throw new IllegalArgumentException("Unknown key: " + key);
         }
@@ -140,8 +135,8 @@ public class NewExpSubmissionDialog extends DialogBox {
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), templateBox);
     }
 
-    public interface HasSubmissionProperties extends IsWidget {
-        Map<String, String> getProperties();
+    public interface HasSubmissionSettings extends IsWidget {
+        Map<String, String> getSettings();
     }
 
     public interface Presenter {
