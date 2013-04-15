@@ -16,11 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
 
 /**
@@ -28,20 +31,28 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpS
  */
 public class StartViewImpl extends Composite implements StartView {
 
+    interface Binder extends UiBinder<Widget, StartViewImpl> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
     private Presenter presenter;
 
+    @UiField
+    Anchor setupSubmission;
+
     public StartViewImpl() {
-        Button button = new Button("Create New");
-        button.addClickHandler(new ClickHandler() {
+        initWidget(Binder.BINDER.createAndBindUi(this));
+
+        setupSubmission.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                setupSubmission();
             }
         });
-        initWidget(new SimplePanel(button));
     }
 
     private void setupSubmission() {
-        (new SetupExpSubmissionDialog()).setPresenter(presenter);
+        (new SetupExpSubmissionDialog(false)).setPresenter(presenter);
     }
 
     @Override

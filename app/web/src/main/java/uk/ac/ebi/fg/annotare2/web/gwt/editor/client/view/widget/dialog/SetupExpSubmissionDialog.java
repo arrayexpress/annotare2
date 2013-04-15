@@ -63,11 +63,17 @@ public class SetupExpSubmissionDialog extends DialogBox {
     private final Map<String, HasSubmissionSettings> details = new HashMap<String, HasSubmissionSettings>();
 
     public SetupExpSubmissionDialog() {
+        this(true);
+    }
+
+    public SetupExpSubmissionDialog(boolean cancelable) {
         setModal(true);
         setGlassEnabled(true);
         setText("New Experiment Submission");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
+
+        cancelButton.setVisible(cancelable);
         templateBox.addItem("One-color microarray", ONE_COLOR);
         templateBox.addItem("Two-color microarray", TWO_COLOR);
         templateBox.addItem("High-throughput sequencing", SEQ);
@@ -89,8 +95,9 @@ public class SetupExpSubmissionDialog extends DialogBox {
 
     @UiHandler("okButton")
     public void onOkButtonClick(ClickEvent event) {
-        hide();
         final WaitingPanel w = new WaitingPanel("Creating new submission, please wait...");
+        setWidget(w);
+        center();
         presenter.setupNewSubmission(((HasSubmissionSettings) templateDetails.getWidget()).getSettings(),
                 new AsyncCallback<Void>() {
                     @Override
@@ -100,7 +107,7 @@ public class SetupExpSubmissionDialog extends DialogBox {
 
                     @Override
                     public void onSuccess(Void result) {
-                        w.showSuccess("Congrats, new submission has been created!");
+                        w.showSuccess("New submission has been created. Loading new content...");
                         Window.Location.reload();
                     }
                 });

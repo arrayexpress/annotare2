@@ -41,7 +41,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.StartEditorLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorStartLayout;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -123,7 +123,7 @@ public class EditorApp implements EntryPoint {
     }
 
     private Widget initStartLayout(EventBus eventBus) {
-        StartEditorLayout layout = new StartEditorLayout();
+        EditorStartLayout layout = new EditorStartLayout();
 
         ActivityMapper startActivityMapper = injector.getStartActivityMapper();
         ActivityManager startActivityManager = new ActivityManager(startActivityMapper, eventBus);

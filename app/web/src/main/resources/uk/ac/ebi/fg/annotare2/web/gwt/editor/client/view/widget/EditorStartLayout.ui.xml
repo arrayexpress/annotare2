@@ -74,5 +74,10 @@
         <g:center>
             <g:SimpleLayoutPanel  ui:field="display"/>
         </g:center>
+        <g:south size="20">
+           <g:HTMLPanel>
+               <div class="copy">2012 EMBL-EBI, Functional Genomics Group</div>
+           </g:HTMLPanel>
+        </g:south>
     </g:DockLayoutPanel>
 </ui:UiBinder>

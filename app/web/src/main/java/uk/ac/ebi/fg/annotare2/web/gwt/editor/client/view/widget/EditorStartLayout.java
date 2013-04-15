@@ -24,15 +24,15 @@ import com.google.gwt.user.client.ui.*;
 /**
  * @author Olga Melnichuk
  */
-public class StartEditorLayout extends Composite {
-    interface Binder extends UiBinder<Widget, StartEditorLayout> {
+public class EditorStartLayout extends Composite {
+    interface Binder extends UiBinder<Widget, EditorStartLayout> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
     HasOneWidget display;
 
-    public StartEditorLayout() {
+    public EditorStartLayout() {
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
