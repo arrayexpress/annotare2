@@ -24,18 +24,27 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Olga Melnichuk
  */
-public class TwoColorMicroarrayView  extends Composite {
+public class TwoColorMicroarrayProperties extends Composite implements NewExpSubmissionDialog.HasSubmissionProperties {
     @UiField
     HTML description;
 
-    interface Binder extends UiBinder<Widget, TwoColorMicroarrayView> {
+    @Override
+    public Map<String, String> getProperties() {
+        //TODO
+        return new HashMap<String, String>();
+    }
+
+    interface Binder extends UiBinder<Widget, TwoColorMicroarrayProperties> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public TwoColorMicroarrayView() {
+    public TwoColorMicroarrayProperties() {
         initWidget(Binder.BINDER.createAndBindUi(this));
         description.setHTML(SafeHtmlUtils.fromSafeConstant("Two-color microarray submission is ..."));
     }

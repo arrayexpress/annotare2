@@ -16,26 +16,24 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class OneColorMicroarrayView extends Composite {
+public class HighThroughputSeqProperties extends Composite implements NewExpSubmissionDialog.HasSubmissionProperties {
 
-    @UiField
-    HTML description;
-
-    interface Binder extends UiBinder<Widget, OneColorMicroarrayView> {
-        Binder BINDER = GWT.create(Binder.class);
+    public HighThroughputSeqProperties() {
+        initWidget(new Label("HTS submission is..."));
     }
 
-    public OneColorMicroarrayView() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
-        description.setHTML(SafeHtmlUtils.fromSafeConstant("One-color microarray submission is ..."));
+    @Override
+    public Map<String, String> getProperties() {
+        //TODO
+        return new HashMap<String, String>();
     }
 }
