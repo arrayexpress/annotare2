@@ -20,6 +20,8 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
+import java.util.Map;
+
 /**
  * @author Olga Melnichuk
  */
@@ -33,4 +35,6 @@ public interface SubmissionService extends RemoteService {
     int createExperimentSubmission() throws NoPermissionException;
 
     int createArrayDesignSubmission() throws NoPermissionException;
+
+    void setupExperimentSubmission(int id, Map<String, String> settings) throws ResourceNotFoundException, NoPermissionException;
 }

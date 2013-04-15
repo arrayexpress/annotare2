@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPanel;
@@ -90,7 +91,7 @@ public class SetupExpSubmissionDialog extends DialogBox {
     public void onOkButtonClick(ClickEvent event) {
         hide();
         final WaitingPanel w = new WaitingPanel("Creating new submission, please wait...");
-        presenter.createNewSubmission(((HasSubmissionSettings) getWidget()).getSettings(),
+        presenter.setupNewSubmission(((HasSubmissionSettings) templateDetails.getWidget()).getSettings(),
                 new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -100,7 +101,7 @@ public class SetupExpSubmissionDialog extends DialogBox {
                     @Override
                     public void onSuccess(Void result) {
                         w.showSuccess("Congrats, new submission has been created!");
-                        hide();
+                        Window.Location.reload();
                     }
                 });
     }
@@ -140,6 +141,6 @@ public class SetupExpSubmissionDialog extends DialogBox {
     }
 
     public interface Presenter {
-        void createNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback);
+        void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback);
     }
 }

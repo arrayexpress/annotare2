@@ -19,28 +19,44 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.StartView;
+
+import java.util.Map;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk
  */
-public class StartActivity extends AbstractActivity {
+public class StartActivity extends AbstractActivity implements StartView.Presenter {
 
     private final StartView view;
+    private final SubmissionServiceAsync submissionService;
 
     @Inject
-    public StartActivity(StartView view) {
+    public StartActivity(StartView view,
+                         SubmissionServiceAsync submissionService) {
         this.view = view;
+        this.submissionService = submissionService;
     }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        view.start();
     }
 
     public StartActivity withPlace(Place place) {
         return this;
+    }
+
+    @Override
+    public void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback) {
+        submissionService.setupExperimentSubmission(getSubmissionId(), properties, callback);
     }
 }

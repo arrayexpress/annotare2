@@ -16,12 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import com.google.common.collect.ImmutableMap;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -31,7 +34,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class Experiment {
 
-    @JsonProperty("properties")
     private Map<String, String> properties;
 
     @JsonProperty("info")
@@ -40,11 +42,19 @@ public class Experiment {
     @JsonProperty("design")
     private ExperimentDesign design;
 
+    public Experiment(@JsonProperty("properties") Map<String, String> properties) {
+        this.properties = new HashMap<String, String>();
+        this.properties.putAll(properties);
+    }
+
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(this.properties);
+    }
+
     public static Experiment fromJsonString(String str) throws DataSerializationExcepetion {
         if (isNullOrEmpty(str)) {
             return null;
         }
-
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(str, Experiment.class);

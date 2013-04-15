@@ -29,6 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
@@ -113,7 +114,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
-    public void createNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback) {
-        //TODO
+    public void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback) {
+        submissionService.setupExperimentSubmission(EditorUtils.getSubmissionId(), properties, AsyncCallbackWrapper.wrap(callback));
     }
 }

@@ -43,4 +43,18 @@ public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
             }
         };
     }
+
+    public static <T> AsyncCallback<T> wrap(final AsyncCallback<T> callback) {
+        return new AsyncCallbackWrapper<T>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(T result) {
+                callback.onSuccess(result);
+            }
+        }.wrap();
+    }
 }

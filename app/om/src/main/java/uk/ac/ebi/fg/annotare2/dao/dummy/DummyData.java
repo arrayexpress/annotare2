@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -113,7 +114,7 @@ public class DummyData {
         submission.setInvestigation(
                 CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
         // TODO
-        submission.setExperiment(new Experiment());
+        submission.setExperiment(new Experiment(Collections.<String, String>emptyMap()));
         submission.setTitle(title);
         submission.setAccession(accession);
         save(submission);

@@ -16,8 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
 
 /**
@@ -25,9 +28,29 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpS
  */
 public class StartViewImpl extends Composite implements StartView {
 
-    public StartViewImpl() {
-        initWidget(new Label("Hi there!"));
+    private Presenter presenter;
 
-        new SetupExpSubmissionDialog();
+    public StartViewImpl() {
+        Button button = new Button("Create New");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+            }
+        });
+        initWidget(new SimplePanel(button));
+    }
+
+    private void setupSubmission() {
+        (new SetupExpSubmissionDialog()).setPresenter(presenter);
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void start() {
+        setupSubmission();
     }
 }

@@ -16,11 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
+import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
@@ -28,6 +33,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -72,6 +79,24 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (AccessControlException e) {
             log.warn("createSubmission() failure", e);
             throw new NoPermissionException("no permission to create a submission");
+        }
+    }
+
+    @Override
+    public void setupExperimentSubmission(int id, Map<String, String> settings) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission submission =
+                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            submission.setExperiment(new Experiment(settings));
+        } catch (RecordNotFoundException e) {
+            log.warn("setupExperimentSubmission(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (AccessControlException e) {
+            log.warn("setupExperimentSubmission(" + id + ") failure", e);
+            throw new NoPermissionException("no permission to update submission: " + id);
+        } catch (DataSerializationExcepetion e) {
+            log.error("setupExperimentSubmisison(" + id + ") failure", e);
+            throw new UnexpectedException("experiment setup failure", e);
         }
     }
 }
