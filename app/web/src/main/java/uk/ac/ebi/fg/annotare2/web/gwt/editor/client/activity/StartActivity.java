@@ -23,8 +23,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.StartView;
 
+import java.util.List;
 import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -57,5 +59,11 @@ public class StartActivity extends AbstractActivity implements StartView.Present
     @Override
     public void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback) {
         submissionService.setupExperimentSubmission(getSubmissionId(), properties, callback);
+    }
+
+    @Override
+    public List<ArrayDesignRef> getArrayDesigns() {
+        //TODO
+        return null;
     }
 }

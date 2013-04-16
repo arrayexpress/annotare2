@@ -33,7 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.ExpressArrayList;
+import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import javax.servlet.http.HttpServlet;
@@ -99,12 +99,17 @@ public class AppServletModule extends ServletModule {
         bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(Scopes.SINGLETON);
         bind(AccountManager.class).in(Scopes.SINGLETON);
         bind(SubmissionManager.class).in(Scopes.SINGLETON);
-        bind(ExpressArrayList.class).in(Scopes.SINGLETON);
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(Scopes.SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);
 
         overrideMageTabCheck();
+    }
+
+    @Singleton
+    @Provides
+    public ArrayExpressArrayDesignList getArrayExpressArrayDesignList() {
+        return ArrayExpressArrayDesignList.create();
     }
 
     private void overrideMageTabCheck() {

@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.om;
+package uk.ac.ebi.fg.annotare2.web.server.services.ae;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
+ * List of arrays from ArrayExpress.
+ *
  * @author Olga Melnichuk
  */
-public class ExpressArray {
+public class ArrayExpressArrayDesignList {
 
-    private final int id;
-    private final String name;
-    private final String description;
-
-    public ExpressArray(int id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+    public Collection<AE.ArrayDesign> getArrayDesigns() {
+        //TODO
+        return Collections.emptyList();
     }
 
-    public int getId() {
-        return id;
+    private ArrayExpressArrayDesignList load() {
+        //TODO
+        return this;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
+    public static ArrayExpressArrayDesignList create() {
+        return (new ArrayExpressArrayDesignList()).load();
     }
 }
