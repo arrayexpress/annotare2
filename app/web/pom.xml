@@ -79,14 +79,6 @@
         </profile>
     </profiles>
 
-    <repositories>
-        <repository>
-            <id>sencha-gpl-release</id>
-            <name>Open source licensed Sencha artifacts</name>
-            <url>https://maven.sencha.com/repo/gpl-release/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
 
         <!-- Annotare dependencies -->
@@ -183,14 +175,6 @@
             <groupId>com.googlecode.gwtupload</groupId>
             <artifactId>gwtupload</artifactId>
             <version>0.6.4</version>
-        </dependency>
-
-        <!-- Sencha GXT 3.0 -->
-
-        <dependency>
-            <groupId>com.sencha.gxt</groupId>
-            <artifactId>gxt</artifactId>
-            <version>${gxt.version}</version>
         </dependency>
 
         <!-- jstl support-->

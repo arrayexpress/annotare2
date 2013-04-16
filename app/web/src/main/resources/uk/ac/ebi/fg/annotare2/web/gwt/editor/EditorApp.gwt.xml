@@ -44,8 +44,6 @@
 
     <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp"/>
 
-    <inherits name="com.sencha.gxt.ui.GXT"/>
-
     <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorApp"/>
 
     <stylesheet src="editor.css"/>
