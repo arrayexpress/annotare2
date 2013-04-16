@@ -37,4 +37,6 @@ public interface SubmissionService extends RemoteService {
     int createArrayDesignSubmission() throws NoPermissionException;
 
     void setupExperimentSubmission(int id, Map<String, String> settings) throws ResourceNotFoundException, NoPermissionException;
+
+    void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException;
 }

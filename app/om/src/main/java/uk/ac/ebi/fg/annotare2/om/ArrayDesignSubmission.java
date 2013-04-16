@@ -53,4 +53,9 @@ public class ArrayDesignSubmission extends Submission {
     public boolean hasNoData() {
         return isNullOrEmpty(header) || isNullOrEmpty(body);
     }
+
+    @Override
+    public void discardAll() {
+        throw new UnsupportedOperationException("Can't discard data for ArrayDesign");
+    }
 }

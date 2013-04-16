@@ -53,7 +53,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     public SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
-            Submission sb = submissionManager.getSubmission(getCurrentUser(), id);
+            Submission sb = submissionManager.getSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiSubmissionDetails(sb);
         } catch (AccessControlException e) {
             log.warn("getSubmission(" + id + ") failure", e);
@@ -97,6 +97,21 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (DataSerializationExcepetion e) {
             log.error("setupExperimentSubmisison(" + id + ") failure", e);
             throw new UnexpectedException("experiment setup failure", e);
+        }
+    }
+
+    @Override
+    public void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission =
+                    submissionManager.getSubmission(getCurrentUser(), id, Permission.UPDATE);
+            submission.discardAll();
+        } catch (RecordNotFoundException e) {
+            log.warn("setupExperimentSubmission(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (AccessControlException e) {
+            log.warn("setupExperimentSubmission(" + id + ") failure", e);
+            throw new NoPermissionException("no permission to update submission: " + id);
         }
     }
 }

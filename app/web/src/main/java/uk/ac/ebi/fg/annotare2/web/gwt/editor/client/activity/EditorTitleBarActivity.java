@@ -120,6 +120,11 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
+    public void discardSubmissionData(AsyncCallback<Void> callback) {
+        submissionService.discardSubmissionData(EditorUtils.getSubmissionId(), AsyncCallbackWrapper.wrap(callback));
+    }
+
+    @Override
     public void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback) {
         submissionService.setupExperimentSubmission(EditorUtils.getSubmissionId(), properties, AsyncCallbackWrapper.wrap(callback));
     }

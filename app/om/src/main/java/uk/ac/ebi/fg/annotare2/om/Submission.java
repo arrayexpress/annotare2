@@ -98,4 +98,6 @@ public abstract class Submission implements HasEffectiveAcl {
     }
 
     public abstract boolean hasNoData();
+
+    public abstract void discardAll();
 }

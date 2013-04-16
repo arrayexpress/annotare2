@@ -57,9 +57,9 @@ public class SubmissionManager {
                 SubmissionStatus.PUBLIC_IN_AE);
     }
 
-    public Submission getSubmission(User user, int id) throws AccessControlException, RecordNotFoundException {
+    public Submission getSubmission(User user, int id, Permission permission) throws AccessControlException, RecordNotFoundException {
         Submission submission = submissionDao.getSubmission(id);
-        return withPermission(user, Permission.VIEW, submission);
+        return withPermission(user, permission, submission);
     }
 
     public ExperimentSubmission getExperimentSubmission(User user, int id, Permission permission) throws RecordNotFoundException, AccessControlException {

@@ -14,4 +14,6 @@ public interface SubmissionServiceAsync {
     void createArrayDesignSubmission(AsyncCallback<Integer> async);
 
     void setupExperimentSubmission(int id, Map<String, String> settings, AsyncCallback<Void> async);
+
+    void discardSubmissionData(int id, AsyncCallback<Void> async);
 }

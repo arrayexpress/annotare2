@@ -21,9 +21,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
 
 /**
@@ -81,6 +84,20 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("createNewLink")
     public void onCreateLinkClick(ClickEvent clickEvent) {
-        (new SetupExpSubmissionDialog()).setPresenter(presenter);
+        if (Window.confirm("Please note that the all data of the submission will be lost. Do you want to continue?")) {
+            final WaitingPopup popup = new WaitingPopup("Creating new submission, please wait...");
+            popup.setPopupPosition(Window.getClientWidth()/2, Window.getClientHeight()/2);
+            presenter.discardSubmissionData(new AsyncCallback<Void>(){
+                @Override
+                public void onFailure(Throwable caught) {
+                    popup.showError(caught);
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+                    Window.Location.reload();
+                }
+            });
+        }
     }
 }

@@ -67,4 +67,9 @@ public class ExperimentSubmission extends Submission {
     public boolean hasNoData() {
         return isNullOrEmpty(experimentString);
     }
+
+    @Override
+    public void discardAll() {
+        experimentString = null;
+    }
 }
