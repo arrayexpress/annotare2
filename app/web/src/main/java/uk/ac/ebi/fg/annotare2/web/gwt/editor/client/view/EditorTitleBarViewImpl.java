@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.SetupExpSubmissionDialog;
 
 /**
  * @author Olga Melnichuk

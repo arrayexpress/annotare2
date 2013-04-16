@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class OneColorMicroarraySettings extends Composite implements HasSubmissionSettings {
+public class TwoColorMicroarraySettings extends Composite implements HasSubmissionSettings {
 
     @UiField
     HTML description;
@@ -38,25 +37,19 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
     @UiField(provided = true)
     SuggestBox arrayDesignList;
 
-    interface Binder extends UiBinder<Widget, OneColorMicroarraySettings> {
+    interface Binder extends UiBinder<Widget, TwoColorMicroarraySettings> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public OneColorMicroarraySettings(SubmissionSettingsDataSource dataSource) {
+    public TwoColorMicroarraySettings(SubmissionSettingsDataSource dataSource) {
         arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(dataSource));
         initWidget(Binder.BINDER.createAndBindUi(this));
-        description.setHTML(SafeHtmlUtils.fromSafeConstant("One-color microarray submission is ..."));
+        description.setHTML(SafeHtmlUtils.fromSafeConstant("Two-color microarray submission is ..."));
     }
-
-    public void setArrayDesigns(List<ArrayDesignRef> list) {
-
-    }
-
 
     @Override
     public Map<String, String> getSettings() {
         //TODO
         return new HashMap<String, String>();
     }
-
 }

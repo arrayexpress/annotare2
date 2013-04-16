@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-import java.util.Map;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HasSubmissionSettings extends IsWidget {
-
-    Map<String, String> getSettings();
+interface SubmissionSettingsDataSource extends ArrayDesignSuggestOracle.Service {
 }

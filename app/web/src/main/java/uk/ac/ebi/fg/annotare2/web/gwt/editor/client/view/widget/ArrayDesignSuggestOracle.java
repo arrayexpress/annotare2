@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
