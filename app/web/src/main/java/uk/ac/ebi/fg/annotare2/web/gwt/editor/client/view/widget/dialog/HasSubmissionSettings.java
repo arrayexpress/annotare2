@@ -16,25 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.IsWidget;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class HighThroughputSeqSettings extends Composite implements HasSubmissionSettings {
+public interface HasSubmissionSettings extends IsWidget {
 
-    public HighThroughputSeqSettings() {
-        initWidget(new Label("HTS submission is..."));
-    }
-
-    @Override
-    public Map<String, String> getSettings() {
-        //TODO
-        return new HashMap<String, String>();
-    }
-
+    Map<String, String> getSettings();
 }

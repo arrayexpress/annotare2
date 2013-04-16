@@ -25,6 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
@@ -48,6 +49,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
     private final SubmissionValidationServiceAsync validationService;
+    private final DataServiceAsync dataServiceAsync;
 
     private EventBus eventBus;
 
@@ -55,11 +57,13 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     public EditorTitleBarActivity(EditorTitleBarView view,
                                   PlaceController placeController,
                                   SubmissionServiceAsync submissionService,
-                                  SubmissionValidationServiceAsync validationService) {
+                                  SubmissionValidationServiceAsync validationService,
+                                  DataServiceAsync dataServiceAsync) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
         this.validationService = validationService;
+        this.dataServiceAsync = dataServiceAsync;
     }
 
     public EditorTitleBarActivity withPlace(Place place) {
@@ -121,8 +125,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
-    public List<ArrayDesignRef> getArrayDesigns() {
-        // TODO
-        return null;
+    public void getArrayDesigns(AsyncCallback<List<ArrayDesignRef>> callback) {
+        dataServiceAsync.getArrayDesignList(AsyncCallbackWrapper.wrap(callback));
     }
 }

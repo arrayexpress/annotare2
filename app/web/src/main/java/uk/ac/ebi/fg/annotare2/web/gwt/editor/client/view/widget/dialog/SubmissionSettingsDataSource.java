@@ -16,25 +16,18 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class HighThroughputSeqSettings extends Composite implements HasSubmissionSettings {
+interface SubmissionSettingsDataSource {
 
-    public HighThroughputSeqSettings() {
-        initWidget(new Label("HTS submission is..."));
-    }
+    List<ArrayDesignRef> getArrayDesigns();
 
-    @Override
-    public Map<String, String> getSettings() {
-        //TODO
-        return new HashMap<String, String>();
-    }
-
+    HandlerRegistration addArrayDesignListChangeHandler(ValueChangeHandler<List<ArrayDesignRef>> handler);
 }

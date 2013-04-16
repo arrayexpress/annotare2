@@ -22,17 +22,24 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class TwoColorMicroarraySettings extends Composite implements SetupExpSubmissionView.HasSubmissionSettings {
+public class TwoColorMicroarraySettings extends Composite implements HasSubmissionSettings {
+
     @UiField
     HTML description;
+
+    @UiField
+    ListBox arrayDesignList;
 
     @Override
     public Map<String, String> getSettings() {
@@ -48,4 +55,15 @@ public class TwoColorMicroarraySettings extends Composite implements SetupExpSub
         initWidget(Binder.BINDER.createAndBindUi(this));
         description.setHTML(SafeHtmlUtils.fromSafeConstant("Two-color microarray submission is ..."));
     }
+
+    public void setArrayDesigns(List<ArrayDesignRef> list) {
+        arrayDesignList.clear();
+        if (list == null) {
+            return;
+        }
+        for(ArrayDesignRef ref : list) {
+            arrayDesignList.addItem(ref.getName() + " : " + ref.getDescription(), ref.getName());
+        }
+    }
+
 }

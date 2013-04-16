@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class HighThroughputSeqSettings extends Composite implements HasSubmissionSettings {
+@RemoteServiceRelativePath(DataService.NAME)
+public interface DataService extends RemoteService {
 
-    public HighThroughputSeqSettings() {
-        initWidget(new Label("HTS submission is..."));
-    }
+    public static final String NAME = "dataService";
 
-    @Override
-    public Map<String, String> getSettings() {
-        //TODO
-        return new HashMap<String, String>();
-    }
-
+    List<ArrayDesignRef> getArrayDesignList();
 }

@@ -19,6 +19,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -28,22 +31,70 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog.ValueStore.newValueStore;
+
 /**
  * @author Olga Melnichuk
  */
-public class SetupExpSubmissionView extends Composite {
+public class SetupExpSubmissionView extends Composite implements SubmissionSettingsDataSource {
 
     interface Binder extends UiBinder<Widget, SetupExpSubmissionView> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    private static final String ONE_COLOR = "1-color";
-    private static final String TWO_COLOR = "2-color";
-    private static final String SEQ = "seq";
+    private enum Settings {
+        ONE_COLOR("One-color microarray") {
+            @Override
+            public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
+                final OneColorMicroarraySettings w = new OneColorMicroarraySettings();
+                source.addArrayDesignListChangeHandler(new ValueChangeHandler<List<ArrayDesignRef>>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<List<ArrayDesignRef>> event) {
+                        w.setArrayDesigns(event.getValue());
+                    }
+                });
+                w.setArrayDesigns(source.getArrayDesigns());
+                return w;
+            }
+        },
+        TWO_COLOR("Two-color microarray") {
+            @Override
+            public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
+                final TwoColorMicroarraySettings w = new TwoColorMicroarraySettings();
+                source.addArrayDesignListChangeHandler(new ValueChangeHandler<List<ArrayDesignRef>>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<List<ArrayDesignRef>> event) {
+                        w.setArrayDesigns(event.getValue());
+                    }
+                });
+                w.setArrayDesigns(source.getArrayDesigns());
+                return w;
+            }
+        },
+        SEQ("High-throughput sequencing") {
+            @Override
+            public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
+                return new HighThroughputSeqSettings();
+            }
+        };
+
+        private String title;
+
+        private Settings(String title) {
+            this.title = title;
+        }
+
+        private String getTitle() {
+            return title;
+        }
+
+        public abstract HasSubmissionSettings createWidget(SubmissionSettingsDataSource source);
+    }
 
     @UiField
     ScrollPanel templateDetails;
@@ -59,7 +110,9 @@ public class SetupExpSubmissionView extends Composite {
 
     private Presenter presenter;
 
-    private final Map<String, HasSubmissionSettings> details = new HashMap<String, HasSubmissionSettings>();
+    private final ValueStore<List<ArrayDesignRef>> arrayDesigns = newValueStore();
+
+    private final Map<Settings, HasSubmissionSettings> widgets = new HashMap<Settings, HasSubmissionSettings>();
 
     public SetupExpSubmissionView() {
         this(null);
@@ -73,13 +126,15 @@ public class SetupExpSubmissionView extends Composite {
         } else {
             cancelButton.addClickHandler(cancelClick);
         }
-        templateBox.addItem("One-color microarray", ONE_COLOR);
-        templateBox.addItem("Two-color microarray", TWO_COLOR);
-        templateBox.addItem("High-throughput sequencing", SEQ);
+
+        for (Settings s : Settings.values()) {
+            templateBox.addItem(s.getTitle(), s.name());
+        }
+
         templateBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                showDetails(templateBox.getValue(templateBox.getSelectedIndex()));
+                showDetails(Settings.valueOf(getSelectedSettingsTemplate()));
             }
         });
         selectFirstTemplate(templateBox);
@@ -87,6 +142,10 @@ public class SetupExpSubmissionView extends Composite {
 
     @UiHandler("okButton")
     public void onOkButtonClick(ClickEvent event) {
+        if (presenter == null) {
+            return;
+        }
+        okButton.setEnabled(false);
         final WaitingPopup w = new WaitingPopup("Creating new submission, please wait...");
         w.showRelativeTo(okButton);
         presenter.setupNewSubmission(((HasSubmissionSettings) templateDetails.getWidget()).getSettings(),
@@ -106,27 +165,37 @@ public class SetupExpSubmissionView extends Composite {
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        if (presenter != null) {
+            presenter.getArrayDesigns(new AsyncCallback<List<ArrayDesignRef>>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    //TODO log
+                    setArrayDesigns(new ArrayList<ArrayDesignRef>());
+                }
+
+                @Override
+                public void onSuccess(List<ArrayDesignRef> result) {
+                    setArrayDesigns(new ArrayList<ArrayDesignRef>(result));
+                }
+            });
+        }
     }
 
-    private void showDetails(String key) {
-        HasSubmissionSettings w = details.get(key);
+    private void setArrayDesigns(List<ArrayDesignRef> list) {
+        arrayDesigns.setValue(list);
+    }
+
+    private String getSelectedSettingsTemplate() {
+        return templateBox.getValue(templateBox.getSelectedIndex());
+    }
+
+    private void showDetails(Settings key) {
+        HasSubmissionSettings w = widgets.get(key);
         if (w == null) {
-            w = createDetails(key);
-            details.put(key, w);
+            w = key.createWidget(this);
+            widgets.put(key, w);
         }
         templateDetails.setWidget(w);
-    }
-
-    private HasSubmissionSettings createDetails(String key) {
-        if (ONE_COLOR.equals(key)) {
-            return new OneColorMicroarraySettings();
-        } else if (TWO_COLOR.equals(key)) {
-            return new TwoColorMicroarraySettings();
-        } else if (SEQ.equals(key)) {
-            return new HighThroughputSeqSettings();
-        } else {
-            throw new IllegalArgumentException("Unknown key: " + key);
-        }
     }
 
     private static void selectFirstTemplate(ListBox listBox) {
@@ -134,12 +203,20 @@ public class SetupExpSubmissionView extends Composite {
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
     }
 
-    public interface HasSubmissionSettings extends IsWidget {
-        Map<String, String> getSettings();
+    @Override
+    public HandlerRegistration addArrayDesignListChangeHandler(ValueChangeHandler<List<ArrayDesignRef>> handler) {
+        return arrayDesigns.addValueChangeHandler(handler);
+    }
+
+    @Override
+    public List<ArrayDesignRef> getArrayDesigns() {
+        return arrayDesigns.getValue();
     }
 
     public interface Presenter {
+
         void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback);
-        List<ArrayDesignRef> getArrayDesigns();
+
+        void getArrayDesigns(AsyncCallback<List<ArrayDesignRef>> list);
     }
 }

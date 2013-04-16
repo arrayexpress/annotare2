@@ -18,6 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.server.services.ae;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * List of arrays from ArrayExpress.
@@ -26,9 +29,10 @@ import java.util.Collections;
  */
 public class ArrayExpressArrayDesignList {
 
-    public Collection<AE.ArrayDesign> getArrayDesigns() {
-        //TODO
-        return Collections.emptyList();
+    public List<AE.ArrayDesign> getArrayDesigns() {
+        return asList(
+                new AE.ArrayDesign(1, "A-D-01", "Description 01"),
+                new AE.ArrayDesign(2, "A-D-02", "Description 02"));
     }
 
     private ArrayExpressArrayDesignList load() {

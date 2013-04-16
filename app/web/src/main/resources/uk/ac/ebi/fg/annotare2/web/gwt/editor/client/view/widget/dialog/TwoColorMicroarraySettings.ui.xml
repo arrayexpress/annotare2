@@ -33,7 +33,7 @@
                     What array did you use?
                 </td>
                 <td>
-                    <g:ListBox width="100%"/>
+                    <g:ListBox ui:field="arrayDesignList" width="100%"/>
                 </td>
             </tr>
         </table>
