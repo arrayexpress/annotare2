@@ -16,14 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ValidationResult implements Serializable {
+public class ValidationResult implements IsSerializable {
 
     private List<String> errors = new ArrayList<String>();
 

@@ -16,12 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class Accession implements Serializable {
+public class Accession implements IsSerializable {
 
     private static final String UNACCESSIONED = "UNACCESSIONED";
 

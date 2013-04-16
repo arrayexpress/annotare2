@@ -16,12 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class UserDto implements Serializable {
+public class UserDto implements IsSerializable {
 
     private String email;
 

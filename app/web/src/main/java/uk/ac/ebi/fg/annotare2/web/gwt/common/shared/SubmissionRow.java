@@ -16,15 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionRow implements Serializable {
+public class SubmissionRow implements IsSerializable {
 
     private int id;
 
