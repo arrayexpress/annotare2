@@ -24,5 +24,5 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import java.util.List;
 
 public interface DataServiceAsync {
-    void getArrayDesignList(AsyncCallback<List<ArrayDesignRef>> async);
+    void getArrayDesignList(String query, AsyncCallback<List<ArrayDesignRef>> async);
 }

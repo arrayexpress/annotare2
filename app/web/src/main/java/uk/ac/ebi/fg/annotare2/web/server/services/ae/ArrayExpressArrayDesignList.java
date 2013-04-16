@@ -16,8 +16,18 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.ae;
 
-import java.util.Collection;
-import java.util.Collections;
+import com.google.common.io.Closeables;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.RadixTree;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import org.apache.log4j.helpers.LogLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -29,18 +39,56 @@ import static java.util.Arrays.asList;
  */
 public class ArrayExpressArrayDesignList {
 
-    public List<AE.ArrayDesign> getArrayDesigns() {
-        return asList(
-                new AE.ArrayDesign(1, "A-D-01", "Description 01"),
-                new AE.ArrayDesign(2, "A-D-02", "Description 02"));
+    private static final Logger log = LoggerFactory.getLogger(ArrayExpressArrayDesignList.class);
+
+    private final ConcurrentRadixTree<AE.ArrayDesign> trie;
+
+    public ArrayExpressArrayDesignList() {
+        trie = new ConcurrentRadixTree<AE.ArrayDesign>(new DefaultCharArrayNodeFactory());
     }
 
-    private ArrayExpressArrayDesignList load() {
-        //TODO
-        return this;
+    private ArrayExpressArrayDesignList load() throws IOException {
+        InputStream in = ArrayExpressArrayDesignList.class.getResourceAsStream("/ArrayExpressArrayDesigns-16042013.txt");
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                AE.ArrayDesign ad = createArrayDesign(line);
+                if (ad != null) {
+                    trie.put(ad.getName(), ad);
+                    trie.put(ad.getDesription(), ad);
+                }
+            }
+            return this;
+        } finally {
+            Closeables.close(in, true);
+        }
+    }
+
+    private AE.ArrayDesign createArrayDesign(String line) {
+        String[] parts = line.split("\t");
+        if (parts.length != 3) {
+            return null;
+        }
+        try {
+            return new AE.ArrayDesign(Integer.parseInt(parts[0]), parts[1], parts[2]);
+        } catch (NumberFormatException e) {
+            log.error("Can't parse Array Design: [" + line + "]", e);
+            return null;
+        }
+    }
+
+    public Iterable<AE.ArrayDesign> getArrayDesigns(String query) {
+        return trie.getValuesForClosestKeys(query);
     }
 
     public static ArrayExpressArrayDesignList create() {
-        return (new ArrayExpressArrayDesignList()).load();
+        ArrayExpressArrayDesignList list = new ArrayExpressArrayDesignList();
+        try {
+            return list.load();
+        } catch (IOException e) {
+            log.error("Can't load array designs", e);
+        }
+        return list;
     }
 }

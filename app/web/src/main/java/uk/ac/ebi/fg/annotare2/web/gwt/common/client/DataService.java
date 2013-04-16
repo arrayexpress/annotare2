@@ -30,5 +30,5 @@ public interface DataService extends RemoteService {
 
     public static final String NAME = "dataService";
 
-    List<ArrayDesignRef> getArrayDesignList();
+    List<ArrayDesignRef> getArrayDesignList(String query);
 }

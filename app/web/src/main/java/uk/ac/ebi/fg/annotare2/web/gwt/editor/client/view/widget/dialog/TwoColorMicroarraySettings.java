@@ -20,10 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 
 import java.util.HashMap;
@@ -38,32 +35,22 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
     @UiField
     HTML description;
 
-    @UiField
-    ListBox arrayDesignList;
+    @UiField(provided = true)
+    SuggestBox arrayDesignList;
+
+    interface Binder extends UiBinder<Widget, TwoColorMicroarraySettings> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
+    public TwoColorMicroarraySettings(SubmissionSettingsDataSource dataSource) {
+        arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(dataSource));
+        initWidget(Binder.BINDER.createAndBindUi(this));
+        description.setHTML(SafeHtmlUtils.fromSafeConstant("Two-color microarray submission is ..."));
+    }
 
     @Override
     public Map<String, String> getSettings() {
         //TODO
         return new HashMap<String, String>();
     }
-
-    interface Binder extends UiBinder<Widget, TwoColorMicroarraySettings> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
-
-    public TwoColorMicroarraySettings() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
-        description.setHTML(SafeHtmlUtils.fromSafeConstant("Two-color microarray submission is ..."));
-    }
-
-    public void setArrayDesigns(List<ArrayDesignRef> list) {
-        arrayDesignList.clear();
-        if (list == null) {
-            return;
-        }
-        for(ArrayDesignRef ref : list) {
-            arrayDesignList.addItem(ref.getName() + " : " + ref.getDescription(), ref.getName());
-        }
-    }
-
 }

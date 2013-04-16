@@ -51,29 +51,13 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
         ONE_COLOR("One-color microarray") {
             @Override
             public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
-                final OneColorMicroarraySettings w = new OneColorMicroarraySettings();
-                source.addArrayDesignListChangeHandler(new ValueChangeHandler<List<ArrayDesignRef>>() {
-                    @Override
-                    public void onValueChange(ValueChangeEvent<List<ArrayDesignRef>> event) {
-                        w.setArrayDesigns(event.getValue());
-                    }
-                });
-                w.setArrayDesigns(source.getArrayDesigns());
-                return w;
+                return new OneColorMicroarraySettings(source);
             }
         },
         TWO_COLOR("Two-color microarray") {
             @Override
             public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
-                final TwoColorMicroarraySettings w = new TwoColorMicroarraySettings();
-                source.addArrayDesignListChangeHandler(new ValueChangeHandler<List<ArrayDesignRef>>() {
-                    @Override
-                    public void onValueChange(ValueChangeEvent<List<ArrayDesignRef>> event) {
-                        w.setArrayDesigns(event.getValue());
-                    }
-                });
-                w.setArrayDesigns(source.getArrayDesigns());
-                return w;
+                return  new TwoColorMicroarraySettings(source);
             }
         },
         SEQ("High-throughput sequencing") {
@@ -109,8 +93,6 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
     Button okButton;
 
     private Presenter presenter;
-
-    private final ValueStore<List<ArrayDesignRef>> arrayDesigns = newValueStore();
 
     private final Map<Settings, HasSubmissionSettings> widgets = new HashMap<Settings, HasSubmissionSettings>();
 
@@ -163,27 +145,17 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
                 });
     }
 
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    @Override
+    public void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> callback) {
         if (presenter != null) {
-            presenter.getArrayDesigns(new AsyncCallback<List<ArrayDesignRef>>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    //TODO log
-                    setArrayDesigns(new ArrayList<ArrayDesignRef>());
-                }
-
-                @Override
-                public void onSuccess(List<ArrayDesignRef> result) {
-                    setArrayDesigns(new ArrayList<ArrayDesignRef>(result));
-                }
-            });
+            presenter.getArrayDesigns(query, callback);
         }
     }
 
-    private void setArrayDesigns(List<ArrayDesignRef> list) {
-        arrayDesigns.setValue(list);
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
+
 
     private String getSelectedSettingsTemplate() {
         return templateBox.getValue(templateBox.getSelectedIndex());
@@ -203,20 +175,10 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
     }
 
-    @Override
-    public HandlerRegistration addArrayDesignListChangeHandler(ValueChangeHandler<List<ArrayDesignRef>> handler) {
-        return arrayDesigns.addValueChangeHandler(handler);
-    }
-
-    @Override
-    public List<ArrayDesignRef> getArrayDesigns() {
-        return arrayDesigns.getValue();
-    }
-
     public interface Presenter {
 
         void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback);
 
-        void getArrayDesigns(AsyncCallback<List<ArrayDesignRef>> list);
+        void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> list);
     }
 }

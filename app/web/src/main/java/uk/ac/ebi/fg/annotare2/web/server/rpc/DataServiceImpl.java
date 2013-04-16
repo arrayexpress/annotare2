@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Iterables;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
@@ -43,8 +43,8 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
-    public List<ArrayDesignRef> getArrayDesignList() {
-        return newArrayList(Lists.transform(adList.getArrayDesigns(), new Function<AE.ArrayDesign, ArrayDesignRef>() {
+    public List<ArrayDesignRef> getArrayDesignList(String query) {
+        return newArrayList(Iterables.transform(Iterables.limit(adList.getArrayDesigns(query), 20), new Function<AE.ArrayDesign, ArrayDesignRef>() {
             @Nullable
             @Override
             public ArrayDesignRef apply(@Nullable AE.ArrayDesign ad) {
@@ -52,5 +52,4 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
             }
         }));
     }
-
 }

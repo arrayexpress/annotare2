@@ -16,12 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDesignRef implements Serializable {
+public class ArrayDesignRef implements IsSerializable {
 
     private String name;
     private String description;

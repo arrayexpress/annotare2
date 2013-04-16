@@ -35,32 +35,28 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
     @UiField
     HTML description;
 
-    @UiField
-    ListBox arrayDesignList;
-
-    @Override
-    public Map<String, String> getSettings() {
-        //TODO
-        return new HashMap<String, String>();
-    }
+    @UiField(provided = true)
+    SuggestBox arrayDesignList;
 
     interface Binder extends UiBinder<Widget, OneColorMicroarraySettings> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public OneColorMicroarraySettings() {
+    public OneColorMicroarraySettings(SubmissionSettingsDataSource dataSource) {
+        arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(dataSource));
         initWidget(Binder.BINDER.createAndBindUi(this));
         description.setHTML(SafeHtmlUtils.fromSafeConstant("One-color microarray submission is ..."));
     }
 
     public void setArrayDesigns(List<ArrayDesignRef> list) {
-        arrayDesignList.clear();
-        if (list == null) {
-            return;
-        }
-        for(ArrayDesignRef ad : list) {
-            arrayDesignList.addItem(ad.getName() + " : " + ad.getDescription(), ad.getName());
-        }
+
+    }
+
+
+    @Override
+    public Map<String, String> getSettings() {
+        //TODO
+        return new HashMap<String, String>();
     }
 
 }

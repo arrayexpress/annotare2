@@ -16,18 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.dialog;
 
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-
-import java.util.List;
-
 /**
  * @author Olga Melnichuk
  */
-interface SubmissionSettingsDataSource {
-
-    List<ArrayDesignRef> getArrayDesigns();
-
-    HandlerRegistration addArrayDesignListChangeHandler(ValueChangeHandler<List<ArrayDesignRef>> handler);
+interface SubmissionSettingsDataSource extends ArrayDesignSuggestOracle.Service {
 }
