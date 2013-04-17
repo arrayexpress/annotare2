@@ -65,7 +65,7 @@ public class ArrayDesignSuggestOracle extends SuggestOracle {
         }
     }
 
-    public static interface Service {
+    public interface Service {
         void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> callback);
     }
 }
