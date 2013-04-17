@@ -28,20 +28,20 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfo
 /**
  * @author Olga Melnichuk
  */
-public class IdfNavigationActivity extends AbstractActivity implements LeftNavigationView.Presenter {
+public class InfoNavigationActivity extends AbstractActivity implements LeftNavigationView.Presenter {
 
     private final LeftNavigationView view;
     private final PlaceController placeController;
     private ExpInfoSection section;
 
     @Inject
-    public IdfNavigationActivity(LeftNavigationView view,
-                                 PlaceController placeController) {
+    public InfoNavigationActivity(LeftNavigationView view,
+                                  PlaceController placeController) {
         this.view = view;
         this.placeController = placeController;
     }
 
-    public IdfNavigationActivity withPlace(ExpInfoPlace place) {
+    public InfoNavigationActivity withPlace(ExpInfoPlace place) {
         this.section = place.getExpInfoSection();
         return this;
     }

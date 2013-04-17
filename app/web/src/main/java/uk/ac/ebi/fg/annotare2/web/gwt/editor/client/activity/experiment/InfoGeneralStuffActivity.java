@@ -34,7 +34,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGeneralInfoView.Presenter {
+public class InfoGeneralStuffActivity extends AbstractActivity implements IdfGeneralInfoView.Presenter {
 
     private final IdfGeneralInfoView view;
 
@@ -45,15 +45,15 @@ public class IdfGeneralInfoActivity extends AbstractActivity implements IdfGener
     private Investigation investigation;
 
     @Inject
-    public IdfGeneralInfoActivity(IdfGeneralInfoView view,
-                                  PlaceController placeController,
-                                  IdfData idfData) {
+    public InfoGeneralStuffActivity(IdfGeneralInfoView view,
+                                    PlaceController placeController,
+                                    IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
         this.idfData = idfData;
     }
 
-    public IdfGeneralInfoActivity withPlace(ExpInfoPlace place) {
+    public InfoGeneralStuffActivity withPlace(ExpInfoPlace place) {
         return this;
     }
 

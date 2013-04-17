@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class IdfContactListActivity extends AbstractActivity implements IdfContactListView.Presenter {
+public class InfoContactListActivity extends AbstractActivity implements IdfContactListView.Presenter {
 
     private final IdfContactListView view;
 
@@ -46,15 +46,15 @@ public class IdfContactListActivity extends AbstractActivity implements IdfConta
     private Investigation investigation;
 
     @Inject
-    public IdfContactListActivity(IdfContactListView view,
-                                  PlaceController placeController,
-                                  IdfData idfData) {
+    public InfoContactListActivity(IdfContactListView view,
+                                   PlaceController placeController,
+                                   IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
         this.idfData = idfData;
     }
 
-    public IdfContactListActivity withPlace(ExpInfoPlace place) {
+    public InfoContactListActivity withPlace(ExpInfoPlace place) {
         return this;
     }
 

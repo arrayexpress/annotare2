@@ -36,8 +36,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
     private final Provider<IdfContentActivity> idfContentActivityProvider;
     private final Provider<IdfSheetModeActivity> idfSheetModeActivityProvider;
-    private final Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider;
-    private final Provider<IdfContactListActivity> idfContactListActivityProvider;
+    private final Provider<InfoGeneralStuffActivity> idfGeneralInfoActivityProvider;
+    private final Provider<InfoContactListActivity> idfContactListActivityProvider;
 
     private final Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider;
     private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
@@ -48,8 +48,8 @@ public class EditorContentActivityMapper implements ActivityMapper {
     @Inject
     public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
                                        Provider<IdfSheetModeActivity> idfSheetModeActivityProvider,
-                                       Provider<IdfGeneralInfoActivity> idfGeneralInfoActivityProvider,
-                                       Provider<IdfContactListActivity> idfContactListActivityProvider,
+                                       Provider<InfoGeneralStuffActivity> idfGeneralInfoActivityProvider,
+                                       Provider<InfoContactListActivity> idfContactListActivityProvider,
                                        Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
                                        Provider<SdrfContentActivity> sdrfContentActivityProvider,
                                        Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider,
