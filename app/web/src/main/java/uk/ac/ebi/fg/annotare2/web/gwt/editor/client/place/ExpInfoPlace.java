@@ -36,15 +36,11 @@ public class ExpInfoPlace extends ExperimentPlace {
     private ExpInfoSection expInfoSection;
 
     public ExpInfoPlace() {
-        setExpInfoSection(null);
+        this(null);
     }
 
     public ExpInfoPlace(ExpInfoSection expInfoSection) {
         setExpInfoSection(expInfoSection);
-    }
-
-    public ExpInfoPlace(ExpInfoPlace other) {
-        setExpInfoSection(other.getExpInfoSection());
     }
 
     public ExpInfoSection getExpInfoSection() {

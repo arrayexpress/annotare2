@@ -25,26 +25,69 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExpDesignPlace extends ExperimentPlace {
 
+    private ExpDesignSection expDesignSection;
+
+    public ExpDesignPlace() {
+        this(ExpDesignSection.SAMPLES);
+    }
+
+    public ExpDesignPlace(ExpDesignSection expDesignSection) {
+        setExpDesignSection(expDesignSection);
+    }
+
+    public void setExpDesignSection(ExpDesignSection expDesignSection) {
+        this.expDesignSection = expDesignSection == null ? ExpDesignSection.SAMPLES : expDesignSection;
+    }
+
     @Override
     public ExperimentTab getSelectedTab() {
         return ExperimentTab.EXP_DESIGN;
     }
 
+    public ExpDesignSection getExpDesignSection() {
+        return expDesignSection;
+    }
+
     @Prefix("DESIGN")
     public static class Tokenizer implements PlaceTokenizer<ExpDesignPlace> {
 
+        private final Provider<ExpDesignPlace> placeProvider;
+
+        @Inject
+        public Tokenizer(Provider<ExpDesignPlace> placeProvider) {
+            this.placeProvider = placeProvider;
+        }
+
         public String getToken(ExpDesignPlace place) {
-            return "";
+            return new TokenBuilder()
+                    .add(place.getExpDesignSection().name())
+                    .toString();
         }
 
         public ExpDesignPlace getPlace(String token) {
-            return new ExpDesignPlace();
+            TokenReader reader = new TokenReader(token);
+            try {
+                ExpDesignPlace place = placeProvider.get();
+                String sectionToken = reader.nextString();
+                ExpDesignSection section = EnumUtils.getIfPresent(ExpDesignSection.class, sectionToken);
+                if (section == null) {
+                    throw new TokenReaderException("Unrecognized token: " + sectionToken);
+                }
+                place.setExpDesignSection(section);
+                return place;
+            } catch (TokenReaderException e) {
+                //TODO log
+                Window.alert(e.getMessage());
+                return null;
+            }
         }
     }
 }

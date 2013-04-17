@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
@@ -26,6 +28,8 @@ public interface LeftNavigationView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     void setSections(Section... sections);
+
+    void setSections(List<? extends Section> sections);
 
     void setSelected(Section section);
 

@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
 import java.util.HashMap;
@@ -39,39 +40,6 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
 
     interface Binder extends UiBinder<Widget, SetupExpSubmissionView> {
         Binder BINDER = GWT.create(Binder.class);
-    }
-
-    private enum Settings {
-        ONE_COLOR("One-color microarray") {
-            @Override
-            public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
-                return new OneColorMicroarraySettings(source);
-            }
-        },
-        TWO_COLOR("Two-color microarray") {
-            @Override
-            public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
-                return  new TwoColorMicroarraySettings(source);
-            }
-        },
-        SEQ("High-throughput sequencing") {
-            @Override
-            public HasSubmissionSettings createWidget(SubmissionSettingsDataSource source) {
-                return new HighThroughputSeqSettings();
-            }
-        };
-
-        private String title;
-
-        private Settings(String title) {
-            this.title = title;
-        }
-
-        private String getTitle() {
-            return title;
-        }
-
-        public abstract HasSubmissionSettings createWidget(SubmissionSettingsDataSource source);
     }
 
     @UiField
@@ -88,7 +56,7 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
 
     private Presenter presenter;
 
-    private final Map<Settings, HasSubmissionSettings> widgets = new HashMap<Settings, HasSubmissionSettings>();
+    private final Map<ExperimentType, HasSubmissionSettings> widgets = new HashMap<ExperimentType, HasSubmissionSettings>();
 
     public SetupExpSubmissionView() {
         this(null);
@@ -103,14 +71,14 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
             cancelButton.addClickHandler(cancelClick);
         }
 
-        for (Settings s : Settings.values()) {
-            templateBox.addItem(s.getTitle(), s.name());
+        for (ExperimentType type : ExperimentType.values()) {
+            templateBox.addItem(type.getTitle(), type.name());
         }
 
         templateBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                showDetails(Settings.valueOf(getSelectedSettingsTemplate()));
+                showDetails(ExperimentType.valueOf(getSelectedSettingsTemplate()));
             }
         });
         selectFirstTemplate(templateBox);
@@ -155,13 +123,26 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
         return templateBox.getValue(templateBox.getSelectedIndex());
     }
 
-    private void showDetails(Settings key) {
-        HasSubmissionSettings w = widgets.get(key);
+    private void showDetails(ExperimentType type) {
+        HasSubmissionSettings w = widgets.get(type);
         if (w == null) {
-            w = key.createWidget(this);
-            widgets.put(key, w);
+            w = createWidget(type);
+            widgets.put(type, w);
         }
         templateDetails.setWidget(w);
+    }
+
+    private HasSubmissionSettings createWidget(ExperimentType type) {
+        switch (type) {
+            case ONE_COLOR_MICROARRAY:
+                return new OneColorMicroarraySettings(this);
+            case TWO_COLOR_MICROARRAY:
+                return new TwoColorMicroarraySettings(this);
+            case SEQUENCING:
+                return new HighThroughputSeqSettings();
+            default:
+                throw new IllegalArgumentException("Unknown experiment type: " + type);
+        }
     }
 
     private static void selectFirstTemplate(ListBox listBox) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
-
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 /**
  * @author Olga Melnichuk
  */
-public enum ExpInfoSection implements LeftNavigationView.Section {
-    GENERAL_INFO("General Information"),
-    CONTACTS("Contacts"),
-    PUBLICATIONS("Publications");
+public enum ExperimentType {
+    ONE_COLOR_MICROARRAY("One-color microarray"),
+    TWO_COLOR_MICROARRAY("Two-color microarray"),
+    SEQUENCING("High-throughput sequencing");
 
     private final String title;
 
-    private ExpInfoSection(String title) {
+    private ExperimentType(String title) {
         this.title = title;
     }
 
-    @Override
     public String getTitle() {
         return title;
-    }
-
-    @Override
-    public String getKey() {
-        return name();
     }
 }

@@ -21,24 +21,34 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.DesignNavigationActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.InfoNavigationActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorLeftMenuActivityMapper implements ActivityMapper {
+public class EditorLeftNavigationActivityMapper implements ActivityMapper {
 
-    private final Provider<InfoNavigationActivity> idfNavActivityProvider;
+    private final Provider<InfoNavigationActivity> infoNavActivityProvider;
+    private final Provider<DesignNavigationActivity> designNavActivityProvider;
 
     @Inject
-    public EditorLeftMenuActivityMapper(Provider<InfoNavigationActivity> idfNavActivityProvider) {
-        this.idfNavActivityProvider = idfNavActivityProvider;
+    public EditorLeftNavigationActivityMapper(
+            Provider<InfoNavigationActivity> infoNavActivityProvider,
+            Provider<DesignNavigationActivity> designNavActivityProvider) {
+        this.infoNavActivityProvider = infoNavActivityProvider;
+        this.designNavActivityProvider = designNavActivityProvider;
     }
 
     public Activity getActivity(Place place) {
         if (place instanceof ExpInfoPlace) {
-            return (idfNavActivityProvider.get()).withPlace((ExpInfoPlace) place);
+            return (infoNavActivityProvider.get()).withPlace((ExpInfoPlace) place);
+
+        } else if (place instanceof ExpDesignPlace) {
+            return (designNavActivityProvider.get()).withPlace((ExpDesignPlace) place);
+
         }
         // hide left menu
         return null;

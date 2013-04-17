@@ -25,8 +25,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static com.googlecode.concurrenttrees.common.Iterables.toList;
 
 /**
  * @author Olga Melnichuk
@@ -69,6 +70,13 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
 
     @Override
     public void setSections(Section... sections) {
+        List<Section> list = new ArrayList<Section>();
+        Collections.addAll(list, sections);
+        setSections(list);
+    }
+
+    @Override
+    public void setSections(List<? extends Section> sections) {
         indexMap.clear();
         for (final Section section : sections) {
             Label label = new Label(section.getTitle());
