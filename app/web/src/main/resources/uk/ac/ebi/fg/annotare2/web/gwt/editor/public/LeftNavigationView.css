@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+.navigationPanel {
+    border: 1px solid #eeeeee;
+}
 
-import com.google.gwt.user.client.ui.IsWidget;
+.navigationItem {
+    padding: 10px 5px 10px 15px;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
 
-/**
- * @author Olga Melnichuk
- */
-public interface LeftNavigationView extends IsWidget {
+.navigationItem:hover {
+    background-color: #F3F7FB;
+    cursor: pointer;
+    color: black;
+}
 
-    void setPresenter(Presenter presenter);
+.navigationItem:active {
+    color: #888;
+}
 
-    void setSections(Section... sections);
-
-    void setSelected(Section section);
-
-    public interface Presenter {
-
-        void navigateTo(Section section);
-    }
-
-    public interface Section {
-
-        String getTitle();
-
-        String getKey();
-    }
+.navigationItem.selectedItem {
+    background-color: #48877c;
+    color: white;
+    font-size: 16px;
 }

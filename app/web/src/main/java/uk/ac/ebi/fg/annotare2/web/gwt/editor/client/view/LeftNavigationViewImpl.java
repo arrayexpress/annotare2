@@ -16,8 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -30,32 +33,53 @@ import java.util.Map;
  */
 public class LeftNavigationViewImpl extends Composite implements LeftNavigationView {
 
-    private Map<Object, Label> labelMap = new HashMap<Object, Label>();
+    public interface Resources extends ClientBundle {
 
-    private NavigationSection selected;
+        @Source("../../public/LeftNavigationView.css")
+        Style style();
+    }
 
-    private FlowPanel flowPanel;
+    public interface Style extends CssResource {
 
+        String navigationPanel();
+
+        String navigationItem();
+
+        String selectedItem();
+    }
+
+    static Resources DEFAULT_RESOURCES;
+
+    private final Style style;
+    private final FlowPanel panel;
+
+    private final Map<String, Integer> indexMap = new HashMap<String, Integer>();
+    private Section selected;
     private Presenter presenter;
 
     public LeftNavigationViewImpl() {
-        flowPanel = new FlowPanel();
-        flowPanel.setStyleName("app-IdfNavigation");
-        initWidget(flowPanel);
+        Resources resources = getDefaultResources();
+        style = resources.style();
+        style.ensureInjected();
+
+        panel = new FlowPanel();
+        panel.setStyleName(style.navigationPanel());
+        initWidget(panel);
     }
 
     @Override
-    public void initSections(NavigationSection... sections) {
-        for(final NavigationSection s : sections) {
-            Label label = new Label(s.getTitle());
-            label.setStyleName("app-IdfNavigationItem");
+    public void setSections(Section... sections) {
+        indexMap.clear();
+        for (final Section section : sections) {
+            Label label = new Label(section.getTitle());
+            label.setStyleName(style.navigationItem());
             label.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    onSectionClick(s);
+                    onSectionClick(section);
                 }
             });
-            labelMap.put(s.getId(), label);
-            flowPanel.add(label);
+            indexMap.put(section.getKey(), indexMap.size());
+            panel.add(label);
         }
     }
 
@@ -65,22 +89,31 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
     }
 
     @Override
-    public void selectSection(NavigationSection section) {
+    public void setSelected(Section section) {
         selectLabel(section);
     }
 
-    private void onSectionClick(NavigationSection s) {
-        selectLabel(s);
+    private void onSectionClick(Section section) {
+        selectLabel(section);
         if (presenter != null) {
-            presenter.goTo(s);
+            presenter.navigateTo(section);
         }
     }
 
-    private void selectLabel(NavigationSection s) {
+    private void selectLabel(Section section) {
         if (selected != null) {
-            labelMap.get(selected).removeStyleName("selected");
+            int index = indexMap.get(selected.getKey());
+            panel.getWidget(index).removeStyleName(style.selectedItem());
         }
-        labelMap.get(s.getId()).addStyleName("selected");
-        selected = s;
+        int index = indexMap.get(section.getKey());
+        panel.getWidget(index).addStyleName(style.selectedItem());
+        selected = section;
+    }
+
+    private static Resources getDefaultResources() {
+        if (DEFAULT_RESOURCES == null) {
+            DEFAULT_RESOURCES = GWT.create(Resources.class);
+        }
+        return DEFAULT_RESOURCES;
     }
 }

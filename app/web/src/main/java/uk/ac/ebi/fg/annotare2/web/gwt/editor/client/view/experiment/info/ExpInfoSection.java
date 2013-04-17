@@ -16,12 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 
 /**
  * @author Olga Melnichuk
  */
-public enum ExpInfoSection implements NavigationSection {
+public enum ExpInfoSection implements LeftNavigationView.Section {
     GENERAL_INFO("General Information"),
     CONTACTS("Contacts"),
     PUBLICATIONS("Publications");
@@ -36,7 +36,8 @@ public enum ExpInfoSection implements NavigationSection {
         return title;
     }
 
-    public Object getId() {
-        return this;
+    @Override
+    public String getKey() {
+        return name();
     }
 }

@@ -18,13 +18,11 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.NavigationSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
 
 /**
@@ -33,9 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfo
 public class IdfNavigationActivity extends AbstractActivity implements LeftNavigationView.Presenter {
 
     private final LeftNavigationView view;
-
     private final PlaceController placeController;
-
     private ExpInfoSection section;
 
     @Inject
@@ -52,16 +48,13 @@ public class IdfNavigationActivity extends AbstractActivity implements LeftNavig
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.initSections(ExpInfoSection.values());
-        view.selectSection(section);
+        view.setSections(ExpInfoSection.values());
+        view.setSelected(section);
         containerWidget.setWidget(view.asWidget());
     }
 
-    public void goTo(Place place) {
-        placeController.goTo(place);
-    }
-
-    public void goTo(NavigationSection section) {
-        goTo(new ExpInfoPlace((ExpInfoSection)section));
+    @Override
+    public void navigateTo(LeftNavigationView.Section section) {
+        placeController.goTo(new ExpInfoPlace((ExpInfoSection) section));
     }
 }
