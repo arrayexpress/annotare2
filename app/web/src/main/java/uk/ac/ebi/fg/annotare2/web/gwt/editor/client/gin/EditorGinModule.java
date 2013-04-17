@@ -34,6 +34,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolB
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolBarViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SdrfTabToolBarView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SdrfTabToolBarViewImpl;
@@ -63,14 +65,14 @@ public class EditorGinModule extends AbstractGinModule {
         bind(LeftNavigationView.class).to(LeftNavigationViewImpl.class);
 
         bind(IdfTabToolBarView.class).to(IdfTabToolBarViewImpl.class);
-        bind(IdfContentView.class).to(IdfContentViewImpl.class);
         bind(ExpInfoGeneralStuffView.class).to(ExpInfoGeneralStuffViewImpl.class);
         bind(ExpInfoContactListView.class).to(ExpInfoContactListViewImpl.class);
         bind(IdfTermSourceListView.class).to(ExpInfoTermSourceListViewImpl.class);
         bind(IdfExperimentalDesignListView.class).to(ExpInfoExperimentalDesignListViewImpl.class);
 
+        bind(SamplesView.class).to(SamplesViewImpl.class);
+
         bind(SdrfTabToolBarView.class).to(SdrfTabToolBarViewImpl.class);
-        bind(SdrfContentView.class).to(SdrfContentViewImpl.class);
 
         bind(AdfGeneralInfoView.class).to(AdfGeneralInfoViewImpl.class);
         bind(AdfTabToolBarView.class).to(AdfTabToolBarViewImpl.class);
