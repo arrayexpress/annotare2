@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -25,28 +25,26 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.SdrfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdTablePlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SheetModeView;
 
 /**
  * @author Olga Melnichuk
  */
-public class SdrfSheetModeActivity extends AbstractActivity {
+public class AdfTablePreviewActivity extends AbstractActivity {
 
     private final SheetModeView view;
 
     private final PlaceController placeController;
 
-    private final SdrfData sdrfData;
+    private final AdfData adfData;
 
     @Inject
-    public SdrfSheetModeActivity(SheetModeView view,
-                                 PlaceController placeController,
-                                 SdrfData sdrfData
-                                 ) {
+    public AdfTablePreviewActivity(SheetModeView view, PlaceController placeController, AdfData adfData) {
         this.view = view;
         this.placeController = placeController;
-        this.sdrfData = sdrfData;
+        this.adfData = adfData;
     }
 
     @Override
@@ -55,7 +53,7 @@ public class SdrfSheetModeActivity extends AbstractActivity {
         initAsync();
     }
 
-    public SdrfSheetModeActivity withPlace(Place place) {
+    public AdfTablePreviewActivity withPlace(AdTablePlace place) {
         return this;
     }
 
@@ -64,11 +62,11 @@ public class SdrfSheetModeActivity extends AbstractActivity {
     }
 
     private void initAsync() {
-        sdrfData.getTable(new AsyncCallbackWrapper<Table>() {
+        adfData.getTable(new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load SDRF table: " + caught.getMessage());
+                Window.alert("Can't load ADF table: " + caught.getMessage());
             }
 
             @Override

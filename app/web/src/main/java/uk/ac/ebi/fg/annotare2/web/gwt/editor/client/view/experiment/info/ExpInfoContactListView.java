@@ -17,32 +17,23 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface IdfGeneralInfoView extends IsWidget {
+public interface ExpInfoContactListView extends IsWidget {
 
-    public void setTitle(String title);
+    void setContacts(List<Person> contacts);
 
-    public void setDescription(String description);
-
-    public void setDateOfExperiment(Date date);
-
-    public void setDateOfPublicRelease(Date date);
-
-    public void setPresenter(Presenter presenter);
+    void setPresenter(Presenter presenter);
 
     public interface Presenter {
 
-        void setTitle(String title);
+        Person createContact();
 
-        void setDescription(String description);
-
-        void setDateOfExperiment(Date date);
-
-        void setDateOfPublicRelease(Date date);
+        void removeContacts(List<Integer> indices);
     }
 }

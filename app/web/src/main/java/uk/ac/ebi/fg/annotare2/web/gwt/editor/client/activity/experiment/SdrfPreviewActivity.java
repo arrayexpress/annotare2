@@ -14,43 +14,67 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.IdfContentView;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.SdrfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SheetModeView;
 
 /**
  * @author Olga Melnichuk
  */
-public class IdfContentActivity extends AbstractActivity {
+public class SdrfPreviewActivity extends AbstractActivity {
 
-    private final IdfContentView view;
+    private final SheetModeView view;
 
     private final PlaceController placeController;
 
+    private final SdrfData sdrfData;
+
     @Inject
-    public IdfContentActivity(IdfContentView view,
-                              PlaceController placeController) {
+    public SdrfPreviewActivity(SheetModeView view,
+                               PlaceController placeController,
+                               SdrfData sdrfData
+    ) {
         this.view = view;
         this.placeController = placeController;
+        this.sdrfData = sdrfData;
     }
 
-    public IdfContentActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
-        return this;
-    }
-
+    @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //TODO view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        initAsync();
+    }
+
+    public SdrfPreviewActivity withPlace(Place place) {
+        return this;
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
+    }
+
+    private void initAsync() {
+        sdrfData.getTable(new AsyncCallbackWrapper<Table>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load SDRF table: " + caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Table result) {
+                view.setTable(result, true);
+            }
+        }.wrap());
     }
 }

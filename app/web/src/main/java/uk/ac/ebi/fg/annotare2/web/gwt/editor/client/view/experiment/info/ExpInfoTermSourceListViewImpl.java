@@ -34,11 +34,11 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class IdfTermSourceListViewImpl extends IdfListView<TermSource> implements IdfTermSourceListView {
+public class ExpInfoTermSourceListViewImpl extends ExpInfoListView<TermSource> implements IdfTermSourceListView {
 
     private Presenter presenter;
 
-    public IdfTermSourceListViewImpl() {
+    public ExpInfoTermSourceListViewImpl() {
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

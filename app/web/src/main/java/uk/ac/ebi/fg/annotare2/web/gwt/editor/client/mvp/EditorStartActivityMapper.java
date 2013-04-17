@@ -21,18 +21,18 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.StartActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.SetupActivity;
 
 /**
  * @author Olga Melnichuk
  */
 public class EditorStartActivityMapper implements ActivityMapper {
 
-    private final Provider<StartActivity> activityProvider;
-    private StartActivity current;
+    private final Provider<SetupActivity> activityProvider;
+    private SetupActivity current;
 
     @Inject
-    public EditorStartActivityMapper(Provider<StartActivity> activityProvider) {
+    public EditorStartActivityMapper(Provider<SetupActivity> activityProvider) {
         this.activityProvider = activityProvider;
     }
 

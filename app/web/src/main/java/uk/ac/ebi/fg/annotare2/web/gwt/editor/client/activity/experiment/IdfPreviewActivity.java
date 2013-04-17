@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2012 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -25,26 +25,28 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdTablePlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPreviewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SheetModeView;
 
 /**
  * @author Olga Melnichuk
  */
-public class AdfTableSheetModeActivity extends AbstractActivity {
+public class IdfPreviewActivity extends AbstractActivity {
 
     private final SheetModeView view;
 
     private final PlaceController placeController;
 
-    private final AdfData adfData;
+    private final IdfData idfData;
 
     @Inject
-    public AdfTableSheetModeActivity(SheetModeView view, PlaceController placeController, AdfData adfData) {
+    public IdfPreviewActivity(SheetModeView view,
+                              PlaceController placeController,
+                              IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
-        this.adfData = adfData;
+        this.idfData = idfData;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class AdfTableSheetModeActivity extends AbstractActivity {
         initAsync();
     }
 
-    public AdfTableSheetModeActivity withPlace(AdTablePlace place) {
+    public IdfPreviewActivity withPlace(IdfPreviewPlace place) {
         return this;
     }
 
@@ -62,16 +64,16 @@ public class AdfTableSheetModeActivity extends AbstractActivity {
     }
 
     private void initAsync() {
-        adfData.getTable(new AsyncCallbackWrapper<Table>() {
+        idfData.getTable(new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load ADF table: " + caught.getMessage());
+                Window.alert("Can't load IDF table: " + caught.getMessage());
             }
 
             @Override
             public void onSuccess(Table result) {
-                view.setTable(result, true);
+                view.setTable(result, false);
             }
         }.wrap());
     }

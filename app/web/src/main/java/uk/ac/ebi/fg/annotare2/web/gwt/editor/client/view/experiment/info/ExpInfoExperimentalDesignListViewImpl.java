@@ -36,14 +36,14 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class IdfExperimentalDesignListViewImpl extends IdfListView<Term>
+public class ExpInfoExperimentalDesignListViewImpl extends ExpInfoListView<Term>
         implements IdfExperimentalDesignListView {
 
     private Presenter presenter;
 
     private final DynamicList<TermSource> termSources;
 
-    public IdfExperimentalDesignListViewImpl() {
+    public ExpInfoExperimentalDesignListViewImpl() {
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

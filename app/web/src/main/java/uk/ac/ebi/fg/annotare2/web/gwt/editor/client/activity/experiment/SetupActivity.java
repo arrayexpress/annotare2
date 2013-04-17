@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -36,14 +36,14 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
-public class StartActivity extends AbstractActivity implements StartView.Presenter {
+public class SetupActivity extends AbstractActivity implements StartView.Presenter {
 
     private final StartView view;
     private final SubmissionServiceAsync submissionService;
     private final DataServiceAsync dataService;
 
     @Inject
-    public StartActivity(StartView view,
+    public SetupActivity(StartView view,
                          SubmissionServiceAsync submissionService,
                          DataServiceAsync dataService) {
         this.view = view;
@@ -57,7 +57,7 @@ public class StartActivity extends AbstractActivity implements StartView.Present
         containerWidget.setWidget(view.asWidget());
     }
 
-    public StartActivity withPlace(Place place) {
+    public SetupActivity withPlace(Place place) {
         return this;
     }
 

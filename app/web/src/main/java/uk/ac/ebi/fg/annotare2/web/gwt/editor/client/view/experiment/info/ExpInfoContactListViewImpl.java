@@ -27,11 +27,11 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class IdfContactListViewImpl extends IdfListView<Person> implements IdfContactListView {
+public class ExpInfoContactListViewImpl extends ExpInfoListView<Person> implements ExpInfoContactListView {
 
     private Presenter presenter;
 
-    public IdfContactListViewImpl() {
+    public ExpInfoContactListViewImpl() {
 
         addIcon.addClickHandler(new ClickHandler() {
             @Override

@@ -21,12 +21,11 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.IdfContentActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.SdrfContentActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGeneralInfoActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTableSheetModeActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTablePreviewActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
 
 /**
@@ -34,63 +33,81 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfo
  */
 public class EditorContentActivityMapper implements ActivityMapper {
 
-    private final Provider<IdfContentActivity> idfContentActivityProvider;
-    private final Provider<IdfSheetModeActivity> idfSheetModeActivityProvider;
-    private final Provider<InfoGeneralStuffActivity> idfGeneralInfoActivityProvider;
-    private final Provider<InfoContactListActivity> idfContactListActivityProvider;
+    private final Provider<InfoGeneralStuffActivity> expInfoGeneralActivityProvider;
+    private final Provider<InfoContactListActivity> expInfoContactsActivityProvider;
 
-    private final Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider;
-    private final Provider<SdrfContentActivity> sdrfContentActivityProvider;
+    private final Provider<DesignSamplesActivity> expDesignSamplesActivityProvider;
+    private final Provider<DesignExtractsActivity> expDesignExtractsActivityProvider;
+    private final Provider<DesignLabeledExtractsActivity> expDesignLabeledExtractsActivityProvider;
+    private final Provider<DesignRawFilesActivity> expDesignRawFilesActivityProvider;
 
-    private final Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider;
-    private final Provider<AdfTableSheetModeActivity> adfTableSheetModeActivityProvider;
+
+    private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
+    private final Provider<IdfPreviewActivity> idfPreviewActivityProvider;
+
+    private final Provider<AdfGeneralInfoActivity> adfInfoGeneralActivityProvider;
+    private final Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider;
 
     @Inject
-    public EditorContentActivityMapper(Provider<IdfContentActivity> idfContentActivityProvider,
-                                       Provider<IdfSheetModeActivity> idfSheetModeActivityProvider,
-                                       Provider<InfoGeneralStuffActivity> idfGeneralInfoActivityProvider,
-                                       Provider<InfoContactListActivity> idfContactListActivityProvider,
-                                       Provider<SdrfSheetModeActivity> sdrfSheetModeActivityProvider,
-                                       Provider<SdrfContentActivity> sdrfContentActivityProvider,
-                                       Provider<AdfGeneralInfoActivity> adfGeneralInfoActivityProvider,
-                                       Provider<AdfTableSheetModeActivity> adfTableSheetModeActivityProvider) {
-        this.idfContentActivityProvider = idfContentActivityProvider;
-        this.idfSheetModeActivityProvider = idfSheetModeActivityProvider;
-        this.idfGeneralInfoActivityProvider = idfGeneralInfoActivityProvider;
-        this.idfContactListActivityProvider = idfContactListActivityProvider;
+    public EditorContentActivityMapper(
+            Provider<InfoGeneralStuffActivity> expInfoGeneralActivityProvider,
+            Provider<InfoContactListActivity> expInfoContactsActivityProvider,
+            Provider<DesignSamplesActivity> expDesignSamplesActivityProvider,
+            Provider<DesignExtractsActivity> expDesignExtractsActivityProvider,
+            Provider<DesignLabeledExtractsActivity> expDesignLabeledExtractsActivityProvider,
+            Provider<DesignRawFilesActivity> expDesignRawFilesActivityProvider,
+            Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
+            Provider<IdfPreviewActivity> idfPreviewActivityProvider,
+            Provider<AdfGeneralInfoActivity> adfInfoGeneralActivityProvider,
+            Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider) {
+        this.expInfoGeneralActivityProvider = expInfoGeneralActivityProvider;
+        this.expInfoContactsActivityProvider = expInfoContactsActivityProvider;
 
-        this.sdrfSheetModeActivityProvider = sdrfSheetModeActivityProvider;
-        this.sdrfContentActivityProvider = sdrfContentActivityProvider;
+        this.expDesignSamplesActivityProvider = expDesignSamplesActivityProvider;
+        this.expDesignExtractsActivityProvider = expDesignExtractsActivityProvider;
+        this.expDesignLabeledExtractsActivityProvider = expDesignLabeledExtractsActivityProvider;
+        this.expDesignRawFilesActivityProvider = expDesignRawFilesActivityProvider;
 
-        this.adfGeneralInfoActivityProvider = adfGeneralInfoActivityProvider;
-        this.adfTableSheetModeActivityProvider = adfTableSheetModeActivityProvider;
+        this.sdrfPreviewActivityProvider = sdrfPreviewActivityProvider;
+        this.idfPreviewActivityProvider = idfPreviewActivityProvider;
+
+        this.adfInfoGeneralActivityProvider = adfInfoGeneralActivityProvider;
+        this.adfTablePreviewActivityProvider = adfTablePreviewActivityProvider;
     }
 
     public Activity getActivity(Place place) {
         if (place instanceof ExpInfoPlace) {
-            ExpInfoPlace descrPlace = (ExpInfoPlace) place;
-            ExpInfoSection section = descrPlace.getExpInfoSection();
+            ExpInfoPlace infoPlace = (ExpInfoPlace) place;
+            ExpInfoSection section = infoPlace.getExpInfoSection();
             switch (section) {
                 case GENERAL_INFO:
-                    return (idfGeneralInfoActivityProvider.get()).withPlace(descrPlace);
+                    return (expInfoGeneralActivityProvider.get()).withPlace(infoPlace);
                 case CONTACTS:
-                    return (idfContactListActivityProvider.get()).withPlace(descrPlace);
-                default:
-                    return (idfContentActivityProvider.get()).withPlace(place);
+                    return (expInfoContactsActivityProvider.get()).withPlace(infoPlace);
             }
         } else if (place instanceof ExpDesignPlace) {
-            return (sdrfContentActivityProvider.get()).withPlace((ExpDesignPlace) place);
+            ExpDesignPlace designPlace = (ExpDesignPlace) place;
+            ExpDesignSection section = designPlace.getExpDesignSection();
+            switch (section) {
+                case SAMPLES:
+                    return (expDesignSamplesActivityProvider.get()).withPlace(designPlace);
+                case EXTRACTS:
+                    return (expDesignExtractsActivityProvider.get()).withPlace(designPlace);
+                case LABELED_EXTRACTS:
+                    return (expDesignLabeledExtractsActivityProvider.get()).withPlace(designPlace);
+                case RAW_FILES:
+                    return (expDesignRawFilesActivityProvider.get()).withPlace(designPlace);
+            }
         } else if (place instanceof IdfPreviewPlace) {
-            return (idfSheetModeActivityProvider.get()).withPlace((IdfPreviewPlace)place);
+            return (idfPreviewActivityProvider.get()).withPlace((IdfPreviewPlace) place);
         } else if (place instanceof SdrfPreviewPlace) {
-            return (sdrfSheetModeActivityProvider.get()).withPlace(place);
+            return (sdrfPreviewActivityProvider.get()).withPlace(place);
         } else if (place instanceof AdHeaderPlace) {
             AdHeaderPlace adHeaderPlace = (AdHeaderPlace) place;
-            return (adfGeneralInfoActivityProvider.get()).withPlace(adHeaderPlace);
+            return (adfInfoGeneralActivityProvider.get()).withPlace(adHeaderPlace);
         } else if (place instanceof AdTablePlace) {
-            return (adfTableSheetModeActivityProvider.get()).withPlace((AdTablePlace) place);
+            return (adfTablePreviewActivityProvider.get()).withPlace((AdTablePlace) place);
         }
-        //TODO
         return null;
     }
 }

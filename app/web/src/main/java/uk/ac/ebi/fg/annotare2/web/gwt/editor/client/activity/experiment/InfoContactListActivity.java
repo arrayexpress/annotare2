@@ -28,16 +28,16 @@ import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.IdfContactListView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoContactListView;
 
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class InfoContactListActivity extends AbstractActivity implements IdfContactListView.Presenter {
+public class InfoContactListActivity extends AbstractActivity implements ExpInfoContactListView.Presenter {
 
-    private final IdfContactListView view;
+    private final ExpInfoContactListView view;
 
     private final PlaceController placeController;
 
@@ -46,7 +46,7 @@ public class InfoContactListActivity extends AbstractActivity implements IdfCont
     private Investigation investigation;
 
     @Inject
-    public InfoContactListActivity(IdfContactListView view,
+    public InfoContactListActivity(ExpInfoContactListView view,
                                    PlaceController placeController,
                                    IdfData idfData) {
         this.view = view;
