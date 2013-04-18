@@ -26,6 +26,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSugge
 import java.util.HashMap;
 import java.util.Map;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
+
 /**
  * @author Olga Melnichuk
  */
@@ -36,6 +38,9 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
 
     @UiField(provided = true)
     SuggestBox arrayDesignList;
+
+    @UiField
+    TextBox hybsNum;
 
     interface Binder extends UiBinder<Widget, TwoColorMicroarraySettings> {
         Binder BINDER = GWT.create(Binder.class);
@@ -51,6 +56,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
                         "A two colour experiment uses two dyes, normally Cy3 " +
                         "and Cy5. For two colour data one row in the  SDRF (Sample and Data " +
                         "Relationship Format) file is equal to one colour channel."));
+        integerValuesOnly(hybsNum);
     }
 
     @Override

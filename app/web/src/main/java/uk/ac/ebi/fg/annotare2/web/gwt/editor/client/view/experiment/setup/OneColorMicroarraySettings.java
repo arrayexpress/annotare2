@@ -22,11 +22,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**
  * @author Olga Melnichuk
@@ -38,6 +41,9 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
 
     @UiField(provided = true)
     SuggestBox arrayDesignList;
+
+    @UiField
+    TextBox hybsNum;
 
     interface Binder extends UiBinder<Widget, OneColorMicroarraySettings> {
         Binder BINDER = GWT.create(Binder.class);
@@ -54,12 +60,8 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
                         "one colour data one row in the SDRF (Sample and Data Relationship " +
                         "Format) file is equal to one assay."
         ));
+        integerValuesOnly(hybsNum);
     }
-
-    public void setArrayDesigns(List<ArrayDesignRef> list) {
-
-    }
-
 
     @Override
     public Map<String, String> getSettings() {
