@@ -32,10 +32,6 @@ import java.util.List;
  */
 public class MyDataGrid<T> extends DataGrid<T> {
 
-    private int minWidth;
-
-    private boolean hasLastColumn = false;
-
     public MyDataGrid(int pageSize, Resources resources) {
         super(pageSize, resources);
         getTableHeadElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
@@ -58,23 +54,35 @@ public class MyDataGrid<T> extends DataGrid<T> {
         });
     }
 
-    public void setMinimumTableWidthInPx(int width) {
-        super.setMinimumTableWidth(width, com.google.gwt.dom.client.Style.Unit.PX);
-        minWidth = width;
+    private int getVisibleWidth() {
+        HeaderPanel header = (HeaderPanel) getWidget();
+        return header.getContentWidget().getOffsetWidth();
     }
 
-    public void addColumn(String title, Column<T, ?> column) {
-        if (!hasLastColumn) {
+    public void addResizableColumn(Column<T, ?> column, String title) {
+        insertResizableColumn(column, title, getColumnCount());
+    }
+
+    public void insertResizableColumn(Column<T, ?> column, String title, int beforeIndex) {
+        insertColumn(beforeIndex, column, new MyResizableHeader<T>(title, column, this), null);
+    }
+
+    @Override
+    public void insertColumn(int beforeIndex, Column<T, ?> col, Header<?> header, Header<?> footer) {
+        if (getColumnCount() == 0) {
             Column<T, ?> lastColumn = new Column<T, String>(new TextCell()) {
                 @Override
                 public String getValue(T object) {
                     return "";
                 }
             };
-            addColumn(lastColumn, new MyResizableHeader<T>("", lastColumn, this));
-            hasLastColumn = true;
+            super.insertColumn(0, lastColumn, new MyResizableHeader<T>("", lastColumn, this), null);
+            beforeIndex = 1;
         }
-        insertColumn(getColumnCount() - 1, column, new MyResizableHeader<T>(title, column, this));
+        if (getColumnCount() > 0 && beforeIndex == getColumnCount()) {
+            beforeIndex -= 1;
+        }
+        super.insertColumn(beforeIndex, col, header, footer);
     }
 
     protected int getTableBodyHeight() {
@@ -102,6 +110,7 @@ public class MyDataGrid<T> extends DataGrid<T> {
         int lastColWidth = getHeaderOffsetWidth(lastColIndex);
         int borderWidth = tableWidth - residualWidth - currColWidth - lastColWidth;
 
+        int minWidth = getVisibleWidth();
         int newTableWidth = residualWidth + colWidth + borderWidth;
         lastColWidth = Math.max(minWidth - newTableWidth, 0);
 

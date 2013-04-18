@@ -52,7 +52,6 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
         MyDataGridResources resources = GWT.create(MyDataGridResources.class);
         MyDataGrid<IndexedRow> dataGrid = new MyDataGrid<IndexedRow>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("There's no data yet, come later"));
-        dataGrid.setMinimumTableWidthInPx(panel.getOffsetWidth());
 
         dataGrid.setSelectionModel(new NoSelectionModel<IndexedRow>());
 
@@ -113,7 +112,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
                     }
                 });
                 column.setSortable(true);
-                dataGrid.addColumn("N", column);
+                dataGrid.addColumn(column, new TextHeader("N"));
                 dataGrid.setColumnWidth(i, 50, Style.Unit.PX);
                 continue;
             }
@@ -141,7 +140,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
                 }
             });
             column.setSortable(true);
-            dataGrid.addColumn(title, column);
+            dataGrid.addColumn(column, new TextHeader(title));
             dataGrid.setColumnWidth(i, 150, Style.Unit.PX);
         }
         dataGrid.getColumnSortList().push(dataGrid.getColumn(0));

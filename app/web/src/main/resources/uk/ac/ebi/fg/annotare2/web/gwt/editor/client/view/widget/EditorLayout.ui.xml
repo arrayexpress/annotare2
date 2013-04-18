@@ -82,7 +82,7 @@
             <g:SplitLayoutPanel ui:field="splitPanel">
                 <g:center>
                     <g:DockLayoutPanel>
-                        <g:north size="60">
+                        <g:north size="75">
                             <g:DockLayoutPanel>
                                 <g:north size="40">
                                     <g:SimpleLayoutPanel ui:field="tabBarDisplay" height="100%"/>
