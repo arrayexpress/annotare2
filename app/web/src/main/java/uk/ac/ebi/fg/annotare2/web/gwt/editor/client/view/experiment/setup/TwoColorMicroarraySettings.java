@@ -44,7 +44,13 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
     public TwoColorMicroarraySettings(SubmissionSettingsDataSource dataSource) {
         arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(dataSource));
         initWidget(Binder.BINDER.createAndBindUi(this));
-        description.setHTML(SafeHtmlUtils.fromSafeConstant("Two-color microarray submission is ..."));
+        description.setHTML(SafeHtmlUtils.fromSafeConstant(
+                "An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-3237/'>" +
+                        "E-MEXP-3237</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/22432704'>" +
+                        "Europe PMC 22432704</a>. " +
+                        "A two colour experiment uses two dyes, normally Cy3 " +
+                        "and Cy5. For two colour data one row in the  SDRF (Sample and Data " +
+                        "Relationship Format) file is equal to one colour channel."));
     }
 
     @Override

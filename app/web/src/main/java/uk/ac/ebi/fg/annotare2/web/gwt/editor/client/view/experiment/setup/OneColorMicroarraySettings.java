@@ -46,7 +46,14 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
     public OneColorMicroarraySettings(SubmissionSettingsDataSource dataSource) {
         arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(dataSource));
         initWidget(Binder.BINDER.createAndBindUi(this));
-        description.setHTML(SafeHtmlUtils.fromSafeConstant("One-color microarray submission is ..."));
+        description.setHTML(SafeHtmlUtils.fromSafeConstant(
+                "An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-641/'>" +
+                        "E-MTAB-641</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/21980142'>" +
+                        "Europe PMC 21980142</a>. A one colour experiment uses one dye or label. For " +
+                        "example experiments using an Affymetrix array use the label biotin. For " +
+                        "one colour data one row in the SDRF (Sample and Data Relationship " +
+                        "Format) file is equal to one assay."
+        ));
     }
 
     public void setArrayDesigns(List<ArrayDesignRef> list) {
