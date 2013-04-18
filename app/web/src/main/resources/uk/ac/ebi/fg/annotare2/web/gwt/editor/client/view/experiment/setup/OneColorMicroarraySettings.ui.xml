@@ -24,7 +24,7 @@
             <tr>
                 <td>How many hybridisations did you perform?</td>
                 <td width="200px">
-                    <g:TextBox ui:field="hybsNum" width="50px"/>
+                    <g:TextBox ui:field="numberOfHybs" width="50px"/>
                 </td>
             </tr>
             <tr>
@@ -40,7 +40,7 @@
                     What label did you use?
                 </td>
                 <td>
-                    <g:TextBox width="100%"/>
+                    <g:TextBox ui:field="label" width="100%"/>
                 </td>
             </tr>
         </table>

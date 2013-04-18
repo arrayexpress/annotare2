@@ -21,14 +21,11 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.ONE_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**
@@ -43,7 +40,10 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
     SuggestBox arrayDesignList;
 
     @UiField
-    TextBox hybsNum;
+    TextBox numberOfHybs;
+
+    @UiField
+    TextBox label;
 
     interface Binder extends UiBinder<Widget, OneColorMicroarraySettings> {
         Binder BINDER = GWT.create(Binder.class);
@@ -60,13 +60,27 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
                         "one colour data one row in the SDRF (Sample and Data Relationship " +
                         "Format) file is equal to one assay."
         ));
-        integerValuesOnly(hybsNum);
+        integerValuesOnly(numberOfHybs);
     }
 
     @Override
     public Map<String, String> getSettings() {
-        //TODO
-        return new HashMap<String, String>();
+        return new SetupSettingsBuilder()
+                .setExperimentType(ONE_COLOR_MICROARRAY)
+                .setArrayDesign(arrayDesignList.getValue())
+                .setNumberOfHybritisations(intValue(numberOfHybs.getValue()))
+                .setLabel(label.getValue())
+                .build();
     }
 
+    private int intValue(String value) {
+        if (value == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 }

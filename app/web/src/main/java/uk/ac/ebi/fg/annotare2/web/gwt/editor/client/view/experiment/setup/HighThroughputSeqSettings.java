@@ -20,8 +20,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.SEQUENCING;
 
 /**
  * @author Olga Melnichuk
@@ -40,8 +41,8 @@ public class HighThroughputSeqSettings extends Composite implements HasSubmissio
 
     @Override
     public Map<String, String> getSettings() {
-        //TODO
-        return new HashMap<String, String>();
+        return new SetupSettingsBuilder()
+                .setExperimentType(SEQUENCING)
+                .build();
     }
-
 }

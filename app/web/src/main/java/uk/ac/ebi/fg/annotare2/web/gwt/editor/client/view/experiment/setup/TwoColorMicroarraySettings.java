@@ -23,9 +23,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.TWO_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**
@@ -40,7 +40,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
     SuggestBox arrayDesignList;
 
     @UiField
-    TextBox hybsNum;
+    TextBox numberOfHybs;
 
     interface Binder extends UiBinder<Widget, TwoColorMicroarraySettings> {
         Binder BINDER = GWT.create(Binder.class);
@@ -56,12 +56,26 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
                         "A two colour experiment uses two dyes, normally Cy3 " +
                         "and Cy5. For two colour data one row in the  SDRF (Sample and Data " +
                         "Relationship Format) file is equal to one colour channel."));
-        integerValuesOnly(hybsNum);
+        integerValuesOnly(numberOfHybs);
     }
 
     @Override
     public Map<String, String> getSettings() {
-        //TODO
-        return new HashMap<String, String>();
+        return new SetupSettingsBuilder()
+                .setExperimentType(TWO_COLOR_MICROARRAY)
+                .setArrayDesign(arrayDesignList.getValue())
+                .setNumberOfHybritisations(intValue(numberOfHybs.getValue()))
+                .build();
+    }
+
+    private int intValue(String value) {
+        if (value == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }
