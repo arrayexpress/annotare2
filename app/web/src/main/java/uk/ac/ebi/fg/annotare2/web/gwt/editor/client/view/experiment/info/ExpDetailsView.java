@@ -23,7 +23,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public interface ExpInfoGeneralStuffView extends IsWidget {
+public interface ExpDetailsView extends IsWidget {
 
     public void setTitle(String title);
 

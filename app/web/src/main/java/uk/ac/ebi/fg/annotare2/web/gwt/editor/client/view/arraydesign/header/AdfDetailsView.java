@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public interface AdfGeneralInfoView extends IsWidget {
+public interface AdfDetailsView extends IsWidget {
 
     void setPrintingProtocols(List<UIPrintingProtocol> protocols);
 

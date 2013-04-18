@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ExpInfoExperimentalDesignListViewImpl extends ExpInfoListView<Term>
+public class ExpInfoExperimentalDesignListViewImpl extends ListView<Term>
         implements IdfExperimentalDesignListView {
 
     private Presenter presenter;

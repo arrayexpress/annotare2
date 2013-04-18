@@ -37,9 +37,9 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
 /**
  * @author Olga Melnichuk
  */
-public class ExpInfoGeneralStuffViewImpl extends Composite implements ExpInfoGeneralStuffView {
+public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
-    interface Binder extends UiBinder<Widget, ExpInfoGeneralStuffViewImpl> {
+    interface Binder extends UiBinder<Widget, ExpDetailsViewImpl> {
     }
 
     @UiField
@@ -57,7 +57,7 @@ public class ExpInfoGeneralStuffViewImpl extends Composite implements ExpInfoGen
     private Presenter presenter;
 
     @Inject
-    public ExpInfoGeneralStuffViewImpl() {
+    public ExpDetailsViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
 

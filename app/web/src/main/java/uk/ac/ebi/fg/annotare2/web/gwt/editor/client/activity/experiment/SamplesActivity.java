@@ -19,18 +19,28 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
 /**
  * @author Olga Melnichuk
  */
-public class DesignRawFilesActivity extends AbstractActivity {
+public class SamplesActivity extends AbstractActivity {
 
-    @Override
-    public void start(AcceptsOneWidget panel, EventBus eventBus) {
+    private final SamplesView view;
+
+    @Inject
+    public SamplesActivity(SamplesView view) {
+        this.view = view;
     }
 
-    public DesignRawFilesActivity withPlace(ExpDesignPlace designPlace) {
+    @Override
+    public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
+        containerWidget.setWidget(view);
+    }
+
+    public SamplesActivity withPlace(ExpDesignPlace designPlace) {
         return this;
     }
 }

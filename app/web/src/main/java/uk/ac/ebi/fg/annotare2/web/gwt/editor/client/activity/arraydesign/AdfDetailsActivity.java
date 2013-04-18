@@ -26,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfGeneralInfoView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +36,17 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class AdfGeneralInfoActivity extends AbstractActivity {
+public class AdfDetailsActivity extends AbstractActivity {
 
-    private AdfGeneralInfoView view;
+    private AdfDetailsView view;
 
     private final AdfData adfData;
 
     private AdfHeader adfHeader;
 
     @Inject
-    public AdfGeneralInfoActivity(AdfGeneralInfoView view,
-                                  AdfData adfData) {
+    public AdfDetailsActivity(AdfDetailsView view,
+                              AdfData adfData) {
         this.view = view;
         this.adfData = adfData;
     }
@@ -99,7 +99,7 @@ public class AdfGeneralInfoActivity extends AbstractActivity {
         loadAsync();
     }
 
-    public AdfGeneralInfoActivity withPlace(AdHeaderPlace place) {
+    public AdfDetailsActivity withPlace(AdHeaderPlace place) {
         return this;
     }
 

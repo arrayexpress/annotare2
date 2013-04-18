@@ -24,13 +24,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 /**
  * @author Olga Melnichuk
  */
-public class DesignLabeledExtractsActivity extends AbstractActivity {
+public class LabeledExtractsActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
     }
 
-    public DesignLabeledExtractsActivity withPlace(ExpDesignPlace designPlace) {
+    public LabeledExtractsActivity withPlace(ExpDesignPlace designPlace) {
         return this;
     }
 }

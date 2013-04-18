@@ -43,9 +43,9 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
 /**
  * @author Olga Melnichuk
  */
-public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoView {
+public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
 
-    interface Binder extends UiBinder<Widget, AdfGeneralInfoViewImpl> {
+    interface Binder extends UiBinder<Widget, AdfDetailsViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -93,7 +93,7 @@ public class AdfGeneralInfoViewImpl extends Composite implements AdfGeneralInfoV
     private List<UIPrintingProtocol> printingProtocols = new ArrayList<UIPrintingProtocol>();
     private Set<String> protocolNames = new HashSet<String>();
 
-    public AdfGeneralInfoViewImpl() {
+    public AdfDetailsViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());

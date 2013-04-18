@@ -21,7 +21,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfGeneralInfoActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfDetailsActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTablePreviewActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
@@ -33,32 +33,32 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfo
  */
 public class EditorContentActivityMapper implements ActivityMapper {
 
-    private final Provider<InfoGeneralStuffActivity> expInfoGeneralActivityProvider;
-    private final Provider<InfoContactListActivity> expInfoContactsActivityProvider;
+    private final Provider<ExpDetailsActivity> expInfoGeneralActivityProvider;
+    private final Provider<ContactListActivity> expInfoContactsActivityProvider;
 
-    private final Provider<DesignSamplesActivity> expDesignSamplesActivityProvider;
-    private final Provider<DesignExtractsActivity> expDesignExtractsActivityProvider;
-    private final Provider<DesignLabeledExtractsActivity> expDesignLabeledExtractsActivityProvider;
-    private final Provider<DesignRawFilesActivity> expDesignRawFilesActivityProvider;
+    private final Provider<SamplesActivity> expDesignSamplesActivityProvider;
+    private final Provider<ExtractsActivity> expDesignExtractsActivityProvider;
+    private final Provider<LabeledExtractsActivity> expDesignLabeledExtractsActivityProvider;
+    private final Provider<RawFilesActivity> expDesignRawFilesActivityProvider;
 
 
     private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
     private final Provider<IdfPreviewActivity> idfPreviewActivityProvider;
 
-    private final Provider<AdfGeneralInfoActivity> adfInfoGeneralActivityProvider;
+    private final Provider<AdfDetailsActivity> adfInfoGeneralActivityProvider;
     private final Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider;
 
     @Inject
     public EditorContentActivityMapper(
-            Provider<InfoGeneralStuffActivity> expInfoGeneralActivityProvider,
-            Provider<InfoContactListActivity> expInfoContactsActivityProvider,
-            Provider<DesignSamplesActivity> expDesignSamplesActivityProvider,
-            Provider<DesignExtractsActivity> expDesignExtractsActivityProvider,
-            Provider<DesignLabeledExtractsActivity> expDesignLabeledExtractsActivityProvider,
-            Provider<DesignRawFilesActivity> expDesignRawFilesActivityProvider,
+            Provider<ExpDetailsActivity> expInfoGeneralActivityProvider,
+            Provider<ContactListActivity> expInfoContactsActivityProvider,
+            Provider<SamplesActivity> expDesignSamplesActivityProvider,
+            Provider<ExtractsActivity> expDesignExtractsActivityProvider,
+            Provider<LabeledExtractsActivity> expDesignLabeledExtractsActivityProvider,
+            Provider<RawFilesActivity> expDesignRawFilesActivityProvider,
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
             Provider<IdfPreviewActivity> idfPreviewActivityProvider,
-            Provider<AdfGeneralInfoActivity> adfInfoGeneralActivityProvider,
+            Provider<AdfDetailsActivity> adfInfoGeneralActivityProvider,
             Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider) {
         this.expInfoGeneralActivityProvider = expInfoGeneralActivityProvider;
         this.expInfoContactsActivityProvider = expInfoContactsActivityProvider;

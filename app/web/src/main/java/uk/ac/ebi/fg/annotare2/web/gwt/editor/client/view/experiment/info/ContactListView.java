@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public interface ExpInfoContactListView extends IsWidget {
+public interface ContactListView extends IsWidget {
 
     void setContacts(List<Person> contacts);
 

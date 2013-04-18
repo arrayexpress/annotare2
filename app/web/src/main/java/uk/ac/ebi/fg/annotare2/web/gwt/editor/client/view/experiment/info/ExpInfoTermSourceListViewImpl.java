@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ExpInfoTermSourceListViewImpl extends ExpInfoListView<TermSource> implements IdfTermSourceListView {
+public class ExpInfoTermSourceListViewImpl extends ListView<TermSource> implements IdfTermSourceListView {
 
     private Presenter presenter;
 

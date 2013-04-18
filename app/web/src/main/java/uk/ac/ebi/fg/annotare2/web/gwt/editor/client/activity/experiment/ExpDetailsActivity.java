@@ -27,16 +27,16 @@ import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoGeneralStuffView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpDetailsView;
 
 import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-public class InfoGeneralStuffActivity extends AbstractActivity implements ExpInfoGeneralStuffView.Presenter {
+public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsView.Presenter {
 
-    private final ExpInfoGeneralStuffView view;
+    private final ExpDetailsView view;
 
     private final PlaceController placeController;
 
@@ -45,15 +45,15 @@ public class InfoGeneralStuffActivity extends AbstractActivity implements ExpInf
     private Investigation investigation;
 
     @Inject
-    public InfoGeneralStuffActivity(ExpInfoGeneralStuffView view,
-                                    PlaceController placeController,
-                                    IdfData idfData) {
+    public ExpDetailsActivity(ExpDetailsView view,
+                              PlaceController placeController,
+                              IdfData idfData) {
         this.view = view;
         this.placeController = placeController;
         this.idfData = idfData;
     }
 
-    public InfoGeneralStuffActivity withPlace(ExpInfoPlace place) {
+    public ExpDetailsActivity withPlace(ExpInfoPlace place) {
         return this;
     }
 

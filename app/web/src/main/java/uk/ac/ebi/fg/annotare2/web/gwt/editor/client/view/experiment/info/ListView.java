@@ -19,9 +19,9 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ExpInfoListView<T> extends Composite {
+public class ListView<T> extends Composite {
 
-    interface Binder extends UiBinder<Widget, ExpInfoListView> {
+    interface Binder extends UiBinder<Widget, ListView> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -36,7 +36,7 @@ public class ExpInfoListView<T> extends Composite {
 
     private int selection = 0;
 
-    public ExpInfoListView() {
+    public ListView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
