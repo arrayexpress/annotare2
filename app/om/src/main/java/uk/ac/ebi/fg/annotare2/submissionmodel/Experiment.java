@@ -16,18 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
-import com.google.common.collect.ImmutableMap;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -36,15 +34,57 @@ public class Experiment {
 
     private Map<String, String> properties;
 
-    @JsonProperty("info")
-    private ExperimentInfo info;
+    @JsonProperty("nextId")
+    private int nextId;
 
-    @JsonProperty("design")
-    private ExperimentDesign design;
+    @JsonProperty("title")
+    private String title;
+
+    @JsonProperty("description")
+    private String description;
+
+    @JsonProperty("experimentDate")
+    private Date experimentDate;
+
+    @JsonProperty("publicReleaseDate")
+    private Date publicReleaseDate;
+
+    @JsonProperty("contacts")
+    private List<Contact> contacts;
+
+    @JsonProperty("publications")
+    private List<Publication> publications;
+
+    @JsonProperty("samples")
+    private List<Sample> samples;
+
+    @JsonProperty("extracts")
+    private List<Extract> extracts;
+
+    @JsonProperty("labeledExtracts")
+    private List<LabeledExtract> labeledExtracts;
+
+    @JsonProperty("assays")
+    private List<Assay> assays;
+
+    @JsonProperty("arrayDataFiles")
+    private List<ArrayDataFile> arrayDataFiles;
 
     public Experiment(@JsonProperty("properties") Map<String, String> properties) {
         this.properties = new HashMap<String, String>();
         this.properties.putAll(properties);
+    }
+
+    public Sample addSample(Sample sample) {
+        sample.setId(nextId());
+        getSamples().add(sample);
+        return sample;
+    }
+
+    public Extract addExtract(Extract extract) {
+        extract.setId(nextId());
+        getExtracts().add(extract);
+        return extract;
     }
 
     public Map<String, String> getProperties() {
@@ -78,5 +118,23 @@ public class Experiment {
         } catch (IOException e) {
             throw new DataSerializationExcepetion(e);
         }
+    }
+
+    private List<Sample> getSamples() {
+        if (samples == null) {
+            samples = newArrayList();
+        }
+        return samples;
+    }
+
+    private List<Extract> getExtracts() {
+        if (extracts == null) {
+            extracts = newArrayList();
+        }
+        return extracts;
+    }
+
+    private int nextId() {
+        return nextId++;
     }
 }

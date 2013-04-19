@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+package uk.ac.ebi.fg.annotare2.submissionmodel;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HasSubmissionSettings extends IsWidget {
-
-    ExperimentSetupSettings getSettings();
+public class LabeledExtract {
 }

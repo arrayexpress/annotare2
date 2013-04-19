@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
@@ -152,7 +153,7 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
 
     public interface Presenter {
 
-        void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback);
+        void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback);
 
         void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> list);
     }

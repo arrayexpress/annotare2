@@ -14,14 +14,34 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
+package uk.ac.ebi.fg.annotare2.submissionmodel;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * @author Olga Melnichuk
  */
-public enum SetupSetting {
-    EXPERIMENT_TYPE,
-    NUMBER_OF_HYBRITISATIONS,
-    ARRAY_DESIGN,
-    LABEL
+public class Extract {
+
+    @JsonProperty("id")
+    private int id;
+
+    @JsonProperty("name")
+    private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

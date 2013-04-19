@@ -26,10 +26,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.StartView;
 
 import java.util.List;
-import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -62,8 +62,8 @@ public class SetupActivity extends AbstractActivity implements StartView.Present
     }
 
     @Override
-    public void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback) {
-        submissionService.setupExperimentSubmission(getSubmissionId(), properties, callback);
+    public void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback) {
+        submissionService.setupExperimentSubmission(getSubmissionId(), settings, callback);
     }
 
     @Override

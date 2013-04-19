@@ -30,11 +30,15 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import java.util.Map;
+
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
 
 /**
  * @author Olga Melnichuk
@@ -83,11 +87,11 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public void setupExperimentSubmission(int id, Map<String, String> settings) throws ResourceNotFoundException, NoPermissionException {
+    public void setupExperimentSubmission(int id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission =
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-            submission.setExperiment(new Experiment(settings));
+            submission.setExperiment(createExperiment(settings));
         } catch (RecordNotFoundException e) {
             log.warn("setupExperimentSubmission(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");

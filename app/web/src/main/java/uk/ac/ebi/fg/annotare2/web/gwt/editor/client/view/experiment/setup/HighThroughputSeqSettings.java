@@ -19,8 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-
-import java.util.Map;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.SEQUENCING;
 
@@ -40,8 +39,8 @@ public class HighThroughputSeqSettings extends Composite implements HasSubmissio
     }
 
     @Override
-    public Map<String, String> getSettings() {
-        return new SetupSettingsBuilder()
+    public ExperimentSetupSettings getSettings() {
+        return new ExperimentSetupSettings.Builder()
                 .setExperimentType(SEQUENCING)
                 .build();
     }

@@ -31,13 +31,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceA
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 import java.util.List;
-import java.util.Map;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper.wrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -121,16 +121,16 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void discardSubmissionData(AsyncCallback<Void> callback) {
-        submissionService.discardSubmissionData(EditorUtils.getSubmissionId(), AsyncCallbackWrapper.wrap(callback));
+        submissionService.discardSubmissionData(getSubmissionId(), wrap(callback));
     }
 
     @Override
-    public void setupNewSubmission(Map<String, String> properties, AsyncCallback<Void> callback) {
-        submissionService.setupExperimentSubmission(EditorUtils.getSubmissionId(), properties, AsyncCallbackWrapper.wrap(callback));
+    public void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback) {
+        submissionService.setupExperimentSubmission(getSubmissionId(), settings, wrap(callback));
     }
 
     @Override
     public void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> callback) {
-        dataServiceAsync.getArrayDesignList(query, AsyncCallbackWrapper.wrap(callback));
+        dataServiceAsync.getArrayDesignList(query, wrap(callback));
     }
 }

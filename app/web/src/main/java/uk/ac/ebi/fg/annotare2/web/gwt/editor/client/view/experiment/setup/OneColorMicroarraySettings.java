@@ -21,9 +21,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
-
-import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.ONE_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
@@ -64,8 +63,8 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
     }
 
     @Override
-    public Map<String, String> getSettings() {
-        return new SetupSettingsBuilder()
+    public ExperimentSetupSettings getSettings() {
+        return new ExperimentSetupSettings.Builder()
                 .setExperimentType(ONE_COLOR_MICROARRAY)
                 .setArrayDesign(arrayDesignList.getValue())
                 .setNumberOfHybritisations(intValue(numberOfHybs.getValue()))
