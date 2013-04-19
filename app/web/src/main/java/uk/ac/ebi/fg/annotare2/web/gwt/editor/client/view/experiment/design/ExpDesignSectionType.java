@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
-
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 /**
  * @author Olga Melnichuk
  */
-public class RawFilesActivity extends AbstractActivity {
-
-    @Override
-    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-    }
-
-    public RawFilesActivity withPlace(ExpDesignPlace designPlace) {
-        return this;
-    }
+public enum ExpDesignSectionType {
+    SOURCES,
+    SAMPLES,
+    EXTRACTS,
+    LABELED_EXTRACTS,
+    ASSAYS,
+    SCANS,
+    ARRAY_DATA_FILES,
+    NORMALIZATIONS,
+    DERIVED_ARRAY_DATA_FILES;
 }

@@ -25,7 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfDeta
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTablePreviewActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSectionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
 
 /**
@@ -33,45 +33,44 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfo
  */
 public class EditorContentActivityMapper implements ActivityMapper {
 
-    private final Provider<ExpDetailsActivity> expInfoGeneralActivityProvider;
-    private final Provider<ContactListActivity> expInfoContactsActivityProvider;
+    private final Provider<ExpDetailsActivity> expDetailsActivityProvider;
+    private final Provider<ContactListActivity> contactsActivityProvider;
 
-    private final Provider<SamplesActivity> expDesignSamplesActivityProvider;
-    private final Provider<ExtractsActivity> expDesignExtractsActivityProvider;
-    private final Provider<LabeledExtractsActivity> expDesignLabeledExtractsActivityProvider;
-    private final Provider<RawFilesActivity> expDesignRawFilesActivityProvider;
-
+    private final Provider<SamplesActivity> samplesActivityProvider;
+    private final Provider<ExtractsActivity> extractsActivityProvider;
+    private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
+    private final Provider<ArrayDataFilesActivity> arrayDataFilesActivityProvider;
 
     private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
     private final Provider<IdfPreviewActivity> idfPreviewActivityProvider;
 
-    private final Provider<AdfDetailsActivity> adfInfoGeneralActivityProvider;
+    private final Provider<AdfDetailsActivity> adfDetailsActivityProvider;
     private final Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider;
 
     @Inject
     public EditorContentActivityMapper(
-            Provider<ExpDetailsActivity> expInfoGeneralActivityProvider,
-            Provider<ContactListActivity> expInfoContactsActivityProvider,
-            Provider<SamplesActivity> expDesignSamplesActivityProvider,
-            Provider<ExtractsActivity> expDesignExtractsActivityProvider,
-            Provider<LabeledExtractsActivity> expDesignLabeledExtractsActivityProvider,
-            Provider<RawFilesActivity> expDesignRawFilesActivityProvider,
+            Provider<ExpDetailsActivity> expDetailsActivityProvider,
+            Provider<ContactListActivity> contactsActivityProvider,
+            Provider<SamplesActivity> samplesActivityProvider,
+            Provider<ExtractsActivity> extractsActivityProvider,
+            Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
+            Provider<ArrayDataFilesActivity> arrayDataFilesActivityProvider,
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
             Provider<IdfPreviewActivity> idfPreviewActivityProvider,
-            Provider<AdfDetailsActivity> adfInfoGeneralActivityProvider,
+            Provider<AdfDetailsActivity> adfDetailsActivityProvider,
             Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider) {
-        this.expInfoGeneralActivityProvider = expInfoGeneralActivityProvider;
-        this.expInfoContactsActivityProvider = expInfoContactsActivityProvider;
+        this.expDetailsActivityProvider = expDetailsActivityProvider;
+        this.contactsActivityProvider = contactsActivityProvider;
 
-        this.expDesignSamplesActivityProvider = expDesignSamplesActivityProvider;
-        this.expDesignExtractsActivityProvider = expDesignExtractsActivityProvider;
-        this.expDesignLabeledExtractsActivityProvider = expDesignLabeledExtractsActivityProvider;
-        this.expDesignRawFilesActivityProvider = expDesignRawFilesActivityProvider;
+        this.samplesActivityProvider = samplesActivityProvider;
+        this.extractsActivityProvider = extractsActivityProvider;
+        this.labeledExtractsActivityProvider = labeledExtractsActivityProvider;
+        this.arrayDataFilesActivityProvider = arrayDataFilesActivityProvider;
 
         this.sdrfPreviewActivityProvider = sdrfPreviewActivityProvider;
         this.idfPreviewActivityProvider = idfPreviewActivityProvider;
 
-        this.adfInfoGeneralActivityProvider = adfInfoGeneralActivityProvider;
+        this.adfDetailsActivityProvider = adfDetailsActivityProvider;
         this.adfTablePreviewActivityProvider = adfTablePreviewActivityProvider;
     }
 
@@ -81,22 +80,22 @@ public class EditorContentActivityMapper implements ActivityMapper {
             ExpInfoSection section = infoPlace.getExpInfoSection();
             switch (section) {
                 case GENERAL_INFO:
-                    return (expInfoGeneralActivityProvider.get()).withPlace(infoPlace);
+                    return (expDetailsActivityProvider.get()).withPlace(infoPlace);
                 case CONTACTS:
-                    return (expInfoContactsActivityProvider.get()).withPlace(infoPlace);
+                    return (contactsActivityProvider.get()).withPlace(infoPlace);
             }
         } else if (place instanceof ExpDesignPlace) {
             ExpDesignPlace designPlace = (ExpDesignPlace) place;
-            ExpDesignSection section = designPlace.getExpDesignSection();
+            ExpDesignSectionType section = designPlace.getExpDesignSection().getType();
             switch (section) {
                 case SAMPLES:
-                    return (expDesignSamplesActivityProvider.get()).withPlace(designPlace);
+                    return (samplesActivityProvider.get()).withPlace(designPlace);
                 case EXTRACTS:
-                    return (expDesignExtractsActivityProvider.get()).withPlace(designPlace);
+                    return (extractsActivityProvider.get()).withPlace(designPlace);
                 case LABELED_EXTRACTS:
-                    return (expDesignLabeledExtractsActivityProvider.get()).withPlace(designPlace);
-                case RAW_FILES:
-                    return (expDesignRawFilesActivityProvider.get()).withPlace(designPlace);
+                    return (labeledExtractsActivityProvider.get()).withPlace(designPlace);
+                case ARRAY_DATA_FILES:
+                    return (arrayDataFilesActivityProvider.get()).withPlace(designPlace);
             }
         } else if (place instanceof IdfPreviewPlace) {
             return (idfPreviewActivityProvider.get()).withPlace((IdfPreviewPlace) place);
@@ -104,7 +103,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
             return (sdrfPreviewActivityProvider.get()).withPlace(place);
         } else if (place instanceof AdHeaderPlace) {
             AdHeaderPlace adHeaderPlace = (AdHeaderPlace) place;
-            return (adfInfoGeneralActivityProvider.get()).withPlace(adHeaderPlace);
+            return (adfDetailsActivityProvider.get()).withPlace(adHeaderPlace);
         } else if (place instanceof AdTablePlace) {
             return (adfTablePreviewActivityProvider.get()).withPlace((AdTablePlace) place);
         }

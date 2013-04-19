@@ -27,21 +27,24 @@ import static java.util.EnumSet.allOf;
 import static java.util.EnumSet.of;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.TWO_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSectionType.SAMPLES;
 
 /**
  * @author Olga Melnichuk
  */
 public enum ExpDesignSection implements LeftNavigationView.Section {
-    SAMPLES("Create your samples", allOf(ExperimentType.class)),
-    EXTRACTS("Create extracts and assign ENA library info", of(SEQUENCING)),
-    LABELED_EXTRACTS("Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
-    RAW_FILES("Upload raw files", allOf(ExperimentType.class)),
-    PROCESSED_FILES("Upload processed files", allOf(ExperimentType.class));
+    SAMPLES(ExpDesignSectionType.SAMPLES, "Create your samples", allOf(ExperimentType.class)),
+    EXTRACTS(ExpDesignSectionType.EXTRACTS, "Create extracts and assign ENA library info", of(SEQUENCING)),
+    LABELED_EXTRACTS(ExpDesignSectionType.LABELED_EXTRACTS, "Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
+    RAW_FILES(ExpDesignSectionType.ARRAY_DATA_FILES, "Upload raw files", allOf(ExperimentType.class)),
+    PROCESSED_FILES(ExpDesignSectionType.DERIVED_ARRAY_DATA_FILES, "Upload processed files", allOf(ExperimentType.class));
 
     private final String title;
+    private final ExpDesignSectionType type;
     private final EnumSet applyTo;
 
-    private ExpDesignSection(String title, EnumSet<ExperimentType> applyTo) {
+    private ExpDesignSection(ExpDesignSectionType type, String title, EnumSet<ExperimentType> applyTo) {
+        this.type = type;
         this.title = title;
         this.applyTo = applyTo;
     }
@@ -58,6 +61,10 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     @Override
     public String getKey() {
         return name();
+    }
+
+    public ExpDesignSectionType getType() {
+        return type;
     }
 
     public static List<ExpDesignSection> allApplicableTo(ExperimentType type) {
