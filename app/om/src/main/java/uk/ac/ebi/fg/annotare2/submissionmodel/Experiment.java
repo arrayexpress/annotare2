@@ -35,7 +35,7 @@ public class Experiment {
     private Map<String, String> properties;
 
     @JsonProperty("nextId")
-    private int nextId;
+    int nextId;
 
     @JsonProperty("title")
     private String title;
@@ -73,17 +73,22 @@ public class Experiment {
     public Experiment(@JsonProperty("properties") Map<String, String> properties) {
         this.properties = new HashMap<String, String>();
         this.properties.putAll(properties);
+        samples = newArrayList();
+        extracts = newArrayList();
+        labeledExtracts = newArrayList();
+        assays = newArrayList();
+        arrayDataFiles = newArrayList();
     }
 
     public Sample addSample(Sample sample) {
         sample.setId(nextId());
-        getSamples().add(sample);
+        samples.add(sample);
         return sample;
     }
 
     public Extract addExtract(Extract extract) {
         extract.setId(nextId());
-        getExtracts().add(extract);
+        extracts.add(extract);
         return extract;
     }
 
@@ -118,20 +123,6 @@ public class Experiment {
         } catch (IOException e) {
             throw new DataSerializationExcepetion(e);
         }
-    }
-
-    private List<Sample> getSamples() {
-        if (samples == null) {
-            samples = newArrayList();
-        }
-        return samples;
-    }
-
-    private List<Extract> getExtracts() {
-        if (extracts == null) {
-            extracts = newArrayList();
-        }
-        return extracts;
     }
 
     private int nextId() {
