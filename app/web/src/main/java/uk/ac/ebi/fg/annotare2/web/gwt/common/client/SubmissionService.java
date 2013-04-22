@@ -21,6 +21,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -32,7 +35,9 @@ public interface SubmissionService extends RemoteService {
 
     SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    ExperimentSettings getExperimentSubmissionSettings(int id) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentSettings getExperimentSettings(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException;
 
     int createExperimentSubmission() throws NoPermissionException;
 

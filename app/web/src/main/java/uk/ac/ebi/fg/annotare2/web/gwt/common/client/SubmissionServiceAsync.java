@@ -4,6 +4,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+
+import java.util.List;
 
 public interface SubmissionServiceAsync {
 
@@ -17,5 +20,7 @@ public interface SubmissionServiceAsync {
 
     void discardSubmissionData(int id, AsyncCallback<Void> async);
 
-    void getExperimentSubmissionSettings(int id, AsyncCallback<ExperimentSettings> async);
+    void getExperimentSettings(int id, AsyncCallback<ExperimentSettings> async);
+
+    void getSamples(int id, AsyncCallback<List<SampleRow>> async);
 }

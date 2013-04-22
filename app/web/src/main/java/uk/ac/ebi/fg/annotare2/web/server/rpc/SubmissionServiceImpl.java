@@ -31,10 +31,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+
+import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
 
@@ -53,6 +56,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         this.submissionManager = submissionManager;
     }
 
+    @Override
     public SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = submissionManager.getSubmission(getCurrentUser(), id, Permission.VIEW);
@@ -66,7 +70,8 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
-    public ExperimentSettings getExperimentSubmissionSettings(int id) throws ResourceNotFoundException, NoPermissionException {
+    @Override
+    public ExperimentSettings getExperimentSettings(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiExperimentSubmissionSettings(sb);
@@ -82,6 +87,24 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
+    @Override
+    public List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            return UIObjectConverter.uiSampleRows(sb);
+        } catch (AccessControlException e) {
+            log.warn("getSampless(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getSamples(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (DataSerializationExcepetion e) {
+            log.error("getSamples(" + id + ") failure", e);
+            throw new UnexpectedException("extract experiment settings failure", e);
+        }
+    }
+
+    @Override
     public int createExperimentSubmission() throws NoPermissionException {
         try {
             return submissionManager.createExperimentSubmission(getCurrentUser()).getId();
@@ -91,6 +114,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
+    @Override
     public int createArrayDesignSubmission() throws NoPermissionException {
         try {
             return submissionManager.createArrayDesignSubmission(getCurrentUser()).getId();

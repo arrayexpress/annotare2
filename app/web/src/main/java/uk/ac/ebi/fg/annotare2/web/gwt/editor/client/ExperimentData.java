@@ -23,6 +23,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,12 +48,12 @@ public class ExperimentData {
         this.submissionService = submissionService;
     }
 
-    public void getSettings(final AsyncCallback<ExperimentSettings> callback) {
+    public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
         if (settings != null) {
             callback.onSuccess(settings);
             return;
         }
-        submissionService.getExperimentSubmissionSettings(getSubmissionId(), new AsyncCallbackWrapper<ExperimentSettings>() {
+        submissionService.getExperimentSettings(getSubmissionId(), new AsyncCallbackWrapper<ExperimentSettings>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
@@ -66,4 +68,39 @@ public class ExperimentData {
     }
 
 
+    public void getSamplesAsync(final AsyncCallback<List<SampleRow>> callback) {
+        if (samples != null) {
+            callback.onSuccess(getSamples());
+            return;
+        }
+        submissionService.getSamples(getSubmissionId(), new AsyncCallbackWrapper<List<SampleRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(List<SampleRow> result) {
+                setSamples(result);
+                callback.onSuccess(result);
+            }
+        });
+    }
+
+    private List<SampleRow> getSamples() {
+        List<SampleRow> rows = new ArrayList<SampleRow>();
+        for (Integer id : samples) {
+            rows.add(sampleMap.get(id));
+        }
+        return rows;
+    }
+
+    private void setSamples(List<SampleRow> rows) {
+        sampleMap = new HashMap<Integer, SampleRow>();
+        samples = new ArrayList<Integer>();
+        for(SampleRow row :  rows) {
+            sampleMap.put(row.getId(), row);
+            samples.add(row.getId());
+        }
+    }
 }

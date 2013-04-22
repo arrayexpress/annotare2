@@ -18,18 +18,21 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
+import uk.ac.ebi.fg.annotare2.submissionmodel.Sample;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -92,6 +95,15 @@ public class UIObjectConverter {
         }
     };
 
+    static Function<Sample, SampleRow> SAMPLE_ROW = new Function<Sample, SampleRow>() {
+        @Nullable
+        @Override
+        public SampleRow apply(@Nullable Sample sample) {
+            checkNotNull(sample);
+            return new SampleRow(sample.getId(), sample.getName());
+        }
+    };
+
     public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
@@ -107,6 +119,11 @@ public class UIObjectConverter {
         String type = exp.getProperties().get(EXPERIMENT_TYPE.name());
         return new ExperimentSettings(
                 type == null ? null : ExperimentType.valueOf(type));
+    }
+
+    public static List<SampleRow> uiSampleRows(ExperimentSubmission submission) throws DataSerializationExcepetion {
+        Experiment exp = submission.getExperiment();
+        return new ArrayList<SampleRow>(Collections2.transform(exp.getSamples(), SAMPLE_ROW));
     }
 
     public static UserDto uiUser(User user) {

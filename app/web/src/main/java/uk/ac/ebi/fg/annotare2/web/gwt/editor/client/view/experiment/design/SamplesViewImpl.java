@@ -64,9 +64,9 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     public SamplesViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
         toolBar.add(createTools());
-        setData(new ArrayList<SampleRow>(), new ArrayList<SampleColumn>());
     }
 
+    @Override
     public void setData(List<SampleRow> rows, List<SampleColumn> columns) {
         //TODO put resources as inner interface
         MyDataGridResources resources = GWT.create(MyDataGridResources.class);

@@ -18,10 +18,18 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -29,18 +37,38 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.Sampl
 public class SamplesActivity extends AbstractActivity {
 
     private final SamplesView view;
+    private final ExperimentData expData;
 
     @Inject
-    public SamplesActivity(SamplesView view) {
+    public SamplesActivity(SamplesView view,
+                           ExperimentData expData) {
         this.view = view;
+        this.expData = expData;
     }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         containerWidget.setWidget(view);
+        loadSamples();
     }
 
     public SamplesActivity withPlace(ExpDesignPlace designPlace) {
         return this;
+    }
+
+    private void loadSamples() {
+        expData.getSamplesAsync(new AsyncCallback<List<SampleRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert(caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(List<SampleRow> result) {
+                //TODO load column list
+                view.setData(result, new ArrayList<SampleColumn>());
+            }
+        });
     }
 }

@@ -23,9 +23,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class SampleRow implements IsSerializable {
 
+    private int id;
+
     private String name;
 
-    public SampleRow(String name) {
+    public SampleRow(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -34,5 +37,9 @@ public class SampleRow implements IsSerializable {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
     }
 }

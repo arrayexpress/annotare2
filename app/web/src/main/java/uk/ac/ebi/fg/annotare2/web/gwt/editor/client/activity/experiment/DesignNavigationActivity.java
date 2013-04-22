@@ -74,7 +74,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     }
 
     private void loadExperimentDetails() {
-        expData.getSettings(
+        expData.getSettingsAsync(
                 new AsyncCallback<ExperimentSettings>() {
                     @Override
                     public void onFailure(Throwable caught) {

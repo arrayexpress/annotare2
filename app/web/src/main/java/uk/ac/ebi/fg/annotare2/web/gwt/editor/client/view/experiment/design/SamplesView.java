@@ -17,9 +17,15 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public interface SamplesView extends IsWidget {
+
+    void setData(List<SampleRow> rows, List<SampleColumn> columns);
 }
