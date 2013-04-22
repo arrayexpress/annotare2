@@ -29,8 +29,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class ExperimentSubmission extends Submission {
 
+    @Deprecated
     private String investigation;
 
+    @Deprecated
     private String sampleAndDataRel;
 
     private String experimentString;
@@ -39,18 +41,22 @@ public class ExperimentSubmission extends Submission {
         super(user, acl);
     }
 
+    @Deprecated
     public void setInvestigation(String text) {
         this.investigation = text;
     }
 
+    @Deprecated
     public void setSampleAndDataRelationship(String rel) {
         this.sampleAndDataRel = rel;
     }
 
+    @Deprecated
     public InputStream getInvestigation() throws IOException {
        return asStream(investigation);
     }
 
+    @Deprecated
     public InputStream getSampleAndDataRelationship() {
         return asStream(sampleAndDataRel);
     }

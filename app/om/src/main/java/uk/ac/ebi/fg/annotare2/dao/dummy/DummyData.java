@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Arrays.asList;
@@ -65,21 +66,24 @@ public class DummyData {
         try {
             createSubmission(user,
                     SubmissionStatus.IN_PROGRESS,
-                    "E-GEOD-37590.idf.txt",
-                    "E-GEOD-37590",
-                    "Natural genetic variation in yeast longevity");
+                    "E-MTAB-641.idf.txt",
+                    "E-MTAB-641.sdrf.txt",
+                    "E-MTAB-641",
+                    "agb1-1 mutant and Col-0 comparative transcriptomic analysis in a Plectosphaerella cucumerina inoculation");
 
             createSubmission(user,
                     SubmissionStatus.IN_PROGRESS,
-                    "E-MTAB-996.idf.txt",
-                    "E-MTAB-996",
-                    "E. coli Anaerobic/aerobic transitions in chemostat");
+                    "E-MEXP-3237.idf.txt",
+                    "E-MEXP-3237.sdrf.txt",
+                    "E-MEXP-3237",
+                    "rogB mutant in NEM316 S. agalactiae strain");
 
             createSubmission(user,
                     SubmissionStatus.PUBLIC_IN_AE,
-                    "E-GEOD-37372.idf.txt",
-                    "E-GEOD-37372",
-                    "Ewing's sarcoma tumor samples");
+                    "E-MTAB-582.idf.txt",
+                    "E-MTAB-582.sdrf.txt",
+                    "E-MTAB-582",
+                    "RNA and chromatin structure");
 
             createAdSubmission(user,
                     SubmissionStatus.IN_PROGRESS,
@@ -108,12 +112,22 @@ public class DummyData {
         return user;
     }
 
-    private static Submission createSubmission(User user, SubmissionStatus status, String idfName, String accession, String title) throws IOException, DataSerializationExcepetion {
+    private static Submission createSubmission(User user,
+                                               SubmissionStatus status,
+                                               String idfName,
+                                               String sdrfName,
+                                               String accession,
+                                               String title) throws IOException, DataSerializationExcepetion {
         ExperimentSubmission submission = new SubmissionFactory().createExperimentSubmission(user);
         submission.setStatus(status);
+
+        //TODO use experiment object instead
         submission.setInvestigation(
                 CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
-        // TODO
+        if (!isNullOrEmpty(sdrfName)) {
+            submission.setSampleAndDataRelationship(
+                    CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(sdrfName), Charsets.UTF_8)));
+        }
         submission.setExperiment(new Experiment(Collections.<String, String>emptyMap()));
         submission.setTitle(title);
         submission.setAccession(accession);
@@ -121,7 +135,12 @@ public class DummyData {
         return submission;
     }
 
-    private static Submission createAdSubmission(User user, SubmissionStatus status, String headerFile, String bodyFile, String accession, String title) throws IOException {
+    private static Submission createAdSubmission(User user,
+                                                 SubmissionStatus status,
+                                                 String headerFile,
+                                                 String bodyFile,
+                                                 String accession,
+                                                 String title) throws IOException {
         ArrayDesignSubmission submission = new SubmissionFactory().createArrayDesignSubmission(user);
         submission.setStatus(status);
         submission.setAccession(accession);

@@ -120,7 +120,7 @@
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2</groupId>
             <artifactId>magetabcheck</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
 
         <!-- Web specific dependencies -->
