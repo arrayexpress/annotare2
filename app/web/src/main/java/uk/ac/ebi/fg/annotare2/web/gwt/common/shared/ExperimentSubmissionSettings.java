@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 
 /**
  * @author Olga Melnichuk
  */
-public enum ExpDesignSectionType {
-    SOURCES,
-    SAMPLES,
-    EXTRACTS,
-    LABELED_EXTRACTS,
-    ASSAYS,
-    SCANS,
-    ARRAY_DATA_FILES,
-    NORMALIZATIONS,
-    DERIVED_ARRAY_DATA_FILES,
-    NONE;
+public class ExperimentSubmissionSettings implements IsSerializable {
+
+    private ExperimentType experimentType;
+
+    public ExperimentSubmissionSettings() {
+    }
+
+    public ExperimentSubmissionSettings(ExperimentType experimentType) {
+        this.experimentType = experimentType;
+    }
+
+    public ExperimentType getExperimentType() {
+        return experimentType;
+    }
 }

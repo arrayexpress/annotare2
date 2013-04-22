@@ -16,8 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -33,8 +38,13 @@ public class Sample {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("extracts")
+    private List<Integer> extractIds;
+
     private List<Extract> extracts;
+
+    public Sample() {
+        extracts = newArrayList();
+    }
 
     public int getId() {
         return id;
@@ -53,13 +63,33 @@ public class Sample {
     }
 
     public void addExtract(Extract extract) {
-        getExtracts().add(extract);
+        extracts.add(extract);
     }
 
-    private List<Extract> getExtracts() {
-        if (extracts == null) {
-            extracts = newArrayList();
-        }
-        return extracts;
+    @JsonIgnore
+    public List<Extract> getExtracts() {
+        return Collections.unmodifiableList(extracts);
+    }
+
+    @JsonProperty("extracts")
+    List<Integer> getExtractIds() {
+        return extractIds != null ? extractIds :
+                Lists.transform(extracts, new Function<Extract, Integer>() {
+                    @Nullable
+                    @Override
+                    public Integer apply(@Nullable Extract input) {
+                        return input.getId();
+                    }
+                });
+    }
+
+    @JsonProperty("extracts")
+    void setExtractIds(List<Integer> extractIds) {
+        this.extractIds = newArrayList(extractIds);
+    }
+
+    void setAllExtracts(List<Extract> extracts) {
+        this.extracts = newArrayList(extracts);
+        extractIds = null;
     }
 }

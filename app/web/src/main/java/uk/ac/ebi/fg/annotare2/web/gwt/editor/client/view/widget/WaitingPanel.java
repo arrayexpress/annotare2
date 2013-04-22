@@ -58,6 +58,6 @@ public class WaitingPanel extends Composite {
         } else {
             msg = "Unexpected error happened. Please try again later.";
         }
-        label.setText("Error: " + msg);
+        label.setText(msg);
     }
 }

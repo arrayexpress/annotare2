@@ -16,8 +16,54 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
 public class LabeledExtract {
+
+    @JsonProperty("id")
+    private int id;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("label")
+    private String label;
+
+    private List<Integer> assayIds;
+
+    private List<Assay> assays;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public List<Assay> getAssays() {
+        return Collections.unmodifiableList(assays);
+    }
 }

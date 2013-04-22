@@ -16,32 +16,24 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.google.common.collect.Maps;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDataFile {
+public class ExperimentSerializationTest {
 
-    @JsonProperty("id")
-    private int id;
-
-    @JsonProperty("name")
-    private String name;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    @Test
+    public void emptyExperimentTest() throws DataSerializationExcepetion {
+        Experiment exp1 = new Experiment(Maps.<String, String>newHashMap());
+        Experiment exp2 = Experiment.fromJsonString(exp1.toJsonString());
+        assertTrue(exp2.getSamples().isEmpty());
+        assertTrue(exp2.getExtracts().isEmpty());
+        assertTrue(exp2.getLabeledExtracts().isEmpty());
+        assertTrue(exp2.getAssays().isEmpty());
+        assertTrue(exp2.getArrayDataFiles().isEmpty());
     }
 }

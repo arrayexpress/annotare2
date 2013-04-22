@@ -25,18 +25,16 @@ import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSubmissionSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-
-import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
 
@@ -65,6 +63,22 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (RecordNotFoundException e) {
             log.warn("getSubmission(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        }
+    }
+
+    public ExperimentSubmissionSettings getExperimentSubmissionSettings(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            return UIObjectConverter.uiExperimentSubmissionSettings(sb);
+        } catch (AccessControlException e) {
+            log.warn("getExperimentSettings(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getExperimentSettings(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (DataSerializationExcepetion e) {
+            log.error("getExperimentSettings(" + id + ") failure", e);
+            throw new UnexpectedException("extract experiment settings failure", e);
         }
     }
 

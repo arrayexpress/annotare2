@@ -23,11 +23,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static java.util.EnumSet.allOf;
-import static java.util.EnumSet.of;
+import static java.util.EnumSet.*;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType.TWO_COLOR_MICROARRAY;
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSectionType.SAMPLES;
 
 /**
  * @author Olga Melnichuk
@@ -37,7 +35,8 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     EXTRACTS(ExpDesignSectionType.EXTRACTS, "Create extracts and assign ENA library info", of(SEQUENCING)),
     LABELED_EXTRACTS(ExpDesignSectionType.LABELED_EXTRACTS, "Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
     RAW_FILES(ExpDesignSectionType.ARRAY_DATA_FILES, "Upload raw files", allOf(ExperimentType.class)),
-    PROCESSED_FILES(ExpDesignSectionType.DERIVED_ARRAY_DATA_FILES, "Upload processed files", allOf(ExperimentType.class));
+    PROCESSED_FILES(ExpDesignSectionType.DERIVED_ARRAY_DATA_FILES, "Upload processed files", allOf(ExperimentType.class)),
+    NONE(ExpDesignSectionType.NONE, "None", noneOf(ExperimentType.class));
 
     private final String title;
     private final ExpDesignSectionType type;
@@ -50,7 +49,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     }
 
     private boolean appliesTo(ExperimentType type) {
-        return applyTo.contains(type);
+        return type != null && applyTo.contains(type);
     }
 
     @Override
@@ -67,7 +66,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
         return type;
     }
 
-    public static List<ExpDesignSection> allApplicableTo(ExperimentType type) {
+    public static List<ExpDesignSection> experimentDesignSectionsFor(ExperimentType type) {
         List<ExpDesignSection> list = new ArrayList<ExpDesignSection>();
         for (ExpDesignSection section : values()) {
             if (section.appliesTo(type)) {
@@ -75,5 +74,9 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
             }
         }
         return list;
+    }
+
+    public boolean isNone() {
+        return this == NONE;
     }
 }

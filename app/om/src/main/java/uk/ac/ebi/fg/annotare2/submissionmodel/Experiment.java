@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,12 +28,15 @@ import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Olga Melnichuk
  */
 public class Experiment {
 
+    @JsonProperty("properties")
     private Map<String, String> properties;
 
     @JsonProperty("nextId")
@@ -55,24 +60,15 @@ public class Experiment {
     @JsonProperty("publications")
     private List<Publication> publications;
 
-    @JsonProperty("samples")
     private List<Sample> samples;
-
-    @JsonProperty("extracts")
     private List<Extract> extracts;
-
-    @JsonProperty("labeledExtracts")
     private List<LabeledExtract> labeledExtracts;
-
-    @JsonProperty("assays")
     private List<Assay> assays;
-
-    @JsonProperty("arrayDataFiles")
     private List<ArrayDataFile> arrayDataFiles;
 
+    @JsonCreator
     public Experiment(@JsonProperty("properties") Map<String, String> properties) {
-        this.properties = new HashMap<String, String>();
-        this.properties.putAll(properties);
+        this.properties = newHashMap(properties);
         samples = newArrayList();
         extracts = newArrayList();
         labeledExtracts = newArrayList();
@@ -80,13 +76,29 @@ public class Experiment {
         arrayDataFiles = newArrayList();
     }
 
-    public Sample addSample(Sample sample) {
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Date getExperimentDate() {
+        return experimentDate;
+    }
+
+    public Date getPublicReleaseDate() {
+        return publicReleaseDate;
+    }
+
+    public Sample createSample(Sample sample) {
         sample.setId(nextId());
         samples.add(sample);
         return sample;
     }
 
-    public Extract addExtract(Extract extract) {
+    public Extract createExtract(Extract extract) {
         extract.setId(nextId());
         extracts.add(extract);
         return extract;
@@ -102,7 +114,8 @@ public class Experiment {
         }
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(str, Experiment.class);
+            ExperimentData data = mapper.readValue(str, ExperimentData.class);
+            return data.fixExperiment();
         } catch (JsonGenerationException e) {
             throw new DataSerializationExcepetion(e);
         } catch (JsonMappingException e) {
@@ -115,7 +128,7 @@ public class Experiment {
     public String toJsonString() throws DataSerializationExcepetion {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.writeValueAsString(this);
+            return mapper.writeValueAsString(new ExperimentData(this));
         } catch (JsonGenerationException e) {
             throw new DataSerializationExcepetion(e);
         } catch (JsonMappingException e) {
@@ -128,4 +141,50 @@ public class Experiment {
     private int nextId() {
         return nextId++;
     }
+
+    @JsonIgnore
+    public List<Sample> getSamples() {
+        return unmodifiableList(samples);
+    }
+
+    @JsonIgnore
+    public List<Extract> getExtracts() {
+        return unmodifiableList(extracts);
+    }
+
+    @JsonIgnore
+    public List<LabeledExtract> getLabeledExtracts() {
+        return unmodifiableList(labeledExtracts);
+    }
+
+    @JsonIgnore
+    public List<Assay> getAssays() {
+        return unmodifiableList(assays);
+    }
+
+    @JsonIgnore
+    public List<ArrayDataFile> getArrayDataFiles() {
+        return unmodifiableList(arrayDataFiles);
+    }
+
+    void restoreSamples(List<Sample> samples) {
+        this.samples = newArrayList(samples);
+    }
+
+    void restoreExtracts(List<Extract> extracts) {
+        this.extracts = newArrayList(extracts);
+    }
+
+    void restoreLabeledExtracts(List<LabeledExtract> labeledExtracts) {
+        this.labeledExtracts = newArrayList(labeledExtracts);
+    }
+
+    void restoreAssays(List<Assay> assays) {
+        this.assays = newArrayList(assays);
+    }
+
+    void restoreArrayDataFiles(List<ArrayDataFile> files) {
+        this.arrayDataFiles = newArrayList(files);
+    }
+
 }

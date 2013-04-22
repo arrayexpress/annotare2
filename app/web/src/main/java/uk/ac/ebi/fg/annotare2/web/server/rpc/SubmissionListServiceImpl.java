@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import java.util.ArrayList;

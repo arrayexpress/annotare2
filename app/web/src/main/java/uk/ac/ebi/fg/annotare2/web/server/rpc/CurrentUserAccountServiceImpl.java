@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 
 /**
  * @author Olga Melnichuk

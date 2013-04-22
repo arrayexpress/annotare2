@@ -25,6 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.DesignNa
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.InfoNavigationActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
 
 /**
  * @author Olga Melnichuk
@@ -47,8 +48,10 @@ public class EditorLeftNavigationActivityMapper implements ActivityMapper {
             return (infoNavActivityProvider.get()).withPlace((ExpInfoPlace) place);
 
         } else if (place instanceof ExpDesignPlace) {
-            return (designNavActivityProvider.get()).withPlace((ExpDesignPlace) place);
-
+            ExpDesignSection section = ((ExpDesignPlace) place).getExpDesignSection();
+            if (!section.isNone()) {
+                return (designNavActivityProvider.get()).withPlace((ExpDesignPlace) place);
+            }
         }
         // hide left menu
         return null;

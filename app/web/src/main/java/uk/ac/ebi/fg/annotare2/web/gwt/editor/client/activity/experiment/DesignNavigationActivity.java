@@ -19,12 +19,20 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSubmissionSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
+
+import java.util.List;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection.experimentDesignSectionsFor;
 
 /**
  * @author Olga Melnichuk
@@ -33,13 +41,16 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
 
     private final LeftNavigationView view;
     private final PlaceController placeController;
+    private final SubmissionServiceAsync submissionService;
     private ExpDesignSection section;
 
     @Inject
     public DesignNavigationActivity(LeftNavigationView view,
-                                    PlaceController placeController) {
+                                    PlaceController placeController,
+                                    SubmissionServiceAsync submissionService) {
         this.view = view;
         this.placeController = placeController;
+        this.submissionService = submissionService;
     }
 
     public DesignNavigationActivity withPlace(ExpDesignPlace place) {
@@ -49,13 +60,40 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.setSections(ExpDesignSection.allApplicableTo(ExperimentType.SEQUENCING));
-        view.setSelected(section);
         containerWidget.setWidget(view.asWidget());
+        loadExperimentDetails();
     }
 
     @Override
     public void navigateTo(LeftNavigationView.Section section) {
-        placeController.goTo(new ExpDesignPlace((ExpDesignSection) section));
+        goTo(new ExpDesignPlace((ExpDesignSection) section));
+    }
+
+    private void goTo(ExpDesignPlace place) {
+        placeController.goTo(place);
+    }
+    private void loadExperimentDetails() {
+        //TODO cache this call
+        submissionService.getExperimentSubmissionSettings(getSubmissionId(),
+                new AsyncCallbackWrapper<ExperimentSubmissionSettings>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        //TODO
+                        Window.alert(caught.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(ExperimentSubmissionSettings result) {
+                        List<ExpDesignSection> sections = experimentDesignSectionsFor(result.getExperimentType());
+                        view.setSections(sections);
+                        if (sections.contains(section)) {
+                            view.setSelected(section);
+                        } else if (!sections.isEmpty()) {
+                            view.setSelected(sections.get(0));
+                        } else {
+                           goTo(new ExpDesignPlace(ExpDesignSection.NONE));
+                        }
+                    }
+                }.wrap());
     }
 }

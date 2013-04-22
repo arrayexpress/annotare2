@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.rpc;
+package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -22,10 +22,15 @@ import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
+import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSubmissionSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -34,11 +39,12 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.transform;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentSetting.EXPERIMENT_TYPE;
 
 /**
  * @author Olga Melnichuk
  */
-class UIObjectConverter {
+public class UIObjectConverter {
 
     static Function<User, UserDto> USER_TRANSFORM = new Function<User, UserDto>() {
         public UserDto apply(@Nullable User user) {
@@ -87,16 +93,24 @@ class UIObjectConverter {
         }
     };
 
-    static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
+    public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
     }
 
-    static SubmissionDetails uiSubmissionDetails(Submission submission) {
+    public static SubmissionDetails uiSubmissionDetails(Submission submission) {
         return SUBMISSION_DETAILS.apply(submission);
     }
 
-    static UserDto uiUser(User user) {
+    public static ExperimentSubmissionSettings uiExperimentSubmissionSettings(ExperimentSubmission submission)
+            throws DataSerializationExcepetion {
+        Experiment exp = submission.getExperiment();
+        String type = exp.getProperties().get(EXPERIMENT_TYPE.name());
+        return new ExperimentSubmissionSettings(
+                type == null ? null : ExperimentType.valueOf(type));
+    }
+
+    public static UserDto uiUser(User user) {
         return USER_TRANSFORM.apply(user);
     }
 }
