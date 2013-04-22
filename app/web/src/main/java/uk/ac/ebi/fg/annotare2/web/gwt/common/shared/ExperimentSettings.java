@@ -22,14 +22,14 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentSubmissionSettings implements IsSerializable {
+public class ExperimentSettings implements IsSerializable {
 
     private ExperimentType experimentType;
 
-    public ExperimentSubmissionSettings() {
+    public ExperimentSettings() {
     }
 
-    public ExperimentSubmissionSettings(ExperimentType experimentType) {
+    public ExperimentSettings(ExperimentType experimentType) {
         this.experimentType = experimentType;
     }
 

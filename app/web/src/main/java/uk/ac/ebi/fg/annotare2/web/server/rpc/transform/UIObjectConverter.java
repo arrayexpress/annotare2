@@ -24,12 +24,11 @@ import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSubmissionSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 
 import javax.annotation.Nullable;
@@ -102,11 +101,11 @@ public class UIObjectConverter {
         return SUBMISSION_DETAILS.apply(submission);
     }
 
-    public static ExperimentSubmissionSettings uiExperimentSubmissionSettings(ExperimentSubmission submission)
+    public static ExperimentSettings uiExperimentSubmissionSettings(ExperimentSubmission submission)
             throws DataSerializationExcepetion {
         Experiment exp = submission.getExperiment();
         String type = exp.getProperties().get(EXPERIMENT_TYPE.name());
-        return new ExperimentSubmissionSettings(
+        return new ExperimentSettings(
                 type == null ? null : ExperimentType.valueOf(type));
     }
 

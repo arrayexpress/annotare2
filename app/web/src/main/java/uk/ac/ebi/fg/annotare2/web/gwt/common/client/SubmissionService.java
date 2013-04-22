@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSubmissionSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
@@ -32,7 +32,7 @@ public interface SubmissionService extends RemoteService {
 
     SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    ExperimentSubmissionSettings getExperimentSubmissionSettings(int id) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentSettings getExperimentSubmissionSettings(int id) throws ResourceNotFoundException, NoPermissionException;
 
     int createExperimentSubmission() throws NoPermissionException;
 

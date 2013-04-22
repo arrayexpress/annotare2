@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSubmissionSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
@@ -66,7 +66,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
-    public ExperimentSubmissionSettings getExperimentSubmissionSettings(int id) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentSettings getExperimentSubmissionSettings(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiExperimentSubmissionSettings(sb);
