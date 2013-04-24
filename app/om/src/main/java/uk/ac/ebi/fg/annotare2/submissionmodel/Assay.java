@@ -16,12 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import com.google.common.base.Function;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import javax.annotation.Nullable;
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
 
 /**
  * @author Olga Melnichuk
  */
-public class Assay {
+public class Assay implements GraphNode {
 
     @JsonProperty("id")
     private int id;
@@ -29,19 +37,83 @@ public class Assay {
     @JsonProperty("name")
     private String name;
 
+    private List<ArrayDataFile> arrayDataFiles;
+    private List<Integer> arrayDataFileIds;
+
+    private List<Scan> scans;
+    private List<Integer> scanIds;
+
+    @JsonCreator
+    public Assay(@JsonProperty("id") int id) {
+        this.id = id;
+        arrayDataFiles = newArrayList();
+        scans = newArrayList();
+    }
+
+    @Override
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    @Override
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void addArrayDataFile(ArrayDataFile dataFile) {
+        arrayDataFiles.add(dataFile);
+    }
+
+    public void addScan(Scan scan) {
+        scans.add(scan);
+    }
+
+    @JsonProperty("arrayDataFiles")
+    List<Integer> getArrayDataFileIds() {
+        return arrayDataFileIds != null ? arrayDataFileIds :
+                transform(arrayDataFiles, new Function<ArrayDataFile, Integer>() {
+                    @Nullable
+                    @Override
+                    public Integer apply(@Nullable ArrayDataFile arrayDataFile) {
+                        return arrayDataFile.getId();
+                    }
+                });
+    }
+
+    @JsonProperty("arrayDataFiles")
+    void setArrayDataFileIds(List<Integer> arrayDataFileIds) {
+        this.arrayDataFileIds = newArrayList(arrayDataFileIds);
+    }
+
+    void setAllArrayDataFiles(List<ArrayDataFile> dataFiles) {
+        this.arrayDataFiles = newArrayList(dataFiles);
+        this.arrayDataFileIds = null;
+    }
+
+    @JsonProperty("scans")
+    List<Integer> getScansIds() {
+        return scanIds != null ? scanIds :
+                transform(scans, new Function<Scan, Integer>() {
+                    @Nullable
+                    @Override
+                    public Integer apply(@Nullable Scan scan) {
+                        return scan.getId();
+                    }
+                });
+
+    }
+
+    @JsonProperty("scans")
+    void setScanIds(List<Integer> scanIds) {
+        this.scanIds = newArrayList(scanIds);
+    }
+
+    void setAllScans(List<Scan> scans) {
+        this.scans = newArrayList(scans);
+        this.scanIds = null;
     }
 }

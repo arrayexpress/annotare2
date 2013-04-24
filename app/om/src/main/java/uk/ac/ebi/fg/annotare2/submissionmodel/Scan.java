@@ -22,7 +22,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDataFile implements GraphNode {
+public class Scan implements GraphNode {
 
     @JsonProperty("id")
     private int id;
@@ -31,7 +31,7 @@ public class ArrayDataFile implements GraphNode {
     private String name;
 
     @JsonCreator
-    public ArrayDataFile(@JsonProperty("id") int id) {
+    public Scan(@JsonProperty("id") int id) {
         this.id = id;
     }
 

@@ -24,7 +24,10 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
@@ -41,6 +44,9 @@ public class Experiment {
 
     @JsonProperty("nextId")
     int nextId;
+
+    @JsonProperty("accession")
+    private String accession;
 
     @JsonProperty("title")
     private String title;
@@ -60,48 +66,121 @@ public class Experiment {
     @JsonProperty("publications")
     private List<Publication> publications;
 
+    private List<Source> sources;
     private List<Sample> samples;
     private List<Extract> extracts;
     private List<LabeledExtract> labeledExtracts;
     private List<Assay> assays;
     private List<ArrayDataFile> arrayDataFiles;
+    private List<Scan> scans;
+
 
     @JsonCreator
     public Experiment(@JsonProperty("properties") Map<String, String> properties) {
         this.properties = newHashMap(properties);
+        sources = newArrayList();
         samples = newArrayList();
         extracts = newArrayList();
         labeledExtracts = newArrayList();
         assays = newArrayList();
         arrayDataFiles = newArrayList();
+        contacts = newArrayList();
+        publications = newArrayList();
+        scans = newArrayList();
+    }
+
+    public String getAccession() {
+        return accession;
+    }
+
+    public void setAccession(String accession) {
+        this.accession = accession;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getExperimentDate() {
         return experimentDate;
     }
 
+    public void setExperimentDate(Date experimentDate) {
+        this.experimentDate = experimentDate;
+    }
+
     public Date getPublicReleaseDate() {
         return publicReleaseDate;
     }
 
-    public Sample createSample(Sample sample) {
-        sample.setId(nextId());
+    public void setPublicReleaseDate(Date publicReleaseDate) {
+        this.publicReleaseDate = publicReleaseDate;
+    }
+
+    public Contact createContact() {
+        Contact contact = new Contact(nextId());
+        contacts.add(contact);
+        return contact;
+    }
+
+    public Publication createPublication(Publication publication) {
+        publication.setId(nextId());
+        publications.add(publication);
+        return publication;
+    }
+
+    public Source createSource() {
+        Source source = new Source(nextId());
+        sources.add(source);
+        return source;
+    }
+
+    public Sample createSample() {
+        Sample sample = new Sample(nextId());
         samples.add(sample);
         return sample;
     }
 
-    public Extract createExtract(Extract extract) {
-        extract.setId(nextId());
+    public Extract createExtract() {
+        Extract extract = new Extract(nextId());
         extracts.add(extract);
         return extract;
+    }
+
+    public LabeledExtract createLabeledExtract(LabeledExtract labeledExtract) {
+        labeledExtract.setId(nextId());
+        labeledExtracts.add(labeledExtract);
+        return labeledExtract;
+    }
+
+    public Assay createAssay() {
+        Assay assay = new Assay(nextId());
+        assays.add(assay);
+        return assay;
+    }
+
+    public ArrayDataFile createArrayDataFile() {
+        ArrayDataFile arrayDataFile = new ArrayDataFile(nextId());
+        arrayDataFiles.add(arrayDataFile);
+        return arrayDataFile;
+    }
+
+    public Scan createScan() {
+        Scan scan = new Scan(nextId());
+        scans.add(scan);
+        return scan;
     }
 
     public Map<String, String> getProperties() {
@@ -139,7 +218,12 @@ public class Experiment {
     }
 
     private int nextId() {
-        return nextId++;
+        return ++nextId;
+    }
+
+    @JsonIgnore
+    public List<Source> getSources() {
+        return unmodifiableList(sources);
     }
 
     @JsonIgnore
@@ -167,6 +251,15 @@ public class Experiment {
         return unmodifiableList(arrayDataFiles);
     }
 
+    @JsonIgnore
+    public List<Scan> getScans() {
+        return unmodifiableList(scans);
+    }
+
+    void restoreSources(List<Source> sources) {
+        this.sources = newArrayList(sources);
+    }
+
     void restoreSamples(List<Sample> samples) {
         this.samples = newArrayList(samples);
     }
@@ -186,5 +279,52 @@ public class Experiment {
     void restoreArrayDataFiles(List<ArrayDataFile> files) {
         this.arrayDataFiles = newArrayList(files);
     }
+
+    public Source getSource(int id) {
+        for (Source source : sources) {
+            if (id == source.getId()) {
+                return source;
+            }
+        }
+        return null;
+    }
+
+    public Sample getSample(int id) {
+        for (Sample sample : samples) {
+            if (id == sample.getId()) {
+                return sample;
+            }
+        }
+        return null;
+    }
+
+
+    public Extract getExtract(int id) {
+        for (Extract extract : extracts) {
+            if (id == extract.getId()) {
+                return extract;
+            }
+        }
+        return null;
+    }
+
+    public LabeledExtract getLabeledExtract(int id) {
+        for (LabeledExtract labeledExtract : labeledExtracts) {
+            if (id == labeledExtract.getId()) {
+                return labeledExtract;
+            }
+        }
+        return null;
+    }
+
+    public Assay getAssay(int id) {
+        for (Assay assay : assays) {
+            if (id == assay.getId()) {
+                return assay;
+            }
+        }
+        return null;
+    }
+
 
 }

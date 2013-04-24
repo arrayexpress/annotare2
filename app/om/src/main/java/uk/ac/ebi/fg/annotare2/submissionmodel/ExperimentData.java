@@ -33,6 +33,9 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 class ExperimentData {
 
+    @JsonProperty("sourceMap")
+    private Map<Integer, Source> sourceMap;
+
     @JsonProperty("sampleMap")
     private Map<Integer, Sample> sampleMap;
 
@@ -47,6 +50,9 @@ class ExperimentData {
 
     @JsonProperty("arrayDataFileMap")
     private Map<Integer, ArrayDataFile> arrayDataFileMap;
+
+    @JsonProperty("sources")
+    private List<Integer> sources;
 
     @JsonProperty("samples")
     private List<Integer> samples;
@@ -69,6 +75,7 @@ class ExperimentData {
     @JsonCreator
     ExperimentData(@JsonProperty("experiment") Experiment experiment) {
         this.experiment = experiment;
+        saveSources(experiment);
         saveSamples(experiment);
         saveExtracts(experiment);
         saveLabeledExtracts(experiment);
@@ -76,12 +83,12 @@ class ExperimentData {
         saveArrayDataFiles(experiment);
     }
 
-    private void saveExtracts(Experiment experiment) {
-        extractMap = newHashMap();
-        extracts = newArrayList();
-        for (Extract extract : experiment.getExtracts()) {
-            extractMap.put(extract.getId(), extract);
-            extracts.add(extract.getId());
+    private void saveSources(Experiment experiment) {
+        sourceMap = newHashMap();
+        sources = newArrayList();
+        for (Source source : experiment.getSources()) {
+            sourceMap.put(source.getId(), source);
+            sources.add(source.getId());
         }
     }
 
@@ -91,6 +98,15 @@ class ExperimentData {
         for (Sample sample : experiment.getSamples()) {
             sampleMap.put(sample.getId(), sample);
             samples.add(sample.getId());
+        }
+    }
+
+    private void saveExtracts(Experiment experiment) {
+        extractMap = newHashMap();
+        extracts = newArrayList();
+        for (Extract extract : experiment.getExtracts()) {
+            extractMap.put(extract.getId(), extract);
+            extracts.add(extract.getId());
         }
     }
 
@@ -122,6 +138,13 @@ class ExperimentData {
     }
 
     Experiment fixExperiment() {
+        experiment.restoreSources(transform(sources, new Function<Integer, Source>() {
+            @Nullable
+            @Override
+            public Source apply(@Nullable Integer id) {
+                return fix(sourceMap.get(id));
+            }
+        }));
         experiment.restoreSamples(transform(samples, new Function<Integer, Sample>() {
             @Nullable
             @Override
@@ -160,13 +183,26 @@ class ExperimentData {
         return experiment;
     }
 
+    private Source fix(Source source) {
+        source.setAllSamples(
+                transform(source.getSampleIds(), new Function<Integer, Sample>() {
+                    @Nullable
+                    @Override
+                    public Sample apply(@Nullable Integer id) {
+                        return sampleMap.get(id);
+                    }
+                })
+        );
+        return source;
+    }
+
     private Sample fix(Sample sample) {
         sample.setAllExtracts(
                 transform(sample.getExtractIds(), new Function<Integer, Extract>() {
                     @Nullable
                     @Override
                     public Extract apply(@Nullable Integer id) {
-                        return fix(extractMap.get(id));
+                        return extractMap.get(id);
                     }
                 }));
         return sample;
