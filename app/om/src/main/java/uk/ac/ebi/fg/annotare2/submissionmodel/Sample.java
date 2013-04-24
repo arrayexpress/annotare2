@@ -40,7 +40,6 @@ public class Sample implements GraphNode {
     private String name;
 
     private List<Integer> extractIds;
-
     private List<Extract> extracts;
 
     @JsonCreator

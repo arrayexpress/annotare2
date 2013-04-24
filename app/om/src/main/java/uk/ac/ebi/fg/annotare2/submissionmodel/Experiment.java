@@ -159,8 +159,8 @@ public class Experiment {
         return extract;
     }
 
-    public LabeledExtract createLabeledExtract(LabeledExtract labeledExtract) {
-        labeledExtract.setId(nextId());
+    public LabeledExtract createLabeledExtract() {
+        LabeledExtract labeledExtract = new LabeledExtract(nextId());
         labeledExtracts.add(labeledExtract);
         return labeledExtract;
     }

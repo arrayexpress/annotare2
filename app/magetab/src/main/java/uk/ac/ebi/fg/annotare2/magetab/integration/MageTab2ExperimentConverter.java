@@ -77,7 +77,8 @@ public class MageTab2ExperimentConverter {
 
     private void fillInIdfData(IdfData idfData) {
         Info expInfo = idfData.getInfo();
-        exp.setAccession(expInfo.getAccession().getValue());
+        //TODO requires MageTabCheck v1.6
+        // exp.setAccession(expInfo.getAccession().getValue());
         exp.setTitle(expInfo.getTitle().getValue());
         exp.setDescription(expInfo.getExperimentDescription().getValue());
         exp.setExperimentDate(parseDate(expInfo.getDateOfExperiment().getValue()));
@@ -227,7 +228,7 @@ public class MageTab2ExperimentConverter {
         Object obj = cache.get(labeledExtractNode);
         LabeledExtract labeledExtract;
         if (obj == null) {
-            labeledExtract = exp.createLabeledExtract(new LabeledExtract());
+            labeledExtract = exp.createLabeledExtract();
             labeledExtract.setName(labeledExtractNode.getName());
             labeledExtract.setLabel(labeledExtractNode.getLabel().getValue());
             //TODO set other attributes

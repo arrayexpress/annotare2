@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
 import com.google.common.base.Function;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -45,17 +46,15 @@ public class LabeledExtract implements GraphNode {
 
     private List<Assay> assays;
 
-    public LabeledExtract() {
+    @JsonCreator
+    public LabeledExtract(@JsonProperty("id") int id) {
+        this.id = id;
         assays = newArrayList();
     }
 
     @Override
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
@@ -99,5 +98,10 @@ public class LabeledExtract implements GraphNode {
 
     public void addAssay(Assay assay) {
         assays.add(assay);
+    }
+
+    void setAllAssays(List<Assay> assays) {
+        this.assays = newArrayList(assays);
+        this.assayIds = null;
     }
 }

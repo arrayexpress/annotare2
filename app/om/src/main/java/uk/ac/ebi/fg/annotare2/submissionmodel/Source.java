@@ -69,6 +69,11 @@ public class Source implements GraphNode {
         return samples;
     }
 
+    @JsonIgnore
+    public List<Extract> getExtracts() {
+        return extracts;
+    }
+
     public void addSample(Sample sample) {
         samples.add(sample);
     }

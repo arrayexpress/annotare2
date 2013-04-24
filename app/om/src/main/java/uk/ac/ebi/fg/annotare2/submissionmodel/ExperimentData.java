@@ -191,8 +191,15 @@ class ExperimentData {
                     public Sample apply(@Nullable Integer id) {
                         return sampleMap.get(id);
                     }
-                })
-        );
+                }));
+        source.setAllExtracts(
+                transform(source.getExtractIds(), new Function<Integer, Extract>() {
+                    @Nullable
+                    @Override
+                    public Extract apply(@Nullable Integer id) {
+                        return extractMap.get(id);
+                    }
+                }));
         return source;
     }
 
@@ -209,12 +216,34 @@ class ExperimentData {
     }
 
     private Extract fix(Extract extract) {
-        //TODO
+        extract.setAllAssays(
+                transform(extract.getAssayIds(), new Function<Integer, Assay>() {
+                    @Nullable
+                    @Override
+                    public Assay apply(@Nullable Integer id) {
+                        return assayMap.get(id);
+                    }
+                }));
+        extract.setAllLabeledExtracts(
+                transform(extract.getLabeledExtractIds(), new Function<Integer, LabeledExtract>() {
+                    @Nullable
+                    @Override
+                    public LabeledExtract apply(@Nullable Integer id) {
+                        return labeledExtractMap.get(id);
+                    }
+                }));
         return extract;
     }
 
     private LabeledExtract fix(LabeledExtract labeledExtract) {
-        //TODO
+        labeledExtract.setAllAssays(
+                transform(labeledExtract.getAssayIds(), new Function<Integer, Assay>() {
+                    @Nullable
+                    @Override
+                    public Assay apply(@Nullable Integer id) {
+                        return assayMap.get(id);
+                    }
+                }));
         return labeledExtract;
     }
 
