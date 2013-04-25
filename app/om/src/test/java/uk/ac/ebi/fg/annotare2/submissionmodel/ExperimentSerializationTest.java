@@ -160,6 +160,41 @@ public class ExperimentSerializationTest {
         assertNodeEquals(assay1, assay2);
     }
 
+    @Test
+    public void oneAssayNodeTest() throws DataSerializationExcepetion {
+        Experiment exp1 = newExperiment();
+        ArrayDataFile arrayDataFile1 = exp1.createArrayDataFile();
+        arrayDataFile1.setName("ArrayDataFile");
+
+        Scan scan1 = exp1.createScan();
+        scan1.setName("Scan");
+
+        Assay assay1 = exp1.createAssay();
+        assay1.setName("Assay");
+        assay1.addArrayDataFile(arrayDataFile1);
+        assay1.addScan(scan1);
+
+        assertEquals(1, exp1.getAssays().size());
+        assertEquals(1, exp1.getArrayDataFiles().size());
+        assertEquals(1, exp1.getScans().size());
+
+        Experiment exp2 = Experiment.fromJsonString(exp1.toJsonString());
+        assertEquals(exp1.getAssays().size(), exp2.getAssays().size());
+        assertEquals(exp1.getArrayDataFiles().size(), exp2.getArrayDataFiles().size());
+        assertEquals(exp1.getScans().size(), exp2.getScans().size());
+
+        Assay assay2 = exp2.getAssays().get(0);
+        assertNodeEquals(assay1, assay2);
+
+        assertEquals(assay1.getArrayDataFiles().size(), assay2.getArrayDataFiles().size());
+        assertEquals(assay1.getScans().size(), assay2.getScans().size());
+
+        ArrayDataFile arrayDataFile2 = assay2.getArrayDataFiles().get(0);
+        Scan scan2 = assay2.getScans().get(0);
+        assertNodeEquals(arrayDataFile1, arrayDataFile2);
+        assertNodeEquals(scan1, scan2);
+    }
+
     private static void assertNodeEquals(GraphNode node1, GraphNode node2) {
         assertEquals(node1.getId(), node2.getId());
         assertEquals(node1.getName(), node2.getName());

@@ -18,13 +18,16 @@ package uk.ac.ebi.fg.annotare2.submissionmodel;
 
 import com.google.common.base.Function;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.transform;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Olga Melnichuk
@@ -70,6 +73,16 @@ public class Assay implements GraphNode {
 
     public void addScan(Scan scan) {
         scans.add(scan);
+    }
+
+    @JsonIgnore
+    public List<ArrayDataFile> getArrayDataFiles() {
+        return unmodifiableList(arrayDataFiles);
+    }
+
+    @JsonIgnore
+    public List<Scan> getScans() {
+        return unmodifiableList(scans);
     }
 
     @JsonProperty("arrayDataFiles")

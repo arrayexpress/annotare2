@@ -276,6 +276,10 @@ public class Experiment {
         this.assays = newArrayList(assays);
     }
 
+    void restoreScans(List<Scan> scans) {
+        this.scans = newArrayList(scans);
+    }
+
     void restoreArrayDataFiles(List<ArrayDataFile> files) {
         this.arrayDataFiles = newArrayList(files);
     }

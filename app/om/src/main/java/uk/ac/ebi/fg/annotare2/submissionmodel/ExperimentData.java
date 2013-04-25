@@ -48,6 +48,9 @@ class ExperimentData {
     @JsonProperty("assayMap")
     private Map<Integer, Assay> assayMap;
 
+    @JsonProperty("scanMap")
+    private Map<Integer, Scan> scanMap;
+
     @JsonProperty("arrayDataFileMap")
     private Map<Integer, ArrayDataFile> arrayDataFileMap;
 
@@ -66,6 +69,9 @@ class ExperimentData {
     @JsonProperty("assays")
     private List<Integer> assays;
 
+    @JsonProperty("scans")
+    private List<Integer> scans;
+
     @JsonProperty("arrayDataFiles")
     private List<Integer> arrayDataFiles;
 
@@ -80,6 +86,7 @@ class ExperimentData {
         saveExtracts(experiment);
         saveLabeledExtracts(experiment);
         saveAssays(experiment);
+        saveScans(experiment);
         saveArrayDataFiles(experiment);
     }
 
@@ -128,6 +135,15 @@ class ExperimentData {
         }
     }
 
+    private void saveScans(Experiment experiment) {
+        scanMap = newHashMap();
+        scans = newArrayList();
+        for (Scan scan : experiment.getScans()) {
+            scanMap.put(scan.getId(), scan);
+            scans.add(scan.getId());
+        }
+    }
+
     private void saveArrayDataFiles(Experiment experiment) {
         arrayDataFileMap = newHashMap();
         arrayDataFiles = newArrayList();
@@ -171,6 +187,13 @@ class ExperimentData {
             @Override
             public Assay apply(@Nullable Integer id) {
                 return fix(assayMap.get(id));
+            }
+        }));
+        experiment.restoreScans(transform(scans, new Function<Integer, Scan>() {
+            @Nullable
+            @Override
+            public Scan apply(@Nullable Integer id) {
+                return fix(scanMap.get(id));
             }
         }));
         experiment.restoreArrayDataFiles(transform(arrayDataFiles, new Function<Integer, ArrayDataFile>() {
@@ -248,12 +271,30 @@ class ExperimentData {
     }
 
     private Assay fix(Assay assay) {
-        //TODO
+        assay.setAllArrayDataFiles(
+                transform(assay.getArrayDataFileIds(), new Function<Integer, ArrayDataFile>() {
+                    @Nullable
+                    @Override
+                    public ArrayDataFile apply(@Nullable Integer id) {
+                        return arrayDataFileMap.get(id);
+                    }
+                }));
+        assay.setAllScans(
+                transform(assay.getScansIds(), new Function<Integer, Scan>() {
+                    @Nullable
+                    @Override
+                    public Scan apply(@Nullable Integer id) {
+                        return scanMap.get(id);
+                    }
+                }));
         return assay;
     }
 
+    private Scan fix(Scan scan) {
+        return scan;
+    }
+
     private ArrayDataFile fix(ArrayDataFile file) {
-        //TODO
         return file;
     }
 }
