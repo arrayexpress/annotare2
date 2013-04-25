@@ -38,8 +38,8 @@ public class ExperimentFactory {
             Experiment setupExperiment(Experiment experiment, ExperimentSetupSettings settings) {
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
-                    Sample sample = experiment.createSample(new Sample());
-                    Extract extract = experiment.createExtract(new Extract());
+                    Sample sample = experiment.createSample();
+                    Extract extract = experiment.createExtract();
                     sample.addExtract(extract);
                 }
                 return experiment;
@@ -51,7 +51,7 @@ public class ExperimentFactory {
                 return experiment;
             }
         },
-        SEQUENSING_EXPERIMENT_BUILDER(ExperimentType.SEQUENCING) {
+        SEQUENCING_EXPERIMENT_BUILDER(ExperimentType.SEQUENCING) {
             @Override
             Experiment setupExperiment(Experiment experiment, ExperimentSetupSettings settings) {
                 return experiment;
