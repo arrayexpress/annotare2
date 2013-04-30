@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public class ExperimentSerializationTest {
 
     @Test
-    public void emptyExperimentTest() throws DataSerializationExcepetion {
+    public void emptyExperimentTest() throws DataSerializationException {
         Experiment exp1 = newExperiment();
         Experiment exp2 = Experiment.fromJsonString(exp1.toJsonString());
         assertTrue(exp2.getSources().isEmpty());
@@ -41,7 +41,7 @@ public class ExperimentSerializationTest {
     }
 
     @Test
-    public void oneSourceNodeTest() throws DataSerializationExcepetion {
+    public void oneSourceNodeTest() throws DataSerializationException {
         Experiment exp1 = newExperiment();
         Sample sample1 = exp1.createSample();
         sample1.setName("Sample");
@@ -75,7 +75,7 @@ public class ExperimentSerializationTest {
     }
 
     @Test
-    public void oneSampleNodeTest() throws DataSerializationExcepetion {
+    public void oneSampleNodeTest() throws DataSerializationException {
         Experiment exp1 = newExperiment();
         Extract extract1 = exp1.createExtract();
         extract1.setName("Extract");
@@ -101,7 +101,7 @@ public class ExperimentSerializationTest {
     }
 
     @Test
-    public void oneExtractNodeTest() throws DataSerializationExcepetion {
+    public void oneExtractNodeTest() throws DataSerializationException {
         Experiment exp1 = newExperiment();
         Assay assay1 = exp1.createAssay();
         assay1.setName("Assay");
@@ -136,7 +136,7 @@ public class ExperimentSerializationTest {
     }
 
     @Test
-    public void oneLabeledExtractNodeTest() throws DataSerializationExcepetion {
+    public void oneLabeledExtractNodeTest() throws DataSerializationException {
         Experiment exp1 = newExperiment();
         Assay assay1 = exp1.createAssay();
         assay1.setName("Assay");
@@ -161,7 +161,7 @@ public class ExperimentSerializationTest {
     }
 
     @Test
-    public void oneAssayNodeTest() throws DataSerializationExcepetion {
+    public void oneAssayNodeTest() throws DataSerializationException {
         Experiment exp1 = newExperiment();
         ArrayDataFile arrayDataFile1 = exp1.createArrayDataFile();
         arrayDataFile1.setName("ArrayDataFile");

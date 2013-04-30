@@ -18,16 +18,16 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 
 import java.util.Date;
 
@@ -66,35 +66,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         dateOfExperiment.getElement().setPropertyString("placeholder", dateTimeFormatPlaceholder());
 
         dateOfPublicRelease.setFormat(format);
-        dateOfPublicRelease.getElement().setPropertyString("placeholder",  dateTimeFormatPlaceholder());
-
-        title.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                presenter.setTitle(title.getValue());
-            }
-        });
-
-        description.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                presenter.setDescription(description.getValue());
-            }
-        });
-
-        dateOfExperiment.addValueChangeHandler(new ValueChangeHandler<Date>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Date> event) {
-                presenter.setDateOfExperiment(event.getValue());
-            }
-        });
-
-        dateOfPublicRelease.addValueChangeHandler(new ValueChangeHandler<Date>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Date> event) {
-                presenter.setDateOfPublicRelease(event.getValue());
-            }
-        });
+        dateOfPublicRelease.getElement().setPropertyString("placeholder", dateTimeFormatPlaceholder());
     }
 
     @Override
@@ -103,22 +75,53 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     }
 
     @Override
-    public void setDescription(String description) {
-        this.description.setText(description);
-    }
-
-    @Override
-    public void setDateOfExperiment(Date date) {
-        this.dateOfExperiment.setValue(date);
-    }
-
-    @Override
-    public void setDateOfPublicRelease(Date date) {
-        this.dateOfPublicRelease.setValue(date);
+    public void setDetails(ExperimentDetails details) {
+        title.setText(details.getTitle());
+        description.setText(details.getDescription());
+        dateOfExperiment.setValue(details.getExperimentDate());
+        dateOfPublicRelease.setValue(details.getPublicReleaseDate());
     }
 
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public ExperimentDetails getDetails() {
+        return latestVersion();
+    }
+
+    @UiHandler("title")
+    public void titleChanged(ChangeEvent event) {
+        save();
+    }
+
+    @UiHandler("description")
+    public void descriptionChanged(ChangeEvent event) {
+        save();
+    }
+
+    @UiHandler("dateOfExperiment")
+    public void dateOfExperimentChanged(ValueChangeEvent<Date> event) {
+        save();
+    }
+
+    @UiHandler("dateOfPublicRelease")
+    public void dateOfPublicReleaseChanged(ValueChangeEvent<Date> event) {
+        save();
+    }
+
+    private ExperimentDetails latestVersion() {
+        ExperimentDetails details = new ExperimentDetails();
+        details.setTitle(title.getValue());
+        details.setDescription(description.getValue());
+        details.setExperimentDate(dateOfExperiment.getValue());
+        details.setPublicReleaseDate(dateOfPublicRelease.getValue());
+        return details;
+    }
+
+    private void save() {
+        presenter.saveDetails(latestVersion());
     }
 }

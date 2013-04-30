@@ -22,7 +22,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -97,16 +96,6 @@ public class Assay implements GraphNode {
                 });
     }
 
-    @JsonProperty("arrayDataFiles")
-    void setArrayDataFileIds(List<Integer> arrayDataFileIds) {
-        this.arrayDataFileIds = newArrayList(arrayDataFileIds);
-    }
-
-    void setAllArrayDataFiles(List<ArrayDataFile> dataFiles) {
-        this.arrayDataFiles = newArrayList(dataFiles);
-        this.arrayDataFileIds = null;
-    }
-
     @JsonProperty("scans")
     List<Integer> getScansIds() {
         return scanIds != null ? scanIds :
@@ -120,9 +109,19 @@ public class Assay implements GraphNode {
 
     }
 
+    @JsonProperty("arrayDataFiles")
+    void setArrayDataFileIds(List<Integer> arrayDataFileIds) {
+        this.arrayDataFileIds = newArrayList(arrayDataFileIds);
+    }
+
     @JsonProperty("scans")
     void setScanIds(List<Integer> scanIds) {
         this.scanIds = newArrayList(scanIds);
+    }
+
+    void setAllArrayDataFiles(List<ArrayDataFile> dataFiles) {
+        this.arrayDataFiles = newArrayList(dataFiles);
+        this.arrayDataFileIds = null;
     }
 
     void setAllScans(List<Scan> scans) {

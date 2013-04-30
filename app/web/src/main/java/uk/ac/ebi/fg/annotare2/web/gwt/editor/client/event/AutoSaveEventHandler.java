@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.submissionmodel;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataSerializationExcepetion extends Exception {
+public interface AutoSaveEventHandler extends EventHandler {
 
-    public DataSerializationExcepetion(Throwable cause) {
-        super(cause);
-    }
+    void autoSaveStarted(AutoSaveEvent event);
+
+    void autoSaveStopped(AutoSaveEvent event);
+
+    void autoSaveFailed(AutoSaveEvent event);
 }

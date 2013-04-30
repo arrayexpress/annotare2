@@ -21,15 +21,13 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpDetailsView;
-
-import java.util.Date;
 
 /**
  * @author Olga Melnichuk
@@ -40,17 +38,15 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
 
     private final PlaceController placeController;
 
-    private final IdfData idfData;
-
-    private Investigation investigation;
+    private final ExperimentData experimentData;
 
     @Inject
     public ExpDetailsActivity(ExpDetailsView view,
                               PlaceController placeController,
-                              IdfData idfData) {
+                              ExperimentData experimentData) {
         this.view = view;
         this.placeController = placeController;
-        this.idfData = idfData;
+        this.experimentData = experimentData;
     }
 
     public ExpDetailsActivity withPlace(ExpInfoPlace place) {
@@ -66,7 +62,7 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
 
     @Override
     public void onStop() {
-        //TODO save changes here
+        experimentData.saveDetails(view.getDetails());
         super.onStop();
     }
 
@@ -75,52 +71,23 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
     }
 
     private void loadAsync() {
-        idfData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
+        experimentData.getDetailsAsync(new AsyncCallback<ExperimentDetails>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load Investigation Data.");
+                Window.alert("Can't load experiment details.");
             }
 
             @Override
-            public void onSuccess(Investigation inv) {
-                if (inv != null) {
-                    investigation = inv;
-                    view.setTitle(inv.getTitle().getValue());
-                    view.setDescription(inv.getDescription().getValue());
-                    view.setDateOfExperiment(inv.getDateOfExperiment().getValue());
-                    view.setDateOfPublicRelease(inv.getDateOfPublicRelease().getValue());
-                }
+            public void onSuccess(ExperimentDetails details) {
+                view.setDetails(details);
             }
-        }.wrap());
+        });
     }
 
     @Override
-    public void setTitle(String title) {
-        if (investigation != null) {
-            investigation.getTitle().setValue(title);
-        }
-    }
-
-    @Override
-    public void setDescription(String description) {
-        if (investigation != null) {
-            investigation.getDescription().setValue(description);
-        }
-    }
-
-    @Override
-    public void setDateOfExperiment(Date date) {
-        if (investigation != null) {
-            investigation.getDateOfExperiment().setValue(date);
-        }
-    }
-
-    @Override
-    public void setDateOfPublicRelease(Date date) {
-        if (investigation != null) {
-            investigation.getDateOfPublicRelease().setValue(date);
-        }
+    public void saveDetails(ExperimentDetails details) {
+        experimentData.saveDetails(details);
     }
 }
 

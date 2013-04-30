@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 
 import java.io.IOException;
@@ -61,11 +61,11 @@ public class ExperimentSubmission extends Submission {
         return asStream(sampleAndDataRel);
     }
 
-    public Experiment getExperiment() throws DataSerializationExcepetion {
+    public Experiment getExperiment() throws DataSerializationException {
          return Experiment.fromJsonString(experimentString);
     }
 
-    public void setExperiment(Experiment exp) throws DataSerializationExcepetion {
+    public void setExperiment(Experiment exp) throws DataSerializationException {
          this.experimentString = exp.toJsonString();
     }
 

@@ -24,12 +24,14 @@ import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
@@ -81,7 +83,24 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (RecordNotFoundException e) {
             log.warn("getExperimentSettings(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
-        } catch (DataSerializationExcepetion e) {
+        } catch (DataSerializationException e) {
+            log.error("getExperimentSettings(" + id + ") failure", e);
+            throw new UnexpectedException("extract experiment settings failure", e);
+        }
+    }
+
+    @Override
+    public ExperimentDetails getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            return UIObjectConverter.uiExperimentDetails(sb);
+        } catch (AccessControlException e) {
+            log.warn("getExperimentSettings(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getExperimentSettings(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (DataSerializationException e) {
             log.error("getExperimentSettings(" + id + ") failure", e);
             throw new UnexpectedException("extract experiment settings failure", e);
         }
@@ -98,7 +117,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (RecordNotFoundException e) {
             log.warn("getSamples(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
-        } catch (DataSerializationExcepetion e) {
+        } catch (DataSerializationException e) {
             log.error("getSamples(" + id + ") failure", e);
             throw new UnexpectedException("extract experiment settings failure", e);
         }
@@ -136,9 +155,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (AccessControlException e) {
             log.warn("setupExperimentSubmission(" + id + ") failure", e);
             throw new NoPermissionException("no permission to update submission: " + id);
-        } catch (DataSerializationExcepetion e) {
-            log.error("setupExperimentSubmisison(" + id + ") failure", e);
-            throw new UnexpectedException("experiment setup failure", e);
+        } catch (DataSerializationException e) {
+            log.error("setupExperimentSubmission(" + id + ") failure", e);
+            throw new UnexpectedException("experiment setup failed", e);
         }
     }
 
@@ -154,6 +173,30 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (AccessControlException e) {
             log.warn("setupExperimentSubmission(" + id + ") failure", e);
             throw new NoPermissionException("no permission to update submission: " + id);
+        }
+    }
+
+    @Override
+    public void saveExperimentDetails(int id, ExperimentDetails details) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission submission =
+                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            Experiment exp = submission.getExperiment();
+            exp.setTitle(details.getTitle());
+            exp.setDescription(details.getDescription());
+            exp.setPublicReleaseDate(details.getPublicReleaseDate());
+            exp.setExperimentDate(details.getExperimentDate());
+            submission.setExperiment(exp);
+            submission.setTitle(details.getTitle());
+        } catch (RecordNotFoundException e) {
+            log.warn("saveExperimentDetails(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (AccessControlException e) {
+            log.warn("saveExperimentDetails(" + id + ") failure", e);
+            throw new NoPermissionException("no permission to update submission: " + id);
+        } catch (DataSerializationException e) {
+            log.warn("saveExperimentDetails(" + id + ") failure", e);
+            throw new UnexpectedException("data save failed", e);
         }
     }
 }

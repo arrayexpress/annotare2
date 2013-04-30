@@ -187,7 +187,7 @@ public class Experiment {
         return Collections.unmodifiableMap(this.properties);
     }
 
-    public static Experiment fromJsonString(String str) throws DataSerializationExcepetion {
+    public static Experiment fromJsonString(String str) throws DataSerializationException {
         if (isNullOrEmpty(str)) {
             return null;
         }
@@ -196,24 +196,24 @@ public class Experiment {
             ExperimentData data = mapper.readValue(str, ExperimentData.class);
             return data.fixExperiment();
         } catch (JsonGenerationException e) {
-            throw new DataSerializationExcepetion(e);
+            throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
-            throw new DataSerializationExcepetion(e);
+            throw new DataSerializationException(e);
         } catch (IOException e) {
-            throw new DataSerializationExcepetion(e);
+            throw new DataSerializationException(e);
         }
     }
 
-    public String toJsonString() throws DataSerializationExcepetion {
+    public String toJsonString() throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(new ExperimentData(this));
         } catch (JsonGenerationException e) {
-            throw new DataSerializationExcepetion(e);
+            throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
-            throw new DataSerializationExcepetion(e);
+            throw new DataSerializationException(e);
         } catch (IOException e) {
-            throw new DataSerializationExcepetion(e);
+            throw new DataSerializationException(e);
         }
     }
 

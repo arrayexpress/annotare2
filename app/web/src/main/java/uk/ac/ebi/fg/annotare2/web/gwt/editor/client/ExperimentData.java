@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class ExperimentData {
 
     private final SubmissionServiceAsync submissionService;
+    private final DataChangeManager changes;
 
     private Map<Integer, SampleRow> sampleMap;
 
@@ -43,9 +45,14 @@ public class ExperimentData {
 
     private ExperimentSettings settings;
 
+    private ExperimentDetails details;
+
     @Inject
-    public ExperimentData(SubmissionServiceAsync submissionService) {
+    public ExperimentData(SubmissionServiceAsync submissionService,
+                          DataChangeManager changes) {
         this.submissionService = submissionService;
+        this.changes = changes;
+
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -87,6 +94,36 @@ public class ExperimentData {
         });
     }
 
+    public void getDetailsAsync(final AsyncCallback<ExperimentDetails> callback) {
+        if (details != null) {
+            callback.onSuccess(details);
+            return;
+        }
+        submissionService.getExperimentDetails(getSubmissionId(), new AsyncCallbackWrapper<ExperimentDetails>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentDetails result) {
+                details = result;
+                callback.onSuccess(result);
+            }
+        });
+    }
+
+    public void saveDetails(ExperimentDetails details) {
+        // TODO check if there are changes
+        this.details = details;
+        this.changes.add("submissionDetails", new DataChangeManager.SaveDataHandler() {
+            @Override
+            public void onSave(AsyncCallback<Void> callback) {
+                saveExperimentDetails(callback);
+            }
+        });
+    }
+
     private List<SampleRow> getSamples() {
         List<SampleRow> rows = new ArrayList<SampleRow>();
         for (Integer id : samples) {
@@ -98,9 +135,24 @@ public class ExperimentData {
     private void setSamples(List<SampleRow> rows) {
         sampleMap = new HashMap<Integer, SampleRow>();
         samples = new ArrayList<Integer>();
-        for(SampleRow row :  rows) {
+        for (SampleRow row : rows) {
             sampleMap.put(row.getId(), row);
             samples.add(row.getId());
         }
     }
+
+    private void saveExperimentDetails(final AsyncCallback<Void> callback) {
+        submissionService.saveExperimentDetails(getSubmissionId(), details, new AsyncCallbackWrapper<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                callback.onSuccess(result);
+            }
+        });
+    }
+
 }
