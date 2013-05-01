@@ -46,6 +46,7 @@ public class ExperimentData {
     private ExperimentSettings settings;
 
     private ExperimentDetails details;
+    private ExperimentDetails updatedDetails;
 
     @Inject
     public ExperimentData(SubmissionServiceAsync submissionService,
@@ -114,11 +115,10 @@ public class ExperimentData {
     }
 
     public void saveDetails(ExperimentDetails details) {
-        // TODO check if there are changes
-        this.details = details;
+        this.updatedDetails = details;
         this.changes.add("submissionDetails", new DataChangeManager.SaveDataHandler() {
             @Override
-            public void onSave(AsyncCallback<Void> callback) {
+            public void onSave(DataChangeManager.Callback callback) {
                 saveExperimentDetails(callback);
             }
         });
@@ -141,16 +141,21 @@ public class ExperimentData {
         }
     }
 
-    private void saveExperimentDetails(final AsyncCallback<Void> callback) {
-        submissionService.saveExperimentDetails(getSubmissionId(), details, new AsyncCallbackWrapper<Void>() {
+    private void saveExperimentDetails(final DataChangeManager.Callback callback) {
+        if (details.isContentEquals(updatedDetails)) {
+            return;
+        }
+        callback.onStart();
+        submissionService.saveExperimentDetails(getSubmissionId(), updatedDetails, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
+                callback.onStop(caught);
             }
 
             @Override
             public void onSuccess(Void result) {
-                callback.onSuccess(result);
+                details = updatedDetails;
+                callback.onStop(null);
             }
         });
     }

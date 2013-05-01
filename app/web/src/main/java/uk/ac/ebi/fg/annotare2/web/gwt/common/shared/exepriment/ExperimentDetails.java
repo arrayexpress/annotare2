@@ -48,4 +48,16 @@ public class ExperimentDetails implements IsSerializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public boolean isContentEquals(ExperimentDetails that) {
+        if (that == null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (experimentDate != null ? !experimentDate.equals(that.experimentDate) : that.experimentDate != null)
+            return false;
+        if (publicReleaseDate != null ? !publicReleaseDate.equals(that.publicReleaseDate) : that.publicReleaseDate != null)
+            return false;
+        return !(title != null ? !title.equals(that.title) : that.title != null);
+    }
+
+
 }
