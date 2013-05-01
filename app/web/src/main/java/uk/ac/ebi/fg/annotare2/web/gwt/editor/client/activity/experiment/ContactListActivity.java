@@ -18,15 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ContactListView;
 
@@ -39,19 +36,13 @@ public class ContactListActivity extends AbstractActivity implements ContactList
 
     private final ContactListView view;
 
-    private final PlaceController placeController;
-
-    private final IdfData idfData;
-
-    private Investigation investigation;
+    private final ExperimentData experimentData;
 
     @Inject
     public ContactListActivity(ContactListView view,
-                               PlaceController placeController,
-                               IdfData idfData) {
+                               ExperimentData experimentData) {
         this.view = view;
-        this.placeController = placeController;
-        this.idfData = idfData;
+        this.experimentData = experimentData;
     }
 
     public ContactListActivity withPlace(ExpInfoPlace place) {
@@ -71,35 +62,33 @@ public class ContactListActivity extends AbstractActivity implements ContactList
         super.onStop();
     }
 
-    public void goTo(Place place) {
-        placeController.goTo(place);
-    }
-
     private void loadAsync() {
-        idfData.getInvestigation(new AsyncCallbackWrapper<Investigation>() {
+        experimentData.getContactsAsync(new AsyncCallback<List<ContactDto>>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load Investigation Data.");
+                Window.alert("Can't load contact list.");
             }
 
             @Override
-            public void onSuccess(Investigation inv) {
-                if (inv != null) {
-                    investigation = inv;
-                    view.setContacts(inv.getContacts());
-                }
+            public void onSuccess(List<ContactDto> result) {
+                view.setContacts(result);
             }
-        }.wrap());
+        });
     }
 
     @Override
-    public Person createContact() {
-        return investigation.createContact();
+    public void saveContact(ContactDto contact) {
+        experimentData.saveContact(contact);
     }
 
     @Override
-    public void removeContacts(List<Integer> indices) {
-        investigation.removeContact(indices);
+    public void createContact(AsyncCallback<ContactDto> callback) {
+        //experimentData.createContact();
+    }
+
+    @Override
+    public void removeContacts(List<Integer> contactIds) {
+        //experimentData.removeContacts(contactIds);
     }
 }

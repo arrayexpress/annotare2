@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * @author Olga Melnichuk
  */
-public interface RecordChangeEventHandler extends EventHandler {
+public interface ItemHeaderChangeEventHandler extends EventHandler {
 
-    void onRecordChange(String value);
+    void onItemHeaderChange(ItemHeaderChangeEvent event);
 }

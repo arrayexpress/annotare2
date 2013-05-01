@@ -21,13 +21,11 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -39,21 +37,22 @@ public class ExperimentData {
     private final SubmissionServiceAsync submissionService;
     private final DataChangeManager changes;
 
-    private Map<Integer, SampleRow> sampleMap;
+    private Set<SampleRow> samples;
 
-    private List<Integer> samples;
-
-    private ExperimentSettings settings;
+    private Map<Integer, ContactDto> contactsMap;
+    private Set<Integer> contacts;
+    private Set<ContactDto> updatedContacts = new HashSet<ContactDto>();
 
     private ExperimentDetails details;
     private ExperimentDetails updatedDetails;
+
+    private ExperimentSettings settings;
 
     @Inject
     public ExperimentData(SubmissionServiceAsync submissionService,
                           DataChangeManager changes) {
         this.submissionService = submissionService;
         this.changes = changes;
-
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -72,13 +71,12 @@ public class ExperimentData {
                 settings = result;
                 callback.onSuccess(result);
             }
-        });
+        }.wrap());
     }
-
 
     public void getSamplesAsync(final AsyncCallback<List<SampleRow>> callback) {
         if (samples != null) {
-            callback.onSuccess(getSamples());
+            callback.onSuccess(new ArrayList<SampleRow>(samples));
             return;
         }
         submissionService.getSamples(getSubmissionId(), new AsyncCallbackWrapper<List<SampleRow>>() {
@@ -89,10 +87,33 @@ public class ExperimentData {
 
             @Override
             public void onSuccess(List<SampleRow> result) {
-                setSamples(result);
+                samples = new LinkedHashSet<SampleRow>(result);
                 callback.onSuccess(result);
             }
-        });
+        }.wrap());
+    }
+
+    public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
+        if (contacts != null) {
+            callback.onSuccess(getContacts());
+            return;
+        }
+        submissionService.getContacts(getSubmissionId(), new AsyncCallbackWrapper<List<ContactDto>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(List<ContactDto> result) {
+                contactsMap = new HashMap<Integer, ContactDto>();
+                contacts = new LinkedHashSet<Integer>();
+                for (ContactDto dto : result) {
+                    contactsMap.put(dto.getId(), dto);
+                    contacts.add(dto.getId());
+                }
+            }
+        }.wrap());
     }
 
     public void getDetailsAsync(final AsyncCallback<ExperimentDetails> callback) {
@@ -111,7 +132,7 @@ public class ExperimentData {
                 details = result;
                 callback.onSuccess(result);
             }
-        });
+        }.wrap());
     }
 
     public void saveDetails(ExperimentDetails details) {
@@ -124,40 +145,69 @@ public class ExperimentData {
         });
     }
 
-    private List<SampleRow> getSamples() {
-        List<SampleRow> rows = new ArrayList<SampleRow>();
-        for (Integer id : samples) {
-            rows.add(sampleMap.get(id));
-        }
-        return rows;
+    public void saveContact(ContactDto contact) {
+        this.updatedContacts.add(contact);
+        this.changes.add("contact", new DataChangeManager.SaveDataHandler() {
+            @Override
+            public void onSave(DataChangeManager.Callback callback) {
+                saveContacts(callback);
+            }
+        });
     }
 
-    private void setSamples(List<SampleRow> rows) {
-        sampleMap = new HashMap<Integer, SampleRow>();
-        samples = new ArrayList<Integer>();
-        for (SampleRow row : rows) {
-            sampleMap.put(row.getId(), row);
-            samples.add(row.getId());
+    private List<ContactDto> getContacts() {
+        List<ContactDto> list = new ArrayList<ContactDto>();
+        for (Integer id : contacts) {
+            list.add(contactsMap.get(id));
         }
+        return list;
     }
 
     private void saveExperimentDetails(final DataChangeManager.Callback callback) {
-        if (details.isContentEquals(updatedDetails)) {
+        if (updatedDetails == null || details.isContentEqual(updatedDetails)) {
             return;
         }
         callback.onStart();
-        submissionService.saveExperimentDetails(getSubmissionId(), updatedDetails, new AsyncCallbackWrapper<Void>() {
+        submissionService.saveExperimentDetails(getSubmissionId(), updatedDetails, new AsyncCallbackWrapper<ExperimentDetails>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onStop(caught);
             }
 
             @Override
-            public void onSuccess(Void result) {
-                details = updatedDetails;
+            public void onSuccess(ExperimentDetails result) {
+                details = result;
                 callback.onStop(null);
             }
-        });
+        }.wrap());
+    }
+
+    private void saveContacts(final DataChangeManager.Callback callback) {
+        List<ContactDto> changes = new ArrayList<ContactDto>();
+        for (ContactDto dto : updatedContacts) {
+            ContactDto contact = contactsMap.get(dto.getId());
+            if (!contact.isContentEqual(dto)) {
+                changes.add(dto);
+            }
+        }
+        if (changes.isEmpty()) {
+            return;
+        }
+        callback.onStart();
+        submissionService.saveContacts(getSubmissionId(), changes, new AsyncCallbackWrapper<List<ContactDto>>(){
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onStop(caught);
+            }
+
+            @Override
+            public void onSuccess(List<ContactDto> result) {
+                for(ContactDto dto : result) {
+                    contactsMap.put(dto.getId(), dto);
+                }
+                callback.onStop(null);
+            }
+        }.wrap());
     }
 
 }

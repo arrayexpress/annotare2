@@ -89,7 +89,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
     @Override
     public ExperimentDetails getDetails() {
-        return latestVersion();
+        return getResult();
     }
 
     @UiHandler("title")
@@ -112,16 +112,15 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         save();
     }
 
-    private ExperimentDetails latestVersion() {
-        ExperimentDetails details = new ExperimentDetails();
-        details.setTitle(title.getValue());
-        details.setDescription(description.getValue());
-        details.setExperimentDate(dateOfExperiment.getValue());
-        details.setPublicReleaseDate(dateOfPublicRelease.getValue());
-        return details;
+    private ExperimentDetails getResult() {
+        return new ExperimentDetails(
+                title.getValue(),
+                description.getValue(),
+                dateOfExperiment.getValue(),
+                dateOfPublicRelease.getValue());
     }
 
     private void save() {
-        presenter.saveDetails(latestVersion());
+        presenter.saveDetails(getResult());
     }
 }

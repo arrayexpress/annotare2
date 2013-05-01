@@ -24,15 +24,12 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Collections.unmodifiableList;
+import static com.google.common.collect.Sets.newLinkedHashSet;
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * @author Olga Melnichuk
@@ -61,32 +58,32 @@ public class Experiment {
     private Date publicReleaseDate;
 
     @JsonProperty("contacts")
-    private List<Contact> contacts;
+    private Set<Contact> contacts;
 
     @JsonProperty("publications")
-    private List<Publication> publications;
+    private Set<Publication> publications;
 
-    private List<Source> sources;
-    private List<Sample> samples;
-    private List<Extract> extracts;
-    private List<LabeledExtract> labeledExtracts;
-    private List<Assay> assays;
-    private List<ArrayDataFile> arrayDataFiles;
-    private List<Scan> scans;
+    private Set<Source> sources;
+    private Set<Sample> samples;
+    private Set<Extract> extracts;
+    private Set<LabeledExtract> labeledExtracts;
+    private Set<Assay> assays;
+    private Set<ArrayDataFile> arrayDataFiles;
+    private Set<Scan> scans;
 
 
     @JsonCreator
     public Experiment(@JsonProperty("properties") Map<String, String> properties) {
         this.properties = newHashMap(properties);
-        sources = newArrayList();
-        samples = newArrayList();
-        extracts = newArrayList();
-        labeledExtracts = newArrayList();
-        assays = newArrayList();
-        arrayDataFiles = newArrayList();
-        contacts = newArrayList();
-        publications = newArrayList();
-        scans = newArrayList();
+        sources = newLinkedHashSet();
+        samples = newLinkedHashSet();
+        extracts = newLinkedHashSet();
+        labeledExtracts = newLinkedHashSet();
+        assays = newLinkedHashSet();
+        arrayDataFiles = newLinkedHashSet();
+        contacts = newLinkedHashSet();
+        publications = newLinkedHashSet();
+        scans = newLinkedHashSet();
     }
 
     public String getAccession() {
@@ -222,66 +219,71 @@ public class Experiment {
     }
 
     @JsonIgnore
-    public List<Source> getSources() {
-        return unmodifiableList(sources);
+    public Collection<Contact> getContacts() {
+        return unmodifiableCollection(contacts);
     }
 
     @JsonIgnore
-    public List<Sample> getSamples() {
-        return unmodifiableList(samples);
+    public Collection<Source> getSources() {
+        return unmodifiableCollection(sources);
     }
 
     @JsonIgnore
-    public List<Extract> getExtracts() {
-        return unmodifiableList(extracts);
+    public Collection<Sample> getSamples() {
+        return unmodifiableCollection(samples);
     }
 
     @JsonIgnore
-    public List<LabeledExtract> getLabeledExtracts() {
-        return unmodifiableList(labeledExtracts);
+    public Collection<Extract> getExtracts() {
+        return unmodifiableCollection(extracts);
     }
 
     @JsonIgnore
-    public List<Assay> getAssays() {
-        return unmodifiableList(assays);
+    public Collection<LabeledExtract> getLabeledExtracts() {
+        return unmodifiableCollection(labeledExtracts);
     }
 
     @JsonIgnore
-    public List<ArrayDataFile> getArrayDataFiles() {
-        return unmodifiableList(arrayDataFiles);
+    public Collection<Assay> getAssays() {
+        return unmodifiableCollection(assays);
     }
 
     @JsonIgnore
-    public List<Scan> getScans() {
-        return unmodifiableList(scans);
+    public Collection<ArrayDataFile> getArrayDataFiles() {
+        return unmodifiableCollection(arrayDataFiles);
     }
 
-    void restoreSources(List<Source> sources) {
-        this.sources = newArrayList(sources);
+    @JsonIgnore
+    public Collection<Scan> getScans() {
+        return unmodifiableCollection(scans);
     }
 
-    void restoreSamples(List<Sample> samples) {
-        this.samples = newArrayList(samples);
+    void restoreSources(Collection<Source> sources) {
+        this.sources = newLinkedHashSet(sources);
     }
 
-    void restoreExtracts(List<Extract> extracts) {
-        this.extracts = newArrayList(extracts);
+    void restoreSamples(Collection<Sample> samples) {
+        this.samples = newLinkedHashSet(samples);
     }
 
-    void restoreLabeledExtracts(List<LabeledExtract> labeledExtracts) {
-        this.labeledExtracts = newArrayList(labeledExtracts);
+    void restoreExtracts(Collection<Extract> extracts) {
+        this.extracts = newLinkedHashSet(extracts);
     }
 
-    void restoreAssays(List<Assay> assays) {
-        this.assays = newArrayList(assays);
+    void restoreLabeledExtracts(Collection<LabeledExtract> labeledExtracts) {
+        this.labeledExtracts = newLinkedHashSet(labeledExtracts);
     }
 
-    void restoreScans(List<Scan> scans) {
-        this.scans = newArrayList(scans);
+    void restoreAssays(Collection<Assay> assays) {
+        this.assays = newLinkedHashSet(assays);
     }
 
-    void restoreArrayDataFiles(List<ArrayDataFile> files) {
-        this.arrayDataFiles = newArrayList(files);
+    void restoreScans(Collection<Scan> scans) {
+        this.scans = newLinkedHashSet(scans);
+    }
+
+    void restoreArrayDataFiles(Collection<ArrayDataFile> files) {
+        this.arrayDataFiles = newLinkedHashSet(files);
     }
 
     public Source getSource(int id) {

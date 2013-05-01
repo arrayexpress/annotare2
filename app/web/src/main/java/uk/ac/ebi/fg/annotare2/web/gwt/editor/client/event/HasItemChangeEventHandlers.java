@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
 
 /**
  * @author Olga Melnichuk
  */
-public class RecordChangeEvent extends GwtEvent<RecordChangeEventHandler> {
+public interface HasItemChangeEventHandlers extends HasHandlers {
 
-    public static Type<RecordChangeEventHandler> TYPE = new Type<RecordChangeEventHandler>();
-
-    private final String value;
-
-    public RecordChangeEvent(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public Type<RecordChangeEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(RecordChangeEventHandler handler) {
-        handler.onRecordChange(value);
-    }
+    HandlerRegistration addItemChangeEventHandler(ItemChangeEventHandler handler);
 }

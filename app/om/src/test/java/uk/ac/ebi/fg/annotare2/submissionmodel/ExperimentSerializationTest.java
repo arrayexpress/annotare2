@@ -63,7 +63,7 @@ public class ExperimentSerializationTest {
         assertEquals(exp1.getSamples().size(), exp2.getSamples().size());
         assertEquals(exp1.getExtracts().size(), exp2.getExtracts().size());
 
-        Source source2 = exp2.getSources().get(0);
+        Source source2 = exp2.getSources().iterator().next();
         assertEquals(source1.getSamples().size(), source2.getSamples().size());
         assertEquals(source1.getExtracts().size(), source2.getExtracts().size());
         Sample sample2 = source2.getSamples().get(0);
@@ -90,7 +90,7 @@ public class ExperimentSerializationTest {
         assertEquals(exp1.getSamples().size(), exp2.getSamples().size());
         assertEquals(exp1.getExtracts().size(), exp2.getExtracts().size());
 
-        Sample sample2 = exp2.getSamples().get(0);
+        Sample sample2 = exp2.getSamples().iterator().next();
         assertEquals(sample1.getExtracts().size(), sample2.getExtracts().size());
         Extract extract2 = sample2.getExtracts().get(0);
 
@@ -123,7 +123,7 @@ public class ExperimentSerializationTest {
         assertEquals(exp1.getLabeledExtracts().size(), exp2.getLabeledExtracts().size());
         assertEquals(exp1.getExtracts().size(), exp2.getExtracts().size());
 
-        Extract extract2 = exp2.getExtracts().get(0);
+        Extract extract2 = exp2.getExtracts().iterator().next();
         assertNodeEquals(extract1, extract2);
 
         assertEquals(extract1.getAssays().size(), extract2.getAssays().size());
@@ -151,7 +151,7 @@ public class ExperimentSerializationTest {
         assertEquals(exp1.getAssays().size(), exp2.getAssays().size());
         assertEquals(exp1.getLabeledExtracts().size(), exp2.getLabeledExtracts().size());
 
-        LabeledExtract labeledExtract2 = exp2.getLabeledExtracts().get(0);
+        LabeledExtract labeledExtract2 = exp2.getLabeledExtracts().iterator().next();
         assertNodeEquals(labeledExtract1, labeledExtract2);
 
         assertEquals(labeledExtract1.getAssays().size(), labeledExtract2.getAssays().size());
@@ -183,7 +183,7 @@ public class ExperimentSerializationTest {
         assertEquals(exp1.getArrayDataFiles().size(), exp2.getArrayDataFiles().size());
         assertEquals(exp1.getScans().size(), exp2.getScans().size());
 
-        Assay assay2 = exp2.getAssays().get(0);
+        Assay assay2 = exp2.getAssays().iterator().next();
         assertNodeEquals(assay1, assay2);
 
         assertEquals(assay1.getArrayDataFiles().size(), assay2.getArrayDataFiles().size());

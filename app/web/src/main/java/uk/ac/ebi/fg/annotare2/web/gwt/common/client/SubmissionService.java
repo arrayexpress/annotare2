@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
@@ -40,6 +41,8 @@ public interface SubmissionService extends RemoteService {
 
     ExperimentDetails getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException;
 
+    List<ContactDto> getContacts(int id) throws ResourceNotFoundException, NoPermissionException;
+
     List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException;
 
     int createExperimentSubmission() throws NoPermissionException;
@@ -50,5 +53,7 @@ public interface SubmissionService extends RemoteService {
 
     void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    void saveExperimentDetails(int id, ExperimentDetails details) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentDetails saveExperimentDetails(int id, ExperimentDetails details) throws ResourceNotFoundException, NoPermissionException;
+
+    List<ContactDto> saveContacts(int id, List<ContactDto> contacts) throws ResourceNotFoundException, NoPermissionException;
 }

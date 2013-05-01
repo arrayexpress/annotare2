@@ -125,4 +125,21 @@ public class Source implements GraphNode {
         this.extracts = newArrayList(extracts);
         extractIds = null;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Source source = (Source) o;
+
+        if (id != source.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

@@ -34,7 +34,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.Changeabl
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentalDesignView extends IdfItemView<Term> {
+public class ExperimentalDesignView extends ItemView<Term> {
 
     interface Binder extends UiBinder<Widget, ExperimentalDesignView> {
         Binder BINDER = GWT.create(Binder.class);

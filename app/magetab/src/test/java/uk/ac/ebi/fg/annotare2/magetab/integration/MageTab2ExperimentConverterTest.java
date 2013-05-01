@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.integration;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -26,10 +27,8 @@ import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 import uk.ac.ebi.fg.annotare2.submissionmodel.GraphNode;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
-
-import org.junit.Ignore;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
@@ -101,7 +100,7 @@ public class MageTab2ExperimentConverterTest {
         assertHasUniqueNames(exp.getArrayDataFiles());
     }
 
-    private static void assertHasUniqueNames(List<? extends GraphNode> items) {
+    private static void assertHasUniqueNames(Collection<? extends GraphNode> items) {
         Set<String> names = newHashSet();
         for (GraphNode item : items) {
             assertFalse(isNullOrEmpty(item.getName()));
@@ -123,7 +122,7 @@ public class MageTab2ExperimentConverterTest {
         assertHasUniqueIds(ids, exp.getArrayDataFiles());
     }
 
-    private static void assertHasUniqueIds(Set<Integer> ids, List<? extends GraphNode> items) {
+    private static void assertHasUniqueIds(Set<Integer> ids, Collection<? extends GraphNode> items) {
         for (GraphNode item : items) {
             assertTrue(item.getId() > 0);
             if (ids.contains(item.getId())) {

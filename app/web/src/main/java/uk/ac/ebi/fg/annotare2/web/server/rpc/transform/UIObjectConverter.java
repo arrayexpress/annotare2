@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.submissionmodel.Contact;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Sample;
@@ -31,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
@@ -105,6 +107,25 @@ public class UIObjectConverter {
         }
     };
 
+    static Function<Contact, ContactDto> CONTACT_DTO = new Function<Contact, ContactDto>() {
+        @Nullable
+        @Override
+        public ContactDto apply(@Nullable Contact contact) {
+            checkNotNull(contact);
+            return new ContactDto(
+                    contact.getId(),
+                    contact.getFirstName(),
+                    contact.getLastName(),
+                    contact.getMidInitials(),
+                    contact.getEmail(),
+                    contact.getPhone(),
+                    contact.getFax(),
+                    contact.getAffiliation(),
+                    contact.getAddress(),
+                    contact.getRoles());
+        }
+    };
+
     public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
@@ -124,12 +145,12 @@ public class UIObjectConverter {
 
     public static ExperimentDetails uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
         Experiment exp = submission.getExperiment();
-        ExperimentDetails details = new ExperimentDetails();
-        details.setTitle(exp.getTitle());
-        details.setDescription(exp.getDescription());
-        details.setExperimentDate(exp.getExperimentDate());
-        details.setPublicReleaseDate(exp.getPublicReleaseDate());
-        return details;
+        return new ExperimentDetails(
+                exp.getTitle(),
+                exp.getDescription(),
+                exp.getExperimentDate(),
+                exp.getPublicReleaseDate()
+        );
     }
 
     public static List<SampleRow> uiSampleRows(ExperimentSubmission submission) throws DataSerializationException {
@@ -141,4 +162,8 @@ public class UIObjectConverter {
         return USER_TRANSFORM.apply(user);
     }
 
+    public static List<ContactDto> uiContacts(ExperimentSubmission submission) throws DataSerializationException {
+        Experiment exp = submission.getExperiment();
+        return new ArrayList<ContactDto>(Collections2.transform(exp.getContacts(), CONTACT_DTO));
+    }
 }

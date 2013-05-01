@@ -18,7 +18,11 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
@@ -27,19 +31,17 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ContactListViewImpl extends ListView<Person> implements ContactListView {
+public class ContactListViewImpl extends ListView<ContactDto.Editor> implements ContactListView {
 
     private Presenter presenter;
 
     public ContactListViewImpl() {
-
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 addNewContact();
             }
         });
-
         removeIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -49,8 +51,8 @@ public class ContactListViewImpl extends ListView<Person> implements ContactList
     }
 
     @Override
-    public void setContacts(List<Person> contacts) {
-        for (Person p : contacts) {
+    public void setContacts(List<ContactDto> contacts) {
+        for (ContactDto p : contacts) {
             addContactView(p);
         }
     }
@@ -61,12 +63,29 @@ public class ContactListViewImpl extends ListView<Person> implements ContactList
     }
 
     private void addNewContact() {
-        DisclosureListItem item = addContactView(presenter.createContact());
-        //todo scroll + item.open();
+        presenter.createContact(new AsyncCallback<ContactDto>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Can't create row");
+            }
+
+            @Override
+            public void onSuccess(ContactDto result) {
+                DisclosureListItem item = addContactView(result);
+                //todo scroll + item.open();
+            }
+        });
     }
 
-    private DisclosureListItem addContactView(Person p) {
-        return addListItem(new ContactView(p));
+    private DisclosureListItem addContactView(ContactDto p) {
+        final ContactView view = new ContactView(p);
+        view.addItemChangeEventHandler(new ItemChangeEventHandler() {
+            @Override
+            public void onItemChange(ItemChangeEvent event) {
+                 presenter.saveContact(view.getContact());
+            }
+        });
+        return addListItem(view);
     }
 
     private void removeSelectedContacts() {

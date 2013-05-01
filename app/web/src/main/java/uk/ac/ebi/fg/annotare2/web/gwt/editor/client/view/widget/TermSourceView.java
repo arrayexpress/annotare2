@@ -28,7 +28,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.Changeabl
 /**
  * @author Olga Melnichuk
  */
-public class TermSourceView extends IdfItemView<TermSource> {
+public class TermSourceView extends ItemView<TermSource> {
 
     interface Binder extends UiBinder<Widget, TermSourceView> {
         Binder BINDER = GWT.create(Binder.class);

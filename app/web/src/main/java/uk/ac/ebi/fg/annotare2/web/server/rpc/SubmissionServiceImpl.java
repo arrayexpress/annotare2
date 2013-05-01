@@ -31,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
@@ -39,6 +40,7 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
@@ -107,12 +109,29 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
+    public List<ContactDto> getContacts(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            return UIObjectConverter.uiContacts(sb);
+        } catch (AccessControlException e) {
+            log.warn("getContacts(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getContacts(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (DataSerializationException e) {
+            log.error("getContacts(" + id + ") failure", e);
+            throw new UnexpectedException("extract experiment settings failure", e);
+        }
+    }
+
+    @Override
     public List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiSampleRows(sb);
         } catch (AccessControlException e) {
-            log.warn("getSampless(" + id + ") failure", e);
+            log.warn("getSamples(" + id + ") failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");
         } catch (RecordNotFoundException e) {
             log.warn("getSamples(" + id + ") failure", e);
@@ -177,7 +196,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public void saveExperimentDetails(int id, ExperimentDetails details) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentDetails saveExperimentDetails(int id, ExperimentDetails details) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission =
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
@@ -188,6 +207,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             exp.setExperimentDate(details.getExperimentDate());
             submission.setExperiment(exp);
             submission.setTitle(details.getTitle());
+            return details;
         } catch (RecordNotFoundException e) {
             log.warn("saveExperimentDetails(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
@@ -198,5 +218,11 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             log.warn("saveExperimentDetails(" + id + ") failure", e);
             throw new UnexpectedException("data save failed", e);
         }
+    }
+
+    @Override
+    public List<ContactDto> saveContacts(int id, List<ContactDto> contacts) throws ResourceNotFoundException, NoPermissionException {
+        //TODO
+        return new ArrayList<ContactDto>();
     }
 }

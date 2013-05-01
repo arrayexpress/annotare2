@@ -17,39 +17,33 @@ public class ExperimentDetails implements IsSerializable {
 
     private Date publicReleaseDate;
 
-    public String getDescription() {
-        return description;
+    public ExperimentDetails() {
     }
 
-    public void setDescription(String description) {
+    public ExperimentDetails(String title, String description, Date experimentDate, Date publicReleaseDate) {
+        this.title = title;
         this.description = description;
+        this.experimentDate = experimentDate;
+        this.publicReleaseDate = publicReleaseDate;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Date getExperimentDate() {
         return experimentDate;
     }
 
-    public void setExperimentDate(Date experimentDate) {
-        this.experimentDate = experimentDate;
-    }
-
     public Date getPublicReleaseDate() {
         return publicReleaseDate;
-    }
-
-    public void setPublicReleaseDate(Date publicReleaseDate) {
-        this.publicReleaseDate = publicReleaseDate;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public boolean isContentEquals(ExperimentDetails that) {
+    public boolean isContentEqual(ExperimentDetails that) {
         if (that == null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (experimentDate != null ? !experimentDate.equals(that.experimentDate) : that.experimentDate != null)
@@ -58,6 +52,4 @@ public class ExperimentDetails implements IsSerializable {
             return false;
         return !(title != null ? !title.equals(that.title) : that.title != null);
     }
-
-
 }

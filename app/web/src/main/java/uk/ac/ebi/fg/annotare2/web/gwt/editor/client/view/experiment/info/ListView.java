@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.IdfItemView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ItemView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class ListView<T> extends Composite {
         return EditorResources.EDITOR_RESOURCES;
     }
 
-    protected DisclosureListItem addListItem(IdfItemView<T> itemView) {
+    protected DisclosureListItem addListItem(ItemView<T> itemView) {
         DisclosureListItem item = new DisclosureListItem(itemView);
         listPanel.add(item);
 
