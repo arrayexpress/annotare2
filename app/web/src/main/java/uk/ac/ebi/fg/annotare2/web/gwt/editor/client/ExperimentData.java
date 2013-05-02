@@ -112,6 +112,7 @@ public class ExperimentData {
                     contactsMap.put(dto.getId(), dto);
                     contacts.add(dto.getId());
                 }
+                callback.onSuccess(result);
             }
         }.wrap());
     }
