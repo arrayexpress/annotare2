@@ -16,7 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.logical.shared.*;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemHeaderChangeEvent;
@@ -61,6 +64,10 @@ public class DisclosureListItem extends Composite {
         });
 
         setContent(content);
+    }
+
+    public DisclosurePanelContent getContent() {
+        return (DisclosurePanelContent) panel.getContent();
     }
 
     public void setContent(DisclosurePanelContent w) {

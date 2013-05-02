@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.integration;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -38,7 +37,6 @@ import static junit.framework.TestCase.*;
 /**
  * @author Olga Melnichuk
  */
-@Ignore("requires MageTabCheck v1.6")
 public class MageTab2ExperimentConverterTest {
 
     @Test

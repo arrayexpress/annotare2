@@ -146,11 +146,17 @@ public class ExperimentData {
     }
 
     public void saveContact(ContactDto contact) {
-        this.updatedContacts.add(contact);
+        List<ContactDto> list = new ArrayList<ContactDto>();
+        list.add(contact);
+        saveContacts(list);
+    }
+
+    public void saveContacts(List<ContactDto> contacts) {
+        this.updatedContacts.addAll(contacts);
         this.changes.add("contact", new DataChangeManager.SaveDataHandler() {
             @Override
             public void onSave(DataChangeManager.Callback callback) {
-                saveContacts(callback);
+                saveExperimentContacts(callback);
             }
         });
     }
@@ -182,7 +188,7 @@ public class ExperimentData {
         }.wrap());
     }
 
-    private void saveContacts(final DataChangeManager.Callback callback) {
+    private void saveExperimentContacts(final DataChangeManager.Callback callback) {
         List<ContactDto> changes = new ArrayList<ContactDto>();
         for (ContactDto dto : updatedContacts) {
             ContactDto contact = contactsMap.get(dto.getId());
@@ -194,7 +200,7 @@ public class ExperimentData {
             return;
         }
         callback.onStart();
-        submissionService.saveContacts(getSubmissionId(), changes, new AsyncCallbackWrapper<List<ContactDto>>(){
+        submissionService.saveContacts(getSubmissionId(), changes, new AsyncCallbackWrapper<List<ContactDto>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onStop(caught);
@@ -202,7 +208,7 @@ public class ExperimentData {
 
             @Override
             public void onSuccess(List<ContactDto> result) {
-                for(ContactDto dto : result) {
+                for (ContactDto dto : result) {
                     contactsMap.put(dto.getId(), dto);
                 }
                 callback.onStop(null);

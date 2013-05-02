@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -23,12 +25,16 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
-import static com.google.common.collect.Sets.newLinkedHashSet;
+import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableCollection;
 
 /**
@@ -57,33 +63,46 @@ public class Experiment {
     @JsonProperty("publicReleaseDate")
     private Date publicReleaseDate;
 
-    @JsonProperty("contacts")
-    private Set<Contact> contacts;
+    @JsonProperty("contactMap")
+    private Map<Integer, Contact> contacts;
 
-    @JsonProperty("publications")
-    private Set<Publication> publications;
+    @JsonProperty("publicationMap")
+    private Map<Integer, Publication> publications;
 
-    private Set<Source> sources;
-    private Set<Sample> samples;
-    private Set<Extract> extracts;
-    private Set<LabeledExtract> labeledExtracts;
-    private Set<Assay> assays;
-    private Set<ArrayDataFile> arrayDataFiles;
-    private Set<Scan> scans;
+    @JsonProperty("sourceMap")
+    private Map<Integer, Source> sources;
 
+    @JsonProperty("sampleMap")
+    private Map<Integer, Sample> samples;
+
+    @JsonProperty("extractMap")
+    private Map<Integer, Extract> extracts;
+
+    @JsonProperty("labeledExtractMap")
+    private Map<Integer, LabeledExtract> labeledExtracts;
+
+    @JsonProperty("assayMap")
+    private Map<Integer, Assay> assays;
+
+    @JsonProperty("arrayDataFileMap")
+    private Map<Integer, ArrayDataFile> arrayDataFiles;
+
+    @JsonProperty("scanMap")
+    private Map<Integer, Scan> scans;
 
     @JsonCreator
     public Experiment(@JsonProperty("properties") Map<String, String> properties) {
         this.properties = newHashMap(properties);
-        sources = newLinkedHashSet();
-        samples = newLinkedHashSet();
-        extracts = newLinkedHashSet();
-        labeledExtracts = newLinkedHashSet();
-        assays = newLinkedHashSet();
-        arrayDataFiles = newLinkedHashSet();
-        contacts = newLinkedHashSet();
-        publications = newLinkedHashSet();
-        scans = newLinkedHashSet();
+        sources = newLinkedHashMap();
+        samples = newLinkedHashMap();
+        extracts = newLinkedHashMap();
+        labeledExtracts = newLinkedHashMap();
+        assays = newLinkedHashMap();
+        arrayDataFiles = newLinkedHashMap();
+        scans = newLinkedHashMap();
+
+        contacts = newLinkedHashMap();
+        publications = newLinkedHashMap();
     }
 
     public String getAccession() {
@@ -128,55 +147,55 @@ public class Experiment {
 
     public Contact createContact() {
         Contact contact = new Contact(nextId());
-        contacts.add(contact);
+        contacts.put(contact.getId(), contact);
         return contact;
     }
 
     public Publication createPublication(Publication publication) {
         publication.setId(nextId());
-        publications.add(publication);
+        publications.put(publication.getId(), publication);
         return publication;
     }
 
     public Source createSource() {
         Source source = new Source(nextId());
-        sources.add(source);
+        sources.put(source.getId(), source);
         return source;
     }
 
     public Sample createSample() {
         Sample sample = new Sample(nextId());
-        samples.add(sample);
+        samples.put(sample.getId(), sample);
         return sample;
     }
 
     public Extract createExtract() {
         Extract extract = new Extract(nextId());
-        extracts.add(extract);
+        extracts.put(extract.getId(), extract);
         return extract;
     }
 
     public LabeledExtract createLabeledExtract() {
         LabeledExtract labeledExtract = new LabeledExtract(nextId());
-        labeledExtracts.add(labeledExtract);
+        labeledExtracts.put(labeledExtract.getId(), labeledExtract);
         return labeledExtract;
     }
 
     public Assay createAssay() {
         Assay assay = new Assay(nextId());
-        assays.add(assay);
+        assays.put(assay.getId(), assay);
         return assay;
     }
 
     public ArrayDataFile createArrayDataFile() {
         ArrayDataFile arrayDataFile = new ArrayDataFile(nextId());
-        arrayDataFiles.add(arrayDataFile);
+        arrayDataFiles.put(arrayDataFile.getId(), arrayDataFile);
         return arrayDataFile;
     }
 
     public Scan createScan() {
         Scan scan = new Scan(nextId());
-        scans.add(scan);
+        scans.put(scan.getId(), scan);
         return scan;
     }
 
@@ -190,8 +209,9 @@ public class Experiment {
         }
         ObjectMapper mapper = new ObjectMapper();
         try {
-            ExperimentData data = mapper.readValue(str, ExperimentData.class);
-            return data.fixExperiment();
+            Experiment exp = mapper.readValue(str, Experiment.class);
+            exp.fixReferences();
+            return exp;
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
@@ -204,7 +224,7 @@ public class Experiment {
     public String toJsonString() throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.writeValueAsString(new ExperimentData(this));
+            return mapper.writeValueAsString(this);
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
@@ -220,117 +240,189 @@ public class Experiment {
 
     @JsonIgnore
     public Collection<Contact> getContacts() {
-        return unmodifiableCollection(contacts);
+        return unmodifiableCollection(contacts.values());
+    }
+
+    @JsonIgnore
+    public Collection<Publication> getPublications() {
+        return unmodifiableCollection(publications.values());
     }
 
     @JsonIgnore
     public Collection<Source> getSources() {
-        return unmodifiableCollection(sources);
+        return unmodifiableCollection(sources.values());
     }
 
     @JsonIgnore
     public Collection<Sample> getSamples() {
-        return unmodifiableCollection(samples);
+        return unmodifiableCollection(samples.values());
     }
 
     @JsonIgnore
     public Collection<Extract> getExtracts() {
-        return unmodifiableCollection(extracts);
+        return unmodifiableCollection(extracts.values());
     }
 
     @JsonIgnore
     public Collection<LabeledExtract> getLabeledExtracts() {
-        return unmodifiableCollection(labeledExtracts);
+        return unmodifiableCollection(labeledExtracts.values());
     }
 
     @JsonIgnore
     public Collection<Assay> getAssays() {
-        return unmodifiableCollection(assays);
+        return unmodifiableCollection(assays.values());
     }
 
     @JsonIgnore
     public Collection<ArrayDataFile> getArrayDataFiles() {
-        return unmodifiableCollection(arrayDataFiles);
+        return unmodifiableCollection(arrayDataFiles.values());
     }
 
     @JsonIgnore
     public Collection<Scan> getScans() {
-        return unmodifiableCollection(scans);
+        return unmodifiableCollection(scans.values());
     }
 
-    void restoreSources(Collection<Source> sources) {
-        this.sources = newLinkedHashSet(sources);
-    }
-
-    void restoreSamples(Collection<Sample> samples) {
-        this.samples = newLinkedHashSet(samples);
-    }
-
-    void restoreExtracts(Collection<Extract> extracts) {
-        this.extracts = newLinkedHashSet(extracts);
-    }
-
-    void restoreLabeledExtracts(Collection<LabeledExtract> labeledExtracts) {
-        this.labeledExtracts = newLinkedHashSet(labeledExtracts);
-    }
-
-    void restoreAssays(Collection<Assay> assays) {
-        this.assays = newLinkedHashSet(assays);
-    }
-
-    void restoreScans(Collection<Scan> scans) {
-        this.scans = newLinkedHashSet(scans);
-    }
-
-    void restoreArrayDataFiles(Collection<ArrayDataFile> files) {
-        this.arrayDataFiles = newLinkedHashSet(files);
-    }
 
     public Source getSource(int id) {
-        for (Source source : sources) {
-            if (id == source.getId()) {
-                return source;
-            }
-        }
-        return null;
+        return sources.get(id);
     }
 
     public Sample getSample(int id) {
-        for (Sample sample : samples) {
-            if (id == sample.getId()) {
-                return sample;
-            }
-        }
-        return null;
+        return samples.get(id);
     }
 
 
     public Extract getExtract(int id) {
-        for (Extract extract : extracts) {
-            if (id == extract.getId()) {
-                return extract;
-            }
-        }
-        return null;
+        return extracts.get(id);
     }
 
     public LabeledExtract getLabeledExtract(int id) {
-        for (LabeledExtract labeledExtract : labeledExtracts) {
-            if (id == labeledExtract.getId()) {
-                return labeledExtract;
-            }
-        }
-        return null;
+        return labeledExtracts.get(id);
     }
 
     public Assay getAssay(int id) {
-        for (Assay assay : assays) {
-            if (id == assay.getId()) {
-                return assay;
-            }
-        }
-        return null;
+        return assays.get(id);
     }
 
 
+    public Contact getContact(int id) {
+        return contacts.get(id);
+    }
+
+    private void fixReferences() {
+        for (Source s : sources.values()) {
+            fix(s);
+        }
+        for (Sample s : samples.values()) {
+            fix(s);
+        }
+        for (Extract e : extracts.values()) {
+            fix(e);
+        }
+        for (LabeledExtract e : labeledExtracts.values()) {
+            fix(e);
+        }
+        for (Assay a : assays.values()) {
+            fix(a);
+        }
+        for (Scan s : scans.values()) {
+            fix(s);
+        }
+        for (ArrayDataFile a : arrayDataFiles.values()) {
+            fix(a);
+        }
+    }
+
+    private Source fix(Source source) {
+        source.setAllSamples(
+                Lists.transform(source.getSampleIds(), new Function<Integer, Sample>() {
+                    @Nullable
+                    @Override
+                    public Sample apply(@Nullable Integer id) {
+                        return samples.get(id);
+                    }
+                }));
+        source.setAllExtracts(
+                Lists.transform(source.getExtractIds(), new Function<Integer, Extract>() {
+                    @Nullable
+                    @Override
+                    public Extract apply(@Nullable Integer id) {
+                        return extracts.get(id);
+                    }
+                }));
+        return source;
+    }
+
+    private Sample fix(Sample sample) {
+        sample.setAllExtracts(
+                Lists.transform(sample.getExtractIds(), new Function<Integer, Extract>() {
+                    @Nullable
+                    @Override
+                    public Extract apply(@Nullable Integer id) {
+                        return extracts.get(id);
+                    }
+                }));
+        return sample;
+    }
+
+    private Extract fix(Extract extract) {
+        extract.setAllAssays(
+                Lists.transform(extract.getAssayIds(), new Function<Integer, Assay>() {
+                    @Nullable
+                    @Override
+                    public Assay apply(@Nullable Integer id) {
+                        return assays.get(id);
+                    }
+                }));
+        extract.setAllLabeledExtracts(
+                Lists.transform(extract.getLabeledExtractIds(), new Function<Integer, LabeledExtract>() {
+                    @Nullable
+                    @Override
+                    public LabeledExtract apply(@Nullable Integer id) {
+                        return labeledExtracts.get(id);
+                    }
+                }));
+        return extract;
+    }
+
+    private LabeledExtract fix(LabeledExtract labeledExtract) {
+        labeledExtract.setAllAssays(
+                Lists.transform(labeledExtract.getAssayIds(), new Function<Integer, Assay>() {
+                    @Nullable
+                    @Override
+                    public Assay apply(@Nullable Integer id) {
+                        return assays.get(id);
+                    }
+                }));
+        return labeledExtract;
+    }
+
+    private Assay fix(Assay assay) {
+        assay.setAllArrayDataFiles(
+                Lists.transform(assay.getArrayDataFileIds(), new Function<Integer, ArrayDataFile>() {
+                    @Nullable
+                    @Override
+                    public ArrayDataFile apply(@Nullable Integer id) {
+                        return arrayDataFiles.get(id);
+                    }
+                }));
+        assay.setAllScans(
+                Lists.transform(assay.getScansIds(), new Function<Integer, Scan>() {
+                    @Nullable
+                    @Override
+                    public Scan apply(@Nullable Integer id) {
+                        return scans.get(id);
+                    }
+                }));
+        return assay;
+    }
+
+    private Scan fix(Scan scan) {
+        return scan;
+    }
+
+    private ArrayDataFile fix(ArrayDataFile file) {
+        return file;
+    }
 }

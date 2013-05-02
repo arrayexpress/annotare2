@@ -58,7 +58,7 @@ public class ContactListActivity extends AbstractActivity implements ContactList
 
     @Override
     public void onStop() {
-        //TODO save changes here
+        experimentData.saveContacts(view.getContacts());
         super.onStop();
     }
 

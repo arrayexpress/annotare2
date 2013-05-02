@@ -57,8 +57,8 @@ public class ItemView<T> extends DisclosurePanelContent {
         field.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                fireItemChangeEvent();
                 field.saveValueTo(item);
+                fireItemChangeEvent();
             }
         });
     }

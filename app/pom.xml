@@ -136,7 +136,7 @@
             <dependency>
                 <groupId>uk.ac.ebi.fg.annotare2</groupId>
                 <artifactId>magetabcheck</artifactId>
-                <version>1.5</version>
+                <version>1.6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

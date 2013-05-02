@@ -77,8 +77,7 @@ public class MageTab2ExperimentConverter {
 
     private void fillInIdfData(IdfData idfData) {
         Info expInfo = idfData.getInfo();
-        //TODO requires MageTabCheck v1.6
-        // exp.setAccession(expInfo.getAccession().getValue());
+        exp.setAccession(expInfo.getAccession().getValue());
         exp.setTitle(expInfo.getTitle().getValue());
         exp.setDescription(expInfo.getExperimentDescription().getValue());
         exp.setExperimentDate(parseDate(expInfo.getDateOfExperiment().getValue()));

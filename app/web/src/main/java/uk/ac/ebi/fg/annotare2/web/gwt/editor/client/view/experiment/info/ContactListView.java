@@ -31,6 +31,8 @@ public interface ContactListView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
+    List<ContactDto> getContacts();
+
     public interface Presenter {
 
         void createContact(AsyncCallback<ContactDto> callback);

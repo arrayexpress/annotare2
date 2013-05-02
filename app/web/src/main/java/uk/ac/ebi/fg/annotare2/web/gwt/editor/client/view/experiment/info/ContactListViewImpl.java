@@ -26,6 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEventHandler
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +49,16 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
                 removeSelectedContacts();
             }
         });
+    }
+
+    @Override
+    public List<ContactDto> getContacts() {
+        List<ContactDto> contacts = new ArrayList<ContactDto>();
+        for(DisclosureListItem item : getItems()) {
+            ContactView view = (ContactView) item.getContent();
+            contacts.add(view.getContact());
+        }
+        return  contacts;
     }
 
     @Override

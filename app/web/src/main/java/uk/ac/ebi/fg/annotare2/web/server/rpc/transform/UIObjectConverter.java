@@ -39,6 +39,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -164,6 +165,10 @@ public class UIObjectConverter {
 
     public static List<ContactDto> uiContacts(ExperimentSubmission submission) throws DataSerializationException {
         Experiment exp = submission.getExperiment();
-        return new ArrayList<ContactDto>(Collections2.transform(exp.getContacts(), CONTACT_DTO));
+        return uiContacts(exp.getContacts());
+    }
+
+    public static List<ContactDto> uiContacts(Collection<Contact> contacts) throws DataSerializationException {
+        return new ArrayList<ContactDto>(Collections2.transform(contacts, CONTACT_DTO));
     }
 }

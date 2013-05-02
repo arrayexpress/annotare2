@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.submissionmodel.Contact;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
@@ -40,9 +41,9 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
 
 /**
@@ -222,7 +223,44 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     @Override
     public List<ContactDto> saveContacts(int id, List<ContactDto> contacts) throws ResourceNotFoundException, NoPermissionException {
-        //TODO
-        return new ArrayList<ContactDto>();
+        try {
+            ExperimentSubmission submission =
+                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            Experiment exp = submission.getExperiment();
+            List<Contact> saved = newArrayList();
+            for (ContactDto dto : contacts) {
+                Contact contact = exp.getContact(dto.getId());
+                if (contact != null) {
+                    updateContact(contact, dto);
+                    saved.add(contact);
+                } else {
+                    log.warn("UPDATE FOR NON EXISTED CONTACT");
+                }
+            }
+            submission.setExperiment(exp);
+            return  UIObjectConverter.uiContacts(saved);
+        } catch (RecordNotFoundException e) {
+            log.warn("saveContacts(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (AccessControlException e) {
+            log.warn("saveContacts(" + id + ") failure", e);
+            throw new NoPermissionException("no permission to update submission: " + id);
+        } catch (DataSerializationException e) {
+            log.warn("saveContacts(" + id + ") failure", e);
+            throw new UnexpectedException("data save failed", e);
+        }
     }
+
+    private void updateContact(Contact contact, ContactDto dto) {
+        contact.setFirstName(dto.getFirstName());
+        contact.setLastName(dto.getLastName());
+        contact.setMidInitials(dto.getMidInitials());
+        contact.setEmail(dto.getEmail());
+        contact.setPhone(dto.getPhone());
+        contact.setFax(dto.getFax());
+        contact.setAddress(dto.getAddress());
+        contact.setAffiliation(dto.getAffiliation());
+        contact.setRoles(dto.getRoles());
+    }
+
 }
