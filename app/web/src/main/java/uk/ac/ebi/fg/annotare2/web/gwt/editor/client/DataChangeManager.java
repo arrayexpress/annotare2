@@ -61,7 +61,7 @@ public class DataChangeManager {
         Set<String> queueCopy = new LinkedHashSet<String>(queue);
         queue = new LinkedHashSet<String>();
 
-        for (String key : queueCopy) {
+        for (final String key : queueCopy) {
             SaveDataHandler handler = handlers.get(key);
             handler.onSave(new Callback() {
                 @Override

@@ -32,10 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
@@ -122,7 +119,24 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
         } catch (DataSerializationException e) {
             log.error("getContacts(" + id + ") failure", e);
-            throw new UnexpectedException("extract experiment settings failure", e);
+            throw new UnexpectedException("get experiment contacts failure", e);
+        }
+    }
+
+    @Override
+    public List<PublicationDto> getPublications(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            return UIObjectConverter.uiPublications(sb);
+        } catch (AccessControlException e) {
+            log.warn("getPublications(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getPublications(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (DataSerializationException e) {
+            log.error("getPublications(" + id + ") failure", e);
+            throw new UnexpectedException("get experiment publications failure", e);
         }
     }
 
@@ -139,7 +153,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
         } catch (DataSerializationException e) {
             log.error("getSamples(" + id + ") failure", e);
-            throw new UnexpectedException("extract experiment settings failure", e);
+            throw new UnexpectedException("get experiment samples failure", e);
         }
     }
 

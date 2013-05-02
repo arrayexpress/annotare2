@@ -65,6 +65,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(IdfTabToolBarView.class).to(IdfTabToolBarViewImpl.class);
         bind(ExpDetailsView.class).to(ExpDetailsViewImpl.class);
         bind(ContactListView.class).to(ContactListViewImpl.class);
+        bind(PublicationListView.class).to(PublicationListViewImpl.class);
         bind(IdfTermSourceListView.class).to(ExpInfoTermSourceListViewImpl.class);
         bind(IdfExperimentalDesignListView.class).to(ExpInfoExperimentalDesignListViewImpl.class);
 

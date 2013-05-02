@@ -20,10 +20,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 
 import java.util.List;
 
@@ -42,6 +39,8 @@ public interface SubmissionService extends RemoteService {
     ExperimentDetails getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException;
 
     List<ContactDto> getContacts(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    List<PublicationDto> getPublications(int id) throws ResourceNotFoundException, NoPermissionException;
 
     List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException;
 

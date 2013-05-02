@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import java.util.*;
@@ -40,9 +41,9 @@ public class ExperimentData {
     private Set<SampleRow> samples;
 
     private Map<Integer, ContactDto> contactsMap;
-    private Set<Integer> contacts;
     private Set<ContactDto> updatedContacts = new HashSet<ContactDto>();
 
+    private Map<Integer, PublicationDto> publicationsMap;
     private ExperimentDetails details;
     private ExperimentDetails updatedDetails;
 
@@ -94,7 +95,7 @@ public class ExperimentData {
     }
 
     public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
-        if (contacts != null) {
+        if (contactsMap != null) {
             callback.onSuccess(getContacts());
             return;
         }
@@ -107,10 +108,30 @@ public class ExperimentData {
             @Override
             public void onSuccess(List<ContactDto> result) {
                 contactsMap = new HashMap<Integer, ContactDto>();
-                contacts = new LinkedHashSet<Integer>();
                 for (ContactDto dto : result) {
                     contactsMap.put(dto.getId(), dto);
-                    contacts.add(dto.getId());
+                }
+                callback.onSuccess(result);
+            }
+        }.wrap());
+    }
+
+    public void getPublicationsAsync(final AsyncCallback<List<PublicationDto>> callback) {
+        if (publicationsMap != null) {
+            callback.onSuccess(getPublications());
+            return;
+        }
+        submissionService.getPublications(getSubmissionId(), new AsyncCallbackWrapper<List<PublicationDto>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(List<PublicationDto> result) {
+                publicationsMap = new HashMap<Integer, PublicationDto>();
+                for (PublicationDto dto : result) {
+                    publicationsMap.put(dto.getId(), dto);
                 }
                 callback.onSuccess(result);
             }
@@ -164,9 +185,13 @@ public class ExperimentData {
 
     private List<ContactDto> getContacts() {
         List<ContactDto> list = new ArrayList<ContactDto>();
-        for (Integer id : contacts) {
-            list.add(contactsMap.get(id));
-        }
+        list.addAll(contactsMap.values());
+        return list;
+    }
+
+    private List<PublicationDto> getPublications() {
+        List<PublicationDto> list = new ArrayList<PublicationDto>();
+        list.addAll(publicationsMap.values());
         return list;
     }
 

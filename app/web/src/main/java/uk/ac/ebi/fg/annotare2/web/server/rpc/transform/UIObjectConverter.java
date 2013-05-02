@@ -23,19 +23,13 @@ import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Contact;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Sample;
+import uk.ac.ebi.fg.annotare2.submissionmodel.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -127,6 +121,19 @@ public class UIObjectConverter {
         }
     };
 
+    static Function<Publication, PublicationDto> PUBLICATION_DTO = new Function<Publication, PublicationDto>() {
+        @Nullable
+        @Override
+        public PublicationDto apply(@Nullable Publication publication) {
+            return new PublicationDto(
+                    publication.getId(),
+                    publication.getTitle(),
+                    publication.getAuthors(),
+                    publication.getPubMedId()
+            );
+        }
+    };
+
     public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
@@ -170,5 +177,10 @@ public class UIObjectConverter {
 
     public static List<ContactDto> uiContacts(Collection<Contact> contacts) throws DataSerializationException {
         return new ArrayList<ContactDto>(Collections2.transform(contacts, CONTACT_DTO));
+    }
+
+    public static List<PublicationDto> uiPublications(ExperimentSubmission submission) throws DataSerializationException {
+        Experiment exp = submission.getExperiment();
+        return new ArrayList<PublicationDto>(Collections2.transform(exp.getPublications(), PUBLICATION_DTO));
     }
 }
