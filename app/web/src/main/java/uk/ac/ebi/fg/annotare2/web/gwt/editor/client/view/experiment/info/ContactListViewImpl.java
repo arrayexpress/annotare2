@@ -54,11 +54,11 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     @Override
     public List<ContactDto> getContacts() {
         List<ContactDto> contacts = new ArrayList<ContactDto>();
-        for(DisclosureListItem item : getItems()) {
+        for (DisclosureListItem item : getItems()) {
             ContactView view = (ContactView) item.getContent();
             contacts.add(view.getContact());
         }
-        return  contacts;
+        return contacts;
     }
 
     @Override
@@ -74,18 +74,8 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     }
 
     private void addNewContact() {
-        presenter.createContact(new AsyncCallback<ContactDto>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Can't create row");
-            }
-
-            @Override
-            public void onSuccess(ContactDto result) {
-                DisclosureListItem item = addContactView(result);
-                //todo scroll + item.open();
-            }
-        });
+        DisclosureListItem item = addContactView(presenter.createContact());
+        //todo scroll + item.open();
     }
 
     private DisclosureListItem addContactView(ContactDto p) {
@@ -93,7 +83,7 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
         view.addItemChangeEventHandler(new ItemChangeEventHandler() {
             @Override
             public void onItemChange(ItemChangeEvent event) {
-                 presenter.saveContact(view.getContact());
+                presenter.updateContact(view.getContact());
             }
         });
         return addListItem(view);
@@ -104,7 +94,14 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
         if (selected.isEmpty()) {
             return;
         }
-        presenter.removeContacts(selected);
+
+        List<ContactDto> contacts = new ArrayList<ContactDto>();
+        for (Integer index : selected) {
+            DisclosureListItem item = getItem(index);
+            ContactView view = (ContactView) item.getContent();
+            contacts.add(view.getContact());
+        }
+        presenter.removeContacts(contacts);
         removeItems(selected);
     }
 }

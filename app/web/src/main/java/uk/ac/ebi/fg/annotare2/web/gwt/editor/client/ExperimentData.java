@@ -40,10 +40,10 @@ public class ExperimentData {
 
     private Set<SampleRow> samples;
 
-    private Map<Integer, ContactDto> contactsMap;
-    private Set<ContactDto> updatedContacts = new HashSet<ContactDto>();
+    private ExperimentContacts contacts;
 
     private Map<Integer, PublicationDto> publicationsMap;
+
     private ExperimentDetails details;
     private ExperimentDetails updatedDetails;
 
@@ -54,6 +54,7 @@ public class ExperimentData {
                           DataChangeManager changes) {
         this.submissionService = submissionService;
         this.changes = changes;
+        this.contacts = new ExperimentContacts(submissionService);
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -94,26 +95,8 @@ public class ExperimentData {
         }.wrap());
     }
 
-    public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
-        if (contactsMap != null) {
-            callback.onSuccess(getContacts());
-            return;
-        }
-        submissionService.getContacts(getSubmissionId(), new AsyncCallbackWrapper<List<ContactDto>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(List<ContactDto> result) {
-                contactsMap = new HashMap<Integer, ContactDto>();
-                for (ContactDto dto : result) {
-                    contactsMap.put(dto.getId(), dto);
-                }
-                callback.onSuccess(result);
-            }
-        }.wrap());
+    public void getContactsAsync(AsyncCallback<List<ContactDto>> callback) {
+        contacts.getContactsAsync(callback);
     }
 
     public void getPublicationsAsync(final AsyncCallback<List<PublicationDto>> callback) {
@@ -159,34 +142,44 @@ public class ExperimentData {
 
     public void saveDetails(ExperimentDetails details) {
         this.updatedDetails = details;
-        this.changes.add("submissionDetails", new DataChangeManager.SaveDataHandler() {
+        this.changes.add("expDetails", new DataChangeManager.SaveAction() {
             @Override
-            public void onSave(DataChangeManager.Callback callback) {
+            public void onSave(AsyncCallback callback) {
                 saveExperimentDetails(callback);
             }
         });
     }
 
-    public void saveContact(ContactDto contact) {
-        List<ContactDto> list = new ArrayList<ContactDto>();
-        list.add(contact);
-        saveContacts(list);
+    public ContactDto createContact() {
+        ContactDto dto = contacts.create();
+        notifyContactsUpdated();
+        return dto;
     }
 
-    public void saveContacts(List<ContactDto> contacts) {
-        this.updatedContacts.addAll(contacts);
-        this.changes.add("contact", new DataChangeManager.SaveDataHandler() {
+    public void updateContact(ContactDto toBeUpdated) {
+        List<ContactDto> list = new ArrayList<ContactDto>();
+        list.add(toBeUpdated);
+        updateContacts(list);
+    }
+
+    public void updateContacts(List<ContactDto> toBeUpdated) {
+        for (ContactDto contact : toBeUpdated) {
+            contacts.update(contact);
+        }
+        notifyContactsUpdated();
+    }
+
+    public void removeContacts(List<ContactDto> toBeRemoved) {
+        contacts.remove(toBeRemoved);
+    }
+
+    private void notifyContactsUpdated() {
+        this.changes.add("expContacts", new DataChangeManager.SaveAction() {
             @Override
-            public void onSave(DataChangeManager.Callback callback) {
-                saveExperimentContacts(callback);
+            public void onSave(AsyncCallback<Void> callback) {
+                contacts.sendUpdates(callback);
             }
         });
-    }
-
-    private List<ContactDto> getContacts() {
-        List<ContactDto> list = new ArrayList<ContactDto>();
-        list.addAll(contactsMap.values());
-        return list;
     }
 
     private List<PublicationDto> getPublications() {
@@ -195,51 +188,23 @@ public class ExperimentData {
         return list;
     }
 
-    private void saveExperimentDetails(final DataChangeManager.Callback callback) {
+    private void saveExperimentDetails(final AsyncCallback<Void> callback) {
         if (updatedDetails == null || details.isContentEqual(updatedDetails)) {
             return;
         }
-        callback.onStart();
         submissionService.saveExperimentDetails(getSubmissionId(), updatedDetails, new AsyncCallbackWrapper<ExperimentDetails>() {
             @Override
             public void onFailure(Throwable caught) {
-                callback.onStop(caught);
+                callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(ExperimentDetails result) {
                 details = result;
-                callback.onStop(null);
+                callback.onSuccess(null);
             }
         }.wrap());
     }
 
-    private void saveExperimentContacts(final DataChangeManager.Callback callback) {
-        List<ContactDto> changes = new ArrayList<ContactDto>();
-        for (ContactDto dto : updatedContacts) {
-            ContactDto contact = contactsMap.get(dto.getId());
-            if (!contact.isContentEqual(dto)) {
-                changes.add(dto);
-            }
-        }
-        if (changes.isEmpty()) {
-            return;
-        }
-        callback.onStart();
-        submissionService.saveContacts(getSubmissionId(), changes, new AsyncCallbackWrapper<List<ContactDto>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onStop(caught);
-            }
-
-            @Override
-            public void onSuccess(List<ContactDto> result) {
-                for (ContactDto dto : result) {
-                    contactsMap.put(dto.getId(), dto);
-                }
-                callback.onStop(null);
-            }
-        }.wrap());
-    }
 
 }

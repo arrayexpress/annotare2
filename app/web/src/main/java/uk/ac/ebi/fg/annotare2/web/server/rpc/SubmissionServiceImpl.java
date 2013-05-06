@@ -33,11 +33,14 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -236,36 +239,41 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public List<ContactDto> saveContacts(int id, List<ContactDto> contacts) throws ResourceNotFoundException, NoPermissionException {
+    public ContactsUpdateResult updateContacts(int id, List<ContactsUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission =
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+
+            ContactsUpdateResult result = new ContactsUpdateResult();
             Experiment exp = submission.getExperiment();
-            List<Contact> saved = newArrayList();
-            for (ContactDto dto : contacts) {
-                Contact contact = exp.getContact(dto.getId());
-                if (contact != null) {
-                    updateContact(contact, dto);
-                    saved.add(contact);
-                } else {
-                    log.warn("UPDATE FOR NON EXISTED CONTACT");
+            for (ContactsUpdateCommand command : commands) {
+                switch (command.getType()) {
+                    case UPDATE:
+                        result.update(updateContact(command.getContact(), exp));
+                        break;
+                    case CREATE:
+                        result.create(createContact(command.getContact(), exp));
+                        break;
+                    case REMOVE:
+                        result.removeAll(removeContacts(command.getContactIds(), exp));
                 }
             }
             submission.setExperiment(exp);
-            return  UIObjectConverter.uiContacts(saved);
+            return result;
         } catch (RecordNotFoundException e) {
-            log.warn("saveContacts(" + id + ") failure", e);
+            log.warn("updateContacts(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
         } catch (AccessControlException e) {
-            log.warn("saveContacts(" + id + ") failure", e);
+            log.warn("updateContacts(" + id + ") failure", e);
             throw new NoPermissionException("no permission to update submission: " + id);
         } catch (DataSerializationException e) {
-            log.warn("saveContacts(" + id + ") failure", e);
+            log.warn("updateContacts(" + id + ") failure", e);
             throw new UnexpectedException("data save failed", e);
         }
     }
 
-    private void updateContact(Contact contact, ContactDto dto) {
+    private ContactDto updateContact(ContactDto dto, Experiment exp) {
+        Contact contact = exp.getContact(dto.getId());
         contact.setFirstName(dto.getFirstName());
         contact.setLastName(dto.getLastName());
         contact.setMidInitials(dto.getMidInitials());
@@ -275,6 +283,22 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         contact.setAddress(dto.getAddress());
         contact.setAffiliation(dto.getAffiliation());
         contact.setRoles(dto.getRoles());
+        return dto;
     }
 
+    private ContactDto createContact(ContactDto dto, Experiment exp) {
+        Contact contact = exp.createContact();
+        return updateContact(new ContactDto(contact.getId()).update(dto), exp);
+    }
+
+    private List<ContactDto> removeContacts(List<Integer> ids, Experiment exp) throws DataSerializationException {
+        List<Contact> removed = new ArrayList<Contact>();
+        for (Integer id : ids) {
+            Contact contact = exp.removeContact(id);
+            if (contact != null) {
+                removed.add(contact);
+            }
+        }
+        return UIObjectConverter.uiContacts(removed);
+    }
 }

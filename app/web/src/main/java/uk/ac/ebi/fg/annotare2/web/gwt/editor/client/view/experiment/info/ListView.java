@@ -46,10 +46,14 @@ public class ListView<T> extends Composite {
         return EditorResources.EDITOR_RESOURCES;
     }
 
+    protected DisclosureListItem getItem(int index) {
+        return (DisclosureListItem) listPanel.getWidget(index);
+    }
+
     protected List<DisclosureListItem> getItems() {
         List<DisclosureListItem> items = new ArrayList<DisclosureListItem>();
-        for(int i = 0; i<listPanel.getWidgetCount(); i ++) {
-            items.add((DisclosureListItem)listPanel.getWidget(i));
+        for (int i = 0; i < listPanel.getWidgetCount(); i++) {
+            items.add((DisclosureListItem) listPanel.getWidget(i));
         }
         return items;
     }

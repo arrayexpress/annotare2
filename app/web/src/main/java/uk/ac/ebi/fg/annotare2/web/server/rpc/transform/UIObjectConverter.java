@@ -109,6 +109,7 @@ public class UIObjectConverter {
             checkNotNull(contact);
             return new ContactDto(
                     contact.getId(),
+                    contact.getId(),
                     contact.getFirstName(),
                     contact.getLastName(),
                     contact.getMidInitials(),

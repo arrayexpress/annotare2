@@ -58,7 +58,7 @@ public class ContactListActivity extends AbstractActivity implements ContactList
 
     @Override
     public void onStop() {
-        experimentData.saveContacts(view.getContacts());
+        experimentData.updateContacts(view.getContacts());
         super.onStop();
     }
 
@@ -78,17 +78,17 @@ public class ContactListActivity extends AbstractActivity implements ContactList
     }
 
     @Override
-    public void saveContact(ContactDto contact) {
-        experimentData.saveContact(contact);
+    public void updateContact(ContactDto contact) {
+        experimentData.updateContact(contact);
     }
 
     @Override
-    public void createContact(AsyncCallback<ContactDto> callback) {
-        //experimentData.createContact();
+    public ContactDto createContact() {
+        return experimentData.createContact();
     }
 
     @Override
-    public void removeContacts(List<Integer> contactIds) {
-        //experimentData.removeContacts(contactIds);
+    public void removeContacts(List<ContactDto> contacts) {
+        experimentData.removeContacts(contacts);
     }
 }

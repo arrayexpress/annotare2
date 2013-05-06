@@ -12,6 +12,8 @@ public class ContactDto implements IsSerializable {
 
     private int id;
 
+    private int tmpId;
+
     private String firstName;
 
     private String lastName;
@@ -28,17 +30,19 @@ public class ContactDto implements IsSerializable {
 
     private String address;
 
-    private List<String> roles;
+    private List<String> roles = new ArrayList<String>();
 
     public ContactDto() {
     }
 
     public ContactDto(int id) {
         this.id = id;
+        this.tmpId = id;
     }
 
     public ContactDto(ContactDto other) {
         this(other.id,
+                other.tmpId,
                 other.firstName,
                 other.lastName,
                 other.midInitials,
@@ -51,6 +55,7 @@ public class ContactDto implements IsSerializable {
     }
 
     public ContactDto(int id,
+                      int tmpId,
                       String firstName,
                       String lastName,
                       String midInitials,
@@ -61,6 +66,7 @@ public class ContactDto implements IsSerializable {
                       String address,
                       List<String> roles) {
         this.id = id;
+        this.tmpId = tmpId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.midInitials = midInitials;
@@ -72,6 +78,10 @@ public class ContactDto implements IsSerializable {
         if (roles != null) {
             this.roles = new ArrayList<String>(roles);
         }
+    }
+
+    public int getTmpId() {
+        return tmpId;
     }
 
     public int getId() {
@@ -135,17 +145,20 @@ public class ContactDto implements IsSerializable {
         return new Editor(this);
     }
 
-    public boolean isContentEqual(ContactDto that) {
-        if (address != null ? !address.equals(that.address) : that.address != null) return false;
-        if (affiliation != null ? !affiliation.equals(that.affiliation) : that.affiliation != null) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (fax != null ? !fax.equals(that.fax) : that.fax != null) return false;
-        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
-        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
-        if (midInitials != null ? !midInitials.equals(that.midInitials) : that.midInitials != null) return false;
-        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
-        if (roles != null ? !roles.equals(that.roles) : that.roles != null) return false;
-        return true;
+    public ContactDto update(ContactDto toBeUpdated) {
+        return new ContactDto(
+                id,
+                toBeUpdated.getTmpId(),
+                toBeUpdated.getFirstName(),
+                toBeUpdated.getLastName(),
+                toBeUpdated.getMidInitials(),
+                toBeUpdated.getEmail(),
+                toBeUpdated.getPhone(),
+                toBeUpdated.getFax(),
+                toBeUpdated.getAffiliation(),
+                toBeUpdated.getAddress(),
+                toBeUpdated.getRoles()
+        );
     }
 
     public static class Editor {
@@ -226,6 +239,10 @@ public class ContactDto implements IsSerializable {
 
         public void setRoles(List<String> roles) {
             copy.roles = roles;
+        }
+
+        public void setTmpId(int id) {
+            copy.tmpId = id;
         }
 
         public ContactDto copy() {

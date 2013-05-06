@@ -4,6 +4,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateResult;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public interface SubmissionServiceAsync {
 
     void getContacts(int id, AsyncCallback<List<ContactDto>> async);
 
-    void saveContacts(int id, List<ContactDto> contacts, AsyncCallback<List<ContactDto>> async);
-
     void getPublications(int id, AsyncCallback<List<PublicationDto>> async);
+
+    void updateContacts(int id, List<ContactsUpdateCommand> commands, AsyncCallback<ContactsUpdateResult> async);
 }

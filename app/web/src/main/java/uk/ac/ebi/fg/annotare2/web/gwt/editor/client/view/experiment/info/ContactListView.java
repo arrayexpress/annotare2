@@ -35,10 +35,10 @@ public interface ContactListView extends IsWidget {
 
     public interface Presenter {
 
-        void createContact(AsyncCallback<ContactDto> callback);
+        ContactDto createContact();
 
-        void removeContacts(List<Integer> indices);
+        void removeContacts(List<ContactDto> indices);
 
-        void saveContact(ContactDto contact);
+        void updateContact(ContactDto contact);
     }
 }

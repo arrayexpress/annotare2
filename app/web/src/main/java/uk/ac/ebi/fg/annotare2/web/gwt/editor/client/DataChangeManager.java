@@ -17,14 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEvent;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -34,8 +33,9 @@ public class DataChangeManager {
     private static final int REPEAT_INTERVAL = 2000;
 
     private final EventBus eventBus;
-    private final Map<String, SaveDataHandler> handlers = new HashMap<String, SaveDataHandler>();
-    private Set<String> queue = new LinkedHashSet<String>();
+    private final Map<String, SaveAction> actions = new HashMap<String, SaveAction>();
+    private Queue<String> queue = new LinkedList<String>();
+    private boolean isActive;
 
     @Inject
     public DataChangeManager(EventBus eventBus) {
@@ -49,42 +49,55 @@ public class DataChangeManager {
         }.scheduleRepeating(REPEAT_INTERVAL);
     }
 
-    public void add(String key, SaveDataHandler handler) {
+    public void add(String key, SaveAction action) {
         if (queue.contains(key)) {
             return;
         }
-        handlers.put(key, handler);
+        actions.put(key, action);
         queue.add(key);
     }
 
     public void execute() {
-        Set<String> queueCopy = new LinkedHashSet<String>(queue);
-        queue = new LinkedHashSet<String>();
-
-        for (final String key : queueCopy) {
-            SaveDataHandler handler = handlers.get(key);
-            handler.onSave(new Callback() {
-                @Override
-                public void onStop(Throwable caught) {
-                    eventBus.fireEvent(AutoSaveEvent.autoSaveStopped(caught));
-                }
-
-                @Override
-                public void onStart() {
-                    eventBus.fireEvent(AutoSaveEvent.autoSaveStarted());
-                }
-            });
+        if (isActive || queue.isEmpty()) {
+            return;
         }
+
+        notifyStart();
+        next();
     }
 
-    public interface SaveDataHandler {
-        void onSave(Callback callback);
+    private void next() {
+        if (queue.isEmpty()) {
+            notifyStop(null);
+        }
+        String key = queue.peek();
+        SaveAction action = actions.get(key);
+        action.onSave(new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                notifyStop(caught);
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                queue.poll();
+                next();
+            }
+        });
     }
 
-    public interface Callback {
-        void onStart();
+    private void notifyStart() {
+        eventBus.fireEvent(AutoSaveEvent.autoSaveStarted());
+    }
 
-        void onStop(Throwable caught);
+    private void notifyStop(Throwable caught) {
+        isActive = false;
+        eventBus.fireEvent(AutoSaveEvent.autoSaveStopped(caught));
+        Window.alert(caught.getMessage());
+    }
+
+    public interface SaveAction {
+        void onSave(AsyncCallback<Void> callback);
     }
 }
 

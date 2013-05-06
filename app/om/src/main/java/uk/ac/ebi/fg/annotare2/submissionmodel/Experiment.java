@@ -151,6 +151,10 @@ public class Experiment {
         return contact;
     }
 
+    public Contact removeContact(int id) {
+        return contacts.remove(id);
+    }
+
     public Publication createPublication(Publication publication) {
         publication.setId(nextId());
         publications.put(publication.getId(), publication);
