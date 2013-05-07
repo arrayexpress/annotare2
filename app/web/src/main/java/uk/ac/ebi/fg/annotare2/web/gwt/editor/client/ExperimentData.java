@@ -140,12 +140,15 @@ public class ExperimentData {
         }.wrap());
     }
 
-    public void saveDetails(ExperimentDetails details) {
-        this.updatedDetails = details;
+    public void updateDetails(ExperimentDetails updatedDetails) {
+        if (updatedDetails == null || details.isContentEqual(updatedDetails)) {
+            return;
+        }
+        this.updatedDetails = updatedDetails;
         this.changes.add("expDetails", new DataChangeManager.SaveAction() {
             @Override
             public void onSave(AsyncCallback callback) {
-                saveExperimentDetails(callback);
+                updateExperimentDetails(callback);
             }
         });
     }
@@ -188,10 +191,7 @@ public class ExperimentData {
         return list;
     }
 
-    private void saveExperimentDetails(final AsyncCallback<Void> callback) {
-        if (updatedDetails == null || details.isContentEqual(updatedDetails)) {
-            return;
-        }
+    private void updateExperimentDetails(final AsyncCallback<Void> callback) {
         submissionService.saveExperimentDetails(getSubmissionId(), updatedDetails, new AsyncCallbackWrapper<ExperimentDetails>() {
             @Override
             public void onFailure(Throwable caught) {

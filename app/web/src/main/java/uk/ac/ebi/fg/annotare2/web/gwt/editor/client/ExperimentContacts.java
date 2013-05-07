@@ -101,6 +101,7 @@ public class ExperimentContacts {
             return;
         }
         final List<ContactsUpdateCommand> latestUpdates = new ArrayList<ContactsUpdateCommand>(updates);
+        updates = new ArrayList<ContactsUpdateCommand>();
         submissionService.updateContacts(getSubmissionId(), latestUpdates,
                 new AsyncCallbackWrapper<ContactsUpdateResult>() {
                     @Override

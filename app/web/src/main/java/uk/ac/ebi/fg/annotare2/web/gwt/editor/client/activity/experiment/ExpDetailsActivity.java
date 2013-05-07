@@ -62,7 +62,7 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
 
     @Override
     public void onStop() {
-        experimentData.saveDetails(view.getDetails());
+        experimentData.updateDetails(view.getDetails());
         super.onStop();
     }
 
@@ -87,7 +87,7 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
 
     @Override
     public void saveDetails(ExperimentDetails details) {
-        experimentData.saveDetails(details);
+        experimentData.updateDetails(details);
     }
 }
 

@@ -27,9 +27,15 @@ import java.util.List;
  */
 public class ContactsUpdateResult implements IsSerializable {
 
-    private final List<ContactDto> created = new ArrayList<ContactDto>();
-    private final List<ContactDto> updated = new ArrayList<ContactDto>();
-    private final List<ContactDto> removed = new ArrayList<ContactDto>();
+    private List<ContactDto> created;
+    private List<ContactDto> updated;
+    private List<ContactDto> removed;
+
+    public ContactsUpdateResult() {
+        created = new ArrayList<ContactDto>();
+        updated = new ArrayList<ContactDto>();
+        removed = new ArrayList<ContactDto>();
+    }
 
     public List<ContactDto> getCreatedContacts() {
         return created;

@@ -54,7 +54,7 @@ public class DataChangeManager {
             return;
         }
         actions.put(key, action);
-        queue.add(key);
+        queue.offer(key);
     }
 
     public void execute() {
@@ -69,6 +69,7 @@ public class DataChangeManager {
     private void next() {
         if (queue.isEmpty()) {
             notifyStop(null);
+            return;
         }
         String key = queue.peek();
         SaveAction action = actions.get(key);
@@ -93,7 +94,9 @@ public class DataChangeManager {
     private void notifyStop(Throwable caught) {
         isActive = false;
         eventBus.fireEvent(AutoSaveEvent.autoSaveStopped(caught));
-        Window.alert(caught.getMessage());
+        if (caught != null) {
+            Window.alert(caught.getMessage());
+        }
     }
 
     public interface SaveAction {

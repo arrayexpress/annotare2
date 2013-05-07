@@ -256,6 +256,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                         break;
                     case REMOVE:
                         result.removeAll(removeContacts(command.getContactIds(), exp));
+                        break;
                 }
             }
             submission.setExperiment(exp);
