@@ -46,8 +46,8 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
     public PublicationView(PublicationDto publication) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        addHeaderField(hasChangeableValue(title));
         addHeaderField(hasChangeableValue(authors));
+        addHeaderField(hasChangeableValue(title));
         addHeaderField(hasChangeableValue(pubMedId));
 
         addField(new EditableField<PublicationDto.Editor, String>(hasChangeableValue(title)) {
