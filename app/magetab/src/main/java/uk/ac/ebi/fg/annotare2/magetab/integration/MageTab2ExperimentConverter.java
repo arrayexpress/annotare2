@@ -34,7 +34,6 @@ import uk.ac.ebi.fg.annotare2.submissionmodel.*;
 
 import javax.annotation.Nullable;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Queue;
@@ -44,6 +43,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Queues.newArrayDeque;
 import static com.google.common.collect.Sets.newHashSet;
+import static uk.ac.ebi.fg.annotare2.magetab.integration.Utils.parseMageTabDate;
 
 /**
  * @author Olga Melnichuk
@@ -51,8 +51,6 @@ import static com.google.common.collect.Sets.newHashSet;
 public class MageTab2ExperimentConverter {
 
     private static final Logger log = LoggerFactory.getLogger(MageTab2ExperimentConverter.class);
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     private Experiment exp;
 
@@ -305,7 +303,7 @@ public class MageTab2ExperimentConverter {
 
     private static Date parseDate(String value) {
         try {
-            return isNullOrEmpty(value) ? null : DATE_FORMAT.parse(value);
+            return isNullOrEmpty(value) ? null : parseMageTabDate(value);
         } catch (ParseException e) {
             log.error("can't parse date string: " + value);
             return null;

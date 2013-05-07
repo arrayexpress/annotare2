@@ -16,11 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Closeables;
 import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
+import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
+import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.magetab.integration.Experiment2MageTabConverter;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
@@ -42,11 +51,11 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.io.Closeables.close;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
 
 /**
@@ -167,9 +176,10 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     @Override
     public Table getIdfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
-            return new TsvParser().parse(
-                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW
-                    ).getInvestigation());
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            Experiment exp = submission.getExperiment();
+            MAGETABInvestigation inv = Experiment2MageTabConverter.convert(exp);
+            return asTable(inv.IDF);
         } catch (AccessControlException e) {
             log.warn("getIdfTable(" + id + ") failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");
@@ -178,16 +188,23 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
         } catch (IOException e) {
             log.error("getIdfTable(" + id + ") failure", e);
-            throw new UnexpectedException("get experiment samples failure", e);
+            throw new UnexpectedException("IDF generate failure", e);
+        } catch (DataSerializationException e) {
+            log.error("getIdfTable(" + id + ") failure", e);
+            throw new UnexpectedException("IDF generate failure", e);
+        } catch (ParseException e) {
+            log.error("getIdfTable(" + id + ") failure", e);
+            throw new UnexpectedException("IDF generate failure", e);
         }
     }
 
     @Override
     public Table getSdrfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
-            return new TsvParser().parse(
-                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW
-                    ).getSampleAndDataRelationship());
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            Experiment exp = submission.getExperiment();
+            MAGETABInvestigation inv = Experiment2MageTabConverter.convert(exp);
+            return asTable(inv.SDRF);
         } catch (AccessControlException e) {
             log.warn("getSdrfTable(" + id + ") failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");
@@ -196,7 +213,39 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
         } catch (IOException e) {
             log.error("getSdrfTable(" + id + ") failure", e);
-            throw new UnexpectedException("get experiment samples failure", e);
+            throw new UnexpectedException("SDRF generate failure", e);
+        } catch (DataSerializationException e) {
+            log.error("getSDRFTable(" + id + ") failure", e);
+            throw new UnexpectedException("SDRF generate failure", e);
+        } catch (ParseException e) {
+            log.error("getSDRFTable(" + id + ") failure", e);
+            throw new UnexpectedException("SDRF generate failure", e);
+        }
+    }
+
+    private Table asTable(IDF idf) throws IOException {
+        File tmpFile = File.createTempFile("idf", "tmp");
+        IDFWriter writer = null;
+        try {
+            writer = new IDFWriter(new FileWriter(tmpFile));
+            writer.write(idf);
+            return new TsvParser().parse(new FileInputStream(tmpFile));
+        } finally {
+            close(writer, true);
+            //TODO delete temporary file ?
+        }
+    }
+
+    private Table asTable(SDRF sdrf) throws IOException {
+        File tmpFile = File.createTempFile("sdrf", "tmp");
+        SDRFWriter writer = null;
+        try {
+            writer = new SDRFWriter(new FileWriter(tmpFile));
+            writer.write(sdrf);
+            return new TsvParser().parse(new FileInputStream(tmpFile));
+        } finally {
+            close(writer, true);
+            //TODO delete temporary file ?
         }
     }
 
