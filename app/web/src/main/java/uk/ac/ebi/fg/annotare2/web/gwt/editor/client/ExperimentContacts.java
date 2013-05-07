@@ -36,6 +36,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class ExperimentContacts {
 
     private final SubmissionServiceAsync submissionService;
+    private final UpdateQueue updateQueue;
 
     private int nextId = 0;
 
@@ -48,8 +49,10 @@ public class ExperimentContacts {
     private List<Integer> order = new ArrayList<Integer>();
     private List<ContactsUpdateCommand> updates = new ArrayList<ContactsUpdateCommand>();
 
-    public ExperimentContacts(SubmissionServiceAsync submissionService) {
+    public ExperimentContacts(SubmissionServiceAsync submissionService,
+                              UpdateQueue updateQueue) {
         this.submissionService = submissionService;
+        this.updateQueue = updateQueue;
     }
 
     public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
@@ -75,16 +78,24 @@ public class ExperimentContacts {
         }.wrap());
     }
 
-    public void update(ContactDto toBeUpdated) {
+    public void update(List<ContactDto> toBeUpdated) {
+        for (ContactDto contact : toBeUpdated) {
+            update(contact);
+        }
+    }
+
+    private void update(ContactDto toBeUpdated) {
         ContactDto contact = find(toBeUpdated);
-        updates.add(updateContactCommand(contact.update(toBeUpdated)));
+        if (!contact.isTheSameAs(toBeUpdated)) {
+            addUpdateCommand(updateContactCommand(contact.updatedCopy(toBeUpdated)));
+        }
     }
 
     public ContactDto create() {
         ContactDto toBeCreated = new ContactDto(nextId());
         map.put(toBeCreated.getId(), toBeCreated);
         order.add(toBeCreated.getId());
-        updates.add(createContactCommand(toBeCreated));
+        addUpdateCommand(createContactCommand(toBeCreated));
         return toBeCreated;
     }
 
@@ -93,11 +104,22 @@ public class ExperimentContacts {
         for (ContactDto contact : contacts) {
             toBeRemoved.add(find(contact));
         }
-        updates.add(removeContactsCommand(toBeRemoved));
+        addUpdateCommand(removeContactsCommand(toBeRemoved));
     }
 
-    public void sendUpdates(final AsyncCallback<Void> callback) {
+    private void addUpdateCommand(ContactsUpdateCommand command) {
+        updates.add(command);
+        updateQueue.add("expContacts", new UpdateQueue.SaveAction() {
+            @Override
+            public void onSave(AsyncCallback<Void> callback) {
+                sendUpdates(callback);
+            }
+        });
+    }
+
+    private void sendUpdates(final AsyncCallback<Void> callback) {
         if (updates.isEmpty()) {
+            callback.onSuccess(null);
             return;
         }
         final List<ContactsUpdateCommand> latestUpdates = new ArrayList<ContactsUpdateCommand>(updates);

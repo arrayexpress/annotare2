@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * @author Olga Melnichuk
  */
-public class DataChangeManager {
+public class UpdateQueue {
 
     private static final int REPEAT_INTERVAL = 2000;
 
@@ -38,7 +38,7 @@ public class DataChangeManager {
     private boolean isActive;
 
     @Inject
-    public DataChangeManager(EventBus eventBus) {
+    public UpdateQueue(EventBus eventBus) {
         this.eventBus = eventBus;
 
         new Timer() {

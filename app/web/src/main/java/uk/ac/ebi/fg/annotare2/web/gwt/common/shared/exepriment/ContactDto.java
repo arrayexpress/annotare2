@@ -124,6 +124,19 @@ public class ContactDto implements IsSerializable {
         return roles;
     }
 
+    public boolean isTheSameAs(ContactDto that) {
+        if (address != null ? !address.equals(that.address) : that.address != null) return false;
+        if (affiliation != null ? !affiliation.equals(that.affiliation) : that.affiliation != null) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (fax != null ? !fax.equals(that.fax) : that.fax != null) return false;
+        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
+        if (midInitials != null ? !midInitials.equals(that.midInitials) : that.midInitials != null) return false;
+        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
+        if (roles != null ? !roles.equals(that.roles) : that.roles != null) return false;
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -145,7 +158,7 @@ public class ContactDto implements IsSerializable {
         return new Editor(this);
     }
 
-    public ContactDto update(ContactDto toBeUpdated) {
+    public ContactDto updatedCopy(ContactDto toBeUpdated) {
         return new ContactDto(
                 id,
                 toBeUpdated.getTmpId(),

@@ -289,7 +289,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     private ContactDto createContact(ContactDto dto, Experiment exp) {
         Contact contact = exp.createContact();
-        return updateContact(new ContactDto(contact.getId()).update(dto), exp);
+        return updateContact(new ContactDto(contact.getId()).updatedCopy(dto), exp);
     }
 
     private List<ContactDto> removeContacts(List<Integer> ids, Experiment exp) throws DataSerializationException {

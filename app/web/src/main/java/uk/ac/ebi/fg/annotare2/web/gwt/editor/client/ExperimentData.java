@@ -36,7 +36,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class ExperimentData {
 
     private final SubmissionServiceAsync submissionService;
-    private final DataChangeManager changes;
+    private final UpdateQueue updateQueue;
 
     private Set<SampleRow> samples;
 
@@ -51,10 +51,10 @@ public class ExperimentData {
 
     @Inject
     public ExperimentData(SubmissionServiceAsync submissionService,
-                          DataChangeManager changes) {
+                          UpdateQueue updateQueue) {
         this.submissionService = submissionService;
-        this.changes = changes;
-        this.contacts = new ExperimentContacts(submissionService);
+        this.updateQueue = updateQueue;
+        this.contacts = new ExperimentContacts(submissionService, updateQueue);
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -145,7 +145,7 @@ public class ExperimentData {
             return;
         }
         this.updatedDetails = updatedDetails;
-        this.changes.add("expDetails", new DataChangeManager.SaveAction() {
+        this.updateQueue.add("expDetails", new UpdateQueue.SaveAction() {
             @Override
             public void onSave(AsyncCallback callback) {
                 updateExperimentDetails(callback);
@@ -154,9 +154,7 @@ public class ExperimentData {
     }
 
     public ContactDto createContact() {
-        ContactDto dto = contacts.create();
-        notifyContactsUpdated();
-        return dto;
+       return contacts.create();
     }
 
     public void updateContact(ContactDto toBeUpdated) {
@@ -166,23 +164,11 @@ public class ExperimentData {
     }
 
     public void updateContacts(List<ContactDto> toBeUpdated) {
-        for (ContactDto contact : toBeUpdated) {
-            contacts.update(contact);
-        }
-        notifyContactsUpdated();
+        contacts.update(toBeUpdated);
     }
 
     public void removeContacts(List<ContactDto> toBeRemoved) {
         contacts.remove(toBeRemoved);
-    }
-
-    private void notifyContactsUpdated() {
-        this.changes.add("expContacts", new DataChangeManager.SaveAction() {
-            @Override
-            public void onSave(AsyncCallback<Void> callback) {
-                contacts.sendUpdates(callback);
-            }
-        });
     }
 
     private List<PublicationDto> getPublications() {

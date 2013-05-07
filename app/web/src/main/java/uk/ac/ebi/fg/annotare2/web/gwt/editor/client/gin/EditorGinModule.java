@@ -81,7 +81,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(IdfData.class).in(Singleton.class);
         bind(SdrfData.class).in(Singleton.class);
 
-        bind(DataChangeManager.class).in(Singleton.class);
+        bind(UpdateQueue.class).in(Singleton.class);
         bind(AdfData.class).in(Singleton.class);
         bind(ExperimentData.class).in(Singleton.class);
     }
