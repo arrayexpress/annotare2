@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
@@ -45,6 +46,10 @@ public interface SubmissionService extends RemoteService {
     List<PublicationDto> getPublications(int id) throws ResourceNotFoundException, NoPermissionException;
 
     List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    Table getIdfTable(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+
+    Table getSdrfTable(int submissionId) throws NoPermissionException, ResourceNotFoundException;
 
     int createExperimentSubmission() throws NoPermissionException;
 

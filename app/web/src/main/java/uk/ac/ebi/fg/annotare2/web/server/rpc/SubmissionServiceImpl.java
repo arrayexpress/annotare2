@@ -21,6 +21,8 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
@@ -40,6 +42,7 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,6 +159,43 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
         } catch (DataSerializationException e) {
             log.error("getSamples(" + id + ") failure", e);
+            throw new UnexpectedException("get experiment samples failure", e);
+        }
+    }
+
+
+    @Override
+    public Table getIdfTable(int id) throws NoPermissionException, ResourceNotFoundException {
+        try {
+            return new TsvParser().parse(
+                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW
+                    ).getInvestigation());
+        } catch (AccessControlException e) {
+            log.warn("getIdfTable(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getIdfTable(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (IOException e) {
+            log.error("getIdfTable(" + id + ") failure", e);
+            throw new UnexpectedException("get experiment samples failure", e);
+        }
+    }
+
+    @Override
+    public Table getSdrfTable(int id) throws NoPermissionException, ResourceNotFoundException {
+        try {
+            return new TsvParser().parse(
+                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW
+                    ).getSampleAndDataRelationship());
+        } catch (AccessControlException e) {
+            log.warn("getSdrfTable(" + id + ") failure", e);
+            throw new NoPermissionException("Sorry, you do not have access to this resource");
+        } catch (RecordNotFoundException e) {
+            log.warn("getSdrfTable(" + id + ") failure", e);
+            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+        } catch (IOException e) {
+            log.error("getSdrfTable(" + id + ") failure", e);
             throw new UnexpectedException("get experiment samples failure", e);
         }
     }

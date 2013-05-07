@@ -29,6 +29,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class IdfData {
 
     private final IdfServiceAsync idfService;

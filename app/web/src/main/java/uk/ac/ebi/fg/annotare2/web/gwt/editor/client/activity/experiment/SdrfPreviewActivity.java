@@ -25,8 +25,10 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.SdrfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SheetModeView;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk
@@ -37,16 +39,15 @@ public class SdrfPreviewActivity extends AbstractActivity {
 
     private final PlaceController placeController;
 
-    private final SdrfData sdrfData;
+    private final SubmissionServiceAsync submissionService;
 
     @Inject
     public SdrfPreviewActivity(SheetModeView view,
                                PlaceController placeController,
-                               SdrfData sdrfData
-    ) {
+                               SubmissionServiceAsync submissionService) {
         this.view = view;
         this.placeController = placeController;
-        this.sdrfData = sdrfData;
+        this.submissionService = submissionService;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class SdrfPreviewActivity extends AbstractActivity {
     }
 
     private void initAsync() {
-        sdrfData.getTable(new AsyncCallbackWrapper<Table>() {
+        submissionService.getSdrfTable(getSubmissionId(), new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
