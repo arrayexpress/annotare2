@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.magetab.table.operation.Operation;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 
+@Deprecated
 public interface IdfServiceAsync {
 
     void getGeneralInfo(int submissionId, AsyncCallback<UIGeneralInfo> async);

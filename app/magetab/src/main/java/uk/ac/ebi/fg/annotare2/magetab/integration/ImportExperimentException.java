@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
+package uk.ac.ebi.fg.annotare2.magetab.integration;
 
 /**
  * @author Olga Melnichuk
  */
-public enum ExperimentType {
-    ONE_COLOR_MICROARRAY("One-color microarray"),
-    TWO_COLOR_MICROARRAY("Two-color microarray"),
-    SEQUENCING("High-throughput sequencing");
+public class ImportExperimentException extends Exception {
 
-    private final String title;
-
-    private ExperimentType(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
+    public ImportExperimentException(String message) {
+        super(message);
     }
 }

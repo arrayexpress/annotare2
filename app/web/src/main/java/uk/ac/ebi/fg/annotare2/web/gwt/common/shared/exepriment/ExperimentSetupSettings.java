@@ -17,18 +17,19 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExperimentSetupSettings implements IsSerializable {
 
-    private ExperimentType experimentType;
+    private ExperimentConfigType experimentType;
     private int numberOfHybs;
     private String arrayDesign;
     private String label;
 
-    public ExperimentType getExperimentType() {
+    public ExperimentConfigType getExperimentType() {
         return experimentType;
     }
 
@@ -48,7 +49,7 @@ public class ExperimentSetupSettings implements IsSerializable {
 
         private ExperimentSetupSettings settings = new ExperimentSetupSettings();
 
-        public Builder setExperimentType(ExperimentType type) {
+        public Builder setExperimentType(ExperimentConfigType type) {
             settings.experimentType = type;
             return this;
         }

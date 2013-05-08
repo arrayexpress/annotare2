@@ -23,12 +23,12 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.io.CharStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -63,21 +63,18 @@ public class DummyData {
 
         createSubmission(user,
                 SubmissionStatus.IN_PROGRESS,
-                "E-MTAB-641.idf.txt",
                 "E-MTAB-641.json.txt",
                 "E-MTAB-641",
                 "agb1-1 mutant and Col-0 comparative transcriptomic analysis in a Plectosphaerella cucumerina inoculation");
 
         createSubmission(user,
                 SubmissionStatus.IN_PROGRESS,
-                "E-MEXP-3237.idf.txt",
                 "E-MEXP-3237.json.txt",
                 "E-MEXP-3237",
                 "rogB mutant in NEM316 S. agalactiae strain");
 
         createSubmission(user,
                 SubmissionStatus.PUBLIC_IN_AE,
-                "E-MTAB-582.idf.txt",
                 "E-MTAB-582.json.txt",
                 "E-MTAB-582",
                 "RNA and chromatin structure");
@@ -105,7 +102,6 @@ public class DummyData {
 
     private static void createSubmission(User user,
                                                SubmissionStatus status,
-                                               String idfName,
                                                String jsonFile,
                                                String accession,
                                                String title) {
@@ -114,9 +110,7 @@ public class DummyData {
             submission.setStatus(status);
 
             //TODO use experiment object instead
-            submission.setInvestigation(
-                    CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
-            submission.setExperiment(Experiment.fromJsonString(
+            submission.setExperimentConfig(ExperimentConfig.fromJsonString(
                     CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(jsonFile), Charsets.UTF_8))));
 
             submission.setTitle(title);

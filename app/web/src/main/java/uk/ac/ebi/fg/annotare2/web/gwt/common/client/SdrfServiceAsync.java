@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 
+@Deprecated
 public interface SdrfServiceAsync {
 
     void importData(int submissionId, AsyncCallback<Void> async);

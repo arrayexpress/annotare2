@@ -18,18 +18,24 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
+import uk.ac.ebi.fg.annotare2.configmodel.Contact;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.Publication;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleConfig;
 import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.submissionmodel.*;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -38,8 +44,8 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.transform;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentSetting.EXPERIMENT_TYPE;
 
 /**
  * @author Olga Melnichuk
@@ -93,10 +99,10 @@ public class UIObjectConverter {
         }
     };
 
-    static Function<Sample, SampleRow> SAMPLE_ROW = new Function<Sample, SampleRow>() {
+    static Function<SampleConfig, SampleRow> SAMPLE_ROW = new Function<SampleConfig, SampleRow>() {
         @Nullable
         @Override
-        public SampleRow apply(@Nullable Sample sample) {
+        public SampleRow apply(@Nullable SampleConfig sample) {
             checkNotNull(sample);
             return new SampleRow(sample.getId(), sample.getName());
         }
@@ -146,14 +152,12 @@ public class UIObjectConverter {
 
     public static ExperimentSettings uiExperimentSubmissionSettings(ExperimentSubmission submission)
             throws DataSerializationException {
-        Experiment exp = submission.getExperiment();
-        String type = exp.getProperties().get(EXPERIMENT_TYPE.name());
-        return new ExperimentSettings(
-                type == null ? null : ExperimentType.valueOf(type));
+        ExperimentConfig exp = submission.getExperimentConfig();
+        return new ExperimentSettings(exp.getType());
     }
 
     public static ExperimentDetails uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
-        Experiment exp = submission.getExperiment();
+        ExperimentConfig exp = submission.getExperimentConfig();
         return new ExperimentDetails(
                 exp.getTitle(),
                 exp.getDescription(),
@@ -163,8 +167,8 @@ public class UIObjectConverter {
     }
 
     public static List<SampleRow> uiSampleRows(ExperimentSubmission submission) throws DataSerializationException {
-        Experiment exp = submission.getExperiment();
-        return new ArrayList<SampleRow>(Collections2.transform(exp.getSamples(), SAMPLE_ROW));
+        ExperimentConfig exp = submission.getExperimentConfig();
+        return new ArrayList<SampleRow>(transform(exp.getSamples(), SAMPLE_ROW));
     }
 
     public static UserDto uiUser(User user) {
@@ -172,16 +176,16 @@ public class UIObjectConverter {
     }
 
     public static List<ContactDto> uiContacts(ExperimentSubmission submission) throws DataSerializationException {
-        Experiment exp = submission.getExperiment();
+        ExperimentConfig exp = submission.getExperimentConfig();
         return uiContacts(exp.getContacts());
     }
 
     public static List<ContactDto> uiContacts(Collection<Contact> contacts) throws DataSerializationException {
-        return new ArrayList<ContactDto>(Collections2.transform(contacts, CONTACT_DTO));
+        return new ArrayList<ContactDto>(transform(contacts, CONTACT_DTO));
     }
 
     public static List<PublicationDto> uiPublications(ExperimentSubmission submission) throws DataSerializationException {
-        Experiment exp = submission.getExperiment();
-        return new ArrayList<PublicationDto>(Collections2.transform(exp.getPublications(), PUBLICATION_DTO));
+        ExperimentConfig exp = submission.getExperimentConfig();
+        return new ArrayList<PublicationDto>(transform(exp.getPublications(), PUBLICATION_DTO));
     }
 }

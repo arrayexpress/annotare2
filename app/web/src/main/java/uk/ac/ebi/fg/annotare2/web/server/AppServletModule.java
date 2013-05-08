@@ -87,8 +87,6 @@ public class AppServletModule extends ServletModule {
 
         serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "UserApp", "EditorApp");
 
-        serveAndBindRpcService(IdfService.NAME, IdfServiceImpl.class, "EditorApp");
-        serveAndBindRpcService(SdrfService.NAME, SdrfServiceImpl.class, "EditorApp");
         serveAndBindRpcService(AdfService.NAME, AdfServiceImpl.class, "EditorApp");
         serveAndBindRpcService(SubmissionValidationService.NAME, SubmissionValidationServiceImpl.class, "EditorApp");
         serveAndBindRpcService(VocabularyService.NAME, VocabularyServiceImpl.class, "EditorApp");

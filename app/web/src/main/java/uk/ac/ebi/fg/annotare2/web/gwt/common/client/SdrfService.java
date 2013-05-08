@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 @RemoteServiceRelativePath(SdrfService.NAME)
 public interface SdrfService extends RemoteService {
 

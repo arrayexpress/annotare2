@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.submissionmodel;
+package uk.ac.ebi.fg.annotare2.configmodel;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

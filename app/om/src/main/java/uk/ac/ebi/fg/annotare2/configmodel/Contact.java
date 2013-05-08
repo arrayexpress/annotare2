@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.submissionmodel;
+package uk.ac.ebi.fg.annotare2.configmodel;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+import uk.ac.ebi.fg.annotare2.submissionmodel.HasId;
 
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;

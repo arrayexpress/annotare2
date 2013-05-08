@@ -24,6 +24,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import uk.ac.ebi.fg.annotare2.configmodel.Contact;
+import uk.ac.ebi.fg.annotare2.configmodel.Publication;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -40,6 +42,7 @@ import static java.util.Collections.unmodifiableCollection;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class Experiment {
 
     @JsonProperty("properties")
