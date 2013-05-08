@@ -37,6 +37,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class IdfTermSourceListActivity extends AbstractActivity implements IdfTermSourceListView.Presenter {
 
     private final IdfTermSourceListView view;

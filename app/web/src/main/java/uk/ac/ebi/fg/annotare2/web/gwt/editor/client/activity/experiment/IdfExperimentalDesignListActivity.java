@@ -39,6 +39,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class IdfExperimentalDesignListActivity extends AbstractActivity
         implements IdfExperimentalDesignListView.Presenter {
 

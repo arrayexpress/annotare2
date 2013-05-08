@@ -27,12 +27,11 @@ import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationExcepetion;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -62,41 +61,37 @@ public class DummyData {
         User user = createUser("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee");
         user.setRoles(asList(Role.AUTHENTICATED));
 
-        try {
-            createSubmission(user,
-                    SubmissionStatus.IN_PROGRESS,
-                    "E-GEOD-37590.idf.txt",
-                    "E-GEOD-37590",
-                    "Natural genetic variation in yeast longevity");
+        createSubmission(user,
+                SubmissionStatus.IN_PROGRESS,
+                "E-MTAB-641.idf.txt",
+                "E-MTAB-641.json.txt",
+                "E-MTAB-641",
+                "agb1-1 mutant and Col-0 comparative transcriptomic analysis in a Plectosphaerella cucumerina inoculation");
 
-            createSubmission(user,
-                    SubmissionStatus.IN_PROGRESS,
-                    "E-MTAB-996.idf.txt",
-                    "E-MTAB-996",
-                    "E. coli Anaerobic/aerobic transitions in chemostat");
+        createSubmission(user,
+                SubmissionStatus.IN_PROGRESS,
+                "E-MEXP-3237.idf.txt",
+                "E-MEXP-3237.json.txt",
+                "E-MEXP-3237",
+                "rogB mutant in NEM316 S. agalactiae strain");
 
-            createSubmission(user,
-                    SubmissionStatus.PUBLIC_IN_AE,
-                    "E-GEOD-37372.idf.txt",
-                    "E-GEOD-37372",
-                    "Ewing's sarcoma tumor samples");
+        createSubmission(user,
+                SubmissionStatus.PUBLIC_IN_AE,
+                "E-MTAB-582.idf.txt",
+                "E-MTAB-582.json.txt",
+                "E-MTAB-582",
+                "RNA and chromatin structure");
 
-            createAdSubmission(user,
-                    SubmissionStatus.IN_PROGRESS,
-                    "A-MEXP-2196.adf.header.txt",
-                    "A-MEXP-2196.adf.txt",
-                    "A-MEXP-2196",
-                    "LSTM_An.gambiae_s.s._AGAM15K_V1.0");
+        createAdSubmission(user,
+                SubmissionStatus.IN_PROGRESS,
+                "A-MEXP-2196.adf.header.txt",
+                "A-MEXP-2196.adf.txt",
+                "A-MEXP-2196",
+                "LSTM_An.gambiae_s.s._AGAM15K_V1.0");
 
-            arrayProtocols.add(new ArrayPrintingProtocol("Protocol-1", "<em>Protocol-1 description</em>"));
-            arrayProtocols.add(new ArrayPrintingProtocol("Protocol-2", "<em>Protocol-2 description</em>"));
-            arrayProtocols.add(new ArrayPrintingProtocol("Protocol-3", "<em>Protocol-3 description</em>"));
-
-        } catch (IOException e) {
-            log.error("", e);
-        } catch (DataSerializationExcepetion e) {
-            log.error("", e);
-        }
+        arrayProtocols.add(new ArrayPrintingProtocol("Protocol-1", "<em>Protocol-1 description</em>"));
+        arrayProtocols.add(new ArrayPrintingProtocol("Protocol-2", "<em>Protocol-2 description</em>"));
+        arrayProtocols.add(new ArrayPrintingProtocol("Protocol-3", "<em>Protocol-3 description</em>"));
     }
 
     private DummyData() {
@@ -108,32 +103,53 @@ public class DummyData {
         return user;
     }
 
-    private static Submission createSubmission(User user, SubmissionStatus status, String idfName, String accession, String title) throws IOException, DataSerializationExcepetion {
-        ExperimentSubmission submission = new SubmissionFactory().createExperimentSubmission(user);
-        submission.setStatus(status);
-        submission.setInvestigation(
-                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
-        // TODO
-        submission.setExperiment(new Experiment(Collections.<String, String>emptyMap()));
-        submission.setTitle(title);
-        submission.setAccession(accession);
-        save(submission);
-        return submission;
+    private static void createSubmission(User user,
+                                               SubmissionStatus status,
+                                               String idfName,
+                                               String jsonFile,
+                                               String accession,
+                                               String title) {
+        try {
+            ExperimentSubmission submission = new SubmissionFactory().createExperimentSubmission(user);
+            submission.setStatus(status);
+
+            //TODO use experiment object instead
+            submission.setInvestigation(
+                    CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(idfName), Charsets.UTF_8)));
+            submission.setExperiment(Experiment.fromJsonString(
+                    CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(jsonFile), Charsets.UTF_8))));
+
+            submission.setTitle(title);
+            submission.setAccession(accession);
+            save(submission);
+        } catch (IOException e) {
+            log.error("Can't create submission '" + jsonFile + "' ", e);
+        } catch (DataSerializationException e) {
+            log.error("Can't create submission '" + jsonFile + "' ", e);
+        }
     }
 
-    private static Submission createAdSubmission(User user, SubmissionStatus status, String headerFile, String bodyFile, String accession, String title) throws IOException {
-        ArrayDesignSubmission submission = new SubmissionFactory().createArrayDesignSubmission(user);
-        submission.setStatus(status);
-        submission.setAccession(accession);
-        submission.setTitle(title);
-        submission.setHeader(
-                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(headerFile), Charsets.UTF_8))
-        );
-        submission.setBody(
-                CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(bodyFile), Charsets.UTF_8))
-        );
-        save(submission);
-        return submission;
+    private static void createAdSubmission(User user,
+                                                 SubmissionStatus status,
+                                                 String headerFile,
+                                                 String bodyFile,
+                                                 String accession,
+                                                 String title) {
+        try {
+            ArrayDesignSubmission submission = new SubmissionFactory().createArrayDesignSubmission(user);
+            submission.setStatus(status);
+            submission.setAccession(accession);
+            submission.setTitle(title);
+            submission.setHeader(
+                    CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(headerFile), Charsets.UTF_8))
+            );
+            submission.setBody(
+                    CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(bodyFile), Charsets.UTF_8))
+            );
+            save(submission);
+        } catch (IOException e) {
+            log.error("Cn't create ArrayDesign submission: '" + headerFile + "'", e);
+        }
     }
 
     private static int nextId() {

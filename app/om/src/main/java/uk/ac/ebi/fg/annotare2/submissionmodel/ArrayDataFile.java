@@ -16,12 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDataFile {
+public class ArrayDataFile implements GraphNode {
 
     @JsonProperty("id")
     private int id;
@@ -29,14 +30,17 @@ public class ArrayDataFile {
     @JsonProperty("name")
     private String name;
 
+    @JsonCreator
+    public ArrayDataFile(@JsonProperty("id") int id) {
+        this.id = id;
+    }
+
+    @Override
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    @Override
     public String getName() {
         return name;
     }

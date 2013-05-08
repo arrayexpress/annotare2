@@ -23,6 +23,47 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class Publication {
 
+    @JsonProperty("id")
+    private int id;
+
     @JsonProperty("title")
     private String title;
+
+    @JsonProperty("pubMedId")
+    private String pubMedId;
+
+    @JsonProperty("authors")
+    private String authors;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPubMedId() {
+        return pubMedId;
+    }
+
+    public void setPubMedId(String pubMedId) {
+        this.pubMedId = pubMedId;
+    }
+
+    public String getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String authors) {
+        this.authors = authors;
+    }
 }

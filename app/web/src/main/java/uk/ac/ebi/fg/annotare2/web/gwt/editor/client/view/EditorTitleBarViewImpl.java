@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
@@ -44,6 +45,9 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiField
     Anchor createNewLink;
+
+    @UiField
+    AutoSaveLabel autoSaveLabel;
 
     private Presenter presenter;
 
@@ -65,6 +69,20 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void setSubmissionType(SubmissionType type) {
         validateButton.setEnabled(type == SubmissionType.EXPERIMENT);
+    }
+
+    @Override
+    public void autoSaveStarted() {
+        autoSaveLabel.show("Saving...");
+    }
+
+    @Override
+    public void autoSaveStopped(Throwable caught) {
+        if (caught == null) {
+            autoSaveLabel.hide();
+        } else {
+            autoSaveLabel.show("Save filed");
+        }
     }
 
     @UiHandler("validateButton")

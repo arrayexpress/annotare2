@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.submissionmodel;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataSerializationExcepetion extends Exception {
-
-    public DataSerializationExcepetion(Throwable cause) {
-        super(cause);
-    }
+public enum UpdateCommandType {
+    UPDATE,
+    CREATE,
+    REMOVE
 }

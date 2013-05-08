@@ -16,21 +16,33 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class DisclosurePanelContent extends Composite {
+public abstract class DisclosurePanelContent extends Composite
+        implements HasItemHeaderChangeEventHandlers,
+        HasItemChangeEventHandlers {
 
-    public void addContentChangeHandler(RecordChangeEventHandler handler) {
-        addHandler(handler, RecordChangeEvent.TYPE);
+    @Override
+    public HandlerRegistration addItemChangeEventHandler(ItemChangeEventHandler handler) {
+        return addHandler(handler, ItemChangeEvent.getType());
     }
 
-    void fireRecordChangeEvent(String newValue) {
-        fireEvent(new RecordChangeEvent(newValue));
+    @Override
+    public HandlerRegistration addItemHeaderChangeEventHandler(ItemHeaderChangeEventHandler handler) {
+        return addHandler(handler, ItemHeaderChangeEvent.getType());
+    }
+
+    void fireItemHeaderChangeEvent(String newValue) {
+        ItemHeaderChangeEvent.fire(this, newValue);
+    }
+
+    void fireItemChangeEvent() {
+        ItemChangeEvent.fire(this);
     }
 
     public abstract String getHeaderText();

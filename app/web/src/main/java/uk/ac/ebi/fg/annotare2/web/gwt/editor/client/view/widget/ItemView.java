@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class IdfItemView<T> extends DisclosurePanelContent {
+public class ItemView<T> extends DisclosurePanelContent {
 
     private final List<EditableField<T, ?>> fields = new ArrayList<EditableField<T, ?>>();
 
@@ -34,7 +34,7 @@ public class IdfItemView<T> extends DisclosurePanelContent {
     private final ChangeHandler headerChangeHandler = new ChangeHandler() {
         @Override
         public void onChange(ChangeEvent changeEvent) {
-            fireHeaderChangedEvent();
+            fireHeaderChangeEvent();
         }
     };
 
@@ -45,7 +45,7 @@ public class IdfItemView<T> extends DisclosurePanelContent {
         for (EditableField<T, ?> f : fields) {
             f.readValueFrom(item);
         }
-        fireHeaderChangedEvent();
+        fireHeaderChangeEvent();
     }
 
     protected T getItem() {
@@ -58,6 +58,7 @@ public class IdfItemView<T> extends DisclosurePanelContent {
             @Override
             public void onChange(ChangeEvent changeEvent) {
                 field.saveValueTo(item);
+                fireItemChangeEvent();
             }
         });
     }
@@ -67,8 +68,8 @@ public class IdfItemView<T> extends DisclosurePanelContent {
         field.addChangeHandler(headerChangeHandler);
     }
 
-    private void fireHeaderChangedEvent() {
-        fireRecordChangeEvent(getHeaderText());
+    private void fireHeaderChangeEvent() {
+        fireItemHeaderChangeEvent(getHeaderText());
     }
 
     @Override

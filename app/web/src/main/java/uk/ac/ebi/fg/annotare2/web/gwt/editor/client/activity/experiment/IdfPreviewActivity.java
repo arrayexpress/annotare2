@@ -25,9 +25,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.IdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.IdfPreviewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.SheetModeView;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
  * @author Olga Melnichuk
@@ -38,15 +40,15 @@ public class IdfPreviewActivity extends AbstractActivity {
 
     private final PlaceController placeController;
 
-    private final IdfData idfData;
+    private final SubmissionServiceAsync submissionService;
 
     @Inject
     public IdfPreviewActivity(SheetModeView view,
                               PlaceController placeController,
-                              IdfData idfData) {
+                              SubmissionServiceAsync submissionService) {
         this.view = view;
         this.placeController = placeController;
-        this.idfData = idfData;
+        this.submissionService = submissionService;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class IdfPreviewActivity extends AbstractActivity {
     }
 
     private void initAsync() {
-        idfData.getTable(new AsyncCallbackWrapper<Table>() {
+        submissionService.getIdfTable(getSubmissionId(), new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO

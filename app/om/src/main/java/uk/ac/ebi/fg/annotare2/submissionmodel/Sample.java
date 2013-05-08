@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.submissionmodel;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -30,7 +31,7 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * @author Olga Melnichuk
  */
-public class Sample {
+public class Sample implements GraphNode {
 
     @JsonProperty("id")
     private int id;
@@ -39,21 +40,20 @@ public class Sample {
     private String name;
 
     private List<Integer> extractIds;
-
     private List<Extract> extracts;
 
-    public Sample() {
+    @JsonCreator
+    public Sample(@JsonProperty("id") int id) {
+        this.id = id;
         extracts = newArrayList();
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    @Override
     public String getName() {
         return name;
     }

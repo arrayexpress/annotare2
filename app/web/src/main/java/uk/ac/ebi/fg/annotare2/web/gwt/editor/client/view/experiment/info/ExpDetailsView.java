@@ -17,32 +17,21 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.user.client.ui.IsWidget;
-
-import java.util.Date;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
 
 /**
  * @author Olga Melnichuk
  */
 public interface ExpDetailsView extends IsWidget {
 
-    public void setTitle(String title);
+    public void setDetails(ExperimentDetails details);
 
-    public void setDescription(String description);
-
-    public void setDateOfExperiment(Date date);
-
-    public void setDateOfPublicRelease(Date date);
+    public ExperimentDetails getDetails();
 
     public void setPresenter(Presenter presenter);
 
     public interface Presenter {
 
-        void setTitle(String title);
-
-        void setDescription(String description);
-
-        void setDateOfExperiment(Date date);
-
-        void setDateOfPublicRelease(Date date);
+        void saveDetails(ExperimentDetails details);
     }
 }

@@ -23,6 +23,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -37,7 +39,6 @@ import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -152,7 +153,13 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     private HorizontalPanel createTools() {
         HorizontalPanel tools = new HorizontalPanel();
         tools.setSpacing(3);
-        Button button = new Button("Sample Characteristics");
+        Button button = new Button("Sample Attributes");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                (new SampleAttributesDialog()).show();
+            }
+        });
         tools.add(button);
 
         button = new Button("Delete Selected Rows");

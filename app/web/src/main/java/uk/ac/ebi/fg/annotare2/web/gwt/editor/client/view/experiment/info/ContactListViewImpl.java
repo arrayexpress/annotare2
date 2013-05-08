@@ -18,28 +18,31 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactListViewImpl extends ListView<Person> implements ContactListView {
+public class ContactListViewImpl extends ListView<ContactDto.Editor> implements ContactListView {
 
     private Presenter presenter;
 
     public ContactListViewImpl() {
-
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 addNewContact();
             }
         });
-
         removeIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -49,8 +52,18 @@ public class ContactListViewImpl extends ListView<Person> implements ContactList
     }
 
     @Override
-    public void setContacts(List<Person> contacts) {
-        for (Person p : contacts) {
+    public List<ContactDto> getContacts() {
+        List<ContactDto> contacts = new ArrayList<ContactDto>();
+        for (DisclosureListItem item : getItems()) {
+            ContactView view = (ContactView) item.getContent();
+            contacts.add(view.getContact());
+        }
+        return contacts;
+    }
+
+    @Override
+    public void setContacts(List<ContactDto> contacts) {
+        for (ContactDto p : contacts) {
             addContactView(p);
         }
     }
@@ -65,8 +78,15 @@ public class ContactListViewImpl extends ListView<Person> implements ContactList
         //todo scroll + item.open();
     }
 
-    private DisclosureListItem addContactView(Person p) {
-        return addListItem(new ContactView(p));
+    private DisclosureListItem addContactView(ContactDto p) {
+        final ContactView view = new ContactView(p);
+        view.addItemChangeEventHandler(new ItemChangeEventHandler() {
+            @Override
+            public void onItemChange(ItemChangeEvent event) {
+                presenter.updateContact(view.getContact());
+            }
+        });
+        return addListItem(view);
     }
 
     private void removeSelectedContacts() {
@@ -74,7 +94,14 @@ public class ContactListViewImpl extends ListView<Person> implements ContactList
         if (selected.isEmpty()) {
             return;
         }
-        presenter.removeContacts(selected);
+
+        List<ContactDto> contacts = new ArrayList<ContactDto>();
+        for (Integer index : selected) {
+            DisclosureListItem item = getItem(index);
+            ContactView view = (ContactView) item.getContent();
+            contacts.add(view.getContact());
+        }
+        presenter.removeContacts(contacts);
         removeItems(selected);
     }
 }

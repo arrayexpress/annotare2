@@ -16,14 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.Collections;
 import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Olga Melnichuk
  */
-public class Contact {
+public class Contact implements HasId {
+
+    @JsonProperty("id")
+    private int id;
 
     @JsonProperty("firstName")
     private String firstName;
@@ -52,5 +60,103 @@ public class Contact {
     @JsonProperty("roles")
     private List<String> roles;
 
+    @JsonCreator
+    public Contact(@JsonProperty("id") int id) {
+        this.id = id;
+        this.roles = newArrayList();
+    }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAffiliation() {
+        return affiliation;
+    }
+
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getMidInitials() {
+        return midInitials;
+    }
+
+    public void setMidInitials(String midInitials) {
+        this.midInitials = midInitials;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public List<String> getRoles() {
+        return unmodifiableList(roles);
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = newArrayList(roles);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Contact contact = (Contact) o;
+
+        if (id != contact.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

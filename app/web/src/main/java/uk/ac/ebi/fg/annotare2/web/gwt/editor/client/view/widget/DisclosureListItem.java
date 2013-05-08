@@ -16,12 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.logical.shared.*;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemHeaderChangeEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemHeaderChangeEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemSelectionEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.RecordChangeEventHandler;
 
 /**
  * @author Olga Melnichuk
@@ -62,11 +66,15 @@ public class DisclosureListItem extends Composite {
         setContent(content);
     }
 
+    public DisclosurePanelContent getContent() {
+        return (DisclosurePanelContent) panel.getContent();
+    }
+
     public void setContent(DisclosurePanelContent w) {
-        w.addContentChangeHandler(new RecordChangeEventHandler() {
+        w.addItemHeaderChangeEventHandler(new ItemHeaderChangeEventHandler() {
             @Override
-            public void onRecordChange(String value) {
-                header.setHeaderText(value);
+            public void onItemHeaderChange(ItemHeaderChangeEvent event) {
+                header.setHeaderText(event.getValue());
             }
         });
         header.setHeaderText(w.getHeaderText());

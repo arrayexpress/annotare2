@@ -16,12 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.submissionmodel;
 
+import com.google.common.base.Function;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import javax.annotation.Nullable;
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Olga Melnichuk
  */
-public class Extract {
+public class Extract implements GraphNode {
 
     @JsonProperty("id")
     private int id;
@@ -29,19 +39,92 @@ public class Extract {
     @JsonProperty("name")
     private String name;
 
+    private List<Integer> labeledExtractIds;
+    private List<LabeledExtract> labeledExtracts;
+
+    private List<Integer> assayIds;
+    private List<Assay> assays;
+
+    @JsonCreator
+    public Extract(@JsonProperty("id") int id) {
+        this.id = id;
+        labeledExtracts = newArrayList();
+        assays = newArrayList();
+    }
+
+    @Override
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    @Override
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void addAssay(Assay assay) {
+        this.assays.add(assay);
+    }
+
+    public void addLabeledExtract(LabeledExtract labeledExtract) {
+        this.labeledExtracts.add(labeledExtract);
+    }
+
+    @JsonIgnore
+    public List<Assay> getAssays() {
+        return unmodifiableList(assays);
+    }
+
+    @JsonIgnore
+    public List<LabeledExtract> getLabeledExtracts() {
+        return unmodifiableList(labeledExtracts);
+    }
+
+    @JsonProperty("assays")
+    public List<Integer> getAssayIds() {
+        return assayIds != null ? assayIds :
+                transform(assays, new Function<Assay, Integer>() {
+                    @Nullable
+                    @Override
+                    public Integer apply(@Nullable Assay assay) {
+                        return assay.getId();
+                    }
+                });
+    }
+
+    @JsonProperty("assays")
+    public void setAssayIds(List<Integer> assayIds) {
+        this.assayIds = assayIds;
+    }
+
+    @JsonProperty("labeledExtracts")
+    List<Integer> getLabeledExtractIds() {
+        return labeledExtractIds != null ? labeledExtractIds :
+                transform(labeledExtracts, new Function<LabeledExtract, Integer>() {
+                    @Nullable
+                    @Override
+                    public Integer apply(@Nullable LabeledExtract labeledExtract) {
+                        return labeledExtract.getId();
+                    }
+                });
+    }
+
+    @JsonProperty("labeledExtracts")
+    void setLabeledExtractIds(List<Integer> labeledExtractIds) {
+        this.labeledExtractIds = labeledExtractIds;
+    }
+
+    void setAllLabeledExtracts(List<LabeledExtract> extracts) {
+        this.labeledExtracts = newArrayList(extracts);
+        this.labeledExtractIds = null;
+    }
+
+    void setAllAssays(List<Assay> assays) {
+        this.assays = newArrayList(assays);
+        this.assayIds = null;
     }
 }

@@ -44,19 +44,19 @@ public class VocabularyServiceImpl extends RemoteServiceServlet implements Vocab
     public ArrayList<UITerm> getExperimentalDesigns() {
         ArrayList<UITerm> list = new ArrayList<UITerm>();
         //TODO ask for term names from efo
-        list.addAll(getFromEfo("biological variation design", EfoService.BIOLOGICAL_VARIATION_DESINGS));
-        list.addAll(getFromEfo("methodological variation design", EfoService.METHODOLOGICAL_VARIATION_DESIGNS));
-        list.addAll(getFromEfo("biomolecular annotation design", EfoService.BIOMOLECULAR_ANNOTATION_DESIGNS));
+//        list.addAll(getFromEfo("biological variation design", EfoService.BIOLOGICAL_VARIATION_DESINGS));
+//        list.addAll(getFromEfo("methodological variation design", EfoService.METHODOLOGICAL_VARIATION_DESIGNS));
+//        list.addAll(getFromEfo("biomolecular annotation design", EfoService.BIOMOLECULAR_ANNOTATION_DESIGNS));
         return list;
     }
 
     private Collection<? extends UITerm> getFromEfo(String parentName, String parentAccession) {
         UITermSource efo = convert(KnownTermSource.EFO);
         List<UITerm> list = new ArrayList<UITerm>();
-        Collection<String> termNames = efoService.getSubTermsOf(parentAccession);
-        for (String name : termNames) {
-            list.add(new UITerm(name, "", efo, parentName));
-        }
+//        Collection<String> termNames = efoService.getSubTermsOf(parentAccession);
+//        for (String name : termNames) {
+//            list.add(new UITerm(name, "", efo, parentName));
+//        }
         return list;
     }
 

@@ -140,7 +140,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
                 }
             });
             column.setSortable(true);
-            dataGrid.addColumn(column, new TextHeader(title));
+            dataGrid.addResizableColumn(column, title);
             dataGrid.setColumnWidth(i, 150, Style.Unit.PX);
         }
         dataGrid.getColumnSortList().push(dataGrid.getColumn(0));

@@ -22,14 +22,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactView extends IdfItemView<Person> {
+public class ContactView extends ItemView<ContactDto.Editor> {
 
     interface Binder extends UiBinder<Widget, ContactView> {
         Binder BINDER = GWT.create(Binder.class);
@@ -62,110 +62,114 @@ public class ContactView extends IdfItemView<Person> {
     @UiField
     TextArea roles;
 
-    public ContactView(Person person) {
+    public ContactView(ContactDto contact) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         addHeaderField(hasChangeableValue(firstName));
         addHeaderField(hasChangeableValue(midInitials));
         addHeaderField(hasChangeableValue(lastName));
 
-        addField(new EditableField<Person, String>(hasChangeableValue(firstName)) {
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(firstName)) {
             @Override
-            protected String getValue(Person p) {
-                return p.getFirstName().getValue();
+            protected String getValue(ContactDto.Editor p) {
+                return p.getFirstName();
             }
 
             @Override
-            protected void setValue(Person p, String value) {
-                p.getFirstName().setValue(value);
-            }
-        });
-
-        addField(new EditableField<Person, String>(hasChangeableValue(midInitials)) {
-            @Override
-            protected String getValue(Person p) {
-                return p.getMidInitials().getValue();
-            }
-
-            @Override
-            protected void setValue(Person p, String value) {
-                p.getMidInitials().setValue(value);
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setFirstName(value);
             }
         });
 
-        addField(new EditableField<Person, String>(hasChangeableValue(lastName)) {
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(midInitials)) {
             @Override
-            protected String getValue(Person p) {
-                return p.getLastName().getValue();
+            protected String getValue(ContactDto.Editor p) {
+                return p.getMidInitials();
             }
 
             @Override
-            protected void setValue(Person p, String value) {
-                p.getLastName().setValue(value);
-            }
-        });
-
-        addField(new EditableField<Person, String>(hasChangeableValue(phone)) {
-            @Override
-            protected String getValue(Person p) {
-                return p.getPhone().getValue();
-            }
-
-            @Override
-            protected void setValue(Person p, String value) {
-                p.getPhone().setValue(value);
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setMidInitials(value);
             }
         });
 
-        addField(new EditableField<Person, String>(hasChangeableValue(fax)) {
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(lastName)) {
             @Override
-            protected String getValue(Person p) {
-                return p.getFax().getValue();
+            protected String getValue(ContactDto.Editor p) {
+                return p.getLastName();
             }
 
             @Override
-            protected void setValue(Person p, String value) {
-                p.getFax().setValue(value);
-            }
-        });
-
-        addField(new EditableField<Person, String>(hasChangeableValue(email)) {
-            @Override
-            protected String getValue(Person p) {
-                return p.getEmail().getValue();
-            }
-
-            @Override
-            protected void setValue(Person p, String value) {
-                p.getEmail().setValue(value);
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setLastName(value);
             }
         });
 
-        addField(new EditableField<Person, String>(hasChangeableValue(affiliation)) {
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(phone)) {
             @Override
-            protected String getValue(Person p) {
-                return p.getAffiliation().getValue();
+            protected String getValue(ContactDto.Editor p) {
+                return p.getPhone();
             }
 
             @Override
-            protected void setValue(Person p, String value) {
-                p.getAffiliation().setValue(value);
-            }
-        });
-
-        addField(new EditableField<Person, String>(hasChangeableValue(address)) {
-            @Override
-            protected String getValue(Person p) {
-                return p.getAddress().getValue();
-            }
-
-            @Override
-            protected void setValue(Person p, String value) {
-                p.getAddress().setValue(value);
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setPhone(value);
             }
         });
 
-        setItem(person);
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(fax)) {
+            @Override
+            protected String getValue(ContactDto.Editor p) {
+                return p.getFax();
+            }
+
+            @Override
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setFax(value);
+            }
+        });
+
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(email)) {
+            @Override
+            protected String getValue(ContactDto.Editor p) {
+                return p.getEmail();
+            }
+
+            @Override
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setEmail(value);
+            }
+        });
+
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(affiliation)) {
+            @Override
+            protected String getValue(ContactDto.Editor p) {
+                return p.getAffiliation();
+            }
+
+            @Override
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setAffiliation(value);
+            }
+        });
+
+        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(address)) {
+            @Override
+            protected String getValue(ContactDto.Editor p) {
+                return p.getAddress();
+            }
+
+            @Override
+            protected void setValue(ContactDto.Editor p, String value) {
+                p.setAddress(value);
+            }
+        });
+
+        setItem(contact.editor());
+    }
+
+    public ContactDto getContact() {
+        return getItem().copy();
     }
 }
 

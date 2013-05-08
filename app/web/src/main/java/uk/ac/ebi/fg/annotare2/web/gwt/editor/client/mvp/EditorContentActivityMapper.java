@@ -35,6 +35,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
     private final Provider<ExpDetailsActivity> expDetailsActivityProvider;
     private final Provider<ContactListActivity> contactsActivityProvider;
+    private final Provider<PublicationListActivity> publicationsActivityProvider;
 
     private final Provider<SamplesActivity> samplesActivityProvider;
     private final Provider<ExtractsActivity> extractsActivityProvider;
@@ -51,6 +52,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     public EditorContentActivityMapper(
             Provider<ExpDetailsActivity> expDetailsActivityProvider,
             Provider<ContactListActivity> contactsActivityProvider,
+            Provider<PublicationListActivity> publicationsActivityProvider,
             Provider<SamplesActivity> samplesActivityProvider,
             Provider<ExtractsActivity> extractsActivityProvider,
             Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
@@ -61,6 +63,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<AdfTablePreviewActivity> adfTablePreviewActivityProvider) {
         this.expDetailsActivityProvider = expDetailsActivityProvider;
         this.contactsActivityProvider = contactsActivityProvider;
+        this.publicationsActivityProvider = publicationsActivityProvider;
 
         this.samplesActivityProvider = samplesActivityProvider;
         this.extractsActivityProvider = extractsActivityProvider;
@@ -83,6 +86,9 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (expDetailsActivityProvider.get()).withPlace(infoPlace);
                 case CONTACTS:
                     return (contactsActivityProvider.get()).withPlace(infoPlace);
+                case PUBLICATIONS:
+                    return (publicationsActivityProvider.get()).withPlace(infoPlace);
+
             }
         } else if (place instanceof ExpDesignPlace) {
             ExpDesignPlace designPlace = (ExpDesignPlace) place;

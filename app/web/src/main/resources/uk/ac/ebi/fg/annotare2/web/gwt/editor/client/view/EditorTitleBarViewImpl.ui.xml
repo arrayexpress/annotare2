@@ -16,7 +16,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
-        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:w="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget"
+
+        >
 
     <ui:style>
         .editorHeader {
@@ -92,6 +95,12 @@
         a.wiredLink:hover {
             color:  #48877C;
         }
+
+        .autoSaveLabel {
+            color: #cecece;
+            font-size: 14px;
+            padding-left: 15px;
+        }
     </ui:style>
 
     <g:HTMLPanel height="100%">
@@ -99,9 +108,18 @@
             <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                     <td>
-                        <h1>
-                            <g:Label ui:field="accessionLabel"/>
-                        </h1>
+                        <table>
+                            <tr>
+                                <td>
+                                    <h1>
+                                        <g:Label ui:field="accessionLabel"/>
+                                    </h1>
+                                </td>
+                                <td>
+                                    <w:AutoSaveLabel ui:field="autoSaveLabel" addStyleNames="{style.autoSaveLabel}"/>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                     <td  style="text-align:right">
                         <g:Anchor addStyleNames="{style.wiredLink}" ui:field="createNewLink">Create New</g:Anchor>

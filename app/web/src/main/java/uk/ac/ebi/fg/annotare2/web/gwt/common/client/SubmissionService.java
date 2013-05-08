@@ -18,10 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateResult;
 
 import java.util.List;
 
@@ -37,7 +39,17 @@ public interface SubmissionService extends RemoteService {
 
     ExperimentSettings getExperimentSettings(int id) throws ResourceNotFoundException, NoPermissionException;
 
+    ExperimentDetails getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    List<ContactDto> getContacts(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    List<PublicationDto> getPublications(int id) throws ResourceNotFoundException, NoPermissionException;
+
     List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    Table getIdfTable(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+
+    Table getSdrfTable(int submissionId) throws NoPermissionException, ResourceNotFoundException;
 
     int createExperimentSubmission() throws NoPermissionException;
 
@@ -46,4 +58,8 @@ public interface SubmissionService extends RemoteService {
     void setupExperimentSubmission(int id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
 
     void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    ExperimentDetails saveExperimentDetails(int id, ExperimentDetails details) throws ResourceNotFoundException, NoPermissionException;
+
+    ContactsUpdateResult updateContacts(int id, List<ContactsUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 }

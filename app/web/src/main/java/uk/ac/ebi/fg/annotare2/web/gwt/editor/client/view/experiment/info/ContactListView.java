@@ -16,8 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Person;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 
 import java.util.List;
 
@@ -26,14 +27,18 @@ import java.util.List;
  */
 public interface ContactListView extends IsWidget {
 
-    void setContacts(List<Person> contacts);
+    void setContacts(List<ContactDto> contacts);
 
     void setPresenter(Presenter presenter);
 
+    List<ContactDto> getContacts();
+
     public interface Presenter {
 
-        Person createContact();
+        ContactDto createContact();
 
-        void removeContacts(List<Integer> indices);
+        void removeContacts(List<ContactDto> indices);
+
+        void updateContact(ContactDto contact);
     }
 }
