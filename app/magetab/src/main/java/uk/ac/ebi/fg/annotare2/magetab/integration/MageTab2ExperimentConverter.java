@@ -35,13 +35,10 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.sdrf.LimpopoBasedSd
 import uk.ac.ebi.fg.annotare2.submissionmodel.*;
 
 import javax.annotation.Nullable;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Queues.newArrayDeque;
 import static com.google.common.collect.Sets.newHashSet;
