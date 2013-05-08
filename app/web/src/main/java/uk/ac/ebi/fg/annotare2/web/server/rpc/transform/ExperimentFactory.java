@@ -16,16 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
-import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Extract;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Sample;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentSetting.allSettingsAsMap;
+import static uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType.*;
 
 /**
  * @author Olga Melnichuk
@@ -33,32 +32,32 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentSetting.
 public class ExperimentFactory {
 
     private static enum Builder {
-        ONE_COLOR_EXPERIMENT_BUILDER(ExperimentType.ONE_COLOR_MICROARRAY) {
+        ONE_COLOR_EXPERIMENT_BUILDER(ONE_COLOR_MICROARRAY) {
             @Override
-            Experiment setupExperiment(Experiment experiment, ExperimentSetupSettings settings) {
+            ExperimentConfig setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentConfig config = new ExperimentConfig(ONE_COLOR_MICROARRAY);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
-                    Sample sample = experiment.createSample();
-                    Extract extract = experiment.createExtract();
-                    sample.addExtract(extract);
+                    SampleConfig sample = config.createSampleConfig();
+                    config.assignLabel(sample, settings.getLabel());
                 }
-                return experiment;
+                return config;
             }
         },
-        TWO_COLOR_EXPERIMENT_BUILDER(ExperimentType.TWO_COLOR_MICROARRAY) {
+        TWO_COLOR_EXPERIMENT_BUILDER(TWO_COLOR_MICROARRAY) {
             @Override
-            Experiment setupExperiment(Experiment experiment, ExperimentSetupSettings settings) {
-                return experiment;
+            ExperimentConfig setupExperiment(ExperimentSetupSettings settings) {
+                return new ExperimentConfig(TWO_COLOR_MICROARRAY);
             }
         },
-        SEQUENCING_EXPERIMENT_BUILDER(ExperimentType.SEQUENCING) {
+        SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
             @Override
-            Experiment setupExperiment(Experiment experiment, ExperimentSetupSettings settings) {
-                return experiment;
+            ExperimentConfig setupExperiment( ExperimentSetupSettings settings) {
+                return new ExperimentConfig(SEQUENCING);
             }
         };
 
-        public static Map<ExperimentType, Builder> map = newHashMap();
+        public static Map<ExperimentConfigType, Builder> map = newHashMap();
 
         static {
             for (Builder b : Builder.values()) {
@@ -66,29 +65,28 @@ public class ExperimentFactory {
             }
         }
 
-        private ExperimentType type;
+        private ExperimentConfigType type;
 
-        private Builder(ExperimentType type) {
+        private Builder(ExperimentConfigType type) {
             this.type = type;
         }
 
-        abstract Experiment setupExperiment(Experiment experiment, ExperimentSetupSettings settings);
+        abstract ExperimentConfig setupExperiment(ExperimentSetupSettings settings);
 
         private static Builder find(ExperimentSetupSettings settings) {
             return map.get(settings.getExperimentType());
         }
 
-        public static Experiment build(ExperimentSetupSettings settings) {
+        public static ExperimentConfig build(ExperimentSetupSettings settings) {
             Builder b = find(settings);
             if (b == null) {
                 throw new IllegalStateException("Can't build an experiment with null type");
             }
-            Experiment experiment = new Experiment(allSettingsAsMap(settings));
-            return b.setupExperiment(experiment, settings);
+            return b.setupExperiment(settings);
         }
     }
 
-    public static Experiment createExperiment(ExperimentSetupSettings settings) {
+    public static ExperimentConfig createExperiment(ExperimentSetupSettings settings) {
         return Builder.build(settings);
     }
 

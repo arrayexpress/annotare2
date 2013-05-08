@@ -23,6 +23,8 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.fg.annotare2.configmodel.Contact;
+import uk.ac.ebi.fg.annotare2.configmodel.Publication;
 import uk.ac.ebi.fg.annotare2.submissionmodel.*;
 
 import java.util.Collection;
@@ -30,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Joiner.on;
-import static uk.ac.ebi.fg.annotare2.magetab.integration.Utils.formatMageTabDate;
+import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
  * @author Olga Melnichuk
@@ -49,8 +51,8 @@ public class Experiment2MageTabConverter {
     private static void fillInIdfData(Experiment exp, IDF idf) {
         idf.investigationTitle = fix(exp.getTitle());
         idf.experimentDescription = fix(exp.getDescription());
-        idf.publicReleaseDate = fix(formatMageTabDate(exp.getPublicReleaseDate()));
-        idf.dateOfExperiment = fix(formatMageTabDate(exp.getExperimentDate()));
+        idf.publicReleaseDate = fix(formatDate(exp.getPublicReleaseDate()));
+        idf.dateOfExperiment = fix(formatDate(exp.getExperimentDate()));
         idf.accession = fix(exp.getAccession());
 
         for (Contact contact : exp.getContacts()) {

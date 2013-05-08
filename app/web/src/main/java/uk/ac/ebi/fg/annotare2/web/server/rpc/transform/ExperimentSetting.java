@@ -16,8 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
+import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public enum ExperimentSetting {
     EXPERIMENT_TYPE {
         @Override
         String getValue(ExperimentSetupSettings settings) {
-            ExperimentType type = settings.getExperimentType();
+            ExperimentConfigType type = settings.getExperimentType();
             return (type == null) ? null : type.name();
         }
     },

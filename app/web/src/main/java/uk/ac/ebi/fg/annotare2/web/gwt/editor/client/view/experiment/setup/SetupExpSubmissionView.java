@@ -25,9 +25,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
 
     private Presenter presenter;
 
-    private final Map<ExperimentType, HasSubmissionSettings> widgets = new HashMap<ExperimentType, HasSubmissionSettings>();
+    private final Map<ExperimentConfigType, HasSubmissionSettings> widgets = new HashMap<ExperimentConfigType, HasSubmissionSettings>();
 
     public SetupExpSubmissionView() {
         this(null);
@@ -72,14 +72,14 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
             cancelButton.addClickHandler(cancelClick);
         }
 
-        for (ExperimentType type : ExperimentType.values()) {
+        for (ExperimentConfigType type : ExperimentConfigType.values()) {
             templateBox.addItem(type.getTitle(), type.name());
         }
 
         templateBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                showDetails(ExperimentType.valueOf(getSelectedSettingsTemplate()));
+                showDetails(ExperimentConfigType.valueOf(getSelectedSettingsTemplate()));
             }
         });
         selectFirstTemplate(templateBox);
@@ -124,7 +124,7 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
         return templateBox.getValue(templateBox.getSelectedIndex());
     }
 
-    private void showDetails(ExperimentType type) {
+    private void showDetails(ExperimentConfigType type) {
         HasSubmissionSettings w = widgets.get(type);
         if (w == null) {
             w = createWidget(type);
@@ -133,7 +133,7 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
         templateDetails.setWidget(w);
     }
 
-    private HasSubmissionSettings createWidget(ExperimentType type) {
+    private HasSubmissionSettings createWidget(ExperimentConfigType type) {
         switch (type) {
             case ONE_COLOR_MICROARRAY:
                 return new OneColorMicroarraySettings(this);

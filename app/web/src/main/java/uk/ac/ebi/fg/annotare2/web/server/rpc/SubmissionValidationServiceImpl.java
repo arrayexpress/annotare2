@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationService;
@@ -85,6 +86,9 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
             log.error("Validation failure", e);
             failures.add("Failure: " + e.getMessage());
         } catch (UknownExperimentTypeException e) {
+            log.error("Validation failure", e);
+            failures.add("Failure: " + e.getMessage());
+        } catch (DataSerializationException e) {
             log.error("Validation failure", e);
             failures.add("Failure: " + e.getMessage());
         }

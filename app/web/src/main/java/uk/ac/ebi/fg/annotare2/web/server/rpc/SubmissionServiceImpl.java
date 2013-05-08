@@ -16,8 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Closeables;
 import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -28,16 +26,16 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
+import uk.ac.ebi.fg.annotare2.configmodel.Contact;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.magetab.integration.Experiment2MageTabConverter;
+import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Contact;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
@@ -51,7 +49,10 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,8 +178,8 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public Table getIdfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            Experiment exp = submission.getExperiment();
-            MAGETABInvestigation inv = Experiment2MageTabConverter.convert(exp);
+            ExperimentConfig exp = submission.getExperimentConfig();
+            MAGETABInvestigation inv = new MageTabGenerator(exp).generate();
             return asTable(inv.IDF);
         } catch (AccessControlException e) {
             log.warn("getIdfTable(" + id + ") failure", e);
@@ -202,8 +203,8 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public Table getSdrfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            Experiment exp = submission.getExperiment();
-            MAGETABInvestigation inv = Experiment2MageTabConverter.convert(exp);
+            ExperimentConfig exp = submission.getExperimentConfig();
+            MAGETABInvestigation inv = (new MageTabGenerator(exp)).generate();
             return asTable(inv.SDRF);
         } catch (AccessControlException e) {
             log.warn("getSdrfTable(" + id + ") failure", e);
@@ -274,7 +275,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         try {
             ExperimentSubmission submission =
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-            submission.setExperiment(createExperiment(settings));
+            submission.setExperimentConfig(createExperiment(settings));
         } catch (RecordNotFoundException e) {
             log.warn("setupExperimentSubmission(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
@@ -307,12 +308,12 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         try {
             ExperimentSubmission submission =
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-            Experiment exp = submission.getExperiment();
+            ExperimentConfig exp = submission.getExperimentConfig();
             exp.setTitle(details.getTitle());
             exp.setDescription(details.getDescription());
             exp.setPublicReleaseDate(details.getPublicReleaseDate());
             exp.setExperimentDate(details.getExperimentDate());
-            submission.setExperiment(exp);
+            submission.setExperimentConfig(exp);
             submission.setTitle(details.getTitle());
             return details;
         } catch (RecordNotFoundException e) {
@@ -334,7 +335,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
 
             ContactsUpdateResult result = new ContactsUpdateResult();
-            Experiment exp = submission.getExperiment();
+            ExperimentConfig exp = submission.getExperimentConfig();
             for (ContactsUpdateCommand command : commands) {
                 switch (command.getType()) {
                     case UPDATE:
@@ -348,7 +349,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                         break;
                 }
             }
-            submission.setExperiment(exp);
+            submission.setExperimentConfig(exp);
             return result;
         } catch (RecordNotFoundException e) {
             log.warn("updateContacts(" + id + ") failure", e);
@@ -362,7 +363,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
-    private ContactDto updateContact(ContactDto dto, Experiment exp) {
+    private ContactDto updateContact(ContactDto dto, ExperimentConfig exp) {
         Contact contact = exp.getContact(dto.getId());
         contact.setFirstName(dto.getFirstName());
         contact.setLastName(dto.getLastName());
@@ -376,12 +377,12 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         return dto;
     }
 
-    private ContactDto createContact(ContactDto dto, Experiment exp) {
+    private ContactDto createContact(ContactDto dto, ExperimentConfig exp) {
         Contact contact = exp.createContact();
         return updateContact(new ContactDto(contact.getId()).updatedCopy(dto), exp);
     }
 
-    private List<ContactDto> removeContacts(List<Integer> ids, Experiment exp) throws DataSerializationException {
+    private List<ContactDto> removeContacts(List<Integer> ids, ExperimentConfig exp) throws DataSerializationException {
         List<Contact> removed = new ArrayList<Contact>();
         for (Integer id : ids) {
             Contact contact = exp.removeContact(id);

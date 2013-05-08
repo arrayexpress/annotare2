@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
 
@@ -29,43 +30,17 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class ExperimentSubmission extends Submission {
 
-    @Deprecated
-    private String investigation;
-
-    @Deprecated
-    private String sampleAndDataRel;
-
     private String experimentString;
 
     public ExperimentSubmission(User user, Acl acl) {
         super(user, acl);
     }
 
-    @Deprecated
-    public void setInvestigation(String text) {
-        this.investigation = text;
+    public ExperimentConfig getExperimentConfig() throws DataSerializationException {
+         return ExperimentConfig.fromJsonString(experimentString);
     }
 
-    @Deprecated
-    public void setSampleAndDataRelationship(String rel) {
-        this.sampleAndDataRel = rel;
-    }
-
-    @Deprecated
-    public InputStream getInvestigation() throws IOException {
-       return asStream(investigation);
-    }
-
-    @Deprecated
-    public InputStream getSampleAndDataRelationship() {
-        return asStream(sampleAndDataRel);
-    }
-
-    public Experiment getExperiment() throws DataSerializationException {
-         return Experiment.fromJsonString(experimentString);
-    }
-
-    public void setExperiment(Experiment exp) throws DataSerializationException {
+    public void setExperimentConfig(ExperimentConfig exp) throws DataSerializationException {
          this.experimentString = exp.toJsonString();
     }
 

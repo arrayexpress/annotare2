@@ -25,6 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UIGeneralInfo;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 @RemoteServiceRelativePath(IdfService.NAME)
 public interface IdfService extends RemoteService {
 

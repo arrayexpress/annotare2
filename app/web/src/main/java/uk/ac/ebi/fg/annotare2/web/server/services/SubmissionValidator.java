@@ -16,27 +16,27 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.IdfParser;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.Investigation;
+import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
+import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static com.google.common.io.Closeables.close;
 
@@ -48,6 +48,8 @@ public class SubmissionValidator {
     //TODO move it
     private static final String IDF_FILE_NAME = "idf";
 
+    private static final String SDRF_FILE_NAME = "sdrf";
+
     private final MageTabChecker checker;
 
     @Inject
@@ -56,9 +58,9 @@ public class SubmissionValidator {
     }
 
     public Collection<CheckResult> validate(ExperimentSubmission submission) throws IOException,
-            ParseException, UknownExperimentTypeException {
+            ParseException, UknownExperimentTypeException, DataSerializationException {
 
-        File tmp = copy(submission);
+        File tmp = writeToFile(submission);
 
         MAGETABParser parser = new MAGETABParser();
         MAGETABInvestigation inv = parser.parse(new File(tmp, IDF_FILE_NAME));
@@ -67,37 +69,32 @@ public class SubmissionValidator {
         return natural().sortedCopy(results);
     }
 
-    private File copy(ExperimentSubmission submission) throws IOException {
-        Investigation inv = IdfParser.parse(submission.getInvestigation());
-        String sdrfFileRef = inv.getSdrfFile().getValue();
+    private File writeToFile(ExperimentSubmission submission) throws IOException, DataSerializationException, ParseException {
+        ExperimentConfig config = submission.getExperimentConfig();
+        MAGETABInvestigation inv = (new MageTabGenerator(config)).generate();
 
         File tmp = Files.createTempDir();
         File idfFile = new File(tmp, IDF_FILE_NAME);
+        File sdrfFile = new File(tmp, SDRF_FILE_NAME);
 
-        if (0 == copyStream(submission.getInvestigation(), idfFile)) {
-            throw new IOException("No IDF data");
+        inv.IDF.sdrfFile.add(sdrfFile.getName());
+
+        IDFWriter idfWriter = null;
+        try {
+            idfWriter = new IDFWriter(new FileWriter(idfFile));
+            idfWriter.write(inv.IDF);
+        } finally {
+            close(idfWriter, true);
         }
 
-        if (!isNullOrEmpty(sdrfFileRef)) {
-            if (0 == copyStream(submission.getSampleAndDataRelationship(), new File(tmp, sdrfFileRef))) {
-                /* A workaround: limpopo parser hands when the content of a file is empty */
-                throw new IOException("No SDRF data");
-            }
+        SDRFWriter sdrfWriter = null;
+        try {
+            sdrfWriter = new SDRFWriter(new FileWriter(sdrfFile));
+            sdrfWriter.write(inv.SDRF);
+        } finally {
+            close(sdrfWriter, true);
         }
-
         return tmp;
     }
 
-    private long copyStream(InputStream from, File file) throws IOException {
-        if (from == null) {
-            return 0;
-        }
-        FileOutputStream to = new FileOutputStream(file);
-        try {
-            return ByteStreams.copy(from, to);
-        } finally {
-            close(to, true);
-            close(from, true);
-        }
-    }
 }

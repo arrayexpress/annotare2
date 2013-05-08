@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.magetab.integration;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
+package uk.ac.ebi.fg.annotare2.configmodel.enums;
 
 /**
  * @author Olga Melnichuk
  */
-public class Utils {
+public enum ExperimentConfigType {
+    ONE_COLOR_MICROARRAY("One-color microarray"),
+    TWO_COLOR_MICROARRAY("Two-color microarray"),
+    SEQUENCING("High-throughput sequencing");
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private final String title;
 
-    public static Date parseMageTabDate(String string) throws ParseException {
-        return isNullOrEmpty(string) ? null : DATE_FORMAT.parse(string);
+    private ExperimentConfigType(String title) {
+        this.title = title;
     }
 
-    public static String formatMageTabDate(Date date) {
-        return date == null ? "" : DATE_FORMAT.format(date);
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean isMicroarray() {
+        return this == ONE_COLOR_MICROARRAY || this == TWO_COLOR_MICROARRAY;
     }
 }

@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
+import uk.ac.ebi.fg.annotare2.configmodel.Contact;
+import uk.ac.ebi.fg.annotare2.configmodel.Publication;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.IdfData;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Info;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Person;
@@ -33,17 +35,14 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.sdrf.LimpopoBasedSd
 import uk.ac.ebi.fg.annotare2.submissionmodel.*;
 
 import javax.annotation.Nullable;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Queues.newArrayDeque;
 import static com.google.common.collect.Sets.newHashSet;
-import static uk.ac.ebi.fg.annotare2.magetab.integration.Utils.parseMageTabDate;
+import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.parseDate;
 
 /**
  * @author Olga Melnichuk
@@ -299,15 +298,6 @@ public class MageTab2ExperimentConverter {
         source.setName(sourceNode.getName());
         //TODO set other attributes
         return source.getId();
-    }
-
-    private static Date parseDate(String value) {
-        try {
-            return isNullOrEmpty(value) ? null : parseMageTabDate(value);
-        } catch (ParseException e) {
-            log.error("can't parse date string: " + value);
-            return null;
-        }
     }
 
     private static class NodeToVisit {

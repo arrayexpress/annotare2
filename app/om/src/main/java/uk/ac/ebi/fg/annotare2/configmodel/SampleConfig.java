@@ -14,26 +14,36 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
+package uk.ac.ebi.fg.annotare2.configmodel;
 
-import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-
-import java.util.Map;
-
-import static org.junit.Assert.assertTrue;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentSetting.allSettingsAsMap;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentSettingTest {
+public class SampleConfig {
 
-    @Test
-    public void emptySettingsTest() {
-        Map<String, String> map = allSettingsAsMap(new ExperimentSetupSettings());
-        assertTrue(map.isEmpty());
+    @JsonProperty("id")
+    private int id;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonCreator
+    public SampleConfig(@JsonProperty("id") int id) {
+        this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
