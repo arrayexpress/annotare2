@@ -38,7 +38,7 @@
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
             <artifactId>annotare2-om</artifactId>
-            <version>0.13-SNAPSHOT</version>
+            <version>0.14-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.arrayexpress2</groupId>
