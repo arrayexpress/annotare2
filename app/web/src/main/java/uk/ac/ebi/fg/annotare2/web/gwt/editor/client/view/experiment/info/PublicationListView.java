@@ -26,5 +26,14 @@ import java.util.List;
  */
 public interface PublicationListView extends IsWidget {
 
+    void setPresenter(Presenter presenter);
+
     void setPublications(List<PublicationDto> publications);
+
+    List<PublicationDto> getPublications();
+
+    public interface Presenter {
+
+        void updatePublication(PublicationDto publication);
+    }
 }

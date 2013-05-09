@@ -138,4 +138,14 @@ public class ExperimentData {
     public void removeContacts(List<ContactDto> toBeRemoved) {
         contacts.remove(toBeRemoved);
     }
+
+    public void updatePublication(PublicationDto toBeUpdated) {
+        List<PublicationDto> list = new ArrayList<PublicationDto>();
+        list.add(toBeUpdated);
+        updatePublications(list);
+    }
+
+    public void updatePublications(List<PublicationDto> toBeUpdated) {
+        publications.update(toBeUpdated);
+    }
 }

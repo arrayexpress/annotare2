@@ -88,4 +88,8 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
 
         setItem(publication.editor());
     }
+
+    public PublicationDto getPublication() {
+        return getItem().copy();
+    }
 }

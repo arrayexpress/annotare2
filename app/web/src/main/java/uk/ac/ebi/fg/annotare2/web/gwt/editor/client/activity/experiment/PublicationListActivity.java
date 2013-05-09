@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class PublicationListActivity extends AbstractActivity {
+public class PublicationListActivity extends AbstractActivity implements PublicationListView.Presenter {
 
     private final PublicationListView view;
     private final ExperimentData experimentData;
@@ -46,12 +46,24 @@ public class PublicationListActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
     }
 
+    @Override
+    public void onStop() {
+        experimentData.updatePublications(view.getPublications());
+        super.onStop();
+    }
+
     public PublicationListActivity withPlace(ExpInfoPlace place) {
         return this;
+    }
+
+    @Override
+    public void updatePublication(PublicationDto publication) {
+        experimentData.updatePublication(publication);
     }
 
     private void loadAsync() {

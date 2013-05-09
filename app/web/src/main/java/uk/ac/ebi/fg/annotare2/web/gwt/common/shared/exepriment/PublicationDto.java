@@ -99,5 +99,9 @@ public class PublicationDto implements IsSerializable {
         public String getPubMedId() {
             return copy.pubMedId;
         }
+
+        public PublicationDto copy() {
+            return new PublicationDto(copy);
+        }
     }
 }

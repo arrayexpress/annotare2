@@ -71,4 +71,7 @@ public class ExperimentPublications {
         return list;
     }
 
+    public void update(List<PublicationDto> toBeUpdated) {
+        //TODO
+    }
 }

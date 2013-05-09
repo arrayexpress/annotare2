@@ -22,12 +22,20 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEventHandler
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.PublicationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class PublicationListViewImpl extends ListView<PublicationDto.Editor> implements PublicationListView {
+
+    private Presenter presenter;
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
 
     @Override
     public void setPublications(List<PublicationDto> publications) {
@@ -36,12 +44,22 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
         }
     }
 
+    @Override
+    public List<PublicationDto> getPublications() {
+        List<PublicationDto> publications = new ArrayList<PublicationDto>();
+        for (DisclosureListItem item : getItems()) {
+            PublicationView view = (PublicationView) item.getContent();
+            publications.add(view.getPublication());
+        }
+        return publications;
+    }
+
     private DisclosureListItem addPublicationView(PublicationDto p) {
         final PublicationView view = new PublicationView(p);
         view.addItemChangeEventHandler(new ItemChangeEventHandler() {
             @Override
             public void onItemChange(ItemChangeEvent event) {
-                //TODO
+                presenter.updatePublication(view.getPublication());
             }
         });
         return addListItem(view);
