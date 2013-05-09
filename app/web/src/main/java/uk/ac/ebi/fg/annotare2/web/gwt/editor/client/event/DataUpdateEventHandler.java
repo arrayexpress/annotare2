@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public enum UpdateCommandType {
-    UPDATE,
-    CREATE,
-    REMOVE
+public interface DataUpdateEventHandler extends EventHandler {
+
+    void onDataUpdate(DataUpdateEvent event);
 }

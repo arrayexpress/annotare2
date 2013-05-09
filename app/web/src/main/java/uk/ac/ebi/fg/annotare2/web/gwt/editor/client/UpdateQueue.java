@@ -16,30 +16,45 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasDataUpdateEventHandlers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEvent.autoSaveStarted;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEvent.autoSaveStopped;
 
 /**
  * @author Olga Melnichuk
  */
-public class UpdateQueue {
+public class UpdateQueue implements HasDataUpdateEventHandlers {
 
     private static final int REPEAT_INTERVAL = 2000;
 
     private final EventBus eventBus;
-    private final Map<String, SaveAction> actions = new HashMap<String, SaveAction>();
-    private Queue<String> queue = new LinkedList<String>();
+    private final Transport transport;
+    private final HandlerManager handlerManager;
+
+    private Queue<UpdateCommand> queue = new LinkedList<UpdateCommand>();
     private boolean isActive;
 
-    @Inject
-    public UpdateQueue(EventBus eventBus) {
+    public UpdateQueue(EventBus eventBus, Transport transport) {
         this.eventBus = eventBus;
+        this.transport = transport;
+
+        handlerManager = new HandlerManager(this);
 
         new Timer() {
             @Override
@@ -49,19 +64,19 @@ public class UpdateQueue {
         }.scheduleRepeating(REPEAT_INTERVAL);
     }
 
-    public void add(String key, SaveAction action) {
-        if (queue.contains(key)) {
-            return;
-        }
-        actions.put(key, action);
-        queue.offer(key);
+    @Override
+    public HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler handler) {
+         return handlerManager.addHandler(DataUpdateEvent.getType(), handler);
+    }
+
+    public void add(UpdateCommand command) {
+        queue.offer(command);
     }
 
     public void execute() {
         if (isActive || queue.isEmpty()) {
             return;
         }
-
         notifyStart();
         next();
     }
@@ -71,36 +86,43 @@ public class UpdateQueue {
             notifyStop(null);
             return;
         }
-        String key = queue.peek();
-        SaveAction action = actions.get(key);
-        action.onSave(new AsyncCallback<Void>() {
+        List<UpdateCommand> commands = new ArrayList<UpdateCommand>(queue);
+        final int queueSize = commands.size();
+        transport.sendUpdates(commands, new AsyncCallback<UpdateResult>() {
             @Override
             public void onFailure(Throwable caught) {
                 notifyStop(caught);
             }
 
             @Override
-            public void onSuccess(Void result) {
-                queue.poll();
+            public void onSuccess(UpdateResult result) {
+                for (int i = 0; i < queueSize; i++) {
+                    queue.poll();
+                }
+                fireDataUpdateEvent(result);
                 next();
             }
         });
     }
 
+    private void fireDataUpdateEvent(UpdateResult result) {
+        DataUpdateEvent.fire(handlerManager, result);
+    }
+
     private void notifyStart() {
-        eventBus.fireEvent(AutoSaveEvent.autoSaveStarted());
+        eventBus.fireEvent(autoSaveStarted());
     }
 
     private void notifyStop(Throwable caught) {
         isActive = false;
-        eventBus.fireEvent(AutoSaveEvent.autoSaveStopped(caught));
+        eventBus.fireEvent(autoSaveStopped(caught));
         if (caught != null) {
             Window.alert(caught.getMessage());
         }
     }
 
-    public interface SaveAction {
-        void onSave(AsyncCallback<Void> callback);
+    public interface Transport {
+        void sendUpdates(List<UpdateCommand> commands, AsyncCallback<UpdateResult> callback);
     }
 }
 

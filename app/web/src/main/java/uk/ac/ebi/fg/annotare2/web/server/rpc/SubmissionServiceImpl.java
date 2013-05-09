@@ -26,7 +26,6 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
-import uk.ac.ebi.fg.annotare2.configmodel.Contact;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
@@ -42,8 +41,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
@@ -53,7 +51,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.io.Closeables.close;
@@ -106,7 +103,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public ExperimentDetails getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException {
+    public DetailsDto getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiExperimentDetails(sb);
@@ -304,92 +301,23 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public ExperimentDetails saveExperimentDetails(int id, ExperimentDetails details) throws ResourceNotFoundException, NoPermissionException {
+    public UpdateResult updateExperiment(int id, List<UpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission =
-                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-            ExperimentConfig exp = submission.getExperimentConfig();
-            exp.setTitle(details.getTitle());
-            exp.setDescription(details.getDescription());
-            exp.setPublicReleaseDate(details.getPublicReleaseDate());
-            exp.setExperimentDate(details.getExperimentDate());
-            submission.setExperimentConfig(exp);
-            submission.setTitle(details.getTitle());
-            return details;
-        } catch (RecordNotFoundException e) {
-            log.warn("saveExperimentDetails(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
-        } catch (AccessControlException e) {
-            log.warn("saveExperimentDetails(" + id + ") failure", e);
-            throw new NoPermissionException("no permission to update submission: " + id);
-        } catch (DataSerializationException e) {
-            log.warn("saveExperimentDetails(" + id + ") failure", e);
-            throw new UnexpectedException("data save failed", e);
-        }
-    }
-
-    @Override
-    public ContactsUpdateResult updateContacts(int id, List<ContactsUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission submission =
-                    submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-
-            ContactsUpdateResult result = new ContactsUpdateResult();
-            ExperimentConfig exp = submission.getExperimentConfig();
-            for (ContactsUpdateCommand command : commands) {
-                switch (command.getType()) {
-                    case UPDATE:
-                        result.update(updateContact(command.getContact(), exp));
-                        break;
-                    case CREATE:
-                        result.create(createContact(command.getContact(), exp));
-                        break;
-                    case REMOVE:
-                        result.removeAll(removeContacts(command.getContactIds(), exp));
-                        break;
-                }
-            }
-            submission.setExperimentConfig(exp);
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            ExperimentConfig experiment = submission.getExperimentConfig();
+            UpdateResult result = new ExperimentUpdatePerformer(experiment).run(commands);
+            submission.setExperimentConfig(experiment);
             return result;
         } catch (RecordNotFoundException e) {
-            log.warn("updateContacts(" + id + ") failure", e);
+            log.warn("updateExperiment(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
         } catch (AccessControlException e) {
-            log.warn("updateContacts(" + id + ") failure", e);
+            log.warn("updateExperiment(" + id + ") failure", e);
             throw new NoPermissionException("no permission to update submission: " + id);
         } catch (DataSerializationException e) {
-            log.warn("updateContacts(" + id + ") failure", e);
-            throw new UnexpectedException("data save failed", e);
+            log.warn("updateExperiment(" + id + ") failure", e);
+            throw new UnexpectedException("update experiment failure", e);
         }
     }
 
-    private ContactDto updateContact(ContactDto dto, ExperimentConfig exp) {
-        Contact contact = exp.getContact(dto.getId());
-        contact.setFirstName(dto.getFirstName());
-        contact.setLastName(dto.getLastName());
-        contact.setMidInitials(dto.getMidInitials());
-        contact.setEmail(dto.getEmail());
-        contact.setPhone(dto.getPhone());
-        contact.setFax(dto.getFax());
-        contact.setAddress(dto.getAddress());
-        contact.setAffiliation(dto.getAffiliation());
-        contact.setRoles(dto.getRoles());
-        return dto;
-    }
-
-    private ContactDto createContact(ContactDto dto, ExperimentConfig exp) {
-        Contact contact = exp.createContact();
-        return updateContact(new ContactDto(contact.getId()).updatedCopy(dto), exp);
-    }
-
-    private List<ContactDto> removeContacts(List<Integer> ids, ExperimentConfig exp) throws DataSerializationException {
-        List<Contact> removed = new ArrayList<Contact>();
-        for (Integer id : ids) {
-            Contact contact = exp.removeContact(id);
-            if (contact != null) {
-                removed.add(contact);
-            }
-        }
-        return UIObjectConverter.uiContacts(removed);
-    }
 }

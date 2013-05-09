@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentDetails implements IsSerializable {
+public class DetailsDto implements IsSerializable {
 
     private String title;
 
@@ -17,10 +17,10 @@ public class ExperimentDetails implements IsSerializable {
 
     private Date publicReleaseDate;
 
-    public ExperimentDetails() {
+    public DetailsDto() {
     }
 
-    public ExperimentDetails(String title, String description, Date experimentDate, Date publicReleaseDate) {
+    public DetailsDto(String title, String description, Date experimentDate, Date publicReleaseDate) {
         this.title = title;
         this.description = description;
         this.experimentDate = experimentDate;
@@ -43,7 +43,7 @@ public class ExperimentDetails implements IsSerializable {
         return title;
     }
 
-    public boolean isContentEqual(ExperimentDetails that) {
+    public boolean isContentEqual(DetailsDto that) {
         if (that == null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (experimentDate != null ? !experimentDate.equals(that.experimentDate) : that.experimentDate != null)

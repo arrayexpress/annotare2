@@ -33,7 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
@@ -156,9 +156,9 @@ public class UIObjectConverter {
         return new ExperimentSettings(exp.getType());
     }
 
-    public static ExperimentDetails uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
+    public static DetailsDto uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
         ExperimentConfig exp = submission.getExperimentConfig();
-        return new ExperimentDetails(
+        return new DetailsDto(
                 exp.getTitle(),
                 exp.getDescription(),
                 exp.getExperimentDate(),

@@ -29,6 +29,7 @@ import java.util.Queue;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ChangeManager {
 
     private static final int MAX_QUEUE_SIZE = 100;

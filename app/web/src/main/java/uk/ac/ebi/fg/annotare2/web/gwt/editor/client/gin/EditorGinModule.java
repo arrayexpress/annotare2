@@ -78,7 +78,6 @@ public class EditorGinModule extends AbstractGinModule {
 
         bind(StartView.class).to(StartViewImpl.class);
 
-        bind(UpdateQueue.class).in(Singleton.class);
         bind(AdfData.class).in(Singleton.class);
         bind(ExperimentData.class).in(Singleton.class);
     }

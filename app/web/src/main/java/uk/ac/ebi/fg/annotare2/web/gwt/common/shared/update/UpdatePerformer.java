@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ExpDetailsView extends IsWidget {
+public interface UpdatePerformer {
 
-    public void setDetails(DetailsDto details);
+    void createContact(ContactDto contact);
 
-    public DetailsDto getDetails();
+    void updateContact(ContactDto contact);
 
-    public void setPresenter(Presenter presenter);
+    void removeContact(ContactDto contact);
 
-    public interface Presenter {
+    void createPublication(PublicationDto publication);
 
-        void saveDetails(DetailsDto details);
-    }
+    void updatePublication(PublicationDto publication);
+
+    void removePublication(PublicationDto publication);
+
+    void updateDetails(DetailsDto details);
 }

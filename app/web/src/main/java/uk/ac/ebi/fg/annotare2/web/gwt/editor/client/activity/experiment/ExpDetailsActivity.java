@@ -24,7 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpDetailsView;
@@ -71,7 +71,7 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
     }
 
     private void loadAsync() {
-        experimentData.getDetailsAsync(new AsyncCallback<ExperimentDetails>() {
+        experimentData.getDetailsAsync(new AsyncCallback<DetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -79,14 +79,14 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
             }
 
             @Override
-            public void onSuccess(ExperimentDetails details) {
+            public void onSuccess(DetailsDto details) {
                 view.setDetails(details);
             }
         });
     }
 
     @Override
-    public void saveDetails(ExperimentDetails details) {
+    public void saveDetails(DetailsDto details) {
         experimentData.updateDetails(details);
     }
 }

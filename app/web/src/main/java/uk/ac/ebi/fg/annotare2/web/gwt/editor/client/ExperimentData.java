@@ -16,17 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -36,25 +41,45 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class ExperimentData {
 
     private final SubmissionServiceAsync submissionService;
-    private final UpdateQueue updateQueue;
 
-    private Set<SampleRow> samples;
+    private ExperimentSamples samples;
 
     private ExperimentContacts contacts;
 
-    private Map<Integer, PublicationDto> publicationsMap;
+    private ExperimentPublications publications;
 
     private ExperimentDetails details;
-    private ExperimentDetails updatedDetails;
 
     private ExperimentSettings settings;
 
     @Inject
-    public ExperimentData(SubmissionServiceAsync submissionService,
-                          UpdateQueue updateQueue) {
-        this.submissionService = submissionService;
-        this.updateQueue = updateQueue;
-        this.contacts = new ExperimentContacts(submissionService, updateQueue);
+    public ExperimentData(EventBus eventBus,
+                          SubmissionServiceAsync submissionServiceAsync) {
+        submissionService = submissionServiceAsync;
+
+        UpdateQueue updateQueue = new UpdateQueue(eventBus,
+                new UpdateQueue.Transport() {
+                    @Override
+                    public void sendUpdates(List<UpdateCommand> commands, final AsyncCallback<UpdateResult> callback) {
+                        submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<UpdateResult>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                callback.onFailure(caught);
+                            }
+
+                            @Override
+                            public void onSuccess(UpdateResult result) {
+                                callback.onSuccess(result);
+                            }
+                        }.wrap());
+                    }
+                });
+
+        details = new ExperimentDetails(submissionService, updateQueue);
+        contacts = new ExperimentContacts(submissionService, updateQueue);
+        publications = new ExperimentPublications(submissionService, updateQueue);
+        samples = new ExperimentSamples(submissionService, updateQueue);
+        GWT.log(getClass().getName() + ": initialized");
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -76,85 +101,28 @@ public class ExperimentData {
         }.wrap());
     }
 
-    public void getSamplesAsync(final AsyncCallback<List<SampleRow>> callback) {
-        if (samples != null) {
-            callback.onSuccess(new ArrayList<SampleRow>(samples));
-            return;
-        }
-        submissionService.getSamples(getSubmissionId(), new AsyncCallbackWrapper<List<SampleRow>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(List<SampleRow> result) {
-                samples = new LinkedHashSet<SampleRow>(result);
-                callback.onSuccess(result);
-            }
-        }.wrap());
+    public void getDetailsAsync(AsyncCallback<DetailsDto> callback) {
+        details.getDetailsAsync(callback);
     }
 
     public void getContactsAsync(AsyncCallback<List<ContactDto>> callback) {
         contacts.getContactsAsync(callback);
     }
 
-    public void getPublicationsAsync(final AsyncCallback<List<PublicationDto>> callback) {
-        if (publicationsMap != null) {
-            callback.onSuccess(getPublications());
-            return;
-        }
-        submissionService.getPublications(getSubmissionId(), new AsyncCallbackWrapper<List<PublicationDto>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(List<PublicationDto> result) {
-                publicationsMap = new HashMap<Integer, PublicationDto>();
-                for (PublicationDto dto : result) {
-                    publicationsMap.put(dto.getId(), dto);
-                }
-                callback.onSuccess(result);
-            }
-        }.wrap());
+    public void getPublicationsAsync(AsyncCallback<List<PublicationDto>> callback) {
+        publications.getPublicationsAsync(callback);
     }
 
-    public void getDetailsAsync(final AsyncCallback<ExperimentDetails> callback) {
-        if (details != null) {
-            callback.onSuccess(details);
-            return;
-        }
-        submissionService.getExperimentDetails(getSubmissionId(), new AsyncCallbackWrapper<ExperimentDetails>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(ExperimentDetails result) {
-                details = result;
-                callback.onSuccess(result);
-            }
-        }.wrap());
+    public void getSamplesAsync(AsyncCallback<List<SampleRow>> callback) {
+        samples.getSamplesAsync(callback);
     }
 
-    public void updateDetails(ExperimentDetails updatedDetails) {
-        if (updatedDetails == null || details.isContentEqual(updatedDetails)) {
-            return;
-        }
-        this.updatedDetails = updatedDetails;
-        this.updateQueue.add("expDetails", new UpdateQueue.SaveAction() {
-            @Override
-            public void onSave(AsyncCallback callback) {
-                updateExperimentDetails(callback);
-            }
-        });
+    public void updateDetails(DetailsDto toBeUpdated) {
+        details.updateDetails(toBeUpdated);
     }
 
     public ContactDto createContact() {
-       return contacts.create();
+        return contacts.create();
     }
 
     public void updateContact(ContactDto toBeUpdated) {
@@ -170,27 +138,4 @@ public class ExperimentData {
     public void removeContacts(List<ContactDto> toBeRemoved) {
         contacts.remove(toBeRemoved);
     }
-
-    private List<PublicationDto> getPublications() {
-        List<PublicationDto> list = new ArrayList<PublicationDto>();
-        list.addAll(publicationsMap.values());
-        return list;
-    }
-
-    private void updateExperimentDetails(final AsyncCallback<Void> callback) {
-        submissionService.saveExperimentDetails(getSubmissionId(), updatedDetails, new AsyncCallbackWrapper<ExperimentDetails>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(ExperimentDetails result) {
-                details = result;
-                callback.onSuccess(null);
-            }
-        }.wrap());
-    }
-
-
 }

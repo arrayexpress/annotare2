@@ -5,8 +5,8 @@ import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 
 import java.util.List;
 
@@ -26,17 +26,15 @@ public interface SubmissionServiceAsync {
 
     void getSamples(int id, AsyncCallback<List<SampleRow>> async);
 
-    void getExperimentDetails(int id, AsyncCallback<ExperimentDetails> async);
-
-    void saveExperimentDetails(int id, ExperimentDetails details, AsyncCallback<ExperimentDetails> async);
+    void getExperimentDetails(int id, AsyncCallback<DetailsDto> async);
 
     void getContacts(int id, AsyncCallback<List<ContactDto>> async);
 
     void getPublications(int id, AsyncCallback<List<PublicationDto>> async);
 
-    void updateContacts(int id, List<ContactsUpdateCommand> commands, AsyncCallback<ContactsUpdateResult> async);
-
     void getIdfTable(int submissionId, AsyncCallback<Table> async);
 
     void getSdrfTable(int submissionId, AsyncCallback<Table> async);
+
+    void updateExperiment(int id, List<UpdateCommand> commands, AsyncCallback<UpdateResult> async);
 }

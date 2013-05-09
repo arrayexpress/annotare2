@@ -20,14 +20,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand.createContactCommand;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand.removeContactsCommand;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ContactsUpdateCommand.updateContactCommand;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -47,12 +48,17 @@ public class ExperimentContacts {
     private Map<Integer, Integer> idMap = new HashMap<Integer, Integer>();
 
     private List<Integer> order = new ArrayList<Integer>();
-    private List<ContactsUpdateCommand> updates = new ArrayList<ContactsUpdateCommand>();
 
     public ExperimentContacts(SubmissionServiceAsync submissionService,
                               UpdateQueue updateQueue) {
         this.submissionService = submissionService;
         this.updateQueue = updateQueue;
+        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler() {
+            @Override
+            public void onDataUpdate(DataUpdateEvent event) {
+                applyUpdates(event.getUpdates());
+            }
+        });
     }
 
     public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
@@ -87,7 +93,7 @@ public class ExperimentContacts {
     private void update(ContactDto toBeUpdated) {
         ContactDto contact = find(toBeUpdated);
         if (!contact.isTheSameAs(toBeUpdated)) {
-            addUpdateCommand(updateContactCommand(contact.updatedCopy(toBeUpdated)));
+            addUpdateCommand(new UpdateContactCommand(contact.updatedCopy(toBeUpdated)));
         }
     }
 
@@ -95,52 +101,22 @@ public class ExperimentContacts {
         ContactDto toBeCreated = new ContactDto(nextId());
         map.put(toBeCreated.getId(), toBeCreated);
         order.add(toBeCreated.getId());
-        addUpdateCommand(createContactCommand(toBeCreated));
+        addUpdateCommand(new CreateContactCommand(toBeCreated));
         return toBeCreated;
     }
 
     public void remove(List<ContactDto> contacts) {
-        List<ContactDto> toBeRemoved = new ArrayList<ContactDto>();
         for (ContactDto contact : contacts) {
-            toBeRemoved.add(find(contact));
+            ContactDto toBeRemoved = find(contact);
+            addUpdateCommand(new RemoveContactCommand(toBeRemoved));
         }
-        addUpdateCommand(removeContactsCommand(toBeRemoved));
     }
 
-    private void addUpdateCommand(ContactsUpdateCommand command) {
-        updates.add(command);
-        updateQueue.add("expContacts", new UpdateQueue.SaveAction() {
-            @Override
-            public void onSave(AsyncCallback<Void> callback) {
-                sendUpdates(callback);
-            }
-        });
+    private void addUpdateCommand(UpdateCommand command) {
+        updateQueue.add(command);
     }
 
-    private void sendUpdates(final AsyncCallback<Void> callback) {
-        if (updates.isEmpty()) {
-            callback.onSuccess(null);
-            return;
-        }
-        final List<ContactsUpdateCommand> latestUpdates = new ArrayList<ContactsUpdateCommand>(updates);
-        updates = new ArrayList<ContactsUpdateCommand>();
-        submissionService.updateContacts(getSubmissionId(), latestUpdates,
-                new AsyncCallbackWrapper<ContactsUpdateResult>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        updateFailed(latestUpdates);
-                        callback.onFailure(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(ContactsUpdateResult result) {
-                        applyUpdates(result);
-                        callback.onSuccess(null);
-                    }
-                }.wrap());
-    }
-
-    private void applyUpdates(ContactsUpdateResult result) {
+    private void applyUpdates(UpdateResult result) {
         for (ContactDto created : result.getCreatedContacts()) {
             idMap.put(created.getId(), created.getTmpId());
             map.put(created.getTmpId(), created);
@@ -155,12 +131,6 @@ public class ExperimentContacts {
             map.remove(id);
             order.remove(Integer.valueOf(id));
         }
-    }
-
-    private void updateFailed(List<ContactsUpdateCommand> failedUpdates) {
-        List<ContactsUpdateCommand> newUpdates = new ArrayList<ContactsUpdateCommand>(failedUpdates);
-        newUpdates.addAll(updates);
-        updates = newUpdates;
     }
 
     private int getId(ContactDto contact) {
