@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
@@ -54,12 +55,17 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     @UiField
     DateBox dateOfPublicRelease;
 
+    @UiField
+    ListBox experimentDesigns;
+
     private Presenter presenter;
 
     @Inject
     public ExpDetailsViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+
+        experimentDesigns.addItem("TBA");
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
         dateOfExperiment.setFormat(format);
