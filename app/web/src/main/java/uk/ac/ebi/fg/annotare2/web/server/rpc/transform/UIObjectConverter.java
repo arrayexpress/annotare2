@@ -134,6 +134,7 @@ public class UIObjectConverter {
         public PublicationDto apply(@Nullable Publication publication) {
             return new PublicationDto(
                     publication.getId(),
+                    publication.getId(),
                     publication.getTitle(),
                     publication.getAuthors(),
                     publication.getPubMedId()

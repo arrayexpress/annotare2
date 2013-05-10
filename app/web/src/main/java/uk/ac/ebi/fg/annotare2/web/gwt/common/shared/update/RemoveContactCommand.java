@@ -25,7 +25,8 @@ public class RemoveContactCommand implements UpdateCommand {
 
     private ContactDto contact;
 
-    public RemoveContactCommand() {
+    RemoveContactCommand() {
+        /*used by GWT serialization only*/
     }
 
     public RemoveContactCommand(ContactDto contact) {

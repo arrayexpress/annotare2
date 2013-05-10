@@ -16,25 +16,25 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 
 /**
  * @author Olga Melnichuk
  */
-public class UpdateDetailsCommand implements UpdateCommand {
+public class CreatePublicationCommand implements UpdateCommand {
 
-    private DetailsDto details;
+    private PublicationDto publication;
 
-    UpdateDetailsCommand() {
+    CreatePublicationCommand() {
         /*used by GWT serialization only*/
     }
 
-    public UpdateDetailsCommand(DetailsDto details) {
-        this.details = details;
+    public CreatePublicationCommand(PublicationDto publication) {
+        this.publication = publication;
     }
 
     @Override
     public void execute(UpdatePerformer performer) {
-        performer.updateDetails(details);
+        performer.createPublication(publication);
     }
 }

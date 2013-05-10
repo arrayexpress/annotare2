@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.magetab.integration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
@@ -83,7 +82,7 @@ public class MageTabImporter {
         }
 
         for (uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Publication p : idfData.getPublications()) {
-            Publication publ = exp.createPublication(new Publication());
+            Publication publ = exp.createPublication();
             publ.setTitle(p.getTitle().getValue());
             publ.setPubMedId(p.getPubMedId().getValue());
             publ.setAuthors(p.getAuthorList().getValue());

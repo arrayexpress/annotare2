@@ -158,8 +158,8 @@ public class Experiment {
         return contacts.remove(id);
     }
 
-    public Publication createPublication(Publication publication) {
-        publication.setId(nextId());
+    public Publication createPublication() {
+        Publication publication = new Publication(nextId());
         publications.put(publication.getId(), publication);
         return publication;
     }

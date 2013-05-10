@@ -20,11 +20,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -36,16 +36,27 @@ public class ExperimentPublications {
     private final SubmissionServiceAsync submissionService;
     private final UpdateQueue updateQueue;
 
-    private Map<Integer, PublicationDto> publicationsMap;
+    private IdentityMap<PublicationDto> map = new IdentityMap<PublicationDto>() {
+        @Override
+        protected PublicationDto create(int tmpId) {
+            return new PublicationDto(tmpId);
+        }
+    };
 
     public ExperimentPublications(SubmissionServiceAsync submissionService, UpdateQueue updateQueue) {
         this.submissionService = submissionService;
         this.updateQueue = updateQueue;
+        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler() {
+            @Override
+            public void onDataUpdate(DataUpdateEvent event) {
+                applyUpdates(event.getUpdates());
+            }
+        });
     }
 
     public void getPublicationsAsync(final AsyncCallback<List<PublicationDto>> callback) {
-        if (publicationsMap != null) {
-            callback.onSuccess(getPublications());
+        if (map.isInitialized()) {
+            callback.onSuccess(map.values());
             return;
         }
         submissionService.getPublications(getSubmissionId(), new AsyncCallbackWrapper<List<PublicationDto>>() {
@@ -56,22 +67,53 @@ public class ExperimentPublications {
 
             @Override
             public void onSuccess(List<PublicationDto> result) {
-                publicationsMap = new HashMap<Integer, PublicationDto>();
-                for (PublicationDto dto : result) {
-                    publicationsMap.put(dto.getId(), dto);
-                }
+                map.init(result);
                 callback.onSuccess(result);
             }
         }.wrap());
     }
 
-    private List<PublicationDto> getPublications() {
-        List<PublicationDto> list = new ArrayList<PublicationDto>();
-        list.addAll(publicationsMap.values());
-        return list;
+    public PublicationDto create() {
+        PublicationDto publication = map.create();
+        addUpdateCommand(new CreatePublicationCommand(publication));
+        return publication;
     }
 
     public void update(List<PublicationDto> toBeUpdated) {
-        //TODO
+        for (PublicationDto publication : toBeUpdated) {
+            update(publication);
+        }
+    }
+
+    public void update(PublicationDto toBeUpdated) {
+        PublicationDto publication = map.find(toBeUpdated);
+        if (!publication.isTheSameAs(toBeUpdated)) {
+            addUpdateCommand(new UpdatePublicationCommand(publication.updatedCopy(toBeUpdated)));
+        }
+    }
+
+    public void remove(List<PublicationDto> publications) {
+        for (PublicationDto publication : publications) {
+            PublicationDto toBeRemoved = map.find(publication);
+            addUpdateCommand(new RemovePublicationCommand(toBeRemoved));
+        }
+    }
+
+    private void addUpdateCommand(UpdateCommand command) {
+        updateQueue.add(command);
+    }
+
+    private void applyUpdates(UpdateResult result) {
+        for (PublicationDto created : result.getCreatedPublications()) {
+            map.update(created);
+        }
+
+        for (PublicationDto updated : result.getUpdatedPublications()) {
+            map.update(updated);
+        }
+
+        for (PublicationDto removed : result.getRemovedPublications()) {
+            map.remove(removed);
+        }
     }
 }

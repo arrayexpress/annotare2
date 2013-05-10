@@ -1,6 +1,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ContactDto implements IsSerializable {
+public class ContactDto implements IsSerializable, HasIdentity {
 
     private int id;
 
@@ -32,7 +33,8 @@ public class ContactDto implements IsSerializable {
 
     private List<String> roles = new ArrayList<String>();
 
-    public ContactDto() {
+    ContactDto() {
+        /*used by GWT serialization only*/
     }
 
     public ContactDto(int id) {
@@ -41,17 +43,17 @@ public class ContactDto implements IsSerializable {
     }
 
     public ContactDto(ContactDto other) {
-        this(other.id,
-                other.tmpId,
-                other.firstName,
-                other.lastName,
-                other.midInitials,
-                other.email,
-                other.phone,
-                other.fax,
-                other.affiliation,
-                other.address,
-                other.roles);
+        this(other.getId(),
+                other.getTmpId(),
+                other.getFirstName(),
+                other.getLastName(),
+                other.getMidInitials(),
+                other.getEmail(),
+                other.getPhone(),
+                other.getFax(),
+                other.getAffiliation(),
+                other.getAddress(),
+                other.getRoles());
     }
 
     public ContactDto(int id,
@@ -80,12 +82,14 @@ public class ContactDto implements IsSerializable {
         }
     }
 
-    public int getTmpId() {
-        return tmpId;
-    }
-
+    @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public int getTmpId() {
+        return tmpId;
     }
 
     public String getAddress() {
@@ -137,40 +141,23 @@ public class ContactDto implements IsSerializable {
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ContactDto that = (ContactDto) o;
-
-        if (id != that.id) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
-
     public Editor editor() {
         return new Editor(this);
     }
 
-    public ContactDto updatedCopy(ContactDto toBeUpdated) {
+    public ContactDto updatedCopy(ContactDto updates) {
         return new ContactDto(
                 id,
-                toBeUpdated.getTmpId(),
-                toBeUpdated.getFirstName(),
-                toBeUpdated.getLastName(),
-                toBeUpdated.getMidInitials(),
-                toBeUpdated.getEmail(),
-                toBeUpdated.getPhone(),
-                toBeUpdated.getFax(),
-                toBeUpdated.getAffiliation(),
-                toBeUpdated.getAddress(),
-                toBeUpdated.getRoles()
+                updates.getTmpId(),
+                updates.getFirstName(),
+                updates.getLastName(),
+                updates.getMidInitials(),
+                updates.getEmail(),
+                updates.getPhone(),
+                updates.getFax(),
+                updates.getAffiliation(),
+                updates.getAddress(),
+                updates.getRoles()
         );
     }
 

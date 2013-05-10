@@ -94,7 +94,7 @@ public class MageTab2ExperimentConverter {
         }
 
         for (uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Publication p : idfData.getPublications()) {
-            Publication publ = exp.createPublication(new Publication());
+            Publication publ = exp.createPublication();
             publ.setTitle(p.getTitle().getValue());
             publ.setPubMedId(p.getPubMedId().getValue());
             publ.setAuthors(p.getAuthorList().getValue());

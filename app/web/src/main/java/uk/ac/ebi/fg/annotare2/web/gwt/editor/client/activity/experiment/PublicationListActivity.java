@@ -66,12 +66,22 @@ public class PublicationListActivity extends AbstractActivity implements Publica
         experimentData.updatePublication(publication);
     }
 
+    @Override
+    public PublicationDto createPublication() {
+        return experimentData.createPublication();
+    }
+
+    @Override
+    public void removePublications(List<PublicationDto> publications) {
+        experimentData.removePublications(publications);
+    }
+
     private void loadAsync() {
         experimentData.getPublicationsAsync(new AsyncCallback<List<PublicationDto>>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load contact list.");
+                Window.alert("Can't load publication list.");
             }
 
             @Override

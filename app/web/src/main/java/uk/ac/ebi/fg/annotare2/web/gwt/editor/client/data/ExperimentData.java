@@ -148,4 +148,12 @@ public class ExperimentData {
     public void updatePublications(List<PublicationDto> toBeUpdated) {
         publications.update(toBeUpdated);
     }
+
+    public PublicationDto createPublication() {
+        return publications.create();
+    }
+
+    public void removePublications(List<PublicationDto> toBeRemoved) {
+        publications.remove(toBeRemoved);
+    }
 }

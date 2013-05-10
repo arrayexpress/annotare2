@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import uk.ac.ebi.fg.annotare2.configmodel.Contact;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.Publication;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
@@ -79,18 +80,26 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
     }
 
     @Override
-    public void createPublication(PublicationDto publication) {
-        //TODO
+    public void createPublication(PublicationDto dto) {
+        Publication publication = exp.createPublication();
+        result.updated(new PublicationDto(publication.getId()).updatedCopy(dto));
     }
 
     @Override
-    public void updatePublication(PublicationDto publication) {
-        //TODO
+    public void updatePublication(PublicationDto dto) {
+        Publication publication = exp.getPublication(dto.getId());
+        publication.setTitle(dto.getTitle());
+        publication.setAuthors(dto.getAuthors());
+        publication.setPubMedId(dto.getPubMedId());
+        result.updated(dto);
     }
 
     @Override
-    public void removePublication(PublicationDto publication) {
-        //TODO
+    public void removePublication(PublicationDto dto) {
+        Publication publication = exp.removePublication(dto.getId());
+        if (publication != null) {
+            result.removed(dto);
+        }
     }
 
     public UpdateResult run(List<UpdateCommand> commands) {

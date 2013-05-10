@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEventHandler;
@@ -31,6 +33,21 @@ import java.util.List;
 public class PublicationListViewImpl extends ListView<PublicationDto.Editor> implements PublicationListView {
 
     private Presenter presenter;
+
+    public PublicationListViewImpl() {
+        addIcon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                addNewPublication();
+            }
+        });
+        removeIcon.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                removeSelectedPublications();
+            }
+        });
+    }
 
     @Override
     public void setPresenter(Presenter presenter) {
@@ -63,5 +80,26 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
             }
         });
         return addListItem(view);
+    }
+
+    private void addNewPublication() {
+        DisclosureListItem item = addPublicationView(presenter.createPublication());
+        //todo scroll + item.open();
+    }
+
+    private void removeSelectedPublications() {
+        List<Integer> selected = getSelected();
+        if (selected.isEmpty()) {
+            return;
+        }
+
+        List<PublicationDto> publications = new ArrayList<PublicationDto>();
+        for (Integer index : selected) {
+            DisclosureListItem item = getItem(index);
+            PublicationView view = (PublicationView) item.getContent();
+            publications.add(view.getPublication());
+        }
+        presenter.removePublications(publications);
+        removeItems(selected);
     }
 }

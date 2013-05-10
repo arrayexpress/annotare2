@@ -62,21 +62,6 @@ public class ContactListActivity extends AbstractActivity implements ContactList
         super.onStop();
     }
 
-    private void loadAsync() {
-        experimentData.getContactsAsync(new AsyncCallback<List<ContactDto>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Can't load contact list.");
-            }
-
-            @Override
-            public void onSuccess(List<ContactDto> result) {
-                view.setContacts(result);
-            }
-        });
-    }
-
     @Override
     public void updateContact(ContactDto contact) {
         experimentData.updateContact(contact);
@@ -90,5 +75,20 @@ public class ContactListActivity extends AbstractActivity implements ContactList
     @Override
     public void removeContacts(List<ContactDto> contacts) {
         experimentData.removeContacts(contacts);
+    }
+
+    private void loadAsync() {
+        experimentData.getContactsAsync(new AsyncCallback<List<ContactDto>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert("Can't load contact list.");
+            }
+
+            @Override
+            public void onSuccess(List<ContactDto> result) {
+                view.setContacts(result);
+            }
+        });
     }
 }

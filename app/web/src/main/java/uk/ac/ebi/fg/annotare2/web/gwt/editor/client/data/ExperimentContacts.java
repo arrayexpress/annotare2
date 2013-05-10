@@ -24,10 +24,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -39,15 +36,12 @@ public class ExperimentContacts {
     private final SubmissionServiceAsync submissionService;
     private final UpdateQueue updateQueue;
 
-    private int nextId = 0;
-
-    // real_or_temporary_id -> contact
-    private Map<Integer, ContactDto> map;
-
-    // real_id -> temporary_id
-    private Map<Integer, Integer> idMap = new HashMap<Integer, Integer>();
-
-    private List<Integer> order = new ArrayList<Integer>();
+    private IdentityMap<ContactDto> map = new IdentityMap<ContactDto>() {
+        @Override
+        protected ContactDto create(int tmpId) {
+            return new ContactDto(tmpId);
+        }
+    };
 
     public ExperimentContacts(SubmissionServiceAsync submissionService,
                               UpdateQueue updateQueue) {
@@ -62,8 +56,8 @@ public class ExperimentContacts {
     }
 
     public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
-        if (map != null) {
-            callback.onSuccess(getContacts());
+        if (map.isInitialized()) {
+            callback.onSuccess(map.values());
             return;
         }
         submissionService.getContacts(getSubmissionId(), new AsyncCallbackWrapper<List<ContactDto>>() {
@@ -74,11 +68,7 @@ public class ExperimentContacts {
 
             @Override
             public void onSuccess(List<ContactDto> result) {
-                map = new HashMap<Integer, ContactDto>();
-                for (ContactDto dto : result) {
-                    map.put(dto.getId(), dto);
-                    order.add(dto.getId());
-                }
+                map.init(result);
                 callback.onSuccess(result);
             }
         }.wrap());
@@ -91,23 +81,21 @@ public class ExperimentContacts {
     }
 
     private void update(ContactDto toBeUpdated) {
-        ContactDto contact = find(toBeUpdated);
+        ContactDto contact = map.find(toBeUpdated);
         if (!contact.isTheSameAs(toBeUpdated)) {
             addUpdateCommand(new UpdateContactCommand(contact.updatedCopy(toBeUpdated)));
         }
     }
 
     public ContactDto create() {
-        ContactDto toBeCreated = new ContactDto(nextId());
-        map.put(toBeCreated.getId(), toBeCreated);
-        order.add(toBeCreated.getId());
-        addUpdateCommand(new CreateContactCommand(toBeCreated));
-        return toBeCreated;
+        ContactDto created = map.create();
+        addUpdateCommand(new CreateContactCommand(created));
+        return created;
     }
 
     public void remove(List<ContactDto> contacts) {
         for (ContactDto contact : contacts) {
-            ContactDto toBeRemoved = find(contact);
+            ContactDto toBeRemoved = map.find(contact);
             addUpdateCommand(new RemoveContactCommand(toBeRemoved));
         }
     }
@@ -118,39 +106,15 @@ public class ExperimentContacts {
 
     private void applyUpdates(UpdateResult result) {
         for (ContactDto created : result.getCreatedContacts()) {
-            idMap.put(created.getId(), created.getTmpId());
-            map.put(created.getTmpId(), created);
+            map.update(created);
         }
 
         for (ContactDto updated : result.getUpdatedContacts()) {
-            map.put(getId(updated), updated);
+            map.update(updated);
         }
 
         for (ContactDto removed : result.getRemovedContacts()) {
-            int id = getId(removed);
-            map.remove(id);
-            order.remove(Integer.valueOf(id));
+            map.remove(removed);
         }
-    }
-
-    private int getId(ContactDto contact) {
-        Integer id = idMap.get(contact.getId());
-        return id == null ? contact.getId() : id;
-    }
-
-    private ContactDto find(ContactDto contact) {
-        return map.get(getId(contact));
-    }
-
-    private List<ContactDto> getContacts() {
-        List<ContactDto> contacts = new ArrayList<ContactDto>();
-        for (Integer id : order) {
-            contacts.add(map.get(id));
-        }
-        return contacts;
-    }
-
-    private int nextId() {
-        return --nextId;
     }
 }

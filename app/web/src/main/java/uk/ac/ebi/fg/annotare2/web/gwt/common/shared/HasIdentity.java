@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
-
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 /**
  * @author Olga Melnichuk
  */
-public class UpdateDetailsCommand implements UpdateCommand {
+public interface HasIdentity {
 
-    private DetailsDto details;
+    int getId();
 
-    UpdateDetailsCommand() {
-        /*used by GWT serialization only*/
-    }
-
-    public UpdateDetailsCommand(DetailsDto details) {
-        this.details = details;
-    }
-
-    @Override
-    public void execute(UpdatePerformer performer) {
-        performer.updateDetails(details);
-    }
+    int getTmpId();
 }

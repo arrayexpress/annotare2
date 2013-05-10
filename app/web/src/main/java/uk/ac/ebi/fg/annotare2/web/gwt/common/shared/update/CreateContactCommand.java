@@ -25,7 +25,8 @@ public class CreateContactCommand implements UpdateCommand {
 
     private  ContactDto contact;
 
-    public CreateContactCommand() {
+    CreateContactCommand() {
+        /*used by GWT serialization only*/
     }
 
     public CreateContactCommand(ContactDto contact) {

@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +32,20 @@ public class UpdateResult implements IsSerializable {
     private List<ContactDto> createdContacts;
     private List<ContactDto> updatedContacts;
     private List<ContactDto> removedContacts;
+    private List<PublicationDto> createdPublications;
+    private List<PublicationDto> updatedPublications;
+    private List<PublicationDto> removedPublications;
+
     private DetailsDto updatedDetails;
 
     public UpdateResult() {
         createdContacts = new ArrayList<ContactDto>();
         updatedContacts = new ArrayList<ContactDto>();
         removedContacts = new ArrayList<ContactDto>();
+
+        createdPublications = new ArrayList<PublicationDto>();
+        updatedPublications = new ArrayList<PublicationDto>();
+        removedPublications = new ArrayList<PublicationDto>();
     }
 
     public void created(ContactDto dto) {
@@ -49,6 +58,22 @@ public class UpdateResult implements IsSerializable {
 
     public void removed(ContactDto dto) {
         removedContacts.add(dto);
+    }
+
+    public void created(PublicationDto dto) {
+        createdPublications.add(dto);
+    }
+
+    public void updated(PublicationDto dto) {
+        updatedPublications.add(dto);
+    }
+
+    public void removed(PublicationDto dto) {
+        removedPublications.add(dto);
+    }
+
+    public void updated(DetailsDto details) {
+        updatedDetails = details;
     }
 
     public List<ContactDto> getCreatedContacts() {
@@ -67,7 +92,15 @@ public class UpdateResult implements IsSerializable {
         return updatedDetails;
     }
 
-    public void updated(DetailsDto details) {
-        updatedDetails = details;
+    public List<PublicationDto> getCreatedPublications() {
+        return new ArrayList<PublicationDto>(createdPublications);
+    }
+
+    public List<PublicationDto> getUpdatedPublications() {
+        return new ArrayList<PublicationDto>(updatedPublications);
+    }
+
+    public List<PublicationDto> getRemovedPublications() {
+        return new ArrayList<PublicationDto>(removedPublications);
     }
 }

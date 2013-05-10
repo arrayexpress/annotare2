@@ -17,13 +17,16 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
 /**
  * @author Olga Melnichuk
  */
-public class PublicationDto implements IsSerializable {
+public class PublicationDto implements IsSerializable, HasIdentity {
 
     private int id;
+
+    private int tmpId;
 
     private String title;
 
@@ -31,18 +34,26 @@ public class PublicationDto implements IsSerializable {
 
     private String authors;
 
-    public PublicationDto() {
+    PublicationDto() {
+        /*used by GWT serialization only*/
+    }
+
+    public PublicationDto(int id) {
+        this.id = id;
+        this.tmpId = id;
     }
 
     public PublicationDto(PublicationDto other) {
         this(other.getId(),
+                other.getTmpId(),
                 other.getTitle(),
                 other.getAuthors(),
                 other.getPubMedId());
     }
 
-    public PublicationDto(int id, String title, String authors, String pubMedId) {
+    public PublicationDto(int id, int tmpId, String title, String authors, String pubMedId) {
         this.id = id;
+        this.tmpId = tmpId;
         this.title = title;
         this.authors = authors;
         this.pubMedId = pubMedId;
@@ -52,8 +63,14 @@ public class PublicationDto implements IsSerializable {
         return authors;
     }
 
+    @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public int getTmpId() {
+        return tmpId;
     }
 
     public String getPubMedId() {
@@ -66,6 +83,22 @@ public class PublicationDto implements IsSerializable {
 
     public Editor editor() {
         return new Editor(this);
+    }
+
+    public boolean isTheSameAs(PublicationDto that) {
+        if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
+        if (pubMedId != null ? !pubMedId.equals(that.pubMedId) : that.pubMedId != null) return false;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        return true;
+    }
+
+    public PublicationDto updatedCopy(PublicationDto updates) {
+        return new PublicationDto(
+                id,
+                updates.getTmpId(),
+                updates.getTitle(),
+                updates.getAuthors(),
+                updates.getPubMedId());
     }
 
     public static class Editor {

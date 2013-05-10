@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -34,6 +35,11 @@ public class Publication {
 
     @JsonProperty("authors")
     private String authors;
+
+    @JsonCreator
+    public Publication(@JsonProperty("id") int id) {
+        this.id = id;
+    }
 
     public int getId() {
         return id;
