@@ -32,6 +32,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class IdfTabToolBarActivity extends AbstractActivity implements IdfTabToolBarView.Presenter {
 
     private final IdfTabToolBarView view;
