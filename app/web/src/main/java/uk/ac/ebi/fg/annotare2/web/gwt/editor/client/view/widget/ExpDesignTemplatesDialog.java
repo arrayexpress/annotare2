@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ExpDesignTemplatesDialog extends DialogBox implements HasSelectionHandlers<List<UITerm>> {
 
     public ExpDesignTemplatesDialog(List<UITerm> templates) {

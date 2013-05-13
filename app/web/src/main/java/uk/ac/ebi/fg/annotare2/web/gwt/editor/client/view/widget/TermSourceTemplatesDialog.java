@@ -30,6 +30,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class TermSourceTemplatesDialog extends DialogBox implements HasSelectionHandlers<List<UITermSource>> {
 
     public TermSourceTemplatesDialog(List<UITermSource> templates) {

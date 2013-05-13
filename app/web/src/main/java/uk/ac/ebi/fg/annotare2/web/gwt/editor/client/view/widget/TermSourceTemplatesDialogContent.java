@@ -36,6 +36,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class TermSourceTemplatesDialogContent extends Composite
         implements HasDialogCloseHandlers<List<UITermSource>> {
 

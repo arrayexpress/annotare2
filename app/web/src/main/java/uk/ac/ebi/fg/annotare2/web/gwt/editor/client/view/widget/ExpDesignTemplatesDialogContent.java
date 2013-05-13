@@ -36,6 +36,7 @@ import java.util.*;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ExpDesignTemplatesDialogContent extends Composite
         implements HasDialogCloseHandlers<List<UITerm>> {
 

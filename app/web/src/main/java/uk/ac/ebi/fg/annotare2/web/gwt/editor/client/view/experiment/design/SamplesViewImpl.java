@@ -89,7 +89,6 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
         dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager.<SampleRow>createCheckboxManager());
 
-
         dataProvider = new ListDataProvider<SampleRow>();
         dataProvider.addDataDisplay(dataGrid);
         dataProvider.getList().addAll(rows);
@@ -187,7 +186,6 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         tools.add(button);
         return tools;
     }
-
 
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
 

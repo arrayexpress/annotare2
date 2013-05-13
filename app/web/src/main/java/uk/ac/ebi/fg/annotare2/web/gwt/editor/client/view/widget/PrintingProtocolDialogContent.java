@@ -33,6 +33,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class PrintingProtocolDialogContent extends Composite implements HasDialogCloseHandlers<UIPrintingProtocol> {
 
     interface Binder extends UiBinder<Widget, PrintingProtocolDialogContent> {

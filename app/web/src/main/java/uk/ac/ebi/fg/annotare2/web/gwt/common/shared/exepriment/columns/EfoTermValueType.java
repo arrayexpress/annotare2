@@ -21,11 +21,18 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
  */
 public class EfoTermValueType implements ColumnValueType {
 
+    private String efoId;
+
     public EfoTermValueType() {
+        /* used by GWT serialization only */
     }
 
-    public EfoTermValueType(String efoRoot) {
-        //To change body of created methods use File | Settings | File Templates.
+    public EfoTermValueType(String efoId) {
+        this.efoId = efoId;
+    }
+
+    public String getEfoId() {
+        return efoId;
     }
 
     @Override

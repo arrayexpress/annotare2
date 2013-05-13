@@ -28,6 +28,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class PrintingProtocolDialog extends DialogBox implements HasSelectionHandlers<UIPrintingProtocol> {
 
     public PrintingProtocolDialog(List<UIPrintingProtocol> protocols, String selected) {
