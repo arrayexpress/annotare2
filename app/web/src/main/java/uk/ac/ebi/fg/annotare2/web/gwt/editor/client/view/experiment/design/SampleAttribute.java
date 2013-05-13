@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class SampleAttribute {
 
     public static enum Type {

@@ -25,11 +25,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
  */
 public abstract class DisclosurePanelContent extends Composite
         implements HasItemHeaderChangeEventHandlers,
-        HasItemChangeEventHandlers {
+        HasContentChangeEventHandlers {
 
     @Override
-    public HandlerRegistration addItemChangeEventHandler(ItemChangeEventHandler handler) {
-        return addHandler(handler, ItemChangeEvent.getType());
+    public HandlerRegistration addContentChangeEventHandler(ContentChangeEventHandler handler) {
+        return addHandler(handler, ContentChangeEvent.getType());
     }
 
     @Override
@@ -42,7 +42,7 @@ public abstract class DisclosurePanelContent extends Composite
     }
 
     void fireItemChangeEvent() {
-        ItemChangeEvent.fire(this);
+        ContentChangeEvent.fire(this);
     }
 
     public abstract String getHeaderText();

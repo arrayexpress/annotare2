@@ -77,8 +77,8 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
         });
 
         initWidget(Binder.BINDER.createAndBindUi(this));
-        typeSelector.setAcceptableValues(Arrays.asList(ValueType.values()));
         typeSelector.setValue(ValueType.TEXT);
+        typeSelector.setAcceptableValues(Arrays.asList(ValueType.values()));
         typeSelector.addValueChangeHandler(new ValueChangeHandler<ValueType>() {
             @Override
             public void onValueChange(ValueChangeEvent<ValueType> event) {

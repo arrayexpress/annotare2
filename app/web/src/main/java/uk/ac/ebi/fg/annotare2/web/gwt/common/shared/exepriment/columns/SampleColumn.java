@@ -37,7 +37,7 @@ public class SampleColumn implements IsSerializable {
         DEFAULTS.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType("EFO_0000635")));
     }
 
-    private static String NO_NAME = "NO NAME";
+    private static String NO_NAME = "NEW ATTRIBUTE";
 
     private AttributeType type;
 
@@ -86,24 +86,15 @@ public class SampleColumn implements IsSerializable {
         return type;
     }
 
+    public void setType(AttributeType type) {
+        this.type = type;
+    }
+
     public ColumnValueType getValueType() {
         return valueType;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SampleColumn column = (SampleColumn) o;
-
-        if (!name.equals(column.name)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
+    public void setValueType(ColumnValueType valueType) {
+        this.valueType = valueType;
     }
 }

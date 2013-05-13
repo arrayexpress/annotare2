@@ -19,8 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.PublicationView;
 
@@ -73,9 +73,9 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
 
     private DisclosureListItem addPublicationView(PublicationDto p) {
         final PublicationView view = new PublicationView(p);
-        view.addItemChangeEventHandler(new ItemChangeEventHandler() {
+        view.addContentChangeEventHandler(new ContentChangeEventHandler() {
             @Override
-            public void onItemChange(ItemChangeEvent event) {
+            public void onContentChange(ContentChangeEvent event) {
                 presenter.updatePublication(view.getPublication());
             }
         });

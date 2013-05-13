@@ -29,6 +29,10 @@
         .otherLabel:hover {
             background-color: #eeeeee;
         }
+        .errorMessage {
+            color: red;
+            font-size: 12px;
+        }
     </ui:style>
     <g:ResizeLayoutPanel height="350px" width="600px">
         <g:DockLayoutPanel>
@@ -85,7 +89,7 @@
                                 </g:DockLayoutPanel>
                             </g:center>
                             <g:south size="110">
-                                <g:SimpleLayoutPanel ui:field="attributeEditor"/>
+                                <g:SimpleLayoutPanel ui:field="columnEditor"/>
                             </g:south>
                         </g:SplitLayoutPanel>
                     </g:center>
@@ -95,6 +99,9 @@
                 <g:HTMLPanel>
                     <table style="width:100%">
                         <tr>
+                            <td>
+                                <g:Label ui:field="errorMessage" addStyleNames="{style.errorMessage}"/>
+                            </td>
                             <td align="right">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
                                 <g:Button ui:field="okButton">Ok</g:Button>

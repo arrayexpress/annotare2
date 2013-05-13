@@ -26,6 +26,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEventHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -65,7 +67,10 @@ public class SampleColumnsDialog extends DialogBox {
     Label otherLabel;
 
     @UiField
-    SimpleLayoutPanel attributeEditor;
+    SimpleLayoutPanel columnEditor;
+
+    @UiField
+    Label errorMessage;
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
 
@@ -82,12 +87,12 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("userColumns")
     void userColumnSelected(ChangeEvent event) {
-        attributeEditor.setWidget(
+        columnEditor.setWidget(
                 createValueEditor(getSelectedColumn()));
     }
 
     @UiHandler("addButton")
-    void addButtonClick(ClickEvent event) {
+    void addButtonClicked(ClickEvent event) {
         SampleColumn template = getSelectedColumnTemplate();
         if (template != null) {
             columnTemplates.removeItem(columnTemplates.getSelectedIndex());
@@ -96,22 +101,24 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     @UiHandler("removeButton")
-    void removeButtonClick(ClickEvent event) {
+    void removeButtonClicked(ClickEvent event) {
         removeSelectedColumn();
     }
 
     @UiHandler("otherLabel")
-    void newColumnClick(ClickEvent event) {
+    void newColumnClicked(ClickEvent event) {
         addColumn(new SampleColumn());
     }
 
     @UiHandler("okButton")
-    void okButtonClick(ClickEvent event) {
-        hide();
+    void okButtonClicked(ClickEvent event) {
+        if (isValid()) {
+            hide();
+        }
     }
 
     @UiHandler("cancelButton")
-    void cancelButtonClick(ClickEvent event) {
+    void cancelButtonClicked(ClickEvent event) {
         hide();
     }
 
@@ -131,7 +138,15 @@ public class SampleColumnsDialog extends DialogBox {
         if (column == null) {
             return new Label("No selection");
         }
-        return new SampleColumnEditor(column);
+        SampleColumnEditor editor = new SampleColumnEditor(column);
+        editor.addContentChangeEventHandler(new ContentChangeEventHandler() {
+            @Override
+            public void onContentChange(ContentChangeEvent event) {
+                updateColumnTitles();
+                validate();
+            }
+        });
+        return editor;
     }
 
     private void addColumn(SampleColumn template) {
@@ -140,7 +155,7 @@ public class SampleColumnsDialog extends DialogBox {
         }
         SampleColumn column = new SampleColumn(template);
         columns.add(column);
-        userColumns.addItem(column.getName());
+        userColumns.addItem(getColumnTitle(column), column.getName());
         userColumns.setItemSelected(columns.size() - 1, true);
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), userColumns);
     }
@@ -156,6 +171,17 @@ public class SampleColumnsDialog extends DialogBox {
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), userColumns);
     }
 
+    private void updateColumnTitles() {
+        int index = 0;
+        for (SampleColumn column : columns) {
+            userColumns.setItemText(index++, getColumnTitle(column));
+        }
+    }
+
+    private String getColumnTitle(SampleColumn column) {
+        return (column.getType().isFactorValue() ? "[FV] " : "") + column.getName();
+    }
+
     private void updateColumnTemplateList() {
         columnTemplates.clear();
         Set<SampleColumn> used = new HashSet<SampleColumn>();
@@ -169,5 +195,30 @@ public class SampleColumnsDialog extends DialogBox {
             }
             index++;
         }
+    }
+
+    private void checkNamesUnique(List<String> errors) {
+        Set<String> names = new HashSet<String>();
+        for (SampleColumn column : columns) {
+            names.add(column.getName());
+        }
+        if (names.size() != columns.size()) {
+            errors.add("Attribute names must be unique");
+        }
+    }
+
+    private void showError(String message) {
+        errorMessage.setText(message);
+    }
+
+    private List<String> validate() {
+        List<String> errors = new ArrayList<String>();
+        checkNamesUnique(errors);
+        showError(errors.isEmpty() ? "" : errors.get(0));
+        return errors;
+    }
+
+    private boolean isValid() {
+        return validate().isEmpty();
     }
 }

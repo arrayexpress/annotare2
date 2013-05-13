@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.HasHandlers;
 /**
  * @author Olga Melnichuk
  */
-public interface HasItemChangeEventHandlers extends HasHandlers {
+public interface HasContentChangeEventHandlers extends HasHandlers {
 
-    HandlerRegistration addItemChangeEventHandler(ItemChangeEventHandler handler);
+    HandlerRegistration addContentChangeEventHandler(ContentChangeEventHandler handler);
 }

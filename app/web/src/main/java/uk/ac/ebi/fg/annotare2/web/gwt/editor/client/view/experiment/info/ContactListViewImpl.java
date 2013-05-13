@@ -18,11 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ItemChangeEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
@@ -80,9 +78,9 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
 
     private DisclosureListItem addContactView(ContactDto p) {
         final ContactView view = new ContactView(p);
-        view.addItemChangeEventHandler(new ItemChangeEventHandler() {
+        view.addContentChangeEventHandler(new ContentChangeEventHandler() {
             @Override
-            public void onItemChange(ItemChangeEvent event) {
+            public void onContentChange(ContentChangeEvent event) {
                 presenter.updateContact(view.getContact());
             }
         });

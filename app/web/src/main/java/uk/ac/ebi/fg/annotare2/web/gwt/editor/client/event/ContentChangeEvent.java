@@ -22,28 +22,28 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * @author Olga Melnichuk
  */
-public class ItemChangeEvent extends GwtEvent<ItemChangeEventHandler> {
+public class ContentChangeEvent extends GwtEvent<ContentChangeEventHandler> {
 
-    private static Type<ItemChangeEventHandler> TYPE = new Type<ItemChangeEventHandler>();
+    private static Type<ContentChangeEventHandler> TYPE = new Type<ContentChangeEventHandler>();
 
-    private ItemChangeEvent() {
+    private ContentChangeEvent() {
     }
 
     @Override
-    protected void dispatch(ItemChangeEventHandler handler) {
-        handler.onItemChange(this);
+    protected void dispatch(ContentChangeEventHandler handler) {
+        handler.onContentChange(this);
     }
 
     @Override
-    public Type<ItemChangeEventHandler> getAssociatedType() {
+    public Type<ContentChangeEventHandler> getAssociatedType() {
         return TYPE;
     }
 
-    public static void fire(HasItemChangeEventHandlers source) {
-        source.fireEvent(new ItemChangeEvent());
+    public static void fire(HasContentChangeEventHandlers source) {
+        source.fireEvent(new ContentChangeEvent());
     }
 
-    public static Type<ItemChangeEventHandler> getType() {
+    public static Type<ContentChangeEventHandler> getType() {
         return TYPE;
     }
 }

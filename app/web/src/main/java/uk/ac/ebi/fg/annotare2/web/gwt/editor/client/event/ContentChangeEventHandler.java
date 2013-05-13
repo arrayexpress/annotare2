@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * @author Olga Melnichuk
  */
-public interface ItemChangeEventHandler extends EventHandler {
+public interface ContentChangeEventHandler extends EventHandler {
 
-    void onItemChange(ItemChangeEvent event);
+    void onContentChange(ContentChangeEvent event);
 }
