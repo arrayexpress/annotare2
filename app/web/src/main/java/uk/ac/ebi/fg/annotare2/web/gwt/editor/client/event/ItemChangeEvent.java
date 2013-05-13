@@ -39,7 +39,7 @@ public class ItemChangeEvent extends GwtEvent<ItemChangeEventHandler> {
         return TYPE;
     }
 
-    public static void fire(HasItemHeaderChangeEventHandlers source) {
+    public static void fire(HasItemChangeEventHandlers source) {
         source.fireEvent(new ItemChangeEvent());
     }
 
