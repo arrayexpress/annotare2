@@ -39,6 +39,7 @@ import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -61,6 +62,10 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     private MyDataGrid<SampleRow> dataGrid;
     private ListDataProvider<SampleRow> dataProvider;
+
+    private List<SampleColumn> columns = new ArrayList<SampleColumn>();
+
+    private int permanentColumnCount;
 
     public SamplesViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
@@ -93,7 +98,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                 new ColumnSortEvent.ListHandler<SampleRow>(dataProvider.getList());
         dataGrid.addColumnSortHandler(sortHandler);
 
-        addColumns(dataGrid, sortHandler, columns);
+        setColumns(dataGrid, sortHandler, columns);
 
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
@@ -104,14 +109,17 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         gridPanel.add(dataGrid);
     }
 
-    private void addColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler, List<SampleColumn> columns) {
-        addDefaultColumns(dataGrid, sortHandler);
+    private void setColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler, List<SampleColumn> columns) {
+        this.columns = new ArrayList<SampleColumn>(columns);
+
+        addPermanentColumns(dataGrid, sortHandler);
+        permanentColumnCount = dataGrid.getColumnCount();
         for (SampleColumn column : columns) {
-           // TODO  addColumn(column);
+            // TODO  addColumn(column);
         }
     }
 
-    private void addDefaultColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler) {
+    private void addPermanentColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler) {
         addCheckBoxColumn(dataGrid);
         addNameColumn(dataGrid, sortHandler);
     }
@@ -150,6 +158,10 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         dataGrid.setColumnWidth(column, 100, Style.Unit.PX);
     }
 
+    private void updateColumns(List<SampleColumn> columns) {
+        //TODO
+    }
+
     private HorizontalPanel createTools() {
         HorizontalPanel tools = new HorizontalPanel();
         tools.setSpacing(3);
@@ -157,7 +169,16 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new SampleColumnsDialog()).show();
+                new SampleColumnsDialog(columns, new SampleColumnsDialog.Callback() {
+                    @Override
+                    public void onCancel() {
+                    }
+
+                    @Override
+                    public void onOkay(List<SampleColumn> columns) {
+                        updateColumns(columns);
+                    }
+                });
             }
         });
         tools.add(button);

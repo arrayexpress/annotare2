@@ -18,7 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -34,7 +36,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasContentChangeEventH
 /**
  * @author Olga Melnichuk
  */
-public class SampleColumnEditor extends Composite implements HasContentChangeEventHandlers {
+public class SampleColumnEditor extends Composite implements HasValueChangeHandlers<SampleColumn> {
 
     interface Binder extends UiBinder<Widget, SampleColumnEditor> {
         Binder BINDER = GWT.create(Binder.class);
@@ -49,7 +51,7 @@ public class SampleColumnEditor extends Composite implements HasContentChangeEve
     @UiField
     ColumnValueTypeEditor valueTypeEditor;
 
-    private SampleColumn column;
+    private SampleColumn.Editor column;
 
     public SampleColumnEditor(SampleColumn column) {
         initWidget(Binder.BINDER.createAndBindUi(this));
@@ -64,7 +66,7 @@ public class SampleColumnEditor extends Composite implements HasContentChangeEve
         factorValueCheckbox.setValue(type.isFactorValue());
         factorValueCheckbox.setVisible(type.isFactorValue() || type.isCharacteristic());
 
-        this.column = column;
+        this.column = column.editor();
     }
 
     @UiHandler("nameBox")
@@ -73,7 +75,7 @@ public class SampleColumnEditor extends Composite implements HasContentChangeEve
             return;
         }
         column.setName(nameBox.getValue());
-        ContentChangeEvent.fire(this);
+        ValueChangeEvent.fire(this, column.copy());
     }
 
     @UiHandler("factorValueCheckbox")
@@ -81,7 +83,7 @@ public class SampleColumnEditor extends Composite implements HasContentChangeEve
         AttributeType type = column.getType();
         if (type.isFactorValue() || type.isCharacteristic()) {
             column.setType(event.getValue() ? AttributeType.FACTOR_VALUE : AttributeType.CHARACTERISTIC);
-            ContentChangeEvent.fire(this);
+            ValueChangeEvent.fire(this, column.copy());
         }
     }
 
@@ -91,11 +93,11 @@ public class SampleColumnEditor extends Composite implements HasContentChangeEve
             return;
         }
         column.setValueType(event.getValue());
-        ContentChangeEvent.fire(this);
+        ValueChangeEvent.fire(this,  column.copy());
     }
 
     @Override
-    public HandlerRegistration addContentChangeEventHandler(ContentChangeEventHandler handler) {
-        return addHandler(handler, ContentChangeEvent.getType());
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<SampleColumn> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 }

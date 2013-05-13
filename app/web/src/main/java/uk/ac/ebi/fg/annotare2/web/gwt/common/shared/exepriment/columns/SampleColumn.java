@@ -31,7 +31,8 @@ import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.NEITHER;
 public class SampleColumn implements IsSerializable {
 
     public static List<SampleColumn> DEFAULTS = new ArrayList<SampleColumn>();
-    static  {
+
+    static {
         DEFAULTS.add(createDefault("Material Type", NEITHER, new EfoTermValueType("EFO_0001434")));
         DEFAULTS.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType("EFO_0000634")));
         DEFAULTS.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType("EFO_0000635")));
@@ -51,7 +52,7 @@ public class SampleColumn implements IsSerializable {
         this(null, CHARACTERISTIC, new TextValueType());
     }
 
-    public SampleColumn(String name, AttributeType type,  ColumnValueType valueType) {
+    public SampleColumn(String name, AttributeType type, ColumnValueType valueType) {
         setName(name);
         this.type = type;
         this.valueType = valueType;
@@ -74,7 +75,7 @@ public class SampleColumn implements IsSerializable {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name == null || name.trim().isEmpty() ? NO_NAME : name;
     }
 
@@ -86,7 +87,7 @@ public class SampleColumn implements IsSerializable {
         return type;
     }
 
-    public void setType(AttributeType type) {
+    private void setType(AttributeType type) {
         this.type = type;
     }
 
@@ -94,7 +95,52 @@ public class SampleColumn implements IsSerializable {
         return valueType;
     }
 
-    public void setValueType(ColumnValueType valueType) {
+    private void setValueType(ColumnValueType valueType) {
         this.valueType = valueType;
+    }
+
+    public Editor editor() {
+        return new Editor(this);
+    }
+
+    public static class Editor {
+
+        private SampleColumn column;
+
+        public Editor(SampleColumn column) {
+            this.column = new SampleColumn(column);
+        }
+
+        public boolean isDefault() {
+            return column.isDefault();
+        }
+
+        public String getName() {
+            return column.getName();
+        }
+
+        public void setName(String name) {
+            column.setName(name);
+        }
+
+        public AttributeType getType() {
+            return column.getType();
+        }
+
+        public void setType(AttributeType type) {
+            column.setType(type);
+        }
+
+        public ColumnValueType getValueType() {
+            return column.getValueType();
+        }
+
+        public void setValueType(ColumnValueType valueType) {
+            column.setValueType(valueType);
+        }
+
+        public SampleColumn copy() {
+            return new SampleColumn(column);
+        }
     }
 }
