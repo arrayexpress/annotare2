@@ -20,13 +20,13 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
     <ui:style>
-        .otherLabel {
+        .newAttribute {
             cursor: pointer;
             text-decoration: underline;
             text-transform: lowercase;
             padding: 3px;
         }
-        .otherLabel:hover {
+        .newAttribute:hover {
             background-color: #eeeeee;
         }
         .errorMessage {
@@ -44,7 +44,7 @@
                                 <g:ListBox ui:field="columnTemplates" visibleItemCount="9" width="100%"/>
                             </g:center>
                             <g:south size="25">
-                                <g:Label addStyleNames="{style.otherLabel}" ui:field="otherLabel">Other</g:Label>
+                                <g:Label addStyleNames="{style.newAttribute}" ui:field="newColumnLabel">New Attribute</g:Label>
                             </g:south>
                         </g:DockLayoutPanel>
                     </g:east>

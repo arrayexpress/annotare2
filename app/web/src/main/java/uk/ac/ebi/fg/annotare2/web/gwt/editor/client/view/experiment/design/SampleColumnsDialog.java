@@ -43,31 +43,31 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     @UiField
-    protected ListBox columnTemplates;
+    ListBox columnTemplates;
 
     @UiField
-    protected ListBox userColumns;
+    ListBox userColumns;
 
     @UiField
-    protected Button moveUpButton;
+    Button moveUpButton;
 
     @UiField
-    protected Button moveDownButton;
+    Button moveDownButton;
 
     @UiField
-    protected Button removeButton;
+    Button removeButton;
 
     @UiField
-    protected Button addButton;
+    Button addButton;
 
     @UiField
-    protected Label otherLabel;
+    Label newColumnLabel;
 
     @UiField
-    protected SimpleLayoutPanel columnEditor;
+    SimpleLayoutPanel columnEditor;
 
     @UiField
-    protected Label errorMessage;
+    Label errorMessage;
 
     private Map<Integer, SampleColumn> columnMap = new HashMap<Integer, SampleColumn>();
 
@@ -89,7 +89,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     @UiHandler("userColumns")
-    protected void userColumnSelected(ChangeEvent event) {
+    void userColumnSelected(ChangeEvent event) {
         final int index = userColumns.getSelectedIndex();
         SampleColumn column = index < 0 ? null : getColumn(userColumns.getValue(index));
 
@@ -110,7 +110,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     @UiHandler("addButton")
-    protected void addButtonClicked(ClickEvent event) {
+    void addButtonClicked(ClickEvent event) {
         SampleColumn template = getSelectedColumnTemplate();
         if (template != null) {
             columnTemplates.removeItem(columnTemplates.getSelectedIndex());
@@ -119,17 +119,17 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     @UiHandler("removeButton")
-    protected void removeButtonClicked(ClickEvent event) {
+    void removeButtonClicked(ClickEvent event) {
         removeSelectedColumn();
     }
 
-    @UiHandler("otherLabel")
-    protected void newColumnClicked(ClickEvent event) {
+    @UiHandler("newColumnLabel")
+    void newColumnClicked(ClickEvent event) {
         addColumn(new SampleColumn());
     }
 
     @UiHandler("okButton")
-    protected void okButtonClicked(ClickEvent event) {
+    void okButtonClicked(ClickEvent event) {
         if (isValid()) {
             hide();
             if (callback != null) {
@@ -139,7 +139,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     @UiHandler("cancelButton")
-    protected void cancelButtonClicked(ClickEvent event) {
+    void cancelButtonClicked(ClickEvent event) {
         hide();
         if (callback != null) {
             callback.onCancel();
@@ -154,12 +154,9 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void addColumn(SampleColumn template) {
-        if (getColumnNames().contains(template.getName())) {
-            return;
+        if (!getColumnNames().contains(template.getName())) {
+            setColumn(new SampleColumn(template), true);
         }
-        setColumn(new SampleColumn(template));
-        userColumns.setItemSelected(userColumns.getItemCount() - 1, true);
-        DomEvent.fireNativeEvent(Document.get().createChangeEvent(), userColumns);
     }
 
     private void updateColumn(int index, SampleColumn value) {
@@ -192,8 +189,8 @@ public class SampleColumnsDialog extends DialogBox {
         return (column.getType().isFactorValue() ? "[FV] " : "") + column.getName();
     }
 
-    private List<String> getColumnNames() {
-        List<String> names = new ArrayList<String>();
+    private Set<String> getColumnNames() {
+        Set<String> names = new HashSet<String>();
         for (SampleColumn column : columnMap.values()) {
             names.add(column.getName());
         }
@@ -203,7 +200,17 @@ public class SampleColumnsDialog extends DialogBox {
     private void setColumns(List<SampleColumn> columns) {
         userColumns.clear();
         for (SampleColumn column : columns) {
-            setColumn(column);
+            setColumn(column, false);
+        }
+    }
+
+    private void setColumn(SampleColumn column, boolean select) {
+        int id = columnId();
+        columnMap.put(id, column);
+        userColumns.addItem(getColumnTitle(column), Integer.toString(id));
+        if (select) {
+            userColumns.setItemSelected(userColumns.getItemCount() - 1, true);
+            DomEvent.fireNativeEvent(Document.get().createChangeEvent(), userColumns);
         }
     }
 
@@ -219,15 +226,9 @@ public class SampleColumnsDialog extends DialogBox {
         return columnMap.get(parseInt(id));
     }
 
-    private void setColumn(SampleColumn column) {
-        int id = columnId();
-        columnMap.put(id, column);
-        userColumns.addItem(getColumnTitle(column), Integer.toString(id));
-    }
-
     private void updateTemplateColumns() {
         columnTemplates.clear();
-        Set<String> used = new HashSet<String>(getColumnNames());
+        Set<String> used = getColumnNames();
 
         int index = 0;
         for (SampleColumn column : SampleColumn.DEFAULTS) {
@@ -239,8 +240,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void checkNamesUnique(List<String> errors) {
-        Set<String> names = new HashSet<String>(getColumnNames());
-        if (names.size() != columnMap.size()) {
+        if (getColumnNames().size() != columnMap.size()) {
             errors.add("Attribute names must be unique");
         }
     }
