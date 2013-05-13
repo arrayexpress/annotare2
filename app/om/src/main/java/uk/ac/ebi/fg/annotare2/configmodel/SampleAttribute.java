@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.AttributeType;
+import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
 
 /**
  * @author Olga Melnichuk
