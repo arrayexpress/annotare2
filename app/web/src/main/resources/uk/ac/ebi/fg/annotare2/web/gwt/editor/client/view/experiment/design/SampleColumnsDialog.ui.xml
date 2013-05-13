@@ -37,7 +37,7 @@
                     <g:east size="150">
                         <g:DockLayoutPanel>
                             <g:center>
-                                <g:ListBox ui:field="predefinedAttributes" visibleItemCount="9" width="100%"/>
+                                <g:ListBox ui:field="columnTemplates" visibleItemCount="9" width="100%"/>
                             </g:center>
                             <g:south size="25">
                                 <g:Label addStyleNames="{style.otherLabel}" ui:field="otherLabel">Other</g:Label>
@@ -80,7 +80,7 @@
                                         </g:SimpleLayoutPanel>
                                     </g:east>
                                     <g:center>
-                                        <g:ListBox ui:field="currentAttributes" width="100%" visibleItemCount="9"/>
+                                        <g:ListBox ui:field="userColumns" width="100%" visibleItemCount="9"/>
                                     </g:center>
                                 </g:DockLayoutPanel>
                             </g:center>

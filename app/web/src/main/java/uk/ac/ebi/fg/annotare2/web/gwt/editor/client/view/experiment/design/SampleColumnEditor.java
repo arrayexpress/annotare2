@@ -20,13 +20,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 /**
  * @author Olga Melnichuk
  */
-public class SampleAttributeEditor extends Composite {
+public class SampleColumnEditor extends Composite {
 
-    interface Binder extends UiBinder<Widget, SampleAttributeEditor> {
+    interface Binder extends UiBinder<Widget, SampleColumnEditor> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -34,24 +36,22 @@ public class SampleAttributeEditor extends Composite {
     TextBox nameBox;
 
     @UiField
-    ListBox unitList;
-
-    @UiField
     CheckBox factorValueCheckbox;
 
-    public SampleAttributeEditor(SampleAttribute attribute) {
+    @UiField
+    ColumnValueTypeEditor valueTypeEditor;
+
+    public SampleColumnEditor(SampleColumn column) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        for(SampleAttribute.Unit unit : SampleAttribute.Unit.values()) {
-            unitList.addItem(unit.getTitle(), unit.name());
-            if (unit == attribute.getUnit()) {
-                unitList.setItemSelected(unitList.getItemCount() - 1, true);
-            }
-        }
+        nameBox.setValue(column.getName());
+        nameBox.setEnabled(!column.isDefault());
 
-        nameBox.setValue(attribute.getName());
+        valueTypeEditor.setValue(column.getValueType());
+        valueTypeEditor.setEnabled(!column.isDefault());
 
-        unitList.setEnabled(attribute.isCustom());
-        nameBox.setEnabled(attribute.isCustom());
+        AttributeType type = column.getType();
+        factorValueCheckbox.setValue(type.isFactorValue());
+        factorValueCheckbox.setVisible(type.isFactorValue() || type.isCharacteristic());
     }
 }

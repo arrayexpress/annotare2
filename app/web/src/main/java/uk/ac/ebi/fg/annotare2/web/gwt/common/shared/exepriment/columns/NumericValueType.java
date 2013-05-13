@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-
-import java.util.List;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SamplesView extends IsWidget {
+public class NumericValueType implements ColumnValueType {
 
-    void setData(List<SampleRow> rows, List<SampleColumn> columns);
+    @Override
+    public void visit(Visitor visitor) {
+        visitor.onNumericValueType(this);
+    }
 }

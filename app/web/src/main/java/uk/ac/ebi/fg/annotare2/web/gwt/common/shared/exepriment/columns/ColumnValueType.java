@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-
-import java.util.List;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SamplesView extends IsWidget {
+public interface ColumnValueType extends IsSerializable {
 
-    void setData(List<SampleRow> rows, List<SampleColumn> columns);
+    void visit(Visitor visitor);
+
+    public interface Visitor {
+        void onTextValueType(TextValueType valueType);
+
+        void onEfoTermValueType(EfoTermValueType valueType);
+
+        void onNumericValueType(NumericValueType valueType);
+    }
 }

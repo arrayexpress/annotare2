@@ -18,31 +18,25 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:w="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design"
         >
-
     <g:HTMLPanel>
-        <table style="padding:10px" cellspacing="5">
+        <table style="padding:10px" cellspacing="1" width="100%">
             <tr>
-                <td></td>
+                <td width="60px"></td>
                 <td>
                     <g:CheckBox ui:field="factorValueCheckbox">&nbsp;Is a factor value?</g:CheckBox>
                 </td>
             </tr>
             <tr>
+                <td>Name:</td>
                 <td>
-                    Name:
-                </td>
-                <td>
-                    <g:TextBox ui:field="nameBox" width="250px"/>
+                    <g:TextBox ui:field="nameBox" width="100%"/>
                 </td>
             </tr>
             <tr>
-                <td>
-                    Unit:
-                </td>
-                <td>
-                    <g:ListBox ui:field="unitList" width="150px"/>
-                </td>
+                <td>Type:</td>
+                <td><w:ColumnValueTypeEditor ui:field="valueTypeEditor" width="100%"/></td>
             </tr>
         </table>
     </g:HTMLPanel>

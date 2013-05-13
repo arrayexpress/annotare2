@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.configmodel;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-
-import java.util.List;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.AttributeType;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SamplesView extends IsWidget {
+public class SampleAttribute {
 
-    void setData(List<SampleRow> rows, List<SampleColumn> columns);
+    private AttributeType type;
+
+    private String name;
+
 }

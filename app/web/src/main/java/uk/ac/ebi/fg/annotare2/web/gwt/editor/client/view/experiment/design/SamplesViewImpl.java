@@ -36,7 +36,7 @@ import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import java.util.Comparator;
@@ -157,7 +157,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new SampleAttributesDialog()).show();
+                (new SampleColumnsDialog()).show();
             }
         });
         tools.add(button);

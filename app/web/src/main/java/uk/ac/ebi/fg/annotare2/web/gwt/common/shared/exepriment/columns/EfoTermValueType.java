@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 /**
  * @author Olga Melnichuk
  */
-public class SampleColumn implements IsSerializable {
+public class EfoTermValueType implements ColumnValueType {
+
+    public EfoTermValueType() {
+    }
+
+    public EfoTermValueType(String efoRoot) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void visit(Visitor visitor) {
+        visitor.onEfoTermValueType(this);
+    }
 }

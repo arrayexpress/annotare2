@@ -28,9 +28,11 @@ import uk.ac.ebi.fg.annotare2.submissionmodel.LabeledExtract;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -72,6 +74,7 @@ public class ExperimentConfig {
     @JsonProperty("labeledExtractMap")
     private Map<Integer, LabeledExtractConfig> labeledExtracts;
 
+    private List<SampleAttribute> sampleAttributes;
 
     public ExperimentConfig(@JsonProperty("type") ExperimentConfigType type) {
         this.type = type;
@@ -80,6 +83,8 @@ public class ExperimentConfig {
 
         contacts = newLinkedHashMap();
         publications = newLinkedHashMap();
+
+        sampleAttributes = newArrayList();
     }
 
     public ExperimentConfigType getType() {
@@ -183,6 +188,11 @@ public class ExperimentConfig {
     @JsonIgnore
     public Collection<LabeledExtractConfig> getLabeledExtracts() {
         return unmodifiableCollection(labeledExtracts.values());
+    }
+
+    @JsonIgnore
+    public Collection<SampleAttribute> getSampleAttributes() {
+        return unmodifiableCollection(sampleAttributes);
     }
 
     public static ExperimentConfig fromJsonString(String str) throws DataSerializationException {
