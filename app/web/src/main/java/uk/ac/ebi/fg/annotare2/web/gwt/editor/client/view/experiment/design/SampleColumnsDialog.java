@@ -184,13 +184,13 @@ public class SampleColumnsDialog extends DialogBox {
 
     private void updateColumnTemplateList() {
         columnTemplates.clear();
-        Set<SampleColumn> used = new HashSet<SampleColumn>();
+        Set<String> used = new HashSet<String>();
         for (SampleColumn column : columns) {
-            used.add(column);
+            used.add(column.getName());
         }
         int index = 0;
         for (SampleColumn column : SampleColumn.DEFAULTS) {
-            if (!used.contains(column)) {
+            if (!used.contains(column.getName())) {
                 columnTemplates.addItem(column.getName(), Integer.toString(index));
             }
             index++;
