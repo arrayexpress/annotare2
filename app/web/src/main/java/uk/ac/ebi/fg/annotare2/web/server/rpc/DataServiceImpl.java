@@ -22,10 +22,13 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -35,11 +38,13 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 public class DataServiceImpl extends RemoteServiceServlet implements DataService {
 
-    private ArrayExpressArrayDesignList adList;
+    private final ArrayExpressArrayDesignList adList;
+    private final AnnotareEfoService efoService;
 
     @Inject
-    public DataServiceImpl(ArrayExpressArrayDesignList adList) {
+    public DataServiceImpl(ArrayExpressArrayDesignList adList, AnnotareEfoService efoService) {
         this.adList = adList;
+        this.efoService = efoService;
     }
 
     @Override
@@ -51,5 +56,15 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
                 return new ArrayDesignRef(ad.getName(), ad.getDesription());
             }
         }));
+    }
+
+    @Override
+    public List<EfoTermDto> getEfoTerms(String query, int limit) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<EfoTermDto> getEfoTermsFromBranch(String query, String branchId, int limit) {
+        return Collections.emptyList();
     }
 }

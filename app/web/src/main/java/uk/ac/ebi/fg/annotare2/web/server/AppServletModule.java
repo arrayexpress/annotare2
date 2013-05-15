@@ -29,10 +29,12 @@ import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
+import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static com.google.inject.Scopes.SINGLETON;
 
 /**
  * @author Olga Melnichuk
@@ -74,13 +77,13 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class);
 
-        bind(SecurityFilter.class).in(Scopes.SINGLETON);
-        bind(LoginServlet.class).in(Scopes.SINGLETON);
-        bind(LogoutServlet.class).in(Scopes.SINGLETON);
-        bind(HomeServlet.class).in(Scopes.SINGLETON);
-        bind(EditorServlet.class).in(Scopes.SINGLETON);
-        bind(WelcomeServlet.class).in(Scopes.SINGLETON);
-        bind(UploadServlet.class).in(Scopes.SINGLETON);
+        bind(SecurityFilter.class).in(SINGLETON);
+        bind(LoginServlet.class).in(SINGLETON);
+        bind(LogoutServlet.class).in(SINGLETON);
+        bind(HomeServlet.class).in(SINGLETON);
+        bind(EditorServlet.class).in(SINGLETON);
+        bind(WelcomeServlet.class).in(SINGLETON);
+        bind(UploadServlet.class).in(SINGLETON);
 
         serveAndBindRpcService(CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class, "UserApp");
         serveAndBindRpcService(SubmissionListService.NAME, SubmissionListServiceImpl.class, "UserApp");
@@ -92,15 +95,16 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(VocabularyService.NAME, VocabularyServiceImpl.class, "EditorApp");
         serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");
 
-        bind(SubmissionListServiceImpl.class).in(Scopes.SINGLETON);
+        bind(SubmissionListServiceImpl.class).in(SINGLETON);
 
-        bind(UserDao.class).to(UserDaoDummy.class).in(Scopes.SINGLETON);
-        bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(Scopes.SINGLETON);
-        bind(AccountManager.class).in(Scopes.SINGLETON);
-        bind(SubmissionManager.class).in(Scopes.SINGLETON);
+        bind(UserDao.class).to(UserDaoDummy.class).in(SINGLETON);
+        bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(SINGLETON);
+        bind(AccountManager.class).in(SINGLETON);
+        bind(SubmissionManager.class).in(SINGLETON);
 
-        bind(AuthService.class).to(AuthServiceImpl.class).in(Scopes.SINGLETON);
+        bind(AuthService.class).to(AuthServiceImpl.class).in(SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);
+        bind(AnnotareEfoService.class).asEagerSingleton();
 
         overrideMageTabCheck();
     }
@@ -116,7 +120,9 @@ public class AppServletModule extends ServletModule {
         }).annotatedWith(Names.named("libPaths")).toInstance(libPaths);
 
         bind(new TypeLiteral<List<CheckDefinition>>() {
-        }).toProvider(AnnotareCheckListProvider.class).in(Scopes.SINGLETON);
+        }).toProvider(AnnotareCheckListProvider.class).in(SINGLETON);
+
+        bind(EfoService.class).to(AnnotareEfoService.class);
     }
 
     private void serveAndBindRpcService(String serviceName, Class<? extends HttpServlet> implClass, String... moduleNames) {
@@ -126,7 +132,7 @@ public class AppServletModule extends ServletModule {
             allRpc.awareOf(servicePath);
         }
 
-        bind(implClass).in(Scopes.SINGLETON);
+        bind(implClass).in(SINGLETON);
     }
 
     static class AllRpcServicePathsImpl implements AllRpcServicePaths {
