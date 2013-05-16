@@ -1,22 +1,20 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.*;
+import org.apache.lucene.queryparser.analyzing.AnalyzingQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -26,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.services.efo.*;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -35,6 +34,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.io.Closeables.close;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.lucene.document.Field.Store.NO;
 import static org.apache.lucene.document.Field.Store.YES;
@@ -55,26 +55,38 @@ public class AnnotareEfoService implements EfoService {
     static enum EfoField {
         ACCESSION_FIELD("accession") {
             @Override
-            public Field create(String name, String value) {
-                return new StringField(name, value, YES);
+            public Field create(String name, EfoNode node) {
+                return new StringField(name, node.getAccession(), YES);
+            }
+        },
+        ACCESSION_FIELD_LOWERCASE("accession_lowercase") {
+            @Override
+            public Field create(String name, EfoNode node) {
+                return new StringField(name, node.getAccession().toLowerCase(), NO);
             }
         },
         LABEL_FIELD("label") {
             @Override
-            public Field create(String name, String value) {
-                return new StringField(name, value, YES);
+            public Field create(String name, EfoNode node) {
+                return new StringField(name, node.getName(), YES);
+            }
+        },
+        LABEL_FIELD_LOWERCASE("label_lowercase") {
+            @Override
+            public Field create(String name, EfoNode node) {
+                return new StringField(name, node.getName().toLowerCase(), NO);
             }
         },
         TEXT_FIELD("text") {
             @Override
-            public Field create(String name, String value) {
-                return new TextField(name, value, NO);
+            public Field create(String name, EfoNode node) {
+                return new TextField(name, node.getName().toLowerCase(), NO);
             }
         },
         ASCENDANT_FIELD("ascendant") {
             @Override
-            public Field create(String name, String value) {
-                return new StringField(name, value, NO);
+            public Field create(String name, EfoNode node) {
+                return new StringField(name, node.getAccession().toLowerCase(), NO);
             }
         };
 
@@ -84,17 +96,24 @@ public class AnnotareEfoService implements EfoService {
             this.name = name;
         }
 
-        protected abstract Field create(String name, String value);
+        protected abstract Field create(String name, EfoNode node);
 
-        public Field create(String value) {
-            return create(name, value);
+        public Field create(EfoNode node) {
+            return create(name, node);
         }
 
-        public String prefixMatches(String prefix) {
-            return name + ":\"" + prefix + "*\"";
+        public String matchesPrefix(String prefix) {
+            String[] words = prefix.split("\\s");
+            return on(" AND ").join(Lists.transform(asList(words), new Function<String, String>() {
+                @Nullable
+                @Override
+                public String apply(@Nullable String input) {
+                    return name + ":" + input;
+                }
+            })) + "*";
         }
 
-        public String phraseMatches(String phrase) {
+        public String matchesPhrase(String phrase) {
             return name + ":\"" + phrase + "\"";
         }
     }
@@ -108,12 +127,12 @@ public class AnnotareEfoService implements EfoService {
     private void testSearch() {
         List<String> errors = newArrayList();
 
-        String label = "cell line";
+        String label = "Cell line";
         String accession = "EFO_0000322";
-        String rootAccession = "MaterialType";
+        String rootAccession = "MaterialEntity";
         EfoNode node = findTermByName(label, rootAccession);
         if (node == null) {
-            errors.add("Can't find term by label (in branch): " + label + " | " + rootAccession);
+            errors.add("Can't find term by label (in branch): '" + label + "' | " + rootAccession);
         }
 
         node = findTermByAccession(accession, rootAccession);
@@ -131,9 +150,14 @@ public class AnnotareEfoService implements EfoService {
             errors.add("Can't find term by label or accession (in branch): '' | " + accession + " | " + rootAccession);
         }
 
+        node = findTermByNameOrAccession(label, "", rootAccession);
+        if (node == null) {
+            errors.add("Can't find term by label or accession (in branch): '" + label + "' | '' | " + rootAccession);
+        }
+
         node = findTermByNameOrAccession(label, accession, rootAccession);
         if (node == null) {
-            errors.add("Can't find term by label or accession (in branch): " + label + " | '' | " + rootAccession);
+            errors.add("Can't find term by label or accession (in branch): '" + label + "' | " + accession + " | " + rootAccession);
         }
 
         String prefix = "cell li";
@@ -208,7 +232,7 @@ public class AnnotareEfoService implements EfoService {
             }
         } else {
             EfoNode term = findTermByAccession(accession, rootAccession);
-            if (term != null && name.equals(term.getName())) {
+            if (term != null && name.equalsIgnoreCase(term.getName())) {
                 return term;
             }
         }
@@ -238,49 +262,43 @@ public class AnnotareEfoService implements EfoService {
     }
 
     private EfoNode exactSearchByLabel(String label, String rootAccession) throws ParseException, IOException {
-        Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
-        QueryParser parser = new QueryParser(Version.LUCENE_43, TEXT_FIELD.name, analyzer);
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
         Query query = parser.parse(
-                LABEL_FIELD.phraseMatches(label.toLowerCase())
-                 + " AND " + ASCENDANT_FIELD.phraseMatches(rootAccession.toLowerCase())
+                LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
+                        + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession.toLowerCase())
         );
-        List<EfoNode> result = runQuery(query, MAX_HITS);
+        List<EfoNode> result = runQuery(query, 1);
         return result.isEmpty() ? null : result.get(0);
     }
 
     private EfoNode exactSearchByAccession(String accession, String rootAccession) throws ParseException, IOException {
-        Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
-        QueryParser parser = new QueryParser(Version.LUCENE_43, TEXT_FIELD.name, analyzer);
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
         Query query = parser.parse(
-                ACCESSION_FIELD.phraseMatches(accession.toLowerCase()) +
-                        " AND " + ASCENDANT_FIELD.phraseMatches(rootAccession.toLowerCase()));
-        List<EfoNode> result = runQuery(query, MAX_HITS);
+                ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase())
+                        + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession.toLowerCase()));
+        List<EfoNode> result = runQuery(query, 1);
         return result.isEmpty() ? null : result.get(0);
     }
 
     private EfoNode exactSearchByAccession(String accession) throws ParseException, IOException {
-        Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
-        QueryParser parser = new QueryParser(Version.LUCENE_43, TEXT_FIELD.name, analyzer);
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
         Query query = parser.parse(
-                ACCESSION_FIELD.phraseMatches(accession.toLowerCase()));
-        List<EfoNode> result = runQuery(query, MAX_HITS);
+                ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase()));
+        List<EfoNode> result = runQuery(query, 1);
         return result.isEmpty() ? null : result.get(0);
     }
 
     private Collection<EfoNode> prefixSearch(String prefix) throws ParseException, IOException {
-        Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
-        QueryParser parser = new QueryParser(Version.LUCENE_43, TEXT_FIELD.name, analyzer);
-        Query query = parser.parse(
-                TEXT_FIELD.prefixMatches(prefix.toLowerCase()));
+        QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
+        Query query = parser.parse(TEXT_FIELD.matchesPrefix(prefix));
         return runQuery(query, MAX_HITS);
     }
 
     private Collection<EfoNode> prefixSearch(String prefix, String rootAccession) throws ParseException, IOException {
-        Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
-        QueryParser parser = new QueryParser(Version.LUCENE_43, TEXT_FIELD.name, analyzer);
+        QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
         Query query = parser.parse(
-                TEXT_FIELD.prefixMatches(prefix.toLowerCase()) + " AND " +
-                        ASCENDANT_FIELD.phraseMatches(rootAccession.toLowerCase()));
+                TEXT_FIELD.matchesPrefix(prefix)
+                        + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession));
         return runQuery(query, MAX_HITS);
     }
 
@@ -300,7 +318,7 @@ public class AnnotareEfoService implements EfoService {
             List<EfoNode> terms = newArrayList();
             for (ScoreDoc hit : hits) {
                 Document doc = searcher.doc(hit.doc);
-                log.debug("found: " + doc.get("label") + ", " + doc.get("accession"));
+                //log.debug("found: " + doc.get(LABEL_FIELD.name) + ", " + doc.get(ASCENDANT_FIELD.name));
                 terms.add(new EfoNodeImpl(
                         doc.get(ACCESSION_FIELD.name),
                         doc.get(LABEL_FIELD.name)));
@@ -362,12 +380,14 @@ public class AnnotareEfoService implements EfoService {
         visited.add(node.getAccession());
 
         Document doc = new Document();
-        doc.add(ACCESSION_FIELD.create(node.getAccession()));
-        doc.add(LABEL_FIELD.create(node.getName()));
-        doc.add(TEXT_FIELD.create(node.getName()));
+        doc.add(ACCESSION_FIELD.create(node));
+        doc.add(ACCESSION_FIELD_LOWERCASE.create(node));
+        doc.add(LABEL_FIELD.create(node));
+        doc.add(LABEL_FIELD_LOWERCASE.create(node));
+        doc.add(TEXT_FIELD.create(node));
 
         for (EfoNode parent : parents) {
-            doc.add(ASCENDANT_FIELD.create(parent.getAccession()));
+            doc.add(ASCENDANT_FIELD.create(parent));
         }
 
         writer.addDocument(doc);
