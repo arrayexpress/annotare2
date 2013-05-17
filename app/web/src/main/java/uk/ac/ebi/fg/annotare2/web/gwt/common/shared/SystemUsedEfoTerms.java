@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import java.util.List;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SuggestService<T> {
-
-    void suggest(String query, int limit, AsyncCallback<List<T>> callback);
-
-    void suggest(String query, String rootAccession, int limit, AsyncCallback<List<T>> callback);
-
+public class SystemUsedEfoTerms implements IsSerializable {
 }

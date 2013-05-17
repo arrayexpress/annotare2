@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.configmodel.Contact;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
 import uk.ac.ebi.fg.annotare2.configmodel.Publication;
@@ -26,11 +27,13 @@ import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.services.efo.EfoNode;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
@@ -188,5 +191,15 @@ public class UIObjectConverter {
     public static List<PublicationDto> uiPublications(ExperimentSubmission submission) throws DataSerializationException {
         ExperimentConfig exp = submission.getExperimentConfig();
         return new ArrayList<PublicationDto>(transform(exp.getPublications(), PUBLICATION_DTO));
+    }
+
+    public static List<EfoTermDto> uiEfoTerms(Collection<EfoNode> terms) {
+        return new ArrayList<EfoTermDto>(transform(terms, new Function<EfoNode, EfoTermDto>() {
+            @Nullable
+            @Override
+            public EfoTermDto apply(@Nullable EfoNode input) {
+                return new EfoTermDto(input.getAccession(), input.getName());
+            }
+        }));
     }
 }

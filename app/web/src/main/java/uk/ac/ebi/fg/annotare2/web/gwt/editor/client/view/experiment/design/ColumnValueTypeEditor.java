@@ -56,7 +56,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private final ColumnValueType.Visitor visitor;
 
-    public ColumnValueTypeEditor(final SuggestService<EfoTermDto> efoTermSuggestService) {
+    public ColumnValueTypeEditor(final SuggestService<EfoTermDto> suggestService) {
         visitor = new ColumnValueType.Visitor() {
             @Override
             public void onTextValueType(TextValueType valueType) {
@@ -65,12 +65,12 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
             @Override
             public void onEfoTermValueType(EfoTermValueType valueType) {
-                setEditor(new EfoTermTypeEditor(valueType, efoTermSuggestService));
+                setEditor(new EfoTermTypeEditor(valueType, suggestService));
             }
 
             @Override
             public void onNumericValueType(NumericValueType valueType) {
-                setEditor(new NumberTypeEditor(valueType));
+                setEditor(new NumberTypeEditor(valueType, suggestService));
             }
         };
 
@@ -221,10 +221,10 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private static class NumberTypeEditor implements ValueTypeEditor {
 
-        private ListBox units;
+        private SuggestBox units;
 
-        private NumberTypeEditor(NumericValueType value) {
-            units = new ListBox();
+        private NumberTypeEditor(NumericValueType value, SuggestService<EfoTermDto> suggestService) {
+            units = new SuggestBox(new EfoSuggestOracle(suggestService));
             if (value != null) {
                 // TODO set units
             }
