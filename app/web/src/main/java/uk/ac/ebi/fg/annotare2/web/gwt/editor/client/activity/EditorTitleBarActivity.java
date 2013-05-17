@@ -148,7 +148,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
-    public void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> callback) {
-        dataServiceAsync.getArrayDesignList(query, wrap(callback));
+    public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+        dataServiceAsync.getArrayDesignList(query, limit, wrap(callback));
     }
 }

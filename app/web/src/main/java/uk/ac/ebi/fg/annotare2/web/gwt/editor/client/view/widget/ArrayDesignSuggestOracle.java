@@ -13,18 +13,18 @@ import java.util.List;
  */
 public class ArrayDesignSuggestOracle extends SuggestOracle {
 
-    private final Service service;
+    private final SuggestService<ArrayDesignRef> suggestService;
 
-    public ArrayDesignSuggestOracle(Service service) {
-        if (service == null) {
+    public ArrayDesignSuggestOracle(SuggestService<ArrayDesignRef> suggestService) {
+        if (suggestService == null) {
             throw new IllegalArgumentException("service == null");
         }
-        this.service = service;
+        this.suggestService = suggestService;
     }
 
     @Override
     public void requestSuggestions(final Request request, final Callback callback) {
-        service.getArrayDesigns(request.getQuery(), new AsyncCallback<List<ArrayDesignRef>>() {
+        suggestService.suggest(request.getQuery(), request.getLimit(), new AsyncCallback<List<ArrayDesignRef>>() {
             @Override
             public void onFailure(Throwable caught) {
                 //todo log
@@ -63,9 +63,5 @@ public class ArrayDesignSuggestOracle extends SuggestOracle {
         public String getReplacementString() {
             return ad.getName();
         }
-    }
-
-    public interface Service {
-        void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> callback);
     }
 }

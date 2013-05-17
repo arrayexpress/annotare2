@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +34,9 @@ public class SampleColumn implements IsSerializable {
     public static List<SampleColumn> DEFAULTS = new ArrayList<SampleColumn>();
 
     static {
-        DEFAULTS.add(createDefault("Material Type", NEITHER, new EfoTermValueType("EFO_0001434")));
-        DEFAULTS.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType("EFO_0000634")));
-        DEFAULTS.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType("EFO_0000635")));
+        DEFAULTS.add(createDefault("Material Type", NEITHER, new EfoTermValueType(new EfoTermDto("MaterialEntity", "material entity"))));
+        DEFAULTS.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType(new EfoTermDto("EFO_0000634", "organism"))));
+        DEFAULTS.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType(new EfoTermDto("EFO_0000635", "organism part"))));
     }
 
     private static String NO_NAME = "NEW ATTRIBUTE";

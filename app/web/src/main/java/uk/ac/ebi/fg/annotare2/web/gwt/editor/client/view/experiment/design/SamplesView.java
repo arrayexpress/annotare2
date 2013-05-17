@@ -16,7 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
@@ -28,4 +30,11 @@ import java.util.List;
 public interface SamplesView extends IsWidget {
 
     void setData(List<SampleRow> rows, List<SampleColumn> columns);
+
+    void setPresenter(Presenter presenter);
+
+    public interface Presenter {
+
+        void suggestEfoTerms(String string, int limit, AsyncCallback<List<EfoTermDto>> callback);
+    }
 }

@@ -25,9 +25,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import java.util.List;
 
 public interface DataServiceAsync {
-    void getArrayDesignList(String query, AsyncCallback<List<ArrayDesignRef>> async);
+    void getArrayDesignList(String query, int limit, AsyncCallback<List<ArrayDesignRef>> async);
 
     void getEfoTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> async);
 
-    void getEfoTermsFromBranch(String query, String rootId, int limit, AsyncCallback<List<EfoTermDto>> async);
+    void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<EfoTermDto>> async);
+
 }

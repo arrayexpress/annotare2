@@ -17,9 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.services.efo.EfoNode;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
@@ -28,6 +30,8 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,8 +52,8 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
-    public List<ArrayDesignRef> getArrayDesignList(String query) {
-        return newArrayList(Iterables.transform(Iterables.limit(adList.getArrayDesigns(query), 20), new Function<AE.ArrayDesign, ArrayDesignRef>() {
+    public List<ArrayDesignRef> getArrayDesignList(String query, int limit) {
+        return newArrayList(Iterables.transform(Iterables.limit(adList.getArrayDesigns(query), limit), new Function<AE.ArrayDesign, ArrayDesignRef>() {
             @Nullable
             @Override
             public ArrayDesignRef apply(@Nullable AE.ArrayDesign ad) {
@@ -60,11 +64,18 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 
     @Override
     public List<EfoTermDto> getEfoTerms(String query, int limit) {
-        return Collections.emptyList();
+        Collection<EfoNode> results = efoService.suggest(query, limit);
+        return new ArrayList<EfoTermDto>(Collections2.transform(results, new Function<EfoNode, EfoTermDto>() {
+            @Nullable
+            @Override
+            public EfoTermDto apply(@Nullable EfoNode input) {
+                return new EfoTermDto(input.getAccession(), input.getName());
+            }
+        }));
     }
 
     @Override
-    public List<EfoTermDto> getEfoTermsFromBranch(String query, String branchId, int limit) {
+    public List<EfoTermDto> getEfoTerms(String query, String rootAccession, int limit) {
         return Collections.emptyList();
     }
 }

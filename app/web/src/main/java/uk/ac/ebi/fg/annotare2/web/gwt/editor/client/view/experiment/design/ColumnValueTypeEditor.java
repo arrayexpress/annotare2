@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -25,10 +27,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.ColumnValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.EfoTermValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.NumericValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.TextValueType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.Arrays;
 
@@ -51,7 +56,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private final ColumnValueType.Visitor visitor;
 
-    public ColumnValueTypeEditor() {
+    public ColumnValueTypeEditor(final SuggestService<EfoTermDto> efoTermSuggestService) {
         visitor = new ColumnValueType.Visitor() {
             @Override
             public void onTextValueType(TextValueType valueType) {
@@ -60,7 +65,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
             @Override
             public void onEfoTermValueType(EfoTermValueType valueType) {
-                setEditor(new EfoTermTypeEditor(valueType));
+                setEditor(new EfoTermTypeEditor(valueType, efoTermSuggestService));
             }
 
             @Override
@@ -170,17 +175,27 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private static class EfoTermTypeEditor implements ValueTypeEditor {
 
-        private TextBox textBox;
+        private SuggestBox efoTermBox;
 
-        private EfoTermTypeEditor(EfoTermValueType value) {
-            textBox = new TextBox();
-            if (value != null) {
-                // TODO textBox.setValue(value.getEfoTerm());
+        private EfoTermDto selection;
+
+        private EfoTermTypeEditor(EfoTermValueType valueType, SuggestService<EfoTermDto> suggestService) {
+            efoTermBox = new SuggestBox(new EfoSuggestOracle(suggestService));
+            efoTermBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
+                @Override
+                public void onSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
+                    EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) event.getSelectedItem();
+                    setSelection(suggestion.getTerm());
+                }
+            });
+
+            if (valueType != null) {
+                setSelection(valueType.getEfoTerm());
             }
         }
 
-        private EfoTermTypeEditor() {
-            this(null);
+        private void setSelection(EfoTermDto efoTerm) {
+            selection = efoTerm;
         }
 
         @Override
@@ -190,17 +205,17 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
         @Override
         public Widget getWidget() {
-            return textBox;
+            return efoTermBox;
         }
 
         @Override
         public ColumnValueType getValue() {
-            return new EfoTermValueType(textBox.getValue());
+            return new EfoTermValueType(selection);
         }
 
         @Override
         public void setEnabled(boolean enabled) {
-            textBox.setEnabled(enabled);
+            efoTermBox.setEnabled(enabled);
         }
     }
 
@@ -213,10 +228,6 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
             if (value != null) {
                 // TODO set units
             }
-        }
-
-        private NumberTypeEditor() {
-            this(null);
         }
 
         @Override

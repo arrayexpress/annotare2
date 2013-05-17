@@ -27,7 +27,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.*;
 
@@ -75,7 +77,9 @@ public class SampleColumnsDialog extends DialogBox {
 
     private int nextId;
 
-    public SampleColumnsDialog(List<SampleColumn> columns, Callback callback) {
+    private final SuggestService<EfoTermDto> suggestService;
+
+    public SampleColumnsDialog(List<SampleColumn> columns, SuggestService<EfoTermDto> suggestService, Callback callback) {
         setModal(true);
         setGlassEnabled(true);
         setText("Sample Attributes");
@@ -83,6 +87,7 @@ public class SampleColumnsDialog extends DialogBox {
         setWidget(Binder.BINDER.createAndBindUi(this));
         center();
 
+        this.suggestService = suggestService;
         this.callback = callback;
         setColumns(columns);
         updateTemplateColumns();
@@ -98,7 +103,7 @@ public class SampleColumnsDialog extends DialogBox {
             return;
         }
 
-        SampleColumnEditor editor = new SampleColumnEditor(column);
+        SampleColumnEditor editor = new SampleColumnEditor(column, suggestService);
         editor.addValueChangeHandler(new ValueChangeHandler<SampleColumn>() {
             @Override
             public void onValueChange(ValueChangeEvent<SampleColumn> event) {

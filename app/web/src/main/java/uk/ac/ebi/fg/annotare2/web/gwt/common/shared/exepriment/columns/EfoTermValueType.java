@@ -16,23 +16,25 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+
 /**
  * @author Olga Melnichuk
  */
 public class EfoTermValueType implements ColumnValueType {
 
-    private String efoId;
+    private EfoTermDto efoTerm;
 
     public EfoTermValueType() {
         /* used by GWT serialization only */
     }
 
-    public EfoTermValueType(String efoId) {
-        this.efoId = efoId;
+    public EfoTermValueType(EfoTermDto efoTerm) {
+        this.efoTerm = efoTerm;
     }
 
-    public String getEfoId() {
-        return efoId;
+    public EfoTermDto getEfoTerm() {
+        return efoTerm;
     }
 
     @Override

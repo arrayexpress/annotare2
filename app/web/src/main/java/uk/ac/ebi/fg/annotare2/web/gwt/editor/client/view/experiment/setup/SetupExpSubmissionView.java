@@ -109,9 +109,9 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
     }
 
     @Override
-    public void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> callback) {
+    public void suggest(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
         if (presenter != null) {
-            presenter.getArrayDesigns(query, callback);
+            presenter.getArrayDesigns(query, limit, callback);
         }
     }
 
@@ -155,6 +155,6 @@ public class SetupExpSubmissionView extends Composite implements SubmissionSetti
 
         void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback);
 
-        void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> list);
+        void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> list);
     }
 }

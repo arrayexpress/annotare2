@@ -31,9 +31,9 @@ public interface DataService extends RemoteService {
 
     public static final String NAME = "dataService";
 
-    List<ArrayDesignRef> getArrayDesignList(String query);
+    List<ArrayDesignRef> getArrayDesignList(String query, int limit);
 
     List<EfoTermDto> getEfoTerms(String query, int limit);
 
-    List<EfoTermDto> getEfoTermsFromBranch(String query, String branchId, int limit);
+    List<EfoTermDto> getEfoTerms(String query, String rootAccession, int limit);
 }

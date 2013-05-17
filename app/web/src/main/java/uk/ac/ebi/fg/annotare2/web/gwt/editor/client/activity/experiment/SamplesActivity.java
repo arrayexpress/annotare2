@@ -22,6 +22,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
@@ -34,26 +37,36 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class SamplesActivity extends AbstractActivity {
+public class SamplesActivity extends AbstractActivity implements SamplesView.Presenter {
 
     private final SamplesView view;
     private final ExperimentData expData;
+    private final DataServiceAsync dataService;
 
     @Inject
     public SamplesActivity(SamplesView view,
-                           ExperimentData expData) {
+                           ExperimentData expData,
+                           DataServiceAsync dataService
+                           ) {
         this.view = view;
         this.expData = expData;
+        this.dataService = dataService;
     }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
+        view.setPresenter(this);
         containerWidget.setWidget(view);
         loadSamples();
     }
 
     public SamplesActivity withPlace(ExpDesignPlace designPlace) {
         return this;
+    }
+
+    @Override
+    public void suggestEfoTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+        dataService.getEfoTerms(query, limit, callback);
     }
 
     private void loadSamples() {

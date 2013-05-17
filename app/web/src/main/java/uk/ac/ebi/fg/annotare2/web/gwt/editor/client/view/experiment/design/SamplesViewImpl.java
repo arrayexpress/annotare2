@@ -34,10 +34,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -66,6 +69,8 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
 
     private int permanentColumnCount;
+
+    private Presenter presenter;
 
     public SamplesViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
@@ -106,6 +111,11 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         toolBar.setCellHorizontalAlignment(pager, HasHorizontalAlignment.ALIGN_RIGHT);
 
         gridPanel.add(dataGrid);
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     private void setColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler, List<SampleColumn> columns) {
@@ -168,16 +178,23 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new SampleColumnsDialog(columns, new SampleColumnsDialog.Callback() {
-                    @Override
-                    public void onCancel() {
-                    }
+                new SampleColumnsDialog(columns,
+                        new SuggestService<EfoTermDto>() {
+                            @Override
+                            public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                                presenter.suggestEfoTerms(query, limit, callback);
+                            }
+                        },
+                        new SampleColumnsDialog.Callback() {
+                            @Override
+                            public void onCancel() {
+                            }
 
-                    @Override
-                    public void onOkay(List<SampleColumn> columns) {
-                        updateColumns(columns);
-                    }
-                });
+                            @Override
+                            public void onOkay(List<SampleColumn> columns) {
+                                updateColumns(columns);
+                            }
+                        });
             }
         });
         tools.add(button);

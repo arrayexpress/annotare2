@@ -67,7 +67,7 @@ public class SetupActivity extends AbstractActivity implements StartView.Present
     }
 
     @Override
-    public void getArrayDesigns(String query, AsyncCallback<List<ArrayDesignRef>> callback) {
-        dataService.getArrayDesignList(query, AsyncCallbackWrapper.wrap(callback));
+    public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+        dataService.getArrayDesignList(query,limit, AsyncCallbackWrapper.wrap(callback));
     }
 }

@@ -161,12 +161,12 @@ public class AnnotareEfoService implements EfoService {
         }
 
         String prefix = "cell li";
-        Collection<EfoNode> result = suggest(prefix);
+        Collection<EfoNode> result = suggest(prefix, MAX_HITS);
         if (result.isEmpty()) {
             errors.add("Can't find term by prefix: '" + prefix + "'");
         }
 
-        result = suggest(prefix, rootAccession);
+        result = suggest(prefix, rootAccession, MAX_HITS);
         if (result.isEmpty()) {
             errors.add("Can't find term by prefix (in branch): '" + prefix + "' | " + rootAccession);
         }
@@ -239,9 +239,9 @@ public class AnnotareEfoService implements EfoService {
         return null;
     }
 
-    public Collection<EfoNode> suggest(String prefix) {
+    public Collection<EfoNode> suggest(String prefix, int limit) {
         try {
-            return prefixSearch(prefix);
+            return prefixSearch(prefix, limit);
         } catch (ParseException e) {
             log.debug("efo search doesn't work", e);
         } catch (IOException e) {
@@ -250,9 +250,9 @@ public class AnnotareEfoService implements EfoService {
         return emptyList();
     }
 
-    public Collection<EfoNode> suggest(String prefix, String rootAccession) {
+    public Collection<EfoNode> suggest(String prefix, String rootAccession, int limit) {
         try {
-            return prefixSearch(prefix, rootAccession);
+            return prefixSearch(prefix, rootAccession, limit);
         } catch (ParseException e) {
             log.debug("efo search doesn't work", e);
         } catch (IOException e) {
@@ -288,18 +288,18 @@ public class AnnotareEfoService implements EfoService {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    private Collection<EfoNode> prefixSearch(String prefix) throws ParseException, IOException {
+    private Collection<EfoNode> prefixSearch(String prefix, int limit) throws ParseException, IOException {
         QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
         Query query = parser.parse(TEXT_FIELD.matchesPrefix(prefix));
-        return runQuery(query, MAX_HITS);
+        return runQuery(query, limit);
     }
 
-    private Collection<EfoNode> prefixSearch(String prefix, String rootAccession) throws ParseException, IOException {
+    private Collection<EfoNode> prefixSearch(String prefix, String rootAccession, int limit) throws ParseException, IOException {
         QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
         Query query = parser.parse(
                 TEXT_FIELD.matchesPrefix(prefix)
                         + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession));
-        return runQuery(query, MAX_HITS);
+        return runQuery(query, limit);
     }
 
     private List<EfoNode> runQuery(Query query, int maxHits) throws IOException, ParseException {

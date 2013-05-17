@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-interface SubmissionSettingsDataSource extends SuggestService<ArrayDesignRef>{
+public interface SuggestService<T> {
+
+    void suggest(String query, int limit, AsyncCallback<List<T>> callback);
 }

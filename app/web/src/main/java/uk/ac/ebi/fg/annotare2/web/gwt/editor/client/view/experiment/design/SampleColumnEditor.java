@@ -25,13 +25,15 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.ColumnValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasContentChangeEventHandlers;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 /**
  * @author Olga Melnichuk
@@ -48,12 +50,14 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
     @UiField
     CheckBox factorValueCheckbox;
 
-    @UiField
+    @UiField(provided = true)
     ColumnValueTypeEditor valueTypeEditor;
 
     private SampleColumn.Editor column;
 
-    public SampleColumnEditor(SampleColumn column) {
+    public SampleColumnEditor(SampleColumn column, SuggestService<EfoTermDto> suggestService) {
+        valueTypeEditor = new ColumnValueTypeEditor(suggestService);
+
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         nameBox.setValue(column.getName());
