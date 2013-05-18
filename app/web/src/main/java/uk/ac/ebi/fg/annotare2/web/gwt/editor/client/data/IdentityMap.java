@@ -17,9 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
