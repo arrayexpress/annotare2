@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.List;
@@ -30,6 +31,8 @@ import java.util.List;
 public interface DataService extends RemoteService {
 
     public static final String NAME = "dataService";
+
+    SystemEfoTermsDto getSystemEfoTerms();
 
     List<ArrayDesignRef> getArrayDesignList(String query, int limit);
 

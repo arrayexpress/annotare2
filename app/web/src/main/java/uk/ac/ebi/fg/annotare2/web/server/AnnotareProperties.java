@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+package uk.ac.ebi.fg.annotare2.web.server;
 
 /**
  * @author Olga Melnichuk
  */
-public class SystemUsedEfoTerms implements IsSerializable {
+public class AnnotareProperties {
+
+    //TODO load from a file
+
+    public String getOrganismPartAccession() {
+        return "EFO_0000635";
+    }
+
+    public String getOrganismTermAccession() {
+        return "OBI_0100026";
+    }
+
+    public String getUnitTermAccession() {
+        return "UO_0000000";
+    }
+
 }

@@ -26,7 +26,4 @@ import java.util.List;
 public interface SuggestService<T> {
 
     void suggest(String query, int limit, AsyncCallback<List<T>> callback);
-
-    void suggest(String query, String rootAccession, int limit, AsyncCallback<List<T>> callback);
-
 }

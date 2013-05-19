@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SamplesView extends IsWidget {
+public interface EfoSuggestService {
 
-    void setData(List<SampleRow> rows, List<SampleColumn> columns);
+    void getUnits(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
 
-    void setPresenter(Presenter presenter);
+    void getOrganisms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
 
-    public interface Presenter {
+    void getOrganismParts(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
 
-        EfoSuggestService getEfoSuggestService();
-    }
+    void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
+
+    void getTerms(String query, String rootAccession, int limit, AsyncCallback<List<EfoTermDto>> callback);
 }

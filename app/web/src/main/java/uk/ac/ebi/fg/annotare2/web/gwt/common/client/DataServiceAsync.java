@@ -20,15 +20,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.List;
 
 public interface DataServiceAsync {
+    void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> async);
+
     void getArrayDesignList(String query, int limit, AsyncCallback<List<ArrayDesignRef>> async);
 
     void getEfoTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> async);
 
     void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<EfoTermDto>> async);
-
 }

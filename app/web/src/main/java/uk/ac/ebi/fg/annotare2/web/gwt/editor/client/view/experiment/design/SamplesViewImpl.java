@@ -40,6 +40,7 @@ import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.ArrayList;
@@ -178,13 +179,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new SampleColumnsDialog(columns,
-                        new SuggestService<EfoTermDto>() {
-                            @Override
-                            public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-                                presenter.suggestEfoTerms(query, limit, callback);
-                            }
-                        },
+                new SampleColumnsDialog(columns, presenter.getEfoSuggestService(),
                         new SampleColumnsDialog.Callback() {
                             @Override
                             public void onCancel() {

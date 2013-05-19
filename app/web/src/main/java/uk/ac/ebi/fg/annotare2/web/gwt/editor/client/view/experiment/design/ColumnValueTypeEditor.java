@@ -26,6 +26,7 @@ import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.ColumnValueType;
@@ -33,9 +34,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.EfoTermVa
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.NumericValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.TextValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -56,7 +59,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private final ColumnValueType.Visitor visitor;
 
-    public ColumnValueTypeEditor(final SuggestService<EfoTermDto> suggestService) {
+    public ColumnValueTypeEditor(final EfoSuggestService efoSuggestService) {
         visitor = new ColumnValueType.Visitor() {
             @Override
             public void onTextValueType(TextValueType valueType) {
@@ -65,12 +68,22 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
             @Override
             public void onEfoTermValueType(EfoTermValueType valueType) {
-                setEditor(new EfoTermTypeEditor(valueType, suggestService));
+                setEditor(new EfoTermTypeEditor(valueType, new SuggestService<EfoTermDto>() {
+                    @Override
+                    public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                        efoSuggestService.getTerms(query, limit, callback);
+                    }
+                }));
             }
 
             @Override
             public void onNumericValueType(NumericValueType valueType) {
-                setEditor(new NumberTypeEditor(valueType, suggestService));
+                setEditor(new NumberTypeEditor(valueType, new SuggestService<EfoTermDto>() {
+                    @Override
+                    public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                        efoSuggestService.getUnits(query, limit, callback);
+                    }
+                }));
             }
         };
 

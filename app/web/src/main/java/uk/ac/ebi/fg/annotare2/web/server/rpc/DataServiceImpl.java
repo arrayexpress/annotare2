@@ -20,11 +20,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoNode;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemUsedEfoTerms;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
@@ -34,6 +37,7 @@ import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
 
 /**
@@ -41,63 +45,11 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.
  */
 public class DataServiceImpl extends RemoteServiceServlet implements DataService {
 
-    //TODO move to config
-    private static class FutureProperties {
-        public String getOrganismPartAccession() {
-            return "EFO_0000635";
-        }
-
-        public String getOrganismTermAccession() {
-            return "OBI_0100026";
-        }
-
-        public String getUnitTermAccession() {
-            return "UO_0000000";
-        }
-
-    }
-/*
-    private static final String unitAccession = "UO_0000000";
-    private static final String organismAccession = "OBI_0100026";
-    private static final String organismPartAccession = "EFO_0000635";
-*/
-    private static enum SystemEfoTermType {
-    ORGANISM {
-        @Override
-        protected String getAccession(FutureProperties properties) {
-            return properties.getOrganismTermAccession();
-        }
-    },
-    ORGANISM_PART {
-        @Override
-        protected String getAccession(FutureProperties properties) {
-            return properties.getOrganismPartAccession();
-        }
-    },
-    UNIT {
-        @Override
-        protected String getAccession(FutureProperties properties) {
-            return properties.getUnitTermAccession();
-        }
-    };
-
-    protected abstract String getAccession(FutureProperties properties);
-
-   /* public static Map<SystemEfoTerm, String> accessionMap(FutureProperties properties) {
-        Map<SystemEfoTerm, String> map = newHashMap();
-        for(SystemEfoTerm term : values()) {
-            map.put(term, term.getAccession(properties));
-        }
-        return map;
-    }
-    */
-}
-
+    private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
 
     private final ArrayExpressArrayDesignList adList;
     private final AnnotareEfoService efoService;
-    private final FutureProperties properties = new FutureProperties();
-
+    private final AnnotareProperties properties = new AnnotareProperties();
 
     @Inject
     public DataServiceImpl(ArrayExpressArrayDesignList adList, AnnotareEfoService efoService) {
@@ -126,13 +78,23 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
         return uiEfoTerms(efoService.suggest(query, rootAccession, limit));
     }
 
-    public SystemUsedEfoTerms getSystemEfoTerms() {
-        SystemUsedEfoTerms terms = new SystemUsedEfoTerms();
-        for(SystemEfoTermType termType : SystemEfoTermType.values()) {
-            EfoNode term = efoService.findTermByAccession(termType.getAccession(properties));
-            //TODO
+    @Override
+    public SystemEfoTermsDto getSystemEfoTerms() {
+        SystemEfoTermsDto dto = new SystemEfoTermsDto();
+        dto.setOrganismTerm(
+                loadSystemTerm(properties.getOrganismTermAccession()));
+        dto.setOrganismPartTerm(
+                loadSystemTerm(properties.getOrganismPartAccession()));
+        dto.setUnitTerm(
+                loadSystemTerm(properties.getUnitTermAccession()));
+        return dto;
+    }
 
+    private EfoTermDto loadSystemTerm(String accession) {
+        EfoNode term = efoService.findTermByAccession(accession);
+        if (term == null) {
+            log.error("Can't find system used EFO term: " + accession);
         }
-        return null;
+        return uiEfoTerm(term);
     }
 }

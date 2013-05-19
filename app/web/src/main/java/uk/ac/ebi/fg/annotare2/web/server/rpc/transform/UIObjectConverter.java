@@ -198,8 +198,12 @@ public class UIObjectConverter {
             @Nullable
             @Override
             public EfoTermDto apply(@Nullable EfoNode input) {
-                return new EfoTermDto(input.getAccession(), input.getName());
+                return uiEfoTerm(input);
             }
         }));
+    }
+
+    public static EfoTermDto uiEfoTerm(EfoNode term) {
+        return term == null ? null : new EfoTermDto(term.getAccession(), term.getName());
     }
 }
