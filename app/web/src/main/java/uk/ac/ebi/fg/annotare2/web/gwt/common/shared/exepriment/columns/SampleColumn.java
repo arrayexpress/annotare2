@@ -34,8 +34,9 @@ public class SampleColumn implements IsSerializable {
     public static List<SampleColumn> DEFAULTS = new ArrayList<SampleColumn>();
 
     static {
+        //TODO load from properties
         DEFAULTS.add(createDefault("Material Type", NEITHER, new EfoTermValueType(new EfoTermDto("MaterialEntity", "material entity"))));
-        DEFAULTS.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType(new EfoTermDto("EFO_0000634", "organism"))));
+        DEFAULTS.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType(new EfoTermDto("OBI_0100026", "organism"))));
         DEFAULTS.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType(new EfoTermDto("EFO_0000635", "organism part"))));
     }
 

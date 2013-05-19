@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -39,8 +40,10 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestBoxCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.ArrayList;
@@ -125,8 +128,76 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         addPermanentColumns(dataGrid, sortHandler);
         permanentColumnCount = dataGrid.getColumnCount();
         for (SampleColumn column : columns) {
-            // TODO  addColumn(column);
+            addColumn(column);
         }
+    }
+
+    private void updateColumns(List<SampleColumn> newColumns) {
+        for (SampleColumn column : this.columns) {
+            dataGrid.removeColumn(permanentColumnCount);
+        }
+        for (SampleColumn column : newColumns) {
+            addColumn(column);
+        }
+        this.columns = new ArrayList<SampleColumn>(newColumns);
+    }
+
+    private void addColumn(SampleColumn column) {
+        insertColumn(column, dataGrid.getColumnCount());
+    }
+
+    private void insertColumn(final SampleColumn sampleColumn, int beforeIndex) {
+        Column<SampleRow, String> column = new Column<SampleRow, String>(
+                createCellEditor(sampleColumn)
+        ) {
+            @Override
+            public String getValue(SampleRow row) {
+                return "";// TODO row.getValue(sampleColumn);
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
+            @Override
+            public void update(int index, SampleRow row, String value) {
+                // TODO row.setValue(sampleColumn, value);
+            }
+        });
+        column.setSortable(true);
+        dataGrid.insertResizableColumn(column, sampleColumn.getName(), beforeIndex);
+        dataGrid.setColumnWidth(beforeIndex - 1, 150, Style.Unit.PX);
+    }
+
+    private Cell<String> createCellEditor(SampleColumn sampleColumn) {
+        final List<Cell<String>> editor = new ArrayList<Cell<String>>();
+        final EfoSuggestService efoSuggestService = presenter.getEfoSuggestService();
+
+        sampleColumn.getValueType().visit(new ColumnValueType.Visitor() {
+            @Override
+            public void onTextValueType(TextValueType valueType) {
+                editor.add(new EditTextCell());
+            }
+
+            @Override
+            public void onEfoTermValueType(final EfoTermValueType valueType) {
+                editor.add(new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<EfoTermDto>() {
+                    @Override
+                    public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                        EfoTermDto term = valueType.getEfoTerm();
+                        if (term == null) {
+                            efoSuggestService.getTerms(query, limit, callback);
+                        }   else {
+                            efoSuggestService.getTerms(query, term.getAccession(), limit, callback);
+                        }
+                    }
+                })));
+            }
+
+            @Override
+            public void onNumericValueType(NumericValueType valueType) {
+                editor.add(new EditTextCell());
+                // TODO allow only numeric values
+            }
+        });
+        return editor.iterator().next();
     }
 
     private void addPermanentColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler) {
@@ -168,9 +239,6 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         dataGrid.setColumnWidth(column, 100, Style.Unit.PX);
     }
 
-    private void updateColumns(List<SampleColumn> columns) {
-        //TODO
-    }
 
     private HorizontalPanel createTools() {
         HorizontalPanel tools = new HorizontalPanel();
