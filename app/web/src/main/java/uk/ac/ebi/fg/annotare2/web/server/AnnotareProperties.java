@@ -58,6 +58,10 @@ public class AnnotareProperties {
         return getProperty("efo.term.unit");
     }
 
+    public String getMaterialTypeTermAccession() {
+        return getProperty("efo.term.metarialtype");
+    }
+
     public String getEfoIndexDir() {
         return getProperty("efo.index.dir");
     }

@@ -204,6 +204,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
             if (valueType != null) {
                 setSelection(valueType.getEfoTerm());
+                efoTermBox.setValue(valueType.getEfoTerm().getLabel());
             }
         }
 

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.List;
@@ -35,4 +36,6 @@ public interface EfoSuggestService {
     void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
 
     void getTerms(String query, String rootAccession, int limit, AsyncCallback<List<EfoTermDto>> callback);
+
+    void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> asyncCallback);
 }

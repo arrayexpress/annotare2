@@ -90,6 +90,8 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
                 loadSystemTerm(properties.getOrganismPartAccession()));
         dto.setUnitTerm(
                 loadSystemTerm(properties.getUnitTermAccession()));
+        dto.setMaterialTypeTerm(
+                loadSystemTerm(properties.getMaterialTypeTermAccession()));
         return dto;
     }
 

@@ -71,7 +71,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
 
     @Override
     public EfoSuggestService getEfoSuggestService() {
-       return efoSuggestService;
+        return efoSuggestService;
     }
 
     private void loadSamples() {
@@ -101,7 +101,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
 
         @Override
         public void getUnits(final String query, final int limit, final AsyncCallback<List<EfoTermDto>> callback) {
-            getSystemTerms(new AsyncCallback<SystemEfoTermsDto>() {
+            getSystemEfoTerms(new AsyncCallback<SystemEfoTermsDto>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
@@ -116,7 +116,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
 
         @Override
         public void getOrganisms(final String query, final int limit, final AsyncCallback<List<EfoTermDto>> callback) {
-            getSystemTerms(new AsyncCallback<SystemEfoTermsDto>() {
+            getSystemEfoTerms(new AsyncCallback<SystemEfoTermsDto>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
@@ -131,7 +131,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
 
         @Override
         public void getOrganismParts(final String query, final int limit, final AsyncCallback<List<EfoTermDto>> callback) {
-            getSystemTerms(new AsyncCallback<SystemEfoTermsDto>() {
+            getSystemEfoTerms(new AsyncCallback<SystemEfoTermsDto>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
@@ -154,7 +154,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
             dataService.getEfoTerms(query, rootAccession, limit, callback);
         }
 
-        private void getSystemTerms(final AsyncCallback<SystemEfoTermsDto> callback) {
+        @Override
+        public void getSystemEfoTerms(final AsyncCallback<SystemEfoTermsDto> callback) {
             if (systemTerms != null) {
                 callback.onSuccess(systemTerms);
                 return;

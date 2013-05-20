@@ -209,7 +209,11 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
         }
 
         protected int getSelectedItemIndex() {
-            return getSelectedItemIndex();
+            MenuItem selectedItem = getSelectedItem();
+            if (selectedItem != null) {
+                return getItems().indexOf(selectedItem);
+            }
+            return -1;
         }
 
         protected void selectItem(int index) {
@@ -220,7 +224,7 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
         }
 
         protected int getNumItems() {
-            return getNumItems();
+            return getItems().size();
         }
     }
 

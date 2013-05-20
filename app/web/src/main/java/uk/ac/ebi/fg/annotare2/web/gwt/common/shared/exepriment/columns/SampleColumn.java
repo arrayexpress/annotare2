@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +30,6 @@ import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.NEITHER;
  * @author Olga Melnichuk
  */
 public class SampleColumn implements IsSerializable {
-
-    public static List<SampleColumn> DEFAULTS = new ArrayList<SampleColumn>();
-
-    static {
-        //TODO load from properties
-        DEFAULTS.add(createDefault("Material Type", NEITHER, new EfoTermValueType(new EfoTermDto("MaterialEntity", "material entity"))));
-        DEFAULTS.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType(new EfoTermDto("OBI_0100026", "organism"))));
-        DEFAULTS.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType(new EfoTermDto("EFO_0000635", "organism part"))));
-    }
 
     private static String NO_NAME = "NEW ATTRIBUTE";
 
@@ -103,6 +94,14 @@ public class SampleColumn implements IsSerializable {
 
     public Editor editor() {
         return new Editor(this);
+    }
+
+    public static List<SampleColumn> getTemplateColumns(SystemEfoTermsDto result) {
+        List<SampleColumn> templates = new ArrayList<SampleColumn>();
+        templates.add(createDefault("Material Type", NEITHER, new EfoTermValueType(result.getMaterialTypeTerm())));
+        templates.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType(result.getOrganismTerm())));
+        templates.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType(result.getOrganismPartTerm())));
+        return templates;
     }
 
     public static class Editor {

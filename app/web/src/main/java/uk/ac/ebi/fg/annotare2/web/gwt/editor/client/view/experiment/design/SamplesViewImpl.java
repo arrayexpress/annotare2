@@ -247,7 +247,8 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new SampleColumnsDialog(columns, presenter.getEfoSuggestService(),
+                new SampleColumnsDialog(columns,
+                        presenter.getEfoSuggestService(),
                         new SampleColumnsDialog.Callback() {
                             @Override
                             public void onCancel() {
