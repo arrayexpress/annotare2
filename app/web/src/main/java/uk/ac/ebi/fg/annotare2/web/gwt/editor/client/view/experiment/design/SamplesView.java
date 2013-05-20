@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 
 import java.util.List;
 
@@ -34,6 +33,6 @@ public interface SamplesView extends IsWidget {
 
     public interface Presenter {
 
-        EfoSuggestService getEfoSuggestService();
+        ColumnValueTypeEfoTerms getEfoTerms();
     }
 }

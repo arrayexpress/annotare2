@@ -34,7 +34,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.EfoTermVa
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.NumericValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.TextValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.Arrays;
@@ -59,7 +58,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private final ColumnValueType.Visitor visitor;
 
-    public ColumnValueTypeEditor(final EfoSuggestService efoSuggestService) {
+    public ColumnValueTypeEditor(final ColumnValueTypeEfoTerms efoTerms) {
         visitor = new ColumnValueType.Visitor() {
             @Override
             public void onTextValueType(TextValueType valueType) {
@@ -71,7 +70,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
                 setEditor(new EfoTermTypeEditor(valueType, new SuggestService<EfoTermDto>() {
                     @Override
                     public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-                        efoSuggestService.getTerms(query, limit, callback);
+                        efoTerms.getTerms(query, limit, callback);
                     }
                 }));
             }
@@ -81,7 +80,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
                 setEditor(new NumberTypeEditor(valueType, new SuggestService<EfoTermDto>() {
                     @Override
                     public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-                        efoSuggestService.getUnits(query, limit, callback);
+                        efoTerms.getUnits(query, limit, callback);
                     }
                 }));
             }

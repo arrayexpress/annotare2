@@ -28,6 +28,7 @@ public class SystemEfoTermsDto implements IsSerializable {
     private EfoTermDto organismPartTerm;
     private EfoTermDto unitTerm;
     private EfoTermDto materialTypeTerm;
+    private EfoTermDto studyDesignTerm;
 
     public EfoTermDto getOrganismTerm() {
         return organismTerm;
@@ -59,5 +60,13 @@ public class SystemEfoTermsDto implements IsSerializable {
 
     public void setMaterialTypeTerm(EfoTermDto materialTypeTerm) {
         this.materialTypeTerm = materialTypeTerm;
+    }
+
+    public EfoTermDto getStudyDesignTerm() {
+        return studyDesignTerm;
+    }
+
+    public void setStudyDesignTerm(EfoTermDto studyDesignTerm) {
+        this.studyDesignTerm = studyDesignTerm;
     }
 }

@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.ColumnValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 
 /**
  * @author Olga Melnichuk
@@ -54,7 +53,7 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
     private SampleColumn.Editor column;
 
-    public SampleColumnEditor(SampleColumn column, EfoSuggestService efoSuggestService) {
+    public SampleColumnEditor(SampleColumn column, ColumnValueTypeEfoTerms efoSuggestService) {
         valueTypeEditor = new ColumnValueTypeEditor(efoSuggestService);
 
         initWidget(Binder.BINDER.createAndBindUi(this));

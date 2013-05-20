@@ -22,16 +22,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ColumnValueTypeEfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +42,17 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
 
     private final SamplesView view;
     private final ExperimentData expData;
-    private final DataServiceAsync dataService;
 
-    private final EfoSuggestService efoSuggestService;
+    private final ColumnValueTypeEfoTerms efoTerms;
 
     @Inject
     public SamplesActivity(SamplesView view,
                            ExperimentData expData,
-                           DataServiceAsync dataService
+                           EfoTerms efoTerms
     ) {
         this.view = view;
         this.expData = expData;
-        this.dataService = dataService;
-        this.efoSuggestService = new EfoSuggestServiceImpl(dataService);
+        this.efoTerms = wrapEfoTerms(efoTerms);
     }
 
     @Override
@@ -70,8 +67,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public EfoSuggestService getEfoSuggestService() {
-        return efoSuggestService;
+    public ColumnValueTypeEfoTerms getEfoTerms() {
+        return efoTerms;
     }
 
     private void loadSamples() {
@@ -90,88 +87,27 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         });
     }
 
-    private static class EfoSuggestServiceImpl implements EfoSuggestService {
+    private ColumnValueTypeEfoTerms wrapEfoTerms(final EfoTerms efoTerms) {
+          return new ColumnValueTypeEfoTerms() {
+              @Override
+              public void getUnits(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                    efoTerms.getUnits(query, limit, callback);
+              }
 
-        private SystemEfoTermsDto systemTerms;
-        private final DataServiceAsync dataService;
+              @Override
+              public void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                    efoTerms.getEfoTerms(query, limit, callback);
+              }
 
-        private EfoSuggestServiceImpl(DataServiceAsync dataService) {
-            this.dataService = dataService;
-        }
+              @Override
+              public void getTerms(String query, EfoTermDto root, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                    efoTerms.getEfoTerms(query, root, limit, callback);
+              }
 
-        @Override
-        public void getUnits(final String query, final int limit, final AsyncCallback<List<EfoTermDto>> callback) {
-            getSystemEfoTerms(new AsyncCallback<SystemEfoTermsDto>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(SystemEfoTermsDto result) {
-                    dataService.getEfoTerms(query, result.getUnitTerm().getAccession(), limit, callback);
-                }
-            });
-        }
-
-        @Override
-        public void getOrganisms(final String query, final int limit, final AsyncCallback<List<EfoTermDto>> callback) {
-            getSystemEfoTerms(new AsyncCallback<SystemEfoTermsDto>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(SystemEfoTermsDto result) {
-                    dataService.getEfoTerms(query, result.getOrganismTerm().getAccession(), limit, callback);
-                }
-            });
-        }
-
-        @Override
-        public void getOrganismParts(final String query, final int limit, final AsyncCallback<List<EfoTermDto>> callback) {
-            getSystemEfoTerms(new AsyncCallback<SystemEfoTermsDto>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(SystemEfoTermsDto result) {
-                    dataService.getEfoTerms(query, result.getOrganismPartTerm().getAccession(), limit, callback);
-                }
-            });
-        }
-
-        @Override
-        public void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-            dataService.getEfoTerms(query, limit, callback);
-        }
-
-        @Override
-        public void getTerms(String query, String rootAccession, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-            dataService.getEfoTerms(query, rootAccession, limit, callback);
-        }
-
-        @Override
-        public void getSystemEfoTerms(final AsyncCallback<SystemEfoTermsDto> callback) {
-            if (systemTerms != null) {
-                callback.onSuccess(systemTerms);
-                return;
-            }
-            dataService.getSystemEfoTerms(new AsyncCallbackWrapper<SystemEfoTermsDto>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(SystemEfoTermsDto result) {
-                    systemTerms = result;
-                    callback.onSuccess(result);
-                }
-            }.wrap());
-        }
+              @Override
+              public void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> callback) {
+                  efoTerms.getSystemEfoTerms(callback);
+              }
+          };
     }
 }

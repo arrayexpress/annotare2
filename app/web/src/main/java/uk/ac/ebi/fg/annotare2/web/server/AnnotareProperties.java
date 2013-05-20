@@ -62,6 +62,10 @@ public class AnnotareProperties {
         return getProperty("efo.term.metarialtype");
     }
 
+    public String getStudyDesignAccession() {
+        return getProperty("efo.term.studydesign");
+    }
+
     public String getEfoIndexDir() {
         return getProperty("efo.index.dir");
     }

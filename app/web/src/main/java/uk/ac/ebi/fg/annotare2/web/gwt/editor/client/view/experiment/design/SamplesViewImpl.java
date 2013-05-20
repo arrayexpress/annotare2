@@ -42,7 +42,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestBoxCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
@@ -168,7 +167,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     private Cell<String> createCellEditor(SampleColumn sampleColumn) {
         final List<Cell<String>> editor = new ArrayList<Cell<String>>();
-        final EfoSuggestService efoSuggestService = presenter.getEfoSuggestService();
+        final ColumnValueTypeEfoTerms efoSuggestService = presenter.getEfoTerms();
 
         sampleColumn.getValueType().visit(new ColumnValueType.Visitor() {
             @Override
@@ -185,7 +184,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                         if (term == null) {
                             efoSuggestService.getTerms(query, limit, callback);
                         }   else {
-                            efoSuggestService.getTerms(query, term.getAccession(), limit, callback);
+                            efoSuggestService.getTerms(query, term, limit, callback);
                         }
                     }
                 })));
@@ -248,7 +247,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             @Override
             public void onClick(ClickEvent event) {
                 new SampleColumnsDialog(columns,
-                        presenter.getEfoSuggestService(),
+                        presenter.getEfoTerms(),
                         new SampleColumnsDialog.Callback() {
                             @Override
                             public void onCancel() {

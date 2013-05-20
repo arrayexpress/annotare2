@@ -31,7 +31,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestService;
 
 import java.util.*;
 
@@ -79,12 +78,12 @@ public class SampleColumnsDialog extends DialogBox {
 
     private int nextId;
 
-    private final EfoSuggestService efoSuggestService;
+    private final ColumnValueTypeEfoTerms efoSuggestService;
 
     private final List<SampleColumn> templateColumns = new ArrayList<SampleColumn>();
 
     public SampleColumnsDialog(List<SampleColumn> columns,
-                               EfoSuggestService efoSuggestService,
+                               ColumnValueTypeEfoTerms efoSuggestService,
                                Callback callback) {
         setModal(true);
         setGlassEnabled(true);
