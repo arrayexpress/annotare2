@@ -104,6 +104,8 @@ public class AppServletModule extends ServletModule {
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);
+
+        bind(AnnotareProperties.class).asEagerSingleton();
         bind(AnnotareEfoService.class).asEagerSingleton();
 
         overrideMageTabCheck();

@@ -49,12 +49,15 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 
     private final ArrayExpressArrayDesignList adList;
     private final AnnotareEfoService efoService;
-    private final AnnotareProperties properties = new AnnotareProperties();
+    private final AnnotareProperties properties;
 
     @Inject
-    public DataServiceImpl(ArrayExpressArrayDesignList adList, AnnotareEfoService efoService) {
+    public DataServiceImpl(ArrayExpressArrayDesignList adList,
+                           AnnotareEfoService efoService,
+                           AnnotareProperties properties) {
         this.adList = adList;
         this.efoService = efoService;
+        this.properties = properties;
     }
 
     @Override

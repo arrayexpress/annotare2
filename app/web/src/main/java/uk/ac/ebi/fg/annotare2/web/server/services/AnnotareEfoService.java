@@ -10,19 +10,25 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.analyzing.AnalyzingQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.services.efo.*;
+import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -46,9 +52,6 @@ import static uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService.EfoF
 public class AnnotareEfoService implements EfoService {
 
     private static final Logger log = LoggerFactory.getLogger(AnnotareEfoService.class);
-
-    //TODO move to properties
-    private static final String indexPath = "/Users/olkin/tmp/efo-index/";
 
     private static final int MAX_HITS = 1000;
 
@@ -118,9 +121,12 @@ public class AnnotareEfoService implements EfoService {
         }
     }
 
+    private AnnotareProperties properties;
+
     @Inject
-    public AnnotareEfoService(MageTabCheckProperties properties) {
-        load(properties);
+    public AnnotareEfoService(AnnotareProperties properties) {
+        this.properties = properties;
+        load(properties.getEfoServiceProperties());
         testSearch();
     }
 
@@ -172,9 +178,9 @@ public class AnnotareEfoService implements EfoService {
         }
 
         if (errors.isEmpty()) {
-            log.debug("SEARCH TEST: OK");
+            log.info("SEARCH TEST: OK");
         } else {
-            log.debug("SEARCH TEST: FAILED \n" + on("\n").join(errors));
+            log.info("SEARCH TEST: FAILED \n" + on("\n").join(errors));
         }
     }
 
@@ -305,7 +311,7 @@ public class AnnotareEfoService implements EfoService {
     private List<EfoNode> runQuery(Query query, int maxHits) throws IOException, ParseException {
         IndexReader reader = null;
         try {
-            reader = DirectoryReader.open(FSDirectory.open(new File(indexPath)));
+            reader = DirectoryReader.open(FSDirectory.open(new File(properties.getEfoIndexDir())));
             IndexSearcher searcher = new IndexSearcher(reader);
             log.debug("Searching for: " + query.toString());
 
@@ -313,7 +319,7 @@ public class AnnotareEfoService implements EfoService {
             TopDocs results = searcher.search(query, null, maxHits);
             ScoreDoc[] hits = results.scoreDocs;
 
-            log.debug("[ " + hits.length + " ] hits");
+            log.debug("[" + hits.length + "] hits");
 
             List<EfoNode> terms = newArrayList();
             for (ScoreDoc hit : hits) {
@@ -346,9 +352,9 @@ public class AnnotareEfoService implements EfoService {
         IndexWriter writer = null;
         try {
             long start = System.currentTimeMillis();
-            log.debug("Indexing to directory '" + indexPath + "'...");
+            log.info("Indexing to directory '" + properties.getEfoIndexDir() + "'...");
 
-            Directory dir = FSDirectory.open(new File(indexPath));
+            Directory dir = FSDirectory.open(new File(properties.getEfoIndexDir()));
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_43, analyzer);
 
@@ -357,7 +363,7 @@ public class AnnotareEfoService implements EfoService {
             writer = new IndexWriter(dir, iwc);
             indexDocs(writer, graph);
 
-            log.debug(System.currentTimeMillis() - start + " milliseconds in total");
+            log.info("Indexing done in " + (System.currentTimeMillis() - start) + " milliseconds");
 
         } finally {
             close(writer, true);
