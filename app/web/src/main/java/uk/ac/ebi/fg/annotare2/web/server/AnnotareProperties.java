@@ -80,6 +80,7 @@ public class AnnotareProperties {
         Properties p = new Properties(defaults);
 
         String propertiesFile = System.getProperty(ANNOTARE_PROPERTIES);
+        log.info("-D" + ANNOTARE_PROPERTIES + "=" + propertiesFile);
         p = isNullOrEmpty(propertiesFile) ?
                 load("/Annotare.properties", p) :
                 load(new File(propertiesFile), p);
