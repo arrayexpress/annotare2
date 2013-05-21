@@ -18,12 +18,17 @@ package com.google.gwt.user.cellview.client;
 
 
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HeaderPanel;
 
 import java.util.List;
+
+import static com.google.gwt.dom.client.Style.Unit.PX;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  * DataGrid with resizable columns.
@@ -89,38 +94,66 @@ public class MyDataGrid<T> extends DataGrid<T> {
         return getTableBodyElement().getOffsetHeight();
     }
 
-    protected void resizeColumn(Column<T, ?> target, int colWidth) {
-        int tableWidth = tableHeader.getOffsetWidth();
-        int columnCount = getColumnCount();
-        int colIndex = -1;
-        int lastColIndex = columnCount - 1;
+    protected void resizeColumn(int colIndex, int colWidth) {
         int residualWidth = 0;
-        for (int i = 0; i < lastColIndex; i++) {
-            Column<T, ?> column = getColumn(i);
-            if (column != target) {
+        for (int i = 0; i < getColumnCount() - 2; i++) {
+            if (i != colIndex) {
                 residualWidth += getHeaderOffsetWidth(i);
-            } else {
-                colIndex = i;
             }
         }
+
+        int lastColIndex = getColumnCount() - 1;
+        int tableWidth = tableHeader.getOffsetWidth();
+        int minWidth = getVisibleWidth();
         if (colIndex == lastColIndex) {
+            int newTableWidth = max(residualWidth + colWidth, minWidth);
+            int newColumnWidth = max(newTableWidth - residualWidth, 0);
+            setColumnWidth(getColumn(lastColIndex), newColumnWidth + "px");
+            setTableWidth(residualWidth + newColumnWidth, PX);
             return;
         }
         int currColWidth = getHeaderOffsetWidth(colIndex);
         int lastColWidth = getHeaderOffsetWidth(lastColIndex);
         int borderWidth = tableWidth - residualWidth - currColWidth - lastColWidth;
 
-        int minWidth = getVisibleWidth();
         int newTableWidth = residualWidth + colWidth + borderWidth;
-        lastColWidth = Math.max(minWidth - newTableWidth, 0);
+        lastColWidth = max(minWidth - newTableWidth, 0);
 
-        setColumnWidth(target, colWidth + "px");
-        setColumnWidth(getColumn(columnCount - 1), lastColWidth + "px");
-        setTableWidth(newTableWidth + lastColWidth, com.google.gwt.dom.client.Style.Unit.PX);
+        setColumnWidth(getColumn(colIndex), colWidth + "px");
+        setColumnWidth(getColumn(lastColIndex), lastColWidth + "px");
+        setTableWidth(newTableWidth + lastColWidth, PX);
     }
 
-    protected int getHeaderOffsetWidth(int index) {
-        return tableHeader.ensureTableColElement(index).getOffsetWidth();
+    protected void resizeColumn(Column<T, ?> target, int colWidth) {
+        resizeColumn(getColumnIndex(target), colWidth);
+    }
+
+    public void adjustColumnWidth() {
+        int residualWidth = 0;
+        for (int i = 0; i < getColumnCount() - 2; i++) {
+            residualWidth += getHeaderOffsetWidth(i);
+        }
+
+        int minWidth = getVisibleWidth();
+        int lastColIndex = getColumnCount() - 1;
+        if (residualWidth < minWidth) {
+            setColumnWidth(getColumn(lastColIndex), (minWidth - residualWidth) + "px");
+            setTableWidth(minWidth, PX);
+            return;
+        }
+        setColumnWidth(getColumn(lastColIndex), 0 + "px");
+        setTableWidth(residualWidth, PX);
+    }
+
+    protected int getHeaderOffsetWidth(int col) {
+        checkColumnBounds(col);
+        return tableHeader.ensureTableColElement(col).getOffsetWidth();
+    }
+
+    private void checkColumnBounds(int col) {
+        if (col < 0 || col >= getColumnCount()) {
+            throw new IndexOutOfBoundsException("Column index out of bound: " + col);
+        }
     }
 
     static class MyResizableHeader<T> extends ResizableHeader<T> {
