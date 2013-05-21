@@ -84,7 +84,6 @@ public class AnnotareProperties {
         Properties p = new Properties(defaults);
 
         String propertiesFile = System.getProperty(ANNOTARE_PROPERTIES);
-        log.info("-D" + ANNOTARE_PROPERTIES + "=" + propertiesFile);
         p = isNullOrEmpty(propertiesFile) ?
                 load("/Annotare.properties", p) :
                 load(new File(propertiesFile), p);
@@ -96,7 +95,7 @@ public class AnnotareProperties {
             log.info("Loading properties from resource: " + resourceName);
             return load(AnnotareProperties.class.getResourceAsStream(resourceName), properties);
         } catch (IOException e) {
-            log.error("Can't load properties from resource: " + resourceName, e);
+            log.error("Can't load properties from classpath: " + resourceName, e);
         }
         return properties;
     }

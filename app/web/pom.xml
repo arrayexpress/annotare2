@@ -176,6 +176,19 @@
             <version>0.6.4</version>
         </dependency>
 
+        <!-- needed by for jndi access (jetty embedded container) -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>6.1.11</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-naming</artifactId>
+            <version>6.1.11</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- lucene for efo index -->
 
         <dependency>

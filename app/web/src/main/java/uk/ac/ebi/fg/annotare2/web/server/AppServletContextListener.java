@@ -21,26 +21,40 @@ import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import org.reflections.util.ClasspathHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import java.net.URL;
 import java.util.Set;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.inject.util.Modules.override;
+import static org.reflections.util.ClasspathHelper.forWebInfLib;
 
 /**
  * @author Olga Melnichuk
  */
 public class AppServletContextListener extends GuiceServletContextListener {
 
+    private static final Logger log = LoggerFactory.getLogger(AppServletContextListener.class);
+
     private Set<URL> libPaths = newHashSet();
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        libPaths.addAll(ClasspathHelper.forWebInfLib(servletContextEvent.getServletContext()));
+        initLibraryPaths(servletContextEvent.getServletContext());
+
+        initEnvironment();
+
         Magetab.init();
         super.contextInitialized(servletContextEvent);
     }
@@ -49,5 +63,35 @@ public class AppServletContextListener extends GuiceServletContextListener {
     protected Injector getInjector() {
         return Guice.createInjector(Stage.DEVELOPMENT,
                 override(new CheckerModule()).with(new AppServletModule(libPaths)));
+    }
+
+    private void initEnvironment() {
+        try {
+            Context context = new InitialContext();
+            setSystemProperty("annotare.properties", (String) lookup(context, "java:comp/env/annotareProperties"));
+            setSystemProperty("checker.properties", (String) lookup(context, "java:comp/env/mageTabCheckProperties"));
+        } catch (NamingException e) {
+            log.error("Naming context initialization failure", e);
+        }
+    }
+
+    private Object lookup(Context context, String name) throws NamingException {
+        try {
+            return context.lookup(name);
+        } catch (NameNotFoundException e) {
+            log.info("name '" + name + "' not found in the naming context");
+            return null;
+        }
+    }
+
+    private void setSystemProperty(String name, String value) {
+        if (!isNullOrEmpty(value)) {
+            log.info("setSystemProperty(" + name + "," + value + ")");
+            System.setProperty(name, value);
+        }
+    }
+
+    private void initLibraryPaths(ServletContext context) {
+        libPaths.addAll(forWebInfLib(context));
     }
 }
