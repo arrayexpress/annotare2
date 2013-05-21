@@ -88,26 +88,26 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     private ColumnValueTypeEfoTerms wrapEfoTerms(final EfoTerms efoTerms) {
-          return new ColumnValueTypeEfoTerms() {
-              @Override
-              public void getUnits(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-                    efoTerms.getUnits(query, limit, callback);
-              }
+        return new ColumnValueTypeEfoTerms() {
+            @Override
+            public void getUnits(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                efoTerms.getUnits(query, limit, callback);
+            }
 
-              @Override
-              public void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-                    efoTerms.getEfoTerms(query, limit, callback);
-              }
+            @Override
+            public void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                efoTerms.getEfoTerms(query, limit, callback);
+            }
 
-              @Override
-              public void getTerms(String query, EfoTermDto root, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-                    efoTerms.getEfoTerms(query, root, limit, callback);
-              }
+            @Override
+            public void getTerms(String query, EfoTermDto root, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                efoTerms.getEfoTerms(query, root, limit, callback);
+            }
 
-              @Override
-              public void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> callback) {
-                  efoTerms.getSystemEfoTerms(callback);
-              }
-          };
+            @Override
+            public void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> callback) {
+                efoTerms.getSystemEfoTerms(callback);
+            }
+        };
     }
 }
