@@ -16,13 +16,29 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+
 /**
  * @author Olga Melnichuk
  */
 public class NumericValueType implements ColumnValueType {
 
+    private EfoTermDto units;
+
+    public NumericValueType() {
+        /* used by GWT serialization only */
+    }
+
+    public NumericValueType(EfoTermDto units) {
+        this.units = units;
+    }
+
+    public EfoTermDto getUnits() {
+        return units;
+    }
+
     @Override
     public void visit(Visitor visitor) {
-        visitor.onNumericValueType(this);
+        visitor.visitNumericValueType(this);
     }
 }

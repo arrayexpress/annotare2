@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
@@ -71,8 +72,13 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         return efoTerms;
     }
 
+    @Override
+    public void updateColumns(List<SampleColumn> newColumns) {
+        expData.updateSampleColumns(newColumns);
+    }
+
     private void loadSamples() {
-        expData.getSamplesAsync(new AsyncCallback<List<SampleRow>>() {
+        expData.getSamplesAsync(new AsyncCallback<SampleRowsAndColumns>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -80,9 +86,9 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
             }
 
             @Override
-            public void onSuccess(List<SampleRow> result) {
+            public void onSuccess(SampleRowsAndColumns result) {
                 //TODO load column list
-                view.setData(result, new ArrayList<SampleColumn>());
+                view.setData(result.getSampleRows(), result.getSampleColumns());
             }
         });
     }

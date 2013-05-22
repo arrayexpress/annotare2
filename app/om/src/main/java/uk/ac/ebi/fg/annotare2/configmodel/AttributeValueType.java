@@ -14,22 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+package uk.ac.ebi.fg.annotare2.configmodel;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ColumnValueType extends IsSerializable {
+public abstract class AttributeValueType {
 
-    void visit(Visitor visitor);
+    private final AttributeValueSubType valueSubType;
+
+    protected AttributeValueType(AttributeValueSubType valueSubType) {
+        this.valueSubType = valueSubType;
+    }
+
+    protected void set(SampleAttribute attribute) {
+        attribute.setValueSubType(valueSubType);
+    }
+
+    public abstract void visit(Visitor visitor);
 
     public interface Visitor {
-        void visitTextValueType(TextValueType valueType);
+        void visitTextValueType(TextAttributeValueType valueType);
 
-        void visitTermValueType(EfoTermValueType valueType);
+        void visitNumericValueType(NumericAttributeValueType valueType);
 
-        void visitNumericValueType(NumericValueType valueType);
+        void visitTermValueType(TermAttributeValueType valueType);
     }
 }

@@ -18,11 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
-import uk.ac.ebi.fg.annotare2.configmodel.Contact;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
-import uk.ac.ebi.fg.annotare2.configmodel.Publication;
-import uk.ac.ebi.fg.annotare2.configmodel.SampleConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
@@ -35,10 +31,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -111,6 +105,20 @@ public class UIObjectConverter {
         }
     };
 
+    static Function<SampleAttribute, SampleColumn> SAMPLE_COLUMN = new Function<SampleAttribute, SampleColumn>() {
+        @Nullable
+        @Override
+        public SampleColumn apply(@Nullable SampleAttribute input) {
+            AttributeValueTypeVisitor visitor = new AttributeValueTypeVisitor();
+            input.getValueType().visit(visitor);
+
+            return new SampleColumn(
+                    input.getName(),
+                    input.getType(),
+                    visitor.getValueType());
+        }
+    };
+
     static Function<Contact, ContactDto> CONTACT_DTO = new Function<Contact, ContactDto>() {
         @Nullable
         @Override
@@ -170,9 +178,11 @@ public class UIObjectConverter {
         );
     }
 
-    public static List<SampleRow> uiSampleRows(ExperimentSubmission submission) throws DataSerializationException {
+    public static SampleRowsAndColumns uiSampleRowsAndColumns(ExperimentSubmission submission) throws DataSerializationException {
         ExperimentConfig exp = submission.getExperimentConfig();
-        return new ArrayList<SampleRow>(transform(exp.getSamples(), SAMPLE_ROW));
+        return new SampleRowsAndColumns(
+                new ArrayList<SampleRow>(transform(exp.getSamples(), SAMPLE_ROW)),
+                new ArrayList<SampleColumn>(transform(exp.getSampleAttributes(), SAMPLE_COLUMN)));
     }
 
     public static UserDto uiUser(User user) {
@@ -205,5 +215,31 @@ public class UIObjectConverter {
 
     public static EfoTermDto uiEfoTerm(EfoNode term) {
         return term == null ? null : new EfoTermDto(term.getAccession(), term.getName());
+    }
+
+    private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
+
+        private ColumnValueType valueType;
+
+        @Override
+        public void visitNumericValueType(NumericAttributeValueType valueType) {
+            OntologyTerm units = valueType.getUnits();
+            this.valueType = new NumericValueType(new EfoTermDto(units.getAccession(), units.getLabel()));
+        }
+
+        @Override
+        public void visitTextValueType(TextAttributeValueType valueType) {
+            this.valueType = new TextValueType();
+        }
+
+        @Override
+        public void visitTermValueType(TermAttributeValueType valueType) {
+            OntologyTerm branch = valueType.getBranch();
+            this.valueType = new EfoTermValueType(new EfoTermDto(branch.getAccession(), branch.getLabel()));
+        }
+
+        public ColumnValueType getValueType() {
+            return valueType;
+        }
     }
 }

@@ -14,22 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ColumnValueType extends IsSerializable {
+public class UpdateSampleColumnsCommand implements UpdateCommand {
 
-    void visit(Visitor visitor);
+    private List<SampleColumn> columns;
 
-    public interface Visitor {
-        void visitTextValueType(TextValueType valueType);
+    public UpdateSampleColumnsCommand() {
+        /* used by GWT serializer only */
+    }
 
-        void visitTermValueType(EfoTermValueType valueType);
+    public UpdateSampleColumnsCommand(List<SampleColumn> columns) {
+        this.columns = new ArrayList<SampleColumn>(columns);
+    }
 
-        void visitNumericValueType(NumericValueType valueType);
+    @Override
+    public void execute(UpdatePerformer performer) {
+        performer.updateSampleColumns(columns);
     }
 }

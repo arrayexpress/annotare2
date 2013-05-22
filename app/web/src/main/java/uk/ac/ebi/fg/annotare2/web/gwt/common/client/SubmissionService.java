@@ -45,7 +45,7 @@ public interface SubmissionService extends RemoteService {
 
     List<PublicationDto> getPublications(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException;
+    SampleRowsAndColumns getSamples(int id) throws ResourceNotFoundException, NoPermissionException;
 
     Table getIdfTable(int submissionId) throws NoPermissionException, ResourceNotFoundException;
 

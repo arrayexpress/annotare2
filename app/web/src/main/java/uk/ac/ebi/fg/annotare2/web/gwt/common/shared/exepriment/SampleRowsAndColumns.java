@@ -14,27 +14,37 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SamplesView extends IsWidget {
+public class SampleRowsAndColumns implements IsSerializable {
 
-    void setData(List<SampleRow> rows, List<SampleColumn> columns);
+    private List<SampleRow> rows;
 
-    void setPresenter(Presenter presenter);
+    private List<SampleColumn> columns;
 
-    public interface Presenter {
+    SampleRowsAndColumns() {
+        /*used by GWT serialization only*/
+    }
 
-        ColumnValueTypeEfoTerms getEfoTerms();
+    public SampleRowsAndColumns(List<SampleRow> rows, List<SampleColumn> columns) {
+        this.rows = new ArrayList<SampleRow>(rows);
+        this.columns = new ArrayList<SampleColumn>(columns);
+    }
 
-        void updateColumns(List<SampleColumn> newColumns);
+    public List<SampleRow> getSampleRows() {
+        return rows;
+    }
+
+    public List<SampleColumn> getSampleColumns() {
+        return columns;
     }
 }

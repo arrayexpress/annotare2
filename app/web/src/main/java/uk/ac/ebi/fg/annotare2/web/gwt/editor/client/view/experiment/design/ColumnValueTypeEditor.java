@@ -61,12 +61,12 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
     public ColumnValueTypeEditor(final ColumnValueTypeEfoTerms efoTerms) {
         visitor = new ColumnValueType.Visitor() {
             @Override
-            public void onTextValueType(TextValueType valueType) {
+            public void visitTextValueType(TextValueType valueType) {
                 setEditor(new TextTypeEditor());
             }
 
             @Override
-            public void onEfoTermValueType(EfoTermValueType valueType) {
+            public void visitTermValueType(EfoTermValueType valueType) {
                 setEditor(new EfoTermTypeEditor(valueType, new SuggestService<EfoTermDto>() {
                     @Override
                     public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
@@ -76,7 +76,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
             }
 
             @Override
-            public void onNumericValueType(NumericValueType valueType) {
+            public void visitNumericValueType(NumericValueType valueType) {
                 setEditor(new NumberTypeEditor(valueType, new SuggestService<EfoTermDto>() {
                     @Override
                     public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
@@ -146,19 +146,19 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
         TEXT("Text") {
             @Override
             public void visit(ColumnValueType.Visitor visitor) {
-                visitor.onTextValueType(null);
+                visitor.visitTextValueType(null);
             }
         },
         NUMBER("Number & Units") {
             @Override
             public void visit(ColumnValueType.Visitor visitor) {
-                visitor.onNumericValueType(null);
+                visitor.visitNumericValueType(null);
             }
         },
         EFO_TERM("EFO Term") {
             @Override
             public void visit(ColumnValueType.Visitor visitor) {
-                visitor.onEfoTermValueType(null);
+                visitor.visitTermValueType(null);
             }
         };
 

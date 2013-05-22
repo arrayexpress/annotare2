@@ -140,6 +140,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         }
         dataGrid.adjustColumnWidth();
         this.columns = new ArrayList<SampleColumn>(newColumns);
+        presenter.updateColumns(newColumns);
     }
 
     private void addColumn(SampleColumn column) {
@@ -172,12 +173,12 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
         sampleColumn.getValueType().visit(new ColumnValueType.Visitor() {
             @Override
-            public void onTextValueType(TextValueType valueType) {
+            public void visitTextValueType(TextValueType valueType) {
                 editor.add(new EditTextCell());
             }
 
             @Override
-            public void onEfoTermValueType(final EfoTermValueType valueType) {
+            public void visitTermValueType(final EfoTermValueType valueType) {
                 editor.add(new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<EfoTermDto>() {
                     @Override
                     public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
@@ -192,7 +193,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
 
             @Override
-            public void onNumericValueType(NumericValueType valueType) {
+            public void visitNumericValueType(NumericValueType valueType) {
                 editor.add(new EditTextCell());
                 // TODO allow only numeric values
             }

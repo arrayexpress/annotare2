@@ -16,16 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import uk.ac.ebi.fg.annotare2.configmodel.Contact;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
-import uk.ac.ebi.fg.annotare2.configmodel.Publication;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import uk.ac.ebi.fg.annotare2.configmodel.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdatePerformer;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -102,10 +105,54 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
         }
     }
 
+    @Override
+    public void updateSampleColumns(List<SampleColumn> columns) {
+        List<SampleAttribute> attributes = Lists.transform(
+                columns, new Function<SampleColumn, SampleAttribute>() {
+            @Nullable
+            @Override
+            public SampleAttribute apply(@Nullable SampleColumn input) {
+                ColumnValueTypeVisitor visitor = new ColumnValueTypeVisitor();
+                input.getValueType().visit(visitor);
+                SampleAttribute attr = new SampleAttribute();
+                attr.setName(input.getName());
+                attr.setType(input.getType());
+                attr.setValueType(visitor.getValueType());
+                return attr;
+            }
+        });
+    }
+
     public UpdateResult run(List<UpdateCommand> commands) {
         for (UpdateCommand command : commands) {
             command.execute(this);
         }
         return result;
+    }
+
+    private static class ColumnValueTypeVisitor implements ColumnValueType.Visitor {
+
+        private AttributeValueType valueType;
+
+        @Override
+        public void visitTermValueType(EfoTermValueType valueType) {
+            EfoTermDto term = valueType.getEfoTerm();
+            this.valueType = new TermAttributeValueType(new OntologyTerm(term.getAccession(), term.getLabel()));
+        }
+
+        @Override
+        public void visitTextValueType(TextValueType valueType) {
+            this.valueType = new TextAttributeValueType();
+        }
+
+        @Override
+        public void visitNumericValueType(NumericValueType valueType) {
+            EfoTermDto term = valueType.getUnits();
+            this.valueType = new NumericAttributeValueType(new OntologyTerm(term.getAccession(), term.getLabel()));
+        }
+
+        public AttributeValueType getValueType() {
+            return valueType;
+        }
     }
 }

@@ -23,10 +23,8 @@ import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 
@@ -113,7 +111,7 @@ public class ExperimentData {
         publications.getPublicationsAsync(callback);
     }
 
-    public void getSamplesAsync(AsyncCallback<List<SampleRow>> callback) {
+    public void getSamplesAsync(AsyncCallback<SampleRowsAndColumns> callback) {
         samples.getSamplesAsync(callback);
     }
 
@@ -155,5 +153,9 @@ public class ExperimentData {
 
     public void removePublications(List<PublicationDto> toBeRemoved) {
         publications.remove(toBeRemoved);
+    }
+
+    public void updateSampleColumns(List<SampleColumn> columns) {
+        samples.updateSampleColumns(columns);
     }
 }

@@ -154,10 +154,10 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public List<SampleRow> getSamples(int id) throws ResourceNotFoundException, NoPermissionException {
+    public SampleRowsAndColumns getSamples(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiSampleRows(sb);
+            return UIObjectConverter.uiSampleRowsAndColumns(sb);
         } catch (AccessControlException e) {
             log.warn("getSamples(" + id + ") failure", e);
             throw new NoPermissionException("Sorry, you do not have access to this resource");

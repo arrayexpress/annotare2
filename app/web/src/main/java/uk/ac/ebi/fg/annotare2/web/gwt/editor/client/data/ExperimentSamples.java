@@ -20,6 +20,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleColumnsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -36,30 +42,48 @@ public class ExperimentSamples {
     private final SubmissionServiceAsync submissionService;
     private final UpdateQueue updateQueue;
 
-    private Set<SampleRow> samples;
+    private Set<SampleRow> rows;
+    private List<SampleColumn> columns;
 
     public ExperimentSamples(SubmissionServiceAsync submissionService, UpdateQueue updateQueue) {
         this.submissionService = submissionService;
         this.updateQueue = updateQueue;
+        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler() {
+            @Override
+            public void onDataUpdate(DataUpdateEvent event) {
+                applyUpdates(event.getUpdates());
+            }
+        });
     }
 
-    public void getSamplesAsync(final AsyncCallback<List<SampleRow>> callback) {
-        if (samples != null) {
-            callback.onSuccess(new ArrayList<SampleRow>(samples));
+    public void getSamplesAsync(final AsyncCallback<SampleRowsAndColumns> callback) {
+        if (rows != null && columns != null) {
+            callback.onSuccess(
+                    new SampleRowsAndColumns(
+                            new ArrayList<SampleRow>(rows),
+                            new ArrayList<SampleColumn>(columns)));
             return;
         }
-        submissionService.getSamples(getSubmissionId(), new AsyncCallbackWrapper<List<SampleRow>>() {
+        submissionService.getSamples(getSubmissionId(), new AsyncCallbackWrapper<SampleRowsAndColumns>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(List<SampleRow> result) {
-                samples = new LinkedHashSet<SampleRow>(result);
+            public void onSuccess(SampleRowsAndColumns result) {
+                rows = new LinkedHashSet<SampleRow>(result.getSampleRows());
+                columns = new ArrayList<SampleColumn>(result.getSampleColumns());
                 callback.onSuccess(result);
             }
         }.wrap());
     }
 
+    public void updateSampleColumns(List<SampleColumn> columns) {
+        updateQueue.add(new UpdateSampleColumnsCommand(columns));
+    }
+
+    private void applyUpdates(UpdateResult updates) {
+        columns = new ArrayList<SampleColumn>(updates.getUpdatedSampleColumns());
+    }
 }

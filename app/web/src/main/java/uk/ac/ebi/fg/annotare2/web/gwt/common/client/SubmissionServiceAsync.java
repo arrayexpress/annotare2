@@ -24,7 +24,7 @@ public interface SubmissionServiceAsync {
 
     void getExperimentSettings(int id, AsyncCallback<ExperimentSettings> async);
 
-    void getSamples(int id, AsyncCallback<List<SampleRow>> async);
+    void getSamples(int id, AsyncCallback<SampleRowsAndColumns> async);
 
     void getExperimentDetails(int id, AsyncCallback<DetailsDto> async);
 

@@ -7,6 +7,6 @@ public class TextValueType implements ColumnValueType {
 
     @Override
     public void visit(Visitor visitor) {
-        visitor.onTextValueType(this);
+        visitor.visitTextValueType(this);
     }
 }

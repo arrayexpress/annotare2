@@ -39,6 +39,6 @@ public class EfoTermValueType implements ColumnValueType {
 
     @Override
     public void visit(Visitor visitor) {
-        visitor.onEfoTermValueType(this);
+        visitor.visitTermValueType(this);
     }
 }

@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
 
 /**
@@ -23,8 +25,76 @@ import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
  */
 public class SampleAttribute {
 
-    private AttributeType type;
-
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("type")
+    private AttributeType type;
+
+    @JsonProperty("valueSubType")
+    private AttributeValueSubType valueSubType;
+
+    @JsonProperty("units")
+    private OntologyTerm units;
+
+    @JsonProperty("branch")
+    private OntologyTerm ontologyBranch;
+
+    public String getSdrfColumnName() {
+        return type.getName(name);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public AttributeType getType() {
+        return type;
+    }
+
+    public void setType(AttributeType type) {
+        this.type = type;
+    }
+
+    @JsonIgnore
+    public AttributeValueType getValueType() {
+        return valueSubType == null ? null : valueSubType.get(this);
+    }
+
+    @JsonIgnore
+    public void setValueType(AttributeValueType valueType) {
+        if (valueType == null) {
+            valueSubType = null;
+            return;
+        }
+        valueType.set(this);
+    }
+
+    AttributeValueSubType getValueSubType() {
+        return valueSubType;
+    }
+
+    void setValueSubType(AttributeValueSubType valueSubType) {
+        this.valueSubType = valueSubType;
+    }
+
+    OntologyTerm getOntologyBranch() {
+        return ontologyBranch;
+    }
+
+    void setOntologyBranch(OntologyTerm ontologyBranch) {
+        this.ontologyBranch = ontologyBranch;
+    }
+
+    OntologyTerm getUnits() {
+        return units;
+    }
+
+    void setUnits(OntologyTerm units) {
+        this.units = units;
+    }
 }
