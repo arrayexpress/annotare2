@@ -18,7 +18,6 @@ package com.google.gwt.user.cellview.client;
 
 
 import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import static com.google.gwt.dom.client.Style.Unit.PX;
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 /**
  * DataGrid with resizable columns.
@@ -130,12 +128,12 @@ public class MyDataGrid<T> extends DataGrid<T> {
 
     public void adjustColumnWidth() {
         int residualWidth = 0;
-        for (int i = 0; i < getColumnCount() - 2; i++) {
+        int lastColIndex = getColumnCount() - 1;
+        for (int i = 0; i < lastColIndex; i++) {
             residualWidth += getHeaderOffsetWidth(i);
         }
 
         int minWidth = getVisibleWidth();
-        int lastColIndex = getColumnCount() - 1;
         if (residualWidth < minWidth) {
             setColumnWidth(getColumn(lastColIndex), (minWidth - residualWidth) + "px");
             setTableWidth(minWidth, PX);
@@ -174,5 +172,4 @@ public class MyDataGrid<T> extends DataGrid<T> {
             dataGrid.resizeColumn(column, width);
         }
     }
-
 }
