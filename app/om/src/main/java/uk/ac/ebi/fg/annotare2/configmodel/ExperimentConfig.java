@@ -174,6 +174,14 @@ public class ExperimentConfig {
         return samples.get(id);
     }
 
+    public Collection<SampleAttribute> getSampleAttributes() {
+        return unmodifiableCollection(sampleAttributes);
+    }
+
+    public void setSampleAttributes(List<SampleAttribute> sampleAttributes) {
+        this.sampleAttributes = newArrayList(sampleAttributes);
+    }
+
     @JsonIgnore
     public Collection<Contact> getContacts() {
         return unmodifiableCollection(contacts.values());
@@ -192,11 +200,6 @@ public class ExperimentConfig {
     @JsonIgnore
     public Collection<LabeledExtractConfig> getLabeledExtracts() {
         return unmodifiableCollection(labeledExtracts.values());
-    }
-
-    @JsonIgnore
-    public Collection<SampleAttribute> getSampleAttributes() {
-        return unmodifiableCollection(sampleAttributes);
     }
 
     public static ExperimentConfig fromJsonString(String str) throws DataSerializationException {

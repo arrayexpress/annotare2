@@ -37,12 +37,8 @@ public class SampleAttribute {
     @JsonProperty("units")
     private OntologyTerm units;
 
-    @JsonProperty("branch")
+    @JsonProperty("ontologyBranch")
     private OntologyTerm ontologyBranch;
-
-    public String getSdrfColumnName() {
-        return type.getName(name);
-    }
 
     public String getName() {
         return name;
@@ -61,6 +57,11 @@ public class SampleAttribute {
     }
 
     @JsonIgnore
+    public String getSdrfColumnName() {
+        return type.getName(name);
+    }
+
+    @JsonIgnore
     public AttributeValueType getValueType() {
         return valueSubType == null ? null : valueSubType.get(this);
     }
@@ -72,10 +73,6 @@ public class SampleAttribute {
             return;
         }
         valueType.set(this);
-    }
-
-    AttributeValueSubType getValueSubType() {
-        return valueSubType;
     }
 
     void setValueSubType(AttributeValueSubType valueSubType) {

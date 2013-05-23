@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -78,6 +79,10 @@ public class UpdateResult implements IsSerializable {
 
     public void updated(DetailsDto details) {
         updatedDetails = details;
+    }
+
+    public void updatedAll(Collection<SampleColumn> columns) {
+        updatedSampleColumns.addAll(columns);
     }
 
     public List<ContactDto> getCreatedContacts() {

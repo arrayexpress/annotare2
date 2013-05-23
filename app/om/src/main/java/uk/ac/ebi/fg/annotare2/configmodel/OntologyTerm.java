@@ -16,16 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * @author Olga Melnichuk
  */
 public class OntologyTerm {
 
+    @JsonProperty("accession")
     private final String accession;
 
+    @JsonProperty("label")
     private final String label;
 
-    public OntologyTerm(String accession, String label) {
+    @JsonCreator
+    public OntologyTerm(@JsonProperty("accession") String accession,
+                        @JsonProperty("label") String label) {
         this.accession = accession;
         this.label = label;
     }

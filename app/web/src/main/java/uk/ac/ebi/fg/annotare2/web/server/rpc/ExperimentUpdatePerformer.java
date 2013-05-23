@@ -121,6 +121,8 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
                 return attr;
             }
         });
+        exp.setSampleAttributes(attributes);
+        result.updatedAll(columns);
     }
 
     public UpdateResult run(List<UpdateCommand> commands) {
