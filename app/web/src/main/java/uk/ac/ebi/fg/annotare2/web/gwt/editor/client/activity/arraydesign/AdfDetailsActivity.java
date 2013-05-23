@@ -31,8 +31,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfD
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.asList;
-
 /**
  * @author Olga Melnichuk
  */
@@ -53,46 +51,17 @@ public class AdfDetailsActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //TODO load from an ontotlogy
-        List<String> techTypes = new ArrayList<String>();
-        techTypes.addAll(asList(new String[]{
-                "in_situ_oligo_features",
-                "spotted_antibody_features",
-                "spotted_colony_features",
-                "spotted_ds_DNA_features",
-                "spotted_protein_features",
-                "spotted_ss_PCR_amplicon_features",
-                "spotted_ss_oligo_features"
-        }));
-
-        List<String> surfTypes = new ArrayList<String>();
-        surfTypes.addAll(asList(new String[]{
-                "aminosilane",
-                "polylysine",
-                "unknown_surface_type"
-        }));
-
-        List<String> subTypes = new ArrayList<String>();
-        subTypes.addAll(asList(new String[]{
-                "glass",
-                "nitrocellulose",
-                "nylon",
-                "silicon",
-                "unknown_substrate_type"
-        }));
-
+        // TODO load from database
         List<UIPrintingProtocol> protocols = new ArrayList<UIPrintingProtocol>();
         protocols.add(new UIPrintingProtocol("protocol-1", "protocol description-1"));
         protocols.add(new UIPrintingProtocol("protocol-2", "<em>protocol</em> description-2 looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
 
+        //TODO load from an ontotlogy
         List<String> species = new ArrayList<String>();
         for (int i = 0; i < 20; i++) {
             species.add("specie-" + i);
         }
 
-        view.setTechnologyTypes(techTypes);
-        view.setSurfaceTypes(surfTypes);
-        view.setSubstrateTypes(subTypes);
         view.setSpecies(species);
         view.setPrintingProtocols(protocols);
         containerWidget.setWidget(view.asWidget());
@@ -121,14 +90,10 @@ public class AdfDetailsActivity extends AbstractActivity {
                     view.setReleaseDate(header.getArrayExpressReleaseDate(true));
                     view.setOrganism(header.getOrganism(true));
                     view.setPrintingProtocol(header.getPrintingProtocol());
-                    view.setTechnologyType(header.getTechnologyType(true).getName());
-                    view.setSurfaceType(header.getSurfaceType(true).getName());
-                    view.setSubstrateType(header.getSubstrateType(true).getName());
                 }
             }
         }.wrap());
     }
-
 
 
 }

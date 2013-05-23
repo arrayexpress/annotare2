@@ -56,15 +56,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     TextBox designVersion;
 
     @UiField
-    ComboBox technologyType;
-
-    @UiField
-    ComboBox substrateType;
-
-    @UiField
-    ComboBox surfaceType;
-
-    @UiField
     ComboBox species;
 
     @UiField
@@ -191,21 +182,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     }
 
     @Override
-    public void setTechnologyTypes(List<String> types) {
-        technologyType.setOptions(types);
-    }
-
-    @Override
-    public void setSubstrateTypes(List<String> types) {
-        substrateType.setOptions(types);
-    }
-
-    @Override
-    public void setSurfaceTypes(List<String> types) {
-        surfaceType.setOptions(types);
-    }
-
-    @Override
     public void setSpecies(List<String> species) {
         this.species.setOptions(species);
     }
@@ -232,21 +208,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         };
         ppName.addValueChangeHandler(handler);
         richTextArea.addValueChangeHandler(handler);
-    }
-
-    @Override
-    public void setTechnologyType(Cell<String> cell) {
-        attachCell(technologyType, cell);
-    }
-
-    @Override
-    public void setSurfaceType(Cell<String> cell) {
-        attachCell(surfaceType, cell);
-    }
-
-    @Override
-    public void setSubstrateType(Cell<String> cell) {
-        attachCell(substrateType, cell);
     }
 
     @Override

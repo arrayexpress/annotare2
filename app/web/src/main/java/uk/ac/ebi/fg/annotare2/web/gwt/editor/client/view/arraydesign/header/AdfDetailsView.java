@@ -30,12 +30,6 @@ public interface AdfDetailsView extends IsWidget {
 
     void setPrintingProtocols(List<UIPrintingProtocol> protocols);
 
-    void setTechnologyTypes(List<String> types);
-
-    void setSubstrateTypes(List<String> types);
-
-    void setSurfaceTypes(List<String> types);
-
     void setSpecies(List<String> species);
 
     void setArrayDesignName(Cell<String> cell);
@@ -43,12 +37,6 @@ public interface AdfDetailsView extends IsWidget {
     void setVersion(Cell<String> cell);
 
     void setPrintingProtocol(Cell<String> cell);
-
-    void setTechnologyType(Cell<String> cell);
-
-    void setSurfaceType(Cell<String> cell);
-
-    void setSubstrateType(Cell<String> cell);
 
     void setDescription(Cell<String> cell);
 

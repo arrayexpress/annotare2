@@ -72,38 +72,11 @@
                     </tr>
                     <tr>
                         <td class="app-FormField">
-                            Technology Type:
-                        </td>
-                        <td>
-                            <wgt:ComboBox width="250px" ui:field="technologyType"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="app-FormField">
-                            Substrate Type:
-                        </td>
-                        <td>
-                            <wgt:ComboBox width="250px" ui:field="substrateType"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="app-FormField">
-                            Surface Type:
-                        </td>
-                        <td>
-                            <wgt:ComboBox width="250px" ui:field="surfaceType"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="app-FormField">
                             Species:
                         </td>
                         <td>
                             <wgt:ComboBox width="250px" ui:field="species"/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="app-FormFieldSeparator"></td>
                     </tr>
                     <tr>
                         <td class="app-FormField">
