@@ -17,30 +17,71 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class SampleRow implements IsSerializable {
+public class SampleRow implements IsSerializable, HasIdentity {
 
     private int id;
 
+    private int tmpId;
+
     private String name;
 
-    public SampleRow(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    private Map<String, String> values;
 
     public SampleRow() {
+        /* used by GWT serialization only */
+    }
+
+    public SampleRow(int id, String name) {
+        this(id, name, new HashMap<String, String>());
+    }
+
+    public SampleRow(int id, String name, Map<String, String> values) {
+        this.id = id;
+        this.name = name;
+        this.values = new HashMap<String, String>();
+        this.values.putAll(values);
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue(SampleColumn column) {
+        String v = values.get(column.getName());
+        return v == null ? "" : v;
+    }
+
+    public void setValue(String value, SampleColumn column) {
+        values.put(column.getName(), value);
+    }
+
     public int getId() {
         return id;
+    }
+
+    public int getTmpId() {
+        return tmpId;
+    }
+
+    public void setTmpId(int tmpId) {
+        this.tmpId = tmpId;
+    }
+
+    public Map<String, String> getValues() {
+        return new HashMap<String, String>(values);
     }
 
     @Override

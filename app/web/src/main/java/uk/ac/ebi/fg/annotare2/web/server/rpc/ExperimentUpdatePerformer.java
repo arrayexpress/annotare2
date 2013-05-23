@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdatePerformer;
@@ -123,6 +124,14 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
         });
         exp.setSampleAttributes(attributes);
         result.updatedAll(columns);
+    }
+
+    @Override
+    public void updateSampleRow(SampleRow row) {
+        SampleConfig sample = exp.getSample(row.getId());
+        sample.setName(row.getName());
+        sample.setValues(row.getValues());
+        result.updated(row);
     }
 
     public UpdateResult run(List<UpdateCommand> commands) {

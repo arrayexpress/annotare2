@@ -67,7 +67,7 @@ public class LabeledExtractConfig {
     }
 
     void fix(ExperimentConfig config) {
-        this.sample = config.getSampleConfig(sampleId);
+        this.sample = config.getSample(sampleId);
     }
 
     @JsonIgnore

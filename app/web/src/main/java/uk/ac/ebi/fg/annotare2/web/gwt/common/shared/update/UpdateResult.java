@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.ArrayList;
@@ -37,7 +38,9 @@ public class UpdateResult implements IsSerializable {
     private List<PublicationDto> createdPublications;
     private List<PublicationDto> updatedPublications;
     private List<PublicationDto> removedPublications;
+
     private List<SampleColumn> updatedSampleColumns;
+    private List<SampleRow> updatedSampleRows;
 
     private DetailsDto updatedDetails;
 
@@ -51,6 +54,7 @@ public class UpdateResult implements IsSerializable {
         removedPublications = new ArrayList<PublicationDto>();
 
         updatedSampleColumns = new ArrayList<SampleColumn>();
+        updatedSampleRows = new ArrayList<SampleRow>();
     }
 
     public void created(ContactDto dto) {
@@ -79,6 +83,10 @@ public class UpdateResult implements IsSerializable {
 
     public void updated(DetailsDto details) {
         updatedDetails = details;
+    }
+
+    public void updated(SampleRow row) {
+        updatedSampleRows.add(row);
     }
 
     public void updatedAll(Collection<SampleColumn> columns) {
@@ -111,6 +119,10 @@ public class UpdateResult implements IsSerializable {
 
     public List<PublicationDto> getRemovedPublications() {
         return new ArrayList<PublicationDto>(removedPublications);
+    }
+
+    public List<SampleRow> getUpdatedSampleRows() {
+        return new ArrayList<SampleRow>(updatedSampleRows);
     }
 
     public List<SampleColumn> getUpdatedSampleColumns() {

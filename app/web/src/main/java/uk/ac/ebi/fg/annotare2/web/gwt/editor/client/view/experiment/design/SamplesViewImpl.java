@@ -158,13 +158,14 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         ) {
             @Override
             public String getValue(SampleRow row) {
-                return "";// TODO row.getValue(sampleColumn);
+                return row.getValue(sampleColumn);
             }
         };
         column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
             @Override
             public void update(int index, SampleRow row, String value) {
-                // TODO row.setValue(sampleColumn, value);
+                row.setValue(value, sampleColumn);
+                updateRow(row);
             }
         });
         column.setSortable(true);
@@ -229,6 +230,14 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                 return row.getName();
             }
         };
+        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
+            @Override
+            public void update(int index, SampleRow row, String value) {
+                // TODO check names are unique
+                row.setName(value);
+                updateRow(row);
+            }
+        });
         sortHandler.setComparator(column, new Comparator<SampleRow>() {
             @Override
             public int compare(SampleRow o1, SampleRow o2) {
@@ -244,7 +253,6 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         dataGrid.addResizableColumn(column, "Name");
         dataGrid.setColumnWidth(column, 100, Style.Unit.PX);
     }
-
 
     private HorizontalPanel createTools() {
         HorizontalPanel tools = new HorizontalPanel();
@@ -272,6 +280,10 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         button = new Button("Delete Selected Rows");
         tools.add(button);
         return tools;
+    }
+
+    private void updateRow(SampleRow row) {
+        presenter.updateRow(row);
     }
 
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {

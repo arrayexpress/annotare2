@@ -16,28 +16,25 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-
-import java.util.ArrayList;
-import java.util.List;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 /**
  * @author Olga Melnichuk
  */
-public class UpdateSampleColumnsCommand implements UpdateCommand {
+public class UpdateSampleRowCommand implements UpdateCommand {
 
-    private List<SampleColumn> columns;
+    private SampleRow row;
 
-    UpdateSampleColumnsCommand() {
-        /* used by GWT serializer only */
+    UpdateSampleRowCommand() {
+        /* used by GWT serialization only */
     }
 
-    public UpdateSampleColumnsCommand(List<SampleColumn> columns) {
-        this.columns = new ArrayList<SampleColumn>(columns);
+    public UpdateSampleRowCommand(SampleRow row) {
+        this.row = row;
     }
 
     @Override
     public void execute(UpdatePerformer performer) {
-        performer.updateSampleColumns(columns);
+        performer.updateSampleRow(row);
     }
 }

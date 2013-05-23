@@ -19,11 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleColumnsCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleRowCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
@@ -42,8 +44,14 @@ public class ExperimentSamples {
     private final SubmissionServiceAsync submissionService;
     private final UpdateQueue updateQueue;
 
-    private Set<SampleRow> rows;
     private List<SampleColumn> columns;
+
+    private IdentityMap<SampleRow> map = new IdentityMap<SampleRow>() {
+        @Override
+        protected SampleRow create(int tmpId) {
+            return new SampleRow(tmpId, "New Sample");
+        }
+    };
 
     public ExperimentSamples(SubmissionServiceAsync submissionService, UpdateQueue updateQueue) {
         this.submissionService = submissionService;
@@ -57,10 +65,10 @@ public class ExperimentSamples {
     }
 
     public void getSamplesAsync(final AsyncCallback<SampleRowsAndColumns> callback) {
-        if (rows != null && columns != null) {
+        if (map.isInitialized() && columns != null) {
             callback.onSuccess(
                     new SampleRowsAndColumns(
-                            new ArrayList<SampleRow>(rows),
+                            new ArrayList<SampleRow>(map.values()),
                             new ArrayList<SampleColumn>(columns)));
             return;
         }
@@ -72,7 +80,7 @@ public class ExperimentSamples {
 
             @Override
             public void onSuccess(SampleRowsAndColumns result) {
-                rows = new LinkedHashSet<SampleRow>(result.getSampleRows());
+                map.init(result.getSampleRows());
                 columns = new ArrayList<SampleColumn>(result.getSampleColumns());
                 callback.onSuccess(result);
             }
@@ -83,7 +91,14 @@ public class ExperimentSamples {
         updateQueue.add(new UpdateSampleColumnsCommand(columns));
     }
 
+    public void updateSampleRow(SampleRow row) {
+        updateQueue.add(new UpdateSampleRowCommand(row));
+    }
+
     private void applyUpdates(UpdateResult updates) {
         columns = new ArrayList<SampleColumn>(updates.getUpdatedSampleColumns());
+        for(SampleRow row : updates.getUpdatedSampleRows()) {
+            map.update(row);
+        }
     }
 }

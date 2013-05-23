@@ -19,6 +19,12 @@ package uk.ac.ebi.fg.annotare2.configmodel;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.util.Collections;
+import java.util.Map;
+
+import static com.google.common.collect.Maps.newHashMap;
+import static java.util.Collections.unmodifiableMap;
+
 /**
  * @author Olga Melnichuk
  */
@@ -30,9 +36,13 @@ public class SampleConfig {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("values")
+    private Map<String, String> values;
+
     @JsonCreator
     public SampleConfig(@JsonProperty("id") int id) {
         this.id = id;
+        values = newHashMap();
     }
 
     public int getId() {
@@ -45,5 +55,13 @@ public class SampleConfig {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Map<String, String> getValues() {
+        return unmodifiableMap(values);
+    }
+
+    public void setValues(Map<String, String> values) {
+        this.values = newHashMap(values);
     }
 }

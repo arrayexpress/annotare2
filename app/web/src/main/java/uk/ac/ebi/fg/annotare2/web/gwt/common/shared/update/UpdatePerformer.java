@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.List;
@@ -43,4 +44,6 @@ public interface UpdatePerformer {
     void updateDetails(DetailsDto details);
 
     void updateSampleColumns(List<SampleColumn> columns);
+
+    void updateSampleRow(SampleRow row);
 }

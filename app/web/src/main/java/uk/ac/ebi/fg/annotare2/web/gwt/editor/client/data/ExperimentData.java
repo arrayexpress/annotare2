@@ -158,4 +158,8 @@ public class ExperimentData {
     public void updateSampleColumns(List<SampleColumn> columns) {
         samples.updateSampleColumns(columns);
     }
+
+    public void updateSampleRow(SampleRow row) {
+        samples.updateSampleRow(row);
+    }
 }

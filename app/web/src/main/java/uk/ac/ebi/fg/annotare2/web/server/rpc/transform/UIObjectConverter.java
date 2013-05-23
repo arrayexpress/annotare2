@@ -101,7 +101,7 @@ public class UIObjectConverter {
         @Override
         public SampleRow apply(@Nullable SampleConfig sample) {
             checkNotNull(sample);
-            return new SampleRow(sample.getId(), sample.getName());
+            return new SampleRow(sample.getId(), sample.getName(), sample.getValues());
         }
     };
 

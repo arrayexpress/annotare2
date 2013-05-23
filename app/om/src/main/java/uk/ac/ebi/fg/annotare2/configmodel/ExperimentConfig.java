@@ -170,7 +170,7 @@ public class ExperimentConfig {
         return publications.get(id);
     }
 
-    public SampleConfig getSampleConfig(int id) {
+    public SampleConfig getSample(int id) {
         return samples.get(id);
     }
 
