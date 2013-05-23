@@ -164,12 +164,12 @@ public class UIObjectConverter {
 
     public static ExperimentSettings uiExperimentSubmissionSettings(ExperimentSubmission submission)
             throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentProfile();
         return new ExperimentSettings(exp.getType());
     }
 
     public static DetailsDto uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentProfile();
         return new DetailsDto(
                 exp.getTitle(),
                 exp.getDescription(),
@@ -179,7 +179,7 @@ public class UIObjectConverter {
     }
 
     public static SampleRowsAndColumns uiSampleRowsAndColumns(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentProfile();
         return new SampleRowsAndColumns(
                 new ArrayList<SampleRow>(transform(exp.getSamples(), SAMPLE_ROW)),
                 new ArrayList<SampleColumn>(transform(exp.getSampleAttributes(), SAMPLE_COLUMN)));
@@ -190,7 +190,7 @@ public class UIObjectConverter {
     }
 
     public static List<ContactDto> uiContacts(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentProfile();
         return uiContacts(exp.getContacts());
     }
 
@@ -199,7 +199,7 @@ public class UIObjectConverter {
     }
 
     public static List<PublicationDto> uiPublications(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentProfile();
         return new ArrayList<PublicationDto>(transform(exp.getPublications(), PUBLICATION_DTO));
     }
 

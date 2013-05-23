@@ -110,7 +110,7 @@ public class DummyData {
             submission.setStatus(status);
 
             //TODO use experiment object instead
-            submission.setExperimentConfig(ExperimentProfile.fromJsonString(
+            submission.setExperimentProfile(ExperimentProfile.fromJsonString(
                     CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(jsonFile), Charsets.UTF_8))));
 
             submission.setTitle(title);

@@ -16,6 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
+
 import java.io.InputStream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -25,9 +28,12 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class ArrayDesignSubmission extends Submission {
 
+    @Deprecated
     private String header;
 
     private String body;
+
+    private String headerString;
 
     public ArrayDesignSubmission(User createdBy, Acl acl) {
         super(createdBy, acl);
@@ -41,12 +47,23 @@ public class ArrayDesignSubmission extends Submission {
         return asStream(body);
     }
 
+    @Deprecated
     public void setHeader(String header) {
         this.header = header;
     }
 
+    @Deprecated
     public InputStream getHeader() {
         return asStream(header);
+    }
+
+
+    public ArrayDesignHeader getArrayDesignHeader() throws DataSerializationException {
+        return ArrayDesignHeader.fromJsonString(headerString);
+    }
+
+    public void setArrayDesignHeader(ArrayDesignHeader adHeader) throws DataSerializationException {
+        this.headerString = adHeader.toJsonString();
     }
 
     @Override

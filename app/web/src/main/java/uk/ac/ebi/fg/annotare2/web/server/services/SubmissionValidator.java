@@ -70,7 +70,7 @@ public class SubmissionValidator {
     }
 
     private File writeToFile(ExperimentSubmission submission) throws IOException, DataSerializationException, ParseException {
-        ExperimentProfile config = submission.getExperimentConfig();
+        ExperimentProfile config = submission.getExperimentProfile();
         MAGETABInvestigation inv = (new MageTabGenerator(config)).generate();
 
         File tmp = Files.createTempDir();

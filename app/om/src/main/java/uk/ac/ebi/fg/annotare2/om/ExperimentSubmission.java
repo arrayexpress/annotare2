@@ -32,11 +32,11 @@ public class ExperimentSubmission extends Submission {
         super(user, acl);
     }
 
-    public ExperimentProfile getExperimentConfig() throws DataSerializationException {
+    public ExperimentProfile getExperimentProfile() throws DataSerializationException {
          return ExperimentProfile.fromJsonString(experimentString);
     }
 
-    public void setExperimentConfig(ExperimentProfile exp) throws DataSerializationException {
+    public void setExperimentProfile(ExperimentProfile exp) throws DataSerializationException {
          this.experimentString = exp.toJsonString();
     }
 

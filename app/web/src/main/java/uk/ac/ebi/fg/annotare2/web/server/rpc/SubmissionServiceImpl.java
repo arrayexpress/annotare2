@@ -175,7 +175,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public Table getIdfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            ExperimentProfile exp = submission.getExperimentConfig();
+            ExperimentProfile exp = submission.getExperimentProfile();
             MAGETABInvestigation inv = new MageTabGenerator(exp).generate();
             return asTable(inv.IDF);
         } catch (AccessControlException e) {
@@ -200,7 +200,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public Table getSdrfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            ExperimentProfile exp = submission.getExperimentConfig();
+            ExperimentProfile exp = submission.getExperimentProfile();
             MAGETABInvestigation inv = (new MageTabGenerator(exp)).generate();
             return asTable(inv.SDRF);
         } catch (AccessControlException e) {
@@ -272,7 +272,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         try {
             ExperimentSubmission submission =
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-            submission.setExperimentConfig(createExperiment(settings));
+            submission.setExperimentProfile(createExperiment(settings));
         } catch (RecordNotFoundException e) {
             log.warn("setupExperimentSubmission(" + id + ") failure", e);
             throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
@@ -304,9 +304,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public UpdateResult updateExperiment(int id, List<UpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-            ExperimentProfile experiment = submission.getExperimentConfig();
+            ExperimentProfile experiment = submission.getExperimentProfile();
             UpdateResult result = new ExperimentUpdatePerformer(experiment).run(commands);
-            submission.setExperimentConfig(experiment);
+            submission.setExperimentProfile(experiment);
             return result;
         } catch (RecordNotFoundException e) {
             log.warn("updateExperiment(" + id + ") failure", e);
