@@ -19,6 +19,8 @@ package com.google.gwt.user.cellview.client;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HeaderPanel;
@@ -34,6 +36,8 @@ import static java.lang.Math.max;
  * @author Olga Melnichuk
  */
 public class MyDataGrid<T> extends DataGrid<T> {
+
+    private boolean initialized = false;
 
     public MyDataGrid(int pageSize, Resources resources) {
         super(pageSize, resources);
@@ -81,6 +85,7 @@ public class MyDataGrid<T> extends DataGrid<T> {
             };
             super.insertColumn(0, lastColumn, new MyResizableHeader<T>("", lastColumn, this), null);
             beforeIndex = 1;
+            initialized = true;
         }
         if (getColumnCount() > 0 && beforeIndex == getColumnCount()) {
             beforeIndex -= 1;
@@ -94,7 +99,7 @@ public class MyDataGrid<T> extends DataGrid<T> {
 
     protected void resizeColumn(int colIndex, int colWidth) {
         int residualWidth = 0;
-        for (int i = 0; i < getColumnCount() - 2; i++) {
+        for (int i = 0; i < getColumnCount() - 1; i++) {
             if (i != colIndex) {
                 residualWidth += getHeaderOffsetWidth(i);
             }
@@ -106,7 +111,6 @@ public class MyDataGrid<T> extends DataGrid<T> {
         if (colIndex == lastColIndex) {
             int newTableWidth = max(residualWidth + colWidth, minWidth);
             int newColumnWidth = max(newTableWidth - residualWidth, 0);
-            setColumnWidth(getColumn(lastColIndex), newColumnWidth + "px");
             setTableWidth(residualWidth + newColumnWidth, PX);
             return;
         }
@@ -117,8 +121,7 @@ public class MyDataGrid<T> extends DataGrid<T> {
         int newTableWidth = residualWidth + colWidth + borderWidth;
         lastColWidth = max(minWidth - newTableWidth, 0);
 
-        setColumnWidth(getColumn(colIndex), colWidth + "px");
-        setColumnWidth(getColumn(lastColIndex), lastColWidth + "px");
+        setColumnWidth(colIndex, colWidth + "px");
         setTableWidth(newTableWidth + lastColWidth, PX);
     }
 
@@ -126,7 +129,27 @@ public class MyDataGrid<T> extends DataGrid<T> {
         resizeColumn(getColumnIndex(target), colWidth);
     }
 
-    public void adjustColumnWidth() {
+    public void fix() {
+        removeUnusedDataGridColumns();
+        adjustWidth();
+    }
+
+    // a workaround (for more details see:  http://code.google.com/p/google-web-toolkit/issues/detail?id=6711)
+    private void removeUnusedDataGridColumns() {
+        int columnCount = getColumnCount();
+        NodeList<Element> colGroups = getElement().getElementsByTagName("colgroup");
+
+        for (int i = 0; i < colGroups.getLength(); i++) {
+            Element colGroupEle = colGroups.getItem(i);
+            NodeList<Element> colList = colGroupEle.getElementsByTagName("col");
+
+            for (int j = colList.getLength() - 2; j >= columnCount - 1; j--) {
+                colGroupEle.removeChild(colList.getItem(j));
+            }
+        }
+    }
+
+    private void adjustWidth() {
         int residualWidth = 0;
         int lastColIndex = getColumnCount() - 1;
         for (int i = 0; i < lastColIndex; i++) {
@@ -135,11 +158,9 @@ public class MyDataGrid<T> extends DataGrid<T> {
 
         int minWidth = getVisibleWidth();
         if (residualWidth < minWidth) {
-            setColumnWidth(getColumn(lastColIndex), (minWidth - residualWidth) + "px");
             setTableWidth(minWidth, PX);
             return;
         }
-        setColumnWidth(getColumn(lastColIndex), 0 + "px");
         setTableWidth(residualWidth, PX);
     }
 

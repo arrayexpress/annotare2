@@ -132,13 +132,18 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void updateColumns(List<SampleColumn> newColumns) {
+        for (int i = 0; i < this.columns.size(); i++) {
+            dataGrid.clearColumnWidth(permanentColumnCount - 1 + i);
+        }
         for (SampleColumn column : this.columns) {
             dataGrid.removeColumn(permanentColumnCount - 1);
         }
+
+        dataGrid.fix();
+
         for (SampleColumn column : newColumns) {
             addColumn(column);
         }
-        dataGrid.adjustColumnWidth();
         this.columns = new ArrayList<SampleColumn>(newColumns);
         presenter.updateColumns(newColumns);
     }
@@ -185,7 +190,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                         EfoTermDto term = valueType.getEfoTerm();
                         if (term == null) {
                             efoSuggestService.getTerms(query, limit, callback);
-                        }   else {
+                        } else {
                             efoSuggestService.getTerms(query, term, limit, callback);
                         }
                     }
