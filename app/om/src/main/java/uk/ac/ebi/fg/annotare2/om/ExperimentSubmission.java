@@ -16,12 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Experiment;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -36,11 +32,11 @@ public class ExperimentSubmission extends Submission {
         super(user, acl);
     }
 
-    public ExperimentConfig getExperimentConfig() throws DataSerializationException {
-         return ExperimentConfig.fromJsonString(experimentString);
+    public ExperimentProfile getExperimentConfig() throws DataSerializationException {
+         return ExperimentProfile.fromJsonString(experimentString);
     }
 
-    public void setExperimentConfig(ExperimentConfig exp) throws DataSerializationException {
+    public void setExperimentConfig(ExperimentProfile exp) throws DataSerializationException {
          this.experimentString = exp.toJsonString();
     }
 

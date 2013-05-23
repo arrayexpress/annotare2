@@ -22,7 +22,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 
@@ -38,7 +38,7 @@ public class MageTabImporterTest {
     @Test
     public void mageTab2OneColourExperimentTest() throws ParseException, UnsupportedGraphLayoutException,
             DataSerializationException, ImportExperimentException {
-        ExperimentConfig exp = createExperiment(ONE_COLOR_MICROARRAY, "/E-MTAB-641.idf.txt", "/E-MTAB-641.sdrf.txt");
+        ExperimentProfile exp = createExperiment(ONE_COLOR_MICROARRAY, "/E-MTAB-641.idf.txt", "/E-MTAB-641.sdrf.txt");
         assertNotNull(exp);
         assertEquals(6, exp.getSamples().size());
         assertEquals(18, exp.getLabeledExtracts().size());
@@ -47,7 +47,7 @@ public class MageTabImporterTest {
     @Test
     public void mageTab2TwoColourExperimentTest() throws ParseException, UnsupportedGraphLayoutException,
             DataSerializationException, ImportExperimentException {
-        ExperimentConfig exp = createExperiment(TWO_COLOR_MICROARRAY, "/E-MEXP-3237.idf.txt", "/E-MEXP-3237.sdrf.txt");
+        ExperimentProfile exp = createExperiment(TWO_COLOR_MICROARRAY, "/E-MEXP-3237.idf.txt", "/E-MEXP-3237.sdrf.txt");
         assertNotNull(exp);
         assertEquals(6, exp.getSamples().size());
         assertEquals(12, exp.getLabeledExtracts().size());
@@ -56,13 +56,13 @@ public class MageTabImporterTest {
     @Test
     public void mageTab2SequencingExperimentTest() throws ParseException, UnsupportedGraphLayoutException,
             DataSerializationException, ImportExperimentException {
-        ExperimentConfig exp = createExperiment(SEQUENCING, "/E-MTAB-582.idf.txt", "/E-MTAB-582.sdrf.txt");
+        ExperimentProfile exp = createExperiment(SEQUENCING, "/E-MTAB-582.idf.txt", "/E-MTAB-582.sdrf.txt");
         assertNotNull(exp);
         assertEquals(10, exp.getSamples().size());
         assertEquals(0, exp.getLabeledExtracts().size());
     }
 
-    private ExperimentConfig createExperiment(ExperimentConfigType type, String idfFile, String sdrfFile)
+    private ExperimentProfile createExperiment(ExperimentConfigType type, String idfFile, String sdrfFile)
             throws UnsupportedGraphLayoutException, DataSerializationException, ParseException, ImportExperimentException {
         IDFParser idfParser = new IDFParser();
         IDF idf = idfParser.parse(getClass().getResourceAsStream(idfFile));
@@ -70,7 +70,7 @@ public class MageTabImporterTest {
         SDRFParser sdrfParser = new SDRFParser();
         SDRF sdrf = sdrfParser.parse(getClass().getResourceAsStream(sdrfFile));
 
-        ExperimentConfig exp = new MageTabImporter(type).importFrom(idf, sdrf);
+        ExperimentProfile exp = new MageTabImporter(type).importFrom(idf, sdrf);
         System.out.println(exp.toJsonString());
         return exp;
     }

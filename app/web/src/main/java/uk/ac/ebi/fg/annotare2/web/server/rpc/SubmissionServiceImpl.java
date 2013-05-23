@@ -26,7 +26,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
@@ -175,7 +175,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public Table getIdfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            ExperimentConfig exp = submission.getExperimentConfig();
+            ExperimentProfile exp = submission.getExperimentConfig();
             MAGETABInvestigation inv = new MageTabGenerator(exp).generate();
             return asTable(inv.IDF);
         } catch (AccessControlException e) {
@@ -200,7 +200,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public Table getSdrfTable(int id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            ExperimentConfig exp = submission.getExperimentConfig();
+            ExperimentProfile exp = submission.getExperimentConfig();
             MAGETABInvestigation inv = (new MageTabGenerator(exp)).generate();
             return asTable(inv.SDRF);
         } catch (AccessControlException e) {
@@ -304,7 +304,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public UpdateResult updateExperiment(int id, List<UpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
-            ExperimentConfig experiment = submission.getExperimentConfig();
+            ExperimentProfile experiment = submission.getExperimentConfig();
             UpdateResult result = new ExperimentUpdatePerformer(experiment).run(commands);
             submission.setExperimentConfig(experiment);
             return result;

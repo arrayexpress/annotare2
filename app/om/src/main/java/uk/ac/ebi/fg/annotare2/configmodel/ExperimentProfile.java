@@ -23,7 +23,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.submissionmodel.LabeledExtract;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -39,7 +38,7 @@ import static java.util.Collections.unmodifiableCollection;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentConfig {
+public class ExperimentProfile {
 
     @JsonProperty("nextId")
     int nextId;
@@ -69,14 +68,14 @@ public class ExperimentConfig {
     private Map<Integer, Publication> publications;
 
     @JsonProperty("sampleMap")
-    private Map<Integer, SampleConfig> samples;
+    private Map<Integer, SampleProfile> samples;
 
     @JsonProperty("labeledExtractMap")
-    private Map<Integer, LabeledExtractConfig> labeledExtracts;
+    private Map<Integer, LabeledExtractProfile> labeledExtracts;
 
     private List<SampleAttribute> sampleAttributes;
 
-    public ExperimentConfig(@JsonProperty("type") ExperimentConfigType type) {
+    public ExperimentProfile(@JsonProperty("type") ExperimentConfigType type) {
         this.type = type;
         samples = newLinkedHashMap();
         labeledExtracts = newLinkedHashMap();
@@ -151,14 +150,14 @@ public class ExperimentConfig {
         return publications.remove(id);
     }
 
-    public SampleConfig createSampleConfig() {
-        SampleConfig sample = new SampleConfig(nextId());
+    public SampleProfile createSampleConfig() {
+        SampleProfile sample = new SampleProfile(nextId());
         samples.put(sample.getId(), sample);
         return sample;
     }
 
-    public void assignLabel(SampleConfig config, String label) {
-        LabeledExtractConfig labeledExtract = new LabeledExtractConfig(nextId(), config, label);
+    public void assignLabel(SampleProfile config, String label) {
+        LabeledExtractProfile labeledExtract = new LabeledExtractProfile(nextId(), config, label);
         labeledExtracts.put(labeledExtract.getId(), labeledExtract);
     }
 
@@ -170,7 +169,7 @@ public class ExperimentConfig {
         return publications.get(id);
     }
 
-    public SampleConfig getSample(int id) {
+    public SampleProfile getSample(int id) {
         return samples.get(id);
     }
 
@@ -193,22 +192,22 @@ public class ExperimentConfig {
     }
 
     @JsonIgnore
-    public Collection<SampleConfig> getSamples() {
+    public Collection<SampleProfile> getSamples() {
         return unmodifiableCollection(samples.values());
     }
 
     @JsonIgnore
-    public Collection<LabeledExtractConfig> getLabeledExtracts() {
+    public Collection<LabeledExtractProfile> getLabeledExtracts() {
         return unmodifiableCollection(labeledExtracts.values());
     }
 
-    public static ExperimentConfig fromJsonString(String str) throws DataSerializationException {
+    public static ExperimentProfile fromJsonString(String str) throws DataSerializationException {
         if (isNullOrEmpty(str)) {
             return null;
         }
         ObjectMapper mapper = new ObjectMapper();
         try {
-            ExperimentConfig exp = mapper.readValue(str, ExperimentConfig.class);
+            ExperimentProfile exp = mapper.readValue(str, ExperimentProfile.class);
             exp.fixMe();
             return exp;
         } catch (JsonGenerationException e) {
@@ -238,7 +237,7 @@ public class ExperimentConfig {
     }
 
     private void fixMe() {
-        for (LabeledExtractConfig labeledExtract : labeledExtracts.values()) {
+        for (LabeledExtractProfile labeledExtract : labeledExtracts.values()) {
             labeledExtract.fix(this);
         }
     }

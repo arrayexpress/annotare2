@@ -23,7 +23,7 @@ import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
@@ -70,7 +70,7 @@ public class SubmissionValidator {
     }
 
     private File writeToFile(ExperimentSubmission submission) throws IOException, DataSerializationException, ParseException {
-        ExperimentConfig config = submission.getExperimentConfig();
+        ExperimentProfile config = submission.getExperimentConfig();
         MAGETABInvestigation inv = (new MageTabGenerator(config)).generate();
 
         File tmp = Files.createTempDir();

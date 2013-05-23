@@ -37,11 +37,11 @@ import java.util.List;
  */
 public class ExperimentUpdatePerformer implements UpdatePerformer {
 
-    private final ExperimentConfig exp;
+    private final ExperimentProfile exp;
 
     private final UpdateResult result = new UpdateResult();
 
-    public ExperimentUpdatePerformer(ExperimentConfig exp) {
+    public ExperimentUpdatePerformer(ExperimentProfile exp) {
         this.exp = exp;
     }
 
@@ -128,7 +128,7 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
 
     @Override
     public void updateSampleRow(SampleRow row) {
-        SampleConfig sample = exp.getSample(row.getId());
+        SampleProfile sample = exp.getSample(row.getId());
         sample.setName(row.getName());
         sample.setValues(row.getValues());
         result.updated(row);

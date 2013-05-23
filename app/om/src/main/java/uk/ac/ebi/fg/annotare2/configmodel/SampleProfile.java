@@ -28,7 +28,7 @@ import static java.util.Collections.unmodifiableMap;
 /**
  * @author Olga Melnichuk
  */
-public class SampleConfig {
+public class SampleProfile {
 
     @JsonProperty("id")
     private int id;
@@ -40,7 +40,7 @@ public class SampleConfig {
     private Map<String, String> values;
 
     @JsonCreator
-    public SampleConfig(@JsonProperty("id") int id) {
+    public SampleProfile(@JsonProperty("id") int id) {
         this.id = id;
         values = newHashMap();
     }

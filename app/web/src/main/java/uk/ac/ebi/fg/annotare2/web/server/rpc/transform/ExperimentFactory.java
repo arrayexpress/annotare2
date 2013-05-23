@@ -16,8 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
-import uk.ac.ebi.fg.annotare2.configmodel.SampleConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
@@ -34,11 +36,11 @@ public class ExperimentFactory {
     private static enum Builder {
         ONE_COLOR_EXPERIMENT_BUILDER(ONE_COLOR_MICROARRAY) {
             @Override
-            ExperimentConfig setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentConfig config = new ExperimentConfig(ONE_COLOR_MICROARRAY);
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile config = new ExperimentProfile(ONE_COLOR_MICROARRAY);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
-                    SampleConfig sample = config.createSampleConfig();
+                    SampleProfile sample = config.createSampleConfig();
                     config.assignLabel(sample, settings.getLabel());
                 }
                 return config;
@@ -46,14 +48,14 @@ public class ExperimentFactory {
         },
         TWO_COLOR_EXPERIMENT_BUILDER(TWO_COLOR_MICROARRAY) {
             @Override
-            ExperimentConfig setupExperiment(ExperimentSetupSettings settings) {
-                return new ExperimentConfig(TWO_COLOR_MICROARRAY);
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                return new ExperimentProfile(TWO_COLOR_MICROARRAY);
             }
         },
         SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
             @Override
-            ExperimentConfig setupExperiment( ExperimentSetupSettings settings) {
-                return new ExperimentConfig(SEQUENCING);
+            ExperimentProfile setupExperiment( ExperimentSetupSettings settings) {
+                return new ExperimentProfile(SEQUENCING);
             }
         };
 
@@ -71,13 +73,13 @@ public class ExperimentFactory {
             this.type = type;
         }
 
-        abstract ExperimentConfig setupExperiment(ExperimentSetupSettings settings);
+        abstract ExperimentProfile setupExperiment(ExperimentSetupSettings settings);
 
         private static Builder find(ExperimentSetupSettings settings) {
             return map.get(settings.getExperimentType());
         }
 
-        public static ExperimentConfig build(ExperimentSetupSettings settings) {
+        public static ExperimentProfile build(ExperimentSetupSettings settings) {
             Builder b = find(settings);
             if (b == null) {
                 throw new IllegalStateException("Can't build an experiment with null type");
@@ -86,7 +88,7 @@ public class ExperimentFactory {
         }
     }
 
-    public static ExperimentConfig createExperiment(ExperimentSetupSettings settings) {
+    public static ExperimentProfile createExperiment(ExperimentSetupSettings settings) {
         return Builder.build(settings);
     }
 

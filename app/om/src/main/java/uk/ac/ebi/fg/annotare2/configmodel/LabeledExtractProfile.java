@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 /**
  * @author Olga Melnichuk
  */
-public class LabeledExtractConfig {
+public class LabeledExtractProfile {
 
     @JsonProperty("id")
     private int id;
@@ -33,17 +33,17 @@ public class LabeledExtractConfig {
     @JsonProperty("label")
     private String label;
 
-    private SampleConfig sample;
+    private SampleProfile sample;
     private int sampleId;
 
     @JsonCreator
-    public LabeledExtractConfig(@JsonProperty("id") int id, @JsonProperty("sample") int sampleId, @JsonProperty("label") String label) {
+    public LabeledExtractProfile(@JsonProperty("id") int id, @JsonProperty("sample") int sampleId, @JsonProperty("label") String label) {
         this.id = id;
         this.sampleId = sampleId;
         this.label = label;
     }
 
-    public LabeledExtractConfig(int id, @Nonnull SampleConfig sample, String label) {
+    public LabeledExtractProfile(int id, @Nonnull SampleProfile sample, String label) {
         this(id, sample.getId(), label);
         this.sample = sample;
     }
@@ -57,7 +57,7 @@ public class LabeledExtractConfig {
     }
 
     @JsonIgnore
-    public SampleConfig getSample() {
+    public SampleProfile getSample() {
         return sample;
     }
 
@@ -66,7 +66,7 @@ public class LabeledExtractConfig {
         return sampleId;
     }
 
-    void fix(ExperimentConfig config) {
+    void fix(ExperimentProfile config) {
         this.sample = config.getSample(sampleId);
     }
 

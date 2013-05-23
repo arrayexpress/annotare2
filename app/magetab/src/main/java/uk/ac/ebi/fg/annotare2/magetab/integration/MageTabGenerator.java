@@ -25,8 +25,6 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SDRFNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
-import uk.ac.ebi.fg.annotare2.submissionmodel.LabeledExtract;
-import uk.ac.ebi.fg.annotare2.submissionmodel.Sample;
 
 import java.util.Collection;
 import java.util.Map;
@@ -40,9 +38,9 @@ import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate
  */
 public class MageTabGenerator {
 
-    private final ExperimentConfig exp;
+    private final ExperimentProfile exp;
 
-    public MageTabGenerator(ExperimentConfig exp) {
+    public MageTabGenerator(ExperimentProfile exp) {
         this.exp = exp;
     }
 
@@ -83,14 +81,14 @@ public class MageTabGenerator {
 
     private void generateSdrf(SDRF sdrf) throws ParseException {
         Map<Integer, SDRFNode> map = newHashMap();
-        for (SampleConfig sample : exp.getSamples()) {
+        for (SampleProfile sample : exp.getSamples()) {
             SampleNode sampleNode = new SampleNode();
             sampleNode.setNodeName(sample.getName());
             sdrf.addNode(sampleNode);
             map.put(sample.getId(), sampleNode);
         }
 
-        for(LabeledExtractConfig labeledExtract : exp.getLabeledExtracts()) {
+        for(LabeledExtractProfile labeledExtract : exp.getLabeledExtracts()) {
             SDRFNode sampleNode = map.get(labeledExtract.getSample().getId());
 
             ExtractNode extractNode = new ExtractNode();

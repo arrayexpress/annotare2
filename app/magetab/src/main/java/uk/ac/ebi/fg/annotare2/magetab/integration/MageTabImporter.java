@@ -23,9 +23,11 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.fg.annotare2.configmodel.Contact;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.Publication;
-import uk.ac.ebi.fg.annotare2.configmodel.SampleConfig;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.IdfData;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Info;
@@ -47,13 +49,13 @@ public class MageTabImporter {
 
     private static final Logger log = LoggerFactory.getLogger(MageTabImporter.class);
 
-    private final ExperimentConfig exp;
+    private final ExperimentProfile exp;
 
     public MageTabImporter(ExperimentConfigType configType) {
-        exp = new ExperimentConfig(configType);
+        exp = new ExperimentProfile(configType);
     }
 
-    public ExperimentConfig importFrom(IDF idf, SDRF sdrf) throws ImportExperimentException {
+    public ExperimentProfile importFrom(IDF idf, SDRF sdrf) throws ImportExperimentException {
         IdfData idfData = new LimpopoIdfDataProxy(idf);
         importIdfData(idfData);
         importSdrfData(sdrf);
@@ -115,7 +117,7 @@ public class MageTabImporter {
 
     private void addSampleConfigsFromSamples(Collection<SampleNode> samples) throws ImportExperimentException {
         for (SampleNode node : samples) {
-            SampleConfig config = exp.createSampleConfig();
+            SampleProfile config = exp.createSampleConfig();
             config.setName(node.getNodeName());
             //TODO set material type and characteristics
             assignLabels(config, node);
@@ -124,7 +126,7 @@ public class MageTabImporter {
 
     private void addSampleConfigsFromSources(Collection<SourceNode> sources) throws ImportExperimentException {
         for (SourceNode node : sources) {
-            SampleConfig config = exp.createSampleConfig();
+            SampleProfile config = exp.createSampleConfig();
             config.setName(node.getNodeName());
             //TODO set material type and characteristics
             assignLabels(config, node);
@@ -133,14 +135,14 @@ public class MageTabImporter {
 
     private void addSampleConfigsFromExtracts(Collection<ExtractNode> extracts) throws ImportExperimentException {
         for(ExtractNode node : extracts) {
-            SampleConfig config = exp.createSampleConfig();
+            SampleProfile config = exp.createSampleConfig();
             config.setName(node.getNodeName());
             //TODO set material type and characteristics
             assignLabels(config, node);
         }
     }
 
-    private void assignLabels(SampleConfig config, SDRFNode node) throws ImportExperimentException {
+    private void assignLabels(SampleProfile config, SDRFNode node) throws ImportExperimentException {
         if (!exp.getType().isMicroarray()) {
             return;
         }

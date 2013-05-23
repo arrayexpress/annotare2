@@ -96,10 +96,10 @@ public class UIObjectConverter {
         }
     };
 
-    static Function<SampleConfig, SampleRow> SAMPLE_ROW = new Function<SampleConfig, SampleRow>() {
+    static Function<SampleProfile, SampleRow> SAMPLE_ROW = new Function<SampleProfile, SampleRow>() {
         @Nullable
         @Override
-        public SampleRow apply(@Nullable SampleConfig sample) {
+        public SampleRow apply(@Nullable SampleProfile sample) {
             checkNotNull(sample);
             return new SampleRow(sample.getId(), sample.getName(), sample.getValues());
         }
@@ -164,12 +164,12 @@ public class UIObjectConverter {
 
     public static ExperimentSettings uiExperimentSubmissionSettings(ExperimentSubmission submission)
             throws DataSerializationException {
-        ExperimentConfig exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentConfig();
         return new ExperimentSettings(exp.getType());
     }
 
     public static DetailsDto uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentConfig exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentConfig();
         return new DetailsDto(
                 exp.getTitle(),
                 exp.getDescription(),
@@ -179,7 +179,7 @@ public class UIObjectConverter {
     }
 
     public static SampleRowsAndColumns uiSampleRowsAndColumns(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentConfig exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentConfig();
         return new SampleRowsAndColumns(
                 new ArrayList<SampleRow>(transform(exp.getSamples(), SAMPLE_ROW)),
                 new ArrayList<SampleColumn>(transform(exp.getSampleAttributes(), SAMPLE_COLUMN)));
@@ -190,7 +190,7 @@ public class UIObjectConverter {
     }
 
     public static List<ContactDto> uiContacts(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentConfig exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentConfig();
         return uiContacts(exp.getContacts());
     }
 
@@ -199,7 +199,7 @@ public class UIObjectConverter {
     }
 
     public static List<PublicationDto> uiPublications(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentConfig exp = submission.getExperimentConfig();
+        ExperimentProfile exp = submission.getExperimentConfig();
         return new ArrayList<PublicationDto>(transform(exp.getPublications(), PUBLICATION_DTO));
     }
 
