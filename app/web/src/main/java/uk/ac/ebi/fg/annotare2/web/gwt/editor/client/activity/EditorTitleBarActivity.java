@@ -24,10 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
@@ -51,7 +48,8 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
     private final SubmissionValidationServiceAsync validationService;
-    private final DataServiceAsync dataServiceAsync;
+    private final DataServiceAsync dataService;
+    private final AdfServiceAsync adfService;
 
     private EventBus eventBus;
 
@@ -60,12 +58,14 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
                                   PlaceController placeController,
                                   SubmissionServiceAsync submissionService,
                                   SubmissionValidationServiceAsync validationService,
-                                  DataServiceAsync dataServiceAsync) {
+                                  DataServiceAsync dataService,
+                                  AdfServiceAsync adfService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
         this.validationService = validationService;
-        this.dataServiceAsync = dataServiceAsync;
+        this.dataService = dataService;
+        this.adfService = adfService;
     }
 
     public EditorTitleBarActivity withPlace(Place place) {
@@ -117,20 +117,20 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void validateSubmission(final EditorTitleBarView.ValidationHandler handler) {
-       validationService.validate(getSubmissionId(), new AsyncCallbackWrapper<ValidationResult>() {
-           @Override
-           public void onFailure(Throwable throwable) {
-               handler.onValidationFinished();
-               publishValidationResult(new ValidationResult(throwable));
-               //TODO log exception here
-           }
+        validationService.validate(getSubmissionId(), new AsyncCallbackWrapper<ValidationResult>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                handler.onValidationFinished();
+                publishValidationResult(new ValidationResult(throwable));
+                //TODO log exception here
+            }
 
-           @Override
-           public void onSuccess(ValidationResult result) {
-               handler.onValidationFinished();
-               publishValidationResult(result);
-           }
-       }.wrap());
+            @Override
+            public void onSuccess(ValidationResult result) {
+                handler.onValidationFinished();
+                publishValidationResult(result);
+            }
+        }.wrap());
     }
 
     private void publishValidationResult(ValidationResult result) {
@@ -149,6 +149,11 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
-        dataServiceAsync.getArrayDesignList(query, limit, wrap(callback));
+        dataService.getArrayDesignList(query, limit, wrap(callback));
+    }
+
+    @Override
+    public void importFile(AsyncCallback<Void> callback) {
+        adfService.importBodyData(getSubmissionId(), wrap(callback));
     }
 }

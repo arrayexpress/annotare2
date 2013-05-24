@@ -151,10 +151,6 @@ public class EditorApp implements EntryPoint {
         ActivityManager tabBarActivityManager = new ActivityManager(tabBarActivityMapper, eventBus);
         tabBarActivityManager.setDisplay(layout.getTabBarDisplay());
 
-        ActivityMapper tabToolBarActivityMapper = injector.getTabToolBarActivityMapper();
-        ActivityManager tabToolBarActivityManager = new ActivityManager(tabToolBarActivityMapper, eventBus);
-        tabToolBarActivityManager.setDisplay(layout.getTabToolBarDisplay());
-
         ActivityMapper leftMenuActivityMapper = injector.getLeftMenuActivityMapper();
         ActivityManager leftMenuActivityManager = new ActivityManager(leftMenuActivityMapper, eventBus);
         leftMenuActivityManager.setDisplay(layout.getLeftMenuDisplay());

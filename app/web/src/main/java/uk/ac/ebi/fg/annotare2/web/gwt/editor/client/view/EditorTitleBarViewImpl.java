@@ -25,7 +25,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
@@ -33,6 +35,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
  * @author Olga Melnichuk
  */
 public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
+
+    public static final String CONFIRMATION_MESSAGE = "Please note that the all data of the submission will be lost. Do you want to continue?";
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
     }
@@ -45,6 +49,9 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiField
     Anchor createNewLink;
+
+    @UiField
+    Anchor importLink;
 
     @UiField
     AutoSaveLabel autoSaveLabel;
@@ -68,7 +75,10 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @Override
     public void setSubmissionType(SubmissionType type) {
-        validateButton.setEnabled(type == SubmissionType.EXPERIMENT);
+        boolean isExperimentSubmission = type.isExperimentSubmission();
+        validateButton.setVisible(isExperimentSubmission);
+        createNewLink.setVisible(isExperimentSubmission);
+        importLink.setVisible(!isExperimentSubmission);
     }
 
     @Override
@@ -86,7 +96,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @UiHandler("validateButton")
-    public void onValidateButtonClick(ClickEvent clickEvent) {
+    public void onValidateButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
         presenter.validateSubmission(new ValidationHandler() {
 
@@ -100,11 +110,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @UiHandler("createNewLink")
-    public void onCreateLinkClick(ClickEvent clickEvent) {
-        if (Window.confirm("Please note that the all data of the submission will be lost. Do you want to continue?")) {
+    public void onCreateLinkClick(ClickEvent event) {
+        if (Window.confirm(CONFIRMATION_MESSAGE)) {
             final WaitingPopup popup = new WaitingPopup("Creating new submission, please wait...");
-            popup.setPopupPosition(Window.getClientWidth()/2, Window.getClientHeight()/2);
-            presenter.discardSubmissionData(new AsyncCallback<Void>(){
+            popup.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
+            presenter.discardSubmissionData(new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     popup.showError(caught);
@@ -115,6 +125,20 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                     Window.Location.reload();
                 }
             });
+        }
+    }
+
+    @UiHandler("importLink")
+    public void onImportLinkClick(ClickEvent event) {
+        if (Window.confirm(CONFIRMATION_MESSAGE)) {
+            ImportFileDialog importFileDialog = new ImportFileDialog("Array Design Import");
+            importFileDialog.addImportEventHandler(new ImportEventHandler() {
+                @Override
+                public void onImport(AsyncCallback<Void> callback) {
+                    presenter.importFile(callback);
+                }
+            });
+            importFileDialog.show();
         }
     }
 }

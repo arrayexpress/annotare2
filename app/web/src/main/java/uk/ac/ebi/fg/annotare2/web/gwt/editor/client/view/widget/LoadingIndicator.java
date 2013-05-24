@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources.EDITOR_RESOURCES;
 
 /**
  * @author Olga Melnichuk
  */
-public enum SubmissionType {
-    EXPERIMENT("Experiment"),
-    ARRAY_DESIGN("Array Design");
+public class LoadingIndicator extends Composite {
 
-    private final String title;
-
-    private SubmissionType(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public boolean isExperimentSubmission() {
-        return this == EXPERIMENT;
+    public LoadingIndicator() {
+        EDITOR_RESOURCES.editorStyles().ensureInjected();
+        SimplePanel panel = new SimplePanel();
+        panel.addStyleName(EDITOR_RESOURCES.editorStyles().loadingIndicator());
+        panel.addStyleName(EDITOR_RESOURCES.editorStyles().center());
+        initWidget(panel);
     }
 }

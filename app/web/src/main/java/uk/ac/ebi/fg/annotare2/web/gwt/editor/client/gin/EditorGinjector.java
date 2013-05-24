@@ -44,9 +44,6 @@ public interface EditorGinjector extends Ginjector {
     @EditorTabBarDisplay
     ActivityMapper getTabBarActivityMapper();
 
-    @EditorTabToolBarDisplay
-    ActivityMapper getTabToolBarActivityMapper();
-
     @EditorLeftMenuDisplay
     ActivityMapper getLeftMenuActivityMapper();
 

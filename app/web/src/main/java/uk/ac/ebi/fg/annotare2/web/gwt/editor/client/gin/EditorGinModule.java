@@ -30,8 +30,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolBarView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.AdfTabToolBarViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
@@ -51,7 +49,6 @@ public class EditorGinModule extends AbstractGinModule {
         bind(PlaceHistoryMapper.class).to(EditorPlaceHistoryMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTitleBarDisplay.class).to(EditorTitleBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTabBarDisplay.class).to(EditorTabBarActivityMapper.class).in(Singleton.class);
-        bind(ActivityMapper.class).annotatedWith(EditorTabToolBarDisplay.class).to(EditorTabToolBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLeftMenuDisplay.class).to(EditorLeftNavigationActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorContentDisplay.class).to(EditorContentActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLogBarDisplay.class).to(EditorLogBarActivityMapper.class).in(Singleton.class);
@@ -76,7 +73,6 @@ public class EditorGinModule extends AbstractGinModule {
         bind(SdrfTabToolBarView.class).to(SdrfTabToolBarViewImpl.class);
 
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);
-        bind(AdfTabToolBarView.class).to(AdfTabToolBarViewImpl.class);
 
         bind(StartView.class).to(StartViewImpl.class);
 

@@ -88,7 +88,7 @@
                                     <g:SimpleLayoutPanel ui:field="tabBarDisplay" height="100%"/>
                                 </g:north>
                                 <g:center>
-                                    <g:SimplePanel ui:field="tabToolBarDisplay"/>
+                                    <g:SimplePanel/>
                                 </g:center>
                             </g:DockLayoutPanel>
                         </g:north>

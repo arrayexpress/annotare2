@@ -36,9 +36,6 @@ public class EditorLayout extends Composite {
     HasOneWidget tabBarDisplay;
 
     @UiField
-    HasOneWidget tabToolBarDisplay;
-
-    @UiField
     HasOneWidget leftMenuDisplay;
 
     @UiField
@@ -61,10 +58,6 @@ public class EditorLayout extends Composite {
 
     public HasOneWidget getTabBarDisplay() {
         return tabBarDisplay;
-    }
-
-    public HasOneWidget getTabToolBarDisplay() {
-        return tabToolBarDisplay;
     }
 
     public HasOneWidget getLeftMenuDisplay() {

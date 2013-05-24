@@ -28,6 +28,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import uk.ac.ebi.fg.annotare2.magetab.table.Row;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.LoadingIndicator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,13 +43,19 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
 
     private final DockLayoutPanel panel;
 
+    private final LoadingIndicator loadingIndicator;
+
     public SheetModeViewImpl() {
+        loadingIndicator = new LoadingIndicator();
         panel = new DockLayoutPanel(Style.Unit.PX);
+        panel.add(loadingIndicator);
         initWidget(panel);
     }
 
     @Override
     public void setTable(Table table, boolean hasHeaders) {
+        panel.remove(loadingIndicator);
+
         MyDataGridResources resources = GWT.create(MyDataGridResources.class);
         MyDataGrid<IndexedRow> dataGrid = new MyDataGrid<IndexedRow>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("There's no data yet, come later"));

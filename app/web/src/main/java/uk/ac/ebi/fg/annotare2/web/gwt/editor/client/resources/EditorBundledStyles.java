@@ -28,4 +28,10 @@ public interface EditorBundledStyles extends CssResource {
 
     @ClassName("collapse")
     String collapseIconClass();
+
+    @ClassName("loading-indicator")
+    String loadingIndicator();
+
+    @ClassName("center")
+    String center();
 }
