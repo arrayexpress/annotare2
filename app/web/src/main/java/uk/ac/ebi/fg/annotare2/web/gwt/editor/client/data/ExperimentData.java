@@ -162,4 +162,8 @@ public class ExperimentData {
     public void updateSampleRow(SampleRow row) {
         samples.updateSampleRow(row);
     }
+
+    public SampleRow createSample() {
+        return samples.createSampleRow();
+    }
 }

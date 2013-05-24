@@ -18,8 +18,6 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
@@ -40,7 +38,7 @@ public class ExperimentFactory {
                 ExperimentProfile config = new ExperimentProfile(ONE_COLOR_MICROARRAY);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
-                    SampleProfile sample = config.createSampleConfig();
+                    SampleProfile sample = config.createSample();
                     config.assignLabel(sample, settings.getLabel());
                 }
                 return config;

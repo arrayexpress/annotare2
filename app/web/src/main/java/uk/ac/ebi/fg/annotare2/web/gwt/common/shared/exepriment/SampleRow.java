@@ -45,7 +45,12 @@ public class SampleRow implements IsSerializable, HasIdentity {
     }
 
     public SampleRow(int id, String name, Map<String, String> values) {
+        this(id, id, name, values);
+    }
+
+    public SampleRow(int id, int tmpId, String name, Map<String, String> values) {
         this.id = id;
+        this.tmpId = tmpId;
         this.name = name;
         this.values = new HashMap<String, String>();
         this.values.putAll(values);
@@ -82,6 +87,14 @@ public class SampleRow implements IsSerializable, HasIdentity {
 
     public Map<String, String> getValues() {
         return new HashMap<String, String>(values);
+    }
+
+    public SampleRow updatedCopy(SampleRow updates) {
+        return new SampleRow(
+                id,
+                updates.getTmpId(),
+                updates.getName(),
+                updates.getValues());
     }
 
     @Override

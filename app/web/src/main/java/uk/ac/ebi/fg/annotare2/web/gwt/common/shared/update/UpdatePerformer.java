@@ -46,4 +46,6 @@ public interface UpdatePerformer {
     void updateSampleColumns(List<SampleColumn> columns);
 
     void updateSampleRow(SampleRow row);
+
+    void createSample(SampleRow row);
 }

@@ -82,6 +82,11 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         expData.updateSampleRow(row);
     }
 
+    @Override
+    public SampleRow createSample() {
+        return expData.createSample();
+    }
+
     private void loadSamples() {
         expData.getSamplesAsync(new AsyncCallback<SampleRowsAndColumns>() {
             @Override

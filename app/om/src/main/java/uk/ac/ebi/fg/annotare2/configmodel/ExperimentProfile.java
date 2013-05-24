@@ -150,7 +150,7 @@ public class ExperimentProfile {
         return publications.remove(id);
     }
 
-    public SampleProfile createSampleConfig() {
+    public SampleProfile createSample() {
         SampleProfile sample = new SampleProfile(nextId());
         samples.put(sample.getId(), sample);
         return sample;

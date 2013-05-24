@@ -19,10 +19,11 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.CreateSampleCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleColumnsCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleRowCommand;
@@ -30,9 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -92,12 +91,22 @@ public class ExperimentSamples {
     }
 
     public void updateSampleRow(SampleRow row) {
-        updateQueue.add(new UpdateSampleRowCommand(row));
+        SampleRow existedRow = map.find(row);
+        updateQueue.add(new UpdateSampleRowCommand(existedRow.updatedCopy(row)));
+    }
+
+    public SampleRow createSampleRow() {
+        SampleRow row = map.create();
+        updateQueue.add(new CreateSampleCommand(row));
+        return row;
     }
 
     private void applyUpdates(UpdateResult updates) {
         columns = new ArrayList<SampleColumn>(updates.getUpdatedSampleColumns());
-        for(SampleRow row : updates.getUpdatedSampleRows()) {
+        for (SampleRow row : updates.getUpdatedSampleRows()) {
+            map.update(row);
+        }
+        for (SampleRow row : updates.getCreatedSampleRows()) {
             map.update(row);
         }
     }

@@ -68,6 +68,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     private MyDataGrid<SampleRow> dataGrid;
     private ListDataProvider<SampleRow> dataProvider;
+    private SimplePager pager;
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
 
@@ -108,7 +109,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         setColumns(dataGrid, sortHandler, columns);
 
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
-        SimplePager pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
+        pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
         pager.setDisplay(dataGrid);
         toolBar.add(pager);
         toolBar.setCellHorizontalAlignment(pager, HasHorizontalAlignment.ALIGN_RIGHT);
@@ -251,7 +252,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         });
         column.setSortable(true);
         dataGrid.addResizableColumn(column, "Name");
-        dataGrid.setColumnWidth(column, 100, Style.Unit.PX);
+        dataGrid.setColumnWidth(column, 150, Style.Unit.PX);
     }
 
     private HorizontalPanel createTools() {
@@ -277,13 +278,42 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         });
         tools.add(button);
 
-        button = new Button("Delete Selected Rows");
+        button = new Button("Add Sample");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                createNewSample();
+            }
+        });
         tools.add(button);
+
+        button = new Button("Delete Selected Rows");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                deleteSelectedSamples();
+            }
+        });
+        tools.add(button);
+
         return tools;
     }
 
     private void updateRow(SampleRow row) {
         presenter.updateRow(row);
+    }
+
+    private void createNewSample() {
+        addRow(presenter.createSample());
+    }
+
+    private void addRow(SampleRow row) {
+        dataProvider.getList().add(row);
+        pager.lastPage();
+    }
+
+    private void deleteSelectedSamples() {
+        //TODO
     }
 
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {

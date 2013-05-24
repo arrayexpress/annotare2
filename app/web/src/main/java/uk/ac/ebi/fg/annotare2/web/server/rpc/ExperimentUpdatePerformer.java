@@ -134,6 +134,14 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
         result.updated(row);
     }
 
+    @Override
+    public void createSample(SampleRow row) {
+        SampleProfile sample = exp.createSample();
+        SampleRow newRow = new SampleRow(sample.getId(), sample.getName());
+        newRow.setTmpId(row.getTmpId());
+        result.created(newRow);
+    }
+
     public UpdateResult run(List<UpdateCommand> commands) {
         for (UpdateCommand command : commands) {
             command.execute(this);
