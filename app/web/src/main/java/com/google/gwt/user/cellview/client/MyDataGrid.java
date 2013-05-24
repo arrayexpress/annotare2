@@ -41,9 +41,9 @@ public class MyDataGrid<T> extends DataGrid<T> {
 
     public MyDataGrid(int pageSize, Resources resources) {
         super(pageSize, resources);
-        getTableHeadElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
-        getTableBodyElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
-        getTableFootElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
+        //getTableHeadElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
+        //getTableBodyElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
+        //getTableFootElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
     }
 
     @Override
