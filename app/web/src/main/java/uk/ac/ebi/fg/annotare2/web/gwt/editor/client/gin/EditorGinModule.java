@@ -24,7 +24,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
@@ -35,8 +35,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfD
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SdrfTabToolBarView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SdrfTabToolBarViewImpl;
 
 /**
  * @author Olga Melnichuk
@@ -69,8 +67,6 @@ public class EditorGinModule extends AbstractGinModule {
         bind(IdfExperimentalDesignListView.class).to(ExpInfoExperimentalDesignListViewImpl.class);
 
         bind(SamplesView.class).to(SamplesViewImpl.class);
-
-        bind(SdrfTabToolBarView.class).to(SdrfTabToolBarViewImpl.class);
 
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);
 
