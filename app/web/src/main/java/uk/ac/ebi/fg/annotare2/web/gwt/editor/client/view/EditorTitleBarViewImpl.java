@@ -81,7 +81,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         if (caught == null) {
             autoSaveLabel.hide();
         } else {
-            autoSaveLabel.show("Save filed");
+            autoSaveLabel.show("Can't save changes; unexpected server error");
         }
     }
 
