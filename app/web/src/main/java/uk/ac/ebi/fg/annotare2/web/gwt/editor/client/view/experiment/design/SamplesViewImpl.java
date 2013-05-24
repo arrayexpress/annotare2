@@ -48,6 +48,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -69,6 +70,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     private MyDataGrid<SampleRow> dataGrid;
     private ListDataProvider<SampleRow> dataProvider;
     private SimplePager pager;
+    private MultiSelectionModel<SampleRow> selectionModel;
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
 
@@ -88,7 +90,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         dataGrid = new MyDataGrid<SampleRow>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("No data"));
 
-        final SelectionModel<SampleRow> selectionModel =
+        selectionModel =
                 new MultiSelectionModel<SampleRow>(new ProvidesKey<SampleRow>() {
                     @Override
                     public Object getKey(SampleRow item) {
@@ -220,7 +222,14 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                 return dataGrid.getSelectionModel().isSelected(object);
             }
         };
-        dataGrid.addColumn(checkboxColumn, new CheckboxHeader());
+        CheckboxHeader checkboxHeader = new CheckboxHeader();
+        checkboxHeader.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                selectAllRows(event.getValue());
+            }
+        });
+        dataGrid.addColumn(checkboxColumn, checkboxHeader);
         dataGrid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
     }
 
@@ -309,11 +318,27 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     private void addRow(SampleRow row) {
         dataProvider.getList().add(row);
-        pager.lastPage();
+        if (pager.getPageCount() > 1) {
+            pager.lastPage();
+        }
+    }
+
+    private void selectAllRows(boolean selected) {
+        int start = pager.getPageStart();
+        List<SampleRow> sublist = dataProvider.getList().subList(
+                start, Math.min(start + pager.getPageSize(), dataProvider.getList().size()));
+        for (SampleRow row : sublist) {
+            selectionModel.setSelected(row, selected);
+        }
     }
 
     private void deleteSelectedSamples() {
-        //TODO
+        Set<SampleRow> selectedRows = selectionModel.getSelectedSet();
+        if (selectedRows.isEmpty()) {
+            return;
+        }
+        //TODO presenter.removeSamples(selectedSamples);
+        dataProvider.getList().removeAll(selectedRows);
     }
 
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {

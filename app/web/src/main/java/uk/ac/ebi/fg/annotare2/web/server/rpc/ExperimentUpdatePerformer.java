@@ -137,6 +137,8 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
     @Override
     public void createSample(SampleRow row) {
         SampleProfile sample = exp.createSample();
+        sample.setName(row.getName());
+
         SampleRow newRow = new SampleRow(sample.getId(), sample.getName());
         newRow.setTmpId(row.getTmpId());
         result.created(newRow);
