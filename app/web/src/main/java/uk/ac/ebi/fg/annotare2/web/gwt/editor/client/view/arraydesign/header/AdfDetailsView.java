@@ -16,9 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.Date;
 import java.util.List;
@@ -29,8 +31,6 @@ import java.util.List;
 public interface AdfDetailsView extends IsWidget {
 
     void setPrintingProtocols(List<UIPrintingProtocol> protocols);
-
-    void setSpecies(List<String> species);
 
     void setArrayDesignName(Cell<String> cell);
 
@@ -43,4 +43,11 @@ public interface AdfDetailsView extends IsWidget {
     void setReleaseDate(Cell<Date> cell);
 
     void setOrganism(Cell<String> cell);
+
+    void setPresenter(Presenter presenter);
+
+    public interface Presenter {
+
+        void getOrganisms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
+    }
 }

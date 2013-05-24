@@ -19,12 +19,16 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
@@ -34,19 +38,21 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class AdfDetailsActivity extends AbstractActivity {
-
-    private AdfDetailsView view;
-
-    private final AdfData adfData;
+public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsView.Presenter {
 
     private AdfHeader adfHeader;
 
+    private AdfDetailsView view;
+    private final AdfData adfData;
+    private final EfoTerms efoTerms;
+
     @Inject
     public AdfDetailsActivity(AdfDetailsView view,
-                              AdfData adfData) {
+                              AdfData adfData,
+                              EfoTerms efoTerms) {
         this.view = view;
         this.adfData = adfData;
+        this.efoTerms = efoTerms;
     }
 
     @Override
@@ -55,21 +61,20 @@ public class AdfDetailsActivity extends AbstractActivity {
         List<UIPrintingProtocol> protocols = new ArrayList<UIPrintingProtocol>();
         protocols.add(new UIPrintingProtocol("protocol-1", "protocol description-1"));
         protocols.add(new UIPrintingProtocol("protocol-2", "<em>protocol</em> description-2 looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
-
-        //TODO load from an ontotlogy
-        List<String> species = new ArrayList<String>();
-        for (int i = 0; i < 20; i++) {
-            species.add("specie-" + i);
-        }
-
-        view.setSpecies(species);
         view.setPrintingProtocols(protocols);
+
+        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
     }
 
     public AdfDetailsActivity withPlace(AdHeaderPlace place) {
         return this;
+    }
+
+    @Override
+    public void getOrganisms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+         efoTerms.getOrganisms(query, limit, callback);
     }
 
     private void loadAsync() {

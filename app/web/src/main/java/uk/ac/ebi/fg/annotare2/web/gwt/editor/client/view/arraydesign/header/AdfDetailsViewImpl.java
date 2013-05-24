@@ -26,14 +26,13 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ComboBox;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.PrintingProtocolDialog;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextAreaExtended;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextToolbar;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
 import java.util.*;
 
@@ -55,8 +54,8 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     @UiField
     TextBox designVersion;
 
-    @UiField
-    ComboBox species;
+    @UiField(provided = true)
+    SuggestBox species;
 
     @UiField
     TextArea description;
@@ -84,7 +83,16 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     private List<UIPrintingProtocol> printingProtocols = new ArrayList<UIPrintingProtocol>();
     private Set<String> protocolNames = new HashSet<String>();
 
+    private Presenter presenter;
+
     public AdfDetailsViewImpl() {
+        species = new SuggestBox(new EfoSuggestOracle(new SuggestService<EfoTermDto>() {
+            @Override
+            public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                presenter.getOrganisms(query, limit, callback);
+            }
+        }));
+
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
@@ -182,11 +190,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     }
 
     @Override
-    public void setSpecies(List<String> species) {
-        this.species.setOptions(species);
-    }
-
-    @Override
     public void setArrayDesignName(final Cell<String> cell) {
         attachCell(designName, cell);
     }
@@ -223,6 +226,11 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     @Override
     public void setOrganism(Cell<String> cell) {
         attachCell(species, cell);
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     private <T> void attachCell(final HasValue<T> field, final Cell<T> cell) {

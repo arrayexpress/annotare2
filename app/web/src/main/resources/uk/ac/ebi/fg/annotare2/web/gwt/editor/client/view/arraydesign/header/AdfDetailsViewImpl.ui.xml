@@ -75,7 +75,7 @@
                             Species:
                         </td>
                         <td>
-                            <wgt:ComboBox width="250px" ui:field="species"/>
+                            <g:SuggestBox width="250px" ui:field="species"/>
                         </td>
                     </tr>
                     <tr>
