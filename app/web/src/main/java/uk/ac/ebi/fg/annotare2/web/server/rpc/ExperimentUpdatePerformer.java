@@ -144,6 +144,12 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
         result.created(newRow);
     }
 
+    @Override
+    public void removeSample(SampleRow row) {
+        exp.removeSample(row.getId());
+        result.removed(row);
+    }
+
     public UpdateResult run(List<UpdateCommand> commands) {
         for (UpdateCommand command : commands) {
             command.execute(this);

@@ -156,6 +156,19 @@ public class ExperimentProfile {
         return sample;
     }
 
+    public void removeSample(int id) {
+        for (LabeledExtractProfile labeledExtract : labeledExtracts.values()) {
+            if (labeledExtract.getSample().getId() == id) {
+                removeLabeledExtract(labeledExtract.getId());
+            }
+        }
+        samples.remove(id);
+    }
+
+    public void removeLabeledExtract(int id) {
+        labeledExtracts.remove(id);
+    }
+
     public void assignLabel(SampleProfile config, String label) {
         LabeledExtractProfile labeledExtract = new LabeledExtractProfile(nextId(), config, label);
         labeledExtracts.put(labeledExtract.getId(), labeledExtract);
@@ -241,4 +254,5 @@ public class ExperimentProfile {
             labeledExtract.fix(this);
         }
     }
+
 }

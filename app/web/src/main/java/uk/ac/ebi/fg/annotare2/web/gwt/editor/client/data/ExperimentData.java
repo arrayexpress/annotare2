@@ -166,4 +166,8 @@ public class ExperimentData {
     public SampleRow createSample() {
         return samples.createSampleRow();
     }
+
+    public void removeSamples(List<SampleRow> rows) {
+        samples.removeSampleRows(rows);
+    }
 }

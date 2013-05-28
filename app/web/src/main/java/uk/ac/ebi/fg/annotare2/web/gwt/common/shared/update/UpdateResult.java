@@ -42,6 +42,7 @@ public class UpdateResult implements IsSerializable {
     private List<SampleColumn> updatedSampleColumns;
     private List<SampleRow> updatedSampleRows;
     private List<SampleRow> createdSampleRows;
+    private List<SampleRow> removedSampleRows;
 
     private DetailsDto updatedDetails;
 
@@ -57,6 +58,7 @@ public class UpdateResult implements IsSerializable {
         updatedSampleColumns = new ArrayList<SampleColumn>();
         updatedSampleRows = new ArrayList<SampleRow>();
         createdSampleRows = new ArrayList<SampleRow>();
+        removedSampleRows = new ArrayList<SampleRow>();
     }
 
     public void created(ContactDto dto) {
@@ -93,6 +95,10 @@ public class UpdateResult implements IsSerializable {
 
     public void updated(SampleRow row) {
         updatedSampleRows.add(row);
+    }
+
+    public void removed(SampleRow row) {
+        removedSampleRows.add(row);
     }
 
     public void updatedAll(Collection<SampleColumn> columns) {
@@ -132,10 +138,14 @@ public class UpdateResult implements IsSerializable {
     }
 
     public List<SampleColumn> getUpdatedSampleColumns() {
-        return updatedSampleColumns;
+        return new ArrayList<SampleColumn>(updatedSampleColumns);
     }
 
-    public  List<SampleRow> getCreatedSampleRows() {
-        return createdSampleRows;
+    public List<SampleRow> getCreatedSampleRows() {
+        return new ArrayList<SampleRow>(createdSampleRows);
+    }
+
+    public List<SampleRow> getRemovedSampleRows() {
+        return new ArrayList<SampleRow>(removedSampleRows);
     }
 }

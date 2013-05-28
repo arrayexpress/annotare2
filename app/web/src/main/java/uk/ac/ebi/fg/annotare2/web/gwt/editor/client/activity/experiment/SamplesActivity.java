@@ -34,6 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.Colum
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -85,6 +86,11 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     @Override
     public SampleRow createSample() {
         return expData.createSample();
+    }
+
+    @Override
+    public void removeSamples(List<SampleRow> rows) {
+        expData.removeSamples(rows);
     }
 
     private void loadSamples() {

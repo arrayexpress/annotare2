@@ -23,14 +23,12 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.CreateSampleCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleColumnsCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateSampleRowCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -99,6 +97,13 @@ public class ExperimentSamples {
         SampleRow row = map.create();
         updateQueue.add(new CreateSampleCommand(row));
         return row;
+    }
+
+    public void removeSampleRows(List<SampleRow> rows) {
+        for (SampleRow row : rows) {
+            SampleRow toBeRemoved = map.find(row);
+            updateQueue.add(new RemoveSampleCommand(toBeRemoved));
+        }
     }
 
     private void applyUpdates(UpdateResult updates) {

@@ -48,4 +48,6 @@ public interface UpdatePerformer {
     void updateSampleRow(SampleRow row);
 
     void createSample(SampleRow row);
+
+    void removeSample(SampleRow row);
 }

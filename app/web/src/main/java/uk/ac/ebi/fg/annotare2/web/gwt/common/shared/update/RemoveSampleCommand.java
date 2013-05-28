@@ -14,34 +14,27 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SamplesView extends IsWidget {
+public class RemoveSampleCommand implements UpdateCommand {
 
-    void setData(List<SampleRow> rows, List<SampleColumn> columns);
+    private SampleRow row;
 
-    void setPresenter(Presenter presenter);
+    RemoveSampleCommand() {
+        /*used by GWT serialization only */
+    }
 
-    public interface Presenter {
+    public RemoveSampleCommand(SampleRow row) {
+        this.row = row;
+    }
 
-        ColumnValueTypeEfoTerms getEfoTerms();
-
-        void updateColumns(List<SampleColumn> newColumns);
-
-        void updateRow(SampleRow row);
-
-        SampleRow createSample();
-
-        void removeSamples(List<SampleRow> rows);
+    @Override
+    public void execute(UpdatePerformer performer) {
+        performer.removeSample(row);
     }
 }

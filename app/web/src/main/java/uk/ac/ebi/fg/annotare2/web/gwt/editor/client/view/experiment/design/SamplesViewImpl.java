@@ -337,7 +337,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         if (selectedRows.isEmpty()) {
             return;
         }
-        //TODO presenter.removeSamples(selectedSamples);
+        presenter.removeSamples(new ArrayList<SampleRow>(selectedRows));
         dataProvider.getList().removeAll(selectedRows);
     }
 
