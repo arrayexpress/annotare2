@@ -111,8 +111,8 @@ public class UIObjectConverter {
         public SampleColumn apply(@Nullable SampleAttribute input) {
             AttributeValueTypeVisitor visitor = new AttributeValueTypeVisitor();
             input.getValueType().visit(visitor);
-
             return new SampleColumn(
+                    input.getId(),
                     input.getName(),
                     input.getType(),
                     visitor.getValueType(),

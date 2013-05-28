@@ -18,42 +18,66 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.CHARACTERISTIC;
-import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.NEITHER;
+import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.MATERIAL_TYPE;
 
 /**
  * @author Olga Melnichuk
  */
-public class SampleColumn implements IsSerializable {
+public class SampleColumn implements IsSerializable, HasIdentity {
 
     private static String NO_NAME = "NEW ATTRIBUTE";
+
+    private int id;
+
+    private int tmpId;
+
+    private String name;
 
     private AttributeType type;
 
     private ColumnValueType valueType;
 
-    private String name;
-
     private boolean isEditable = true;
 
-    public SampleColumn() {
-        this(null, CHARACTERISTIC, new TextValueType(), true);
+    SampleColumn() {
+        /* used by GWT serialization only */
     }
 
-    public SampleColumn(SampleColumn template) {
-        this(template.name, template.type, template.valueType, template.isEditable);
+    public SampleColumn(int id, String name) {
+        this(id, name, CHARACTERISTIC, new TextValueType(), true);
     }
 
-    public SampleColumn(String name, AttributeType type, ColumnValueType valueType, boolean isEditable) {
+    public SampleColumn(int id, SampleColumn template) {
+        this(id, template.getId(), template);
+    }
+
+    public SampleColumn(int id, int tmpId, SampleColumn template) {
+        this(id, template.name, template.type, template.valueType, template.isEditable);
+        this.tmpId = tmpId;
+    }
+
+    public SampleColumn(int id, String name, AttributeType type, ColumnValueType valueType, boolean isEditable) {
         setName(name);
+        this.id = id;
+        this.tmpId = id;
         this.type = type;
         this.valueType = valueType;
         this.isEditable = isEditable;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getTmpId() {
+        return tmpId;
     }
 
     public String getName() {
@@ -90,9 +114,9 @@ public class SampleColumn implements IsSerializable {
 
     public static List<SampleColumn> getTemplateColumns(SystemEfoTermsDto result) {
         List<SampleColumn> templates = new ArrayList<SampleColumn>();
-        templates.add(new SampleColumn("Material Type", NEITHER, new EfoTermValueType(result.getMaterialTypeTerm()), false));
-        templates.add(new SampleColumn("Organism", CHARACTERISTIC, new EfoTermValueType(result.getOrganismTerm()), false));
-        templates.add(new SampleColumn("OrganismPart", CHARACTERISTIC, new EfoTermValueType(result.getOrganismPartTerm()), false));
+        templates.add(new SampleColumn(0, "Material Type", MATERIAL_TYPE, new EfoTermValueType(result.getMaterialTypeTerm()), false));
+        templates.add(new SampleColumn(0, "Organism", CHARACTERISTIC, new EfoTermValueType(result.getOrganismTerm()), false));
+        templates.add(new SampleColumn(0, "OrganismPart", CHARACTERISTIC, new EfoTermValueType(result.getOrganismPartTerm()), false));
         return templates;
     }
 
@@ -101,7 +125,7 @@ public class SampleColumn implements IsSerializable {
         private SampleColumn column;
 
         public Editor(SampleColumn column) {
-            this.column = new SampleColumn(column);
+            this.column = new SampleColumn(column.id, column);
         }
 
         public boolean isEditable() {
@@ -133,7 +157,7 @@ public class SampleColumn implements IsSerializable {
         }
 
         public SampleColumn copy() {
-            return new SampleColumn(column);
+            return new SampleColumn(column.id, column);
         }
     }
 }

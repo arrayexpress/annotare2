@@ -32,14 +32,12 @@ public enum AttributeType {
             return "Factor Value[" + name + "]";
         }
     },
-    NEITHER {
-        @Override
-        public String getName(String name) {
-            return name;
-        }
-    };
+    MATERIAL_TYPE,
+    NEITHER;
 
-    public abstract String getName(String name);
+    public String getName(String name) {
+        return name;
+    }
 
     public boolean isFactorValue() {
         return this == FACTOR_VALUE;
@@ -47,5 +45,9 @@ public enum AttributeType {
 
     public boolean isCharacteristic() {
         return this == CHARACTERISTIC;
+    }
+
+    public boolean isMaterialType() {
+        return this == MATERIAL_TYPE;
     }
 }

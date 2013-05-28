@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
@@ -24,6 +25,9 @@ import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
  * @author Olga Melnichuk
  */
 public class SampleAttribute {
+
+    @JsonProperty("id")
+    private int id;
 
     @JsonProperty("name")
     private String name;
@@ -42,6 +46,18 @@ public class SampleAttribute {
 
     @JsonProperty("editable")
     private boolean isEditable;
+
+    @JsonProperty("order")
+    private int order;
+
+    @JsonCreator
+    public SampleAttribute(@JsonProperty("id") int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -67,9 +83,12 @@ public class SampleAttribute {
         isEditable = editable;
     }
 
-    @JsonIgnore
-    public String getSdrfColumnName() {
-        return type.getName(name);
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     @JsonIgnore

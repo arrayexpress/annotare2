@@ -33,8 +33,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ColumnValueTypeEfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -74,8 +72,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public void updateColumns(List<SampleColumn> newColumns) {
-        expData.updateSampleColumns(newColumns);
+    public List<SampleColumn> updateColumns(List<SampleColumn> newColumns) {
+        return expData.updateSampleColumns(newColumns);
     }
 
     @Override

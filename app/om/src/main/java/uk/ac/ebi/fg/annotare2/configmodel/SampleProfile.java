@@ -37,7 +37,7 @@ public class SampleProfile {
     private String name;
 
     @JsonProperty("values")
-    private Map<String, String> values;
+    private Map<Integer, String> values;
 
     @JsonCreator
     public SampleProfile(@JsonProperty("id") int id) {
@@ -57,11 +57,19 @@ public class SampleProfile {
         this.name = name;
     }
 
-    public Map<String, String> getValues() {
+    public Map<Integer, String> getValues() {
         return unmodifiableMap(values);
     }
 
-    public void setValues(Map<String, String> values) {
+    public void setValues(Map<Integer, String> values) {
         this.values = newHashMap(values);
+    }
+
+    public String getValue(SampleAttribute attribute) {
+        return values.get(attribute.getId());
+    }
+
+    void removeAttributeValue(int id) {
+        values.remove(id);
     }
 }

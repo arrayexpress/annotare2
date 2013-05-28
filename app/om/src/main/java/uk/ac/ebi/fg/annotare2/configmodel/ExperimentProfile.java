@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.collect.Ordering;
+import com.google.common.primitives.Ints;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -24,14 +26,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -73,7 +74,8 @@ public class ExperimentProfile {
     @JsonProperty("labeledExtractMap")
     private Map<Integer, LabeledExtractProfile> labeledExtracts;
 
-    private List<SampleAttribute> sampleAttributes;
+    @JsonProperty("sampleAttributeMap")
+    private Map<Integer, SampleAttribute> sampleAttributeMap;
 
     public ExperimentProfile(@JsonProperty("type") ExperimentConfigType type) {
         this.type = type;
@@ -83,7 +85,7 @@ public class ExperimentProfile {
         contacts = newLinkedHashMap();
         publications = newLinkedHashMap();
 
-        sampleAttributes = newArrayList();
+        sampleAttributeMap = newLinkedHashMap();
     }
 
     public ExperimentConfigType getType() {
@@ -186,12 +188,31 @@ public class ExperimentProfile {
         return samples.get(id);
     }
 
-    public Collection<SampleAttribute> getSampleAttributes() {
-        return unmodifiableCollection(sampleAttributes);
+    public SampleAttribute getSampleAttribute(int id) {
+        return sampleAttributeMap.get(id);
     }
 
-    public void setSampleAttributes(List<SampleAttribute> sampleAttributes) {
-        this.sampleAttributes = newArrayList(sampleAttributes);
+    public SampleAttribute createSampleAttribute() {
+        SampleAttribute attr = new SampleAttribute(nextId());
+        sampleAttributeMap.put(attr.getId(), attr);
+        return attr;
+    }
+
+    public void removeSampleAttribute(int id) {
+        for (SampleProfile sample : getSamples()) {
+            sample.removeAttributeValue(id);
+        }
+        sampleAttributeMap.remove(id);
+    }
+
+    @JsonIgnore
+    public Collection<SampleAttribute> getSampleAttributes() {
+        return (new Ordering<SampleAttribute>() {
+            @Override
+            public int compare(@Nullable SampleAttribute left, @Nullable SampleAttribute right) {
+                return Ints.compare(left.getOrder(), right.getOrder());
+            }
+        }).immutableSortedCopy(sampleAttributeMap.values());
     }
 
     @JsonIgnore

@@ -144,11 +144,13 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
         dataGrid.fix();
 
+        newColumns = presenter.updateColumns(newColumns);
+
         for (SampleColumn column : newColumns) {
             addColumn(column);
         }
+
         this.columns = new ArrayList<SampleColumn>(newColumns);
-        presenter.updateColumns(newColumns);
     }
 
     private void addColumn(SampleColumn column) {

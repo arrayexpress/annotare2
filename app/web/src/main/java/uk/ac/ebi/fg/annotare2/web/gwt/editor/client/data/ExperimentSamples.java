@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -28,8 +27,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -41,9 +41,14 @@ public class ExperimentSamples {
     private final SubmissionServiceAsync submissionService;
     private final UpdateQueue updateQueue;
 
-    private List<SampleColumn> columns;
+    private IdentityMap<SampleColumn> sampleColumns = new IdentityMap<SampleColumn>() {
+        @Override
+        protected SampleColumn create(int tmpId) {
+            return new SampleColumn(tmpId, "New Attribute");
+        }
+    };
 
-    private IdentityMap<SampleRow> map = new IdentityMap<SampleRow>() {
+    private IdentityMap<SampleRow> sampleRows = new IdentityMap<SampleRow>() {
         @Override
         protected SampleRow create(int tmpId) {
             return new SampleRow(tmpId, "New Sample");
@@ -62,11 +67,11 @@ public class ExperimentSamples {
     }
 
     public void getSamplesAsync(final AsyncCallback<SampleRowsAndColumns> callback) {
-        if (map.isInitialized() && columns != null) {
+        if (sampleRows.isInitialized() && sampleColumns.isInitialized()) {
             callback.onSuccess(
                     new SampleRowsAndColumns(
-                            new ArrayList<SampleRow>(map.values()),
-                            new ArrayList<SampleColumn>(columns)));
+                            new ArrayList<SampleRow>(sampleRows.values()),
+                            new ArrayList<SampleColumn>(sampleColumns.values())));
             return;
         }
         submissionService.getSamples(getSubmissionId(), new AsyncCallbackWrapper<SampleRowsAndColumns>() {
@@ -77,42 +82,74 @@ public class ExperimentSamples {
 
             @Override
             public void onSuccess(SampleRowsAndColumns result) {
-                map.init(result.getSampleRows());
-                columns = new ArrayList<SampleColumn>(result.getSampleColumns());
+                sampleRows.init(result.getSampleRows());
+                sampleColumns.init(result.getSampleColumns());
                 callback.onSuccess(result);
             }
         }.wrap());
     }
 
-    public void updateSampleColumns(List<SampleColumn> columns) {
-        updateQueue.add(new UpdateSampleColumnsCommand(columns));
+    public List<SampleColumn> updateSampleColumns(List<SampleColumn> columns) {
+        List<SampleColumn> columnsToUpdate = new ArrayList<SampleColumn>();
+        for (SampleColumn column : columns) {
+            if (column.getId() == 0) {
+                int tmpId = sampleColumns.create().getId();
+                columnsToUpdate.add(new SampleColumn(tmpId, tmpId, column));
+            } else {
+                columnsToUpdate.add(column);
+            }
+        }
+        updateQueue.add(new UpdateSampleColumnsCommand(columnsToUpdate));
+        return columnsToUpdate;
     }
 
     public void updateSampleRow(SampleRow row) {
-        SampleRow existedRow = map.find(row);
-        updateQueue.add(new UpdateSampleRowCommand(existedRow.updatedCopy(row)));
+        SampleRow existedRow = sampleRows.find(row);
+        updateQueue.add(new UpdateSampleRowCommand(existedRow.updatedCopy(fixRowValues(row))));
     }
 
     public SampleRow createSampleRow() {
-        SampleRow row = map.create();
+        SampleRow row = sampleRows.create();
         updateQueue.add(new CreateSampleCommand(row));
         return row;
     }
 
     public void removeSampleRows(List<SampleRow> rows) {
         for (SampleRow row : rows) {
-            SampleRow toBeRemoved = map.find(row);
+            SampleRow toBeRemoved = sampleRows.find(row);
             updateQueue.add(new RemoveSampleCommand(toBeRemoved));
         }
     }
 
-    private void applyUpdates(UpdateResult updates) {
-        columns = new ArrayList<SampleColumn>(updates.getUpdatedSampleColumns());
-        for (SampleRow row : updates.getUpdatedSampleRows()) {
-            map.update(row);
+    private SampleRow fixRowValues(SampleRow row) {
+        Map<Integer, String> values = row.getValues();
+        Map<Integer, String> newValues = new HashMap<Integer, String>();
+        for (int key : values.keySet()) {
+            SampleColumn column = sampleColumns.find(key);
+            newValues.put(column.getId(), values.get(key));
         }
+        return new SampleRow(row.getId(), row.getName(), newValues);
+    }
+
+    private void applyUpdates(UpdateResult updates) {
+        for (SampleColumn column : updates.getCreatedSampleColumns()) {
+            sampleColumns.update(column);
+        }
+        for (SampleColumn column : updates.getUpdatedSampleColumns()) {
+            sampleColumns.update(column);
+        }
+        for (Integer id : updates.getRemovedSampleColumnIds()) {
+            sampleColumns.remove(id);
+        }
+
         for (SampleRow row : updates.getCreatedSampleRows()) {
-            map.update(row);
+            sampleRows.update(row);
+        }
+        for (SampleRow row : updates.getUpdatedSampleRows()) {
+            sampleRows.update(row);
+        }
+        for (SampleRow row : updates.getRemovedSampleRows()) {
+            sampleRows.remove(row);
         }
     }
 }

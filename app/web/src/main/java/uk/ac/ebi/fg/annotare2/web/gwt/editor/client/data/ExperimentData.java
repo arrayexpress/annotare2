@@ -155,8 +155,8 @@ public class ExperimentData {
         publications.remove(toBeRemoved);
     }
 
-    public void updateSampleColumns(List<SampleColumn> columns) {
-        samples.updateSampleColumns(columns);
+    public List<SampleColumn> updateSampleColumns(List<SampleColumn> columns) {
+        return samples.updateSampleColumns(columns);
     }
 
     public void updateSampleRow(SampleRow row) {

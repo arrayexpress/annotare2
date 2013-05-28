@@ -23,10 +23,15 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SDRFNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.CharacteristicsAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.MaterialTypeAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.UnitAttribute;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Joiner.on;
@@ -84,11 +89,13 @@ public class MageTabGenerator {
         for (SampleProfile sample : exp.getSamples()) {
             SampleNode sampleNode = new SampleNode();
             sampleNode.setNodeName(sample.getName());
+            sampleNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
+            sampleNode.materialType = extractMaterialTypeAttribute(sample);
             sdrf.addNode(sampleNode);
             map.put(sample.getId(), sampleNode);
         }
 
-        for(LabeledExtractProfile labeledExtract : exp.getLabeledExtracts()) {
+        for (LabeledExtractProfile labeledExtract : exp.getLabeledExtracts()) {
             SDRFNode sampleNode = map.get(labeledExtract.getSample().getId());
 
             ExtractNode extractNode = new ExtractNode();
@@ -101,6 +108,28 @@ public class MageTabGenerator {
         }
     }
 
+    private MaterialTypeAttribute extractMaterialTypeAttribute(SampleProfile sample) {
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (attribute.getType().isMaterialType()) {
+                return new MaterialTypeAttribute();
+            }
+        }
+        return null;
+    }
+
+    private List<CharacteristicsAttribute> extractCharacteristicsAttributes(SampleProfile sample) {
+        List<CharacteristicsAttribute> attributes = new ArrayList<CharacteristicsAttribute>();
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (attribute.getType().isCharacteristic()) {
+                CharacteristicsAttribute attr = new CharacteristicsAttribute();
+                attr.type = attribute.getName();
+                attribute.getValueType().visit(new AttributeValueTypeVisitor(attr));
+                attr.setAttributeValue(sample.getValue(attribute));
+            }
+        }
+        return attributes;
+    }
+
     private static String notNull(String str) {
         return str == null || str.trim().isEmpty() ? "" : str;
     }
@@ -109,4 +138,32 @@ public class MageTabGenerator {
         return on(",").join(collection);
     }
 
+    private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
+
+        private final CharacteristicsAttribute attribute;
+
+        private AttributeValueTypeVisitor(CharacteristicsAttribute attribute) {
+            this.attribute = attribute;
+        }
+
+        @Override
+        public void visitNumericValueType(NumericAttributeValueType valueType) {
+            UnitAttribute unitAttribute = new UnitAttribute();
+            unitAttribute.type = valueType.getUnits().getLabel();
+            unitAttribute.termAccessionNumber = valueType.getUnits().getAccession();
+            //TODO unitAttribute.termSourceREF = ??
+            this.attribute.unit = unitAttribute;
+        }
+
+        @Override
+        public void visitTextValueType(TextAttributeValueType valueType) {
+        }
+
+        @Override
+        public void visitTermValueType(TermAttributeValueType valueType) {
+            attribute.type = valueType.getBranch().getLabel();
+            attribute.termAccessionNumber = valueType.getBranch().getAccession();
+            // TODO attribute.termSourceREF = term.getSource().getId();
+        }
+    }
 }

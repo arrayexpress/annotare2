@@ -24,7 +24,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,7 +38,9 @@ public class UpdateResult implements IsSerializable {
     private List<PublicationDto> updatedPublications;
     private List<PublicationDto> removedPublications;
 
+    private List<SampleColumn> createdSampleColumns;
     private List<SampleColumn> updatedSampleColumns;
+    private List<Integer> removedSampleColumns;
     private List<SampleRow> updatedSampleRows;
     private List<SampleRow> createdSampleRows;
     private List<SampleRow> removedSampleRows;
@@ -55,7 +56,10 @@ public class UpdateResult implements IsSerializable {
         updatedPublications = new ArrayList<PublicationDto>();
         removedPublications = new ArrayList<PublicationDto>();
 
+        createdSampleColumns = new ArrayList<SampleColumn>();
         updatedSampleColumns = new ArrayList<SampleColumn>();
+        removedSampleColumns = new ArrayList<Integer>();
+
         updatedSampleRows = new ArrayList<SampleRow>();
         createdSampleRows = new ArrayList<SampleRow>();
         removedSampleRows = new ArrayList<SampleRow>();
@@ -101,8 +105,12 @@ public class UpdateResult implements IsSerializable {
         removedSampleRows.add(row);
     }
 
-    public void updatedAll(Collection<SampleColumn> columns) {
-        updatedSampleColumns.addAll(columns);
+    public void created(SampleColumn column) {
+        createdSampleColumns.add(column);
+    }
+
+    public void updated(SampleColumn column) {
+        updatedSampleColumns.add(column);
     }
 
     public List<ContactDto> getCreatedContacts() {
@@ -137,15 +145,27 @@ public class UpdateResult implements IsSerializable {
         return new ArrayList<SampleRow>(updatedSampleRows);
     }
 
-    public List<SampleColumn> getUpdatedSampleColumns() {
-        return new ArrayList<SampleColumn>(updatedSampleColumns);
-    }
-
     public List<SampleRow> getCreatedSampleRows() {
         return new ArrayList<SampleRow>(createdSampleRows);
     }
 
     public List<SampleRow> getRemovedSampleRows() {
         return new ArrayList<SampleRow>(removedSampleRows);
+    }
+
+    public List<SampleColumn> getUpdatedSampleColumns() {
+        return new ArrayList<SampleColumn>(updatedSampleColumns);
+    }
+
+    public List<SampleColumn> getCreatedSampleColumns() {
+        return new ArrayList<SampleColumn>(createdSampleColumns);
+    }
+
+    public List<Integer> getRemovedSampleColumnIds() {
+        return new ArrayList<Integer>(removedSampleColumns);
+    }
+
+    public void sampleColumnRemoved(int id) {
+        removedSampleColumns.add(id);
     }
 }

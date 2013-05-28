@@ -70,20 +70,33 @@ public abstract class IdentityMap<T extends HasIdentity> {
         map.put(getId(updated), updated);
     }
 
-    public void remove(T removed) {
-        int id = getId(removed);
+    public void remove(int objId) {
+        int id = getId(objId);
         map.remove(id);
         order.remove(Integer.valueOf(id));
         idMap.remove(id);
     }
 
+    public void remove(T removed) {
+        remove(removed.getId());
+    }
+
     public T find(T obj) {
         return map.get(getId(obj));
+
+    }
+
+    public T find(int id) {
+        return map.get(getId(id));
     }
 
     private int getId(T obj) {
-        Integer id = idMap.get(obj.getId());
-        return id == null ? obj.getId() : id;
+        return getId(obj.getId());
+    }
+
+    private int getId(int objId) {
+        Integer id = idMap.get(objId);
+        return id == null ? objId : id;
     }
 
     private int nextId() {

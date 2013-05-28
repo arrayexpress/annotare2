@@ -34,26 +34,35 @@ public class SampleRow implements IsSerializable, HasIdentity {
 
     private String name;
 
-    private Map<String, String> values;
+    private Map<Integer, String> values;
 
-    public SampleRow() {
+    SampleRow() {
         /* used by GWT serialization only */
     }
 
     public SampleRow(int id, String name) {
-        this(id, name, new HashMap<String, String>());
+        this(id, name, new HashMap<Integer, String>());
     }
 
-    public SampleRow(int id, String name, Map<String, String> values) {
-        this(id, id, name, values);
-    }
-
-    public SampleRow(int id, int tmpId, String name, Map<String, String> values) {
+    public SampleRow(int id, String name, Map<Integer, String> values) {
         this.id = id;
-        this.tmpId = tmpId;
+        this.tmpId = id;
         this.name = name;
-        this.values = new HashMap<String, String>();
+        this.values = new HashMap<Integer, String>();
         this.values.putAll(values);
+    }
+
+    public SampleRow(int id, SampleRow row) {
+        this(id, row.getName(), row.getValues());
+        this.tmpId = row.getTmpId();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getTmpId() {
+        return tmpId;
     }
 
     public String getName() {
@@ -65,36 +74,20 @@ public class SampleRow implements IsSerializable, HasIdentity {
     }
 
     public String getValue(SampleColumn column) {
-        String v = values.get(column.getName());
+        String v = values.get(column.getId());
         return v == null ? "" : v;
     }
 
+    public Map<Integer, String> getValues() {
+        return new HashMap<Integer, String>(values);
+    }
+
     public void setValue(String value, SampleColumn column) {
-        values.put(column.getName(), value);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getTmpId() {
-        return tmpId;
-    }
-
-    public void setTmpId(int tmpId) {
-        this.tmpId = tmpId;
-    }
-
-    public Map<String, String> getValues() {
-        return new HashMap<String, String>(values);
+        this.values.put(column.getId(), value);
     }
 
     public SampleRow updatedCopy(SampleRow updates) {
-        return new SampleRow(
-                id,
-                updates.getTmpId(),
-                updates.getName(),
-                updates.getValues());
+        return new SampleRow(id, updates);
     }
 
     @Override
