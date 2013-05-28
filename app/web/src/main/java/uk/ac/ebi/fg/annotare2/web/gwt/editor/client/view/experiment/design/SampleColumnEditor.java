@@ -59,10 +59,10 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         nameBox.setValue(column.getName());
-        nameBox.setEnabled(!column.isDefault());
+        nameBox.setEnabled(column.isEditable());
 
         valueTypeEditor.setValue(column.getValueType());
-        valueTypeEditor.setEnabled(!column.isDefault());
+        valueTypeEditor.setEnabled(column.isEditable());
 
         AttributeType type = column.getType();
         factorValueCheckbox.setValue(type.isFactorValue());
@@ -73,7 +73,7 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
     @UiHandler("nameBox")
     void nameValueChanged(ChangeEvent event) {
-        if (column.isDefault()) {
+        if (!column.isEditable()) {
             return;
         }
         column.setName(nameBox.getValue());
@@ -91,7 +91,7 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
     @UiHandler("valueTypeEditor")
     void valueTypeChanged(ValueChangeEvent<ColumnValueType> event) {
-        if (column.isDefault()) {
+        if (!column.isEditable()) {
             return;
         }
         column.setValueType(event.getValue());

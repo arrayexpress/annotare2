@@ -119,6 +119,7 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
                 attr.setName(input.getName());
                 attr.setType(input.getType());
                 attr.setValueType(visitor.getValueType());
+                attr.setEditable(input.isEditable());
                 return attr;
             }
         });

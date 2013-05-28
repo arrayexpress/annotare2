@@ -39,29 +39,21 @@ public class SampleColumn implements IsSerializable {
 
     private String name;
 
-    private boolean isDefault;
+    private boolean isEditable = true;
 
     public SampleColumn() {
-        this(null, CHARACTERISTIC, new TextValueType());
-    }
-
-    public SampleColumn(String name, AttributeType type, ColumnValueType valueType) {
-        setName(name);
-        this.type = type;
-        this.valueType = valueType;
+        this(null, CHARACTERISTIC, new TextValueType(), true);
     }
 
     public SampleColumn(SampleColumn template) {
-        name = template.name;
-        type = template.type;
-        valueType = template.valueType;
-        isDefault = template.isDefault;
+        this(template.name, template.type, template.valueType, template.isEditable);
     }
 
-    private static SampleColumn createDefault(String name, AttributeType type, ColumnValueType valueType) {
-        SampleColumn column = new SampleColumn(name, type, valueType);
-        column.isDefault = true;
-        return column;
+    public SampleColumn(String name, AttributeType type, ColumnValueType valueType, boolean isEditable) {
+        setName(name);
+        this.type = type;
+        this.valueType = valueType;
+        this.isEditable = isEditable;
     }
 
     public String getName() {
@@ -72,8 +64,8 @@ public class SampleColumn implements IsSerializable {
         this.name = name == null || name.trim().isEmpty() ? NO_NAME : name;
     }
 
-    public boolean isDefault() {
-        return isDefault;
+    public boolean isEditable() {
+        return isEditable;
     }
 
     public AttributeType getType() {
@@ -98,9 +90,9 @@ public class SampleColumn implements IsSerializable {
 
     public static List<SampleColumn> getTemplateColumns(SystemEfoTermsDto result) {
         List<SampleColumn> templates = new ArrayList<SampleColumn>();
-        templates.add(createDefault("Material Type", NEITHER, new EfoTermValueType(result.getMaterialTypeTerm())));
-        templates.add(createDefault("Organism", CHARACTERISTIC, new EfoTermValueType(result.getOrganismTerm())));
-        templates.add(createDefault("OrganismPart", CHARACTERISTIC, new EfoTermValueType(result.getOrganismPartTerm())));
+        templates.add(new SampleColumn("Material Type", NEITHER, new EfoTermValueType(result.getMaterialTypeTerm()), false));
+        templates.add(new SampleColumn("Organism", CHARACTERISTIC, new EfoTermValueType(result.getOrganismTerm()), false));
+        templates.add(new SampleColumn("OrganismPart", CHARACTERISTIC, new EfoTermValueType(result.getOrganismPartTerm()), false));
         return templates;
     }
 
@@ -112,8 +104,8 @@ public class SampleColumn implements IsSerializable {
             this.column = new SampleColumn(column);
         }
 
-        public boolean isDefault() {
-            return column.isDefault();
+        public boolean isEditable() {
+            return column.isEditable();
         }
 
         public String getName() {

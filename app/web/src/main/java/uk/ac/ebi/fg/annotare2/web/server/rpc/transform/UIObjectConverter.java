@@ -115,7 +115,8 @@ public class UIObjectConverter {
             return new SampleColumn(
                     input.getName(),
                     input.getType(),
-                    visitor.getValueType());
+                    visitor.getValueType(),
+                    input.isEditable());
         }
     };
 

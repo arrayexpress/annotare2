@@ -40,6 +40,9 @@ public class SampleAttribute {
     @JsonProperty("ontologyBranch")
     private OntologyTerm ontologyBranch;
 
+    @JsonProperty("editable")
+    private boolean isEditable;
+
     public String getName() {
         return name;
     }
@@ -54,6 +57,14 @@ public class SampleAttribute {
 
     public void setType(AttributeType type) {
         this.type = type;
+    }
+
+    public boolean isEditable() {
+        return isEditable;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
     }
 
     @JsonIgnore
