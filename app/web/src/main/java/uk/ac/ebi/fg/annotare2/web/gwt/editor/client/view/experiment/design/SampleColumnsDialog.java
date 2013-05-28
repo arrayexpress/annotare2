@@ -169,6 +169,33 @@ public class SampleColumnsDialog extends DialogBox {
         }
     }
 
+    @UiHandler("moveUpButton")
+    void moveColumnUp(ClickEvent event) {
+        int index = userColumnList.getSelectedIndex();
+        if (index <= 0) {
+            return;
+        }
+        move(index, index - 1);
+    }
+
+    @UiHandler("moveDownButton")
+    void moveColumnDown(ClickEvent event) {
+        int index = userColumnList.getSelectedIndex();
+        if (index < 0 || index >= userColumnList.getItemCount() - 1) {
+            return;
+        }
+        move(index, index + 1);
+    }
+
+    private void move(int from, int to) {
+        String text = userColumnList.getItemText(from);
+        String value = userColumnList.getValue(from);
+        userColumnList.removeItem(from);
+        userColumnList.insertItem(text, value, to);
+
+        setItemSelected(userColumnList, to);
+    }
+
     private SampleColumn getSelectedColumnTemplate() {
         int index = columnTemplateList.getSelectedIndex();
         return index < 0 ? null :
@@ -232,8 +259,7 @@ public class SampleColumnsDialog extends DialogBox {
         columnMap.put(id, column);
         userColumnList.addItem(getColumnTitle(column), Integer.toString(id));
         if (select) {
-            userColumnList.setItemSelected(userColumnList.getItemCount() - 1, true);
-            DomEvent.fireNativeEvent(Document.get().createChangeEvent(), userColumnList);
+            setItemSelected(userColumnList, userColumnList.getItemCount() - 1);
         }
     }
 
@@ -285,6 +311,11 @@ public class SampleColumnsDialog extends DialogBox {
 
     private int columnId() {
         return ++nextId;
+    }
+
+    private static void setItemSelected(ListBox listBox, int index) {
+        listBox.setItemSelected(index, true);
+        DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
     }
 
     public interface Callback {
