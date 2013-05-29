@@ -127,6 +127,7 @@ public class MageTabGenerator {
                 attr.type = attribute.getName();
                 attribute.getValueType().visit(new AttributeValueTypeVisitor(attr));
                 attr.setAttributeValue(sample.getValue(attribute));
+                attributes.add(attr);
             }
         }
         return attributes;
@@ -164,8 +165,6 @@ public class MageTabGenerator {
         @Override
         public void visitTermValueType(TermAttributeValueType valueType) {
             attribute.type = valueType.getBranch().getLabel();
-            attribute.termAccessionNumber = valueType.getBranch().getAccession();
-            // TODO attribute.termSourceREF = term.getSource().getId();
         }
     }
 }
