@@ -110,6 +110,7 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
     }
 
     private void notifyStart() {
+        isActive = true;
         eventBus.fireEvent(autoSaveStarted());
     }
 
