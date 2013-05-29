@@ -26,6 +26,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
+import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.NodeFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
@@ -51,6 +52,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import static com.google.common.io.Closeables.close;
@@ -222,6 +227,8 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     private Table asTable(IDF idf) throws IOException {
+        useDirtyHack();
+
         File tmpFile = File.createTempFile("idf", "tmp");
         IDFWriter writer = null;
         try {
@@ -235,6 +242,8 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     private Table asTable(SDRF sdrf) throws IOException {
+        useDirtyHack();
+
         File tmpFile = File.createTempFile("sdrf", "tmp");
         SDRFWriter writer = null;
         try {
@@ -320,4 +329,45 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
+    /**
+     *  A workaround to reset NodeFactory.instance field to reflect changes in SDRF nodes;
+     *  without this workaround SDRFWriter uses SDRF nodes from the first run;
+     */
+    private static void useDirtyHack() {
+        try {
+            NodeFactory newValue = newNodeFactoryHack();
+
+            Field field = NodeFactory.class.getDeclaredField("instance");
+            field.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+            field.set(null, newValue);
+        } catch (ClassNotFoundException e) {
+            throw unexpected("Dirty hack doesn't work", e);
+        } catch (NoSuchMethodException e) {
+            throw unexpected("Dirty hack doesn't work", e);
+        } catch (IllegalAccessException e) {
+            throw unexpected("Dirty hack doesn't work", e);
+        } catch (InvocationTargetException e) {
+            throw unexpected("Dirty hack doesn't work", e);
+        } catch (InstantiationException e) {
+            throw unexpected("Dirty hack doesn't work", e);
+        } catch (NoSuchFieldException e) {
+            throw unexpected("Dirty hack doesn't work", e);
+        }
+    }
+
+    private static NodeFactory newNodeFactoryHack() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Class<?> clazz = Class.forName("uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.NodeFactory");
+        Constructor<?> constructor = clazz.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        return (NodeFactory) constructor.newInstance();
+    }
+
+    private static UnexpectedException unexpected(String message, Exception e) {
+        log.error(message, e);
+        return new UnexpectedException(message, e);
+    }
 }
