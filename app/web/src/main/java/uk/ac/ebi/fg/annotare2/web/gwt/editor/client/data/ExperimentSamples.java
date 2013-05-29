@@ -158,16 +158,25 @@ public class ExperimentSamples {
     }
 
     private void applyUpdates(UpdateResult updates) {
+        int columnChanges = 0;
+
         for (SampleColumn column : updates.getCreatedSampleColumns()) {
             sampleColumns.update(column);
+            columnChanges++;
         }
         for (SampleColumn column : updates.getUpdatedSampleColumns()) {
             sampleColumns.update(column);
+            columnChanges++;
         }
         for (Integer id : updates.getRemovedSampleColumnIds()) {
             sampleColumns.remove(id);
+            columnChanges++;
         }
-        setColumnOrder(updates.getSampleColumnOrder());
+
+        if (columnChanges > 0) {
+            // we need to update column order only if there were any column changes
+            setColumnOrder(updates.getSampleColumnOrder());
+        }
 
         for (SampleRow row : updates.getCreatedSampleRows()) {
             sampleRows.update(row);
