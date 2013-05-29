@@ -113,8 +113,6 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
         private final SuggestionList suggestionList;
         private final SuggestOracle oracle;
 
-        private SuggestOracle.Suggestion current;
-
         private final HandlerManager handlerManager = new HandlerManager(this);
 
         public SuggestionDisplay(SuggestOracle oracle) {
@@ -164,7 +162,6 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
         }
 
         private void onSelect(SuggestOracle.Suggestion suggestion) {
-            current = suggestion;
             SelectionEvent.fire(this, suggestion);
         }
 
@@ -183,10 +180,6 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
 
         public void detach(InputElement input) {
             popup.removeAutoHidePartner(input);
-        }
-
-        public SuggestOracle.Suggestion getCurrentSuggestion() {
-            return current;
         }
 
         public void moveSelectionUp() {
@@ -359,7 +352,7 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
         if (keyUp || keyDown) {
             int keyCode = event.getKeyCode();
             if (keyUp && keyCode == KeyCodes.KEY_ENTER) {
-                setSelectionAndClose(suggestionDisplay.getCurrentSuggestion());
+                setSelectionAndClose(null);
             } else if (keyUp && keyCode == KeyCodes.KEY_ESCAPE) {
                 cancelAndClose();
             } else if (keyCode == KeyCodes.KEY_UP) {
@@ -389,7 +382,9 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
 
     private void setSelectionAndClose(SuggestOracle.Suggestion suggestion) {
         InputElement input = getInputElement(lastParent);
-        input.setValue(suggestion.getReplacementString());
+        if (suggestion != null) {
+            input.setValue(suggestion.getReplacementString());
+        }
         commit(lastContext, lastParent, getViewData(lastContext.getKey()), valueUpdater);
         hide();
     }
