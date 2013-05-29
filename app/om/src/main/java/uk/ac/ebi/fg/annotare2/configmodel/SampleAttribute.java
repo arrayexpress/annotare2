@@ -47,9 +47,6 @@ public class SampleAttribute {
     @JsonProperty("editable")
     private boolean isEditable;
 
-    @JsonProperty("order")
-    private int order;
-
     @JsonCreator
     public SampleAttribute(@JsonProperty("id") int id) {
         this.id = id;
@@ -81,14 +78,6 @@ public class SampleAttribute {
 
     public void setEditable(boolean editable) {
         isEditable = editable;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @JsonIgnore

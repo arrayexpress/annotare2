@@ -30,7 +30,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newLinkedHashSet;
 
 /**
  * @author Olga Melnichuk
@@ -108,8 +109,7 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
 
     @Override
     public void updateSampleColumns(List<SampleColumn> columns) {
-        Set<Integer> used = newHashSet();
-        int order = 0;
+        Set<Integer> used = newLinkedHashSet();
         for (SampleColumn column : columns) {
             SampleAttribute attr;
             if (column.getId() < 0) {
@@ -122,21 +122,21 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
             attr.setName(column.getName());
             attr.setType(column.getType());
             attr.setEditable(column.isEditable());
-            attr.setOrder(order);
 
             ColumnValueTypeVisitor visitor = new ColumnValueTypeVisitor();
             column.getValueType().visit(visitor);
             attr.setValueType(visitor.getValueType());
-
             used.add(attr.getId());
-            order++;
         }
-        for (SampleAttribute attr : exp.getSampleAttributes()) {
+        List<SampleAttribute> attributes = newArrayList(exp.getSampleAttributes());
+        for (SampleAttribute attr : attributes) {
             if (!used.contains(attr.getId())) {
                 exp.removeSampleAttribute(attr.getId());
                 result.sampleColumnRemoved(attr.getId());
             }
         }
+        exp.setSampleAttributeOrder(used);
+        result.setSampleColumnOrder(newArrayList(exp.getSampleAttributeOrder()));
     }
 
     @Override

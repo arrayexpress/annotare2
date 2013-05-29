@@ -41,6 +41,8 @@ public class UpdateResult implements IsSerializable {
     private List<SampleColumn> createdSampleColumns;
     private List<SampleColumn> updatedSampleColumns;
     private List<Integer> removedSampleColumns;
+    private List<Integer> sampleColumnOrder;
+
     private List<SampleRow> updatedSampleRows;
     private List<SampleRow> createdSampleRows;
     private List<SampleRow> removedSampleRows;
@@ -59,6 +61,7 @@ public class UpdateResult implements IsSerializable {
         createdSampleColumns = new ArrayList<SampleColumn>();
         updatedSampleColumns = new ArrayList<SampleColumn>();
         removedSampleColumns = new ArrayList<Integer>();
+        sampleColumnOrder = new ArrayList<Integer>();
 
         updatedSampleRows = new ArrayList<SampleRow>();
         createdSampleRows = new ArrayList<SampleRow>();
@@ -167,5 +170,13 @@ public class UpdateResult implements IsSerializable {
 
     public void sampleColumnRemoved(int id) {
         removedSampleColumns.add(id);
+    }
+
+    public void setSampleColumnOrder(List<Integer> order) {
+        sampleColumnOrder.addAll(order);
+    }
+
+    public List<Integer> getSampleColumnOrder() {
+        return new ArrayList<Integer>(sampleColumnOrder);
     }
 }

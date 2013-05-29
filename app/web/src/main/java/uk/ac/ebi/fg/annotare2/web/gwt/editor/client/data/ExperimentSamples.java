@@ -41,6 +41,8 @@ public class ExperimentSamples {
     private final SubmissionServiceAsync submissionService;
     private final UpdateQueue updateQueue;
 
+    private List<Integer> columnOrder = new ArrayList<Integer>();
+
     private IdentityMap<SampleColumn> sampleColumns = new IdentityMap<SampleColumn>() {
         @Override
         protected SampleColumn create(int tmpId) {
@@ -71,7 +73,7 @@ public class ExperimentSamples {
             callback.onSuccess(
                     new SampleRowsAndColumns(
                             new ArrayList<SampleRow>(sampleRows.values()),
-                            new ArrayList<SampleColumn>(sampleColumns.values())));
+                            getColumns()));
             return;
         }
         submissionService.getSamples(getSubmissionId(), new AsyncCallbackWrapper<SampleRowsAndColumns>() {
@@ -84,6 +86,7 @@ public class ExperimentSamples {
             public void onSuccess(SampleRowsAndColumns result) {
                 sampleRows.init(result.getSampleRows());
                 sampleColumns.init(result.getSampleColumns());
+                initColumnOrder();
                 callback.onSuccess(result);
             }
         }.wrap());
@@ -131,6 +134,25 @@ public class ExperimentSamples {
         return new SampleRow(row.getId(), row.getName(), newValues);
     }
 
+    private void setColumnOrder(List<Integer> order) {
+        columnOrder = new ArrayList<Integer>(order);
+    }
+
+    private void initColumnOrder() {
+        columnOrder = new ArrayList<Integer>();
+        for(SampleColumn column : sampleColumns.values()) {
+            columnOrder.add(column.getId());
+        }
+    }
+
+    private List<SampleColumn> getColumns() {
+        List<SampleColumn> columns = new ArrayList<SampleColumn>();
+        for (Integer id : columnOrder) {
+            columns.add(sampleColumns.find(id));
+        }
+        return columns;
+    }
+
     private void applyUpdates(UpdateResult updates) {
         for (SampleColumn column : updates.getCreatedSampleColumns()) {
             sampleColumns.update(column);
@@ -141,6 +163,7 @@ public class ExperimentSamples {
         for (Integer id : updates.getRemovedSampleColumnIds()) {
             sampleColumns.remove(id);
         }
+        setColumnOrder(updates.getSampleColumnOrder());
 
         for (SampleRow row : updates.getCreatedSampleRows()) {
             sampleRows.update(row);

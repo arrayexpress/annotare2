@@ -16,8 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
-import com.google.common.collect.Ordering;
-import com.google.common.primitives.Ints;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -30,11 +30,14 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Olga Melnichuk
@@ -77,6 +80,9 @@ public class ExperimentProfile {
     @JsonProperty("sampleAttributeMap")
     private Map<Integer, SampleAttribute> sampleAttributeMap;
 
+    @JsonProperty("sampleAttributeOrder")
+    private List<Integer> sampleAttributeOrder;
+
     public ExperimentProfile(@JsonProperty("type") ExperimentConfigType type) {
         this.type = type;
         samples = newLinkedHashMap();
@@ -86,6 +92,7 @@ public class ExperimentProfile {
         publications = newLinkedHashMap();
 
         sampleAttributeMap = newLinkedHashMap();
+        sampleAttributeOrder = newArrayList();
     }
 
     public ExperimentConfigType getType() {
@@ -195,6 +202,7 @@ public class ExperimentProfile {
     public SampleAttribute createSampleAttribute() {
         SampleAttribute attr = new SampleAttribute(nextId());
         sampleAttributeMap.put(attr.getId(), attr);
+        sampleAttributeOrder.add(attr.getId());
         return attr;
     }
 
@@ -203,16 +211,26 @@ public class ExperimentProfile {
             sample.removeAttributeValue(id);
         }
         sampleAttributeMap.remove(id);
+        sampleAttributeOrder.remove(Integer.valueOf(id));
+    }
+
+    public void setSampleAttributeOrder(Collection<Integer> order) {
+        sampleAttributeOrder = newArrayList(order);
+    }
+
+    public Collection<Integer> getSampleAttributeOrder() {
+        return  unmodifiableList(sampleAttributeOrder);
     }
 
     @JsonIgnore
     public Collection<SampleAttribute> getSampleAttributes() {
-        return (new Ordering<SampleAttribute>() {
+        return Lists.transform(sampleAttributeOrder, new Function<Integer, SampleAttribute>() {
+            @Nullable
             @Override
-            public int compare(@Nullable SampleAttribute left, @Nullable SampleAttribute right) {
-                return Ints.compare(left.getOrder(), right.getOrder());
+            public SampleAttribute apply(@Nullable Integer input) {
+                return sampleAttributeMap.get(input);
             }
-        }).immutableSortedCopy(sampleAttributeMap.values());
+        });
     }
 
     @JsonIgnore
