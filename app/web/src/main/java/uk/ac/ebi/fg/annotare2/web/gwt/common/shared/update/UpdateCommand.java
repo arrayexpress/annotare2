@@ -23,5 +23,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public interface UpdateCommand extends IsSerializable {
 
-    public void execute(UpdatePerformer performer);
+    void execute(UpdatePerformer performer);
+
+    boolean isCritical();
 }

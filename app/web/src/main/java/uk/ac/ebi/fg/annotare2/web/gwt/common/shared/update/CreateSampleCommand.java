@@ -37,4 +37,9 @@ public class CreateSampleCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.createSample(row);
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

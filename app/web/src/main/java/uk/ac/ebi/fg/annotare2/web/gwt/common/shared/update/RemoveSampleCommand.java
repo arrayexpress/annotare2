@@ -37,4 +37,9 @@ public class RemoveSampleCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.removeSample(row);
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

@@ -37,4 +37,9 @@ public class RemoveContactCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.removeContact(contact);
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

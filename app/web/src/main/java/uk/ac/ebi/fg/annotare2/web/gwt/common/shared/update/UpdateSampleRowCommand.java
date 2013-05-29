@@ -37,4 +37,9 @@ public class UpdateSampleRowCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.updateSampleRow(row);
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

@@ -37,4 +37,9 @@ public class UpdateContactCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.updateContact(contact);
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

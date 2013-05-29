@@ -37,4 +37,9 @@ public class UpdateDetailsCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.updateDetails(details);
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

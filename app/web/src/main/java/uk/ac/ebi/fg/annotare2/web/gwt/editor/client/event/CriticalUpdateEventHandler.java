@@ -14,32 +14,16 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class RemovePublicationCommand implements UpdateCommand {
+public interface CriticalUpdateEventHandler extends EventHandler {
 
-    private PublicationDto publication;
+    void criticalUpdateStarted(CriticalUpdateEvent event);
 
-    RemovePublicationCommand() {
-        /*used by GWT serialization only */
-    }
-
-    public RemovePublicationCommand(PublicationDto publication) {
-        this.publication = publication;
-    }
-
-    @Override
-    public void execute(UpdatePerformer performer) {
-        performer.removePublication(publication);
-    }
-
-    @Override
-    public boolean isCritical() {
-        return false;
-    }
+    void criticalUpdateFinished(CriticalUpdateEvent event);
 }

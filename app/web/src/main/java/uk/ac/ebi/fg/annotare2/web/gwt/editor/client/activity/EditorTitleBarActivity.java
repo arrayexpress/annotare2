@@ -29,9 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 import java.util.List;
@@ -90,6 +88,19 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
                 view.autoSaveStopped(event.getCaught());
             }
         });
+
+        eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
+            @Override
+            public void criticalUpdateStarted(CriticalUpdateEvent event) {
+                 view.criticalUpdateStarted();
+            }
+
+            @Override
+            public void criticalUpdateFinished(CriticalUpdateEvent event) {
+                 view.criticalUpdateStopped();
+            }
+        });
+
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         initAsync();

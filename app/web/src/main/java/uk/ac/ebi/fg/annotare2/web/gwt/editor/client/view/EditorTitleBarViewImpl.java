@@ -58,6 +58,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     private Presenter presenter;
 
+    private WaitingPopup criticalUpdatePopup;
+
     public EditorTitleBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -95,6 +97,24 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         }
     }
 
+    @Override
+    public void criticalUpdateStarted() {
+        if (criticalUpdatePopup == null) {
+            criticalUpdatePopup = new WaitingPopup("Sending critical updates; please wait..");
+            criticalUpdatePopup.positionAtWindowCenter();
+            criticalUpdatePopup.setGlassEnabled(true);
+        } else if (!criticalUpdatePopup.isShowing()) {
+            criticalUpdatePopup.show();
+        }
+    }
+
+    @Override
+    public void criticalUpdateStopped() {
+        if (criticalUpdatePopup != null && criticalUpdatePopup.isShowing()) {
+            criticalUpdatePopup.hide();
+        }
+    }
+
     @UiHandler("validateButton")
     public void onValidateButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
@@ -113,7 +133,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     public void onCreateLinkClick(ClickEvent event) {
         if (Window.confirm(CONFIRMATION_MESSAGE)) {
             final WaitingPopup popup = new WaitingPopup("Creating new submission, please wait...");
-            popup.setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
+            popup.positionAtWindowCenter();
             presenter.discardSubmissionData(new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {

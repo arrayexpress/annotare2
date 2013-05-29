@@ -40,4 +40,9 @@ public class UpdateSampleColumnsCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.updateSampleColumns(columns);
     }
+
+    @Override
+    public boolean isCritical() {
+        return true;
+    }
 }

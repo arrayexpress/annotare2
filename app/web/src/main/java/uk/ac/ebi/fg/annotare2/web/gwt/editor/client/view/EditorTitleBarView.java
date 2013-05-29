@@ -36,6 +36,10 @@ public interface EditorTitleBarView extends IsWidget {
 
     void autoSaveStopped(Throwable caught);
 
+    void criticalUpdateStarted();
+
+    void criticalUpdateStopped();
+
     public interface Presenter extends SetupExpSubmissionView.Presenter {
 
         void validateSubmission(ValidationHandler handler);

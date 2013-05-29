@@ -35,6 +35,8 @@ import java.util.Queue;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEvent.autoSaveStarted;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.AutoSaveEvent.autoSaveStopped;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent.criticalUpdateFinished;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent.criticalUpdateStarted;
 
 /**
  * @author Olga Melnichuk
@@ -66,10 +68,13 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
 
     @Override
     public HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler handler) {
-         return handlerManager.addHandler(DataUpdateEvent.getType(), handler);
+        return handlerManager.addHandler(DataUpdateEvent.getType(), handler);
     }
 
     public void add(UpdateCommand command) {
+        if (command.isCritical()) {
+            notifyCriticalUpdateStart();
+        }
         queue.offer(command);
     }
 
@@ -107,6 +112,7 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
 
     private void fireDataUpdateEvent(UpdateResult result) {
         DataUpdateEvent.fire(handlerManager, result);
+        notifyCriticalUpdateStop();
     }
 
     private void notifyStart() {
@@ -119,6 +125,23 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
         eventBus.fireEvent(autoSaveStopped(caught));
         if (caught != null) {
             Window.alert(caught.getMessage());
+        }
+    }
+
+    private void notifyCriticalUpdateStart() {
+        eventBus.fireEvent(criticalUpdateStarted());
+    }
+
+    private void notifyCriticalUpdateStop() {
+        boolean hasCriticalCommand = false;
+        for (UpdateCommand command : queue) {
+            if (command.isCritical()) {
+                hasCriticalCommand = true;
+                break;
+            }
+        }
+        if (!hasCriticalCommand) {
+            eventBus.fireEvent(criticalUpdateFinished());
         }
     }
 

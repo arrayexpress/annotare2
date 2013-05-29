@@ -37,4 +37,9 @@ public class CreatePublicationCommand implements UpdateCommand {
     public void execute(UpdatePerformer performer) {
         performer.createPublication(publication);
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

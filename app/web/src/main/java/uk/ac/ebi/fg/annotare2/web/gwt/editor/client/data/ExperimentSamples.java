@@ -129,7 +129,11 @@ public class ExperimentSamples {
         Map<Integer, String> newValues = new HashMap<Integer, String>();
         for (int key : values.keySet()) {
             SampleColumn column = sampleColumns.find(key);
-            newValues.put(column.getId(), values.get(key));
+            if (column != null || column.getId() > 0) {
+                newValues.put(column.getId(), values.get(key));
+            } else {
+                //TODO log error
+            }
         }
         return new SampleRow(row.getId(), row.getName(), newValues);
     }
@@ -140,7 +144,7 @@ public class ExperimentSamples {
 
     private void initColumnOrder() {
         columnOrder = new ArrayList<Integer>();
-        for(SampleColumn column : sampleColumns.values()) {
+        for (SampleColumn column : sampleColumns.values()) {
             columnOrder.add(column.getId());
         }
     }

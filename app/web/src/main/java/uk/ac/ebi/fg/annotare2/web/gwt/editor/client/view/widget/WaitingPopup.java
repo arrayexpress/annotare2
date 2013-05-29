@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
@@ -37,5 +38,9 @@ public class WaitingPopup extends PopupPanel {
 
     public void showSuccess(String message) {
         panel.showSuccess(message);
+    }
+
+    public void positionAtWindowCenter(){
+        setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
     }
 }
