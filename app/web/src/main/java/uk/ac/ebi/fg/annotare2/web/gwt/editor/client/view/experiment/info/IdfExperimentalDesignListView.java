@@ -29,6 +29,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public interface IdfExperimentalDesignListView extends IsWidget {
 
     void setExperimentalDesigns(List<Term> designs);

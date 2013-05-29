@@ -26,6 +26,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public interface IdfTermSourceListView extends IsWidget {
 
     void setTermSources(List<TermSource> contacts);

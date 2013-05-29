@@ -34,6 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class IdfTabToolBarViewImpl extends Composite implements IdfTabToolBarView {
 
     interface Binder extends UiBinder<HTMLPanel, IdfTabToolBarViewImpl> {

@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public interface IdfTabToolBarView extends IsWidget {
 
     public void setPresenter(Presenter presenter);
