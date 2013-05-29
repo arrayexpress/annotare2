@@ -66,7 +66,8 @@ public class SampleProfile {
     }
 
     public String getValue(SampleAttribute attribute) {
-        return values.get(attribute.getId());
+        String value = values.get(attribute.getId());
+        return value == null ? "" : value;
     }
 
     void removeAttributeValue(int id) {

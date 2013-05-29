@@ -111,7 +111,9 @@ public class MageTabGenerator {
     private MaterialTypeAttribute extractMaterialTypeAttribute(SampleProfile sample) {
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
             if (attribute.getType().isMaterialType()) {
-                return new MaterialTypeAttribute();
+                MaterialTypeAttribute attr = new MaterialTypeAttribute();
+                attr.setAttributeValue(sample.getValue(attribute));
+                return attr;
             }
         }
         return null;
