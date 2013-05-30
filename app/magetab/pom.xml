@@ -20,13 +20,13 @@
     <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
     <artifactId>annotare2-magetab</artifactId>
     <packaging>jar</packaging>
-    <version>0.14</version>
+    <version>0.15-SNAPSHOT</version>
     <name>MageTab Lib</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.14</version>
+        <version>0.15-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
             <artifactId>annotare2-om</artifactId>
-            <version>0.14</version>
+            <version>0.15-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.arrayexpress2</groupId>
