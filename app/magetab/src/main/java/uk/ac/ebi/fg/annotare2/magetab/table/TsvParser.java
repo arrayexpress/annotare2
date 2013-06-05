@@ -67,7 +67,7 @@ public class TsvParser {
             close(br, true);
         }
         if (!stats.isReadable()) {
-            throw new IOException("The file content doesn't look like a text");
+            throw new IOException("The file uploaded doesn't look like a text file");
         }
         return table;
     }
