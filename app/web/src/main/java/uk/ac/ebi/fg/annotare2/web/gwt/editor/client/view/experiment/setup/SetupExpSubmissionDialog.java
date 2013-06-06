@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class SetupExpSubmissionDialog extends DialogBox {
 
     private final SetupExpSubmissionView view;
