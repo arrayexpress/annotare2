@@ -59,7 +59,7 @@
         }
     </ui:style>
 
-    <g:SimpleLayoutPanel>
+    <g:ScrollPanel>
         <g:HTMLPanel addStyleNames="{style.background}">
             <div class="{style.square}">
                 <span class="{style.title}">New Experiment Submission</span>
@@ -67,10 +67,10 @@
             <table class="{style.centerView}">
                 <tr>
                     <td>
-                        <w:SetupExpSubmissionView ui:field="view" height="600px" width="800px"/>
+                        <w:SetupExpSubmissionView ui:field="view" height="500px" width="800px"/>
                     </td>
                 </tr>
             </table>
         </g:HTMLPanel>
-    </g:SimpleLayoutPanel>
+    </g:ScrollPanel>
 </ui:UiBinder>
