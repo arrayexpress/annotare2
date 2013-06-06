@@ -244,6 +244,12 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     private Table asTable(SDRF sdrf) throws IOException {
         useDirtyHack();
 
+        if (sdrf.getRootNodes().isEmpty())  {
+            /* A workaround for SDRFWriter bug: an IndexOutOfBoundException is thrown by SDRFWriter,
+            when you try to write en empty SDRF content */
+            return new Table();
+        }
+
         File tmpFile = File.createTempFile("sdrf", "tmp");
         SDRFWriter writer = null;
         try {
