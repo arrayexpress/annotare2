@@ -23,7 +23,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasDialogCloseHandlers;
@@ -34,7 +34,7 @@ import java.util.List;
  * @author Olga Melnichuk
  */
 @Deprecated
-public class PrintingProtocolDialogContent extends Composite implements HasDialogCloseHandlers<UIPrintingProtocol> {
+public class PrintingProtocolDialogContent extends Composite implements HasDialogCloseHandlers<PrintingProtocolDto> {
 
     interface Binder extends UiBinder<Widget, PrintingProtocolDialogContent> {
         Binder BINDER = GWT.create(Binder.class);
@@ -58,12 +58,12 @@ public class PrintingProtocolDialogContent extends Composite implements HasDialo
     @UiField
     HTML descirption;
 
-    private UIPrintingProtocol selection;
+    private PrintingProtocolDto selection;
 
-    public PrintingProtocolDialogContent(final List<UIPrintingProtocol> protocols, String selected) {
+    public PrintingProtocolDialogContent(final List<PrintingProtocolDto> protocols, String selected) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        for (UIPrintingProtocol p : protocols) {
+        for (PrintingProtocolDto p : protocols) {
             listBox.addItem(p.getName());
         }
         listBox.addChangeHandler(new ChangeHandler() {
@@ -71,7 +71,7 @@ public class PrintingProtocolDialogContent extends Composite implements HasDialo
             public void onChange(ChangeEvent event) {
                 int idx = listBox.getSelectedIndex();
                 if (idx >= 0) {
-                    UIPrintingProtocol protocol = protocols.get(idx);
+                    PrintingProtocolDto protocol = protocols.get(idx);
                     name.setText(protocol.getName());
                     descirption.setHTML(protocol.getDescription());
                     selection = protocol;
@@ -112,12 +112,12 @@ public class PrintingProtocolDialogContent extends Composite implements HasDialo
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
     }
 
-    private void fireDialogCloseEvent(UIPrintingProtocol selection, boolean isOk) {
+    private void fireDialogCloseEvent(PrintingProtocolDto selection, boolean isOk) {
         DialogCloseEvent.fire(this, selection, isOk);
     }
 
     @Override
-    public HandlerRegistration addDialogCloseHandler(DialogCloseHandler<UIPrintingProtocol> handler) {
+    public HandlerRegistration addDialogCloseHandler(DialogCloseHandler<PrintingProtocolDto> handler) {
         return addHandler(handler, DialogCloseEvent.getType());
     }
 }

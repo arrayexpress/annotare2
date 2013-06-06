@@ -24,8 +24,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
@@ -58,9 +57,9 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         // TODO load from database
-        List<UIPrintingProtocol> protocols = new ArrayList<UIPrintingProtocol>();
-        protocols.add(new UIPrintingProtocol("protocol-1", "protocol description-1"));
-        protocols.add(new UIPrintingProtocol("protocol-2", "<em>protocol</em> description-2 looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
+        List<PrintingProtocolDto> protocols = new ArrayList<PrintingProtocolDto>();
+        protocols.add(new PrintingProtocolDto(1, "protocol-1", "protocol description-1"));
+        protocols.add(new PrintingProtocolDto(2, "protocol-2", "<em>protocol</em> description-2 looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
         view.setPrintingProtocols(protocols);
 
         view.setPresenter(this);

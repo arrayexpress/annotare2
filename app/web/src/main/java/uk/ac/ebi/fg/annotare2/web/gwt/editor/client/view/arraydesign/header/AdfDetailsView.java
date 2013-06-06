@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.Date;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public interface AdfDetailsView extends IsWidget {
 
-    void setPrintingProtocols(List<UIPrintingProtocol> protocols);
+    void setPrintingProtocols(List<PrintingProtocolDto> protocols);
 
     void setArrayDesignName(Cell<String> cell);
 

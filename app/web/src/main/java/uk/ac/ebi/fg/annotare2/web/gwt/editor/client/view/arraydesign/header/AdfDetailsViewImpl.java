@@ -17,25 +17,29 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.UIPrintingProtocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
 import java.util.*;
 
+import static java.lang.Integer.toString;
+import static java.lang.Integer.toString;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
 
@@ -64,7 +68,7 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     DateBox publicReleaseDate;
 
     @UiField
-    TextBox printingProtocol;
+    ListBox printingProtocolList;
 
     @UiField
     TextBox ppName;
@@ -80,9 +84,7 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
 
     private RichTextAreaExtended richTextArea;
     private boolean inPreviewMode = false;
-    private List<UIPrintingProtocol> printingProtocols = new ArrayList<UIPrintingProtocol>();
-    private Set<String> protocolNames = new HashSet<String>();
-
+    private Map<Integer, PrintingProtocolDto> printingProtocols = new HashMap<Integer, PrintingProtocolDto>();
     private Presenter presenter;
 
     public AdfDetailsViewImpl() {
@@ -98,13 +100,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
         publicReleaseDate.setFormat(format);
         publicReleaseDate.getElement().setPropertyString("placeholder", dateTimeFormatPlaceholder());
-
-        printingProtocol.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                showPrintingProtocolDialog();
-            }
-        });
 
         ppDescrPreview.setVisible(inPreviewMode);
 
@@ -126,32 +121,18 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
                 showPreview(!inPreviewMode);
             }
         });
+
+        setPrintingProtocols(new ArrayList<PrintingProtocolDto>());
     }
 
-    private void showPrintingProtocolDialog() {
-        PrintingProtocolDialog dialog = new PrintingProtocolDialog(printingProtocols, printingProtocol.getValue());
-        dialog.addSelectionHandler(new SelectionHandler<UIPrintingProtocol>() {
-            @Override
-            public void onSelection(SelectionEvent<UIPrintingProtocol> event) {
-                showPrintingProtocol(event.getSelectedItem(), true);
-            }
-        });
-        dialog.show();
-    }
+    private void showPrintingProtocol(PrintingProtocolDto protocol, boolean fireEvent) {
+        boolean editable = !protocol.hasId();
 
-    private void showPrintingProtocol(UIPrintingProtocol protocol, boolean fireEvent) {
-        boolean exists = doesProtocolExist(protocol);
-        printingProtocol.setValue(exists ? protocol.getName() : "NEW");
+        ppName.setValue(protocol.getName(), fireEvent);
+        richTextArea.setValue(unescapeHtml(protocol.getDescription()), fireEvent);
 
-        if (protocol == null) {
-            ppName.setValue("", fireEvent);
-            richTextArea.setValue("", fireEvent);
-        } else {
-            ppName.setValue(protocol.getName(), fireEvent);
-            richTextArea.setValue(unescapeHtml(protocol.getDescription()), fireEvent);
-        }
-        ppName.setEnabled(!exists);
-        richTextArea.setEnabled(!exists);
+        ppName.setEnabled(editable);
+        richTextArea.setEnabled(editable);
         showPreview(false);
     }
 
@@ -177,15 +158,35 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         inPreviewMode = on;
     }
 
-    private boolean doesProtocolExist(UIPrintingProtocol target) {
-        return target != null && protocolNames.contains(target.getName());
+    @UiHandler("printingProtocolList")
+    void onProtocolSelect(ChangeEvent event) {
+        int index = printingProtocolList.getSelectedIndex();
+        int id = Integer.parseInt(printingProtocolList.getValue(index));
+        showPrintingProtocol(printingProtocols.get(id), true);
     }
 
     @Override
-    public void setPrintingProtocols(List<UIPrintingProtocol> protocols) {
-        for (UIPrintingProtocol protocol : protocols) {
-            protocolNames.add(protocol.getName());
-            printingProtocols.add(protocol);
+    public void setPrintingProtocols(List<PrintingProtocolDto> protocols) {
+        printingProtocols = new HashMap<Integer, PrintingProtocolDto>();
+        printingProtocolList.clear();
+        for (PrintingProtocolDto protocol : protocols) {
+            addProtocol(protocol);
+        }
+    }
+
+    private void addProtocol(PrintingProtocolDto protocol) {
+        String name = protocol.hasId() ? protocol.getName() : "Other";
+        printingProtocols.put(protocol.getId(), protocol);
+        printingProtocolList.addItem(name, Integer.toString(protocol.getId()));
+    }
+
+    private void setProtocolSelected(PrintingProtocolDto protocol) {
+        for (int i = 0; i < printingProtocolList.getItemCount(); i++) {
+            if (protocol.getId() == Integer.parseInt(printingProtocolList.getValue(i))) {
+                printingProtocolList.setItemSelected(i, true);
+                DomEvent.fireNativeEvent(Document.get().createChangeEvent(), printingProtocolList);
+                break;
+            }
         }
     }
 
@@ -201,16 +202,20 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
 
     @Override
     public void setPrintingProtocol(final Cell<String> cell) {
-        showPrintingProtocol(UIPrintingProtocol.unsqueeeeze(cell.getValue()), false);
+        PrintingProtocolDto protocol = PrintingProtocolDto.unsqueeeeze(cell.getValue());
+        showPrintingProtocol(protocol, false);
         ValueChangeHandler<String> handler = new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                cell.setValue(
-                        new UIPrintingProtocol(ppName.getValue(), escapeHtml(richTextArea.getHTML())).squeeeeze());
+                PrintingProtocolDto protocol = new PrintingProtocolDto(ppName.getValue(), escapeHtml(richTextArea.getHTML()));
+                cell.setValue(protocol.squeeeeze());
             }
         };
         ppName.addValueChangeHandler(handler);
         richTextArea.addValueChangeHandler(handler);
+
+        addProtocol(protocol);
+        setProtocolSelected(protocol);
     }
 
     @Override

@@ -16,24 +16,41 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * @author Olga Melnichuk
  */
-@Deprecated
-public class UIPrintingProtocol {
+public class PrintingProtocolDto implements IsSerializable {
 
     private static final String SEPARATOR = ":";
+
+    private int id;
 
     private String name;
 
     private String description;
 
-    public UIPrintingProtocol() {
+    PrintingProtocolDto() {
+        /*used by GWT serialization only*/
     }
 
-    public UIPrintingProtocol(String name, String description) {
+    public PrintingProtocolDto(String name, String description) {
+        this(0, name, description);
+    }
+
+    public PrintingProtocolDto(int id, String name, String description) {
+        this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public boolean hasId() {
+        return id > 0;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -48,14 +65,14 @@ public class UIPrintingProtocol {
         return name + SEPARATOR + description;
     }
 
-    public static UIPrintingProtocol unsqueeeeze(String value) {
+    public static PrintingProtocolDto unsqueeeeze(String value) {
         if (value == null || value.isEmpty()) {
             return null;
         }
         int idx = value.indexOf(SEPARATOR);
         if (idx >= 0) {
-            return new UIPrintingProtocol(value.substring(0, idx), value.substring(idx + 1, value.length()));
+            return new PrintingProtocolDto(value.substring(0, idx), value.substring(idx + 1, value.length()));
         }
-        return new UIPrintingProtocol(value, "");
+        return new PrintingProtocolDto(value, "");
     }
 }
