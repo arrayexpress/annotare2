@@ -29,6 +29,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class AdfData {
 
     private final AdfServiceAsync adfService;

@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.Date;
@@ -32,22 +33,14 @@ public interface AdfDetailsView extends IsWidget {
 
     void setPrintingProtocols(List<PrintingProtocolDto> protocols);
 
-    void setArrayDesignName(Cell<String> cell);
-
-    void setVersion(Cell<String> cell);
-
-    void setPrintingProtocol(Cell<String> cell);
-
-    void setDescription(Cell<String> cell);
-
-    void setReleaseDate(Cell<Date> cell);
-
-    void setOrganism(Cell<String> cell);
+    void setDetails(ArrayDesignDetailsDto details);
 
     void setPresenter(Presenter presenter);
 
     public interface Presenter {
 
         void getOrganisms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
+
+        void updateDetails(ArrayDesignDetailsDto details);
     }
 }

@@ -96,7 +96,7 @@
                                             Name:
                                         </td>
                                         <td>
-                                            <g:TextBox width="250px" ui:field="ppName"/>
+                                            <g:TextBox width="250px" ui:field="protocolName"/>
                                         </td>
                                     </tr>
                                     <tr>

@@ -22,11 +22,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ArrayDesignData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
@@ -39,15 +38,13 @@ import java.util.List;
  */
 public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsView.Presenter {
 
-    private AdfHeader adfHeader;
-
     private AdfDetailsView view;
-    private final AdfData adfData;
+    private final ArrayDesignData adfData;
     private final EfoTerms efoTerms;
 
     @Inject
     public AdfDetailsActivity(AdfDetailsView view,
-                              AdfData adfData,
+                              ArrayDesignData adfData,
                               EfoTerms efoTerms) {
         this.view = view;
         this.adfData = adfData;
@@ -73,11 +70,16 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
 
     @Override
     public void getOrganisms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-         efoTerms.getOrganisms(query, limit, callback);
+        efoTerms.getOrganisms(query, limit, callback);
+    }
+
+    @Override
+    public void updateDetails(ArrayDesignDetailsDto details) {
+        adfData.updateDetails(details);
     }
 
     private void loadAsync() {
-        adfData.getHeader(new AsyncCallbackWrapper<AdfHeader>() {
+        adfData.getDetailsAsync(new AsyncCallback<ArrayDesignDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -85,19 +87,9 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
             }
 
             @Override
-            public void onSuccess(AdfHeader header) {
-                if (header != null) {
-                    adfHeader = header;
-                    view.setArrayDesignName(header.getArrayDesignName());
-                    view.setVersion(header.getVersion());
-                    view.setDescription(header.getDescription(true));
-                    view.setReleaseDate(header.getArrayExpressReleaseDate(true));
-                    view.setOrganism(header.getOrganism(true));
-                    view.setPrintingProtocol(header.getPrintingProtocol());
-                }
+            public void onSuccess(ArrayDesignDetailsDto details) {
+                view.setDetails(details);
             }
-        }.wrap());
+        });
     }
-
-
 }

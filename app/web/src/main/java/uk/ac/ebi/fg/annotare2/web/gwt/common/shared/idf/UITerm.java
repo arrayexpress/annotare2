@@ -21,6 +21,7 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class UITerm implements Serializable {
 
     private String category;

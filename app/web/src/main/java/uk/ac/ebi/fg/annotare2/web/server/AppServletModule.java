@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.inject.Provides;
-import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
@@ -35,8 +34,8 @@ import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
-import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
@@ -90,7 +89,6 @@ public class AppServletModule extends ServletModule {
 
         serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "UserApp", "EditorApp");
 
-        serveAndBindRpcService(AdfService.NAME, AdfServiceImpl.class, "EditorApp");
         serveAndBindRpcService(SubmissionValidationService.NAME, SubmissionValidationServiceImpl.class, "EditorApp");
         serveAndBindRpcService(VocabularyService.NAME, VocabularyServiceImpl.class, "EditorApp");
         serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");

@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * @author Olga Melnichuk
  */
-public interface DataUpdateEventHandler extends EventHandler {
+public interface DataUpdateEventHandler<R> extends EventHandler {
 
-    void onDataUpdate(DataUpdateEvent event);
+    void onDataUpdate(DataUpdateEvent<R> event);
 }

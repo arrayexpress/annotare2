@@ -34,7 +34,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class ExperimentContacts {
 
     private final SubmissionServiceAsync submissionService;
-    private final UpdateQueue updateQueue;
+    private final UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue;
 
     private IdentityMap<ContactDto> map = new IdentityMap<ContactDto>() {
         @Override
@@ -44,12 +44,12 @@ public class ExperimentContacts {
     };
 
     public ExperimentContacts(SubmissionServiceAsync submissionService,
-                              UpdateQueue updateQueue) {
+                              UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue) {
         this.submissionService = submissionService;
         this.updateQueue = updateQueue;
-        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler() {
+        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler<ExperimentUpdateResult>() {
             @Override
-            public void onDataUpdate(DataUpdateEvent event) {
+            public void onDataUpdate(DataUpdateEvent<ExperimentUpdateResult> event) {
                 applyUpdates(event.getUpdates());
             }
         });
@@ -100,11 +100,11 @@ public class ExperimentContacts {
         }
     }
 
-    private void addUpdateCommand(UpdateCommand command) {
+    private void addUpdateCommand(ExperimentUpdateCommand command) {
         updateQueue.add(command);
     }
 
-    private void applyUpdates(UpdateResult result) {
+    private void applyUpdates(ExperimentUpdateResult result) {
         for (ContactDto created : result.getCreatedContacts()) {
             map.update(created);
         }

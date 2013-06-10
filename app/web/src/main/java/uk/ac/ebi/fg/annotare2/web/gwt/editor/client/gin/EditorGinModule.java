@@ -25,6 +25,7 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ArrayDesignData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
@@ -72,8 +73,8 @@ public class EditorGinModule extends AbstractGinModule {
 
         bind(StartView.class).to(StartViewImpl.class);
 
-        bind(AdfData.class).in(Singleton.class);
         bind(ExperimentData.class).in(Singleton.class);
+        bind(ArrayDesignData.class).in(Singleton.class);
         bind(EfoTerms.class).in(Singleton.class);
     }
 

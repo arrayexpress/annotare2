@@ -22,6 +22,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
+import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
@@ -33,7 +34,7 @@ import static uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType.*;
 /**
  * @author Olga Melnichuk
  */
-public class MageTabImporterTest {
+public class ExperimentMageTabImporterTest {
 
     @Test
     public void mageTab2OneColourExperimentTest() throws ParseException, UnsupportedGraphLayoutException,
@@ -70,9 +71,8 @@ public class MageTabImporterTest {
         SDRFParser sdrfParser = new SDRFParser();
         SDRF sdrf = sdrfParser.parse(getClass().getResourceAsStream(sdrfFile));
 
-        ExperimentProfile exp = new MageTabImporter(type).importFrom(idf, sdrf);
+        ExperimentProfile exp = new ExperimentMageTabImporter(type).importFrom(idf, sdrf);
         System.out.println(exp.toJsonString());
         return exp;
     }
-
 }

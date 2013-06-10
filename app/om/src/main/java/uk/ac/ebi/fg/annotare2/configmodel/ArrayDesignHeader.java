@@ -47,8 +47,11 @@ public class ArrayDesignHeader {
     @JsonProperty("organism")
     private OntologyTerm organism;
 
-    @JsonProperty("printingProtocol")
-    private PrintingProtocol printingProtocol;
+    @JsonProperty("printingProtocolId")
+    private int printingProtocolId;
+
+    @JsonProperty("printingProtocolBackup")
+    private PrintingProtocol printingProtocolBackup;
 
     public String getDescription() {
         return description;
@@ -74,12 +77,20 @@ public class ArrayDesignHeader {
         this.organism = organism;
     }
 
-    public PrintingProtocol getPrintingProtocol() {
-        return printingProtocol;
+    public int getPrintingProtocolId() {
+        return printingProtocolId;
     }
 
-    public void setPrintingProtocol(PrintingProtocol printingProtocol) {
-        this.printingProtocol = printingProtocol;
+    public void setPrintingProtocolId(int id) {
+        this.printingProtocolId = id;
+    }
+
+    public PrintingProtocol getPrintingProtocolBackup() {
+        return printingProtocolBackup;
+    }
+
+    public void setPrintingProtocolBackup(PrintingProtocol printingProtocolBackup) {
+        this.printingProtocolBackup = printingProtocolBackup;
     }
 
     public Date getPublicReleaseDate() {

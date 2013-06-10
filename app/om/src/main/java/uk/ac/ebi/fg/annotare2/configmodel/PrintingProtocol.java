@@ -24,6 +24,11 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class PrintingProtocol {
 
+    private static final String SEPARATOR = ":";
+
+    @JsonProperty("id")
+    private int id;
+
     @JsonProperty("name")
     private String name;
 
@@ -31,8 +36,10 @@ public class PrintingProtocol {
     private String description;
 
     @JsonCreator
-    public PrintingProtocol(@JsonProperty("name") String name,
+    public PrintingProtocol(@JsonProperty("id") int id,
+                            @JsonProperty("name") String name,
                             @JsonProperty("description") String description) {
+        this.id = id;
         this.description = description;
         this.name = name;
     }
@@ -43,5 +50,24 @@ public class PrintingProtocol {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String format() {
+        return name + SEPARATOR + description;
+    }
+
+    public static PrintingProtocol parse(String value) {
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+        int idx = value.indexOf(SEPARATOR);
+        if (idx >= 0) {
+            return new PrintingProtocol(0, value.substring(0, idx), value.substring(idx + 1, value.length()));
+        }
+        return new PrintingProtocol(0, value, "");
     }
 }

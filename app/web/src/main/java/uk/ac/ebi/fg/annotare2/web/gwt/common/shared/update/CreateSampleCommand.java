@@ -21,7 +21,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 /**
  * @author Olga Melnichuk
  */
-public class CreateSampleCommand implements UpdateCommand {
+public class CreateSampleCommand implements ExperimentUpdateCommand {
 
     private SampleRow row;
 
@@ -34,7 +34,7 @@ public class CreateSampleCommand implements UpdateCommand {
     }
 
     @Override
-    public void execute(UpdatePerformer performer) {
+    public void execute(ExperimentUpdatePerformer performer) {
         performer.createSample(row);
     }
 

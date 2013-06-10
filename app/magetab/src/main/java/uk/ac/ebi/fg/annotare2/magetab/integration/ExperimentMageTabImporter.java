@@ -43,13 +43,13 @@ import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.parseDate;
 /**
  * @author Olga Melnichuk
  */
-public class MageTabImporter {
+public class ExperimentMageTabImporter {
 
-    private static final Logger log = LoggerFactory.getLogger(MageTabImporter.class);
+    private static final Logger log = LoggerFactory.getLogger(ExperimentMageTabImporter.class);
 
     private final ExperimentProfile exp;
 
-    public MageTabImporter(ExperimentConfigType configType) {
+    public ExperimentMageTabImporter(ExperimentConfigType configType) {
         exp = new ExperimentProfile(configType);
     }
 

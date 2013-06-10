@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public interface UpdatePerformer {
+public interface ExperimentUpdatePerformer {
 
     void createContact(ContactDto contact);
 
@@ -41,7 +41,7 @@ public interface UpdatePerformer {
 
     void removePublication(PublicationDto publication);
 
-    void updateDetails(DetailsDto details);
+    void updateDetails(ExperimentDetailsDto details);
 
     void updateSampleColumns(List<SampleColumn> columns);
 

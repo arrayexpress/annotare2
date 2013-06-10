@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 
 import java.util.Date;
 
@@ -81,7 +81,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     }
 
     @Override
-    public void setDetails(DetailsDto details) {
+    public void setDetails(ExperimentDetailsDto details) {
         title.setText(details.getTitle());
         description.setText(details.getDescription());
         dateOfExperiment.setValue(details.getExperimentDate());
@@ -94,7 +94,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     }
 
     @Override
-    public DetailsDto getDetails() {
+    public ExperimentDetailsDto getDetails() {
         return getResult();
     }
 
@@ -118,8 +118,8 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         save();
     }
 
-    private DetailsDto getResult() {
-        return new DetailsDto(
+    private ExperimentDetailsDto getResult() {
+        return new ExperimentDetailsDto(
                 title.getValue(),
                 description.getValue(),
                 dateOfExperiment.getValue(),

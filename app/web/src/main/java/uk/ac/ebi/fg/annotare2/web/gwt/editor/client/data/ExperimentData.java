@@ -25,8 +25,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,23 +55,24 @@ public class ExperimentData {
                           SubmissionServiceAsync submissionServiceAsync) {
         submissionService = submissionServiceAsync;
 
-        UpdateQueue updateQueue = new UpdateQueue(eventBus,
-                new UpdateQueue.Transport() {
-                    @Override
-                    public void sendUpdates(List<UpdateCommand> commands, final AsyncCallback<UpdateResult> callback) {
-                        submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<UpdateResult>() {
+        UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue =
+                new UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult>(eventBus,
+                        new UpdateQueue.Transport<ExperimentUpdateCommand, ExperimentUpdateResult>() {
                             @Override
-                            public void onFailure(Throwable caught) {
-                                callback.onFailure(caught);
-                            }
+                            public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<ExperimentUpdateResult> callback) {
+                                submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<ExperimentUpdateResult>() {
+                                    @Override
+                                    public void onFailure(Throwable caught) {
+                                        callback.onFailure(caught);
+                                    }
 
-                            @Override
-                            public void onSuccess(UpdateResult result) {
-                                callback.onSuccess(result);
+                                    @Override
+                                    public void onSuccess(ExperimentUpdateResult result) {
+                                        callback.onSuccess(result);
+                                    }
+                                }.wrap());
                             }
-                        }.wrap());
-                    }
-                });
+                        });
 
         details = new ExperimentDetails(submissionService, updateQueue);
         contacts = new ExperimentContacts(submissionService, updateQueue);
@@ -99,7 +100,7 @@ public class ExperimentData {
         }.wrap());
     }
 
-    public void getDetailsAsync(AsyncCallback<DetailsDto> callback) {
+    public void getDetailsAsync(AsyncCallback<ExperimentDetailsDto> callback) {
         details.getDetailsAsync(callback);
     }
 
@@ -115,7 +116,7 @@ public class ExperimentData {
         samples.getSamplesAsync(callback);
     }
 
-    public void updateDetails(DetailsDto toBeUpdated) {
+    public void updateDetails(ExperimentDetailsDto toBeUpdated) {
         details.updateDetails(toBeUpdated);
     }
 

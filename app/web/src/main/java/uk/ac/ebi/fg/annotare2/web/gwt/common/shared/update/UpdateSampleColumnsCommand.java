@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class UpdateSampleColumnsCommand implements UpdateCommand {
+public class UpdateSampleColumnsCommand implements ExperimentUpdateCommand {
 
     private List<SampleColumn> columns;
 
@@ -37,7 +37,7 @@ public class UpdateSampleColumnsCommand implements UpdateCommand {
     }
 
     @Override
-    public void execute(UpdatePerformer performer) {
+    public void execute(ExperimentUpdatePerformer performer) {
         performer.updateSampleColumns(columns);
     }
 

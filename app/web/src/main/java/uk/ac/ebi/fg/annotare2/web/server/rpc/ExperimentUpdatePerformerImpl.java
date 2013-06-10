@@ -19,13 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdatePerformer;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateResult;
 
 import java.util.List;
 import java.util.Set;
@@ -36,18 +36,18 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentUpdatePerformer implements UpdatePerformer {
+public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer {
 
     private final ExperimentProfile exp;
 
-    private final UpdateResult result = new UpdateResult();
+    private final ExperimentUpdateResult result = new ExperimentUpdateResult();
 
-    public ExperimentUpdatePerformer(ExperimentProfile exp) {
+    public ExperimentUpdatePerformerImpl(ExperimentProfile exp) {
         this.exp = exp;
     }
 
     @Override
-    public void updateDetails(DetailsDto details) {
+    public void updateDetails(ExperimentDetailsDto details) {
         exp.setTitle(details.getTitle());
         exp.setDescription(details.getDescription());
         exp.setPublicReleaseDate(details.getPublicReleaseDate());
@@ -161,8 +161,8 @@ public class ExperimentUpdatePerformer implements UpdatePerformer {
         result.removed(row);
     }
 
-    public UpdateResult run(List<UpdateCommand> commands) {
-        for (UpdateCommand command : commands) {
+    public ExperimentUpdateResult run(List<ExperimentUpdateCommand> commands) {
+        for (ExperimentUpdateCommand command : commands) {
             command.execute(this);
         }
         return result;

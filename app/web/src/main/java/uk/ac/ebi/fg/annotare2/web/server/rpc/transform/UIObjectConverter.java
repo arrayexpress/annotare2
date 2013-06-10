@@ -25,10 +25,8 @@ import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoNode;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
@@ -169,9 +167,9 @@ public class UIObjectConverter {
         return new ExperimentSettings(exp.getType());
     }
 
-    public static DetailsDto uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
+    public static ExperimentDetailsDto uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
         ExperimentProfile exp = submission.getExperimentProfile();
-        return new DetailsDto(
+        return new ExperimentDetailsDto(
                 exp.getTitle(),
                 exp.getDescription(),
                 exp.getExperimentDate(),
@@ -216,6 +214,27 @@ public class UIObjectConverter {
 
     public static EfoTermDto uiEfoTerm(EfoNode term) {
         return term == null ? null : new EfoTermDto(term.getAccession(), term.getName());
+    }
+
+    public static EfoTermDto uiEfoTerm(OntologyTerm term) {
+        return term == null ? null : new EfoTermDto(term.getAccession(), term.getLabel());
+    }
+
+    public static PrintingProtocolDto uiPrintingProtocol(PrintingProtocol protocol) {
+        return new PrintingProtocolDto(protocol.getId(), protocol.getName(), protocol.getDescription());
+    }
+
+    public static ArrayDesignDetailsDto uiArrayDesignDetails(ArrayDesignSubmission submission) throws DataSerializationException {
+        ArrayDesignHeader header = submission.getHeader();
+        return header == null ? null : new ArrayDesignDetailsDto(
+                header.getName(),
+                header.getDescription(),
+                header.getVersion(),
+                uiEfoTerm(header.getOrganism()),
+                header.getPublicReleaseDate(),
+                header.getPrintingProtocolId(),
+                uiPrintingProtocol(header.getPrintingProtocolBackup())
+        );
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

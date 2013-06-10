@@ -21,7 +21,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 /**
  * @author Olga Melnichuk
  */
-public class RemoveSampleCommand implements UpdateCommand {
+public class RemoveSampleCommand implements ExperimentUpdateCommand {
 
     private SampleRow row;
 
@@ -34,7 +34,7 @@ public class RemoveSampleCommand implements UpdateCommand {
     }
 
     @Override
-    public void execute(UpdatePerformer performer) {
+    public void execute(ExperimentUpdatePerformer performer) {
         performer.removeSample(row);
     }
 

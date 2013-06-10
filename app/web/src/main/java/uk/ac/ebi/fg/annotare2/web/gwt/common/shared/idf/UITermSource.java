@@ -21,6 +21,7 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class UITermSource implements Serializable {
 
     private String name;

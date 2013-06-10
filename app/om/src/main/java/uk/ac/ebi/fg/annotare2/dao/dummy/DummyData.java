@@ -23,6 +23,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.io.CharStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.*;
@@ -81,7 +82,7 @@ public class DummyData {
 
         createAdSubmission(user,
                 SubmissionStatus.IN_PROGRESS,
-                "A-MEXP-2196.adf.header.txt",
+                "A-MEXP-2196.adf.header.json.txt",
                 "A-MEXP-2196.adf.txt",
                 "A-MEXP-2196",
                 "LSTM_An.gambiae_s.s._AGAM15K_V1.0");
@@ -135,14 +136,16 @@ public class DummyData {
             submission.setAccession(accession);
             submission.setTitle(title);
             submission.setHeader(
-                    CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(headerFile), Charsets.UTF_8))
-            );
+                    ArrayDesignHeader.fromJsonString(
+                            CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(headerFile), Charsets.UTF_8))));
             submission.setBody(
                     CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(bodyFile), Charsets.UTF_8))
             );
             save(submission);
         } catch (IOException e) {
-            log.error("Cn't create ArrayDesign submission: '" + headerFile + "'", e);
+            log.error("Can't create ArrayDesign submission: '" + headerFile + "' ", e);
+        } catch (DataSerializationException e) {
+            log.error("Can't create ArrayDesign submission: '" + headerFile + "' ", e);
         }
     }
 

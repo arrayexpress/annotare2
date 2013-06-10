@@ -4,9 +4,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public interface SubmissionServiceAsync {
 
     void getSamples(int id, AsyncCallback<SampleRowsAndColumns> async);
 
-    void getExperimentDetails(int id, AsyncCallback<DetailsDto> async);
+    void getExperimentDetails(int id, AsyncCallback<ExperimentDetailsDto> async);
 
     void getContacts(int id, AsyncCallback<List<ContactDto>> async);
 
@@ -36,5 +36,9 @@ public interface SubmissionServiceAsync {
 
     void getSdrfTable(int submissionId, AsyncCallback<Table> async);
 
-    void updateExperiment(int id, List<UpdateCommand> commands, AsyncCallback<UpdateResult> async);
+    void getArrayDesignDetails(int id, AsyncCallback<ArrayDesignDetailsDto> async);
+
+    void updateExperiment(int id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentUpdateResult> async);
+
+    void updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands, AsyncCallback<ArrayDesignUpdateResult> async);
 }

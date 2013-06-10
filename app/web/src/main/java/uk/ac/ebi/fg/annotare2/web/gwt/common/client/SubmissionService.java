@@ -21,9 +21,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 
 import java.util.List;
 
@@ -39,7 +39,9 @@ public interface SubmissionService extends RemoteService {
 
     ExperimentSettings getExperimentSettings(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    DetailsDto getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentDetailsDto getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    ArrayDesignDetailsDto getArrayDesignDetails(int id) throws ResourceNotFoundException, NoPermissionException;
 
     List<ContactDto> getContacts(int id) throws ResourceNotFoundException, NoPermissionException;
 
@@ -59,5 +61,7 @@ public interface SubmissionService extends RemoteService {
 
     void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    UpdateResult updateExperiment(int id, List<UpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentUpdateResult updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
+
+    ArrayDesignUpdateResult updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 }

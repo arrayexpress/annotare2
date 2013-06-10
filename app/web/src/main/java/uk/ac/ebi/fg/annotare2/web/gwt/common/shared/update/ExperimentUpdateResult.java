@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class UpdateResult implements IsSerializable {
+public class ExperimentUpdateResult implements IsSerializable {
 
     private List<ContactDto> createdContacts;
     private List<ContactDto> updatedContacts;
@@ -47,9 +47,9 @@ public class UpdateResult implements IsSerializable {
     private List<SampleRow> createdSampleRows;
     private List<SampleRow> removedSampleRows;
 
-    private DetailsDto updatedDetails;
+    private ExperimentDetailsDto updatedDetails;
 
-    public UpdateResult() {
+    public ExperimentUpdateResult() {
         createdContacts = new ArrayList<ContactDto>();
         updatedContacts = new ArrayList<ContactDto>();
         removedContacts = new ArrayList<ContactDto>();
@@ -92,7 +92,7 @@ public class UpdateResult implements IsSerializable {
         removedPublications.add(dto);
     }
 
-    public void updated(DetailsDto details) {
+    public void updated(ExperimentDetailsDto details) {
         updatedDetails = details;
     }
 
@@ -128,7 +128,7 @@ public class UpdateResult implements IsSerializable {
         return new ArrayList<ContactDto>(removedContacts);
     }
 
-    public DetailsDto getUpdatedDetails() {
+    public ExperimentDetailsDto getUpdatedDetails() {
         return updatedDetails;
     }
 

@@ -22,6 +22,7 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class UIGeneralInfo implements Serializable {
 
     private String title;

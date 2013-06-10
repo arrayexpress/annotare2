@@ -19,9 +19,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateDetailsCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateExperimentDetailsCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 
@@ -33,49 +34,50 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class ExperimentDetails {
 
     private final SubmissionServiceAsync submissionService;
-    private final UpdateQueue updateQueue;
+    private final UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue;
 
-    private DetailsDto details;
+    private ExperimentDetailsDto details;
 
-    public ExperimentDetails(SubmissionServiceAsync submissionService, UpdateQueue updateQueue) {
+    public ExperimentDetails(SubmissionServiceAsync submissionService,
+                             UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue) {
         this.submissionService = submissionService;
         this.updateQueue = updateQueue;
-        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler() {
+        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler<ExperimentUpdateResult>() {
             @Override
-            public void onDataUpdate(DataUpdateEvent event) {
+            public void onDataUpdate(DataUpdateEvent<ExperimentUpdateResult> event) {
                 applyUpdates(event.getUpdates());
             }
         });
     }
 
-    public void getDetailsAsync(final AsyncCallback<DetailsDto> callback) {
+    public void getDetailsAsync(final AsyncCallback<ExperimentDetailsDto> callback) {
         if (details != null) {
             callback.onSuccess(details);
             return;
         }
-        submissionService.getExperimentDetails(getSubmissionId(), new AsyncCallbackWrapper<DetailsDto>() {
+        submissionService.getExperimentDetails(getSubmissionId(), new AsyncCallbackWrapper<ExperimentDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(DetailsDto result) {
+            public void onSuccess(ExperimentDetailsDto result) {
                 details = result;
                 callback.onSuccess(result);
             }
         }.wrap());
     }
 
-    public void updateDetails(DetailsDto toBeUpdated) {
+    public void updateDetails(ExperimentDetailsDto toBeUpdated) {
         if (toBeUpdated == null || details.isContentEqual(toBeUpdated)) {
             return;
         }
-        updateQueue.add(new UpdateDetailsCommand(toBeUpdated));
+        updateQueue.add(new UpdateExperimentDetailsCommand(toBeUpdated));
     }
 
-    private void applyUpdates(UpdateResult updates) {
-        DetailsDto dto = updates.getUpdatedDetails();
+    private void applyUpdates(ExperimentUpdateResult updates) {
+        ExperimentDetailsDto dto = updates.getUpdatedDetails();
         if (dto != null) {
             details = dto;
         }

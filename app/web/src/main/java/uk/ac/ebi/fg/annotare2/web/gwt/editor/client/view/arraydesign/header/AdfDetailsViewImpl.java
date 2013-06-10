@@ -22,6 +22,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -31,15 +33,17 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
-import uk.ac.ebi.fg.annotare2.magetab.table.Cell;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextAreaExtended;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextToolbar;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import java.util.*;
 
-import static java.lang.Integer.toString;
-import static java.lang.Integer.toString;
+import static java.lang.Integer.parseInt;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
 
@@ -71,7 +75,7 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     ListBox printingProtocolList;
 
     @UiField
-    TextBox ppName;
+    TextBox protocolName;
 
     @UiField
     HTML ppDescrPreview;
@@ -82,10 +86,12 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     @UiField
     Image displayButton;
 
-    private RichTextAreaExtended richTextArea;
+    private RichTextAreaExtended protocolDescription;
     private boolean inPreviewMode = false;
     private Map<Integer, PrintingProtocolDto> printingProtocols = new HashMap<Integer, PrintingProtocolDto>();
     private Presenter presenter;
+
+    private EfoTermDto organism;
 
     public AdfDetailsViewImpl() {
         species = new SuggestBox(new EfoSuggestOracle(new SuggestService<EfoTermDto>() {
@@ -94,6 +100,14 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
                 presenter.getOrganisms(query, limit, callback);
             }
         }));
+        species.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
+            @Override
+            public void onSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
+                EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) event.getSelectedItem();
+                setOrganism(suggestion.getTerm());
+                save();
+            }
+        });
 
         initWidget(Binder.BINDER.createAndBindUi(this));
 
@@ -103,16 +117,22 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
 
         ppDescrPreview.setVisible(inPreviewMode);
 
-        richTextArea = new RichTextAreaExtended();
-        richTextArea.setSize("100%", "14em");
-        RichTextToolbar richTextToolbar = new RichTextToolbar(richTextArea);
+        protocolDescription = new RichTextAreaExtended();
+        protocolDescription.setSize("100%", "14em");
+        RichTextToolbar richTextToolbar = new RichTextToolbar(protocolDescription);
         richTextToolbar.setWidth("100%");
+        protocolDescription.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                savePrintingProtocol();
+            }
+        });
 
         // Add the components to a panel
         Grid grid = new Grid(2, 1);
         grid.setStyleName("app-RichTextArea");
         grid.setWidget(0, 0, richTextToolbar);
-        grid.setWidget(1, 0, richTextArea);
+        grid.setWidget(1, 0, protocolDescription);
         ppDescrEditorDiv.setWidget(grid);
 
         displayButton.addClickHandler(new ClickHandler() {
@@ -128,11 +148,11 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     private void showPrintingProtocol(PrintingProtocolDto protocol, boolean fireEvent) {
         boolean editable = !protocol.hasId();
 
-        ppName.setValue(protocol.getName(), fireEvent);
-        richTextArea.setValue(unescapeHtml(protocol.getDescription()), fireEvent);
+        protocolName.setValue(protocol.getName(), fireEvent);
+        protocolDescription.setValue(unescapeHtml(protocol.getDescription()), fireEvent);
 
-        ppName.setEnabled(editable);
-        richTextArea.setEnabled(editable);
+        protocolName.setEnabled(editable);
+        protocolDescription.setEnabled(editable);
         showPreview(false);
     }
 
@@ -146,7 +166,7 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
 
     private void showPreview(boolean on) {
         if (on) {
-            ppDescrPreview.setHTML(richTextArea.getHTML());
+            ppDescrPreview.setHTML(protocolDescription.getHTML());
             ppDescrPreview.setWidth(ppDescrEditorDiv.getOffsetWidth() + "px");
             ppDescrPreview.setHeight(ppDescrEditorDiv.getOffsetHeight() + "px");
             displayButton.getElement().getParentElement().addClassName("clicked");
@@ -159,10 +179,45 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     }
 
     @UiHandler("printingProtocolList")
-    void onProtocolSelect(ChangeEvent event) {
+    void printingProtocolChanged(ChangeEvent event) {
         int index = printingProtocolList.getSelectedIndex();
-        int id = Integer.parseInt(printingProtocolList.getValue(index));
+        int id = parseInt(printingProtocolList.getValue(index));
         showPrintingProtocol(printingProtocols.get(id), true);
+    }
+
+    @UiHandler("designName")
+    void nameChanged(ChangeEvent event) {
+        save();
+    }
+
+    @UiHandler("description")
+    void descriptionChanged(ChangeEvent event) {
+        save();
+    }
+
+    @UiHandler("designVersion")
+    void designVersionChanged(ChangeEvent event) {
+        save();
+    }
+
+    @UiHandler("species")
+    void speciesChanged(ValueChangeEvent<String> event) {
+        save();
+    }
+
+    @UiHandler("publicReleaseDate")
+    void publicReleaseDateChanged(ValueChangeEvent<Date> event) {
+        save();
+    }
+
+    @UiHandler("protocolName")
+    void protocolNameChanged(ChangeEvent event) {
+        savePrintingProtocol();
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -180,71 +235,74 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         printingProtocolList.addItem(name, Integer.toString(protocol.getId()));
     }
 
-    private void setProtocolSelected(PrintingProtocolDto protocol) {
+    private void setProtocolSelected(PrintingProtocolDto protocol, boolean fireEvents) {
         for (int i = 0; i < printingProtocolList.getItemCount(); i++) {
-            if (protocol.getId() == Integer.parseInt(printingProtocolList.getValue(i))) {
+            if (protocol.getId() == parseInt(printingProtocolList.getValue(i))) {
                 printingProtocolList.setItemSelected(i, true);
-                DomEvent.fireNativeEvent(Document.get().createChangeEvent(), printingProtocolList);
+                if (fireEvents) {
+                    DomEvent.fireNativeEvent(Document.get().createChangeEvent(), printingProtocolList);
+                }
                 break;
             }
         }
     }
 
     @Override
-    public void setArrayDesignName(final Cell<String> cell) {
-        attachCell(designName, cell);
-    }
+    public void setDetails(ArrayDesignDetailsDto details) {
+        if (details == null) {
+            return;
+        }
+        designName.setValue(details.getArrayDesignName());
+        designVersion.setValue(details.getVersion());
+        description.setValue(details.getDescription());
+        publicReleaseDate.setValue(details.getPublicReleaseDate());
+        setOrganism(details.getOrganism());
+        addProtocol(details.getOtherPrintingProtocol());
 
-    @Override
-    public void setVersion(Cell<String> cell) {
-        attachCell(designVersion, cell);
-    }
-
-    @Override
-    public void setPrintingProtocol(final Cell<String> cell) {
-        PrintingProtocolDto protocol = PrintingProtocolDto.unsqueeeeze(cell.getValue());
+        PrintingProtocolDto protocol = printingProtocols.get(details.getPrintingProtocolId());
+        setProtocolSelected(protocol, false);
         showPrintingProtocol(protocol, false);
-        ValueChangeHandler<String> handler = new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
-                PrintingProtocolDto protocol = new PrintingProtocolDto(ppName.getValue(), escapeHtml(richTextArea.getHTML()));
-                cell.setValue(protocol.squeeeeze());
-            }
-        };
-        ppName.addValueChangeHandler(handler);
-        richTextArea.addValueChangeHandler(handler);
-
-        addProtocol(protocol);
-        setProtocolSelected(protocol);
     }
 
-    @Override
-    public void setDescription(Cell<String> cell) {
-        attachCell(description, cell);
+    private void setOrganism(EfoTermDto term) {
+        if (term != null) {
+            organism = term;
+            species.setValue(term.getLabel());
+        }
     }
 
-    @Override
-    public void setReleaseDate(Cell<Date> cell) {
-        attachCell(publicReleaseDate, cell);
+    private int getSelectedProtocolId() {
+        int index = printingProtocolList.getSelectedIndex();
+        return parseInt(printingProtocolList.getValue(index));
     }
 
-    @Override
-    public void setOrganism(Cell<String> cell) {
-        attachCell(species, cell);
+    private PrintingProtocolDto getOtherProtocol() {
+        return printingProtocols.get(0);
     }
 
-    @Override
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+    private ArrayDesignDetailsDto getResult() {
+        return new ArrayDesignDetailsDto(
+                designName.getValue(),
+                description.getValue(),
+                designVersion.getValue(),
+                organism,
+                publicReleaseDate.getValue(),
+                getSelectedProtocolId(),
+                getOtherProtocol());
     }
 
-    private <T> void attachCell(final HasValue<T> field, final Cell<T> cell) {
-        field.setValue(cell.getValue(), false);
-        field.addValueChangeHandler(new ValueChangeHandler<T>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<T> event) {
-                cell.setValue(event.getValue());
-            }
-        });
+    private void savePrintingProtocol() {
+        PrintingProtocolDto selectedProtocol = printingProtocols.get(getSelectedProtocolId());
+        if (!selectedProtocol.hasId()) {
+            printingProtocols.put(selectedProtocol.getId(), new PrintingProtocolDto(
+                    protocolName.getValue(),
+                    protocolDescription.getValue()
+            ));
+        }
+        save();
+    }
+
+    private void save() {
+        presenter.updateDetails(getResult());
     }
 }

@@ -27,11 +27,13 @@ import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.NodeFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
+import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
@@ -41,6 +43,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
@@ -82,11 +85,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             Submission sb = submissionManager.getSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiSubmissionDetails(sb);
         } catch (AccessControlException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
-            log.warn("getSubmission(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         }
     }
 
@@ -96,31 +97,39 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiExperimentSubmissionSettings(sb);
         } catch (AccessControlException e) {
-            log.warn("getExperimentSettings(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
-            log.warn("getExperimentSettings(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (DataSerializationException e) {
-            log.error("getExperimentSettings(" + id + ") failure", e);
-            throw new UnexpectedException("extract experiment settings failure", e);
+            throw unexpected(e);
         }
     }
 
     @Override
-    public DetailsDto getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentDetailsDto getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiExperimentDetails(sb);
         } catch (AccessControlException e) {
-            log.warn("getExperimentSettings(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
-            log.warn("getExperimentSettings(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (DataSerializationException e) {
-            log.error("getExperimentSettings(" + id + ") failure", e);
-            throw new UnexpectedException("extract experiment settings failure", e);
+            throw unexpected(e);
+        }
+    }
+
+    @Override
+    public ArrayDesignDetailsDto getArrayDesignDetails(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ArrayDesignSubmission sb = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.VIEW);
+            return UIObjectConverter.uiArrayDesignDetails(sb);
+        } catch (AccessControlException e) {
+            throw noPermission(e, Permission.VIEW);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 
@@ -164,14 +173,11 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return UIObjectConverter.uiSampleRowsAndColumns(sb);
         } catch (AccessControlException e) {
-            log.warn("getSamples(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
-            log.warn("getSamples(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (DataSerializationException e) {
-            log.error("getSamples(" + id + ") failure", e);
-            throw new UnexpectedException("get experiment samples failure", e);
+            throw unexpected(e);
         }
     }
 
@@ -184,20 +190,15 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             MAGETABInvestigation inv = new MageTabGenerator(exp).generate();
             return asTable(inv.IDF);
         } catch (AccessControlException e) {
-            log.warn("getIdfTable(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
-            log.warn("getIdfTable(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (IOException e) {
-            log.error("getIdfTable(" + id + ") failure", e);
-            throw new UnexpectedException("IDF generate failure", e);
+            throw unexpected(e);
         } catch (DataSerializationException e) {
-            log.error("getIdfTable(" + id + ") failure", e);
-            throw new UnexpectedException("IDF generate failure", e);
+            throw unexpected(e);
         } catch (ParseException e) {
-            log.error("getIdfTable(" + id + ") failure", e);
-            throw new UnexpectedException("IDF generate failure", e);
+            throw unexpected(e);
         }
     }
 
@@ -209,20 +210,15 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             MAGETABInvestigation inv = (new MageTabGenerator(exp)).generate();
             return asTable(inv.SDRF);
         } catch (AccessControlException e) {
-            log.warn("getSdrfTable(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
+            throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
-            log.warn("getSdrfTable(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (IOException e) {
-            log.error("getSdrfTable(" + id + ") failure", e);
-            throw new UnexpectedException("SDRF generate failure", e);
+            throw unexpected(e);
         } catch (DataSerializationException e) {
-            log.error("getSDRFTable(" + id + ") failure", e);
-            throw new UnexpectedException("SDRF generate failure", e);
+            throw unexpected(e);
         } catch (ParseException e) {
-            log.error("getSDRFTable(" + id + ") failure", e);
-            throw new UnexpectedException("SDRF generate failure", e);
+            throw unexpected(e);
         }
     }
 
@@ -244,7 +240,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     private Table asTable(SDRF sdrf) throws IOException {
         useDirtyHack();
 
-        if (sdrf.getRootNodes().isEmpty())  {
+        if (sdrf.getRootNodes().isEmpty()) {
             /* A workaround for SDRFWriter bug: an IndexOutOfBoundException is thrown by SDRFWriter,
             when you try to write en empty SDRF content */
             return new Table();
@@ -267,8 +263,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         try {
             return submissionManager.createExperimentSubmission(getCurrentUser()).getId();
         } catch (AccessControlException e) {
-            log.warn("createSubmission() failure", e);
-            throw new NoPermissionException("no permission to create a submission");
+            throw noPermission(e, Permission.CREATE);
         }
     }
 
@@ -277,8 +272,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         try {
             return submissionManager.createArrayDesignSubmission(getCurrentUser()).getId();
         } catch (AccessControlException e) {
-            log.warn("createSubmission() failure", e);
-            throw new NoPermissionException("no permission to create a submission");
+            throw noPermission(e, Permission.CREATE);
         }
     }
 
@@ -289,14 +283,11 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             submission.setExperimentProfile(createExperiment(settings));
         } catch (RecordNotFoundException e) {
-            log.warn("setupExperimentSubmission(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (AccessControlException e) {
-            log.warn("setupExperimentSubmission(" + id + ") failure", e);
-            throw new NoPermissionException("no permission to update submission: " + id);
+            throw noPermission(e, Permission.UPDATE);
         } catch (DataSerializationException e) {
-            log.error("setupExperimentSubmission(" + id + ") failure", e);
-            throw new UnexpectedException("experiment setup failed", e);
+            throw unexpected(e);
         }
     }
 
@@ -307,37 +298,49 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                     submissionManager.getSubmission(getCurrentUser(), id, Permission.UPDATE);
             submission.discardAll();
         } catch (RecordNotFoundException e) {
-            log.warn("setupExperimentSubmission(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (AccessControlException e) {
-            log.warn("setupExperimentSubmission(" + id + ") failure", e);
-            throw new NoPermissionException("no permission to update submission: " + id);
+            throw noPermission(e, Permission.UPDATE);
         }
     }
 
     @Override
-    public UpdateResult updateExperiment(int id, List<UpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentUpdateResult updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             ExperimentProfile experiment = submission.getExperimentProfile();
-            UpdateResult result = new ExperimentUpdatePerformer(experiment).run(commands);
+            ExperimentUpdateResult result = new ExperimentUpdatePerformerImpl(experiment).run(commands);
             submission.setExperimentProfile(experiment);
             return result;
         } catch (RecordNotFoundException e) {
-            log.warn("updateExperiment(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+            throw noSuchRecord(e);
         } catch (AccessControlException e) {
-            log.warn("updateExperiment(" + id + ") failure", e);
-            throw new NoPermissionException("no permission to update submission: " + id);
+            throw noPermission(e, Permission.UPDATE);
         } catch (DataSerializationException e) {
-            log.warn("updateExperiment(" + id + ") failure", e);
-            throw new UnexpectedException("update experiment failure", e);
+            throw unexpected(e);
+        }
+    }
+
+    @Override
+    public ArrayDesignUpdateResult updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ArrayDesignSubmission submission = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.UPDATE);
+            ArrayDesignHeader header  = submission.getHeader();
+            ArrayDesignUpdateResult result = new ArrayDesignUpdatePerformerImpl(header).run(commands);
+            submission.setHeader(header);
+            return result;
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e, Permission.UPDATE);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 
     /**
-     *  A workaround to reset NodeFactory.instance field to reflect changes in SDRF nodes;
-     *  without this workaround SDRFWriter uses SDRF nodes from the first run;
+     * A workaround to reset NodeFactory.instance field to reflect changes in SDRF nodes;
+     * without this workaround SDRFWriter uses SDRF nodes from the first run;
      */
     private static void useDirtyHack() {
         try {
@@ -351,17 +354,17 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
             field.set(null, newValue);
         } catch (ClassNotFoundException e) {
-            throw unexpected("Dirty hack doesn't work", e);
+            throw unexpected(e);
         } catch (NoSuchMethodException e) {
-            throw unexpected("Dirty hack doesn't work", e);
+            throw unexpected(e);
         } catch (IllegalAccessException e) {
-            throw unexpected("Dirty hack doesn't work", e);
+            throw unexpected(e);
         } catch (InvocationTargetException e) {
-            throw unexpected("Dirty hack doesn't work", e);
+            throw unexpected(e);
         } catch (InstantiationException e) {
-            throw unexpected("Dirty hack doesn't work", e);
+            throw unexpected(e);
         } catch (NoSuchFieldException e) {
-            throw unexpected("Dirty hack doesn't work", e);
+            throw unexpected(e);
         }
     }
 
@@ -372,8 +375,18 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         return (NodeFactory) constructor.newInstance();
     }
 
-    private static UnexpectedException unexpected(String message, Exception e) {
-        log.error(message, e);
-        return new UnexpectedException(message, e);
+    private static UnexpectedException unexpected(Exception e) {
+        log.error("server error", e);
+        return new UnexpectedException("Unexpected server error", e);
+    }
+
+    private static ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
+        log.error("server error", e);
+        return new ResourceNotFoundException("Submission not found");
+    }
+
+    private static NoPermissionException noPermission(AccessControlException e, Permission permission) {
+        log.error("server error", e);
+        return new NoPermissionException("Sorry you do not have permission to '" + permission + "' the submission");
     }
 }

@@ -39,7 +39,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class ExperimentSamples {
 
     private final SubmissionServiceAsync submissionService;
-    private final UpdateQueue updateQueue;
+    private final UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue;
 
     private List<Integer> columnOrder = new ArrayList<Integer>();
 
@@ -57,12 +57,13 @@ public class ExperimentSamples {
         }
     };
 
-    public ExperimentSamples(SubmissionServiceAsync submissionService, UpdateQueue updateQueue) {
+    public ExperimentSamples(SubmissionServiceAsync submissionService,
+                             UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue) {
         this.submissionService = submissionService;
         this.updateQueue = updateQueue;
-        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler() {
+        this.updateQueue.addDataUpdateEventHandler(new DataUpdateEventHandler<ExperimentUpdateResult>() {
             @Override
-            public void onDataUpdate(DataUpdateEvent event) {
+            public void onDataUpdate(DataUpdateEvent<ExperimentUpdateResult> event) {
                 applyUpdates(event.getUpdates());
             }
         });
@@ -157,7 +158,7 @@ public class ExperimentSamples {
         return columns;
     }
 
-    private void applyUpdates(UpdateResult updates) {
+    private void applyUpdates(ExperimentUpdateResult updates) {
         int columnChanges = 0;
 
         for (SampleColumn column : updates.getCreatedSampleColumns()) {

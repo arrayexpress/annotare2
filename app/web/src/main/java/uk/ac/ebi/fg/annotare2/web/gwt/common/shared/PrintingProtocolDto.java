@@ -23,8 +23,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class PrintingProtocolDto implements IsSerializable {
 
-    private static final String SEPARATOR = ":";
-
     private int id;
 
     private String name;
@@ -59,20 +57,5 @@ public class PrintingProtocolDto implements IsSerializable {
 
     public String getDescription() {
         return description;
-    }
-
-    public String squeeeeze() {
-        return name + SEPARATOR + description;
-    }
-
-    public static PrintingProtocolDto unsqueeeeze(String value) {
-        if (value == null || value.isEmpty()) {
-            return null;
-        }
-        int idx = value.indexOf(SEPARATOR);
-        if (idx >= 0) {
-            return new PrintingProtocolDto(value.substring(0, idx), value.substring(idx + 1, value.length()));
-        }
-        return new PrintingProtocolDto(value, "");
     }
 }

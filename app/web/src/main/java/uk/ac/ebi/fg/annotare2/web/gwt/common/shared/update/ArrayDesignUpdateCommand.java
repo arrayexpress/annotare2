@@ -16,30 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-
 /**
  * @author Olga Melnichuk
  */
-public class RemoveContactCommand implements ExperimentUpdateCommand {
+public interface ArrayDesignUpdateCommand extends UpdateCommand {
 
-    private ContactDto contact;
-
-    RemoveContactCommand() {
-        /*used by GWT serialization only*/
-    }
-
-    public RemoveContactCommand(ContactDto contact) {
-        this.contact = contact;
-    }
-
-    @Override
-    public void execute(ExperimentUpdatePerformer performer) {
-        performer.removeContact(contact);
-    }
-
-    @Override
-    public boolean isCritical() {
-        return false;
-    }
+    void execute(ArrayDesignUpdatePerformer performer);
 }

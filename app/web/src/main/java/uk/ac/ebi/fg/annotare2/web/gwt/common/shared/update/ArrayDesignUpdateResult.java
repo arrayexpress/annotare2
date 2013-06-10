@@ -16,30 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 
 /**
  * @author Olga Melnichuk
  */
-public class RemoveContactCommand implements ExperimentUpdateCommand {
+public class ArrayDesignUpdateResult implements IsSerializable {
 
-    private ContactDto contact;
+    private ArrayDesignDetailsDto updatedDetails;
 
-    RemoveContactCommand() {
-        /*used by GWT serialization only*/
+    public ArrayDesignDetailsDto getUpdatedDetails() {
+        return updatedDetails;
     }
 
-    public RemoveContactCommand(ContactDto contact) {
-        this.contact = contact;
-    }
-
-    @Override
-    public void execute(ExperimentUpdatePerformer performer) {
-        performer.removeContact(contact);
-    }
-
-    @Override
-    public boolean isCritical() {
-        return false;
+    public void setUpdatedDetails(ArrayDesignDetailsDto updatedDetails) {
+        this.updatedDetails = updatedDetails;
     }
 }

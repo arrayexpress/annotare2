@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /**
  * @author Olga Melnichuk
  */
-public interface HasDataUpdateEventHandlers {
+public interface HasDataUpdateEventHandlers<R> {
 
-    HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler handler);
+    HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler<R> handler);
 }

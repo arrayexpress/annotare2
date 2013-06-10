@@ -21,7 +21,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 /**
  * @author Olga Melnichuk
  */
-public class RemovePublicationCommand implements UpdateCommand {
+public class RemovePublicationCommand implements ExperimentUpdateCommand {
 
     private PublicationDto publication;
 
@@ -34,7 +34,7 @@ public class RemovePublicationCommand implements UpdateCommand {
     }
 
     @Override
-    public void execute(UpdatePerformer performer) {
+    public void execute(ExperimentUpdatePerformer performer) {
         performer.removePublication(publication);
     }
 

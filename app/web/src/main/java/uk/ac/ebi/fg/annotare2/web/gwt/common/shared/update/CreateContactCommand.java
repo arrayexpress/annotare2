@@ -21,7 +21,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 /**
  * @author Olga Melnichuk
  */
-public class CreateContactCommand implements UpdateCommand {
+public class CreateContactCommand implements ExperimentUpdateCommand {
 
     private  ContactDto contact;
 
@@ -34,7 +34,7 @@ public class CreateContactCommand implements UpdateCommand {
     }
 
     @Override
-    public void execute(UpdatePerformer performer) {
+    public void execute(ExperimentUpdatePerformer performer) {
         performer.createContact(contact);
     }
 

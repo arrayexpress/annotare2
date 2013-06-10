@@ -17,21 +17,21 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 
 /**
  * @author Olga Melnichuk
  */
 public interface ExpDetailsView extends IsWidget {
 
-    public void setDetails(DetailsDto details);
+    public void setDetails(ExperimentDetailsDto details);
 
-    public DetailsDto getDetails();
+    public ExperimentDetailsDto getDetails();
 
     public void setPresenter(Presenter presenter);
 
     public interface Presenter {
 
-        void saveDetails(DetailsDto details);
+        void saveDetails(ExperimentDetailsDto details);
     }
 }

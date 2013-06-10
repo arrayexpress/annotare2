@@ -23,7 +23,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasDataUpdateEventHandlers;
@@ -41,7 +40,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateE
 /**
  * @author Olga Melnichuk
  */
-public class UpdateQueue implements HasDataUpdateEventHandlers {
+public class UpdateQueue<C extends UpdateCommand, R> implements HasDataUpdateEventHandlers<R> {
 
     private static final int REPEAT_INTERVAL = 2000;
 
@@ -49,7 +48,7 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
     private final Transport transport;
     private final HandlerManager handlerManager;
 
-    private Queue<UpdateCommand> queue = new LinkedList<UpdateCommand>();
+    private Queue<C> queue = new LinkedList<C>();
     private boolean isActive;
 
     public UpdateQueue(EventBus eventBus, Transport transport) {
@@ -67,11 +66,11 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
     }
 
     @Override
-    public HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler handler) {
+    public HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler<R> handler) {
         return handlerManager.addHandler(DataUpdateEvent.getType(), handler);
     }
 
-    public void add(UpdateCommand command) {
+    public void add(C command) {
         if (command.isCritical()) {
             notifyCriticalUpdateStart();
         }
@@ -91,16 +90,16 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
             notifyStop(null);
             return;
         }
-        List<UpdateCommand> commands = new ArrayList<UpdateCommand>(queue);
+        List<C> commands = new ArrayList<C>(queue);
         final int queueSize = commands.size();
-        transport.sendUpdates(commands, new AsyncCallback<UpdateResult>() {
+        transport.sendUpdates(commands, new AsyncCallback<R>() {
             @Override
             public void onFailure(Throwable caught) {
                 notifyStop(caught);
             }
 
             @Override
-            public void onSuccess(UpdateResult result) {
+            public void onSuccess(R result) {
                 for (int i = 0; i < queueSize; i++) {
                     queue.poll();
                 }
@@ -110,7 +109,7 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
         });
     }
 
-    private void fireDataUpdateEvent(UpdateResult result) {
+    private void fireDataUpdateEvent(R result) {
         DataUpdateEvent.fire(handlerManager, result);
         notifyCriticalUpdateStop();
     }
@@ -145,8 +144,8 @@ public class UpdateQueue implements HasDataUpdateEventHandlers {
         }
     }
 
-    public interface Transport {
-        void sendUpdates(List<UpdateCommand> commands, AsyncCallback<UpdateResult> callback);
+    public interface Transport<C, R> {
+        void sendUpdates(List<C> commands, AsyncCallback<R> callback);
     }
 }
 
