@@ -24,7 +24,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.AdfData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ArrayDesignData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
