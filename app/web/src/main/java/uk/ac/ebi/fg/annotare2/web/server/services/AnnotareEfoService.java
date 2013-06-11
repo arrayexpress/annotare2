@@ -136,7 +136,7 @@ public class AnnotareEfoService implements EfoService {
         String label = "Cell line";
         String accession = "EFO_0000322";
         String rootAccession = "MaterialEntity";
-        EfoNode node = findTermByName(label, rootAccession);
+        EfoTerm node = findTermByLabel(label, rootAccession);
         if (node == null) {
             errors.add("Can't find term by label (in branch): '" + label + "' | " + rootAccession);
         }
@@ -151,23 +151,23 @@ public class AnnotareEfoService implements EfoService {
             errors.add("Can't find term by accession: " + accession);
         }
 
-        node = findTermByNameOrAccession("", accession, rootAccession);
+        node = findTermByLabelOrAccession("", accession, rootAccession);
         if (node == null) {
             errors.add("Can't find term by label or accession (in branch): '' | " + accession + " | " + rootAccession);
         }
 
-        node = findTermByNameOrAccession(label, "", rootAccession);
+        node = findTermByLabelOrAccession(label, "", rootAccession);
         if (node == null) {
             errors.add("Can't find term by label or accession (in branch): '" + label + "' | '' | " + rootAccession);
         }
 
-        node = findTermByNameOrAccession(label, accession, rootAccession);
+        node = findTermByLabelOrAccession(label, accession, rootAccession);
         if (node == null) {
             errors.add("Can't find term by label or accession (in branch): '" + label + "' | " + accession + " | " + rootAccession);
         }
 
         String prefix = "cell li";
-        Collection<EfoNode> result = suggest(prefix, MAX_HITS);
+        Collection<EfoTerm> result = suggest(prefix, MAX_HITS);
         if (result.isEmpty()) {
             errors.add("Can't find term by prefix: '" + prefix + "'");
         }
@@ -185,7 +185,7 @@ public class AnnotareEfoService implements EfoService {
     }
 
     @Override
-    public EfoNode findTermByName(String name, String rootAccession) {
+    public EfoTerm findTermByLabel(String name, String rootAccession) {
         try {
             return exactSearchByLabel(name, rootAccession);
         } catch (ParseException e) {
@@ -197,7 +197,7 @@ public class AnnotareEfoService implements EfoService {
     }
 
     @Override
-    public EfoNode findTermByAccession(String accession) {
+    public EfoTerm findTermByAccession(String accession) {
         try {
             return exactSearchByAccession(accession);
         } catch (ParseException e) {
@@ -209,7 +209,7 @@ public class AnnotareEfoService implements EfoService {
     }
 
     @Override
-    public EfoNode findTermByAccession(String accession, String rootAccession) {
+    public EfoTerm findTermByAccession(String accession, String rootAccession) {
         try {
             return exactSearchByAccession(accession, rootAccession);
         } catch (ParseException e) {
@@ -221,31 +221,31 @@ public class AnnotareEfoService implements EfoService {
     }
 
     @Override
-    public EfoNode findTermByNameOrAccession(String name, String accession, String rootAccession) {
+    public EfoTerm findTermByLabelOrAccession(String name, String accession, String rootAccession) {
         if (isNullOrEmpty(accession)) {
             if (!isNullOrEmpty(name)) {
-                EfoNode term = findTermByName(name, rootAccession);
+                EfoTerm term = findTermByLabel(name, rootAccession);
                 if (term != null) {
                     return term;
                 }
             }
         } else if (isNullOrEmpty(name)) {
             if (!isNullOrEmpty(accession)) {
-                EfoNode term = findTermByAccession(accession, rootAccession);
+                EfoTerm term = findTermByAccession(accession, rootAccession);
                 if (term != null) {
                     return term;
                 }
             }
         } else {
-            EfoNode term = findTermByAccession(accession, rootAccession);
-            if (term != null && name.equalsIgnoreCase(term.getName())) {
+            EfoTerm term = findTermByAccession(accession, rootAccession);
+            if (term != null && name.equalsIgnoreCase(term.getLabel())) {
                 return term;
             }
         }
         return null;
     }
 
-    public Collection<EfoNode> suggest(String prefix, int limit) {
+    public Collection<EfoTerm> suggest(String prefix, int limit) {
         try {
             return prefixSearch(prefix, limit);
         } catch (ParseException e) {
@@ -256,7 +256,7 @@ public class AnnotareEfoService implements EfoService {
         return emptyList();
     }
 
-    public Collection<EfoNode> suggest(String prefix, String rootAccession, int limit) {
+    public Collection<EfoTerm> suggest(String prefix, String rootAccession, int limit) {
         try {
             return prefixSearch(prefix, rootAccession, limit);
         } catch (ParseException e) {
@@ -267,40 +267,40 @@ public class AnnotareEfoService implements EfoService {
         return emptyList();
     }
 
-    private EfoNode exactSearchByLabel(String label, String rootAccession) throws ParseException, IOException {
+    private EfoTerm exactSearchByLabel(String label, String rootAccession) throws ParseException, IOException {
         QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
         Query query = parser.parse(
                 LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
                         + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession.toLowerCase())
         );
-        List<EfoNode> result = runQuery(query, 1);
+        List<EfoTerm> result = runQuery(query, 1);
         return result.isEmpty() ? null : result.get(0);
     }
 
-    private EfoNode exactSearchByAccession(String accession, String rootAccession) throws ParseException, IOException {
+    private EfoTerm exactSearchByAccession(String accession, String rootAccession) throws ParseException, IOException {
         QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
         Query query = parser.parse(
                 ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase())
                         + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession.toLowerCase()));
-        List<EfoNode> result = runQuery(query, 1);
+        List<EfoTerm> result = runQuery(query, 1);
         return result.isEmpty() ? null : result.get(0);
     }
 
-    private EfoNode exactSearchByAccession(String accession) throws ParseException, IOException {
+    private EfoTerm exactSearchByAccession(String accession) throws ParseException, IOException {
         QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
         Query query = parser.parse(
                 ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase()));
-        List<EfoNode> result = runQuery(query, 1);
+        List<EfoTerm> result = runQuery(query, 1);
         return result.isEmpty() ? null : result.get(0);
     }
 
-    private Collection<EfoNode> prefixSearch(String prefix, int limit) throws ParseException, IOException {
+    private Collection<EfoTerm> prefixSearch(String prefix, int limit) throws ParseException, IOException {
         QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
         Query query = parser.parse(TEXT_FIELD.matchesPrefix(prefix));
         return runQuery(query, limit);
     }
 
-    private Collection<EfoNode> prefixSearch(String prefix, String rootAccession, int limit) throws ParseException, IOException {
+    private Collection<EfoTerm> prefixSearch(String prefix, String rootAccession, int limit) throws ParseException, IOException {
         QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
         Query query = parser.parse(
                 TEXT_FIELD.matchesPrefix(prefix)
@@ -308,7 +308,7 @@ public class AnnotareEfoService implements EfoService {
         return runQuery(query, limit);
     }
 
-    private List<EfoNode> runQuery(Query query, int maxHits) throws IOException, ParseException {
+    private List<EfoTerm> runQuery(Query query, int maxHits) throws IOException, ParseException {
         IndexReader reader = null;
         try {
             reader = DirectoryReader.open(FSDirectory.open(new File(properties.getEfoIndexDir())));
@@ -321,13 +321,14 @@ public class AnnotareEfoService implements EfoService {
 
             log.debug("[" + hits.length + "] hits");
 
-            List<EfoNode> terms = newArrayList();
+            List<EfoTerm> terms = newArrayList();
             for (ScoreDoc hit : hits) {
                 Document doc = searcher.doc(hit.doc);
                 //log.debug("found: " + doc.get(LABEL_FIELD.name) + ", " + doc.get(ASCENDANT_FIELD.name));
-                terms.add(new EfoNodeImpl(
+                terms.add(new EfoTerm(
                         doc.get(ACCESSION_FIELD.name),
-                        doc.get(LABEL_FIELD.name)));
+                        doc.get(LABEL_FIELD.name),
+                        Collections.<String>emptyList()));
             }
             log.debug("Time: " + (System.currentTimeMillis() - start) + "ms");
             return terms;
@@ -348,7 +349,7 @@ public class AnnotareEfoService implements EfoService {
         }
     }
 
-    private void createIndex(EfoGraph graph) throws IOException {
+    private void createIndex(EfoDag graph) throws IOException {
         IndexWriter writer = null;
         try {
             long start = System.currentTimeMillis();
@@ -370,7 +371,7 @@ public class AnnotareEfoService implements EfoService {
         }
     }
 
-    private void indexDocs(IndexWriter writer, EfoGraph dag) throws IOException {
+    private void indexDocs(IndexWriter writer, EfoDag dag) throws IOException {
         Collection<EfoNode> roots = getRootNodes(dag);
         Set<String> visited = newHashSet();
         for (EfoNode node : roots) {
@@ -405,7 +406,7 @@ public class AnnotareEfoService implements EfoService {
         }
     }
 
-    private Collection<EfoNode> getRootNodes(EfoGraph graph) {
+    private Collection<EfoNode> getRootNodes(EfoDag graph) {
         try {
             java.lang.reflect.Field f = graph.getClass().getDeclaredField("efoMap");
             f.setAccessible(true);
@@ -423,41 +424,5 @@ public class AnnotareEfoService implements EfoService {
             log.error("can't hack EfoGraph", e);
         }
         return emptyList();
-    }
-
-    private static class EfoNodeImpl implements EfoNode {
-        private final String accession;
-        private final String name;
-
-        private EfoNodeImpl(String accession, String name) {
-            this.accession = accession;
-            this.name = name;
-        }
-
-        @Override
-        public String getAccession() {
-            return accession;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public Collection<String> getAlternativeNames() {
-            //TODO may be add these field to the index?
-            return emptyList();
-        }
-
-        @Override
-        public Collection<? extends EfoNode> getParents() {
-            throw new UnsupportedOperationException("Illegal use of node");
-        }
-
-        @Override
-        public Collection<? extends EfoNode> getChildren() {
-            throw new UnsupportedOperationException("Illegal use of node");
-        }
     }
 }

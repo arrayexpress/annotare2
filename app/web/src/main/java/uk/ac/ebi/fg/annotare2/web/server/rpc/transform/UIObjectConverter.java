@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoNode;
+import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
@@ -202,18 +203,18 @@ public class UIObjectConverter {
         return new ArrayList<PublicationDto>(transform(exp.getPublications(), PUBLICATION_DTO));
     }
 
-    public static List<EfoTermDto> uiEfoTerms(Collection<EfoNode> terms) {
-        return new ArrayList<EfoTermDto>(transform(terms, new Function<EfoNode, EfoTermDto>() {
+    public static List<EfoTermDto> uiEfoTerms(Collection<EfoTerm> terms) {
+        return new ArrayList<EfoTermDto>(transform(terms, new Function<EfoTerm, EfoTermDto>() {
             @Nullable
             @Override
-            public EfoTermDto apply(@Nullable EfoNode input) {
+            public EfoTermDto apply(@Nullable EfoTerm input) {
                 return uiEfoTerm(input);
             }
         }));
     }
 
-    public static EfoTermDto uiEfoTerm(EfoNode term) {
-        return term == null ? null : new EfoTermDto(term.getAccession(), term.getName());
+    public static EfoTermDto uiEfoTerm(EfoTerm term) {
+        return term == null ? null : new EfoTermDto(term.getAccession(), term.getLabel());
     }
 
     public static EfoTermDto uiEfoTerm(OntologyTerm term) {
