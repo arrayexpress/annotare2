@@ -17,27 +17,15 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.*;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import com.google.gwt.view.client.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
@@ -55,68 +43,53 @@ import java.util.Set;
  */
 public class SamplesViewImpl extends Composite implements SamplesView {
 
-    private static final int PAGE_SIZE = 50;
-
-    interface Binder extends UiBinder<Widget, SamplesViewImpl> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
-
-    @UiField
-    SimpleLayoutPanel gridPanel;
-
-    @UiField
-    HorizontalPanel toolBar;
-
-    private MyDataGrid<SampleRow> dataGrid;
-    private ListDataProvider<SampleRow> dataProvider;
-    private SimplePager pager;
-    private MultiSelectionModel<SampleRow> selectionModel;
+    private final GridView<SampleRow> gridView;
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
-
-    private int permanentColumnCount;
 
     private Presenter presenter;
 
     public SamplesViewImpl() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
-        toolBar.add(createTools());
-    }
+        gridView = new GridView<SampleRow>();
+        Button button = new Button("Sample Attributes");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new SampleColumnsDialog(columns,
+                        presenter.getEfoTerms(),
+                        new SampleColumnsDialog.Callback() {
+                            @Override
+                            public void onCancel() {
+                            }
 
-    @Override
-    public void setData(List<SampleRow> rows, List<SampleColumn> columns) {
-        //TODO put resources as inner interface
-        MyDataGridResources resources = GWT.create(MyDataGridResources.class);
-        dataGrid = new MyDataGrid<SampleRow>(PAGE_SIZE, resources);
-        dataGrid.setEmptyTableWidget(new Label("No data"));
+                            @Override
+                            public void onOkay(List<SampleColumn> columns) {
+                                updateColumns(columns);
+                            }
+                        });
+            }
+        });
+        gridView.addTool(button);
 
-        selectionModel =
-                new MultiSelectionModel<SampleRow>(new ProvidesKey<SampleRow>() {
-                    @Override
-                    public Object getKey(SampleRow item) {
-                        return item.getName();
-                    }
-                });
+        button = new Button("Add Sample");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                createNewSample();
+            }
+        });
+        gridView.addTool(button);
 
-        dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager.<SampleRow>createCheckboxManager());
+        button = new Button("Delete Selected Rows");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                deleteSelectedSamples();
+            }
+        });
+        gridView.addTool(button);
 
-        dataProvider = new ListDataProvider<SampleRow>();
-        dataProvider.addDataDisplay(dataGrid);
-        dataProvider.getList().addAll(rows);
-
-        ColumnSortEvent.ListHandler<SampleRow> sortHandler =
-                new ColumnSortEvent.ListHandler<SampleRow>(dataProvider.getList());
-        dataGrid.addColumnSortHandler(sortHandler);
-
-        setColumns(dataGrid, sortHandler, columns);
-
-        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
-        pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
-        pager.setDisplay(dataGrid);
-        toolBar.add(pager);
-        toolBar.setCellHorizontalAlignment(pager, HasHorizontalAlignment.ALIGN_RIGHT);
-
-        gridPanel.add(dataGrid);
+        initWidget(gridView);
     }
 
     @Override
@@ -124,40 +97,77 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         this.presenter = presenter;
     }
 
-    private void setColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler, List<SampleColumn> columns) {
-        this.columns = new ArrayList<SampleColumn>(columns);
+    @Override
+    public void setData(List<SampleRow> rows, List<SampleColumn> columns) {
+        gridView.setRows(rows);
+        setColumns(columns);
+    }
 
-        addPermanentColumns(dataGrid, sortHandler);
-        permanentColumnCount = dataGrid.getColumnCount();
+    private void setColumns(List<SampleColumn> columns) {
+        this.columns = new ArrayList<SampleColumn>(columns);
+        addNameColumn();
         for (SampleColumn column : columns) {
             addColumn(column);
         }
     }
 
     private void updateColumns(List<SampleColumn> newColumns) {
-        for (int i = 0; i < this.columns.size(); i++) {
-            dataGrid.clearColumnWidth(permanentColumnCount - 1 + i);
-        }
-        for (SampleColumn column : this.columns) {
-            dataGrid.removeColumn(permanentColumnCount - 1);
-        }
-
-        dataGrid.fix();
-
         newColumns = presenter.updateColumns(newColumns);
-
+        columns = new ArrayList<SampleColumn>(newColumns);
+        gridView.clearColumns();
         for (SampleColumn column : newColumns) {
             addColumn(column);
         }
-
-        this.columns = new ArrayList<SampleColumn>(newColumns);
     }
 
-    private void addColumn(SampleColumn column) {
-        insertColumn(column, dataGrid.getColumnCount());
+    private void updateRow(SampleRow row) {
+        presenter.updateRow(row);
     }
 
-    private void insertColumn(final SampleColumn sampleColumn, int beforeIndex) {
+    private void createNewSample() {
+        gridView.addRow(presenter.createSample());
+    }
+
+    private void deleteSelectedSamples() {
+        Set<SampleRow> selection = gridView.getSelectedRows();
+        if (selection.isEmpty()) {
+            return;
+        }
+        presenter.removeSamples(new ArrayList<SampleRow>(selection));
+        gridView.removeSelectedRows();
+    }
+
+    private void addNameColumn() {
+        Column<SampleRow, String> column = new Column<SampleRow, String>(new EditTextCell()) {
+            @Override
+            public String getValue(SampleRow row) {
+                return row.getName();
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
+            @Override
+            public void update(int index, SampleRow row, String value) {
+                // TODO check names are unique
+                row.setName(value);
+                updateRow(row);
+            }
+        });
+        column.setSortable(true);
+        Comparator<SampleRow> comparator = new Comparator<SampleRow>() {
+            @Override
+            public int compare(SampleRow o1, SampleRow o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+                String v1 = o1.getName();
+                String v2 = o2.getName();
+                return v1.compareTo(v2);
+            }
+        };
+        gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
+    }
+
+    private void addColumn(final SampleColumn sampleColumn) {
         Column<SampleRow, String> column = new Column<SampleRow, String>(
                 createCellEditor(sampleColumn)
         ) {
@@ -174,8 +184,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         });
         column.setSortable(true);
-        dataGrid.insertResizableColumn(column, sampleColumn.getName(), beforeIndex);
-        dataGrid.setColumnWidth(beforeIndex - 1, 150, Style.Unit.PX);
+        gridView.addColumn(sampleColumn.getName(), column, null, 150, Style.Unit.PX);
     }
 
     private Cell<String> createCellEditor(SampleColumn sampleColumn) {
@@ -210,192 +219,5 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         });
         return editor.iterator().next();
-    }
-
-    private void addPermanentColumns(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler) {
-        addCheckBoxColumn(dataGrid);
-        addNameColumn(dataGrid, sortHandler);
-    }
-
-    private void addCheckBoxColumn(final MyDataGrid<SampleRow> dataGrid) {
-        Column<SampleRow, Boolean> checkboxColumn = new Column<SampleRow, Boolean>(new CheckboxCell(true, false)) {
-            @Override
-            public Boolean getValue(SampleRow object) {
-                return dataGrid.getSelectionModel().isSelected(object);
-            }
-        };
-        CheckboxHeader checkboxHeader = new CheckboxHeader();
-        checkboxHeader.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                selectAllRows(event.getValue());
-            }
-        });
-        dataGrid.addColumn(checkboxColumn, checkboxHeader);
-        dataGrid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
-    }
-
-    private void addNameColumn(MyDataGrid<SampleRow> dataGrid, ColumnSortEvent.ListHandler<SampleRow> sortHandler) {
-        Column<SampleRow, String> column = new Column<SampleRow, String>(new EditTextCell()) {
-            @Override
-            public String getValue(SampleRow row) {
-                return row.getName();
-            }
-        };
-        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
-            @Override
-            public void update(int index, SampleRow row, String value) {
-                // TODO check names are unique
-                row.setName(value);
-                updateRow(row);
-            }
-        });
-        sortHandler.setComparator(column, new Comparator<SampleRow>() {
-            @Override
-            public int compare(SampleRow o1, SampleRow o2) {
-                if (o1 == o2) {
-                    return 0;
-                }
-                String v1 = o1.getName();
-                String v2 = o2.getName();
-                return v1.compareTo(v2);
-            }
-        });
-        column.setSortable(true);
-        dataGrid.addResizableColumn(column, "Name");
-        dataGrid.setColumnWidth(column, 150, Style.Unit.PX);
-    }
-
-    private HorizontalPanel createTools() {
-        HorizontalPanel tools = new HorizontalPanel();
-        tools.setSpacing(3);
-        Button button = new Button("Sample Attributes");
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                new SampleColumnsDialog(columns,
-                        presenter.getEfoTerms(),
-                        new SampleColumnsDialog.Callback() {
-                            @Override
-                            public void onCancel() {
-                            }
-
-                            @Override
-                            public void onOkay(List<SampleColumn> columns) {
-                                updateColumns(columns);
-                            }
-                        });
-            }
-        });
-        tools.add(button);
-
-        button = new Button("Add Sample");
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                createNewSample();
-            }
-        });
-        tools.add(button);
-
-        button = new Button("Delete Selected Rows");
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                deleteSelectedSamples();
-            }
-        });
-        tools.add(button);
-
-        return tools;
-    }
-
-    private void updateRow(SampleRow row) {
-        presenter.updateRow(row);
-    }
-
-    private void createNewSample() {
-        addRow(presenter.createSample());
-    }
-
-    private void addRow(SampleRow row) {
-        dataProvider.getList().add(row);
-        if (pager.getPageCount() > 1) {
-            pager.lastPage();
-        }
-    }
-
-    private void selectAllRows(boolean selected) {
-        int start = pager.getPageStart();
-        List<SampleRow> sublist = dataProvider.getList().subList(
-                start, Math.min(start + pager.getPageSize(), dataProvider.getList().size()));
-        for (SampleRow row : sublist) {
-            selectionModel.setSelected(row, selected);
-        }
-    }
-
-    private void deleteSelectedSamples() {
-        Set<SampleRow> selectedRows = selectionModel.getSelectedSet();
-        if (selectedRows.isEmpty()) {
-            return;
-        }
-        presenter.removeSamples(new ArrayList<SampleRow>(selectedRows));
-        dataProvider.getList().removeAll(selectedRows);
-    }
-
-    private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
-
-        private boolean checked;
-        private HandlerManager handlerManager;
-
-        public CheckboxHeader() {
-            super(new CheckboxCell());
-            checked = false;
-        }
-
-        @Override
-        public Boolean getValue() {
-            return checked;
-        }
-
-        @Override
-        public void onBrowserEvent(Cell.Context context, Element elem, NativeEvent nativeEvent) {
-            int eventType = Event.as(nativeEvent).getTypeInt();
-            if (eventType == Event.ONCHANGE) {
-                nativeEvent.preventDefault();
-                //use value setter to easily fire change event to handlers
-                setValue(!checked, true);
-            }
-        }
-
-        @Override
-        public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Boolean> handler) {
-            return ensureHandlerManager().addHandler(ValueChangeEvent.getType(), handler);
-        }
-
-        @Override
-        public void fireEvent(GwtEvent<?> event) {
-            ensureHandlerManager().fireEvent(event);
-        }
-
-        @Override
-        public void setValue(Boolean value) {
-            checked = value;
-        }
-
-        @Override
-        public void setValue(Boolean value, boolean fireEvents) {
-            checked = value;
-            if (fireEvents) {
-                ValueChangeEvent.fire(this, value);
-            }
-        }
-
-        private HandlerManager ensureHandlerManager() {
-            if (handlerManager == null) {
-                handlerManager = new HandlerManager(this);
-            }
-            return handlerManager;
-        }
     }
 }
