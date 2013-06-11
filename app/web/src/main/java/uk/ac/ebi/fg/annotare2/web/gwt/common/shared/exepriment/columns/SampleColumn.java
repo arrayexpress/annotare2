@@ -116,7 +116,7 @@ public class SampleColumn implements IsSerializable, HasIdentity {
         List<SampleColumn> templates = new ArrayList<SampleColumn>();
         templates.add(new SampleColumn(0, "Material Type", MATERIAL_TYPE, new EfoTermValueType(result.getMaterialTypeTerm()), false));
         templates.add(new SampleColumn(0, "Organism", CHARACTERISTIC, new EfoTermValueType(result.getOrganismTerm()), false));
-        templates.add(new SampleColumn(0, "OrganismPart", CHARACTERISTIC, new EfoTermValueType(result.getOrganismPartTerm()), false));
+        templates.add(new SampleColumn(0, "Organism Part", CHARACTERISTIC, new EfoTermValueType(result.getOrganismPartTerm()), false));
         return templates;
     }
 
