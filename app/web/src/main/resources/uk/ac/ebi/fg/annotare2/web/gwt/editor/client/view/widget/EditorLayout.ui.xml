@@ -96,7 +96,20 @@
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay" />
                         </g:west>
                         <g:center>
-                            <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
+                            <g:SplitLayoutPanel>
+                                <g:center>
+                                    <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
+                                </g:center>
+                                <g:east size="20">
+                                    <g:HTMLPanel>
+                                        <table style="height:100%;width:100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td>FILES</td>
+                                            </tr>
+                                        </table>
+                                    </g:HTMLPanel>
+                                </g:east>
+                            </g:SplitLayoutPanel>
                         </g:center>
                     </g:DockLayoutPanel>
                 </g:center>
