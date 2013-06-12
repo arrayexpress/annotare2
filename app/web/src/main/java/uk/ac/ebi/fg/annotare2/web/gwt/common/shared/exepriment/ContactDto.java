@@ -2,6 +2,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ContactDto implements IsSerializable, HasIdentity {
+public class ContactDto implements IsSerializable, HasTemporaryIdentity {
 
     private int id;
 

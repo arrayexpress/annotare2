@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
+
+import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HasIdentity {
+public class DataFilesActivity extends AbstractActivity {
 
-    int getId();
+    @Override
+    public void start(AcceptsOneWidget panel, EventBus eventBus) {
+    }
+
+    public DataFilesActivity withPlace(ExpDesignPlace designPlace) {
+        return this;
+    }
 }

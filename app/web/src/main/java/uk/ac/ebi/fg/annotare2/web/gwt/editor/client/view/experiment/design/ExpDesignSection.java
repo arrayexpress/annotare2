@@ -31,19 +31,17 @@ import static uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType.TWO_
  * @author Olga Melnichuk
  */
 public enum ExpDesignSection implements LeftNavigationView.Section {
-    SAMPLES(ExpDesignSectionType.SAMPLES, "Create your samples", allOf(ExperimentConfigType.class)),
-    EXTRACTS(ExpDesignSectionType.EXTRACTS, "Create extracts and assign ENA library info", of(SEQUENCING)),
-    LABELED_EXTRACTS(ExpDesignSectionType.LABELED_EXTRACTS, "Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
-    RAW_FILES(ExpDesignSectionType.ARRAY_DATA_FILES, "Upload raw files", allOf(ExperimentConfigType.class)),
-    PROCESSED_FILES(ExpDesignSectionType.DERIVED_ARRAY_DATA_FILES, "Upload processed files", allOf(ExperimentConfigType.class)),
-    NONE(ExpDesignSectionType.NONE, "None", noneOf(ExperimentConfigType.class));
+    SAMPLES("Create your samples", allOf(ExperimentConfigType.class)),
+    EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING)),
+    LABELED_EXTRACTS("Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
+    RAW_FILES("Upload raw files", allOf(ExperimentConfigType.class)),
+    PROCESSED_FILES("Upload processed files", allOf(ExperimentConfigType.class)),
+    NONE("None", noneOf(ExperimentConfigType.class));
 
     private final String title;
-    private final ExpDesignSectionType type;
     private final EnumSet applyTo;
 
-    private ExpDesignSection(ExpDesignSectionType type, String title, EnumSet<ExperimentConfigType> applyTo) {
-        this.type = type;
+    private ExpDesignSection(String title, EnumSet<ExperimentConfigType> applyTo) {
         this.title = title;
         this.applyTo = applyTo;
     }
@@ -60,10 +58,6 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     @Override
     public String getKey() {
         return name();
-    }
-
-    public ExpDesignSectionType getType() {
-        return type;
     }
 
     public static List<ExpDesignSection> experimentDesignSectionsFor(ExperimentConfigType type) {

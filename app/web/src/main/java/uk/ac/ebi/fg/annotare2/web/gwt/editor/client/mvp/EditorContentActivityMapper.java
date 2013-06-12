@@ -25,7 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfDeta
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign.AdfTablePreviewActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSectionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
 
 /**
@@ -40,7 +40,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<SamplesActivity> samplesActivityProvider;
     private final Provider<ExtractsActivity> extractsActivityProvider;
     private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
-    private final Provider<ArrayDataFilesActivity> arrayDataFilesActivityProvider;
+    private final Provider<DataFilesActivity> dataFilesActivityProvider;
 
     private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
     private final Provider<IdfPreviewActivity> idfPreviewActivityProvider;
@@ -56,7 +56,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<SamplesActivity> samplesActivityProvider,
             Provider<ExtractsActivity> extractsActivityProvider,
             Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
-            Provider<ArrayDataFilesActivity> arrayDataFilesActivityProvider,
+            Provider<DataFilesActivity> dataFilesActivityProvider,
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
             Provider<IdfPreviewActivity> idfPreviewActivityProvider,
             Provider<AdfDetailsActivity> adfDetailsActivityProvider,
@@ -68,7 +68,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.samplesActivityProvider = samplesActivityProvider;
         this.extractsActivityProvider = extractsActivityProvider;
         this.labeledExtractsActivityProvider = labeledExtractsActivityProvider;
-        this.arrayDataFilesActivityProvider = arrayDataFilesActivityProvider;
+        this.dataFilesActivityProvider = dataFilesActivityProvider;
 
         this.sdrfPreviewActivityProvider = sdrfPreviewActivityProvider;
         this.idfPreviewActivityProvider = idfPreviewActivityProvider;
@@ -92,16 +92,16 @@ public class EditorContentActivityMapper implements ActivityMapper {
             }
         } else if (place instanceof ExpDesignPlace) {
             ExpDesignPlace designPlace = (ExpDesignPlace) place;
-            ExpDesignSectionType section = designPlace.getExpDesignSection().getType();
+            ExpDesignSection section = designPlace.getExpDesignSection();
             switch (section) {
                 case SAMPLES:
                     return (samplesActivityProvider.get()).withPlace(designPlace);
-                case EXTRACTS:
+                case EXTRACTS_LIBRARY_INFO:
                     return (extractsActivityProvider.get()).withPlace(designPlace);
                 case LABELED_EXTRACTS:
                     return (labeledExtractsActivityProvider.get()).withPlace(designPlace);
-                case ARRAY_DATA_FILES:
-                    return (arrayDataFilesActivityProvider.get()).withPlace(designPlace);
+                case RAW_FILES:
+                    return (dataFilesActivityProvider.get()).withPlace(designPlace);
             }
         } else if (place instanceof IdfPreviewPlace) {
             return (idfPreviewActivityProvider.get()).withPlace((IdfPreviewPlace) place);

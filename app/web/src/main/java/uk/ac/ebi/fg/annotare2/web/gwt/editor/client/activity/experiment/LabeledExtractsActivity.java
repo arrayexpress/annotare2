@@ -19,15 +19,25 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.LabeledExtractsView;
 
 /**
  * @author Olga Melnichuk
  */
 public class LabeledExtractsActivity extends AbstractActivity {
 
+    private LabeledExtractsView view;
+
+    @Inject
+    public LabeledExtractsActivity(LabeledExtractsView view) {
+        this.view = view;
+    }
+
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        panel.setWidget(view);
     }
 
     public LabeledExtractsActivity withPlace(ExpDesignPlace designPlace) {

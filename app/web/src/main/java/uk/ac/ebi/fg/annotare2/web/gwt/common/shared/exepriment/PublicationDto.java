@@ -17,12 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 
 /**
  * @author Olga Melnichuk
  */
-public class PublicationDto implements IsSerializable, HasIdentity {
+public class PublicationDto implements IsSerializable, HasTemporaryIdentity {
 
     private int id;
 

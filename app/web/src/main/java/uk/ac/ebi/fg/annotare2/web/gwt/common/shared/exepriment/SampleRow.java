@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.HasName;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class SampleRow implements IsSerializable, HasIdentity, HasName {
+public class SampleRow implements IsSerializable, HasTemporaryIdentity, HasName {
 
     private int id;
 

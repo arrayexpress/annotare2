@@ -14,12 +14,34 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HasIdentity {
+public class LabeledExtractRow implements HasIdentity, IsSerializable {
 
-    int getId();
+    private int id;
+    private String name;
+    private List<String> labels;
+
+    LabeledExtractRow() {
+    /* used by GWT serialization */
+    }
+
+    public LabeledExtractRow(int extractId, String extractName, List<String> labels) {
+        this.name = extractName;
+        this.labels = labels;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
 }
