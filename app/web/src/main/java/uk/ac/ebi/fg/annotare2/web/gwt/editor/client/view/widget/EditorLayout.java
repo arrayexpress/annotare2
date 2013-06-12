@@ -47,9 +47,16 @@ public class EditorLayout extends Composite {
     @UiField
     SplitLayoutPanel splitPanel;
 
+    @UiField
+    SplitLayoutPanel verticalSplit;
+
+    @UiField
+    HTMLPanel dockPanel;
+
     public EditorLayout() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+        verticalSplit.setWidgetMinSize(dockPanel, 20);
     }
 
     public HasOneWidget getTitleBarDisplay() {

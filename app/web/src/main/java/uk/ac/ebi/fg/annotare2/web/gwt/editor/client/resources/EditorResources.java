@@ -45,6 +45,9 @@ public interface EditorResources extends ClientBundle {
     @Source("../../public/images/display-icon.png")
     public ImageResource displayIcon();
 
+    @Source("../../public/images/upload-button.png")
+    public ImageResource uploadFilesButton();
+
     @Source("../../public/images/loading64.gif")
     public ImageResource loadingIndicator();
 

@@ -19,6 +19,8 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
+    <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
+
     <ui:style>
         .border {
             border: 1px solid #48877C;
@@ -96,15 +98,18 @@
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay" />
                         </g:west>
                         <g:center>
-                            <g:SplitLayoutPanel>
+                            <g:SplitLayoutPanel ui:field="verticalSplit">
                                 <g:center>
                                     <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
                                 </g:center>
                                 <g:east size="20">
-                                    <g:HTMLPanel>
+                                    <g:HTMLPanel ui:field="dockPanel">
                                         <table style="height:100%;width:100%" cellpadding="0" cellspacing="0">
                                             <tr>
-                                                <td>FILES</td>
+                                                <td></td>
+                                                <td style="width:20px;background-color:#eeeeee;vertical-align:top">
+                                                    <g:Image resource="{res.uploadFilesButton}" ui:field="removeIcon"/>
+                                                </td>
                                             </tr>
                                         </table>
                                     </g:HTMLPanel>
