@@ -14,7 +14,7 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     ScrollPanel logBarDisplay;
 
     @UiField
-    HTMLPanel dockPanel;
+    DockLayoutPanel dockPanel;
 
     @UiField
     SimpleLayoutPanel contentDisplay;
@@ -40,6 +40,7 @@ public class ExperimentLayout extends Composite implements EditorLayout {
 
     public ExperimentLayout() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+        verticalSplit.setWidgetMinSize(dockPanel, 21);
     }
 
    /* public void expandLogBar(double size) {

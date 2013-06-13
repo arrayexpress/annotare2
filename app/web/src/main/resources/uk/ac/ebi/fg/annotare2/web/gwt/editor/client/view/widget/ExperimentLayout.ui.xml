@@ -29,7 +29,7 @@
 
     <g:DockLayoutPanel>
         <g:north size="25">
-            <my:EditorTopMenuBar />
+            <my:EditorTopMenuBar/>
         </g:north>
         <g:north size="60">
             <g:SimpleLayoutPanel ui:field="titleBarDisplay"/>
@@ -49,7 +49,7 @@
                             </g:DockLayoutPanel>
                         </g:north>
                         <g:west size="0">
-                            <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay" />
+                            <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
                             <g:SplitLayoutPanel ui:field="verticalSplit">
@@ -57,16 +57,25 @@
                                     <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
                                 </g:center>
                                 <g:east size="20">
-                                    <g:HTMLPanel ui:field="dockPanel">
-                                        <table style="height:100%;width:100%;background-color:#eee;" cellpadding="0" cellspacing="0">
-                                            <tr>
-                                                <td></td>
-                                                <td style="width:20px;vertical-align:top">
-                                                    <g:Image resource="{res.uploadFilesButton}"/>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </g:HTMLPanel>
+                                    <g:DockLayoutPanel ui:field="dockPanel">
+                                        <g:east size="20">
+                                           <g:HTMLPanel>
+                                               <g:Image resource="{res.uploadFilesButton}"/>
+                                           </g:HTMLPanel>
+                                        </g:east>
+                                        <g:center>
+                                            <g:TabLayoutPanel barUnit="PX" barHeight="30">
+                                            <g:tab>
+                                                <g:header>All Files</g:header>
+                                                <my:DataFileListView />
+                                            </g:tab>
+                                            <g:tab>
+                                                <g:header>Upload</g:header>
+                                                <g:SimplePanel />
+                                            </g:tab>
+                                            </g:TabLayoutPanel>
+                                        </g:center>
+                                    </g:DockLayoutPanel>
                                 </g:east>
                             </g:SplitLayoutPanel>
                         </g:center>
