@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.MATERIAL_TY
 /**
  * @author Olga Melnichuk
  */
-public class SampleColumn implements IsSerializable, HasIdentity {
+public class SampleColumn implements IsSerializable, HasTemporaryIdentity {
 
     private static String NO_NAME = "NEW ATTRIBUTE";
 

@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public abstract class IdentityMap<T extends HasIdentity> {
+public abstract class IdentityMap<T extends HasTemporaryIdentity> {
 
     private int nextId = 0;
 
