@@ -171,4 +171,8 @@ public class ExperimentData {
     public void removeSamples(List<SampleRow> rows) {
         samples.removeSampleRows(rows);
     }
+
+    public void getLabeledExtracts(AsyncCallback<LabeledExtracts> asyncCallback) {
+        //TODO
+    }
 }

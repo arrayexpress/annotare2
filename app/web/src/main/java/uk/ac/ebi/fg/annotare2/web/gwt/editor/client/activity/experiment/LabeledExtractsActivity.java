@@ -18,8 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtracts;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.LabeledExtractsView;
 
@@ -28,19 +32,37 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.Label
  */
 public class LabeledExtractsActivity extends AbstractActivity {
 
-    private LabeledExtractsView view;
+    private final LabeledExtractsView view;
+    private final ExperimentData expData;
 
     @Inject
-    public LabeledExtractsActivity(LabeledExtractsView view) {
+    public LabeledExtractsActivity(LabeledExtractsView view, ExperimentData expData) {
         this.view = view;
+        this.expData = expData;
     }
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         panel.setWidget(view);
+        loadAsync();
     }
 
     public LabeledExtractsActivity withPlace(ExpDesignPlace designPlace) {
         return this;
+    }
+
+    private void loadAsync() {
+        expData.getLabeledExtracts(new AsyncCallback<LabeledExtracts>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //TODO
+                Window.alert(caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(LabeledExtracts result) {
+               view.setData(result.getRows(), result.getLabels());
+            }
+        });
     }
 }

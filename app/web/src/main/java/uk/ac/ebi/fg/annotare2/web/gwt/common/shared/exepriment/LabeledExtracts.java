@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,35 +24,13 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class LabeledExtractRow implements HasIdentity, IsSerializable {
-
-    private int id;
-    private String name;
-    private List<String> labels;
-
-    LabeledExtractRow() {
-    /* used by GWT serialization */
-    }
-
-    public LabeledExtractRow(int extractId, String extractName, List<String> labels) {
-        this.name = extractName;
-        this.labels = new ArrayList<String>(labels);
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
+public class LabeledExtracts implements IsSerializable {
 
     public List<String> getLabels() {
-        return labels;
+        return new ArrayList<String>();
     }
 
-    public boolean hasLabel(String label) {
-        return labels.contains(label);
+    public List<LabeledExtractRow> getRows() {
+        return new ArrayList<LabeledExtractRow>();
     }
 }
