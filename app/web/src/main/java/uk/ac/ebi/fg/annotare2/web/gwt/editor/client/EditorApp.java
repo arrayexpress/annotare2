@@ -34,14 +34,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignLayout;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorStartLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentLayout;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -102,8 +101,8 @@ public class EditorApp implements EntryPoint {
 
         SubmissionType type = details.getType();
         Widget layout = (type == EXPERIMENT && details.hasNoData()) ?
-            initStartLayout(eventBus) :
-            initMainLayout(eventBus);
+                initStartLayout(eventBus) :
+                initMainLayout(type, eventBus);
 
         EditorPlaceFactory factory = injector.getPlaceFactory();
         Place defaultPlace =
@@ -132,16 +131,16 @@ public class EditorApp implements EntryPoint {
         return layout;
     }
 
-    private Widget initMainLayout(EventBus eventBus) {
-        final EditorLayout layout = new EditorLayout();
+    private Widget initMainLayout(SubmissionType type, EventBus eventBus) {
+        EditorLayout layout = type == EXPERIMENT ? new ExperimentLayout() : new ArrayDesignLayout();
 
-        eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
+       /* eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
             @Override
             public void validationFinished(ValidationResult result) {
                 //TODO not sure about the constant size
                 layout.expandLogBar(250);
             }
-        });
+        });*/
 
         ActivityMapper titleBarActivityMapper = injector.getTitleBarActivityMapper();
         ActivityManager titleBarActivityManager = new ActivityManager(titleBarActivityMapper, eventBus);
@@ -159,10 +158,12 @@ public class EditorApp implements EntryPoint {
         ActivityManager contentActivityManager = new ActivityManager(contentActivityMapper, eventBus);
         contentActivityManager.setDisplay(layout.getContentDisplay());
 
-        ActivityMapper logBarActivityMapper = injector.getLogBarActivityMapper();
-        ActivityManager logBarActivityManager = new ActivityManager(logBarActivityMapper, eventBus);
-        logBarActivityManager.setDisplay(layout.getLogBarDisplay());
+        if (layout.getLogBarDisplay() != null) {
+            ActivityMapper logBarActivityMapper = injector.getLogBarActivityMapper();
+            ActivityManager logBarActivityManager = new ActivityManager(logBarActivityMapper, eventBus);
+            logBarActivityManager.setDisplay(layout.getLogBarDisplay());
+        }
 
-        return layout;
+        return layout.asWidget();
     }
 }

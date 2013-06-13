@@ -26,11 +26,5 @@ public interface AdfServiceAsync {
 
     void importBodyData(int submissionId, AsyncCallback<Void> async);
 
-    void importHeaderData(int submissionId, AsyncCallback<Void> async);
-
     void loadBodyData(int submissionId, AsyncCallback<Table> async);
-
-    void loadHeaderData(int submissionId, AsyncCallback<Table> async);
-
-    void updateHeaderData(int submissionId, Operation operation, AsyncCallback<Void> async);
 }

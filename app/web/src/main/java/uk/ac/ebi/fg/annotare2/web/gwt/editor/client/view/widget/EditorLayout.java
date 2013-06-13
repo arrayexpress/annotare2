@@ -16,74 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorLayout extends Composite {
+public interface EditorLayout extends IsWidget {
 
-    interface Binder extends UiBinder<DockLayoutPanel, EditorLayout> {
-    }
+    public HasOneWidget getTitleBarDisplay();
 
-    @UiField
-    HasOneWidget titleBarDisplay;
+    public HasOneWidget getTabBarDisplay();
 
-    @UiField
-    HasOneWidget tabBarDisplay;
+    public HasOneWidget getLeftMenuDisplay();
 
-    @UiField
-    HasOneWidget leftMenuDisplay;
+    public HasOneWidget getContentDisplay();
 
-    @UiField
-    HasOneWidget contentDisplay;
+    public HasOneWidget getLogBarDisplay();
 
-    @UiField
-    HasOneWidget logBarDisplay;
-
-    @UiField
-    SplitLayoutPanel splitPanel;
-
-    @UiField
-    SplitLayoutPanel verticalSplit;
-
-    @UiField
-    HTMLPanel dockPanel;
-
-    public EditorLayout() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
-        verticalSplit.setWidgetMinSize(dockPanel, 20);
-    }
-
-    public HasOneWidget getTitleBarDisplay() {
-        return titleBarDisplay;
-    }
-
-    public HasOneWidget getTabBarDisplay() {
-        return tabBarDisplay;
-    }
-
-    public HasOneWidget getLeftMenuDisplay() {
-        return leftMenuDisplay;
-    }
-
-    public HasOneWidget getContentDisplay() {
-        return contentDisplay;
-    }
-
-    public HasOneWidget getLogBarDisplay() {
-        return logBarDisplay;
-    }
-
-    public void expandLogBar(double size) {
-        Widget w = splitPanel.getWidget(0);
-        double widgetSize = splitPanel.getWidgetSize(w);
-        if (widgetSize < size) {
-            splitPanel.setWidgetSize(w, size);
-        }
-    }
 }
