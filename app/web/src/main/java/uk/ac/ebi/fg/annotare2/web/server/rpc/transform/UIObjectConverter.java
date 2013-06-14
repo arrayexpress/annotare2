@@ -23,7 +23,6 @@ import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoNode;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
@@ -95,10 +94,10 @@ public class UIObjectConverter {
         }
     };
 
-    static Function<SampleProfile, SampleRow> SAMPLE_ROW = new Function<SampleProfile, SampleRow>() {
+    static Function<Sample, SampleRow> SAMPLE_ROW = new Function<Sample, SampleRow>() {
         @Nullable
         @Override
-        public SampleRow apply(@Nullable SampleProfile sample) {
+        public SampleRow apply(@Nullable Sample sample) {
             checkNotNull(sample);
             return new SampleRow(sample.getId(), sample.getName(), sample.getValues());
         }

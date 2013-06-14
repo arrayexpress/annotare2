@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
-import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import java.util.HashMap;

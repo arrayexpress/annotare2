@@ -16,10 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import uk.ac.ebi.fg.annotare2.submissionmodel.HasId;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -28,7 +30,9 @@ import static java.util.Collections.unmodifiableList;
 /**
  * @author Olga Melnichuk
  */
-public class Contact implements HasId {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Contact implements Serializable {
 
     @JsonProperty("id")
     private int id;
@@ -60,13 +64,16 @@ public class Contact implements HasId {
     @JsonProperty("roles")
     private List<String> roles;
 
+    Contact() {
+    /* used by GWT serialization */
+    }
+
     @JsonCreator
     public Contact(@JsonProperty("id") int id) {
         this.id = id;
         this.roles = newArrayList();
     }
 
-    @Override
     public int getId() {
         return id;
     }

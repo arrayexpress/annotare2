@@ -21,7 +21,7 @@
     <artifactId>annotare2-web</artifactId>
     <packaging>war</packaging>
     <version>0.15-SNAPSHOT</version>
-    <name>Annotare 2.0 Web</name>
+    <name>Web</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
@@ -91,10 +91,8 @@
 
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
-            <artifactId>annotare2-om</artifactId>
+            <artifactId>annotare2-om-gwt</artifactId>
             <version>0.15-SNAPSHOT</version>
-            <classifier>sources</classifier>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

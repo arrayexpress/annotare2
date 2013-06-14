@@ -16,13 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class PrintingProtocol {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PrintingProtocol implements Serializable {
 
     private static final String SEPARATOR = ":";
 
@@ -34,6 +40,10 @@ public class PrintingProtocol {
 
     @JsonProperty("description")
     private String description;
+
+    PrintingProtocol() {
+    /* used by GWT serialization only */
+    }
 
     @JsonCreator
     public PrintingProtocol(@JsonProperty("id") int id,

@@ -16,12 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public class TermAttributeValueType extends AttributeValueType {
 
-    private final OntologyTerm branch;
+    private OntologyTerm branch;
+
+    TermAttributeValueType() {
+    /* used by GWT serialization */
+    }
 
     public TermAttributeValueType(OntologyTerm branch) {
         super(AttributeValueSubType.TERM);

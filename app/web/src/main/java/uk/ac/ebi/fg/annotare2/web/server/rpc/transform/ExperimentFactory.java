@@ -17,14 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.Sample;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType.*;
+import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType.*;
 
 /**
  * @author Olga Melnichuk
@@ -35,13 +35,13 @@ public class ExperimentFactory {
         ONE_COLOR_EXPERIMENT_BUILDER(ONE_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                ExperimentProfile config = new ExperimentProfile(ONE_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExperimentProfile(ONE_COLOR_MICROARRAY);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
-                    SampleProfile sample = config.createSample();
-                    config.assignLabel(sample, settings.getLabel());
+                    Sample sample = exp.createSample();
+                    //exp.assignLabel(sample, settings.getLabel());
                 }
-                return config;
+                return exp;
             }
         },
         TWO_COLOR_EXPERIMENT_BUILDER(TWO_COLOR_MICROARRAY) {

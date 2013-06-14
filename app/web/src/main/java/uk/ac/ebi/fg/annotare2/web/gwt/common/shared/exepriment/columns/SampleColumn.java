@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
+import uk.ac.ebi.fg.annotare2.configmodel.AttributeType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
@@ -25,8 +25,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.CHARACTERISTIC;
-import static uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType.MATERIAL_TYPE;
+import static uk.ac.ebi.fg.annotare2.configmodel.AttributeType.CHARACTERISTIC;
+import static uk.ac.ebi.fg.annotare2.configmodel.AttributeType.MATERIAL_TYPE;
 
 /**
  * @author Olga Melnichuk

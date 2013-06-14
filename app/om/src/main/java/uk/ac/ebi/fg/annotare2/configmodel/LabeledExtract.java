@@ -16,62 +16,33 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class LabeledExtractProfile {
+@GwtCompatible
+public class LabeledExtract implements Serializable {
 
-    @JsonProperty("id")
     private int id;
 
     @JsonProperty("label")
     private String label;
 
-    private SampleProfile sample;
-    private int sampleId;
-
     @JsonCreator
-    public LabeledExtractProfile(@JsonProperty("id") int id, @JsonProperty("sample") int sampleId, @JsonProperty("label") String label) {
-        this.id = id;
-        this.sampleId = sampleId;
+    public LabeledExtract(int id, @JsonProperty("label") String label) {
         this.label = label;
-    }
-
-    public LabeledExtractProfile(int id, @Nonnull SampleProfile sample, String label) {
-        this(id, sample.getId(), label);
-        this.sample = sample;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getLabel() {
         return label;
     }
-
-    @JsonIgnore
-    public SampleProfile getSample() {
-        return sample;
-    }
-
-    @JsonProperty("sample")
-    Integer getSampleId() {
-        return sampleId;
-    }
-
-    void fix(ExperimentProfile config) {
-        this.sample = config.getSample(sampleId);
-    }
-
-    @JsonIgnore
-    public String getName() {
-        return sample.getName() + "@" + label;
-    }
 }
+

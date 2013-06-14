@@ -18,18 +18,41 @@ package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
 
+import java.io.Serializable;
+
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class TextAttributeValueType extends AttributeValueType {
+public class Extract implements Serializable {
 
-    public TextAttributeValueType() {
-        super(AttributeValueSubType.TEXT);
+    private int id;
+
+    private String name;
+
+    Extract() {
+    /* used by GWT serialization */
+    }
+
+    public Extract(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     @Override
-    public void visit(Visitor visitor) {
-        visitor.visitTextValueType(this);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Extract extract = (Extract) o;
+
+        if (id != extract.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

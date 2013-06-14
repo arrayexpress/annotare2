@@ -16,19 +16,29 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class OntologyTerm {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class OntologyTerm implements Serializable {
 
     @JsonProperty("accession")
-    private final String accession;
+    private String accession;
 
     @JsonProperty("label")
-    private final String label;
+    private String label;
+
+    OntologyTerm() {
+    /* used by GWT serialization only */
+    }
 
     @JsonCreator
     public OntologyTerm(@JsonProperty("accession") String accession,

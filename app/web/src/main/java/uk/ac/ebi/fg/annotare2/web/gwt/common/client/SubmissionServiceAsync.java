@@ -1,6 +1,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
@@ -41,4 +42,6 @@ public interface SubmissionServiceAsync {
     void updateExperiment(int id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentUpdateResult> async);
 
     void updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands, AsyncCallback<ArrayDesignUpdateResult> async);
+
+    void loadExperiment(int id, AsyncCallback<ExperimentProfile> async);
 }

@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
@@ -49,6 +50,8 @@ public class ExperimentData {
     private ExperimentDetails details;
 
     private ExperimentSettings settings;
+
+    private ExperimentProfile exp;
 
     @Inject
     public ExperimentData(EventBus eventBus,
@@ -82,7 +85,7 @@ public class ExperimentData {
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
-        if (settings != null) {
+       /* if (settings != null) {
             callback.onSuccess(settings);
             return;
         }
@@ -96,6 +99,22 @@ public class ExperimentData {
             public void onSuccess(ExperimentSettings result) {
                 settings = result;
                 callback.onSuccess(result);
+            }
+        }.wrap());*/
+        if (exp != null) {
+            callback.onSuccess(new ExperimentSettings(exp.getType()));
+            return;
+        }
+        submissionService.loadExperiment(getSubmissionId(), new AsyncCallbackWrapper<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                exp = result;
+                callback.onSuccess(new ExperimentSettings(exp.getType()));
             }
         }.wrap());
     }

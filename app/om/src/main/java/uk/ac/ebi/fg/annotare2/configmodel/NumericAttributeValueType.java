@@ -16,12 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public class NumericAttributeValueType extends AttributeValueType {
 
-    private final OntologyTerm units;
+    private OntologyTerm units;
+
+    NumericAttributeValueType() {
+    /* used by GWT serialization */
+    }
 
     public NumericAttributeValueType(OntologyTerm units) {
         super(AttributeValueSubType.NUMBER);

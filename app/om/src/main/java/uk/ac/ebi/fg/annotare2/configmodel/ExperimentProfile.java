@@ -16,39 +16,36 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentProfile {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ExperimentProfile implements Serializable {
 
     @JsonProperty("nextId")
     int nextId;
 
     @JsonProperty("type")
-    private final ExperimentConfigType type;
+    private ExperimentConfigType type;
 
     @JsonProperty("accession")
     private String accession;
@@ -72,10 +69,10 @@ public class ExperimentProfile {
     private Map<Integer, Publication> publications;
 
     @JsonProperty("sampleMap")
-    private Map<Integer, SampleProfile> samples;
+    private Map<Integer, Sample> samples;
 
-    @JsonProperty("labeledExtractMap")
-    private Map<Integer, LabeledExtractProfile> labeledExtracts;
+    @JsonProperty("extractMap")
+    private Map<Integer, Extract> extracts;
 
     @JsonProperty("sampleAttributeMap")
     private Map<Integer, SampleAttribute> sampleAttributeMap;
@@ -83,16 +80,25 @@ public class ExperimentProfile {
     @JsonProperty("sampleAttributeOrder")
     private List<Integer> sampleAttributeOrder;
 
+    private Set<String> labels;
+
+    private Set<LabeledExtract> labeledExtracts;
+
+    ExperimentProfile() {
+        /* used by GWT serialization */
+    }
+
     public ExperimentProfile(@JsonProperty("type") ExperimentConfigType type) {
         this.type = type;
-        samples = newLinkedHashMap();
-        labeledExtracts = newLinkedHashMap();
-
         contacts = newLinkedHashMap();
         publications = newLinkedHashMap();
 
+        samples = newLinkedHashMap();
         sampleAttributeMap = newLinkedHashMap();
         sampleAttributeOrder = newArrayList();
+
+        extracts = newHashMap();
+        labels = newHashSet();
     }
 
     public ExperimentConfigType getType() {
@@ -159,28 +165,18 @@ public class ExperimentProfile {
         return publications.remove(id);
     }
 
-    public SampleProfile createSample() {
-        SampleProfile sample = new SampleProfile(nextId());
+    public Sample createSample() {
+        Sample sample = new Sample(nextId());
         samples.put(sample.getId(), sample);
         return sample;
     }
 
     public void removeSample(int id) {
-        for (LabeledExtractProfile labeledExtract : labeledExtracts.values()) {
-            if (labeledExtract.getSample().getId() == id) {
-                removeLabeledExtract(labeledExtract.getId());
-            }
-        }
         samples.remove(id);
     }
 
     public void removeLabeledExtract(int id) {
         labeledExtracts.remove(id);
-    }
-
-    public void assignLabel(SampleProfile config, String label) {
-        LabeledExtractProfile labeledExtract = new LabeledExtractProfile(nextId(), config, label);
-        labeledExtracts.put(labeledExtract.getId(), labeledExtract);
     }
 
     public Contact getContact(int id) {
@@ -191,7 +187,7 @@ public class ExperimentProfile {
         return publications.get(id);
     }
 
-    public SampleProfile getSample(int id) {
+    public Sample getSample(int id) {
         return samples.get(id);
     }
 
@@ -207,7 +203,7 @@ public class ExperimentProfile {
     }
 
     public void removeSampleAttribute(int id) {
-        for (SampleProfile sample : getSamples()) {
+        for (Sample sample : getSamples()) {
             sample.removeAttributeValue(id);
         }
         sampleAttributeMap.remove(id);
@@ -244,54 +240,18 @@ public class ExperimentProfile {
     }
 
     @JsonIgnore
-    public Collection<SampleProfile> getSamples() {
+    public Collection<Sample> getSamples() {
         return unmodifiableCollection(samples.values());
-    }
-
-    @JsonIgnore
-    public Collection<LabeledExtractProfile> getLabeledExtracts() {
-        return unmodifiableCollection(labeledExtracts.values());
-    }
-
-    public static ExperimentProfile fromJsonString(String str) throws DataSerializationException {
-        if (isNullOrEmpty(str)) {
-            return null;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            ExperimentProfile exp = mapper.readValue(str, ExperimentProfile.class);
-            exp.fixMe();
-            return exp;
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
-    }
-
-    public String toJsonString() throws DataSerializationException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
     }
 
     private int nextId() {
         return ++nextId;
     }
 
-    private void fixMe() {
-        for (LabeledExtractProfile labeledExtract : labeledExtracts.values()) {
+    public void fixMe() {
+       /* for (LabeledExtract labeledExtract : labeledExtracts.values()) {
             labeledExtract.fix(this);
-        }
+        }*/
     }
 
 }

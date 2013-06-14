@@ -19,8 +19,6 @@ package uk.ac.ebi.fg.annotare2.magetab.integration;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SDRFNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.CharacteristicsAttribute;
@@ -86,7 +84,7 @@ public class MageTabGenerator {
 
     private void generateSdrf(SDRF sdrf) throws ParseException {
         Map<Integer, SDRFNode> map = newHashMap();
-        for (SampleProfile sample : exp.getSamples()) {
+        for (Sample sample : exp.getSamples()) {
             SampleNode sampleNode = new SampleNode();
             sampleNode.setNodeName(sample.getName());
             sampleNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
@@ -94,21 +92,9 @@ public class MageTabGenerator {
             sdrf.addNode(sampleNode);
             map.put(sample.getId(), sampleNode);
         }
-
-        for (LabeledExtractProfile labeledExtract : exp.getLabeledExtracts()) {
-            SDRFNode sampleNode = map.get(labeledExtract.getSample().getId());
-
-            ExtractNode extractNode = new ExtractNode();
-            extractNode.setNodeName(labeledExtract.getSample().getName());
-            sampleNode.addChildNode(extractNode);
-            extractNode.addParentNode(sampleNode);
-
-            LabeledExtractNode labeledExtractNode = new LabeledExtractNode();
-            labeledExtractNode.setNodeName(labeledExtract.getName());
-        }
     }
 
-    private MaterialTypeAttribute extractMaterialTypeAttribute(SampleProfile sample) {
+    private MaterialTypeAttribute extractMaterialTypeAttribute(Sample sample) {
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
             if (attribute.getType().isMaterialType()) {
                 MaterialTypeAttribute attr = new MaterialTypeAttribute();
@@ -119,7 +105,7 @@ public class MageTabGenerator {
         return null;
     }
 
-    private List<CharacteristicsAttribute> extractCharacteristicsAttributes(SampleProfile sample) {
+    private List<CharacteristicsAttribute> extractCharacteristicsAttributes(Sample sample) {
         List<CharacteristicsAttribute> attributes = new ArrayList<CharacteristicsAttribute>();
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
             if (attribute.getType().isCharacteristic()) {

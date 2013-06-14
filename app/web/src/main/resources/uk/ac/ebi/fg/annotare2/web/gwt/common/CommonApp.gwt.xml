@@ -14,10 +14,7 @@
   ~ limitations under the License.
   -->
 <module>
-
-    <inherits name="uk.ac.ebi.fg.annotare2.om.Enums" />
-
-    <inherits name="uk.ac.ebi.fg.annotare2.configmodel.Enums" />
+    <inherits name="uk.ac.ebi.fg.annotare2.ExperimentProfile" />
 
     <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab"/>
 

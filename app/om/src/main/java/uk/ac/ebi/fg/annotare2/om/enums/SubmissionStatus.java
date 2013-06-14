@@ -16,9 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.om.enums;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public enum SubmissionStatus {
     IN_PROGRESS("In Progress"),
     SUBMITTED("Submitted"),

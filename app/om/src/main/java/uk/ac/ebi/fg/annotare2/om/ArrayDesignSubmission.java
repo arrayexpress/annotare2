@@ -16,9 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -45,11 +49,11 @@ public class ArrayDesignSubmission extends Submission {
     }
 
     public ArrayDesignHeader getHeader() throws DataSerializationException {
-        return ArrayDesignHeader.fromJsonString(header);
+        return fromJsonString(header);
     }
 
     public void setHeader(ArrayDesignHeader header) throws DataSerializationException {
-        this.header = header.toJsonString();
+        this.header = toJsonString(header);
     }
 
     @Override
@@ -60,5 +64,34 @@ public class ArrayDesignSubmission extends Submission {
     @Override
     public void discardAll() {
         throw new UnsupportedOperationException("Can't discard data for ArrayDesign");
+    }
+
+    public static ArrayDesignHeader fromJsonString(String str) throws DataSerializationException {
+        if (isNullOrEmpty(str)) {
+            return null;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(str, ArrayDesignHeader.class);
+        } catch (JsonGenerationException e) {
+            throw new DataSerializationException(e);
+        } catch (JsonMappingException e) {
+            throw new DataSerializationException(e);
+        } catch (IOException e) {
+            throw new DataSerializationException(e);
+        }
+    }
+
+    public static String toJsonString(ArrayDesignHeader header) throws DataSerializationException {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(header);
+        } catch (JsonGenerationException e) {
+            throw new DataSerializationException(e);
+        } catch (JsonMappingException e) {
+            throw new DataSerializationException(e);
+        } catch (IOException e) {
+            throw new DataSerializationException(e);
+        }
     }
 }

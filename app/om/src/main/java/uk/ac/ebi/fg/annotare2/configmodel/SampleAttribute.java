@@ -16,15 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import uk.ac.ebi.fg.annotare2.configmodel.enums.AttributeType;
+import uk.ac.ebi.fg.annotare2.configmodel.AttributeType;
+
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class SampleAttribute {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SampleAttribute implements Serializable {
 
     @JsonProperty("id")
     private int id;
@@ -46,6 +52,10 @@ public class SampleAttribute {
 
     @JsonProperty("editable")
     private boolean isEditable;
+
+    SampleAttribute() {
+    /* used by GWT serialization */
+    }
 
     @JsonCreator
     public SampleAttribute(@JsonProperty("id") int id) {

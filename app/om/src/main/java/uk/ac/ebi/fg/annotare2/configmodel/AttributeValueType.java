@@ -16,12 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
+
+import java.io.Serializable;
+
 /**
  * @author Olga Melnichuk
  */
-public abstract class AttributeValueType {
+@GwtCompatible
+public abstract class AttributeValueType implements Serializable {
 
-    private final AttributeValueSubType valueSubType;
+    private AttributeValueSubType valueSubType;
+
+    protected AttributeValueType() {
+    /* used by GWT serialization */
+    }
 
     protected AttributeValueType(AttributeValueSubType valueSubType) {
         this.valueSubType = valueSubType;

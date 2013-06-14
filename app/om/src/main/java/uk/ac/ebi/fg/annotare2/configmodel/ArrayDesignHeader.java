@@ -16,21 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
-import org.codehaus.jackson.JsonGenerationException;
+import com.google.common.annotations.GwtCompatible;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDesignHeader {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ArrayDesignHeader implements Serializable {
 
     @JsonProperty("name")
     private String name;
@@ -107,34 +105,5 @@ public class ArrayDesignHeader {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public static ArrayDesignHeader fromJsonString(String str) throws DataSerializationException {
-        if (isNullOrEmpty(str)) {
-            return null;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(str, ArrayDesignHeader.class);
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
-    }
-
-    public String toJsonString() throws DataSerializationException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
     }
 }

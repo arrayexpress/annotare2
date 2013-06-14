@@ -16,8 +16,9 @@
   ~ limitations under the License.
   -->
 <module>
-    <source path="enums">
-        <include name="ExperimentConfigType.java"/>
-        <include name="AttributeType.java"/>
+    <inherits name="com.google.common.collect.Collect"/>
+    <source path="configmodel"/>
+    <source path="om/enums">
+        <include name="SubmissionStatus.java"/>
     </source>
 </module>

@@ -16,19 +16,26 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.unmodifiableMap;
 
 /**
  * @author Olga Melnichuk
  */
-public class SampleProfile {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Sample implements Serializable {
 
     @JsonProperty("id")
     private int id;
@@ -39,10 +46,18 @@ public class SampleProfile {
     @JsonProperty("values")
     private Map<Integer, String> values;
 
+
+    private Set<Extract> extracts;
+
+    Sample() {
+    /* used by GWT serialization */
+    }
+
     @JsonCreator
-    public SampleProfile(@JsonProperty("id") int id) {
+    public Sample(@JsonProperty("id") int id) {
         this.id = id;
         values = newHashMap();
+        extracts = newHashSet();
     }
 
     public int getId() {
@@ -72,5 +87,22 @@ public class SampleProfile {
 
     void removeAttributeValue(int id) {
         values.remove(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sample sample = (Sample) o;
+
+        if (id != sample.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

@@ -21,7 +21,7 @@
     <artifactId>annotare2-om</artifactId>
     <packaging>jar</packaging>
     <version>0.15-SNAPSHOT</version>
-    <name>Annotare 2.0 Object Model</name>
+    <name>Object Model</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
@@ -77,6 +77,11 @@
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>1.9.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava-gwt</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 </project>

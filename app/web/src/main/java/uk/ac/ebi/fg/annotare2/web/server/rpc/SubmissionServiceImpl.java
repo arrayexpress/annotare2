@@ -338,6 +338,20 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
+    @Override
+    public ExperimentProfile loadExperiment(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            return submission.getExperimentProfile();
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e, Permission.UPDATE);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        }
+    }
+
     /**
      * A workaround to reset NodeFactory.instance field to reflect changes in SDRF nodes;
      * without this workaround SDRFWriter uses SDRF nodes from the first run;

@@ -16,9 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public enum AttributeValueSubType {
     TEXT {
         @Override

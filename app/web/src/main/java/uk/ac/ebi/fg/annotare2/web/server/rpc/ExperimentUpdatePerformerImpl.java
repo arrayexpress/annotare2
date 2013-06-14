@@ -141,7 +141,7 @@ public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer 
 
     @Override
     public void updateSampleRow(SampleRow row) {
-        SampleProfile sample = exp.getSample(row.getId());
+        Sample sample = exp.getSample(row.getId());
         sample.setName(row.getName());
         sample.setValues(row.getValues());
         result.updated(row);
@@ -149,7 +149,7 @@ public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer 
 
     @Override
     public void createSample(SampleRow row) {
-        SampleProfile sample = exp.createSample();
+        Sample sample = exp.createSample();
         sample.setName(row.getName());
 
         result.created(new SampleRow(sample.getId(), row));

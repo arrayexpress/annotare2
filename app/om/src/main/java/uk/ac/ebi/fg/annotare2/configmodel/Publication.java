@@ -16,13 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.configmodel;
 
+import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-public class Publication {
+@GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Publication implements Serializable {
 
     @JsonProperty("id")
     private int id;
@@ -35,6 +41,10 @@ public class Publication {
 
     @JsonProperty("authors")
     private String authors;
+
+    Publication() {
+    /* used by GWT serialization */
+    }
 
     @JsonCreator
     public Publication(@JsonProperty("id") int id) {

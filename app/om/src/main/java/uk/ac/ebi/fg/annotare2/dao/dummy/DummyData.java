@@ -23,8 +23,6 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.io.CharStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
@@ -111,7 +109,7 @@ public class DummyData {
             submission.setStatus(status);
 
             //TODO use experiment object instead
-            submission.setExperimentProfile(ExperimentProfile.fromJsonString(
+            submission.setExperimentProfile(ExperimentSubmission.fromJsonString(
                     CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(jsonFile), Charsets.UTF_8))));
 
             submission.setTitle(title);
@@ -136,7 +134,7 @@ public class DummyData {
             submission.setAccession(accession);
             submission.setTitle(title);
             submission.setHeader(
-                    ArrayDesignHeader.fromJsonString(
+                    ArrayDesignSubmission.fromJsonString(
                             CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(headerFile), Charsets.UTF_8))));
             submission.setBody(
                     CharStreams.toString(new InputStreamReader(DummyData.class.getResourceAsStream(bodyFile), Charsets.UTF_8))

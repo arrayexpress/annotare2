@@ -21,12 +21,15 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SourceNode;
 import uk.ac.ebi.fg.annotare2.configmodel.Contact;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.Publication;
-import uk.ac.ebi.fg.annotare2.configmodel.SampleProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.enums.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.Sample;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.IdfData;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Info;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Person;
@@ -115,43 +118,31 @@ public class ExperimentMageTabImporter {
 
     private void addSampleConfigsFromSamples(Collection<SampleNode> samples) throws ImportExperimentException {
         for (SampleNode node : samples) {
-            SampleProfile config = exp.createSample();
+            Sample config = exp.createSample();
             config.setName(node.getNodeName());
             //TODO set material type and characteristics
-            assignLabels(config, node);
+           // assignLabels(config, node);
         }
     }
 
     private void addSampleConfigsFromSources(Collection<SourceNode> sources) throws ImportExperimentException {
         for (SourceNode node : sources) {
-            SampleProfile config = exp.createSample();
+            Sample config = exp.createSample();
             config.setName(node.getNodeName());
             //TODO set material type and characteristics
-            assignLabels(config, node);
+           // assignLabels(config, node);
         }
     }
 
     private void addSampleConfigsFromExtracts(Collection<ExtractNode> extracts) throws ImportExperimentException {
         for(ExtractNode node : extracts) {
-            SampleProfile config = exp.createSample();
+            Sample config = exp.createSample();
             config.setName(node.getNodeName());
             //TODO set material type and characteristics
-            assignLabels(config, node);
+           /// assignLabels(config, node);
         }
     }
 
-    private void assignLabels(SampleProfile config, SDRFNode node) throws ImportExperimentException {
-        if (!exp.getType().isMicroarray()) {
-            return;
-        }
-        Collection<LabeledExtractNode> labeledExtracts = findLabeledExtracts(node);
-        if (labeledExtracts.isEmpty()) {
-            throw new ImportExperimentException("Invalid experiment: no labeled extracts found for '" + config.getName() + "' ");
-        }
-        for(LabeledExtractNode labeledExtract : labeledExtracts) {
-            exp.assignLabel(config, labeledExtract.label.getAttributeValue());
-        }
-    }
 
     private List<LabeledExtractNode> findLabeledExtracts(Node node) {
         List<LabeledExtractNode> nodes = newArrayList();

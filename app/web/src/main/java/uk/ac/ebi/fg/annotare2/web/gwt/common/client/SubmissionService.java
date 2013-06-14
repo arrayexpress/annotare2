@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
@@ -64,4 +65,6 @@ public interface SubmissionService extends RemoteService {
     ExperimentUpdateResult updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 
     ArrayDesignUpdateResult updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
+
+    ExperimentProfile loadExperiment(int id) throws ResourceNotFoundException, NoPermissionException;
 }
