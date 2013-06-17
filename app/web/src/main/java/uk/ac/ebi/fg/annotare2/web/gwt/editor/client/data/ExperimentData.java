@@ -300,6 +300,10 @@ public class ExperimentData {
         //TODO
     }
 
+    public void getExtractAttributeRowsAsync(AsyncCallback<List<ExtractAttributeRow>> asyncCallback) {
+        //TODO
+    }
+
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
         private ColumnValueType valueType;

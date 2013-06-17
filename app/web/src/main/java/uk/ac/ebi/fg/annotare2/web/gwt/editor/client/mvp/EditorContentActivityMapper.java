@@ -38,7 +38,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<PublicationListActivity> publicationsActivityProvider;
 
     private final Provider<SamplesActivity> samplesActivityProvider;
-    private final Provider<ExtractsActivity> extractsActivityProvider;
+    private final Provider<ExtractAttributesActivity> extractAttributesActivityProvider;
     private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
     private final Provider<DataFilesActivity> dataFilesActivityProvider;
 
@@ -54,7 +54,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<ContactListActivity> contactsActivityProvider,
             Provider<PublicationListActivity> publicationsActivityProvider,
             Provider<SamplesActivity> samplesActivityProvider,
-            Provider<ExtractsActivity> extractsActivityProvider,
+            Provider<ExtractAttributesActivity> extractAttributesActivityProvider,
             Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
             Provider<DataFilesActivity> dataFilesActivityProvider,
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
@@ -66,7 +66,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.publicationsActivityProvider = publicationsActivityProvider;
 
         this.samplesActivityProvider = samplesActivityProvider;
-        this.extractsActivityProvider = extractsActivityProvider;
+        this.extractAttributesActivityProvider = extractAttributesActivityProvider;
         this.labeledExtractsActivityProvider = labeledExtractsActivityProvider;
         this.dataFilesActivityProvider = dataFilesActivityProvider;
 
@@ -97,7 +97,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
                 case SAMPLES:
                     return (samplesActivityProvider.get()).withPlace(designPlace);
                 case EXTRACTS_LIBRARY_INFO:
-                    return (extractsActivityProvider.get()).withPlace(designPlace);
+                    return (extractAttributesActivityProvider.get()).withPlace(designPlace);
                 case LABELED_EXTRACTS:
                     return (labeledExtractsActivityProvider.get()).withPlace(designPlace);
                 case RAW_FILES:

@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributeRow;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExtractsActivity extends AbstractActivity {
+public interface ExtractAttributesView extends IsWidget {
 
-    @Override
-    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-    }
-
-    public ExtractsActivity withPlace(ExpDesignPlace designPlace) {
-        return this;
-    }
+    void setData(List<ExtractAttributeRow> rows);
 }
