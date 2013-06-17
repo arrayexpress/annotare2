@@ -99,6 +99,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     @Override
     public void setData(List<SampleRow> rows, List<SampleColumn> columns) {
+        gridView.clearAllColumns();
         gridView.setRows(rows);
         setColumns(columns);
     }
@@ -112,12 +113,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void updateColumns(List<SampleColumn> newColumns) {
-        newColumns = presenter.updateColumns(newColumns);
-        columns = new ArrayList<SampleColumn>(newColumns);
-        gridView.clearColumns();
-        for (SampleColumn column : newColumns) {
-            addColumn(column);
-        }
+        presenter.updateColumns(newColumns);
     }
 
     private void updateRow(SampleRow row) {
@@ -125,7 +121,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void createNewSample() {
-        gridView.addRow(presenter.createSample());
+        presenter.createSample();
     }
 
     private void deleteSelectedSamples() {

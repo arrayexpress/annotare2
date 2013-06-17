@@ -18,28 +18,31 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
-public class RemovePublicationCommand implements ExperimentUpdateCommand {
+public class RemovePublicationsCommand implements ExperimentUpdateCommand {
 
-    private PublicationDto publication;
+    private List<PublicationDto> publications;
 
-    RemovePublicationCommand() {
+    RemovePublicationsCommand() {
         /*used by GWT serialization only */
     }
 
-    public RemovePublicationCommand(PublicationDto publication) {
-        this.publication = publication;
+    public RemovePublicationsCommand(List<PublicationDto> publications) {
+        this.publications = new ArrayList<PublicationDto>(publications);
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.removePublication(publication);
+        performer.removePublications(publications);
     }
 
     @Override
     public boolean isCritical() {
-        return false;
+        return true;
     }
 }

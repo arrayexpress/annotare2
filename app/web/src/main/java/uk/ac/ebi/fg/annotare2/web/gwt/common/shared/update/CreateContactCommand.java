@@ -16,30 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-
 /**
  * @author Olga Melnichuk
  */
 public class CreateContactCommand implements ExperimentUpdateCommand {
 
-    private  ContactDto contact;
-
-    CreateContactCommand() {
-        /*used by GWT serialization only*/
-    }
-
-    public CreateContactCommand(ContactDto contact) {
-        this.contact = contact;
+    public CreateContactCommand() {
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.createContact(contact);
+        performer.createContact();
     }
 
     @Override
     public boolean isCritical() {
-        return false;
+        return true;
     }
 }

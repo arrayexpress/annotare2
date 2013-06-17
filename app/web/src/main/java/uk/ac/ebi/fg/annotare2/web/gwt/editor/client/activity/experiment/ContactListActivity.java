@@ -18,12 +18,15 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ContactListView;
 
@@ -35,8 +38,8 @@ import java.util.List;
 public class ContactListActivity extends AbstractActivity implements ContactListView.Presenter {
 
     private final ContactListView view;
-
     private final ExperimentData experimentData;
+    private HandlerRegistration criticalUpdateHandler;
 
     @Inject
     public ContactListActivity(ContactListView view,
@@ -54,11 +57,23 @@ public class ContactListActivity extends AbstractActivity implements ContactList
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
+
+        criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
+            @Override
+            public void criticalUpdateStarted(CriticalUpdateEvent event) {
+            }
+
+            @Override
+            public void criticalUpdateFinished(CriticalUpdateEvent event) {
+                loadAsync();
+            }
+        });
     }
 
     @Override
     public void onStop() {
         experimentData.updateContacts(view.getContacts());
+        criticalUpdateHandler.removeHandler();
         super.onStop();
     }
 
@@ -68,8 +83,8 @@ public class ContactListActivity extends AbstractActivity implements ContactList
     }
 
     @Override
-    public ContactDto createContact() {
-        return experimentData.createContact();
+    public void createContact() {
+        experimentData.createContact();
     }
 
     @Override

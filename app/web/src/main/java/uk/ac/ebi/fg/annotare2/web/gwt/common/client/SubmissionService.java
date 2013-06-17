@@ -62,9 +62,9 @@ public interface SubmissionService extends RemoteService {
 
     void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException;
 
-    ExperimentUpdateResult updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
-
     ArrayDesignUpdateResult updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 
     ExperimentProfile loadExperiment(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    ExperimentProfile updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 }

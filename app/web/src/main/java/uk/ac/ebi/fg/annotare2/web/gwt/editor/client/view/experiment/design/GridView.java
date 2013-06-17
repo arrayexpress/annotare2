@@ -37,6 +37,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import java.util.Comparator;
 import java.util.List;
@@ -80,6 +81,10 @@ public class GridView<R extends HasIdentity> extends Composite {
     }
 
     public void setRows(List<R> rows) {
+        if (dataGrid != null) {
+            dataProvider.setList(rows);
+            return;
+        }
         //TODO put resources as inner interface
         MyDataGridResources resources = GWT.create(MyDataGridResources.class);
         dataGrid = new MyDataGrid<R>(PAGE_SIZE, resources);
@@ -113,16 +118,27 @@ public class GridView<R extends HasIdentity> extends Composite {
         gridPanel.add(dataGrid);
     }
 
+    public void clearAllColumns() {
+        if (dataGrid == null) {
+            return;
+        }
+        clearColumns(0, dataGrid.getColumnCount() - 1);
+    }
+
     public void clearColumns() {
         int columnCount = dataGrid.getColumnCount() - permanentColumnCount - 1;
         if (columnCount <= 0) {
             return;
         }
-        for (int i = 0; i < columnCount; i++) {
-            dataGrid.clearColumnWidth(permanentColumnCount + i);
+        clearColumns(permanentColumnCount, columnCount);
+    }
+
+    private void clearColumns(int fromIndex, int count) {
+        for (int i = 0; i < count; i++) {
+            dataGrid.clearColumnWidth(fromIndex + i);
         }
-        for (int i = 0; i < columnCount; i++) {
-            dataGrid.removeColumn(permanentColumnCount);
+        for (int i = 0; i < count; i++) {
+            dataGrid.removeColumn(fromIndex);
         }
         dataGrid.fix();
     }

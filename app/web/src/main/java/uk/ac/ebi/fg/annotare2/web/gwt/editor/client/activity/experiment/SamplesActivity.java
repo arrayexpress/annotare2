@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -29,6 +30,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColu
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ColumnValueTypeEfoTerms;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
@@ -45,11 +48,12 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
 
     private final ColumnValueTypeEfoTerms efoTerms;
 
+    private HandlerRegistration criticalUpdateHandler;
+
     @Inject
     public SamplesActivity(SamplesView view,
                            ExperimentData expData,
-                           EfoTerms efoTerms
-    ) {
+                           EfoTerms efoTerms) {
         this.view = view;
         this.expData = expData;
         this.efoTerms = wrapEfoTerms(efoTerms);
@@ -59,7 +63,23 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view);
-        loadSamples();
+        loadAsync();
+        criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
+            @Override
+            public void criticalUpdateStarted(CriticalUpdateEvent event) {
+            }
+
+            @Override
+            public void criticalUpdateFinished(CriticalUpdateEvent event) {
+                loadAsync();
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        criticalUpdateHandler.removeHandler();
+        super.onStop();
     }
 
     public SamplesActivity withPlace(ExpDesignPlace designPlace) {
@@ -72,8 +92,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public List<SampleColumn> updateColumns(List<SampleColumn> newColumns) {
-        return expData.updateSampleColumns(newColumns);
+    public void updateColumns(List<SampleColumn> newColumns) {
+        expData.updateSampleColumns(newColumns);
     }
 
     @Override
@@ -82,8 +102,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public SampleRow createSample() {
-        return expData.createSample();
+    public void createSample() {
+        expData.createSample();
     }
 
     @Override
@@ -91,7 +111,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         expData.removeSamples(rows);
     }
 
-    private void loadSamples() {
+    private void loadAsync() {
         expData.getSamplesAsync(new AsyncCallback<SampleRowsAndColumns>() {
             @Override
             public void onFailure(Throwable caught) {

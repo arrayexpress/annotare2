@@ -61,6 +61,7 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
 
     @Override
     public void setContacts(List<ContactDto> contacts) {
+        clear();
         for (ContactDto p : contacts) {
             addContactView(p);
         }
@@ -72,8 +73,7 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     }
 
     private void addNewContact() {
-        DisclosureListItem item = addContactView(presenter.createContact());
-        //todo scroll + item.open();
+        presenter.createContact();
     }
 
     private DisclosureListItem addContactView(ContactDto p) {

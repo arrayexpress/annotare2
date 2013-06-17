@@ -16,30 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
-
 /**
  * @author Olga Melnichuk
  */
 public class CreatePublicationCommand implements ExperimentUpdateCommand {
-
-    private PublicationDto publication;
-
-    CreatePublicationCommand() {
-        /*used by GWT serialization only*/
-    }
-
-    public CreatePublicationCommand(PublicationDto publication) {
-        this.publication = publication;
+    public CreatePublicationCommand() {
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.createPublication(publication);
+        performer.createPublication();
     }
 
     @Override
     public boolean isCritical() {
-        return false;
+        return true;
     }
 }

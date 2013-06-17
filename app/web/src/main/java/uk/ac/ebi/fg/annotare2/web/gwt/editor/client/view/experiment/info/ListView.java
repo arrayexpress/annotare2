@@ -101,4 +101,7 @@ public class ListView<T> extends Composite {
         return count;
     }
 
+    protected void clear() {
+        listPanel.clear();
+    }
 }

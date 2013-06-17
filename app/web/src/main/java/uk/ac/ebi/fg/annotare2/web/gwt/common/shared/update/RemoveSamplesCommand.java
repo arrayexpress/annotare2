@@ -16,30 +16,33 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class RemoveContactCommand implements ExperimentUpdateCommand {
+public class RemoveSamplesCommand implements ExperimentUpdateCommand {
 
-    private ContactDto contact;
+    private List<SampleRow> rows;
 
-    RemoveContactCommand() {
-        /*used by GWT serialization only*/
+    RemoveSamplesCommand() {
+        /*used by GWT serialization only */
     }
 
-    public RemoveContactCommand(ContactDto contact) {
-        this.contact = contact;
+    public RemoveSamplesCommand(List<SampleRow> rows) {
+        this.rows = new ArrayList<SampleRow>(rows);
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.removeContact(contact);
+        performer.removeSamples(rows);
     }
 
     @Override
     public boolean isCritical() {
-        return false;
+        return true;
     }
 }

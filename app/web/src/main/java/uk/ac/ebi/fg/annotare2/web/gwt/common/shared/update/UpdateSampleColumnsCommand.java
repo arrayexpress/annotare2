@@ -38,7 +38,7 @@ public class UpdateSampleColumnsCommand implements ExperimentUpdateCommand {
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.updateSampleColumns(columns);
+        performer.updateSampleAttributes(columns);
     }
 
     @Override

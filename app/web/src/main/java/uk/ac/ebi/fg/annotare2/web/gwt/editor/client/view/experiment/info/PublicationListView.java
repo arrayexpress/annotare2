@@ -36,7 +36,7 @@ public interface PublicationListView extends IsWidget {
 
         void updatePublication(PublicationDto publication);
 
-        PublicationDto createPublication();
+        void createPublication();
 
         void removePublications(List<PublicationDto> publications);
     }

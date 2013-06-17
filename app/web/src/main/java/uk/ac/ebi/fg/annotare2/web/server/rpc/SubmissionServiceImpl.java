@@ -305,13 +305,13 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public ExperimentUpdateResult updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentProfile updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             ExperimentProfile experiment = submission.getExperimentProfile();
-            ExperimentUpdateResult result = new ExperimentUpdatePerformerImpl(experiment).run(commands);
+            new ExperimentUpdatePerformerImpl(experiment).run(commands);
             submission.setExperimentProfile(experiment);
-            return result;
+            return experiment;
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {

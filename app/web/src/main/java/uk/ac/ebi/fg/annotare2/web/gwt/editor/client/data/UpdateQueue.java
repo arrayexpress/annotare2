@@ -16,16 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataUpdateEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasDataUpdateEventHandlers;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,22 +35,20 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateE
 /**
  * @author Olga Melnichuk
  */
-public class UpdateQueue<C extends UpdateCommand, R> implements HasDataUpdateEventHandlers<R> {
+public class UpdateQueue<C extends UpdateCommand, R> {
 
     private static final int REPEAT_INTERVAL = 2000;
 
     private final EventBus eventBus;
-    private final Transport transport;
-    private final HandlerManager handlerManager;
+    private final Transport<C, R> transport;
 
     private Queue<C> queue = new LinkedList<C>();
     private boolean isActive;
+    private boolean criticalUpdateStarted;
 
-    public UpdateQueue(EventBus eventBus, Transport transport) {
+    public UpdateQueue(EventBus eventBus, Transport<C, R> transport) {
         this.eventBus = eventBus;
         this.transport = transport;
-
-        handlerManager = new HandlerManager(this);
 
         new Timer() {
             @Override
@@ -63,11 +56,6 @@ public class UpdateQueue<C extends UpdateCommand, R> implements HasDataUpdateEve
                 execute();
             }
         }.scheduleRepeating(REPEAT_INTERVAL);
-    }
-
-    @Override
-    public HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler<R> handler) {
-        return handlerManager.addHandler(DataUpdateEvent.getType(), handler);
     }
 
     public void add(C command) {
@@ -103,15 +91,10 @@ public class UpdateQueue<C extends UpdateCommand, R> implements HasDataUpdateEve
                 for (int i = 0; i < queueSize; i++) {
                     queue.poll();
                 }
-                fireDataUpdateEvent(result);
+                notifyCriticalUpdateStop();
                 next();
             }
         });
-    }
-
-    private void fireDataUpdateEvent(R result) {
-        DataUpdateEvent.fire(handlerManager, result);
-        notifyCriticalUpdateStop();
     }
 
     private void notifyStart() {
@@ -128,6 +111,7 @@ public class UpdateQueue<C extends UpdateCommand, R> implements HasDataUpdateEve
     }
 
     private void notifyCriticalUpdateStart() {
+        criticalUpdateStarted = true;
         eventBus.fireEvent(criticalUpdateStarted());
     }
 
@@ -139,7 +123,7 @@ public class UpdateQueue<C extends UpdateCommand, R> implements HasDataUpdateEve
                 break;
             }
         }
-        if (!hasCriticalCommand) {
+        if (!hasCriticalCommand && criticalUpdateStarted) {
             eventBus.fireEvent(criticalUpdateFinished());
         }
     }

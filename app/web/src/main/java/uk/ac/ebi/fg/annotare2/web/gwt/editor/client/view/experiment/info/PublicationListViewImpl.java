@@ -83,8 +83,7 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
     }
 
     private void addNewPublication() {
-        DisclosureListItem item = addPublicationView(presenter.createPublication());
-        //todo scroll + item.open();
+        presenter.createPublication();
     }
 
     private void removeSelectedPublications() {

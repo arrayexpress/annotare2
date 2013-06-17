@@ -35,7 +35,7 @@ public class UpdateSampleRowCommand implements ExperimentUpdateCommand {
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.updateSampleRow(row);
+        performer.updateSample(row);
     }
 
     @Override

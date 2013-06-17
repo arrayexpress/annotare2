@@ -39,9 +39,9 @@ public interface SubmissionServiceAsync {
 
     void getArrayDesignDetails(int id, AsyncCallback<ArrayDesignDetailsDto> async);
 
-    void updateExperiment(int id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentUpdateResult> async);
-
     void updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands, AsyncCallback<ArrayDesignUpdateResult> async);
 
     void loadExperiment(int id, AsyncCallback<ExperimentProfile> async);
+
+    void updateExperiment(int id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentProfile> async);
 }

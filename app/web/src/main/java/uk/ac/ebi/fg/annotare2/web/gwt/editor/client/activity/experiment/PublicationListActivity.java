@@ -18,12 +18,15 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.PublicationListView;
 
@@ -36,6 +39,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
 
     private final PublicationListView view;
     private final ExperimentData experimentData;
+    private HandlerRegistration criticalUpdateHandler;
 
     @Inject
     public PublicationListActivity(PublicationListView view,
@@ -49,11 +53,22 @@ public class PublicationListActivity extends AbstractActivity implements Publica
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
+        criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
+            @Override
+            public void criticalUpdateStarted(CriticalUpdateEvent event) {
+            }
+
+            @Override
+            public void criticalUpdateFinished(CriticalUpdateEvent event) {
+                loadAsync();
+            }
+        });
     }
 
     @Override
     public void onStop() {
         experimentData.updatePublications(view.getPublications());
+        criticalUpdateHandler.removeHandler();
         super.onStop();
     }
 
@@ -67,8 +82,8 @@ public class PublicationListActivity extends AbstractActivity implements Publica
     }
 
     @Override
-    public PublicationDto createPublication() {
-        return experimentData.createPublication();
+    public void createPublication() {
+        experimentData.createPublication();
     }
 
     @Override

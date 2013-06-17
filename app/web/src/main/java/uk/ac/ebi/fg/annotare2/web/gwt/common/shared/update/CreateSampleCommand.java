@@ -16,30 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-
 /**
  * @author Olga Melnichuk
  */
 public class CreateSampleCommand implements ExperimentUpdateCommand {
 
-    private SampleRow row;
-
-    CreateSampleCommand() {
-        /*used by GWT serialization only*/
-    }
-
-    public CreateSampleCommand(SampleRow row) {
-        this.row = row;
+    public CreateSampleCommand() {
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.createSample(row);
+        performer.createSample();
     }
 
     @Override
     public boolean isCritical() {
-        return false;
+        return true;
     }
 }

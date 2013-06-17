@@ -29,25 +29,25 @@ import java.util.List;
  */
 public interface ExperimentUpdatePerformer {
 
-    void createContact(ContactDto contact);
+    void createContact();
 
     void updateContact(ContactDto contact);
 
-    void removeContact(ContactDto contact);
+    void removeContacts(List<ContactDto> contacts);
 
-    void createPublication(PublicationDto publication);
+    void createPublication();
 
     void updatePublication(PublicationDto publication);
 
-    void removePublication(PublicationDto publication);
+    void removePublications(List<PublicationDto> publications);
 
     void updateDetails(ExperimentDetailsDto details);
 
-    void updateSampleColumns(List<SampleColumn> columns);
+    void updateSampleAttributes(List<SampleColumn> columns);
 
-    void updateSampleRow(SampleRow row);
+    void updateSample(SampleRow row);
 
-    void createSample(SampleRow row);
+    void createSample();
 
-    void removeSample(SampleRow row);
+    void removeSamples(List<SampleRow> row);
 }

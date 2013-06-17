@@ -20,14 +20,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +41,7 @@ public class ExperimentData {
 
     private final SubmissionServiceAsync submissionService;
 
-    private ExperimentSamples samples;
-
-    private ExperimentContacts contacts;
-
-    private ExperimentPublications publications;
-
-    private ExperimentDetails details;
-
-    private ExperimentSettings settings;
+    private final UpdateQueue<ExperimentUpdateCommand, ExperimentProfile> updateQueue;
 
     private ExperimentProfile exp;
 
@@ -58,51 +50,32 @@ public class ExperimentData {
                           SubmissionServiceAsync submissionServiceAsync) {
         submissionService = submissionServiceAsync;
 
-        UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult> updateQueue =
-                new UpdateQueue<ExperimentUpdateCommand, ExperimentUpdateResult>(eventBus,
-                        new UpdateQueue.Transport<ExperimentUpdateCommand, ExperimentUpdateResult>() {
+        updateQueue =
+                new UpdateQueue<ExperimentUpdateCommand, ExperimentProfile>(eventBus,
+                        new UpdateQueue.Transport<ExperimentUpdateCommand, ExperimentProfile>() {
                             @Override
-                            public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<ExperimentUpdateResult> callback) {
-                                submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<ExperimentUpdateResult>() {
+                            public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<ExperimentProfile> callback) {
+                                submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<ExperimentProfile>() {
                                     @Override
                                     public void onFailure(Throwable caught) {
                                         callback.onFailure(caught);
                                     }
 
                                     @Override
-                                    public void onSuccess(ExperimentUpdateResult result) {
+                                    public void onSuccess(ExperimentProfile result) {
+                                        exp = result;
                                         callback.onSuccess(result);
                                     }
                                 }.wrap());
                             }
                         });
 
-        details = new ExperimentDetails(submissionService, updateQueue);
-        contacts = new ExperimentContacts(submissionService, updateQueue);
-        publications = new ExperimentPublications(submissionService, updateQueue);
-        samples = new ExperimentSamples(submissionService, updateQueue);
         GWT.log(getClass().getName() + ": initialized");
     }
 
-    public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
-       /* if (settings != null) {
-            callback.onSuccess(settings);
-            return;
-        }
-        submissionService.getExperimentSettings(getSubmissionId(), new AsyncCallbackWrapper<ExperimentSettings>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(ExperimentSettings result) {
-                settings = result;
-                callback.onSuccess(result);
-            }
-        }.wrap());*/
+    private void getExperiment(final AsyncCallback<ExperimentProfile> callback) {
         if (exp != null) {
-            callback.onSuccess(new ExperimentSettings(exp.getType()));
+            callback.onSuccess(exp);
             return;
         }
         submissionService.loadExperiment(getSubmissionId(), new AsyncCallbackWrapper<ExperimentProfile>() {
@@ -114,84 +87,242 @@ public class ExperimentData {
             @Override
             public void onSuccess(ExperimentProfile result) {
                 exp = result;
-                callback.onSuccess(new ExperimentSettings(exp.getType()));
+                callback.onSuccess(exp);
             }
         }.wrap());
     }
 
-    public void getDetailsAsync(AsyncCallback<ExperimentDetailsDto> callback) {
-        details.getDetailsAsync(callback);
+    private ExperimentDetailsDto getExperimentDetails(ExperimentProfile exp) {
+        return new ExperimentDetailsDto(
+                exp.getTitle(),
+                exp.getDescription(),
+                exp.getExperimentDate(),
+                exp.getPublicReleaseDate()
+        );
     }
 
-    public void getContactsAsync(AsyncCallback<List<ContactDto>> callback) {
-        contacts.getContactsAsync(callback);
+    private List<ContactDto> getContacts(ExperimentProfile exp) {
+        List<ContactDto> contacts = new ArrayList<ContactDto>();
+        for (Contact contact : exp.getContacts()) {
+            contacts.add(new ContactDto(
+                    contact.getId(),
+                    contact.getId(),
+                    contact.getFirstName(),
+                    contact.getLastName(),
+                    contact.getMidInitials(),
+                    contact.getEmail(),
+                    contact.getPhone(),
+                    contact.getFax(),
+                    contact.getAffiliation(),
+                    contact.getAddress(),
+                    contact.getRoles()
+            ));
+        }
+        return contacts;
     }
 
-    public void getPublicationsAsync(AsyncCallback<List<PublicationDto>> callback) {
-        publications.getPublicationsAsync(callback);
+    private List<PublicationDto> getPublications(ExperimentProfile exp) {
+        List<PublicationDto> publications = new ArrayList<PublicationDto>();
+        for (Publication publication : exp.getPublications()) {
+            publications.add(new PublicationDto(
+                    publication.getId(),
+                    publication.getId(),
+                    publication.getTitle(),
+                    publication.getAuthors(),
+                    publication.getPubMedId()
+            ));
+        }
+        return publications;
     }
 
-    public void getSamplesAsync(AsyncCallback<SampleRowsAndColumns> callback) {
-        samples.getSamplesAsync(callback);
+    private SampleRowsAndColumns getSampleRowsAndColumns(ExperimentProfile exp) {
+        return new SampleRowsAndColumns(
+                getSampleRows(exp),
+                getSampleColumns(exp));
     }
 
-    public void updateDetails(ExperimentDetailsDto toBeUpdated) {
-        details.updateDetails(toBeUpdated);
+    private List<SampleRow> getSampleRows(ExperimentProfile exp) {
+        List<SampleRow> rows = new ArrayList<SampleRow>();
+        for (Sample sample : exp.getSamples()) {
+            rows.add(new SampleRow(
+                    sample.getId(),
+                    sample.getName(),
+                    sample.getValues()
+            ));
+        }
+        return rows;
     }
 
-    public ContactDto createContact() {
-        return contacts.create();
+    private List<SampleColumn> getSampleColumns(ExperimentProfile exp) {
+        List<SampleColumn> columns = new ArrayList<SampleColumn>();
+        for (SampleAttribute attr : exp.getSampleAttributes()) {
+            AttributeValueTypeVisitor visitor = new AttributeValueTypeVisitor();
+            attr.getValueType().visit(visitor);
+            columns.add(new SampleColumn(
+                    attr.getId(),
+                    attr.getName(),
+                    attr.getType(),
+                    visitor.getValueType(),
+                    attr.isEditable()
+            ));
+        }
+        return columns;
+    }
+
+
+    public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(new ExperimentSettings(result.getType()));
+            }
+        });
+    }
+
+    public void getDetailsAsync(final AsyncCallback<ExperimentDetailsDto> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getExperimentDetails(result));
+            }
+        });
+    }
+
+    public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getContacts(result));
+            }
+        });
+    }
+
+    public void getPublicationsAsync(final AsyncCallback<List<PublicationDto>> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getPublications(result));
+            }
+        });
+    }
+
+    public void getSamplesAsync(final AsyncCallback<SampleRowsAndColumns> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getSampleRowsAndColumns(result));
+            }
+        });
+    }
+
+    public void createContact() {
+        updateQueue.add(new CreateContactCommand());
     }
 
     public void updateContact(ContactDto toBeUpdated) {
-        List<ContactDto> list = new ArrayList<ContactDto>();
-        list.add(toBeUpdated);
-        updateContacts(list);
+        updateQueue.add(new UpdateContactCommand(toBeUpdated));
     }
 
     public void updateContacts(List<ContactDto> toBeUpdated) {
-        contacts.update(toBeUpdated);
+        for (ContactDto contact : toBeUpdated) {
+            updateContact(contact);
+        }
     }
 
     public void removeContacts(List<ContactDto> toBeRemoved) {
-        contacts.remove(toBeRemoved);
+        updateQueue.add(new RemoveContactsCommand(toBeRemoved));
+    }
+
+    public void updateDetails(ExperimentDetailsDto toBeUpdated) {
+        updateQueue.add(new UpdateExperimentDetailsCommand(toBeUpdated));
+    }
+
+    public void createPublication() {
+        updateQueue.add(new CreatePublicationCommand());
     }
 
     public void updatePublication(PublicationDto toBeUpdated) {
-        List<PublicationDto> list = new ArrayList<PublicationDto>();
-        list.add(toBeUpdated);
-        updatePublications(list);
+        updateQueue.add(new UpdatePublicationCommand(toBeUpdated));
     }
 
     public void updatePublications(List<PublicationDto> toBeUpdated) {
-        publications.update(toBeUpdated);
-    }
-
-    public PublicationDto createPublication() {
-        return publications.create();
+        for (PublicationDto publication : toBeUpdated) {
+            updatePublication(publication);
+        }
     }
 
     public void removePublications(List<PublicationDto> toBeRemoved) {
-        publications.remove(toBeRemoved);
+        updateQueue.add(new RemovePublicationsCommand(toBeRemoved));
     }
 
-    public List<SampleColumn> updateSampleColumns(List<SampleColumn> columns) {
-        return samples.updateSampleColumns(columns);
+    public void createSample() {
+        updateQueue.add(new CreateSampleCommand());
+    }
+
+    public void updateSampleColumns(List<SampleColumn> columns) {
+        updateQueue.add(new UpdateSampleColumnsCommand(columns));
     }
 
     public void updateSampleRow(SampleRow row) {
-        samples.updateSampleRow(row);
-    }
-
-    public SampleRow createSample() {
-        return samples.createSampleRow();
+        updateQueue.add(new UpdateSampleRowCommand(row));
     }
 
     public void removeSamples(List<SampleRow> rows) {
-        samples.removeSampleRows(rows);
+        updateQueue.add(new RemoveSamplesCommand(rows));
     }
 
     public void getLabeledExtracts(AsyncCallback<LabeledExtracts> asyncCallback) {
         //TODO
+    }
+
+    private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
+
+        private ColumnValueType valueType;
+
+        @Override
+        public void visitNumericValueType(NumericAttributeValueType valueType) {
+            OntologyTerm units = valueType.getUnits();
+            this.valueType = new NumericValueType(new EfoTermDto(units.getAccession(), units.getLabel()));
+        }
+
+        @Override
+        public void visitTextValueType(TextAttributeValueType valueType) {
+            this.valueType = new TextValueType();
+        }
+
+        @Override
+        public void visitTermValueType(TermAttributeValueType valueType) {
+            OntologyTerm branch = valueType.getBranch();
+            this.valueType = new EfoTermValueType(new EfoTermDto(branch.getAccession(), branch.getLabel()));
+        }
+
+        public ColumnValueType getValueType() {
+            return valueType;
+        }
     }
 }

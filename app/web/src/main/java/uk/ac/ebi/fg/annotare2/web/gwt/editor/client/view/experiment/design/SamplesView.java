@@ -36,11 +36,11 @@ public interface SamplesView extends IsWidget {
 
         ColumnValueTypeEfoTerms getEfoTerms();
 
-        List<SampleColumn> updateColumns(List<SampleColumn> newColumns);
+        void updateColumns(List<SampleColumn> newColumns);
 
         void updateRow(SampleRow row);
 
-        SampleRow createSample();
+        void createSample();
 
         void removeSamples(List<SampleRow> rows);
     }
