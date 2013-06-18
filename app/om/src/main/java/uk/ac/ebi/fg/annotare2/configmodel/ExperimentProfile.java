@@ -63,16 +63,16 @@ public class ExperimentProfile implements Serializable {
     private Date publicReleaseDate;
 
     @JsonProperty("contactMap")
-    private Map<Integer, Contact> contacts;
+    private Map<Integer, Contact> contactMap;
 
     @JsonProperty("publicationMap")
-    private Map<Integer, Publication> publications;
+    private Map<Integer, Publication> publicationMap;
 
     @JsonProperty("sampleMap")
-    private Map<Integer, Sample> samples;
+    private Map<Integer, Sample> sampleMap;
 
     @JsonProperty("extractMap")
-    private Map<Integer, Extract> extracts;
+    private Map<Integer, Extract> extractMap;
 
     @JsonProperty("sampleAttributeMap")
     private Map<Integer, SampleAttribute> sampleAttributeMap;
@@ -82,7 +82,13 @@ public class ExperimentProfile implements Serializable {
 
     private Set<String> labels;
 
-    private Set<LabeledExtract> labeledExtracts;
+    @JsonProperty("sample2Extracts")
+    private Map<Integer, Set<Integer>> sample2ExtractsIds;
+    private Map<Sample, Set<Extract>> sample2Extracts;
+
+    @JsonProperty("extract2Labels")
+    private Map<Integer, Set<String>> extractId2Labels;
+    private Map<Extract, Set<String>> extract2Labels;
 
     ExperimentProfile() {
         /* used by GWT serialization */
@@ -90,15 +96,57 @@ public class ExperimentProfile implements Serializable {
 
     public ExperimentProfile(@JsonProperty("type") ExperimentConfigType type) {
         this.type = type;
-        contacts = newLinkedHashMap();
-        publications = newLinkedHashMap();
+        contactMap = newLinkedHashMap();
+        publicationMap = newLinkedHashMap();
 
-        samples = newLinkedHashMap();
+        sampleMap = newLinkedHashMap();
         sampleAttributeMap = newLinkedHashMap();
         sampleAttributeOrder = newArrayList();
 
-        extracts = newHashMap();
+        extractMap = newHashMap();
         labels = newHashSet();
+
+        sample2Extracts = new HashMap<Sample, Set<Extract>>();
+        extract2Labels = new HashMap<Extract, Set<String>>();
+    }
+
+    @JsonProperty("sample2Extracts")
+    Map<Integer, Set<Integer>> getSample2ExtractsIds() {
+        if (sample2ExtractsIds != null) {
+            return sample2ExtractsIds;
+        }
+        Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
+        for (Sample sample : sample2Extracts.keySet()) {
+            Set<Extract> extracts = sample2Extracts.get(sample);
+            Set<Integer> extractIds = new HashSet<Integer>();
+            for (Extract extract : extracts) {
+                extractIds.add(extract.getId());
+            }
+            map.put(sample.getId(), extractIds);
+        }
+        return map;
+    }
+
+    @JsonProperty("sample2Extracts")
+    void setSample2ExtractsIds(Map<Integer, Set<Integer>> sample2ExtractsIds) {
+        this.sample2ExtractsIds = sample2ExtractsIds;
+    }
+
+    @JsonProperty("extract2Labels")
+    Map<Integer, Set<String>> getExtractId2Labels() {
+        if (extractId2Labels != null) {
+            return extractId2Labels;
+        }
+        Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
+        for (Extract extract : extract2Labels.keySet()) {
+            map.put(extract.getId(), new HashSet<String>(extract2Labels.get(extract)));
+        }
+        return map;
+    }
+
+    @JsonProperty("extract2Labels")
+    void setExtractId2Labels(Map<Integer, Set<String>> extractId2Labels) {
+        this.extractId2Labels = extractId2Labels;
     }
 
     public ExperimentConfigType getType() {
@@ -147,48 +195,115 @@ public class ExperimentProfile implements Serializable {
 
     public Contact createContact() {
         Contact contact = new Contact(nextId());
-        contacts.put(contact.getId(), contact);
+        contactMap.put(contact.getId(), contact);
         return contact;
     }
 
     public Contact removeContact(int id) {
-        return contacts.remove(id);
+        return contactMap.remove(id);
     }
 
     public Publication createPublication() {
         Publication publication = new Publication(nextId());
-        publications.put(publication.getId(), publication);
+        publicationMap.put(publication.getId(), publication);
         return publication;
     }
 
     public Publication removePublication(int id) {
-        return publications.remove(id);
+        return publicationMap.remove(id);
     }
 
     public Sample createSample() {
         Sample sample = new Sample(nextId());
-        samples.put(sample.getId(), sample);
+        sampleMap.put(sample.getId(), sample);
         return sample;
     }
 
-    public void removeSample(int id) {
-        samples.remove(id);
+    public Extract createExtract(Sample... samples) {
+        if (samples.length == 0) {
+            throw new IllegalArgumentException("Can't create empty extract");
+        }
+        Extract extract = new Extract(nextId());
+        extractMap.put(extract.getId(), extract);
+        for (Sample sample : samples) {
+            link(extract, sample);
+        }
+        return extract;
     }
 
-    public void removeLabeledExtract(int id) {
-        labeledExtracts.remove(id);
+    public LabeledExtract createLabeledExtract(Extract extract, String label) {
+        Set<String> labels = extract2Labels.get(extract);
+        if (labels == null) {
+            labels = new HashSet<String>();
+            extract2Labels.put(extract, labels);
+        }
+        labels.add(label);
+        return new LabeledExtract(extract, label);
+    }
+
+    public void removeSample(int id) {
+        Sample sample = sampleMap.get(id);
+        if (sample != null) {
+            removeSample(sample);
+        }
+    }
+
+    public void removeSample(Sample sample) {
+        Set<Extract> toBeRemoved = sample2Extracts.remove(sample);
+
+        for (Sample s : sample2Extracts.keySet()) {
+            toBeRemoved.removeAll(sample2Extracts.get(s));
+        }
+        for (Extract e : toBeRemoved) {
+            removeExtract(e);
+        }
+        sampleMap.remove(sample.getId());
+    }
+
+    private void removeExtract(Extract extract) {
+        //TODO clear files
+        for (Sample sample : sample2Extracts.keySet()) {
+            Set<Extract> extracts = sample2Extracts.get(sample);
+            extracts.remove(extract);
+        }
+        Set<String> labels = extract2Labels.remove(extract);
+        for (String label : labels) {
+            removeLabeledExtract(extract, label);
+        }
+        extractMap.remove(extract.getId());
+    }
+
+    public void removeLabeledExtract(Extract extract, String label) {
+        //TODO clear files
+        Set<String> labels = extract2Labels.get(extract);
+        if (labels != null) {
+            labels.remove(label);
+        }
+    }
+
+    public void link(Extract extract, Sample sample) {
+        Set<Extract> extracts = sample2Extracts.get(sample);
+        if (extracts == null) {
+            extracts = new HashSet<Extract>();
+            sample2Extracts.put(sample, extracts);
+        }
+        extracts.add(extract);
     }
 
     public Contact getContact(int id) {
-        return contacts.get(id);
+        return contactMap.get(id);
     }
 
     public Publication getPublication(int id) {
-        return publications.get(id);
+        return publicationMap.get(id);
     }
 
     public Sample getSample(int id) {
-        return samples.get(id);
+        return sampleMap.get(id);
+    }
+
+    public Extract getExtract(int id) {
+        return extractMap.get(id);
     }
 
     public SampleAttribute getSampleAttribute(int id) {
@@ -215,7 +330,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Collection<Integer> getSampleAttributeOrder() {
-        return  unmodifiableList(sampleAttributeOrder);
+        return unmodifiableList(sampleAttributeOrder);
     }
 
     @JsonIgnore
@@ -231,17 +346,22 @@ public class ExperimentProfile implements Serializable {
 
     @JsonIgnore
     public Collection<Contact> getContacts() {
-        return unmodifiableCollection(contacts.values());
+        return unmodifiableCollection(contactMap.values());
     }
 
     @JsonIgnore
     public Collection<Publication> getPublications() {
-        return unmodifiableCollection(publications.values());
+        return unmodifiableCollection(publicationMap.values());
     }
 
     @JsonIgnore
     public Collection<Sample> getSamples() {
-        return unmodifiableCollection(samples.values());
+        return unmodifiableCollection(sampleMap.values());
+    }
+
+    @JsonIgnore
+    public Collection<Extract> getExtracts() {
+        return unmodifiableCollection(extractMap.values());
     }
 
     private int nextId() {
@@ -252,6 +372,28 @@ public class ExperimentProfile implements Serializable {
        /* for (LabeledExtract labeledExtract : labeledExtracts.values()) {
             labeledExtract.fix(this);
         }*/
+        fixSample2Extracts();
+        fixExtract2Labels();
     }
 
+    private void fixSample2Extracts() {
+        Map<Integer, Set<Integer>> sample2ExtractsIds = getSample2ExtractsIds();
+        for (Integer sampleId : sample2ExtractsIds.keySet()) {
+            Set<Extract> extracts = new HashSet<Extract>();
+            for (Integer extractId : sample2ExtractsIds.get(sampleId)) {
+                extracts.add(extractMap.get(extractId));
+            }
+            Sample sample = sampleMap.get(sampleId);
+            sample2Extracts.put(sample, extracts);
+        }
+        sample2ExtractsIds = null;
+    }
+
+    private void fixExtract2Labels() {
+        Map<Integer, Set<String>> extractId2Labels = getExtractId2Labels();
+        for (Integer extractId : extractId2Labels.keySet()) {
+            extract2Labels.put(extractMap.get(extractId), new HashSet<String>(extractId2Labels.get(extractId)));
+        }
+        extractId2Labels = null;
+    }
 }

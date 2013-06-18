@@ -1,0 +1,26 @@
+Comment[ArrayExpressAccession]	E-MTAB-1160
+Investigation Title	Transfection of HaCaT cells with HPV11 HPV16 or HPV45 genome																		
+Comment[Submitted Name]	Transfection of HaCaT cells with HPV11 HPV16 or HPV45 genome
+Experiment Description	We investigated the early stage of HPV infections by global expression profiling in a cell model, in which cells from the human keratinocyte cell line, HaCaT, were transfected with HPV11, HPV16 or HPV45 genomes ( methods used for transfection are described in PubMed ID: 21078297)																		
+Experimental Design	strain_or_line_design	in_vitro_design	co-expression_design																
+Comment[AEExperimentType]	transcription profiling by array																		
+Comment[AEExperimentDisplayName]	Transcriptional profiling by array of human HaCaT cells transfected with HPV11, HPV16 or HPV45 genome to study the early stage of HPV infections.																		
+Experimental Factor Name	Genotype																		
+Experimental Factor Type	genotype																		
+Quality Control Type	biological_replicate																		
+Public Release Date	2012-07-01																		
+Person Last Name	Kaczkowski																		
+Person First Name	Bogumil																		
+Person Email	b.kaczkowski@gmail.com																		
+Person Phone	(+45) 5193 1509																		
+Person Address	Ole Maaloes Vej 5, DK-2200 Copenhagen N, Denmark																		
+Person Affiliation	Bioinformatics Centre, Department of Biology, University of Copenhagen																		
+Person Roles	submitter																		
+PubMed ID																			
+Publication Author List	Bogumil Kaczkowski, Maria Rossing, Ditte K. Andersen, Anita Dreher, Melissa A. Visser, Ole Winther, Finn Cilius Nielsen, Bodil Norrild																		
+Publication Title	Integrative analyses reveal novel strategies in HPV11,-16 and -45 early infection																		
+Publication Status	in press																		
+Protocol Name	P-MTAB-27042	P-MTAB-27043	P-MTAB-27044	P-MTAB-27045	P-MTAB-27046
+Protocol Type	specified_biomaterial_action	nucleic_acid_extraction	labeling	hybridization	bioassay_data_transformation														
+Protocol Description	The human keratinocyte cell line HaCaT was chosen for the present study. The cells were grown at 37 degrees C and 5% CO2. For cell cultivation Dulbecco_s Modified Eagle Medium (DMEM 1965, Invit- rogen) supplemented with 10% Fetal Calf Serum, 1% Penicillin/ Streptomycin, 1% Glutamate and 1% 0.1 M sodium pyruvate was used. Transfections were done using jetPEITM transfection reagent (Polyplus transfections). For stable transfection the circularized genome (6 lg) was transfected together with the pSV2-neo selec- tion vector (2 lg) into HaCaT cells seeded 2 x 10^6 cell per 10 cm plate. As control, cells were transfected with the selection vector alone. The cells were grown under standard conditions using the same passage number and maintained under selection with G418 sulfate (Invitrogen) in a concentration of 500 lg per ml.  (methods used for transfection are described in PubMed ID: 21078297)	Total RNA was extracted in TriZOL reagent according to the protocol of the manufacturer (Invitrogen).	Total RNA (100ng) was amplified and labelled using the Ambion WT Expression Kit (Applied Biosystems) according to the manufacturers instructions. 	The labelled samples were hybridised to the Human Gene 1.0 ST GeneChip Array (Affymetrix, Santa Clara, CA, USA). Arrays were washed and stained with phycoerythrin-conjugated streptavidin (SAPE) using an Affymetrix Fluidics Station? 450 	RMA was peformed as implemented in oligo package with default settings.  R code: affyGeneFS <- read.celfiles(geneCELs); geneCore <- rma(affyGeneFS, target = core)														
+SDRF File	E-MTAB-1160.sdrf.txt

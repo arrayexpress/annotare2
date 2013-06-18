@@ -62,9 +62,9 @@ public class DummyData {
 
         createSubmission(user,
                 SubmissionStatus.IN_PROGRESS,
-                "E-MTAB-641.json.txt",
-                "E-MTAB-641",
-                "agb1-1 mutant and Col-0 comparative transcriptomic analysis in a Plectosphaerella cucumerina inoculation");
+                "E-MTAB-1160.json.txt",
+                "E-MTAB-1160",
+                "Transfection of HaCaT cells with HPV11 HPV16 or HPV45 genome");
 
         createSubmission(user,
                 SubmissionStatus.IN_PROGRESS,

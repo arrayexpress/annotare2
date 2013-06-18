@@ -17,7 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.ExtractAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -25,17 +29,38 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 public class ExtractAttributeRow implements IsSerializable, HasIdentity {
 
     private int id;
+    private String name;
+    private Map<ExtractAttribute, String> values;
+
 
     ExtractAttributeRow() {
         /*used by GWT serialization only */
     }
 
-    public ExtractAttributeRow(int id) {
+    public ExtractAttributeRow(int id, String name, Map<ExtractAttribute, String> values) {
         this.id = id;
+        this.name = name;
+        this.values = new HashMap<ExtractAttribute, String>(values);
     }
 
     @Override
     public int getId() {
         return 0;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue(ExtractAttribute attr) {
+        return values.get(attr);
+    }
+
+    public void setValue(String value, ExtractAttribute attr) {
+        values.put(attr, value);
     }
 }

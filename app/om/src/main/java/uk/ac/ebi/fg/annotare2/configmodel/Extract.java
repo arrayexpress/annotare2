@@ -17,8 +17,11 @@
 package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -26,17 +29,42 @@ import java.io.Serializable;
 @GwtCompatible
 public class Extract implements Serializable {
 
+    @JsonProperty("id")
     private int id;
 
+    @JsonProperty("name")
     private String name;
+
+    @JsonProperty("attributes")
+    private Map<ExtractAttribute, String> values;
 
     Extract() {
     /* used by GWT serialization */
     }
 
-    public Extract(int id, String name) {
+    public Extract(@JsonProperty("id") int id) {
         this.id = id;
+        this.values = new HashMap<ExtractAttribute, String>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public Map<ExtractAttribute, String> getValues() {
+        return new HashMap<ExtractAttribute, String>(values);
+    }
+
+    public void setValues(Map<ExtractAttribute, String> values) {
+        this.values = new HashMap<ExtractAttribute, String>(values);
     }
 
     @Override

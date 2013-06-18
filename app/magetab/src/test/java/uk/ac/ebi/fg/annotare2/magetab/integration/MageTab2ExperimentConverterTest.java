@@ -39,6 +39,7 @@ import static junit.framework.TestCase.*;
  */
 public class MageTab2ExperimentConverterTest {
 
+/*
     @Test
     public void mageTab2OneColourExperimentTest() throws ParseException, UnsupportedGraphLayoutException, DataSerializationException {
         Experiment exp = createExperiment("/E-MTAB-641.idf.txt", "/E-MTAB-641.sdrf.txt");
@@ -54,6 +55,7 @@ public class MageTab2ExperimentConverterTest {
         assertHasUniqueNames(exp);
         assertHasUniqueIds(exp);
     }
+*/
 
     @Test
     public void mageTab2TwoColourExperimentTest() throws ParseException, UnsupportedGraphLayoutException, DataSerializationException {

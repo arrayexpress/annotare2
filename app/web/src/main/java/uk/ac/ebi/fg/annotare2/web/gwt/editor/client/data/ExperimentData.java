@@ -30,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -169,6 +170,13 @@ public class ExperimentData {
         return columns;
     }
 
+    private List<ExtractAttributeRow> getExtractAttributeRows(ExperimentProfile exp) {
+        List<ExtractAttributeRow> rows = new ArrayList<ExtractAttributeRow>();
+        for(Extract extract : exp.getExtracts()) {
+            rows.add(new ExtractAttributeRow(extract.getId(), extract.getName(), extract.getValues()));
+        }
+        return rows;
+    }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
@@ -240,6 +248,24 @@ public class ExperimentData {
         });
     }
 
+    public void getExtractAttributeRowsAsync(final AsyncCallback<List<ExtractAttributeRow>> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getExtractAttributeRows(result));
+            }
+        });
+    }
+
+    public void getLabeledExtracts(AsyncCallback<LabeledExtracts> callback) {
+        //TODO
+    }
+
     public void createContact() {
         updateQueue.add(new CreateContactCommand());
     }
@@ -294,14 +320,6 @@ public class ExperimentData {
 
     public void removeSamples(List<SampleRow> rows) {
         updateQueue.add(new RemoveSamplesCommand(rows));
-    }
-
-    public void getLabeledExtracts(AsyncCallback<LabeledExtracts> asyncCallback) {
-        //TODO
-    }
-
-    public void getExtractAttributeRowsAsync(AsyncCallback<List<ExtractAttributeRow>> asyncCallback) {
-        //TODO
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

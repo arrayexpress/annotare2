@@ -40,9 +40,10 @@ public class ExperimentMageTabImporterTest {
     @Test
     public void mageTab2OneColourExperimentTest() throws ParseException, UnsupportedGraphLayoutException,
             DataSerializationException, ImportExperimentException {
-        ExperimentProfile exp = createExperiment(ONE_COLOR_MICROARRAY, "/E-MTAB-641.idf.txt", "/E-MTAB-641.sdrf.txt");
+        ExperimentProfile exp = createExperiment(ONE_COLOR_MICROARRAY, "/E-MTAB-1160.idf.txt", "/E-MTAB-1160.sdrf.txt");
         assertNotNull(exp);
-        assertEquals(6, exp.getSamples().size());
+        assertEquals(11, exp.getSamples().size());
+        assertEquals(11, exp.getExtracts().size());
        // assertEquals(18, exp.getLabeledExtracts().size());
     }
 
@@ -52,6 +53,7 @@ public class ExperimentMageTabImporterTest {
         ExperimentProfile exp = createExperiment(TWO_COLOR_MICROARRAY, "/E-MEXP-3237.idf.txt", "/E-MEXP-3237.sdrf.txt");
         assertNotNull(exp);
         assertEquals(6, exp.getSamples().size());
+        assertEquals(6, exp.getExtracts().size());
         //assertEquals(12, exp.getLabeledExtracts().size());
     }
 
@@ -61,6 +63,7 @@ public class ExperimentMageTabImporterTest {
         ExperimentProfile exp = createExperiment(SEQUENCING, "/E-MTAB-582.idf.txt", "/E-MTAB-582.sdrf.txt");
         assertNotNull(exp);
         assertEquals(10, exp.getSamples().size());
+        assertEquals(10, exp.getExtracts().size());
        // assertEquals(0, exp.getLabeledExtracts().size());
     }
 

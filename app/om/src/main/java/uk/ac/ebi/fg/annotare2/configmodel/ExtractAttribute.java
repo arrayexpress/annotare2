@@ -17,38 +17,24 @@
 package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import javax.annotation.Nonnull;
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class LabeledExtract implements Serializable {
+public enum ExtractAttribute {
+    LIBRARY_LAYOUT("Library Layout"),
+    LIBRARY_SOURCE("Library Source"),
+    LIBRARY_STRATEGY("Library Strategy"),
+    LIBRARY_SELECTION("Library Selection");
 
-    private Extract extract;
-    private String label;
+    private final String title;
 
-    LabeledExtract() {
-        /*used by GWT serialization */
+    private ExtractAttribute(String title) {
+        this.title = title;
     }
 
-    public LabeledExtract(Extract extract, String label) {
-        this.extract = extract;
-        this.label = label;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public Extract getExtract() {
-        return extract;
+    public String getTitle() {
+        return title;
     }
 }
-

@@ -21,22 +21,14 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SourceNode;
-import uk.ac.ebi.fg.annotare2.configmodel.Contact;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.Publication;
-import uk.ac.ebi.fg.annotare2.configmodel.Sample;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
+import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.IdfData;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Info;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Person;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.idf.LimpopoIdfDataProxy;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
@@ -51,6 +43,7 @@ public class ExperimentMageTabImporter {
     private static final Logger log = LoggerFactory.getLogger(ExperimentMageTabImporter.class);
 
     private final ExperimentProfile exp;
+    private final Map<ExtractNode, Extract> extracts = new HashMap<ExtractNode, Extract>();
 
     public ExperimentMageTabImporter(ExperimentConfigType configType) {
         exp = new ExperimentProfile(configType);
@@ -94,61 +87,95 @@ public class ExperimentMageTabImporter {
     }
 
     private void importSdrfData(SDRF sdrf) throws ImportExperimentException {
-        addSampleConfigs(sdrf);
+        addSamples(sdrf);
     }
 
-    private void addSampleConfigs(SDRF sdrf) throws ImportExperimentException {
-        Collection<SampleNode> samples = sdrf.getNodes(SampleNode.class);
-        if (samples.isEmpty()) {
-            Collection<ExtractNode> extracts = sdrf.getNodes(ExtractNode.class);
-            if (extracts.isEmpty()) {
-                Collection<SourceNode> sources = sdrf.getNodes(SourceNode.class);
-                if (sources.isEmpty()) {
+    private void addSamples(SDRF sdrf) throws ImportExperimentException {
+        Collection<SourceNode> sources = sdrf.getNodes(SourceNode.class);
+        if (sources.isEmpty()) {
+            Collection<SampleNode> samples = sdrf.getNodes(SampleNode.class);
+            if (samples.isEmpty()) {
+                Collection<ExtractNode> extracts = sdrf.getNodes(ExtractNode.class);
+                if (extracts.isEmpty()) {
                     throw new ImportExperimentException("Invalid experiment: neither sources nor samples nor extracts found");
                 } else {
-                    addSampleConfigsFromSources(sources);
+                    addSampleFromExtracts(extracts);
                 }
             } else {
-                addSampleConfigsFromExtracts(extracts);
+                addSamplesFromSamples(samples);
             }
         } else {
-            addSampleConfigsFromSamples(samples);
+            addSamplesFromSources(sources);
         }
     }
 
-    private void addSampleConfigsFromSamples(Collection<SampleNode> samples) throws ImportExperimentException {
+    private void addSamplesFromSamples(Collection<SampleNode> samples) throws ImportExperimentException {
         for (SampleNode node : samples) {
-            Sample config = exp.createSample();
-            config.setName(node.getNodeName());
+            Sample sample = exp.createSample();
+            sample.setName(node.getNodeName());
             //TODO set material type and characteristics
-           // assignLabels(config, node);
+            // assignLabels(config, node);
+            addExtracts(sample, findExtractNodes(node));
         }
     }
 
-    private void addSampleConfigsFromSources(Collection<SourceNode> sources) throws ImportExperimentException {
+    private void addSamplesFromSources(Collection<SourceNode> sources) throws ImportExperimentException {
         for (SourceNode node : sources) {
-            Sample config = exp.createSample();
-            config.setName(node.getNodeName());
+            Sample sample = exp.createSample();
+            sample.setName(node.getNodeName());
             //TODO set material type and characteristics
-           // assignLabels(config, node);
+            // assignLabels(config, node);
+            addExtracts(sample, findExtractNodes(node));
         }
     }
 
-    private void addSampleConfigsFromExtracts(Collection<ExtractNode> extracts) throws ImportExperimentException {
-        for(ExtractNode node : extracts) {
-            Sample config = exp.createSample();
-            config.setName(node.getNodeName());
+    private void addSampleFromExtracts(Collection<ExtractNode> extracts) throws ImportExperimentException {
+        for (ExtractNode node : extracts) {
+            Sample sample = exp.createSample();
+            sample.setName(node.getNodeName());
             //TODO set material type and characteristics
-           /// assignLabels(config, node);
+            /// assignLabels(config, node);
+            addExtracts(sample, findExtractNodes(node));
         }
     }
 
+    private void addExtracts(Sample sample, Collection<ExtractNode> extractNodes) {
+        for(ExtractNode node : extractNodes) {
+            Extract extract = extracts.get(node);
+            if (extract == null) {
+                extract = exp.createExtract(sample);
+                extract.setName(node.getNodeName());
+                extracts.put(node, extract);
+            } else {
+                exp.link(extract, sample);
+            }
+            addLabeledExtracts(extract, findLabeledExtracts(node));
+        }
+    }
+
+    private void addLabeledExtracts(Extract extract, List<LabeledExtractNode> labeledExtractNodes) {
+        for(LabeledExtractNode node : labeledExtractNodes) {
+            exp.createLabeledExtract(extract, node.label.getAttributeValue());
+        }
+    }
+
+    private List<ExtractNode> findExtractNodes(Node node) {
+        List<ExtractNode> nodes = newArrayList();
+        for(Node child : node.getChildNodes()) {
+            if (child instanceof ExtractNode) {
+                nodes.add((ExtractNode)child);
+            } else {
+                nodes.addAll(findExtractNodes(child));
+            }
+        }
+        return nodes;
+    }
 
     private List<LabeledExtractNode> findLabeledExtracts(Node node) {
         List<LabeledExtractNode> nodes = newArrayList();
         for (Node child : node.getChildNodes()) {
             if (child instanceof LabeledExtractNode) {
-                nodes.add((LabeledExtractNode)child);
+                nodes.add((LabeledExtractNode) child);
             }
         }
         if (!nodes.isEmpty()) {
