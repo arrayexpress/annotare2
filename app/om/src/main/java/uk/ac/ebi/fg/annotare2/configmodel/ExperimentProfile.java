@@ -31,6 +31,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 
@@ -103,11 +104,11 @@ public class ExperimentProfile implements Serializable {
         sampleAttributeMap = newLinkedHashMap();
         sampleAttributeOrder = newArrayList();
 
-        extractMap = newHashMap();
-        labels = newHashSet();
+        extractMap = newLinkedHashMap();
+        labels = newLinkedHashSet();
 
-        sample2Extracts = new HashMap<Sample, Set<Extract>>();
-        extract2Labels = new HashMap<Extract, Set<String>>();
+        sample2Extracts = newLinkedHashMap();
+        extract2Labels =  newLinkedHashMap();
     }
 
     @JsonProperty("sample2Extracts")
@@ -115,10 +116,10 @@ public class ExperimentProfile implements Serializable {
         if (sample2ExtractsIds != null) {
             return sample2ExtractsIds;
         }
-        Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
+        Map<Integer, Set<Integer>> map = newLinkedHashMap();
         for (Sample sample : sample2Extracts.keySet()) {
             Set<Extract> extracts = sample2Extracts.get(sample);
-            Set<Integer> extractIds = new HashSet<Integer>();
+            Set<Integer> extractIds = newLinkedHashSet();
             for (Extract extract : extracts) {
                 extractIds.add(extract.getId());
             }
@@ -137,9 +138,9 @@ public class ExperimentProfile implements Serializable {
         if (extractId2Labels != null) {
             return extractId2Labels;
         }
-        Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
+        Map<Integer, Set<String>> map = newLinkedHashMap();
         for (Extract extract : extract2Labels.keySet()) {
-            map.put(extract.getId(), new HashSet<String>(extract2Labels.get(extract)));
+            map.put(extract.getId(), new LinkedHashSet<String>(extract2Labels.get(extract)));
         }
         return map;
     }
@@ -369,9 +370,6 @@ public class ExperimentProfile implements Serializable {
     }
 
     public void fixMe() {
-       /* for (LabeledExtract labeledExtract : labeledExtracts.values()) {
-            labeledExtract.fix(this);
-        }*/
         fixSample2Extracts();
         fixExtract2Labels();
     }
@@ -379,7 +377,7 @@ public class ExperimentProfile implements Serializable {
     private void fixSample2Extracts() {
         Map<Integer, Set<Integer>> sample2ExtractsIds = getSample2ExtractsIds();
         for (Integer sampleId : sample2ExtractsIds.keySet()) {
-            Set<Extract> extracts = new HashSet<Extract>();
+            Set<Extract> extracts = newLinkedHashSet();
             for (Integer extractId : sample2ExtractsIds.get(sampleId)) {
                 extracts.add(extractMap.get(extractId));
             }
