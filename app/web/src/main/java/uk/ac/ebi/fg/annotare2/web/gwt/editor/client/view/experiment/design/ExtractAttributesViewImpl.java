@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
@@ -86,13 +87,14 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     private void addColumn(final ExtractAttribute attr) {
-        Column<ExtractAttributeRow, String> column = new Column<ExtractAttributeRow, String>(new EditTextCell()) {
+        Column<ExtractAttributeRow, String> column = new Column<ExtractAttributeRow, String>(new SelectionCell(attr.getOptions())) {
             @Override
             public String getValue(ExtractAttributeRow row) {
                 String v = row.getValue(attr);
                 return v == null ? "" : v;
             }
         };
+        column.setCellStyleNames("app-SelectionCell");
         column.setFieldUpdater(new FieldUpdater<ExtractAttributeRow, String>() {
             @Override
             public void update(int index, ExtractAttributeRow row, String value) {
