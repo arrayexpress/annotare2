@@ -108,7 +108,7 @@ public class ExperimentProfile implements Serializable {
         labels = newLinkedHashSet();
 
         sample2Extracts = newLinkedHashMap();
-        extract2Labels =  newLinkedHashMap();
+        extract2Labels = newLinkedHashMap();
     }
 
     @JsonProperty("sample2Extracts")
@@ -268,8 +268,10 @@ public class ExperimentProfile implements Serializable {
             extracts.remove(extract);
         }
         Set<String> labels = extract2Labels.remove(extract);
-        for (String label : labels) {
-            removeLabeledExtract(extract, label);
+        if (labels != null) {
+            for (String label : labels) {
+                removeLabeledExtract(extract, label);
+            }
         }
         extractMap.remove(extract.getId());
     }
