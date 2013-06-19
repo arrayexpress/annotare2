@@ -365,6 +365,17 @@ public class ExperimentProfile implements Serializable {
         return unmodifiableCollection(extractMap.values());
     }
 
+    @JsonIgnore
+    public Collection<LabeledExtract> getLabeledExtracts() {
+        List<LabeledExtract> labeledExtracts = newArrayList();
+        for(Extract extract : extract2Labels.keySet()) {
+            for(String label : extract2Labels.get(extract)) {
+                labeledExtracts.add(new LabeledExtract(extract, label));
+            }
+        }
+        return labeledExtracts;
+    }
+
     private int nextId() {
         return ++nextId;
     }

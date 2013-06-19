@@ -29,6 +29,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ClickableImageCell extends AbstractCell<String> {
 
     interface Template extends SafeHtmlTemplates {

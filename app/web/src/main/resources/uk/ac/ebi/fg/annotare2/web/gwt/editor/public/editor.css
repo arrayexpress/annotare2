@@ -498,3 +498,33 @@ table.GWTUpld {
 .app-SelectionCell select {
     width:100%;
 }
+
+/* list of items with remove button */
+
+.app-ItemRemoveButton {
+    position: absolute;
+    opacity: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    border: 0;
+    z-index: 5;
+    -webkit-transition: opacity 150ms;
+    background: #efefef url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAiElEQVR42r2RsQrDMAxEBRdl8SDcX8lQPGg1GBI6lvz/h7QyRRXV0qUULwfvwZ1tenw5PxToRPWMC52eA9+WDnlh3HFQ/xBQl86NFYJqeGflkiogrOvVlIFhqURFVho3x1moGAa3deMs+LS30CAhBN5nNxeT5hbJ1zwmji2k+aF6NENIPf/hs54f0sZFUVAMigAAAABJRU5ErkJggg==") no-repeat;
+    text-align: right;
+    cursor: pointer;
+}
+
+.app-ItemRemoveButton:hover, .app-ItemRemoveButton:focus {
+    opacity: 1;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAqklEQVR4XqWRMQ6DMAxF/1Fyilyj2SmIBUG5QcTCyJA5Z8jGhlBPgRi4TmoDraVmKFJlWYrlp/g5QfwRlwEVNWVa4WzfH9jK6kCkEkBjwxOhLghheMWMELUAqqwQ4OCbnE4LJnhr5IYdqQt4DJQjhe9u4vBBmnxHHNzRFkDGjHDo0VuTAqy2vAG4NkvXXDHxbGsIGlj3e835VFNtdugma/Jk0eXq0lP//5svi4PtO01oFfYAAAAASUVORK5CYII=");
+}
+
+.app-RemovableItem {
+    padding-right: 20px;
+    position: relative;
+    border: 1px solid #ccc;
+    margin: 5px;
+    float: left;
+}

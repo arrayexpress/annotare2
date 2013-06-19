@@ -52,7 +52,7 @@ public class LabeledExtractsActivity extends AbstractActivity {
     }
 
     private void loadAsync() {
-        expData.getLabeledExtracts(new AsyncCallback<LabeledExtracts>() {
+        expData.getLabeledExtractsAsync(new AsyncCallback<LabeledExtracts>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -61,7 +61,7 @@ public class LabeledExtractsActivity extends AbstractActivity {
 
             @Override
             public void onSuccess(LabeledExtracts result) {
-               view.setData(result.getRows(), result.getLabels());
+                view.setData(result.getRows(), result.getLabels());
             }
         });
     }

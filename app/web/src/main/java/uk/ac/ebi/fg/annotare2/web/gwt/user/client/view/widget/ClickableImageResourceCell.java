@@ -29,9 +29,12 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ImageResourceRenderer;
 
+import java.awt.*;
+
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ClickableImageResourceCell extends AbstractCell<ImageResource> {
 
     private static ImageResourceRenderer renderer;

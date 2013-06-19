@@ -30,8 +30,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -178,6 +179,21 @@ public class ExperimentData {
         return rows;
     }
 
+    private List<ExtractLabelsRow> getExtractLabelsRows(ExperimentProfile exp) {
+        Map<Integer, ExtractLabelsRow> map = new LinkedHashMap<Integer, ExtractLabelsRow>();
+        for(LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+            Extract extract = labeledExtract.getExtract();
+            Integer extractId = extract.getId();
+            ExtractLabelsRow row = map.get(extractId);
+            if (row == null) {
+                row = new ExtractLabelsRow(extractId, extract.getName());
+                map.put(extractId, row);
+            }
+            row.addLabel(labeledExtract.getLabel());
+        }
+        return new ArrayList<ExtractLabelsRow>(map.values());
+    }
+
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
@@ -262,8 +278,18 @@ public class ExperimentData {
         });
     }
 
-    public void getLabeledExtracts(AsyncCallback<LabeledExtracts> callback) {
-        //TODO
+    public void getLabeledExtractsAsync(final AsyncCallback<LabeledExtracts> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(new LabeledExtracts(getExtractLabelsRows(result)));
+            }
+        });
     }
 
     public void createContact() {

@@ -26,11 +26,21 @@ import java.util.List;
  */
 public class LabeledExtracts implements IsSerializable {
 
+    private  List<ExtractLabelsRow> rows;
+
+    public LabeledExtracts() {
+        /* used by GWT serialization */
+    }
+
+    public LabeledExtracts(List<ExtractLabelsRow> rows) {
+        this.rows = rows;
+    }
+
     public List<String> getLabels() {
         return new ArrayList<String>();
     }
 
-    public List<LabeledExtractRow> getRows() {
-        return new ArrayList<LabeledExtractRow>();
+    public List<ExtractLabelsRow> getRows() {
+        return new ArrayList<ExtractLabelsRow>(rows);
     }
 }
