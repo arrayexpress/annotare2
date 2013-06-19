@@ -100,7 +100,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void criticalUpdateStarted() {
         if (criticalUpdatePopup == null) {
-            criticalUpdatePopup = new WaitingPopup("Sending critical updates; please wait..");
+            criticalUpdatePopup = new WaitingPopup("Sending updates to the server; please wait..");
             criticalUpdatePopup.positionAtWindowCenter();
             criticalUpdatePopup.setGlassEnabled(true);
         } else if (!criticalUpdatePopup.isShowing()) {
