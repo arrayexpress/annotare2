@@ -46,9 +46,6 @@ public class Sample implements Serializable {
     @JsonProperty("values")
     private Map<Integer, String> values;
 
-
-    private Set<Extract> extracts;
-
     Sample() {
     /* used by GWT serialization */
     }
@@ -57,7 +54,6 @@ public class Sample implements Serializable {
     public Sample(@JsonProperty("id") int id) {
         this.id = id;
         values = newHashMap();
-        extracts = newHashSet();
     }
 
     public int getId() {
