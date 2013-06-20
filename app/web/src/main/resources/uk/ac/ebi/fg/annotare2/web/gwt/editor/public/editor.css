@@ -164,6 +164,7 @@
     -ms-border-radius: 3px;
     -o-border-radius: 3px;
     color: #000;
+    white-space: nowrap;
 }
 
 .gwt-Button:hover {
