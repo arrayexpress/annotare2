@@ -102,10 +102,10 @@ public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer 
         Set<Integer> used = newLinkedHashSet();
         for (SampleColumn column : columns) {
             SampleAttribute attr;
-            if (column.getId() < 0) {
-                attr = exp.createSampleAttribute();
-            } else {
+            if (column.getId() > 0) {
                 attr = exp.getSampleAttribute(column.getId());
+            } else {
+                attr = exp.createSampleAttribute();
             }
             attr.setName(column.getName());
             attr.setType(column.getType());
