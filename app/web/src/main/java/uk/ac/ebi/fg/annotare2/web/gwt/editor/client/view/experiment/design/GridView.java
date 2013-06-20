@@ -37,7 +37,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
 import java.util.Comparator;
 import java.util.List;
@@ -122,7 +121,8 @@ public class GridView<R extends HasIdentity> extends Composite {
         if (dataGrid == null) {
             return;
         }
-        clearColumns(0, dataGrid.getColumnCount() - 1);
+        /* 2 columns must stay: first checkbox and last buffer column */
+        clearColumns(1, dataGrid.getColumnCount() - 2);
     }
 
     public void clearColumns() {
