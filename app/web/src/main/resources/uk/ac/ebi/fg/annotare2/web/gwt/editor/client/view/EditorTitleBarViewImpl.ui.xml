@@ -32,6 +32,7 @@
             font-size: 23px;
             font-weight: normal;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .validateButton {
@@ -90,10 +91,11 @@
             text-decoration: none;
             margin-right: 20px;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         a.wiredLink:hover {
-            color:  #48877C;
+            color: #48877C;
         }
 
         .autoSaveLabel {
@@ -105,7 +107,7 @@
 
     <g:HTMLPanel height="100%">
         <div class="{style.editorHeader}">
-            <table width="100%" cellpadding="0" cellspacing="0">
+            <table width="100%" cellpadding="0" cellspacing="0" style="table-layout:fixed">
                 <tr>
                     <td>
                         <table>
@@ -121,12 +123,29 @@
                             </tr>
                         </table>
                     </td>
-                    <td  style="text-align:right">
-                        <g:Anchor addStyleNames="{style.wiredLink}" ui:field="importLink">Import</g:Anchor>
-                        <g:Anchor addStyleNames="{style.wiredLink}" ui:field="createNewLink">Create New</g:Anchor>
-                        <g:Anchor addStyleNames="{style.wiredLink}">Export</g:Anchor>
-                        <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton">Validate</g:Button>
-                        <g:Button addStyleNames="{style.submitButton}" enabled="false">Submit</g:Button>
+                    <td style="text-align:right">
+                        <table>
+                            <tr>
+                                <td>
+                                    <g:Anchor addStyleNames="{style.wiredLink}" ui:field="importLink">Import</g:Anchor>
+                                </td>
+                                <td>
+                                    <g:Anchor addStyleNames="{style.wiredLink}" ui:field="createNewLink">Create New
+                                    </g:Anchor>
+                                </td>
+                                <td>
+                                    <g:Anchor addStyleNames="{style.wiredLink}">Export</g:Anchor>
+                                </td>
+                                <td>
+                                    <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton">
+                                        Validate
+                                    </g:Button>
+                                </td>
+                                <td>
+                                    <g:Button addStyleNames="{style.submitButton}" enabled="false">Submit</g:Button>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
