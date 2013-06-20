@@ -18,19 +18,54 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataFilesView;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class DataFilesActivity extends AbstractActivity {
 
+    private final DataFilesView view;
+    private final ExperimentData expData;
+
+
+    @Inject
+    public DataFilesActivity(DataFilesView view, ExperimentData expData) {
+        this.view = view;
+        this.expData = expData;
+    }
+
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        panel.setWidget(view);
+        loadAsync();
     }
 
     public DataFilesActivity withPlace(ExpDesignPlace designPlace) {
         return this;
+    }
+
+    private void loadAsync() {
+        expData.getDataFileRowsAsync(new AsyncCallback<List<DataFileRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Can't load data file rows");
+            }
+
+            @Override
+            public void onSuccess(List<DataFileRow> result) {
+                view.setData(result);
+            }
+        });
+
     }
 }
