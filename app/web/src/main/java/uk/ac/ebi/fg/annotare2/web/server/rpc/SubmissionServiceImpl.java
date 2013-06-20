@@ -62,7 +62,8 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import static com.google.common.io.Closeables.close;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperiment;
 
 /**
  * @author Olga Melnichuk
@@ -309,7 +310,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             ExperimentProfile experiment = submission.getExperimentProfile();
-            new ExperimentUpdatePerformerImpl(experiment).run(commands);
+            experimentUpdater(experiment).run(commands);
             submission.setExperimentProfile(experiment);
             return experiment;
         } catch (RecordNotFoundException e) {

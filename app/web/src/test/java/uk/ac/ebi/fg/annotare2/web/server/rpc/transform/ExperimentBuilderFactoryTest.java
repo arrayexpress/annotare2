@@ -24,12 +24,12 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSe
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentFactory.createExperiment;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperiment;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentFactoryTest {
+public class ExperimentBuilderFactoryTest {
 
     @Test(expected = IllegalStateException.class)
     public void unknownExperimentTypeTest() throws NoSuchMethodException, InvocationTargetException, InstantiationException {

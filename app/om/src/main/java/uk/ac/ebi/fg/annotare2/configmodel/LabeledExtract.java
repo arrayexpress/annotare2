@@ -50,5 +50,9 @@ public class LabeledExtract implements Serializable {
     public Extract getExtract() {
         return extract;
     }
+
+    public String getName() {
+        return extract.getName() + ":" + label;
+    }
 }
 

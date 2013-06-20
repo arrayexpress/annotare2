@@ -124,6 +124,7 @@ public class UpdateQueue<C extends UpdateCommand, R> {
             }
         }
         if (!hasCriticalCommand && criticalUpdateStarted) {
+            criticalUpdateStarted = false;
             eventBus.fireEvent(criticalUpdateFinished());
         }
     }

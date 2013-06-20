@@ -20,26 +20,29 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.Sample;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater;
 
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType.*;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentFactory {
+public class ExperimentBuilderFactory {
 
     private static enum Builder {
         ONE_COLOR_EXPERIMENT_BUILDER(ONE_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
                 ExperimentProfile exp = new ExperimentProfile(ONE_COLOR_MICROARRAY);
+                exp.addLabel(settings.getLabel());
+                ExperimentUpdater updater = experimentUpdater(exp);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
-                    Sample sample = exp.createSample();
-                    //exp.assignLabel(sample, settings.getLabel());
+                    updater.createSample("New Sample " + i);
                 }
                 return exp;
             }
@@ -47,7 +50,15 @@ public class ExperimentFactory {
         TWO_COLOR_EXPERIMENT_BUILDER(TWO_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                return new ExperimentProfile(TWO_COLOR_MICROARRAY);
+                ExperimentProfile exp = new ExperimentProfile(TWO_COLOR_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+                ExperimentUpdater updater = experimentUpdater(exp);
+                int n = settings.getNumberOfHybs();
+                for (int i = 0; i < n/2; i++) {
+                    updater.createSample("New Sample " + i);
+                }
+                return exp;
             }
         },
         SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
@@ -89,6 +100,4 @@ public class ExperimentFactory {
     public static ExperimentProfile createExperiment(ExperimentSetupSettings settings) {
         return Builder.build(settings);
     }
-
-
 }

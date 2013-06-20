@@ -35,12 +35,23 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer {
+public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     private final ExperimentProfile exp;
 
-    public ExperimentUpdatePerformerImpl(ExperimentProfile exp) {
+    protected ExperimentUpdater(ExperimentProfile exp) {
         this.exp = exp;
+    }
+
+    public static ExperimentUpdater experimentUpdater(ExperimentProfile exp) {
+        ExperimentConfigType type = exp.getType();
+        switch (type) {
+            case ONE_COLOR_MICROARRAY:
+            case TWO_COLOR_MICROARRAY:
+            case SEQUENCING:
+                return new BasicExperimentUpdater(exp);
+        }
+        throw new IllegalArgumentException("No updater for experiment type: " + type);
     }
 
     @Override
@@ -72,7 +83,7 @@ public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer 
 
     @Override
     public void removeContacts(List<ContactDto> dtos) {
-        for(ContactDto dto : dtos) {
+        for (ContactDto dto : dtos) {
             exp.removeContact(dto.getId());
         }
     }
@@ -92,7 +103,7 @@ public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer 
 
     @Override
     public void removePublications(List<PublicationDto> dtos) {
-        for(PublicationDto dto : dtos) {
+        for (PublicationDto dto : dtos) {
             exp.removePublication(dto.getId());
         }
     }
@@ -134,12 +145,18 @@ public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer 
 
     @Override
     public void createSample() {
-        exp.createSample();
+        createSample("New Sample");
+    }
+
+    public Sample createSample(String name) {
+        Sample sample = exp.createSample();
+        sample.setName(name);
+        return sample;
     }
 
     @Override
     public void removeSamples(List<SampleRow> rows) {
-        for(SampleRow row : rows) {
+        for (SampleRow row : rows) {
             exp.removeSample(row.getId());
         }
     }
@@ -148,6 +165,10 @@ public class ExperimentUpdatePerformerImpl implements ExperimentUpdatePerformer 
         for (ExperimentUpdateCommand command : commands) {
             command.execute(this);
         }
+    }
+
+    protected ExperimentProfile exp() {
+        return exp;
     }
 
     private static class ColumnValueTypeVisitor implements ColumnValueType.Visitor {

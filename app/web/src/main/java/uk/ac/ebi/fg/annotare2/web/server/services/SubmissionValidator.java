@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
@@ -60,18 +61,20 @@ public class SubmissionValidator {
     public Collection<CheckResult> validate(ExperimentSubmission submission) throws IOException,
             ParseException, UknownExperimentTypeException, DataSerializationException {
 
-        File tmp = writeToFile(submission);
+        ExperimentProfile exp = submission.getExperimentProfile();
+        ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
+
+        File tmp = writeToFile(exp);
 
         MAGETABParser parser = new MAGETABParser();
         MAGETABInvestigation inv = parser.parse(new File(tmp, IDF_FILE_NAME));
 
-        Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(inv));
+        Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(inv), type);
         return natural().sortedCopy(results);
     }
 
-    private File writeToFile(ExperimentSubmission submission) throws IOException, DataSerializationException, ParseException {
-        ExperimentProfile config = submission.getExperimentProfile();
-        MAGETABInvestigation inv = (new MageTabGenerator(config)).generate();
+    private File writeToFile(ExperimentProfile exp) throws IOException, DataSerializationException, ParseException {
+        MAGETABInvestigation inv = (new MageTabGenerator(exp)).generate();
 
         File tmp = Files.createTempDir();
         File idfFile = new File(tmp, IDF_FILE_NAME);

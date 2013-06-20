@@ -79,6 +79,7 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("sampleAttributeOrder")
     private List<Integer> sampleAttributeOrder;
 
+    @JsonProperty("labels")
     private Set<String> labels;
 
     @JsonProperty("sample2Extracts")
@@ -231,6 +232,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     public LabeledExtract createLabeledExtract(Extract extract, String label) {
+        addLabel(label);
         Set<String> labels = extract2Labels.get(extract);
         if (labels == null) {
             labels = new HashSet<String>();
@@ -251,7 +253,10 @@ public class ExperimentProfile implements Serializable {
         Set<Extract> toBeRemoved = sample2Extracts.remove(sample);
 
         for (Sample s : sample2Extracts.keySet()) {
-            toBeRemoved.removeAll(sample2Extracts.get(s));
+            Set<Extract> extracts = sample2Extracts.get(s);
+            if (extracts != null) {
+                toBeRemoved.removeAll(extracts);
+            }
         }
         for (Extract e : toBeRemoved) {
             removeExtract(e);
@@ -366,14 +371,38 @@ public class ExperimentProfile implements Serializable {
     }
 
     @JsonIgnore
+    public Collection<Extract> getExtracts(Sample sample) {
+        Set<Extract> extracts = sample2Extracts.get(sample);
+        return extracts == null ? new HashSet<Extract>() : unmodifiableCollection(sample2Extracts.get(sample));
+    }
+
+    @JsonIgnore
     public Collection<LabeledExtract> getLabeledExtracts() {
         List<LabeledExtract> labeledExtracts = newArrayList();
-        for(Extract extract : extract2Labels.keySet()) {
-            for(String label : extract2Labels.get(extract)) {
+        for (Extract extract : extract2Labels.keySet()) {
+            labeledExtracts.addAll(getLabeledExtracts(extract));
+        }
+        return labeledExtracts;
+    }
+
+    @JsonIgnore
+    public Collection<LabeledExtract> getLabeledExtracts(Extract extract) {
+        List<LabeledExtract> labeledExtracts = newArrayList();
+        Set<String> labels = extract2Labels.get(extract);
+        if (labels != null) {
+            for (String label : labels) {
                 labeledExtracts.add(new LabeledExtract(extract, label));
             }
         }
         return labeledExtracts;
+    }
+
+    public Collection<String> getLabels() {
+        return unmodifiableCollection(labels);
+    }
+
+    public void addLabel(String label) {
+        labels.add(label);
     }
 
     private int nextId() {
@@ -395,7 +424,7 @@ public class ExperimentProfile implements Serializable {
             Sample sample = sampleMap.get(sampleId);
             sample2Extracts.put(sample, extracts);
         }
-        sample2ExtractsIds = null;
+        this.sample2ExtractsIds = null;
     }
 
     private void fixExtract2Labels() {
@@ -403,6 +432,6 @@ public class ExperimentProfile implements Serializable {
         for (Integer extractId : extractId2Labels.keySet()) {
             extract2Labels.put(extractMap.get(extractId), new HashSet<String>(extractId2Labels.get(extractId)));
         }
-        extractId2Labels = null;
+        this.extractId2Labels = null;
     }
 }

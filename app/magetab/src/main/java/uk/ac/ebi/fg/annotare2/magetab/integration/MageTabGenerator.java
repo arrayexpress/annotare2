@@ -19,11 +19,8 @@ package uk.ac.ebi.fg.annotare2.magetab.integration;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SDRFNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.CharacteristicsAttribute;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.MaterialTypeAttribute;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.UnitAttribute;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
 
@@ -91,6 +88,33 @@ public class MageTabGenerator {
             sampleNode.materialType = extractMaterialTypeAttribute(sample);
             sdrf.addNode(sampleNode);
             map.put(sample.getId(), sampleNode);
+            Collection<Extract> extracts = exp.getExtracts(sample);
+            for(Extract extract : extracts) {
+                ExtractNode extractNode = new ExtractNode();
+                extractNode.setNodeName(extract.getName());
+                sampleNode.addChildNode(extractNode);
+                extractNode.addParentNode(sampleNode);
+                Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
+                for(LabeledExtract labeledExtract : labeledExtracts) {
+                    LabeledExtractNode labeledExtractNode = new LabeledExtractNode();
+                    labeledExtractNode.setNodeName(labeledExtract.getName());
+                    LabelAttribute label = new LabelAttribute();
+                    label.setAttributeValue(labeledExtract.getLabel());
+                    labeledExtractNode.label = label;
+                    extractNode.addChildNode(labeledExtractNode);
+                    labeledExtractNode.addParentNode(extractNode);
+
+                    AssayNode assayNode = new AssayNode();
+                    assayNode.setNodeName(labeledExtract.getName());
+                    TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
+                    if (exp.getType().isMicroarray()) {
+                        technologyType.setAttributeValue("array assay");
+                    } else {
+                        technologyType.setAttributeValue("high_throughput_sequencing");
+                    }
+                    assayNode.technologyType = technologyType;
+                }
+            }
         }
     }
 
