@@ -44,7 +44,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     public static ExperimentUpdater experimentUpdater(ExperimentProfile exp) {
-        ExperimentConfigType type = exp.getType();
+        ExperimentProfileType type = exp.getType();
         switch (type) {
             case ONE_COLOR_MICROARRAY:
             case TWO_COLOR_MICROARRAY:

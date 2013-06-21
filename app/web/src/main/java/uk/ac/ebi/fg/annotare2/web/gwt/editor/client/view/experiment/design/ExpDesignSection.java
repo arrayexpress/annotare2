@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 
 import java.util.ArrayList;
@@ -24,29 +24,29 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static java.util.EnumSet.*;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType.SEQUENCING;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType.TWO_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.SEQUENCING;
+import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.TWO_COLOR_MICROARRAY;
 
 /**
  * @author Olga Melnichuk
  */
 public enum ExpDesignSection implements LeftNavigationView.Section {
-    SAMPLES("Create your samples", allOf(ExperimentConfigType.class)),
+    SAMPLES("Create your samples", allOf(ExperimentProfileType.class)),
     EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING)),
     LABELED_EXTRACTS("Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
-    RAW_FILES("Upload raw files", allOf(ExperimentConfigType.class)),
-    PROCESSED_FILES("Upload processed files", allOf(ExperimentConfigType.class)),
-    NONE("None", noneOf(ExperimentConfigType.class));
+    RAW_FILES("Upload raw files", allOf(ExperimentProfileType.class)),
+    PROCESSED_FILES("Upload processed files", allOf(ExperimentProfileType.class)),
+    NONE("None", noneOf(ExperimentProfileType.class));
 
     private final String title;
     private final EnumSet applyTo;
 
-    private ExpDesignSection(String title, EnumSet<ExperimentConfigType> applyTo) {
+    private ExpDesignSection(String title, EnumSet<ExperimentProfileType> applyTo) {
         this.title = title;
         this.applyTo = applyTo;
     }
 
-    private boolean appliesTo(ExperimentConfigType type) {
+    private boolean appliesTo(ExperimentProfileType type) {
         return type != null && applyTo.contains(type);
     }
 
@@ -60,7 +60,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
         return name();
     }
 
-    public static List<ExpDesignSection> experimentDesignSectionsFor(ExperimentConfigType type) {
+    public static List<ExpDesignSection> experimentDesignSectionsFor(ExperimentProfileType type) {
         List<ExpDesignSection> list = new ArrayList<ExpDesignSection>();
         for (ExpDesignSection section : values()) {
             if (section.appliesTo(type)) {

@@ -45,7 +45,7 @@ public class ExperimentMageTabImporter {
     private final ExperimentProfile exp;
     private final Map<ExtractNode, Extract> extracts = new HashMap<ExtractNode, Extract>();
 
-    public ExperimentMageTabImporter(ExperimentConfigType configType) {
+    public ExperimentMageTabImporter(ExperimentProfileType configType) {
         exp = new ExperimentProfile(configType);
     }
 

@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public enum ExperimentSetting {
     EXPERIMENT_TYPE {
         @Override
         String getValue(ExperimentSetupSettings settings) {
-            ExperimentConfigType type = settings.getExperimentType();
+            ExperimentProfileType type = settings.getExperimentType();
             return (type == null) ? null : type.name();
         }
     },

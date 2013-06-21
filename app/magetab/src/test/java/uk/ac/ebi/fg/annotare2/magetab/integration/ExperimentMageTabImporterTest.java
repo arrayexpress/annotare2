@@ -22,15 +22,14 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
-import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType.*;
+import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.*;
 
 /**
  * @author Olga Melnichuk
@@ -67,7 +66,7 @@ public class ExperimentMageTabImporterTest {
        // assertEquals(0, exp.getLabeledExtracts().size());
     }
 
-    private ExperimentProfile createExperiment(ExperimentConfigType type, String idfFile, String sdrfFile)
+    private ExperimentProfile createExperiment(ExperimentProfileType type, String idfFile, String sdrfFile)
             throws UnsupportedGraphLayoutException, DataSerializationException, ParseException, ImportExperimentException {
         IDFParser idfParser = new IDFParser();
         IDF idf = idfParser.parse(getClass().getResourceAsStream(idfFile));

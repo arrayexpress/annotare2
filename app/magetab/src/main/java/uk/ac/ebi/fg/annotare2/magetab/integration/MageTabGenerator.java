@@ -89,13 +89,13 @@ public class MageTabGenerator {
             sdrf.addNode(sampleNode);
             map.put(sample.getId(), sampleNode);
             Collection<Extract> extracts = exp.getExtracts(sample);
-            for(Extract extract : extracts) {
+            for (Extract extract : extracts) {
                 ExtractNode extractNode = new ExtractNode();
                 extractNode.setNodeName(extract.getName());
                 sampleNode.addChildNode(extractNode);
                 extractNode.addParentNode(sampleNode);
                 Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
-                for(LabeledExtract labeledExtract : labeledExtracts) {
+                for (LabeledExtract labeledExtract : labeledExtracts) {
                     LabeledExtractNode labeledExtractNode = new LabeledExtractNode();
                     labeledExtractNode.setNodeName(labeledExtract.getName());
                     LabelAttribute label = new LabelAttribute();
@@ -104,16 +104,28 @@ public class MageTabGenerator {
                     extractNode.addChildNode(labeledExtractNode);
                     labeledExtractNode.addParentNode(extractNode);
 
-                    AssayNode assayNode = new AssayNode();
+                    /*AssayNode assayNode = new AssayNode();
                     assayNode.setNodeName(labeledExtract.getName());
                     TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
-                    if (exp.getType().isMicroarray()) {
-                        technologyType.setAttributeValue("array assay");
-                    } else {
-                        technologyType.setAttributeValue("high_throughput_sequencing");
-                    }
+                    technologyType.setAttributeValue("array assay");
                     assayNode.technologyType = technologyType;
+
+                    labeledExtractNode.addChildNode(assayNode);
+                    assayNode.addParentNode(labeledExtractNode);*/
                 }
+
+/*
+                if (!exp.getType().isMicroarray() && labeledExtracts.isEmpty()) {
+                    AssayNode assayNode = new AssayNode();
+                    assayNode.setNodeName(extract.getName());
+                    TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
+                    technologyType.setAttributeValue("high_throughput_sequencing");
+                    assayNode.technologyType = technologyType;
+
+                    extractNode.addChildNode(assayNode);
+                    assayNode.addParentNode(extractNode);
+                }
+*/
             }
         }
     }

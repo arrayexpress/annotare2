@@ -44,7 +44,7 @@ public class ExperimentProfile implements Serializable {
     int nextId;
 
     @JsonProperty("type")
-    private ExperimentConfigType type;
+    private ExperimentProfileType type;
 
     @JsonProperty("accession")
     private String accession;
@@ -94,7 +94,7 @@ public class ExperimentProfile implements Serializable {
         /* used by GWT serialization */
     }
 
-    public ExperimentProfile(@JsonProperty("type") ExperimentConfigType type) {
+    public ExperimentProfile(@JsonProperty("type") ExperimentProfileType type) {
         this.type = type;
         contactMap = newLinkedHashMap();
         publicationMap = newLinkedHashMap();
@@ -149,7 +149,7 @@ public class ExperimentProfile implements Serializable {
         this.extractId2Labels = extractId2Labels;
     }
 
-    public ExperimentConfigType getType() {
+    public ExperimentProfileType getType() {
         return type;
     }
 

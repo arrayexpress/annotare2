@@ -17,15 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.Sample;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater;
 
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType.*;
+import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
 
 /**
@@ -68,7 +67,7 @@ public class ExperimentBuilderFactory {
             }
         };
 
-        public static Map<ExperimentConfigType, Builder> map = newHashMap();
+        public static Map<ExperimentProfileType, Builder> map = newHashMap();
 
         static {
             for (Builder b : Builder.values()) {
@@ -76,9 +75,9 @@ public class ExperimentBuilderFactory {
             }
         }
 
-        private ExperimentConfigType type;
+        private ExperimentProfileType type;
 
-        private Builder(ExperimentConfigType type) {
+        private Builder(ExperimentProfileType type) {
             this.type = type;
         }
 

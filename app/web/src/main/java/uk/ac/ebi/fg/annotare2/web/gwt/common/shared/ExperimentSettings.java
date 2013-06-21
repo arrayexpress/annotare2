@@ -17,23 +17,23 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExperimentSettings implements IsSerializable {
 
-    private ExperimentConfigType experimentType;
+    private ExperimentProfileType experimentType;
 
     public ExperimentSettings() {
     }
 
-    public ExperimentSettings(ExperimentConfigType experimentType) {
+    public ExperimentSettings(ExperimentProfileType experimentType) {
         this.experimentType = experimentType;
     }
 
-    public ExperimentConfigType getExperimentType() {
+    public ExperimentProfileType getExperimentType() {
         return experimentType;
     }
 }

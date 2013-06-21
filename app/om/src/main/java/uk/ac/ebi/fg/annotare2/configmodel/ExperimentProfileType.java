@@ -22,14 +22,14 @@ import com.google.common.annotations.GwtCompatible;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public enum ExperimentConfigType {
+public enum ExperimentProfileType {
     ONE_COLOR_MICROARRAY("One-color microarray"),
     TWO_COLOR_MICROARRAY("Two-color microarray"),
     SEQUENCING("High-throughput sequencing");
 
     private final String title;
 
-    private ExperimentConfigType(String title) {
+    private ExperimentProfileType(String title) {
         this.title = title;
     }
 

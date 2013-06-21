@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import org.junit.Test;
 import sun.reflect.ReflectionFactory;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentConfigType;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import java.lang.reflect.Constructor;
@@ -33,16 +33,16 @@ public class ExperimentBuilderFactoryTest {
 
     @Test(expected = IllegalStateException.class)
     public void unknownExperimentTypeTest() throws NoSuchMethodException, InvocationTargetException, InstantiationException {
-        Constructor cstr = ExperimentConfigType.class.getDeclaredConstructor(
+        Constructor cstr = ExperimentProfileType.class.getDeclaredConstructor(
                 String.class, int.class, String.class
         );
         ReflectionFactory reflection =
                 ReflectionFactory.getReflectionFactory();
         Enum e = (Enum) reflection.newConstructorAccessor(cstr).newInstance(
-                new Object[]{"MISSING_EXPERIMENT_TYPE", ExperimentConfigType.values().length, "Missing Experiment Type"});
+                new Object[]{"MISSING_EXPERIMENT_TYPE", ExperimentProfileType.values().length, "Missing Experiment Type"});
 
         ExperimentSetupSettings settings = new ExperimentSetupSettings.Builder()
-                .setExperimentType((ExperimentConfigType) e)
+                .setExperimentType((ExperimentProfileType) e)
                 .build();
 
         createExperiment(settings);
