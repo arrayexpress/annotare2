@@ -83,12 +83,12 @@ public class ExperimentProfile implements Serializable {
     private Set<String> labels;
 
     @JsonProperty("sample2Extracts")
-    private Map<Integer, Set<Integer>> sample2ExtractsIds;
-    private Map<Sample, Set<Extract>> sample2Extracts;
+    private MultiSets<Integer, Integer> sample2ExtractsIds;
+    private MultiSets<Sample, Extract> sample2Extracts;
 
     @JsonProperty("extract2Labels")
-    private Map<Integer, Set<String>> extractId2Labels;
-    private Map<Extract, Set<String>> extract2Labels;
+    private MultiSets<Integer, String> extractId2Labels;
+    private MultiSets<Extract, String> extract2Labels;
 
     ExperimentProfile() {
         /* used by GWT serialization */
@@ -106,46 +106,44 @@ public class ExperimentProfile implements Serializable {
         extractMap = newLinkedHashMap();
         labels = newLinkedHashSet();
 
-        sample2Extracts = newLinkedHashMap();
-        extract2Labels = newLinkedHashMap();
+        sample2Extracts = new MultiSets<Sample, Extract>();
+        extract2Labels = new MultiSets<Extract, String>();
     }
 
     @JsonProperty("sample2Extracts")
-    Map<Integer, Set<Integer>> getSample2ExtractsIds() {
+    MultiSets<Integer, Integer> getSample2ExtractsIds() {
         if (sample2ExtractsIds != null) {
             return sample2ExtractsIds;
         }
-        Map<Integer, Set<Integer>> map = newLinkedHashMap();
+        MultiSets<Integer, Integer> map = new MultiSets<Integer, Integer>();
         for (Sample sample : sample2Extracts.keySet()) {
             Set<Extract> extracts = sample2Extracts.get(sample);
-            Set<Integer> extractIds = newLinkedHashSet();
             for (Extract extract : extracts) {
-                extractIds.add(extract.getId());
+                map.put(sample.getId(), extract.getId());
             }
-            map.put(sample.getId(), extractIds);
         }
         return map;
     }
 
     @JsonProperty("sample2Extracts")
-    void setSample2ExtractsIds(Map<Integer, Set<Integer>> sample2ExtractsIds) {
+    void setSample2ExtractsIds(MultiSets<Integer, Integer> sample2ExtractsIds) {
         this.sample2ExtractsIds = sample2ExtractsIds;
     }
 
     @JsonProperty("extract2Labels")
-    Map<Integer, Set<String>> getExtractId2Labels() {
+    MultiSets<Integer, String> getExtractId2Labels() {
         if (extractId2Labels != null) {
             return extractId2Labels;
         }
-        Map<Integer, Set<String>> map = newLinkedHashMap();
+        MultiSets<Integer, String> map = new MultiSets<Integer, String>();
         for (Extract extract : extract2Labels.keySet()) {
-            map.put(extract.getId(), new LinkedHashSet<String>(extract2Labels.get(extract)));
+            map.putAll(extract.getId(), extract2Labels.get(extract));
         }
         return map;
     }
 
     @JsonProperty("extract2Labels")
-    void setExtractId2Labels(Map<Integer, Set<String>> extractId2Labels) {
+    void setExtractId2Labels(MultiSets<Integer, String> extractId2Labels) {
         this.extractId2Labels = extractId2Labels;
     }
 
@@ -226,19 +224,14 @@ public class ExperimentProfile implements Serializable {
         Extract extract = new Extract(nextId());
         extractMap.put(extract.getId(), extract);
         for (Sample sample : samples) {
-            link(extract, sample);
+            link(sample, extract);
         }
         return extract;
     }
 
     public LabeledExtract createLabeledExtract(Extract extract, String label) {
         addLabel(label);
-        Set<String> labels = extract2Labels.get(extract);
-        if (labels == null) {
-            labels = new HashSet<String>();
-            extract2Labels.put(extract, labels);
-        }
-        labels.add(label);
+        extract2Labels.put(extract, label);
         return new LabeledExtract(extract, label);
     }
 
@@ -287,13 +280,8 @@ public class ExperimentProfile implements Serializable {
         }
     }
 
-    public void link(Extract extract, Sample sample) {
-        Set<Extract> extracts = sample2Extracts.get(sample);
-        if (extracts == null) {
-            extracts = new HashSet<Extract>();
-            sample2Extracts.put(sample, extracts);
-        }
-        extracts.add(extract);
+    public void link(Sample sample, Extract extract) {
+        sample2Extracts.put(sample, extract);
     }
 
     public Contact getContact(int id) {
@@ -372,8 +360,7 @@ public class ExperimentProfile implements Serializable {
 
     @JsonIgnore
     public Collection<Extract> getExtracts(Sample sample) {
-        Set<Extract> extracts = sample2Extracts.get(sample);
-        return extracts == null ? new HashSet<Extract>() : unmodifiableCollection(sample2Extracts.get(sample));
+        return unmodifiableCollection(sample2Extracts.get(sample));
     }
 
     @JsonIgnore
@@ -415,22 +402,20 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void fixSample2Extracts() {
-        Map<Integer, Set<Integer>> sample2ExtractsIds = getSample2ExtractsIds();
+        MultiSets<Integer, Integer> sample2ExtractsIds = getSample2ExtractsIds();
         for (Integer sampleId : sample2ExtractsIds.keySet()) {
-            Set<Extract> extracts = newLinkedHashSet();
-            for (Integer extractId : sample2ExtractsIds.get(sampleId)) {
-                extracts.add(extractMap.get(extractId));
-            }
             Sample sample = sampleMap.get(sampleId);
-            sample2Extracts.put(sample, extracts);
+            for (Integer extractId : sample2ExtractsIds.get(sampleId)) {
+                sample2Extracts.put(sample, extractMap.get(extractId));
+            }
         }
         this.sample2ExtractsIds = null;
     }
 
     private void fixExtract2Labels() {
-        Map<Integer, Set<String>> extractId2Labels = getExtractId2Labels();
+        MultiSets<Integer, String> extractId2Labels = getExtractId2Labels();
         for (Integer extractId : extractId2Labels.keySet()) {
-            extract2Labels.put(extractMap.get(extractId), new HashSet<String>(extractId2Labels.get(extractId)));
+            extract2Labels.putAll(extractMap.get(extractId), extractId2Labels.get(extractId));
         }
         this.extractId2Labels = null;
     }

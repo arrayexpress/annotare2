@@ -47,6 +47,7 @@ import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.parseDate;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class MageTab2ExperimentConverter {
 
     private static final Logger log = LoggerFactory.getLogger(MageTab2ExperimentConverter.class);

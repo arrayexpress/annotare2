@@ -21,14 +21,20 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SourceNode;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.IdfData;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Info;
 import uk.ac.ebi.fg.annotare2.magetabcheck.model.idf.Person;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.idf.LimpopoIdfDataProxy;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
@@ -147,7 +153,7 @@ public class ExperimentMageTabImporter {
                 extract.setName(node.getNodeName());
                 extracts.put(node, extract);
             } else {
-                exp.link(extract, sample);
+                exp.link(sample, extract);
             }
             addLabeledExtracts(extract, findLabeledExtracts(node));
         }

@@ -37,6 +37,7 @@ import static junit.framework.TestCase.*;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class MageTab2ExperimentConverterTest {
 
 /*
