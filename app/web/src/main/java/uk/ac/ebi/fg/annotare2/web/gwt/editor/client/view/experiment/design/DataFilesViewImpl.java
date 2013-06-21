@@ -37,9 +37,9 @@ public class DataFilesViewImpl extends Composite implements DataFilesView {
     private static List<String> options = new ArrayList<String>();
     static {
         options.add("");
-        options.add("E-MTAB-641.raw.1.zip");
-        options.add("E-MTAB-641.raw.2.zip");
-        options.add("E-MTAB-641.raw.3.zip");
+        options.add("data.raw.1.zip");
+        options.add("data.raw.2.zip");
+        options.add("data.raw.3.zip");
     }
 
     public DataFilesViewImpl() {

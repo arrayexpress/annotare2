@@ -41,19 +41,19 @@ public class DataFileListView extends Composite {
 
         List<FileRow> values = new ArrayList<FileRow>();
         values.add(new FileRow(
-                "E-MTAB-641.raw.1.zip",
+                "data.raw.1.zip",
                 "424896a587b9a879c9a66c52bfa76424",
                 "10Mb",
                 new Date(),
                 true));
         values.add(new FileRow(
-                "E-MTAB-641.raw.2.zip",
+                "data.raw.2.zip",
                 "424896a587b9a879c9a66c52bfa76424",
                 "10Mb",
                 new Date(),
                 true));
         values.add(new FileRow(
-                "E-MTAB-641.raw.3.zip",
+                "data.raw.3.zip",
                 "424896a587b9a879c9a66c52bfa76424",
                 "10Mb",
                 new Date(),
