@@ -31,7 +31,7 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
 import java.io.File;
 import java.io.FileWriter;

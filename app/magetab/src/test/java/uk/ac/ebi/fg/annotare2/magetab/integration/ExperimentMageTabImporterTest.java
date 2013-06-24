@@ -25,7 +25,7 @@ import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;

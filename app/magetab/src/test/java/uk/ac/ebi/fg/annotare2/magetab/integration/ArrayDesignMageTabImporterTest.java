@@ -22,7 +22,7 @@ import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.JseTextFormatter;
 import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
 import java.io.IOException;
 import java.io.InputStream;

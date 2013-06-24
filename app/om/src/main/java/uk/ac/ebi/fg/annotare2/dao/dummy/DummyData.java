@@ -27,7 +27,7 @@ import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

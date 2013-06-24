@@ -20,7 +20,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.submissionmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
 import java.io.IOException;
 import java.io.InputStream;

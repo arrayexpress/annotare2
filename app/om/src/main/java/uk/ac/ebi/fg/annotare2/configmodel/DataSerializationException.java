@@ -14,38 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.submissionmodel;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
+package uk.ac.ebi.fg.annotare2.configmodel;
 
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDataFile implements GraphNode {
+public class DataSerializationException extends Exception {
 
-    @JsonProperty("id")
-    private int id;
-
-    @JsonProperty("name")
-    private String name;
-
-    @JsonCreator
-    public ArrayDataFile(@JsonProperty("id") int id) {
-        this.id = id;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public DataSerializationException(Throwable cause) {
+        super(cause);
     }
 }
