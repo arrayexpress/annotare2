@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,13 +28,16 @@ import java.util.Set;
 
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static com.google.common.collect.Sets.newLinkedHashSet;
+import static org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class MultiSets<K, V> implements Serializable {
 
+    @JsonProperty("map")
     private Map<K, Set<V>> map;
 
     public MultiSets() {
