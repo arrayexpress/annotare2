@@ -22,7 +22,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributeRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExtractAttributesView;
@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ExtractAttributesActivity extends AbstractActivity {
+public class ExtractAttributesActivity extends AbstractActivity implements ExtractAttributesView.Presenter {
 
     private final ExtractAttributesView view;
     private final ExperimentData expData;
@@ -46,6 +46,7 @@ public class ExtractAttributesActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        view.setPresenter(this);
         panel.setWidget(view);
         loadAsync();
     }
@@ -54,15 +55,20 @@ public class ExtractAttributesActivity extends AbstractActivity {
         return this;
     }
 
+    @Override
+    public void updateRow(ExtractAttributesRow row) {
+        expData.updateExtractAttributeRow(row);
+    }
+
     private void loadAsync() {
-        expData.getExtractAttributeRowsAsync(new AsyncCallback<List<ExtractAttributeRow>>() {
+        expData.getExtractAttributeRowsAsync(new AsyncCallback<List<ExtractAttributesRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert(caught.getMessage());
             }
 
             @Override
-            public void onSuccess(List<ExtractAttributeRow> result) {
+            public void onSuccess(List<ExtractAttributesRow> result) {
                view.setData(result);
             }
         });

@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
-
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ExtractAttributesView extends IsWidget {
+public class UpdateExtractAttributesRowCommand implements ExperimentUpdateCommand {
 
-    void setData(List<ExtractAttributesRow> rows);
+    private ExtractAttributesRow row;
 
-    void setPresenter(Presenter presenter);
+    UpdateExtractAttributesRowCommand() {
+        /* used by GWT serialization */
+    }
 
-    public interface Presenter {
+    public UpdateExtractAttributesRowCommand(ExtractAttributesRow row) {
+        this.row = row;
+    }
 
-        void updateRow(ExtractAttributesRow row);
+    @Override
+    public void execute(ExperimentUpdatePerformer performer) {
+        performer.updateExtractAttributes(row);
+    }
+
+    @Override
+    public boolean isCritical() {
+        return false;
     }
 }

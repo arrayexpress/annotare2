@@ -26,18 +26,18 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class ExtractAttributeRow implements IsSerializable, HasIdentity {
+public class ExtractAttributesRow implements IsSerializable, HasIdentity {
 
     private int id;
     private String name;
     private Map<ExtractAttribute, String> values;
 
 
-    ExtractAttributeRow() {
+    ExtractAttributesRow() {
         /*used by GWT serialization only */
     }
 
-    public ExtractAttributeRow(int id, String name, Map<ExtractAttribute, String> values) {
+    public ExtractAttributesRow(int id, String name, Map<ExtractAttribute, String> values) {
         this.id = id;
         this.name = name;
         this.values = new HashMap<ExtractAttribute, String>(values);
@@ -45,7 +45,7 @@ public class ExtractAttributeRow implements IsSerializable, HasIdentity {
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 
     public String getName() {
@@ -62,5 +62,9 @@ public class ExtractAttributeRow implements IsSerializable, HasIdentity {
 
     public void setValue(String value, ExtractAttribute attr) {
         values.put(attr, value);
+    }
+
+    public Map<ExtractAttribute, String> getValues() {
+        return new HashMap<ExtractAttribute, String>(values);
     }
 }

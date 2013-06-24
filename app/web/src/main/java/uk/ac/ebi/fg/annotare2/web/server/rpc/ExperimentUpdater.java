@@ -18,10 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
@@ -158,6 +155,14 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     public void removeSamples(List<SampleRow> rows) {
         for (SampleRow row : rows) {
             exp.removeSample(row.getId());
+        }
+    }
+
+    @Override
+    public void updateExtractAttributes(ExtractAttributesRow row) {
+        Extract extract = exp.getExtract(row.getId());
+        if (extract != null) {
+            extract.setValues(row.getValues());
         }
     }
 

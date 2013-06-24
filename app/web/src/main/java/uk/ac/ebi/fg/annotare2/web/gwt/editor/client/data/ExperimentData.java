@@ -171,10 +171,10 @@ public class ExperimentData {
         return columns;
     }
 
-    private List<ExtractAttributeRow> getExtractAttributeRows(ExperimentProfile exp) {
-        List<ExtractAttributeRow> rows = new ArrayList<ExtractAttributeRow>();
+    private List<ExtractAttributesRow> getExtractAttributeRows(ExperimentProfile exp) {
+        List<ExtractAttributesRow> rows = new ArrayList<ExtractAttributesRow>();
         for(Extract extract : exp.getExtracts()) {
-            rows.add(new ExtractAttributeRow(extract.getId(), extract.getName(), extract.getValues()));
+            rows.add(new ExtractAttributesRow(extract.getId(), extract.getName(), extract.getValues()));
         }
         return rows;
     }
@@ -279,7 +279,7 @@ public class ExperimentData {
         });
     }
 
-    public void getExtractAttributeRowsAsync(final AsyncCallback<List<ExtractAttributeRow>> callback) {
+    public void getExtractAttributeRowsAsync(final AsyncCallback<List<ExtractAttributesRow>> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -375,6 +375,10 @@ public class ExperimentData {
 
     public void removeSamples(List<SampleRow> rows) {
         updateQueue.add(new RemoveSamplesCommand(rows));
+    }
+
+    public void updateExtractAttributeRow(ExtractAttributesRow row) {
+        updateQueue.add(new UpdateExtractAttributesRowCommand(row));
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

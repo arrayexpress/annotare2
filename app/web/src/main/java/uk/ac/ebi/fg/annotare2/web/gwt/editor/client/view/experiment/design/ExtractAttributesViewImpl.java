@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.configmodel.ExtractAttribute;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributeRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
 
 import java.util.Comparator;
 import java.util.List;
@@ -35,17 +35,23 @@ import static uk.ac.ebi.fg.annotare2.configmodel.ExtractAttribute.*;
  */
 public class ExtractAttributesViewImpl extends Composite implements ExtractAttributesView {
 
-    private final GridView<ExtractAttributeRow> gridView;
+    private final GridView<ExtractAttributesRow> gridView;
+    private Presenter presenter;
 
     public ExtractAttributesViewImpl() {
-        gridView = new GridView<ExtractAttributeRow>();
+        gridView = new GridView<ExtractAttributesRow>();
         initWidget(gridView);
     }
 
     @Override
-    public void setData(List<ExtractAttributeRow> rows) {
+    public void setData(List<ExtractAttributesRow> rows) {
         gridView.setRows(rows);
         setColumns();
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     private void setColumns() {
@@ -57,24 +63,24 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     private void addNameColumn() {
-        Column<ExtractAttributeRow, String> column = new Column<ExtractAttributeRow, String>(new EditTextCell()) {
+        Column<ExtractAttributesRow, String> column = new Column<ExtractAttributesRow, String>(new EditTextCell()) {
             @Override
-            public String getValue(ExtractAttributeRow row) {
+            public String getValue(ExtractAttributesRow row) {
                 return row.getName();
             }
         };
-        column.setFieldUpdater(new FieldUpdater<ExtractAttributeRow, String>() {
+        column.setFieldUpdater(new FieldUpdater<ExtractAttributesRow, String>() {
             @Override
-            public void update(int index, ExtractAttributeRow row, String value) {
+            public void update(int index, ExtractAttributesRow row, String value) {
                 // TODO check names are unique
                 row.setName(value);
                 updateRow(row);
             }
         });
         column.setSortable(true);
-        Comparator<ExtractAttributeRow> comparator = new Comparator<ExtractAttributeRow>() {
+        Comparator<ExtractAttributesRow> comparator = new Comparator<ExtractAttributesRow>() {
             @Override
-            public int compare(ExtractAttributeRow o1, ExtractAttributeRow o2) {
+            public int compare(ExtractAttributesRow o1, ExtractAttributesRow o2) {
                 if (o1 == o2) {
                     return 0;
                 }
@@ -87,17 +93,17 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     private void addColumn(final ExtractAttribute attr) {
-        Column<ExtractAttributeRow, String> column = new Column<ExtractAttributeRow, String>(new SelectionCell(attr.getOptions())) {
+        Column<ExtractAttributesRow, String> column = new Column<ExtractAttributesRow, String>(new SelectionCell(attr.getOptions())) {
             @Override
-            public String getValue(ExtractAttributeRow row) {
+            public String getValue(ExtractAttributesRow row) {
                 String v = row.getValue(attr);
                 return v == null ? "" : v;
             }
         };
         column.setCellStyleNames("app-SelectionCell");
-        column.setFieldUpdater(new FieldUpdater<ExtractAttributeRow, String>() {
+        column.setFieldUpdater(new FieldUpdater<ExtractAttributesRow, String>() {
             @Override
-            public void update(int index, ExtractAttributeRow row, String value) {
+            public void update(int index, ExtractAttributesRow row, String value) {
                 row.setValue(value, attr);
                 updateRow(row);
             }
@@ -105,7 +111,7 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
         gridView.addPermanentColumn(attr.getTitle(), column, null, 150, Style.Unit.PX);
     }
 
-    private void updateRow(ExtractAttributeRow row) {
-        //TODO
+    private void updateRow(ExtractAttributesRow row) {
+        presenter.updateRow(row);
     }
 }
