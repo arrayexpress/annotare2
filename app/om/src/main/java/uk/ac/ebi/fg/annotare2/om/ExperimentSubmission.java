@@ -16,15 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
-
-import java.io.IOException;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.fromJson2Experiment;
+import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.toJsonString;
 
 /**
  * @author Olga Melnichuk
@@ -38,7 +35,7 @@ public class ExperimentSubmission extends Submission {
     }
 
     public ExperimentProfile getExperimentProfile() throws DataSerializationException {
-        return fromJsonString(experimentString);
+        return fromJson2Experiment(experimentString);
     }
 
     public void setExperimentProfile(ExperimentProfile exp) throws DataSerializationException {
@@ -53,36 +50,5 @@ public class ExperimentSubmission extends Submission {
     @Override
     public void discardAll() {
         experimentString = null;
-    }
-
-    public static ExperimentProfile fromJsonString(String str) throws DataSerializationException {
-        if (isNullOrEmpty(str)) {
-            return null;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            ExperimentProfile exp = mapper.readValue(str, ExperimentProfile.class);
-            exp.fixMe();
-            return exp;
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
-    }
-
-    public static String toJsonString(ExperimentProfile exp) throws DataSerializationException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(exp);
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
     }
 }

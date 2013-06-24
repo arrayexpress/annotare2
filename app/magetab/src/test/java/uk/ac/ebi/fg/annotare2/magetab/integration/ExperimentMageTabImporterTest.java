@@ -22,10 +22,10 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.configmodel.JsonCodec;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -75,7 +75,7 @@ public class ExperimentMageTabImporterTest {
         SDRF sdrf = sdrfParser.parse(getClass().getResourceAsStream(sdrfFile));
 
         ExperimentProfile exp = new ExperimentMageTabImporter(type).importFrom(idf, sdrf);
-        System.out.println(ExperimentSubmission.toJsonString(exp));
+        System.out.println(JsonCodec.toJsonString(exp));
         return exp;
     }
 }

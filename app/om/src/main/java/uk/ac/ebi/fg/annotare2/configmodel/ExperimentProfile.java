@@ -396,7 +396,7 @@ public class ExperimentProfile implements Serializable {
         return ++nextId;
     }
 
-    public void fixMe() {
+    protected void fixMe() {
         fixSample2Extracts();
         fixExtract2Labels();
     }
