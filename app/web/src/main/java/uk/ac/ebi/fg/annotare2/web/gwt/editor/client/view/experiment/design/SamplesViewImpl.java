@@ -117,7 +117,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void updateRow(SampleRow row) {
-        presenter.updateRow(row);
+        presenter.updateRow(row.copy());
     }
 
     private void createNewSample() {

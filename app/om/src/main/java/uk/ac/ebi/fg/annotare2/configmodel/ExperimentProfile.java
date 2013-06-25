@@ -272,6 +272,10 @@ public class ExperimentProfile implements Serializable {
         extractMap.remove(extract.getId());
     }
 
+    public void removeLabeledExtract(LabeledExtract labeledExtract) {
+        removeLabeledExtract(labeledExtract.getExtract(), labeledExtract.getLabel());
+    }
+
     public void removeLabeledExtract(Extract extract, String label) {
         //TODO clear files
         Set<String> labels = extract2Labels.get(extract);

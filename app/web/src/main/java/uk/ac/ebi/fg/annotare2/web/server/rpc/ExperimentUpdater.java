@@ -23,8 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
@@ -163,6 +162,30 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         Extract extract = exp.getExtract(row.getId());
         if (extract != null) {
             extract.setValues(row.getValues());
+        }
+    }
+
+    @Override
+    public void updateExtractLabels(ExtractLabelsRow row) {
+        Extract extract = exp.getExtract(row.getId());
+        if (extract == null) {
+            return;
+        }
+        Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
+        Set<String> newLabels = new HashSet<String>(row.getLabels());
+        Set<String> existedLabels = new HashSet<String>();
+        for (LabeledExtract labeledExtract : labeledExtracts) {
+            if (!newLabels.contains(labeledExtract.getLabel())) {
+                exp.removeLabeledExtract(labeledExtract);
+            } else {
+                existedLabels.add(labeledExtract.getLabel());
+            }
+        }
+
+        if (newLabels.removeAll(existedLabels)) {
+            for (String label : newLabels) {
+                exp.createLabeledExtract(extract, label);
+            }
         }
     }
 

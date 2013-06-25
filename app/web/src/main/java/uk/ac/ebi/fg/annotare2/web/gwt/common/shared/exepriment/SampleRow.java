@@ -54,9 +54,8 @@ public class SampleRow implements IsSerializable, HasTemporaryIdentity, HasName 
         this.values.putAll(values);
     }
 
-    public SampleRow(int id, SampleRow row) {
-        this(id, row.getName(), row.getValues());
-        this.tmpId = row.getTmpId();
+    public SampleRow copy() {
+        return new SampleRow(id, name, values);
     }
 
     public int getId() {
@@ -86,10 +85,6 @@ public class SampleRow implements IsSerializable, HasTemporaryIdentity, HasName 
 
     public void setValue(String value, SampleColumn column) {
         this.values.put(column.getId(), value);
-    }
-
-    public SampleRow updatedCopy(SampleRow updates) {
-        return new SampleRow(id, updates);
     }
 
     @Override

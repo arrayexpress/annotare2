@@ -5,12 +5,8 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.*;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -19,6 +15,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractLabelsRow;
 
 import java.util.*;
@@ -29,17 +26,23 @@ import java.util.*;
 public class LabeledExtractsViewImpl extends Composite implements LabeledExtractsView {
 
     private final GridView<ExtractLabelsRow> gridView;
+    private final ListBox labelList;
+    private Presenter presenter;
 
     public LabeledExtractsViewImpl() {
         gridView = new GridView<ExtractLabelsRow>();
-        Button button = new Button("Add label");
-        button.addClickHandler(new ClickHandler() {
+        labelList = new ListBox();
+        labelList.addItem("labels", "");
+        labelList.addItem("Cy3", "Cy3");
+        labelList.addItem("Cy5", "Cy5");
+        labelList.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                // TODO
+            public void onChange(ChangeEvent event) {
+                assignLabel();
+                labelList.setItemSelected(0, true);
             }
         });
-        gridView.addTool(button);
+        gridView.addTool(labelList);
         initWidget(gridView);
     }
 
@@ -47,6 +50,11 @@ public class LabeledExtractsViewImpl extends Composite implements LabeledExtract
     public void setData(List<ExtractLabelsRow> rows, List<String> labels) {
         gridView.setRows(rows);
         setColumns(labels);
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     private void setColumns(List<String> labels) {
@@ -90,22 +98,33 @@ public class LabeledExtractsViewImpl extends Composite implements LabeledExtract
             @Override
             public void update(int index, ExtractLabelsRow row, Set<String> labels) {
                 row.setLabels(labels);
-                //TODO update row
+                updateRow(row);
             }
         });
         gridView.addPermanentColumn("Labels", column, null, 350, Style.Unit.PX);
     }
 
-    private void addColumn(final String label) {
-        Column<ExtractLabelsRow, String> column = new Column<ExtractLabelsRow, String>(new TextCell()) {
-            @Override
-            public String getValue(ExtractLabelsRow object) {
-                return object.hasLabel(label) ? "+" : "";
+    private void assignLabel() {
+        Set<ExtractLabelsRow> selectedRows = gridView.getSelectedRows();
+        if (selectedRows.isEmpty()) {
+            return;
+        }
+
+        String label = labelList.getValue(labelList.getSelectedIndex());
+        if (label.isEmpty()) {
+            return;
+        }
+        for(ExtractLabelsRow row : selectedRows) {
+            if (row.addLabel(label)) {
+                updateRow(row);
             }
-        };
-        gridView.addColumn(label, column, null, 150, Style.Unit.PX);
+        }
+        gridView.redraw();
     }
 
+    private void updateRow(ExtractLabelsRow row) {
+        presenter.updateRow(row.copy());
+    }
 
     static class LabelsCell extends AbstractCell<Set<String>> {
 

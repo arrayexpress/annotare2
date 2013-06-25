@@ -381,6 +381,10 @@ public class ExperimentData {
         updateQueue.add(new UpdateExtractAttributesRowCommand(row));
     }
 
+    public void updateExtractLabelsRow(ExtractLabelsRow row) {
+        updateQueue.add(new UpdateExtractLabelsRowCommand(row));
+    }
+
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
         private ColumnValueType valueType;

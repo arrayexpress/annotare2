@@ -49,4 +49,6 @@ public interface ExperimentUpdatePerformer {
     void removeSamples(List<SampleRow> row);
 
     void updateExtractAttributes(ExtractAttributesRow row);
+
+    void updateExtractLabels(ExtractLabelsRow row);
 }

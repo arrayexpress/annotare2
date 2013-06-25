@@ -22,6 +22,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractLabelsRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtracts;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
@@ -30,7 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.Label
 /**
  * @author Olga Melnichuk
  */
-public class LabeledExtractsActivity extends AbstractActivity {
+public class LabeledExtractsActivity extends AbstractActivity implements LabeledExtractsView.Presenter {
 
     private final LabeledExtractsView view;
     private final ExperimentData expData;
@@ -43,12 +44,18 @@ public class LabeledExtractsActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        view.setPresenter(this);
         panel.setWidget(view);
         loadAsync();
     }
 
     public LabeledExtractsActivity withPlace(ExpDesignPlace designPlace) {
         return this;
+    }
+
+    @Override
+    public void updateRow(ExtractLabelsRow row) {
+        expData.updateExtractLabelsRow(row);
     }
 
     private void loadAsync() {

@@ -112,6 +112,6 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     private void updateRow(ExtractAttributesRow row) {
-        presenter.updateRow(row);
+        presenter.updateRow(row.copy());
     }
 }

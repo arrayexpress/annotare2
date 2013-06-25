@@ -216,6 +216,10 @@ public class GridView<R extends HasIdentity> extends Composite {
         dataProvider.getList().removeAll(selectedRows);
     }
 
+    public void redraw() {
+        dataGrid.redraw();
+    }
+
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {
 
         private boolean checked;

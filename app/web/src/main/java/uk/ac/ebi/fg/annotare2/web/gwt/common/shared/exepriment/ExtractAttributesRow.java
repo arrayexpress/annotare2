@@ -67,4 +67,8 @@ public class ExtractAttributesRow implements IsSerializable, HasIdentity {
     public Map<ExtractAttribute, String> getValues() {
         return new HashMap<ExtractAttribute, String>(values);
     }
+
+    public ExtractAttributesRow copy() {
+        return new ExtractAttributesRow(id, name, values);
+    }
 }

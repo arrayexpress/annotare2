@@ -57,11 +57,13 @@ public class ExtractLabelsRow implements HasIdentity, IsSerializable {
         this.labels = new LinkedHashSet<String>(labels);
     }
 
-    public void addLabel(String label) {
-        labels.add(label);
+    public boolean addLabel(String label) {
+        return labels.add(label);
     }
 
-    public boolean hasLabel(String label) {
-        return labels.contains(label);
+    public ExtractLabelsRow copy() {
+        ExtractLabelsRow copy = new ExtractLabelsRow(id, name);
+        copy.setLabels(labels);
+        return copy;
     }
 }
