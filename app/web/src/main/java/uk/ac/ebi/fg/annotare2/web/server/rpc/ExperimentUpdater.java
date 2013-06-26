@@ -161,7 +161,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     public void updateExtractAttributes(ExtractAttributesRow row) {
         Extract extract = exp.getExtract(row.getId());
         if (extract != null) {
-            extract.setValues(row.getValues());
+            extract.setAttributeValues(row.getValues());
         }
     }
 

@@ -174,7 +174,7 @@ public class ExperimentData {
     private List<ExtractAttributesRow> getExtractAttributeRows(ExperimentProfile exp) {
         List<ExtractAttributesRow> rows = new ArrayList<ExtractAttributesRow>();
         for(Extract extract : exp.getExtracts()) {
-            rows.add(new ExtractAttributesRow(extract.getId(), extract.getName(), extract.getValues()));
+            rows.add(new ExtractAttributesRow(extract.getId(), extract.getName(), extract.getAttributeValues()));
         }
         return rows;
     }

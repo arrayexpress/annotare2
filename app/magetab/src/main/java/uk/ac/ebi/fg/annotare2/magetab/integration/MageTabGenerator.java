@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Joiner.on;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
@@ -105,6 +106,13 @@ public class MageTabGenerator {
     private ExtractNode createExtractNode(Extract extract) {
         ExtractNode extractNode = new ExtractNode();
         extractNode.setNodeName(extract.getName());
+        for (ExtractAttribute attr : ExtractAttribute.values()) {
+            String value = extract.getAttributeValue(attr);
+            if (!isNullOrEmpty(value)) {
+                extractNode.comments.put(getSdrfFriendlyName(attr), value);
+            }
+        }
+
         Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
         for (LabeledExtract labeledExtract : labeledExtracts) {
             LabeledExtractNode labeledExtractNode = createLabeledExtractNode(labeledExtract);
@@ -118,6 +126,21 @@ public class MageTabGenerator {
             assayNode.addParentNode(extractNode);
         }
         return extractNode;
+    }
+
+    private static String getSdrfFriendlyName(ExtractAttribute attr) {
+        switch (attr) {
+            case LIBRARY_LAYOUT:
+                return "LIBRARY_LAYOUT";
+            case LIBRARY_SELECTION:
+                return "LIBRARY_SELECTION";
+            case LIBRARY_SOURCE:
+                return "LIBRARY_SOURCE";
+            case LIBRARY_STRATEGY:
+                return "LIBRARY_STRATEGY";
+            default:
+                return attr.getTitle();
+        }
     }
 
     private LabeledExtractNode createLabeledExtractNode(LabeledExtract labeledExtract) {
