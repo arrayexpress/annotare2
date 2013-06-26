@@ -19,7 +19,10 @@ package uk.ac.ebi.fg.annotare2.magetab.integration;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.AssayNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
@@ -27,10 +30,8 @@ import uk.ac.ebi.fg.annotare2.configmodel.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.base.Joiner.on;
-import static com.google.common.collect.Maps.newHashMap;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
@@ -80,54 +81,66 @@ public class MageTabGenerator {
     }
 
     private void generateSdrf(SDRF sdrf) throws ParseException {
-        Map<Integer, SDRFNode> map = newHashMap();
         for (Sample sample : exp.getSamples()) {
-            SampleNode sampleNode = new SampleNode();
-            sampleNode.setNodeName(sample.getName());
-            sampleNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
-            sampleNode.materialType = extractMaterialTypeAttribute(sample);
-            sdrf.addNode(sampleNode);
-            map.put(sample.getId(), sampleNode);
-            Collection<Extract> extracts = exp.getExtracts(sample);
-            for (Extract extract : extracts) {
-                ExtractNode extractNode = new ExtractNode();
-                extractNode.setNodeName(extract.getName());
-                sampleNode.addChildNode(extractNode);
-                extractNode.addParentNode(sampleNode);
-                Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
-                for (LabeledExtract labeledExtract : labeledExtracts) {
-                    LabeledExtractNode labeledExtractNode = new LabeledExtractNode();
-                    labeledExtractNode.setNodeName(labeledExtract.getName());
-                    LabelAttribute label = new LabelAttribute();
-                    label.setAttributeValue(labeledExtract.getLabel());
-                    labeledExtractNode.label = label;
-                    extractNode.addChildNode(labeledExtractNode);
-                    labeledExtractNode.addParentNode(extractNode);
-
-                    /*AssayNode assayNode = new AssayNode();
-                    assayNode.setNodeName(labeledExtract.getName());
-                    TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
-                    technologyType.setAttributeValue("array assay");
-                    assayNode.technologyType = technologyType;
-
-                    labeledExtractNode.addChildNode(assayNode);
-                    assayNode.addParentNode(labeledExtractNode);*/
-                }
-
-/*
-                if (!exp.getType().isMicroarray() && labeledExtracts.isEmpty()) {
-                    AssayNode assayNode = new AssayNode();
-                    assayNode.setNodeName(extract.getName());
-                    TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
-                    technologyType.setAttributeValue("high_throughput_sequencing");
-                    assayNode.technologyType = technologyType;
-
-                    extractNode.addChildNode(assayNode);
-                    assayNode.addParentNode(extractNode);
-                }
-*/
-            }
+            sdrf.addNode(createSampleNode(sample));
         }
+    }
+
+    private SampleNode createSampleNode(Sample sample) {
+        SampleNode sampleNode = new SampleNode();
+        sampleNode.setNodeName(sample.getName());
+        sampleNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
+        sampleNode.materialType = extractMaterialTypeAttribute(sample);
+
+        Collection<Extract> extracts = exp.getExtracts(sample);
+        for (Extract extract : extracts) {
+            ExtractNode extractNode = createExtractNode(extract);
+            sampleNode.addChildNode(extractNode);
+            extractNode.addParentNode(sampleNode);
+        }
+
+        return sampleNode;
+    }
+
+    private ExtractNode createExtractNode(Extract extract) {
+        ExtractNode extractNode = new ExtractNode();
+        extractNode.setNodeName(extract.getName());
+        Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
+        for (LabeledExtract labeledExtract : labeledExtracts) {
+            LabeledExtractNode labeledExtractNode = createLabeledExtractNode(labeledExtract);
+            extractNode.addChildNode(labeledExtractNode);
+            labeledExtractNode.addParentNode(extractNode);
+        }
+
+        if (labeledExtracts.isEmpty()) {
+            AssayNode assayNode = createAssayNode(extract.getName());
+            extractNode.addChildNode(assayNode);
+            assayNode.addParentNode(extractNode);
+        }
+        return extractNode;
+    }
+
+    private LabeledExtractNode createLabeledExtractNode(LabeledExtract labeledExtract) {
+        LabeledExtractNode labeledExtractNode = new LabeledExtractNode();
+        labeledExtractNode.setNodeName(labeledExtract.getName());
+        LabelAttribute label = new LabelAttribute();
+        label.setAttributeValue(labeledExtract.getLabel());
+        labeledExtractNode.label = label;
+
+        AssayNode assayNode = createAssayNode(labeledExtract.getName());
+        labeledExtractNode.addChildNode(assayNode);
+        assayNode.addParentNode(labeledExtractNode);
+        return labeledExtractNode;
+    }
+
+    private AssayNode createAssayNode(String assayName) {
+        AssayNode assayNode = new AssayNode();
+        assayNode.setNodeName(assayName);
+        TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
+        technologyType.setAttributeValue(
+                exp.getType().isMicroarray() ? "array assay" : "sequencing assay");
+        assayNode.technologyType = technologyType;
+        return assayNode;
     }
 
     private MaterialTypeAttribute extractMaterialTypeAttribute(Sample sample) {
