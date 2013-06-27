@@ -46,26 +46,6 @@ public class AnnotareProperties {
         properties = load();
     }
 
-    public String getOrganismPartAccession() {
-        return getProperty("efo.term.organismpart");
-    }
-
-    public String getOrganismTermAccession() {
-        return getProperty("efo.term.organism");
-    }
-
-    public String getUnitTermAccession() {
-        return getProperty("efo.term.unit");
-    }
-
-    public String getMaterialTypeTermAccession() {
-        return getProperty("efo.term.metarialtype");
-    }
-
-    public String getStudyDesignAccession() {
-        return getProperty("efo.term.studydesign");
-    }
-
     public String getEfoIndexDir() {
         return getProperty("efo.index.dir");
     }
@@ -73,6 +53,7 @@ public class AnnotareProperties {
     public EfoServiceProperties getEfoServiceProperties() {
         return mageTabCheckProperties;
     }
+
 
     private String getProperty(String key) {
         return properties.getProperty(key);
@@ -117,5 +98,9 @@ public class AnnotareProperties {
             properties.load(in);
         }
         return properties;
+    }
+
+    public String getEfoTermAccession(String propertyName) {
+        return getProperty("efo.term." + propertyName);
     }
 }

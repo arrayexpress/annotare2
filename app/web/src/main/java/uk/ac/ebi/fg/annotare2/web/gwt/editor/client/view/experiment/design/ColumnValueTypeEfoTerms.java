@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 
 import java.util.List;
 
@@ -27,11 +27,11 @@ import java.util.List;
  */
 public interface ColumnValueTypeEfoTerms {
 
-    void getUnits(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
+    void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
 
-    void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback);
+    void getTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
 
-    void getTerms(String query, EfoTermDto root, int limit, AsyncCallback<List<EfoTermDto>> callback);
+    void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback);
 
-    void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> asyncCallback);
+    void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> asyncCallback);
 }

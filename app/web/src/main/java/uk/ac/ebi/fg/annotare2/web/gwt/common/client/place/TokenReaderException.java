@@ -21,6 +21,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client.place;
  */
 public class TokenReaderException extends Exception {
 
+    public TokenReaderException() {
+    }
+
     public TokenReaderException(String message) {
         super(message);
     }

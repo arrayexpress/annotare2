@@ -34,6 +34,4 @@ public class ExperimentSettingTest {
         Map<String, String> map = allSettingsAsMap(new ExperimentSetupSettings());
         assertTrue(map.isEmpty());
     }
-
-
 }

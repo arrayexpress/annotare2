@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public class EfoTermValueType implements ColumnValueType {
+public class SystemEfoTermMap implements IsSerializable {
 
-    private EfoTermDto efoTerm;
+    private Map<SystemEfoTerm, OntologyTerm> map;
 
-    public EfoTermValueType() {
-        /* used by GWT serialization only */
+    public SystemEfoTermMap() {
+        map = new HashMap<SystemEfoTerm, OntologyTerm>();
     }
 
-    public EfoTermValueType(EfoTermDto efoTerm) {
-        this.efoTerm = efoTerm;
+    public OntologyTerm getEfoTerm(SystemEfoTerm term) {
+        return map.get(term);
     }
 
-    public EfoTermDto getEfoTerm() {
-        return efoTerm;
-    }
-
-    @Override
-    public void visit(Visitor visitor) {
-        visitor.visitTermValueType(this);
+    public void put(SystemEfoTerm systemTerm, OntologyTerm ontologyTerm) {
+        map.put(systemTerm, ontologyTerm);
     }
 }

@@ -28,7 +28,7 @@ public interface ColumnValueType extends IsSerializable {
     public interface Visitor {
         void visitTextValueType(TextValueType valueType);
 
-        void visitTermValueType(EfoTermValueType valueType);
+        void visitTermValueType(OntologyTermValueType valueType);
 
         void visitNumericValueType(NumericValueType valueType);
     }

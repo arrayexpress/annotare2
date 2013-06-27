@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
 /**
  * @author Olga Melnichuk
  */
-public class EfoTermDto implements IsSerializable {
+public class OntologyTermValueType implements ColumnValueType {
 
-    private String accession;
+    private OntologyTerm term;
 
-    private String label;
-
-    EfoTermDto() {
+    public OntologyTermValueType() {
         /* used by GWT serialization only */
     }
 
-    public EfoTermDto(String accession, String label) {
-        this.accession = accession;
-        this.label = label;
+    public OntologyTermValueType(OntologyTerm term) {
+        this.term = term;
     }
 
-    public String getAccession() {
-        return accession;
+    public OntologyTerm getEfoTerm() {
+        return term;
     }
 
-    public String getLabel() {
-        return label;
+    @Override
+    public void visit(Visitor visitor) {
+        visitor.visitTermValueType(this);
     }
 }

@@ -24,7 +24,6 @@ import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
@@ -163,6 +162,7 @@ public class ExperimentData {
             columns.add(new SampleColumn(
                     attr.getId(),
                     attr.getName(),
+                    null, /*TODO*/
                     attr.getType(),
                     visitor.getValueType(),
                     attr.isEditable()
@@ -392,7 +392,7 @@ public class ExperimentData {
         @Override
         public void visitNumericValueType(NumericAttributeValueType valueType) {
             OntologyTerm units = valueType.getUnits();
-            this.valueType = new NumericValueType(new EfoTermDto(units.getAccession(), units.getLabel()));
+            this.valueType = new NumericValueType(units);
         }
 
         @Override
@@ -403,7 +403,7 @@ public class ExperimentData {
         @Override
         public void visitTermValueType(TermAttributeValueType valueType) {
             OntologyTerm branch = valueType.getBranch();
-            this.valueType = new EfoTermValueType(new EfoTermDto(branch.getAccession(), branch.getLabel()));
+            this.valueType = new OntologyTermValueType(branch);
         }
 
         public ColumnValueType getValueType() {

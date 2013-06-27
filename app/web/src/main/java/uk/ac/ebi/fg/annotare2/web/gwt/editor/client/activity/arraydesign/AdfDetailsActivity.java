@@ -22,11 +22,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ArrayDesignData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTermData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
@@ -40,12 +40,12 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
 
     private AdfDetailsView view;
     private final ArrayDesignData adfData;
-    private final EfoTerms efoTerms;
+    private final EfoTermData efoTerms;
 
     @Inject
     public AdfDetailsActivity(AdfDetailsView view,
                               ArrayDesignData adfData,
-                              EfoTerms efoTerms) {
+                              EfoTermData efoTerms) {
         this.view = view;
         this.adfData = adfData;
         this.efoTerms = efoTerms;
@@ -69,7 +69,7 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
     }
 
     @Override
-    public void getOrganisms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+    public void getOrganisms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
         efoTerms.getOrganisms(query, limit, callback);
     }
 

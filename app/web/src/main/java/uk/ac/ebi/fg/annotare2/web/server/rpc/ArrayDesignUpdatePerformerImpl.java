@@ -21,7 +21,6 @@ import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdatePerformer;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
@@ -50,7 +49,7 @@ public class ArrayDesignUpdatePerformerImpl implements ArrayDesignUpdatePerforme
 
     @Override
     public void updateDetails(ArrayDesignDetailsDto details) {
-        EfoTermDto organism = details.getOrganism();
+        OntologyTerm organism = details.getOrganism();
         PrintingProtocolDto otherProtocol = details.getOtherPrintingProtocol();
 
         header.setName(details.getArrayDesignName());

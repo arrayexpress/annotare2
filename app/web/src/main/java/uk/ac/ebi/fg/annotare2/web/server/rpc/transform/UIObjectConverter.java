@@ -24,10 +24,8 @@ import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
@@ -112,6 +110,7 @@ public class UIObjectConverter {
             return new SampleColumn(
                     input.getId(),
                     input.getName(),
+                    null, /*TODO*/
                     input.getType(),
                     visitor.getValueType(),
                     input.isEditable());
@@ -202,22 +201,18 @@ public class UIObjectConverter {
         return new ArrayList<PublicationDto>(transform(exp.getPublications(), PUBLICATION_DTO));
     }
 
-    public static List<EfoTermDto> uiEfoTerms(Collection<EfoTerm> terms) {
-        return new ArrayList<EfoTermDto>(transform(terms, new Function<EfoTerm, EfoTermDto>() {
+    public static List<OntologyTerm> uiEfoTerms(Collection<EfoTerm> terms) {
+        return new ArrayList<OntologyTerm>(transform(terms, new Function<EfoTerm, OntologyTerm>() {
             @Nullable
             @Override
-            public EfoTermDto apply(@Nullable EfoTerm input) {
+            public OntologyTerm apply(@Nullable EfoTerm input) {
                 return uiEfoTerm(input);
             }
         }));
     }
 
-    public static EfoTermDto uiEfoTerm(EfoTerm term) {
-        return term == null ? null : new EfoTermDto(term.getAccession(), term.getLabel());
-    }
-
-    public static EfoTermDto uiEfoTerm(OntologyTerm term) {
-        return term == null ? null : new EfoTermDto(term.getAccession(), term.getLabel());
+    public static OntologyTerm uiEfoTerm(EfoTerm term) {
+        return term == null ? null : new OntologyTerm(term.getAccession(), term.getLabel());
     }
 
     public static PrintingProtocolDto uiPrintingProtocol(PrintingProtocol protocol) {
@@ -230,7 +225,7 @@ public class UIObjectConverter {
                 header.getName(),
                 header.getDescription(),
                 header.getVersion(),
-                uiEfoTerm(header.getOrganism()),
+                header.getOrganism(),
                 header.getPublicReleaseDate(),
                 header.getPrintingProtocolId(),
                 uiPrintingProtocol(header.getPrintingProtocolBackup())
@@ -244,7 +239,7 @@ public class UIObjectConverter {
         @Override
         public void visitNumericValueType(NumericAttributeValueType valueType) {
             OntologyTerm units = valueType.getUnits();
-            this.valueType = new NumericValueType(new EfoTermDto(units.getAccession(), units.getLabel()));
+            this.valueType = new NumericValueType(units);
         }
 
         @Override
@@ -255,7 +250,7 @@ public class UIObjectConverter {
         @Override
         public void visitTermValueType(TermAttributeValueType valueType) {
             OntologyTerm branch = valueType.getBranch();
-            this.valueType = new EfoTermValueType(new EfoTermDto(branch.getAccession(), branch.getLabel()));
+            this.valueType = new OntologyTermValueType(branch);
         }
 
         public ColumnValueType getValueType() {

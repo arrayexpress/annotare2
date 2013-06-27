@@ -23,12 +23,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTerms;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTermData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
@@ -53,7 +53,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     @Inject
     public SamplesActivity(SamplesView view,
                            ExperimentData expData,
-                           EfoTerms efoTerms) {
+                           EfoTermData efoTerms) {
         this.view = view;
         this.expData = expData;
         this.efoTerms = wrapEfoTerms(efoTerms);
@@ -127,25 +127,25 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         });
     }
 
-    private ColumnValueTypeEfoTerms wrapEfoTerms(final EfoTerms efoTerms) {
+    private ColumnValueTypeEfoTerms wrapEfoTerms(final EfoTermData efoTerms) {
         return new ColumnValueTypeEfoTerms() {
             @Override
-            public void getUnits(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+            public void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoTerms.getUnits(query, limit, callback);
             }
 
             @Override
-            public void getTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+            public void getTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoTerms.getEfoTerms(query, limit, callback);
             }
 
             @Override
-            public void getTerms(String query, EfoTermDto root, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+            public void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoTerms.getEfoTerms(query, root, limit, callback);
             }
 
             @Override
-            public void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> callback) {
+            public void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> callback) {
                 efoTerms.getSystemEfoTerms(callback);
             }
         };

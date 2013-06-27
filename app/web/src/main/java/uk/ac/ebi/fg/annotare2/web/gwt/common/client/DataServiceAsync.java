@@ -17,20 +17,18 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 
 import java.util.List;
 
 public interface DataServiceAsync {
-    void getSystemEfoTerms(AsyncCallback<SystemEfoTermsDto> async);
+    void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> async);
 
     void getArrayDesignList(String query, int limit, AsyncCallback<List<ArrayDesignRef>> async);
 
-    void getEfoTerms(String query, int limit, AsyncCallback<List<EfoTermDto>> async);
+    void getEfoTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> async);
 
-    void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<EfoTermDto>> async);
+    void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<OntologyTerm>> async);
 }

@@ -17,13 +17,15 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import uk.ac.ebi.fg.annotare2.configmodel.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
@@ -204,8 +206,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         private AttributeValueType valueType;
 
         @Override
-        public void visitTermValueType(EfoTermValueType valueType) {
-            EfoTermDto term = valueType.getEfoTerm();
+        public void visitTermValueType(OntologyTermValueType valueType) {
+            OntologyTerm term = valueType.getEfoTerm();
             this.valueType = new TermAttributeValueType(new OntologyTerm(term.getAccession(), term.getLabel()));
         }
 
@@ -216,7 +218,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
         @Override
         public void visitNumericValueType(NumericValueType valueType) {
-            EfoTermDto term = valueType.getUnits();
+            OntologyTerm term = valueType.getUnits();
             this.valueType = new NumericAttributeValueType(new OntologyTerm(term.getAccession(), term.getLabel()));
         }
 

@@ -16,24 +16,24 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
 /**
  * @author Olga Melnichuk
  */
 public class NumericValueType implements ColumnValueType {
 
-    private EfoTermDto units;
+    private OntologyTerm units;
 
     public NumericValueType() {
         /* used by GWT serialization only */
     }
 
-    public NumericValueType(EfoTermDto units) {
+    public NumericValueType(OntologyTerm units) {
         this.units = units;
     }
 
-    public EfoTermDto getUnits() {
+    public OntologyTerm getUnits() {
         return units;
     }
 

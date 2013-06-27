@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 
 import java.util.Date;
 
@@ -30,7 +30,7 @@ public class ArrayDesignDetailsDto implements IsSerializable {
     private String name;
     private String description;
     private String version;
-    private EfoTermDto organism;
+    private OntologyTerm organism;
     private Date releaseDate;
     private int printingProtocolId;
     private PrintingProtocolDto otherPrintingProtocol;
@@ -40,7 +40,7 @@ public class ArrayDesignDetailsDto implements IsSerializable {
       /*used by GWT serialization*/
     }
 
-    public ArrayDesignDetailsDto(String name, String description, String version, EfoTermDto organism, Date releaseDate,
+    public ArrayDesignDetailsDto(String name, String description, String version, OntologyTerm organism, Date releaseDate,
                                  int printingProtocolId, PrintingProtocolDto otherPrintingProtocol) {
         this.name = name;
         this.description = description;
@@ -67,7 +67,7 @@ public class ArrayDesignDetailsDto implements IsSerializable {
         return releaseDate;
     }
 
-    public EfoTermDto getOrganism() {
+    public OntologyTerm getOrganism() {
         return organism;
     }
 

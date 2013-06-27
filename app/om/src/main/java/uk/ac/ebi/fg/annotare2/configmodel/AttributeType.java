@@ -23,34 +23,34 @@ import com.google.common.annotations.GwtCompatible;
  */
 @GwtCompatible
 public enum AttributeType {
-    CHARACTERISTIC {
+    CHARACTERISTIC_ATTRIBUTE {
         @Override
         public String getName(String name) {
             return "Characteristic[" + name + "]";
         }
     },
-    FACTOR_VALUE {
+    FACTOR_VALUE_ATTRIBUTE {
         @Override
         public String getName(String name) {
             return "Factor Value[" + name + "]";
         }
     },
-    MATERIAL_TYPE,
-    NEITHER;
+    MATERIAL_TYPE_ATTRIBUTE,
+    OTHER_ATTRIBUTE;
 
     public String getName(String name) {
         return name;
     }
 
     public boolean isFactorValue() {
-        return this == FACTOR_VALUE;
+        return this == FACTOR_VALUE_ATTRIBUTE;
     }
 
     public boolean isCharacteristic() {
-        return this == CHARACTERISTIC;
+        return this == CHARACTERISTIC_ATTRIBUTE;
     }
 
     public boolean isMaterialType() {
-        return this == MATERIAL_TYPE;
+        return this == MATERIAL_TYPE_ATTRIBUTE;
     }
 }

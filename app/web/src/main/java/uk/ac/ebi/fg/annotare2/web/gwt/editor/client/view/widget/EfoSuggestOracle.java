@@ -3,7 +3,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SuggestOracle;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +13,15 @@ import java.util.List;
  */
 public class EfoSuggestOracle extends SuggestOracle {
 
-    private final SuggestService<EfoTermDto> suggestService;
+    private final SuggestService<OntologyTerm> suggestService;
 
-    public EfoSuggestOracle(SuggestService<EfoTermDto> suggestService) {
+    public EfoSuggestOracle(SuggestService<OntologyTerm> suggestService) {
         this.suggestService = suggestService;
     }
 
     @Override
     public void requestSuggestions(final Request request, final Callback callback) {
-        suggestService.suggest(request.getQuery(), request.getLimit(), new AsyncCallback<List<EfoTermDto>>() {
+        suggestService.suggest(request.getQuery(), request.getLimit(), new AsyncCallback<List<OntologyTerm>>() {
             @Override
             public void onFailure(Throwable caught) {
                 //todo log
@@ -29,28 +29,28 @@ public class EfoSuggestOracle extends SuggestOracle {
             }
 
             @Override
-            public void onSuccess(List<EfoTermDto> result) {
+            public void onSuccess(List<OntologyTerm> result) {
                 callback.onSuggestionsReady(request, createResponse(result));
             }
         });
     }
 
-    private Response createResponse(List<EfoTermDto> result) {
+    private Response createResponse(List<OntologyTerm> result) {
         List<EfoTermSuggestion> suggestions = new ArrayList<EfoTermSuggestion>();
-        for (EfoTermDto term : result) {
+        for (OntologyTerm term : result) {
             suggestions.add(new EfoTermSuggestion(term));
         }
         return new Response(suggestions);
     }
 
     public static class EfoTermSuggestion implements SuggestOracle.Suggestion {
-        private final EfoTermDto term;
+        private final OntologyTerm term;
 
-        private EfoTermSuggestion(EfoTermDto term) {
+        private EfoTermSuggestion(OntologyTerm term) {
             this.term = term;
         }
 
-        public EfoTermDto getTerm() {
+        public OntologyTerm getTerm() {
             return term;
         }
 

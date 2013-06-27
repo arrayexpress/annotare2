@@ -22,11 +22,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
@@ -71,32 +72,30 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
-    public List<EfoTermDto> getEfoTerms(String query, int limit) {
+    public List<OntologyTerm> getEfoTerms(String query, int limit) {
         return uiEfoTerms(efoService.suggest(query, limit));
     }
 
     @Override
-    public List<EfoTermDto> getEfoTerms(String query, String rootAccession, int limit) {
+    public List<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit) {
         return uiEfoTerms(efoService.suggest(query, rootAccession, limit));
     }
 
     @Override
-    public SystemEfoTermsDto getSystemEfoTerms() {
-        SystemEfoTermsDto dto = new SystemEfoTermsDto();
-        dto.setOrganismTerm(
-                loadSystemTerm(properties.getOrganismTermAccession()));
-        dto.setOrganismPartTerm(
-                loadSystemTerm(properties.getOrganismPartAccession()));
-        dto.setUnitTerm(
-                loadSystemTerm(properties.getUnitTermAccession()));
-        dto.setMaterialTypeTerm(
-                loadSystemTerm(properties.getMaterialTypeTermAccession()));
-        dto.setStudyDesignTerm(
-                loadSystemTerm(properties.getStudyDesignAccession()));
-        return dto;
+    public SystemEfoTermMap getSystemEfoTerms() {
+        SystemEfoTermMap map = new SystemEfoTermMap();
+        for(SystemEfoTerm systemTerm : SystemEfoTerm.values()) {
+            String accession = properties.getEfoTermAccession(systemTerm.getPropertyName());
+            if (accession == null) {
+                log.error("application properties do not contain accession for a system term: " + systemTerm);
+                continue;
+            }
+            map.put(systemTerm, loadSystemTerm(accession));
+        }
+        return map;
     }
 
-    private EfoTermDto loadSystemTerm(String accession) {
+    private OntologyTerm loadSystemTerm(String accession) {
         EfoTerm term = efoService.findTermByAccession(accession);
         if (term == null) {
             log.error("Can't find system used EFO term: " + accession);

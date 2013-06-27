@@ -26,7 +26,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
@@ -194,11 +194,11 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
 
             @Override
-            public void visitTermValueType(final EfoTermValueType valueType) {
-                editor.add(new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<EfoTermDto>() {
+            public void visitTermValueType(final OntologyTermValueType valueType) {
+                editor.add(new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
                     @Override
-                    public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
-                        EfoTermDto term = valueType.getEfoTerm();
+                    public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+                        OntologyTerm term = valueType.getEfoTerm();
                         if (term == null) {
                             efoSuggestService.getTerms(query, limit, callback);
                         } else {

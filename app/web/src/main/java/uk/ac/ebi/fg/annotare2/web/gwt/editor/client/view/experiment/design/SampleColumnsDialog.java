@@ -29,7 +29,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.*;
@@ -96,7 +96,7 @@ public class SampleColumnsDialog extends DialogBox {
         this.callback = callback;
         setColumns(columns);
 
-        efoSuggestService.getSystemEfoTerms(new AsyncCallback<SystemEfoTermsDto>() {
+        efoSuggestService.getSystemEfoTerms(new AsyncCallback<SystemEfoTermMap>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO proper logging
@@ -104,7 +104,7 @@ public class SampleColumnsDialog extends DialogBox {
             }
 
             @Override
-            public void onSuccess(SystemEfoTermsDto result) {
+            public void onSuccess(SystemEfoTermMap result) {
                 templateColumns.addAll(SampleColumn.getTemplateColumns(result));
                 updateTemplateColumns();
             }
@@ -148,7 +148,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        addColumn(new SampleColumn(0, ""));
+        addColumn(new SampleColumn(0, "", null));
     }
 
     @UiHandler("okButton")

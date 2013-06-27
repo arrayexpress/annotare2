@@ -33,9 +33,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextAreaExtended;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextToolbar;
@@ -91,12 +91,12 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     private Map<Integer, PrintingProtocolDto> printingProtocols = new HashMap<Integer, PrintingProtocolDto>();
     private Presenter presenter;
 
-    private EfoTermDto organism;
+    private OntologyTerm organism;
 
     public AdfDetailsViewImpl() {
-        species = new SuggestBox(new EfoSuggestOracle(new SuggestService<EfoTermDto>() {
+        species = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
-            public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 presenter.getOrganisms(query, limit, callback);
             }
         }));
@@ -264,7 +264,7 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         showPrintingProtocol(protocol, false);
     }
 
-    private void setOrganism(EfoTermDto term) {
+    private void setOrganism(OntologyTerm term) {
         if (term != null) {
             organism = term;
             species.setValue(term.getLabel());

@@ -84,7 +84,7 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
     void factorValueCheckboxChanged(ValueChangeEvent<Boolean> event) {
         AttributeType type = column.getType();
         if (type.isFactorValue() || type.isCharacteristic()) {
-            column.setType(event.getValue() ? AttributeType.FACTOR_VALUE : AttributeType.CHARACTERISTIC);
+            column.setType(event.getValue() ? AttributeType.FACTOR_VALUE_ATTRIBUTE : AttributeType.CHARACTERISTIC_ATTRIBUTE);
             ValueChangeEvent.fire(this, column.copy());
         }
     }

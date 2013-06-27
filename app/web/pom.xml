@@ -96,14 +96,6 @@
         </dependency>
 
         <dependency>
-            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
-            <artifactId>annotare2-om</artifactId>
-            <version>0.15-SNAPSHOT</version>
-            <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>
-
-        <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>
             <artifactId>annotare2-magetab</artifactId>
             <version>0.15-SNAPSHOT</version>

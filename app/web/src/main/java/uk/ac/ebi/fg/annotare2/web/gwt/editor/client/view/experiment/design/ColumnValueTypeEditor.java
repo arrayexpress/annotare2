@@ -28,10 +28,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoTermDto;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.ColumnValueType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.EfoTermValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.NumericValueType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.OntologyTermValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.TextValueType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
@@ -66,10 +66,10 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
             }
 
             @Override
-            public void visitTermValueType(EfoTermValueType valueType) {
-                setEditor(new EfoTermTypeEditor(valueType, new SuggestService<EfoTermDto>() {
+            public void visitTermValueType(OntologyTermValueType valueType) {
+                setEditor(new EfoTermTypeEditor(valueType, new SuggestService<OntologyTerm>() {
                     @Override
-                    public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                    public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                         efoTerms.getTerms(query, limit, callback);
                     }
                 }));
@@ -77,9 +77,9 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
             @Override
             public void visitNumericValueType(NumericValueType valueType) {
-                setEditor(new NumberTypeEditor(valueType, new SuggestService<EfoTermDto>() {
+                setEditor(new NumberTypeEditor(valueType, new SuggestService<OntologyTerm>() {
                     @Override
-                    public void suggest(String query, int limit, AsyncCallback<List<EfoTermDto>> callback) {
+                    public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                         efoTerms.getUnits(query, limit, callback);
                     }
                 }));
@@ -189,9 +189,9 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
         private SuggestBox efoTermBox;
 
-        private EfoTermDto selection;
+        private OntologyTerm selection;
 
-        private EfoTermTypeEditor(EfoTermValueType valueType, SuggestService<EfoTermDto> suggestService) {
+        private EfoTermTypeEditor(OntologyTermValueType valueType, SuggestService<OntologyTerm> suggestService) {
             efoTermBox = new SuggestBox(new EfoSuggestOracle(suggestService));
             efoTermBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
                 @Override
@@ -207,7 +207,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
             }
         }
 
-        private void setSelection(EfoTermDto efoTerm) {
+        private void setSelection(OntologyTerm efoTerm) {
             selection = efoTerm;
         }
 
@@ -223,7 +223,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
         @Override
         public ColumnValueType getValue() {
-            return new EfoTermValueType(selection);
+            return new OntologyTermValueType(selection);
         }
 
         @Override
@@ -236,7 +236,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
         private SuggestBox units;
 
-        private NumberTypeEditor(NumericValueType value, SuggestService<EfoTermDto> suggestService) {
+        private NumberTypeEditor(NumericValueType value, SuggestService<OntologyTerm> suggestService) {
             units = new SuggestBox(new EfoSuggestOracle(suggestService));
             if (value != null) {
                 // TODO set units
