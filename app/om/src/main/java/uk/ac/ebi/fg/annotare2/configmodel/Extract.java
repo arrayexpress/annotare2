@@ -59,11 +59,15 @@ public class Extract implements Serializable {
         this.name = name;
     }
 
-    public Map<ExtractAttribute, String> getValues() {
+    public String getAttributeValue(ExtractAttribute attribute) {
+        return values.get(attribute);
+    }
+
+    public Map<ExtractAttribute, String> getAttributeValues() {
         return new HashMap<ExtractAttribute, String>(values);
     }
 
-    public void setValues(Map<ExtractAttribute, String> values) {
+    public void setAttributeValues(Map<ExtractAttribute, String> values) {
         this.values = new HashMap<ExtractAttribute, String>(values);
     }
 
