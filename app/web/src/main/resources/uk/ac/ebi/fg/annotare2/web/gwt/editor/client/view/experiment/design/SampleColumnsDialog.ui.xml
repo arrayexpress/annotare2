@@ -34,7 +34,7 @@
             font-size: 12px;
         }
     </ui:style>
-    <g:ResizeLayoutPanel height="350px" width="600px">
+    <g:ResizeLayoutPanel height="500px" width="600px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:DockLayoutPanel>
@@ -88,7 +88,7 @@
                                     </g:center>
                                 </g:DockLayoutPanel>
                             </g:center>
-                            <g:south size="110">
+                            <g:south size="200">
                                 <g:SimpleLayoutPanel ui:field="columnEditor"/>
                             </g:south>
                         </g:SplitLayoutPanel>

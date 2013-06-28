@@ -81,6 +81,14 @@ public class SampleColumn implements IsSerializable, HasIdentity {
         this.name = name == null || name.trim().isEmpty() ? NO_NAME : name;
     }
 
+    public OntologyTerm getTerm() {
+        return term;
+    }
+
+    private void setTerm(OntologyTerm term) {
+        this.term = term;
+    }
+
     public boolean isEditable() {
         return isEditable;
     }
@@ -217,6 +225,14 @@ public class SampleColumn implements IsSerializable, HasIdentity {
 
         public void setName(String name) {
             column.setName(name);
+        }
+
+        public OntologyTerm getTerm() {
+            return column.getTerm();
+        }
+
+        public void setTerm(OntologyTerm term) {
+            column.setTerm(term);
         }
 
         public AttributeType getType() {

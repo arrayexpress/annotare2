@@ -370,6 +370,12 @@
     -moz-box-sizing: border-box;
 }
 
+.gwt-SuggestBox {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
 /* upload status */
 
 a.wgt-button {

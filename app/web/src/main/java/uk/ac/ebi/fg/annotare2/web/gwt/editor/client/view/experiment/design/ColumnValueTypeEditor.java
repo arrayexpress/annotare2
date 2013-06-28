@@ -149,13 +149,13 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
                 visitor.visitTextValueType(null);
             }
         },
-        NUMBER("Number & Units") {
+        NUMBER("Measure") {
             @Override
             public void visit(ColumnValueType.Visitor visitor) {
                 visitor.visitNumericValueType(null);
             }
         },
-        EFO_TERM("EFO Term") {
+        EFO_TERM("EFO branch") {
             @Override
             public void visit(ColumnValueType.Visitor visitor) {
                 visitor.visitTermValueType(null);

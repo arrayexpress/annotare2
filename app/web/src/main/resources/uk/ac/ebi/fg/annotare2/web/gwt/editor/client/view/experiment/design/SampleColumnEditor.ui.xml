@@ -23,7 +23,7 @@
     <g:HTMLPanel>
         <table style="padding:10px" cellspacing="1" width="100%">
             <tr>
-                <td width="60px"></td>
+                <td width="80px"></td>
                 <td>
                     <g:CheckBox ui:field="factorValueCheckbox">&nbsp;Is a factor value?</g:CheckBox>
                 </td>
@@ -35,8 +35,16 @@
                 </td>
             </tr>
             <tr>
-                <td>Type:</td>
-                <td><w:ColumnValueTypeEditor ui:field="valueTypeEditor" width="100%"/></td>
+                <td>EFO Term:</td>
+                <td>
+                    <g:SuggestBox ui:field="nameTermBox" width="100%"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Value Type:</td>
+                <td>
+                    <w:ColumnValueTypeEditor ui:field="valueTypeEditor" width="100%"/>
+                </td>
             </tr>
         </table>
     </g:HTMLPanel>
