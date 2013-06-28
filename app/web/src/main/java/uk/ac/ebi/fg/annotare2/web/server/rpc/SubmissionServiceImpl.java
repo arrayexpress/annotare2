@@ -92,33 +92,6 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
-    @Override
-    public ExperimentSettings getExperimentSettings(int id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiExperimentSubmissionSettings(sb);
-        } catch (AccessControlException e) {
-            throw noPermission(e, Permission.VIEW);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        }
-    }
-
-    @Override
-    public ExperimentDetailsDto getExperimentDetails(int id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiExperimentDetails(sb);
-        } catch (AccessControlException e) {
-            throw noPermission(e, Permission.VIEW);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        }
-    }
 
     @Override
     public ArrayDesignDetailsDto getArrayDesignDetails(int id) throws ResourceNotFoundException, NoPermissionException {
@@ -133,55 +106,6 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw unexpected(e);
         }
     }
-
-    @Override
-    public List<ContactDto> getContacts(int id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiContacts(sb);
-        } catch (AccessControlException e) {
-            log.warn("getContacts(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
-        } catch (RecordNotFoundException e) {
-            log.warn("getContacts(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
-        } catch (DataSerializationException e) {
-            log.error("getContacts(" + id + ") failure", e);
-            throw new UnexpectedException("get experiment contacts failure", e);
-        }
-    }
-
-    @Override
-    public List<PublicationDto> getPublications(int id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiPublications(sb);
-        } catch (AccessControlException e) {
-            log.warn("getPublications(" + id + ") failure", e);
-            throw new NoPermissionException("Sorry, you do not have access to this resource");
-        } catch (RecordNotFoundException e) {
-            log.warn("getPublications(" + id + ") failure", e);
-            throw new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
-        } catch (DataSerializationException e) {
-            log.error("getPublications(" + id + ") failure", e);
-            throw new UnexpectedException("get experiment publications failure", e);
-        }
-    }
-
-    @Override
-    public SampleRowsAndColumns getSamples(int id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission sb = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiSampleRowsAndColumns(sb);
-        } catch (AccessControlException e) {
-            throw noPermission(e, Permission.VIEW);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        }
-    }
-
 
     @Override
     public Table getIdfTable(int id) throws NoPermissionException, ResourceNotFoundException {
@@ -326,7 +250,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public ArrayDesignUpdateResult updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ArrayDesignSubmission submission = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.UPDATE);
-            ArrayDesignHeader header  = submission.getHeader();
+            ArrayDesignHeader header = submission.getHeader();
             ArrayDesignUpdateResult result = new ArrayDesignUpdatePerformerImpl(header).run(commands);
             submission.setHeader(header);
             return result;

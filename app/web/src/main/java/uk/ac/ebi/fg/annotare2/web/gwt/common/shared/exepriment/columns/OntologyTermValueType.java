@@ -38,6 +38,11 @@ public class OntologyTermValueType implements ColumnValueType {
     }
 
     @Override
+    public String getColumnName(String name) {
+        return name;
+    }
+
+    @Override
     public void visit(Visitor visitor) {
         visitor.visitTermValueType(this);
     }

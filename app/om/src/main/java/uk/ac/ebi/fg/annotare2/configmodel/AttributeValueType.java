@@ -36,7 +36,7 @@ public abstract class AttributeValueType implements Serializable {
         this.valueSubType = valueSubType;
     }
 
-    protected void set(SampleAttribute attribute) {
+    public void set(SampleAttribute attribute) {
         attribute.setValueSubType(valueSubType);
     }
 

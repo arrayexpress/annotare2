@@ -36,7 +36,7 @@ public class TermAttributeValueType extends AttributeValueType {
     }
 
     @Override
-    protected void set(SampleAttribute attribute) {
+    public void set(SampleAttribute attribute) {
         super.set(attribute);
         attribute.setOntologyBranch(branch);
     }

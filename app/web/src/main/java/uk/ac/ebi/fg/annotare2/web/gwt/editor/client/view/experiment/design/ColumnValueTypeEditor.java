@@ -17,10 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -49,12 +46,12 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
     }
 
     @UiField(provided = true)
-    ValueListBox<ValueType> typeSelector;
+    ValueListBox<EditorType> typeSelector;
 
     @UiField
-    SimplePanel typeExtras;
+    SimplePanel editorPanel;
 
-    private ValueTypeEditor editor;
+    private Editor<? extends ColumnValueType> editor;
 
     private final ColumnValueType.Visitor visitor;
 
@@ -62,43 +59,64 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
         visitor = new ColumnValueType.Visitor() {
             @Override
             public void visitTextValueType(TextValueType valueType) {
-                setEditor(new TextTypeEditor());
+                Editor<TextValueType> editor = new TextEditor();
+                editor.addValueChangeHandler(new ValueChangeHandler<TextValueType>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<TextValueType> event) {
+                        fireValueChangeEvent(event.getValue());
+                    }
+                });
+                setEditor(editor);
             }
 
             @Override
             public void visitTermValueType(OntologyTermValueType valueType) {
-                setEditor(new EfoTermTypeEditor(valueType, new SuggestService<OntologyTerm>() {
+                Editor<OntologyTermValueType> editor = new EfoTermEditor(valueType, new SuggestService<OntologyTerm>() {
                     @Override
                     public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                         efoTerms.getTerms(query, limit, callback);
                     }
-                }));
+                });
+                editor.addValueChangeHandler(new ValueChangeHandler<OntologyTermValueType>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<OntologyTermValueType> event) {
+                        fireValueChangeEvent(event.getValue());
+                    }
+                });
+                setEditor(editor);
             }
 
             @Override
             public void visitNumericValueType(NumericValueType valueType) {
-                setEditor(new NumberTypeEditor(valueType, new SuggestService<OntologyTerm>() {
+                Editor<NumericValueType> editor = new NumberEditor(valueType, new SuggestService<OntologyTerm>() {
                     @Override
                     public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                         efoTerms.getUnits(query, limit, callback);
                     }
-                }));
+                });
+                editor.addValueChangeHandler(new ValueChangeHandler<NumericValueType>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<NumericValueType> event) {
+                        fireValueChangeEvent(event.getValue());
+                    }
+                });
+                setEditor(editor);
             }
         };
 
-        typeSelector = new ValueListBox<ValueType>(new AbstractRenderer<ValueType>() {
+        typeSelector = new ValueListBox<EditorType>(new AbstractRenderer<EditorType>() {
             @Override
-            public String render(ValueType object) {
+            public String render(EditorType object) {
                 return object == null ? "" : object.getTitle();
             }
         });
 
         initWidget(Binder.BINDER.createAndBindUi(this));
-        typeSelector.setValue(ValueType.TEXT);
-        typeSelector.setAcceptableValues(Arrays.asList(ValueType.values()));
-        typeSelector.addValueChangeHandler(new ValueChangeHandler<ValueType>() {
+        typeSelector.setValue(EditorType.TEXT);
+        typeSelector.setAcceptableValues(Arrays.asList(EditorType.values()));
+        typeSelector.addValueChangeHandler(new ValueChangeHandler<EditorType>() {
             @Override
-            public void onValueChange(ValueChangeEvent<ValueType> event) {
+            public void onValueChange(ValueChangeEvent<EditorType> event) {
                 event.getValue().visit(visitor);
             }
         });
@@ -118,8 +136,12 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
     public void setValue(ColumnValueType value, boolean fireEvents) {
         value.visit(visitor);
         if (fireEvents) {
-            ValueChangeEvent.fire(this, getValue());
+            fireValueChangeEvent(value);
         }
+    }
+
+    private void fireValueChangeEvent(ColumnValueType value) {
+        ValueChangeEvent.fire(this, value);
     }
 
     @Override
@@ -132,17 +154,17 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
         DOM.setElementPropertyBoolean(typeSelector.getElement(), "disabled", !enabled);
     }
 
-    private void setEditor(ValueTypeEditor editor) {
-        this.editor = editor;
-        this.typeExtras.setWidget(editor.getWidget());
-        setType(editor.getType());
+    private void setEditor(Editor<? extends ColumnValueType> newEditor) {
+        editor = newEditor;
+        this.editorPanel.setWidget(newEditor.asWidget());
+        setType(newEditor.getType());
     }
 
-    private void setType(ValueType valueType) {
-        this.typeSelector.setValue(valueType);
+    private void setType(EditorType editorType) {
+        this.typeSelector.setValue(editorType);
     }
 
-    private static enum ValueType {
+    private static enum EditorType {
         TEXT("Text") {
             @Override
             public void visit(ColumnValueType.Visitor visitor) {
@@ -164,7 +186,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
         private final String title;
 
-        private ValueType(String title) {
+        private EditorType(String title) {
             this.title = title;
         }
 
@@ -175,54 +197,46 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
         public abstract void visit(ColumnValueType.Visitor visitor);
     }
 
-    private interface ValueTypeEditor {
-        ColumnValueType getValue();
+    private interface Editor<T extends ColumnValueType> extends IsWidget, HasValueChangeHandlers<T> {
+
+        T getValue();
 
         void setEnabled(boolean enabled);
 
-        Widget getWidget();
-
-        ValueType getType();
+        EditorType getType();
     }
 
-    private static class EfoTermTypeEditor implements ValueTypeEditor {
+    private static class EfoTermEditor extends Composite implements Editor<OntologyTermValueType> {
 
         private SuggestBox efoTermBox;
 
         private OntologyTerm selection;
 
-        private EfoTermTypeEditor(OntologyTermValueType valueType, SuggestService<OntologyTerm> suggestService) {
+        private EfoTermEditor(OntologyTermValueType valueType, SuggestService<OntologyTerm> suggestService) {
             efoTermBox = new SuggestBox(new EfoSuggestOracle(suggestService));
             efoTermBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
                 @Override
                 public void onSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
                     EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) event.getSelectedItem();
-                    setSelection(suggestion.getTerm());
+                    selection = suggestion.getTerm();
+                    fireChangeEvent();
                 }
             });
 
             if (valueType != null) {
-                setSelection(valueType.getEfoTerm());
-                efoTermBox.setValue(valueType.getEfoTerm() == null ? "" : valueType.getEfoTerm().getLabel());
+                selection = valueType.getEfoTerm();
+                efoTermBox.setValue(selection == null ? "" : selection.getLabel());
             }
-        }
-
-        private void setSelection(OntologyTerm efoTerm) {
-            selection = efoTerm;
+            initWidget(efoTermBox);
         }
 
         @Override
-        public ValueType getType() {
-            return ValueType.EFO_TERM;
+        public EditorType getType() {
+            return EditorType.EFO_TERM;
         }
 
         @Override
-        public Widget getWidget() {
-            return efoTermBox;
-        }
-
-        @Override
-        public ColumnValueType getValue() {
+        public OntologyTermValueType getValue() {
             return new OntologyTermValueType(selection);
         }
 
@@ -230,62 +244,93 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
         public void setEnabled(boolean enabled) {
             efoTermBox.setEnabled(enabled);
         }
+
+        @Override
+        public HandlerRegistration addValueChangeHandler(ValueChangeHandler<OntologyTermValueType> handler) {
+            return addHandler(handler, ValueChangeEvent.getType());
+        }
+
+        private void fireChangeEvent() {
+            ValueChangeEvent.fire(this, getValue());
+        }
     }
 
-    private static class NumberTypeEditor implements ValueTypeEditor {
+    private static class NumberEditor extends Composite implements Editor<NumericValueType> {
 
-        private SuggestBox units;
+        private SuggestBox suggestBox;
+        private OntologyTerm term;
 
-        private NumberTypeEditor(NumericValueType value, SuggestService<OntologyTerm> suggestService) {
-            units = new SuggestBox(new EfoSuggestOracle(suggestService));
+        private NumberEditor(NumericValueType value, SuggestService<OntologyTerm> suggestService) {
+            suggestBox = new SuggestBox(new EfoSuggestOracle(suggestService));
+            suggestBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
+                @Override
+                public void onSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
+                    EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) event.getSelectedItem();
+                    term = suggestion.getTerm();
+                    fireChangeEvent();
+                }
+            });
             if (value != null) {
-                // TODO set units
+                term = value.getUnits();
+                suggestBox.setValue(term == null ? "" : term.getLabel());
             }
+            initWidget(suggestBox);
         }
 
         @Override
-        public ValueType getType() {
-            return ValueType.NUMBER;
+        public EditorType getType() {
+            return EditorType.NUMBER;
         }
 
         @Override
         public Widget getWidget() {
-            return units;
+            return suggestBox;
         }
 
         @Override
-        public ColumnValueType getValue() {
-            return new NumericValueType();
+        public NumericValueType getValue() {
+            return new NumericValueType(term);
         }
 
         @Override
         public void setEnabled(boolean enabled) {
-            units.setEnabled(enabled);
+            //TODO: are units always enabled?
+            // suggestBox.setEnabled(enabled);
+        }
+
+        @Override
+        public HandlerRegistration addValueChangeHandler(ValueChangeHandler<NumericValueType> handler) {
+            return addHandler(handler, ValueChangeEvent.getType());
+        }
+
+        private void fireChangeEvent() {
+            ValueChangeEvent.fire(this, getValue());
         }
     }
 
-    private static class TextTypeEditor implements ValueTypeEditor {
+    private static class TextEditor extends Composite implements Editor<TextValueType> {
 
-        private TextTypeEditor() {
+        private TextEditor() {
+            initWidget(new Label(""));
         }
 
         @Override
-        public ValueType getType() {
-            return ValueType.TEXT;
+        public EditorType getType() {
+            return EditorType.TEXT;
         }
 
         @Override
-        public Widget getWidget() {
-            return new Label("");
-        }
-
-        @Override
-        public ColumnValueType getValue() {
+        public TextValueType getValue() {
             return new TextValueType();
         }
 
         @Override
         public void setEnabled(boolean enabled) {
+        }
+
+        @Override
+        public HandlerRegistration addValueChangeHandler(ValueChangeHandler<TextValueType> handler) {
+            return addHandler(handler, ValueChangeEvent.getType());
         }
     }
 }

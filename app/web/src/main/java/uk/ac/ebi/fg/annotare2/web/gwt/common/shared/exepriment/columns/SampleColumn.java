@@ -73,6 +73,10 @@ public class SampleColumn implements IsSerializable, HasIdentity {
         return id;
     }
 
+    public String getPrettyName() {
+        return valueType.getColumnName(getName());
+    }
+
     public String getName() {
         return name;
     }
@@ -143,7 +147,7 @@ public class SampleColumn implements IsSerializable, HasIdentity {
                 createTemplateColumn(
                         STRAIN.getFriendlyName(),
                         result.getEfoTerm(STRAIN),
-                        new OntologyTermValueType(result.getEfoTerm(STRAIN))));
+                        new TextValueType()));
         templates.add(
                 createTemplateColumn(
                         DISEASE.getFriendlyName(),
@@ -158,7 +162,7 @@ public class SampleColumn implements IsSerializable, HasIdentity {
                 createTemplateColumn(
                         AGE.getFriendlyName(),
                         result.getEfoTerm(AGE),
-                        new OntologyTermValueType(result.getEfoTerm(AGE))));
+                        new NumericValueType(null)));
         templates.add(
                 createTemplateColumn(
                         CELL_LINE.getFriendlyName(),

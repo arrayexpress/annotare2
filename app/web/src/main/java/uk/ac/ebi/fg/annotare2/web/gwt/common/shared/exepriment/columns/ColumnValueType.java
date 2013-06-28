@@ -25,6 +25,8 @@ public interface ColumnValueType extends IsSerializable {
 
     void visit(Visitor visitor);
 
+    String getColumnName(String name);
+
     public interface Visitor {
         void visitTextValueType(TextValueType valueType);
 

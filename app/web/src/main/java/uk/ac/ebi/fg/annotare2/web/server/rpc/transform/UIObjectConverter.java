@@ -92,65 +92,6 @@ public class UIObjectConverter {
         }
     };
 
-    static Function<Sample, SampleRow> SAMPLE_ROW = new Function<Sample, SampleRow>() {
-        @Nullable
-        @Override
-        public SampleRow apply(@Nullable Sample sample) {
-            checkNotNull(sample);
-            return new SampleRow(sample.getId(), sample.getName(), sample.getValues());
-        }
-    };
-
-    static Function<SampleAttribute, SampleColumn> SAMPLE_COLUMN = new Function<SampleAttribute, SampleColumn>() {
-        @Nullable
-        @Override
-        public SampleColumn apply(@Nullable SampleAttribute input) {
-            AttributeValueTypeVisitor visitor = new AttributeValueTypeVisitor();
-            input.getValueType().visit(visitor);
-            return new SampleColumn(
-                    input.getId(),
-                    input.getName(),
-                    null, /*TODO*/
-                    input.getType(),
-                    visitor.getValueType(),
-                    input.isEditable());
-        }
-    };
-
-    static Function<Contact, ContactDto> CONTACT_DTO = new Function<Contact, ContactDto>() {
-        @Nullable
-        @Override
-        public ContactDto apply(@Nullable Contact contact) {
-            checkNotNull(contact);
-            return new ContactDto(
-                    contact.getId(),
-                    contact.getId(),
-                    contact.getFirstName(),
-                    contact.getLastName(),
-                    contact.getMidInitials(),
-                    contact.getEmail(),
-                    contact.getPhone(),
-                    contact.getFax(),
-                    contact.getAffiliation(),
-                    contact.getAddress(),
-                    contact.getRoles());
-        }
-    };
-
-    static Function<Publication, PublicationDto> PUBLICATION_DTO = new Function<Publication, PublicationDto>() {
-        @Nullable
-        @Override
-        public PublicationDto apply(@Nullable Publication publication) {
-            return new PublicationDto(
-                    publication.getId(),
-                    publication.getId(),
-                    publication.getTitle(),
-                    publication.getAuthors(),
-                    publication.getPubMedId()
-            );
-        }
-    };
-
     public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
@@ -160,45 +101,8 @@ public class UIObjectConverter {
         return SUBMISSION_DETAILS.apply(submission);
     }
 
-    public static ExperimentSettings uiExperimentSubmissionSettings(ExperimentSubmission submission)
-            throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentProfile();
-        return new ExperimentSettings(exp.getType());
-    }
-
-    public static ExperimentDetailsDto uiExperimentDetails(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentProfile();
-        return new ExperimentDetailsDto(
-                exp.getTitle(),
-                exp.getDescription(),
-                exp.getExperimentDate(),
-                exp.getPublicReleaseDate()
-        );
-    }
-
-    public static SampleRowsAndColumns uiSampleRowsAndColumns(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentProfile();
-        return new SampleRowsAndColumns(
-                new ArrayList<SampleRow>(transform(exp.getSamples(), SAMPLE_ROW)),
-                new ArrayList<SampleColumn>(transform(exp.getSampleAttributes(), SAMPLE_COLUMN)));
-    }
-
     public static UserDto uiUser(User user) {
         return USER_TRANSFORM.apply(user);
-    }
-
-    public static List<ContactDto> uiContacts(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentProfile();
-        return uiContacts(exp.getContacts());
-    }
-
-    public static List<ContactDto> uiContacts(Collection<Contact> contacts) throws DataSerializationException {
-        return new ArrayList<ContactDto>(transform(contacts, CONTACT_DTO));
-    }
-
-    public static List<PublicationDto> uiPublications(ExperimentSubmission submission) throws DataSerializationException {
-        ExperimentProfile exp = submission.getExperimentProfile();
-        return new ArrayList<PublicationDto>(transform(exp.getPublications(), PUBLICATION_DTO));
     }
 
     public static List<OntologyTerm> uiEfoTerms(Collection<EfoTerm> terms) {
@@ -230,31 +134,5 @@ public class UIObjectConverter {
                 header.getPrintingProtocolId(),
                 uiPrintingProtocol(header.getPrintingProtocolBackup())
         );
-    }
-
-    private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
-
-        private ColumnValueType valueType;
-
-        @Override
-        public void visitNumericValueType(NumericAttributeValueType valueType) {
-            OntologyTerm units = valueType.getUnits();
-            this.valueType = new NumericValueType(units);
-        }
-
-        @Override
-        public void visitTextValueType(TextAttributeValueType valueType) {
-            this.valueType = new TextValueType();
-        }
-
-        @Override
-        public void visitTermValueType(TermAttributeValueType valueType) {
-            OntologyTerm branch = valueType.getBranch();
-            this.valueType = new OntologyTermValueType(branch);
-        }
-
-        public ColumnValueType getValueType() {
-            return valueType;
-        }
     }
 }

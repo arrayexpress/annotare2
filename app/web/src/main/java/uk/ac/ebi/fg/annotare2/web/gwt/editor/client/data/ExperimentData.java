@@ -162,7 +162,7 @@ public class ExperimentData {
             columns.add(new SampleColumn(
                     attr.getId(),
                     attr.getName(),
-                    null, /*TODO*/
+                    attr.getTerm(),
                     attr.getType(),
                     visitor.getValueType(),
                     attr.isEditable()
@@ -391,8 +391,7 @@ public class ExperimentData {
 
         @Override
         public void visitNumericValueType(NumericAttributeValueType valueType) {
-            OntologyTerm units = valueType.getUnits();
-            this.valueType = new NumericValueType(units);
+            this.valueType = new NumericValueType(valueType.getUnits());
         }
 
         @Override
@@ -402,8 +401,7 @@ public class ExperimentData {
 
         @Override
         public void visitTermValueType(TermAttributeValueType valueType) {
-            OntologyTerm branch = valueType.getBranch();
-            this.valueType = new OntologyTermValueType(branch);
+            this.valueType = new OntologyTermValueType(valueType.getBranch());
         }
 
         public ColumnValueType getValueType() {

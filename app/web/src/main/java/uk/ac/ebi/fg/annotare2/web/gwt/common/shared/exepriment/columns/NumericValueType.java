@@ -38,6 +38,11 @@ public class NumericValueType implements ColumnValueType {
     }
 
     @Override
+    public String getColumnName(String name) {
+        return name +  " [" + (units == null ? "NO UNITS" : units.getLabel()) + "]";
+    }
+
+    @Override
     public void visit(Visitor visitor) {
         visitor.visitNumericValueType(this);
     }

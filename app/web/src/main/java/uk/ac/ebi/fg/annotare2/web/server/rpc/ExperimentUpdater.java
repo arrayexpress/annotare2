@@ -117,12 +117,13 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 attr = exp.createSampleAttribute();
             }
             attr.setName(column.getName());
+            attr.setTerm(column.getTerm());
             attr.setType(column.getType());
             attr.setEditable(column.isEditable());
 
             ColumnValueTypeVisitor visitor = new ColumnValueTypeVisitor();
             column.getValueType().visit(visitor);
-            attr.setValueType(visitor.getValueType());
+            visitor.getValueType().set(attr);
             used.add(attr.getId());
         }
         List<SampleAttribute> attributes = newArrayList(exp.getSampleAttributes());
@@ -207,8 +208,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
         @Override
         public void visitTermValueType(OntologyTermValueType valueType) {
-            OntologyTerm term = valueType.getEfoTerm();
-            this.valueType = new TermAttributeValueType(new OntologyTerm(term.getAccession(), term.getLabel()));
+            this.valueType = new TermAttributeValueType(valueType.getEfoTerm());
         }
 
         @Override
@@ -218,8 +218,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
         @Override
         public void visitNumericValueType(NumericValueType valueType) {
-            OntologyTerm term = valueType.getUnits();
-            this.valueType = new NumericAttributeValueType(new OntologyTerm(term.getAccession(), term.getLabel()));
+            this.valueType = new NumericAttributeValueType(valueType.getUnits());
         }
 
         public AttributeValueType getValueType() {

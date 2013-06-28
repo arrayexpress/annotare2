@@ -180,7 +180,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         });
         column.setSortable(true);
-        gridView.addColumn(sampleColumn.getName(), column, null, 150, Style.Unit.PX);
+        gridView.addColumn(sampleColumn.getPrettyName(), column, null, 150, Style.Unit.PX);
     }
 
     private Cell<String> createCellEditor(SampleColumn sampleColumn) {

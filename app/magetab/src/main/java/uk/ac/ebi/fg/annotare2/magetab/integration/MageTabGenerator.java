@@ -209,9 +209,13 @@ public class MageTabGenerator {
 
         @Override
         public void visitNumericValueType(NumericAttributeValueType valueType) {
+            if (valueType.getUnits() == null) {
+                return;
+            }
             UnitAttribute unitAttribute = new UnitAttribute();
             unitAttribute.type = valueType.getUnits().getLabel();
             unitAttribute.termAccessionNumber = valueType.getUnits().getAccession();
+            unitAttribute.setAttributeValue(valueType.getUnits().getLabel());
             //TODO unitAttribute.termSourceREF = ??
             this.attribute.unit = unitAttribute;
         }

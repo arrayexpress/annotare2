@@ -26,7 +26,7 @@
                     <g:ValueListBox ui:field="typeSelector" width="100%"/>
                 </td>
                 <td>
-                    <g:SimplePanel ui:field="typeExtras" width="100%"/>
+                    <g:SimplePanel ui:field="editorPanel" width="100%"/>
                 </td>
             </tr>
         </table>

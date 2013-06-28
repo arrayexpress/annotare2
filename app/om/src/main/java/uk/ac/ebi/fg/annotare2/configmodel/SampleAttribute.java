@@ -38,6 +38,9 @@ public class SampleAttribute implements Serializable {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("term")
+    private OntologyTerm term;
+
     @JsonProperty("type")
     private AttributeType type;
 
@@ -72,6 +75,14 @@ public class SampleAttribute implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public OntologyTerm getTerm() {
+        return term;
+    }
+
+    public void setTerm(OntologyTerm term) {
+        this.term = term;
     }
 
     public AttributeType getType() {
