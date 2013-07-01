@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

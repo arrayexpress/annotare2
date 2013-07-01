@@ -23,7 +23,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasDialogCloseHandlers;

@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdatePerformer;

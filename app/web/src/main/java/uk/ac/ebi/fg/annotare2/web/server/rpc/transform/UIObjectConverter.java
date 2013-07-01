@@ -26,9 +26,8 @@ import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

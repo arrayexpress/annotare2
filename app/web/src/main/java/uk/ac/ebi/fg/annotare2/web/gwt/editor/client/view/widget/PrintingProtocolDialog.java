@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DialogBox;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DialogCloseHandler;
 

@@ -34,7 +34,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.PrintingProtocolDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextAreaExtended;
