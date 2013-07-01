@@ -20,13 +20,13 @@
     <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
     <artifactId>annotare2-om</artifactId>
     <packaging>jar</packaging>
-    <version>0.15-SNAPSHOT</version>
+    <version>0.15</version>
     <name>Object Model</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.15-SNAPSHOT</version>
+        <version>0.15</version>
     </parent>
 
     <properties>
