@@ -36,7 +36,7 @@ public enum AttributeType {
         }
     },
     MATERIAL_TYPE_ATTRIBUTE,
-    OTHER_ATTRIBUTE;
+    COMMENT_ATTRIBUTE;
 
     public String getName(String name) {
         return name;
@@ -52,5 +52,9 @@ public enum AttributeType {
 
     public boolean isMaterialType() {
         return this == MATERIAL_TYPE_ATTRIBUTE;
+    }
+
+    public boolean isComment() {
+        return this == COMMENT_ATTRIBUTE;
     }
 }

@@ -19,10 +19,7 @@ package uk.ac.ebi.fg.annotare2.magetab.integration;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.AssayNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.ExtractNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.LabeledExtractNode;
-import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.SampleNode;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
@@ -92,6 +89,7 @@ public class MageTabGenerator {
         sampleNode.setNodeName(sample.getName());
         sampleNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
         sampleNode.materialType = extractMaterialTypeAttribute(sample);
+        addComments(sampleNode, sample);
 
         Collection<Extract> extracts = exp.getExtracts(sample);
         for (Extract extract : extracts) {
@@ -189,6 +187,17 @@ public class MageTabGenerator {
             }
         }
         return attributes;
+    }
+
+    private void addComments(SampleNode node, Sample sample) {
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (attribute.getType().isComment()) {
+                String value = sample.getValue(attribute);
+                if (!isNullOrEmpty(value)) {
+                    node.comments.put(attribute.getName(), value);
+                }
+            }
+        }
     }
 
     private static String notNull(String str) {
