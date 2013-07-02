@@ -16,15 +16,34 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
-
-import java.util.List;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ProtocolsView extends IsWidget {
+public class ProtocolCreateDialog extends DialogBox {
 
-    public void setData(List<ProtocolRow> rows);
+    @UiField
+    Button cancelButton;
+
+    @UiField
+    Button okButton;
+
+    interface Binder extends UiBinder<Widget, ProtocolCreateDialog> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
+    public ProtocolCreateDialog() {
+        setModal(true);
+        setGlassEnabled(true);
+        setText("Create Protocol");
+
+        setWidget(Binder.BINDER.createAndBindUi(this));
+        center();
+    }
 }

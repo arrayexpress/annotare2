@@ -20,8 +20,11 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
+
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -37,7 +40,8 @@ public class ProtocolsActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
-       panel.setWidget(view);
+        panel.setWidget(view);
+        view.setData(new ArrayList<ProtocolRow>());
     }
 
 
