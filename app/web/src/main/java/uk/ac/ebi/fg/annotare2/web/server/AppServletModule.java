@@ -32,9 +32,7 @@ import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 
 import javax.servlet.http.HttpServlet;
@@ -105,7 +103,8 @@ public class AppServletModule extends ServletModule {
         bind(AllRpcServicePaths.class).toInstance(allRpc);
 
         bind(AnnotareProperties.class).asEagerSingleton();
-        bind(AnnotareEfoService.class).asEagerSingleton();
+        bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
+        bind(AnnotareEfoService.class).in(SINGLETON);
 
         overrideMageTabCheck();
     }
