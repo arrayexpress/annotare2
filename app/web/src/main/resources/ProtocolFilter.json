@@ -1,0 +1,114 @@
+[
+    {
+        "label": "delivery method",
+        "id": "EFO_0000395",
+        "type": "NONE",
+        "usage": "NONE"
+    },
+    {
+        "label": "study design",
+        "id": "EFO_0001426",
+        "type": "NONE",
+        "usage": "NONE"
+    },
+    {
+        "label": "gene expression protocol",
+        "id": "EFO_0003788",
+        "type": "NONE",
+        "usage": "NONE"
+    },
+    {
+        "label": "hybridization protocol",
+        "id": "EFO_0003790",
+        "type": "PROTOCOL_TYPE",
+        "usage": "MICRO_ARRAY"
+    },
+    {
+        "label": "labelling protocol",
+        "id": "EFO_0003808",
+        "type": "PROTOCOL_TYPE",
+        "usage": "MICRO_ARRAY"
+    },
+    {
+        "label": "nucleic acid library construction protocol",
+        "id": "EFO_0004184",
+        "type": "PROTOCOL_TYPE",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "nucleic acid sequencing protocol",
+        "id": "EFO_0004170",
+        "type": "PROTOCOL_TYPE",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "454 GS 20 standard manufacturer's protocol",
+        "id": "EFO_0005051",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "cot filtration for highly repetitive genomic DNA",
+        "id": "EFO_0004173",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "cot filtration for moderately repetitive genomic DNA",
+        "id": "EFO_0004172",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "cot filtration for single or low copy genomic DNA",
+        "id": "EFO_0004171",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "cot filtration for theoretical single copy genomic DNA",
+        "id": "EFO_0004174",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "Illumina Genome Analyzer II standard manufacturer's protocol",
+        "id": "EFO_0005083",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "Illumina Genome Analyzer IIx standard manufacturer's protocol",
+        "id": "EFO_0005084",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "Illumina Genome Analyzer standard manufacturer's protocol",
+        "id": "EFO_0005082",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "Illumina HiSeq 1000 standard manufacturer's protocol",
+        "id": "EFO_0005085",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "Illumina HiSeq 2000 standard manufacturer's protocol",
+        "id": "EFO_0005086",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    },
+    {
+        "label": "Illumina MiSeq standard manufacturer's protocol",
+        "id": "EFO_0005087",
+        "type": "PROTOCOL",
+        "usage": "SEQUENCING"
+    }
+]
+
+
+
+

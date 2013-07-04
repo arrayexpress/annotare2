@@ -17,7 +17,9 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.base.Function;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.SetMultimap;
 import com.google.inject.Inject;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
@@ -45,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.services.efo.*;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoSubTree;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -53,6 +56,7 @@ import java.util.*;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.io.Closeables.close;
 import static java.util.Arrays.asList;
@@ -60,7 +64,6 @@ import static java.util.Collections.emptyList;
 import static org.apache.lucene.document.Field.Store.NO;
 import static org.apache.lucene.document.Field.Store.YES;
 import static uk.ac.ebi.fg.annotare2.web.server.services.EfoSearchImpl.EfoField.*;
-import static uk.ac.ebi.fg.annotare2.web.server.services.EfoSearchImpl.EfoField.ASCENDANT_FIELD;
 
 /**
  * @author Olga Melnichuk
@@ -153,6 +156,38 @@ public class EfoSearchImpl implements EfoSearch {
         return null;
     }
 
+    public EfoSubTree subtree(String branchAccession) {
+        try {
+            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+            Query query = parser.parse(ASCENDANT_FIELD.matchesPhrase(branchAccession.toLowerCase()));
+            List<Document> docs = runDocumentQuery(query, 1000);
+
+            List<EfoTerm> terms = newArrayList();
+            SetMultimap<String, String> parents = HashMultimap.create();
+            for (Document doc : docs) {
+                String[] values = doc.getValues(ASCENDANT_FIELD.name);
+                EfoTerm term = asTerm(doc);
+                terms.add(term);
+                parents.putAll(term.getAccession(), asList(values));
+            }
+
+            for (String id : parents.keySet()) {
+                Set<String> parentList = parents.get(id);
+                for (String p : parentList) {
+                    if (!parents.containsKey(p)) {
+                        parents.remove(id, p);
+                    }
+                }
+            }
+            return new EfoSubTree(terms).build(parents);
+        } catch (ParseException e) {
+            logError(e);
+        } catch (IOException e) {
+            logError(e);
+        }
+        return null;
+    }
+
     private void logError(Exception e) {
         log.error("EFO search unexpected error", e);
     }
@@ -172,6 +207,10 @@ public class EfoSearchImpl implements EfoSearch {
     }
 
     private List<EfoTerm> runQuery(Query query, int maxHits) throws IOException, ParseException {
+        return asTerms(runDocumentQuery(query, maxHits));
+    }
+
+    private List<Document> runDocumentQuery(Query query, int maxHits) throws IOException, ParseException {
         IndexReader reader = null;
         try {
             reader = DirectoryReader.open(FSDirectory.open(new File(properties.getEfoIndexDir())));
@@ -184,20 +223,34 @@ public class EfoSearchImpl implements EfoSearch {
 
             log.debug("[" + hits.length + "] hits");
 
-            List<EfoTerm> terms = newArrayList();
+            List<Document> docs = newArrayList();
             for (ScoreDoc hit : hits) {
                 Document doc = searcher.doc(hit.doc);
                 //log.debug("found: " + doc.get(LABEL_FIELD.name) + ", " + doc.get(ASCENDANT_FIELD.name));
-                terms.add(new EfoTerm(
-                        doc.get(ACCESSION_FIELD.name),
-                        doc.get(LABEL_FIELD.name),
-                        Collections.<String>emptyList()));
+                docs.add(doc);
             }
             log.debug("Time: " + (System.currentTimeMillis() - start) + "ms");
-            return terms;
+            return docs;
         } finally {
             close(reader, true);
         }
+    }
+
+    private List<EfoTerm> asTerms(List<Document> docs) {
+        return transform(docs, new Function<Document, EfoTerm>() {
+            @Nullable
+            @Override
+            public EfoTerm apply(@Nullable Document input) {
+                return asTerm(input);
+            }
+        });
+    }
+
+    private EfoTerm asTerm(Document doc) {
+        return new EfoTerm(
+                doc.get(ACCESSION_FIELD.name),
+                doc.get(LABEL_FIELD.name),
+                Collections.<String>emptyList());
     }
 
     private void load(EfoServiceProperties properties) {
