@@ -16,15 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.utils;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
+import com.google.common.base.Function;
+import com.google.common.collect.*;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
+import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.intersection;
+import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableSet;
 
 /**
  * @author Olga Melnichuk
@@ -32,6 +37,7 @@ import static com.google.common.collect.Maps.newHashMap;
 public class EfoSubTree {
 
     private final Map<String, EfoTerm> map = newHashMap();
+    private final List<Node> roots = newArrayList();
 
     public EfoSubTree(Collection<EfoTerm> terms) {
         for (EfoTerm term : terms) {
@@ -41,8 +47,38 @@ public class EfoSubTree {
 
     public EfoSubTree build(SetMultimap<String, String> parents) {
         List<String> sorted = sort(parents);
-        //TODO
-        return null;
+        final Map<String, Node> created = newHashMap();
+        for (String id : sorted) {
+            Node node = new Node(map.get(id));
+            created.put(node.getId(), node);
+            Set<Node> parentNodes = newHashSet(
+                    transform(parents.get(id),
+                            new Function<String, Node>() {
+                                @Nullable
+                                @Override
+                                public Node apply(@Nullable String input) {
+                                    return created.get(input);
+                                }
+                            }));
+
+            if (parentNodes.isEmpty()) {
+                roots.add(node);
+                continue;
+            }
+
+            for (Node parent : parentNodes) {
+                Set<Node> childNodes = parent.getChildren();
+                if (intersection(parentNodes, childNodes).isEmpty()) {
+                    parent.addChild(node);
+                    node.addParent(parent);
+                }
+            }
+        }
+        return this;
+    }
+
+    public Collection<Node> getRoots() {
+        return unmodifiableCollection(roots);
     }
 
     /**
@@ -56,25 +92,30 @@ public class EfoSubTree {
         List<String> sorted = newArrayList();
         Queue<String> current = new ArrayDeque<String>();
         Edges edges = new Edges(parents);
-        current.addAll(edges.getRoots());
-
+        for (String id : map.keySet()) {
+            if (edges.getParents(id).isEmpty()) {
+                current.add(id);
+            }
+        }
 
         while (!current.isEmpty()) {
             String node = current.poll();
             sorted.add(node);
-            for (String child : edges.getChildren(node)) {
+            for (String child : newArrayList(edges.getChildren(node))) {
                 edges.remove(node, child);
-                if (!edges.incomingEdgesExist(child)) {
+                if (edges.getParents(child).isEmpty()) {
                     current.add(child);
                 }
             }
         }
-        // TODO if edges exist show error
+
+        if (!edges.isEmpty()) {
+            throw new IllegalStateException("Graph has at least one cycle");
+        }
         return sorted;
     }
 
     private static class Edges {
-
         private SetMultimap<String, String> parents;
         private SetMultimap<String, String> children;
 
@@ -84,30 +125,75 @@ public class EfoSubTree {
             Multimaps.invertFrom(parents, children);
         }
 
-        public Collection<String> getRoots() {
-            List<String> roots = newArrayList();
-            for (String node : parents.keySet()) {
-                if (parents.get(node).isEmpty()) {
-                    roots.add(node);
-                }
-            }
-            return roots;
+        public Collection<String> getChildren(String node) {
+            return unmodifiableCollection(children.get(node));
         }
 
-        public Collection<String> getChildren(String node) {
-            return newArrayList(children.get(node));
+        public Collection<String> getParents(String child) {
+            return unmodifiableCollection(parents.get(child));
         }
 
         public void remove(String node, String child) {
             children.remove(node, child);
-            for (String key : parents.keySet()) {
-                 parents.remove(key, node);
+            for (String key : newArrayList(parents.keySet())) {
+                parents.remove(key, node);
             }
         }
 
-        public boolean incomingEdgesExist(String child) {
-            return parents.get(child).isEmpty();
+        public boolean isEmpty() {
+            return parents.isEmpty() && children.isEmpty();
         }
     }
 
+    public static class Node {
+        private final EfoTerm term;
+        private final Set<Node> parents = newHashSet();
+        private final Set<Node> children = newHashSet();
+
+        public Node(EfoTerm term) {
+            this.term = term;
+        }
+
+        public void addChild(Node child) {
+            children.add(child);
+        }
+
+        public void addParent(Node parent) {
+            parents.add(parent);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Node node = (Node) o;
+
+            if (!getId().equals(node.getId())) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return getId().hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return getId();
+        }
+
+        public String getId() {
+            return term.getAccession();
+        }
+
+        public Set<Node> getChildren() {
+            return unmodifiableSet(children);
+        }
+
+        public Set<Node> getParents() {
+            return unmodifiableSet(parents);
+        }
+    }
 }

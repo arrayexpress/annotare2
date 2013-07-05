@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoSubTree;
 
 import java.util.Collection;
 
@@ -34,4 +35,6 @@ public interface EfoSearch {
     EfoTerm searchByAccession(String accession, String branchAccession);
 
     EfoTerm searchByAccession(String accession);
+
+    EfoSubTree subtree(String branchAccession);
 }

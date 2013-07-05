@@ -156,6 +156,7 @@ public class EfoSearchImpl implements EfoSearch {
         return null;
     }
 
+    @Override
     public EfoSubTree subtree(String branchAccession) {
         try {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
