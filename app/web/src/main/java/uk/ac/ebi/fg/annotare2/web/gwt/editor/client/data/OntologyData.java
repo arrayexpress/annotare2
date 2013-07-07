@@ -23,7 +23,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.ORGANISM;
@@ -32,13 +34,14 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.UNIT;
 /**
  * @author Olga Melnichuk
  */
-public class EfoTermData {
+public class OntologyData {
 
     private final DataServiceAsync dataService;
     private SystemEfoTermMap systemTerms;
+    private EfoGraphDto protocolTypes;
 
     @Inject
-    public EfoTermData(DataServiceAsync dataService) {
+    public OntologyData(DataServiceAsync dataService) {
         this.dataService = dataService;
     }
 
@@ -97,6 +100,30 @@ public class EfoTermData {
         } else {
             dataService.getEfoTerms(query, root.getAccession(), limit, callback);
         }
+    }
+
+    public void getProtocolTypes(final AsyncCallback<EfoGraphDto> callback) {
+        if (protocolTypes != null) {
+            callback.onSuccess(protocolTypes);
+            return;
+        }
+        dataService.getProtocolTypes(new AsyncCallbackWrapper<EfoGraphDto>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(EfoGraphDto result) {
+                protocolTypes = result;
+                callback.onSuccess(result);
+            }
+        }.wrap());
+    }
+
+    public void getProtocols(OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> callback) {
+        //TODO
+        callback.onSuccess(new ArrayList<OntologyTerm>());
     }
 
     private static class TermSuggest {

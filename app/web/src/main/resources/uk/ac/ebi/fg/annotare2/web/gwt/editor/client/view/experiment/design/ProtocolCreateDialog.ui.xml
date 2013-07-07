@@ -19,10 +19,31 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
+    <ui:style>
+        .tree {
+            border: 1px solid grey;
+        }
+    </ui:style>
     <g:ResizeLayoutPanel height="500px" width="600px">
         <g:DockLayoutPanel>
             <g:center>
-                <g:SimplePanel />
+                <g:SplitLayoutPanel>
+                    <g:center>
+                        <g:ScrollPanel addStyleNames="{style.tree}">
+                            <g:Tree ui:field="protocolTypeTree"/>
+                        </g:ScrollPanel>
+                    </g:center>
+                    <g:east size="400">
+                        <g:DockLayoutPanel>
+                            <g:north size="20">
+                                <g:Label>Pre-defined protocols:</g:Label>
+                            </g:north>
+                            <g:north size="200">
+                                    <g:ListBox visibleItemCount="10" width="100%"/>
+                            </g:north>
+                        </g:DockLayoutPanel>
+                    </g:east>
+                </g:SplitLayoutPanel>
             </g:center>
             <g:south size="50">
                 <g:HTMLPanel>
@@ -30,7 +51,7 @@
                         <tr>
                             <td align="right">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
-                                <g:Button ui:field="okButton">Ok</g:Button>
+                                <g:Button ui:field="okButton">Create</g:Button>
                             </td>
                         </tr>
                     </table>

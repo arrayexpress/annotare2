@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 /**
  * @author Olga Melnichuk
  */
-public class EfoSubTreeTest {
+public class EfoGraphTest {
 
     @Test
     public void test() {
@@ -49,37 +49,37 @@ public class EfoSubTreeTest {
         parents.putAll("D", asList("A", "B", "C"));
         parents.putAll("E", asList("A", "C"));
 
-        Collection<EfoSubTree.Node> roots = new EfoSubTree(asList(A, B, C, D, E)).build(parents).getRoots();
+        Collection<EfoGraph.Node> roots = new EfoGraph(asList(A, B, C, D, E)).build(parents).getRoots();
         assertEquals(1, roots.size());
 
-        EfoSubTree.Node root = roots.iterator().next();
+        EfoGraph.Node root = roots.iterator().next();
         assertEquals("A", root.getId());
         assertTrue(root.getParents().isEmpty());
 
-        Set<EfoSubTree.Node> childrenA = root.getChildren();
+        Set<EfoGraph.Node> childrenA = root.getChildren();
         assertEquals(2, childrenA.size());
-        assertTrue(childrenA.contains(new EfoSubTree.Node(B)));
-        assertTrue(childrenA.contains(new EfoSubTree.Node(C)));
+        assertTrue(childrenA.contains(new EfoGraph.Node(B)));
+        assertTrue(childrenA.contains(new EfoGraph.Node(C)));
 
-        for (EfoSubTree.Node node : childrenA) {
+        for (EfoGraph.Node node : childrenA) {
             assertEquals(1, node.getParents().size());
             assertEquals("A", node.getParents().iterator().next().getId());
 
             if ("B".equals(node.getId())) {
                 assertEquals(1, node.getChildren().size());
 
-                EfoSubTree.Node nodeD = node.getChildren().iterator().next();
+                EfoGraph.Node nodeD = node.getChildren().iterator().next();
                 assertEquals("D", nodeD.getId());
                 assertEquals(2, nodeD.getParents().size());
                 assertTrue(nodeD.getChildren().isEmpty());
             } else if ("C".equals(node.getId())) {
-                Set<EfoSubTree.Node> childrenC = node.getChildren();
+                Set<EfoGraph.Node> childrenC = node.getChildren();
                 assertEquals(2, childrenC.size());
-                assertTrue(childrenC.contains(new EfoSubTree.Node(D)));
-                assertTrue(childrenC.contains(new EfoSubTree.Node(E)));
+                assertTrue(childrenC.contains(new EfoGraph.Node(D)));
+                assertTrue(childrenC.contains(new EfoGraph.Node(E)));
 
-                Iterator<EfoSubTree.Node> iter = childrenC.iterator();
-                EfoSubTree.Node nodeE = iter.next();
+                Iterator<EfoGraph.Node> iter = childrenC.iterator();
+                EfoGraph.Node nodeE = iter.next();
                 if (!"E".equals(node.getId())) {
                     nodeE = iter.next();
                 }

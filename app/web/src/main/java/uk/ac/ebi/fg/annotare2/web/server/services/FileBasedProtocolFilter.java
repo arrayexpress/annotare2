@@ -22,7 +22,7 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoSubTree;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +47,7 @@ public class FileBasedProtocolFilter implements ProtocolFilter {
     }
 
     @Override
-    public EfoSubTree filter(ExperimentProfileType type, EfoSubTree protocols) {
+    public EfoGraph filter(ExperimentProfileType type, EfoGraph protocols) {
         //TODO
         return null;
     }

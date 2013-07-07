@@ -47,7 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.services.efo.*;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoSubTree;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -57,6 +57,7 @@ import java.util.*;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.transform;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.io.Closeables.close;
 import static java.util.Arrays.asList;
@@ -78,7 +79,6 @@ public class EfoSearchImpl implements EfoSearch {
     public EfoSearchImpl(AnnotareProperties properties) {
         this.properties = properties;
         load(properties.getEfoServiceProperties());
-
     }
 
     @Override
@@ -111,7 +111,7 @@ public class EfoSearchImpl implements EfoSearch {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
             Query query = parser.parse(
                     LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
-                            + " AND " + ASCENDANT_FIELD.matchesPhrase(branchAccession.toLowerCase())
+                            + " AND " + ASCENDANT_FIELD.matchesPhrase(branchAccession)
             );
             List<EfoTerm> result = runQuery(query, 1);
             return result.isEmpty() ? null : result.get(0);
@@ -129,7 +129,7 @@ public class EfoSearchImpl implements EfoSearch {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
             Query query = parser.parse(
                     ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase())
-                            + " AND " + ASCENDANT_FIELD.matchesPhrase(branchAccession.toLowerCase()));
+                            + " AND " + ASCENDANT_FIELD.matchesPhrase(branchAccession));
             List<EfoTerm> result = runQuery(query, 1);
             return result.isEmpty() ? null : result.get(0);
         } catch (ParseException e) {
@@ -157,30 +157,30 @@ public class EfoSearchImpl implements EfoSearch {
     }
 
     @Override
-    public EfoSubTree subtree(String branchAccession) {
+    public EfoGraph subGraph(String rootAccession) {
         try {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
-            Query query = parser.parse(ASCENDANT_FIELD.matchesPhrase(branchAccession.toLowerCase()));
+            Query query = parser.parse(ASCENDANT_FIELD.matchesPhrase(rootAccession));
             List<Document> docs = runDocumentQuery(query, 1000);
 
-            List<EfoTerm> terms = newArrayList();
+            Map<String, EfoTerm> terms = newHashMap();
             SetMultimap<String, String> parents = HashMultimap.create();
             for (Document doc : docs) {
                 String[] values = doc.getValues(ASCENDANT_FIELD.name);
                 EfoTerm term = asTerm(doc);
-                terms.add(term);
+                terms.put(term.getAccession(), term);
                 parents.putAll(term.getAccession(), asList(values));
             }
 
-            for (String id : parents.keySet()) {
-                Set<String> parentList = parents.get(id);
+            for (String id : newHashSet(parents.keySet())) {
+                Set<String> parentList = newHashSet(parents.get(id));
                 for (String p : parentList) {
-                    if (!parents.containsKey(p)) {
+                    if (!terms.containsKey(p)) {
                         parents.remove(id, p);
                     }
                 }
             }
-            return new EfoSubTree(terms).build(parents);
+            return new EfoGraph(terms.values()).build(parents);
         } catch (ParseException e) {
             logError(e);
         } catch (IOException e) {
@@ -377,7 +377,7 @@ public class EfoSearchImpl implements EfoSearch {
         ASCENDANT_FIELD("ascendant") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getAccession().toLowerCase(), NO);
+                return new StringField(name, node.getAccession(), YES);
             }
         };
 

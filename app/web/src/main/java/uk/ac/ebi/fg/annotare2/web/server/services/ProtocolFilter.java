@@ -17,13 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoSubTree;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 /**
  * @author Olga Melnichuk
  */
 public interface ProtocolFilter {
 
-    EfoSubTree filter(ExperimentProfileType type, EfoSubTree protocols);
+    EfoGraph filter(ExperimentProfileType type, EfoGraph protocols);
 }
 

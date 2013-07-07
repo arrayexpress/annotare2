@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.PROTOCOL;
 
 /**
  * @author Olga Melnichuk
@@ -22,10 +25,13 @@ public class AnnotareEfoService implements EfoService {
 
     private static final int MAX_HITS = 1000;
 
+    private final AnnotareProperties properties;
+
     private final EfoSearch efoSearch;
 
     @Inject
-    public AnnotareEfoService(EfoSearch efoSearch) {
+    public AnnotareEfoService(AnnotareProperties properties, EfoSearch efoSearch) {
+        this.properties = properties;
         this.efoSearch = efoSearch;
         testSearch();
     }
@@ -130,5 +136,9 @@ public class AnnotareEfoService implements EfoService {
             }
         }
         return null;
+    }
+
+    public EfoGraph getProtocolTypes() {
+        return efoSearch.subGraph(properties.getEfoTermAccession(PROTOCOL));
     }
 }

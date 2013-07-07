@@ -34,18 +34,18 @@ import static java.util.Collections.unmodifiableSet;
 /**
  * @author Olga Melnichuk
  */
-public class EfoSubTree {
+public class EfoGraph {
 
     private final Map<String, EfoTerm> map = newHashMap();
     private final List<Node> roots = newArrayList();
 
-    public EfoSubTree(Collection<EfoTerm> terms) {
+    public EfoGraph(Collection<EfoTerm> terms) {
         for (EfoTerm term : terms) {
             map.put(term.getAccession(), term);
         }
     }
 
-    public EfoSubTree build(SetMultimap<String, String> parents) {
+    public EfoGraph build(SetMultimap<String, String> parents) {
         List<String> sorted = sort(parents);
         final Map<String, Node> created = newHashMap();
         for (String id : sorted) {
@@ -194,6 +194,10 @@ public class EfoSubTree {
 
         public Set<Node> getParents() {
             return unmodifiableSet(parents);
+        }
+
+        public EfoTerm getTerm() {
+            return term;
         }
     }
 }

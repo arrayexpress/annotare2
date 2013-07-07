@@ -26,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ArrayDesignData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTermData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
@@ -40,12 +40,12 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
 
     private AdfDetailsView view;
     private final ArrayDesignData adfData;
-    private final EfoTermData efoTerms;
+    private final OntologyData efoTerms;
 
     @Inject
     public AdfDetailsActivity(AdfDetailsView view,
                               ArrayDesignData adfData,
-                              EfoTermData efoTerms) {
+                              OntologyData efoTerms) {
         this.view = view;
         this.adfData = adfData;
         this.efoTerms = efoTerms;

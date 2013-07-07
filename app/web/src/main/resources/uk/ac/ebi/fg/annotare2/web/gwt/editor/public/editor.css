@@ -298,6 +298,14 @@
     color: white;
 }
 
+/* Tree bug workaround:
+   http://code.google.com/p/google-web-toolkit/issues/detail?id=3800&q=tree%20item%20selected&colspec=ID%20Type%20Status%20Owner%20Milestone%20Summary%20Stars
+ */
+
+.gwt-Tree .gwt-TreeItem-selected  {
+    display: table !important;
+}
+
 /* Idf List */
 
 .app-IdfListView {

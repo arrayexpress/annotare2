@@ -26,5 +26,10 @@ import java.util.List;
  */
 public interface ProtocolsView extends IsWidget {
 
-    public void setData(List<ProtocolRow> rows);
+    void setData(List<ProtocolRow> rows);
+
+    void setPresenter(Presenter presenter);
+
+    public interface Presenter extends ProtocolCreateDialog.Presenter {
+    }
 }

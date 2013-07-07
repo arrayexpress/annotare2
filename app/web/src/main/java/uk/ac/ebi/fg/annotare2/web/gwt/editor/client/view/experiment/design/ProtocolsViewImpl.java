@@ -32,9 +32,11 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolsViewImpl  extends Composite implements ProtocolsView {
+public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private GridView<ProtocolRow> gridView;
+
+    private Presenter presenter;
 
     public ProtocolsViewImpl() {
         gridView = new GridView<ProtocolRow>();
@@ -42,7 +44,9 @@ public class ProtocolsViewImpl  extends Composite implements ProtocolsView {
         createButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                (new ProtocolCreateDialog()).show();
+                if (presenter != null) {
+                    (new ProtocolCreateDialog(presenter)).show();
+                }
             }
         });
         gridView.addTool(createButton);
@@ -52,9 +56,14 @@ public class ProtocolsViewImpl  extends Composite implements ProtocolsView {
     }
 
     @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
     public void setData(List<ProtocolRow> rows) {
-       gridView.setRows(rows);
-       setColumns();
+        gridView.setRows(rows);
+        setColumns();
     }
 
     private void setColumns() {

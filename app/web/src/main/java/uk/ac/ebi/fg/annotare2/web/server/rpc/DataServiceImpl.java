@@ -28,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
@@ -37,8 +38,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 
 /**
  * @author Olga Melnichuk
@@ -85,7 +85,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     public SystemEfoTermMap getSystemEfoTerms() {
         SystemEfoTermMap map = new SystemEfoTermMap();
         for(SystemEfoTerm systemTerm : SystemEfoTerm.values()) {
-            String accession = properties.getEfoTermAccession(systemTerm.getPropertyName());
+            String accession = properties.getEfoTermAccession(systemTerm);
             if (accession == null) {
                 log.error("application properties do not contain accession for a system term: " + systemTerm);
                 continue;
@@ -93,6 +93,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
             map.put(systemTerm, loadSystemTerm(accession));
         }
         return map;
+    }
+
+    @Override
+    public EfoGraphDto getProtocolTypes() {
+        return uiEfoGraph(efoService.getProtocolTypes());
     }
 
     private OntologyTerm loadSystemTerm(String accession) {

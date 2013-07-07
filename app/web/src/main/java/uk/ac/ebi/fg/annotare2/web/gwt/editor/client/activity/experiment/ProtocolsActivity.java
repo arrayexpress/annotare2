@@ -18,34 +18,52 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolsActivity extends AbstractActivity {
+public class ProtocolsActivity extends AbstractActivity implements ProtocolsView.Presenter{
 
     private final ProtocolsView view;
+    private final OntologyData ontologyData;
 
     @Inject
-    public ProtocolsActivity(ProtocolsView view) {
+    public ProtocolsActivity(ProtocolsView view, OntologyData ontologyData) {
         this.view = view;
+        this.ontologyData = ontologyData;
     }
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
-        panel.setWidget(view);
+        view.setPresenter(this);
         view.setData(new ArrayList<ProtocolRow>());
+        panel.setWidget(view);
     }
 
 
     public ProtocolsActivity withPlace(ExpDesignPlace designPlace) {
         return this;
+    }
+
+    @Override
+    public void getProtocolTypes(AsyncCallback<EfoGraphDto> callback) {
+        ontologyData.getProtocolTypes(callback);
+    }
+
+    @Override
+    public void getProtocols(OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> callback) {
+        ontologyData.getProtocols(protocolType, callback);
     }
 }

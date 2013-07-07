@@ -21,6 +21,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
  */
 public enum SystemEfoTerm {
 
+    PROTOCOL("Protocol", "protocol"),
     STUDY_DESIGN("Experiment Design", "study_design"),
     UNIT("Unit", "unit"),
 

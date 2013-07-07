@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.EfoTermData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
@@ -53,7 +53,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     @Inject
     public SamplesActivity(SamplesView view,
                            ExperimentData expData,
-                           EfoTermData efoTerms) {
+                           OntologyData efoTerms) {
         this.view = view;
         this.expData = expData;
         this.efoTerms = wrapEfoTerms(efoTerms);
@@ -127,7 +127,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         });
     }
 
-    private ColumnValueTypeEfoTerms wrapEfoTerms(final EfoTermData efoTerms) {
+    private ColumnValueTypeEfoTerms wrapEfoTerms(final OntologyData efoTerms) {
         return new ColumnValueTypeEfoTerms() {
             @Override
             public void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {

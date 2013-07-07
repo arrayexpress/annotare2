@@ -17,16 +17,28 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
+
+import java.util.List;
+
+import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromString;
 
 /**
  * @author Olga Melnichuk
  */
 public class ProtocolCreateDialog extends DialogBox {
+
+    interface Binder extends UiBinder<Widget, ProtocolCreateDialog> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
 
     @UiField
     Button cancelButton;
@@ -34,16 +46,64 @@ public class ProtocolCreateDialog extends DialogBox {
     @UiField
     Button okButton;
 
-    interface Binder extends UiBinder<Widget, ProtocolCreateDialog> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
+    @UiField
+    Tree protocolTypeTree;
 
-    public ProtocolCreateDialog() {
+    final Presenter presenter;
+
+    public ProtocolCreateDialog(Presenter presenter) {
+        this.presenter = presenter;
+
         setModal(true);
         setGlassEnabled(true);
-        setText("Create Protocol");
+        setText("New Protocol");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
+
+        protocolTypeTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+            @Override
+            public void onSelection(SelectionEvent<TreeItem> event) {
+                Window.alert(event.getSelectedItem().getText());
+            }
+        });
+
         center();
+        loadProtocolTypes();
+    }
+
+    private void loadProtocolTypes() {
+        if (presenter == null) {
+            return;
+        }
+        presenter.getProtocolTypes(new AsyncCallback<EfoGraphDto>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error; can't load list of protocol types.");
+            }
+
+            @Override
+            public void onSuccess(EfoGraphDto graph) {
+                for(EfoGraphDto.Node node : graph.getRoots()) {
+                    showProtocolTypes(protocolTypeTree, node);
+                }
+            }
+        });
+    }
+
+    private void showProtocolTypes(HasTreeItems treeNode, EfoGraphDto.Node graphNode) {
+        OntologyTerm term = graphNode.getTerm();
+        TreeItem treeItem = treeNode.addItem(fromString(term.getLabel()));
+        treeItem.setUserObject(term);
+
+        for (EfoGraphDto.Node child : graphNode.getChildren()) {
+            showProtocolTypes(treeItem, child);
+        }
+    }
+
+    public static interface Presenter {
+
+        void getProtocolTypes(AsyncCallback<EfoGraphDto> callback);
+
+        void getProtocols(OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> callback);
     }
 }

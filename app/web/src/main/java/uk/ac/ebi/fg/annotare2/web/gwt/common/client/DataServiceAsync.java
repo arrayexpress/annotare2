@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 
 import java.util.List;
 
@@ -31,4 +32,6 @@ public interface DataServiceAsync {
     void getEfoTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> async);
 
     void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<OntologyTerm>> async);
+
+    void getProtocolTypes(AsyncCallback<EfoGraphDto> async);
 }

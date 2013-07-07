@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoServiceProperties;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 
 import java.io.*;
 import java.util.Properties;
@@ -100,7 +101,7 @@ public class AnnotareProperties {
         return properties;
     }
 
-    public String getEfoTermAccession(String propertyName) {
-        return getProperty("efo.term." + propertyName);
+    public String getEfoTermAccession(SystemEfoTerm term) {
+        return getProperty("efo.term." + term.getPropertyName());
     }
 }
