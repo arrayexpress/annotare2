@@ -43,4 +43,6 @@ public interface DataService extends RemoteService {
     List<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit);
 
     EfoGraphDto getProtocolTypes(ExperimentProfileType type);
+
+    List<OntologyTerm> getProtocols(ExperimentProfileType expType, OntologyTerm protocolType);
 }

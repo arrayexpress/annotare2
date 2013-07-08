@@ -26,7 +26,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.ORGANISM;
@@ -122,9 +121,18 @@ public class OntologyData {
         }.wrap());
     }
 
-    public void getProtocols(OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> callback) {
-        //TODO
-        callback.onSuccess(new ArrayList<OntologyTerm>());
+    public void getProtocols(ExperimentProfileType expType, OntologyTerm protocolType, final AsyncCallback<List<OntologyTerm>> callback) {
+        dataService.getProtocols(expType, protocolType, new AsyncCallbackWrapper<List<OntologyTerm>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                 callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(List<OntologyTerm> result) {
+                callback.onSuccess(result);
+            }
+        });
     }
 
     private static class TermSuggest {

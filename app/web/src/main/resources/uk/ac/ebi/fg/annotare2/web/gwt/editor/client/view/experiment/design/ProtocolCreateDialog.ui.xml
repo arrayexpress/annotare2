@@ -29,17 +29,24 @@
             <g:center>
                 <g:SplitLayoutPanel>
                     <g:center>
-                        <g:ScrollPanel addStyleNames="{style.tree}">
-                            <g:Tree ui:field="protocolTypeTree"/>
-                        </g:ScrollPanel>
+                        <g:DockLayoutPanel>
+                            <g:north size="20">
+                                <g:Label>Protocol Types:</g:Label>
+                            </g:north>
+                            <g:center>
+                                <g:ScrollPanel addStyleNames="{style.tree}">
+                                    <g:Tree ui:field="protocolTypeTree"/>
+                                </g:ScrollPanel>
+                            </g:center>
+                        </g:DockLayoutPanel>
                     </g:center>
                     <g:east size="400">
                         <g:DockLayoutPanel>
                             <g:north size="20">
-                                <g:Label>Pre-defined protocols:</g:Label>
+                                <g:Label>Protocols:</g:Label>
                             </g:north>
                             <g:north size="200">
-                                    <g:ListBox ui:field="protocolList" visibleItemCount="10" width="100%"/>
+                                <g:ListBox ui:field="protocolList" visibleItemCount="10" width="100%"/>
                             </g:north>
                         </g:DockLayoutPanel>
                     </g:east>

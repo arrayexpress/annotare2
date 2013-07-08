@@ -78,7 +78,17 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public void getProtocols(OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> callback) {
-        ontologyData.getProtocols(protocolType, callback);
+    public void getProtocols(final OntologyTerm protocolType, final AsyncCallback<List<OntologyTerm>> callback) {
+        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error; Can't get experiment type");
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfileType result) {
+                ontologyData.getProtocols(result, protocolType, callback);
+            }
+        });
     }
 }

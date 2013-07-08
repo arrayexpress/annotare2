@@ -101,6 +101,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
         return uiEfoGraph(efoService.getProtocolTypes(expType));
     }
 
+    @Override
+    public List<OntologyTerm> getProtocols(ExperimentProfileType expType, OntologyTerm protocolType) {
+        return uiEfoTerms(efoService.getProtocols(expType, protocolType));
+    }
+
     private OntologyTerm loadSystemTerm(String accession) {
         EfoTerm term = efoService.findTermByAccession(accession);
         if (term == null) {

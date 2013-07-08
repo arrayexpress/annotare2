@@ -5,11 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -144,5 +146,10 @@ public class AnnotareEfoService implements EfoService {
     public EfoGraph getProtocolTypes(ExperimentProfileType type) {
        return efoSearch.subGraph(properties.getEfoTermAccession(PROTOCOL))
                .filter(FileBasedProtocolFilter.create(type));
+    }
+
+    public Collection<EfoTerm> getProtocols(ExperimentProfileType expType, OntologyTerm protocolType) {
+        //TODO
+        return new ArrayList<EfoTerm>();
     }
 }

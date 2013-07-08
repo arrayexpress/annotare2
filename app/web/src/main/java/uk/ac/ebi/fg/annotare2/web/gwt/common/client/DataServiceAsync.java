@@ -35,4 +35,6 @@ public interface DataServiceAsync {
     void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<OntologyTerm>> async);
 
     void getProtocolTypes(ExperimentProfileType expType, AsyncCallback<EfoGraphDto> async);
+
+    void getProtocols(ExperimentProfileType expType, OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> async);
 }

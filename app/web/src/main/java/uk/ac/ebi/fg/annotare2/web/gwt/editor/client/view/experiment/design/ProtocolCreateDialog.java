@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromString;
@@ -74,6 +75,7 @@ public class ProtocolCreateDialog extends DialogBox {
 
         center();
         loadProtocolTypes();
+        showProtocols(new ArrayList<OntologyTerm>());
     }
 
     @UiHandler("cancelButton")
@@ -125,7 +127,14 @@ public class ProtocolCreateDialog extends DialogBox {
     }
 
     private void showProtocols(List<OntologyTerm> protocols) {
-        //TODO
+        protocolList.clear();
+        for(OntologyTerm term : protocols) {
+            protocolList.addItem(term.getLabel(), term.getAccession());
+        }
+        if (protocols.isEmpty()) {
+            protocolList.addItem("No Protocols");
+            protocolList.getElement().getElementsByTagName("option").getItem(0).setAttribute("disabled", "disabled");
+        }
     }
 
     public static interface Presenter {
