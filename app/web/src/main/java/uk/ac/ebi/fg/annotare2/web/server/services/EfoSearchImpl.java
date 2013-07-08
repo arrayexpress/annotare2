@@ -303,6 +303,9 @@ public class EfoSearchImpl implements EfoSearch {
 
         visited.add(node.getAccession());
 
+        Map<String, EfoNode> allParents = newHashMap();
+        goBackForMoreParents(allParents, node);
+
         Document doc = new Document();
         doc.add(ACCESSION_FIELD.create(node));
         doc.add(ACCESSION_FIELD_LOWERCASE.create(node));
@@ -310,7 +313,7 @@ public class EfoSearchImpl implements EfoSearch {
         doc.add(LABEL_FIELD_LOWERCASE.create(node));
         doc.add(TEXT_FIELD.create(node));
 
-        for (EfoNode parent : parents) {
+        for (EfoNode parent : allParents.values()) {
             doc.add(ASCENDANT_FIELD.create(parent));
         }
 
@@ -320,6 +323,15 @@ public class EfoSearchImpl implements EfoSearch {
         newParents.add(node);
         for (EfoNode child : node.getChildren()) {
             indexDoc(child, newParents, visited, writer);
+        }
+    }
+
+    private void goBackForMoreParents(Map<String, EfoNode> parents, EfoNode node) {
+        for(EfoNode parent : node.getParents()) {
+            if (!parents.containsKey(parent.getAccession())) {
+                parents.put(parent.getAccession(), parent);
+                goBackForMoreParents(parents, parent);
+            }
         }
     }
 
