@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
@@ -33,5 +34,5 @@ public interface DataServiceAsync {
 
     void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<OntologyTerm>> async);
 
-    void getProtocolTypes(AsyncCallback<EfoGraphDto> async);
+    void getProtocolTypes(ExperimentProfileType expType, AsyncCallback<EfoGraphDto> async);
 }

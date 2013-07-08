@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
@@ -102,12 +103,12 @@ public class OntologyData {
         }
     }
 
-    public void getProtocolTypes(final AsyncCallback<EfoGraphDto> callback) {
+    public void getProtocolTypes(ExperimentProfileType expType, final AsyncCallback<EfoGraphDto> callback) {
         if (protocolTypes != null) {
             callback.onSuccess(protocolTypes);
             return;
         }
-        dataService.getProtocolTypes(new AsyncCallbackWrapper<EfoGraphDto>() {
+        dataService.getProtocolTypes(expType, new AsyncCallbackWrapper<EfoGraphDto>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);

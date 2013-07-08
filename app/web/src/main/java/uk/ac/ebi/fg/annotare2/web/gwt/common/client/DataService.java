@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
@@ -41,5 +42,5 @@ public interface DataService extends RemoteService {
 
     List<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit);
 
-    EfoGraphDto getProtocolTypes();
+    EfoGraphDto getProtocolTypes(ExperimentProfileType type);
 }

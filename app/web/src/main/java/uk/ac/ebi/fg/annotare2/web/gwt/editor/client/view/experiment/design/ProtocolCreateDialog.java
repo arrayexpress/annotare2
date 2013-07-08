@@ -17,10 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -49,6 +51,9 @@ public class ProtocolCreateDialog extends DialogBox {
     @UiField
     Tree protocolTypeTree;
 
+    @UiField
+    ListBox protocolList;
+
     final Presenter presenter;
 
     public ProtocolCreateDialog(Presenter presenter) {
@@ -63,12 +68,17 @@ public class ProtocolCreateDialog extends DialogBox {
         protocolTypeTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             @Override
             public void onSelection(SelectionEvent<TreeItem> event) {
-                Window.alert(event.getSelectedItem().getText());
+                loadProtocols((OntologyTerm)event.getSelectedItem().getUserObject());
             }
         });
 
         center();
         loadProtocolTypes();
+    }
+
+    @UiHandler("cancelButton")
+    void cancelClicked(ClickEvent event) {
+        hide();
     }
 
     private void loadProtocolTypes() {
@@ -78,7 +88,7 @@ public class ProtocolCreateDialog extends DialogBox {
         presenter.getProtocolTypes(new AsyncCallback<EfoGraphDto>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error; can't load list of protocol types.");
+                Window.alert("Server error; can't load list of protocol types");
             }
 
             @Override
@@ -98,6 +108,24 @@ public class ProtocolCreateDialog extends DialogBox {
         for (EfoGraphDto.Node child : graphNode.getChildren()) {
             showProtocolTypes(treeItem, child);
         }
+    }
+
+    private void loadProtocols(OntologyTerm term) {
+        presenter.getProtocols(term, new AsyncCallback<List<OntologyTerm>>(){
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error; can't load list of protocols");
+            }
+
+            @Override
+            public void onSuccess(List<OntologyTerm> result) {
+                showProtocols(result);
+            }
+        });
+    }
+
+    private void showProtocols(List<OntologyTerm> protocols) {
+        //TODO
     }
 
     public static interface Presenter {

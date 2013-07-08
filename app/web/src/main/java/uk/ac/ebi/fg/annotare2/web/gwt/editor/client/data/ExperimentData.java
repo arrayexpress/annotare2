@@ -321,6 +321,20 @@ public class ExperimentData {
         });
     }
 
+    public void getExperimentProfileTypeAsync(final AsyncCallback<ExperimentProfileType> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(result.getType());
+            }
+        });
+    }
+
     public void createContact() {
         updateQueue.add(new CreateContactCommand());
     }

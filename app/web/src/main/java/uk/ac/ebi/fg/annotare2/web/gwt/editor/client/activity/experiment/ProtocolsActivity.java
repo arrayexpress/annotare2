@@ -18,12 +18,15 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
@@ -38,11 +41,13 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
 
     private final ProtocolsView view;
     private final OntologyData ontologyData;
+    private final ExperimentData expData;
 
     @Inject
-    public ProtocolsActivity(ProtocolsView view, OntologyData ontologyData) {
+    public ProtocolsActivity(ProtocolsView view, OntologyData ontologyData, ExperimentData expData) {
         this.view = view;
         this.ontologyData = ontologyData;
+        this.expData = expData;
     }
 
     @Override
@@ -58,8 +63,18 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public void getProtocolTypes(AsyncCallback<EfoGraphDto> callback) {
-        ontologyData.getProtocolTypes(callback);
+    public void getProtocolTypes(final AsyncCallback<EfoGraphDto> callback) {
+        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error; Can't get experiment type");
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfileType result) {
+                ontologyData.getProtocolTypes(result, callback);
+            }
+        });
     }
 
     @Override

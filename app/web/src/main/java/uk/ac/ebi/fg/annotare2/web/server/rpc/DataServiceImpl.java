@@ -22,6 +22,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
@@ -96,8 +97,8 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
-    public EfoGraphDto getProtocolTypes() {
-        return uiEfoGraph(efoService.getProtocolTypes());
+    public EfoGraphDto getProtocolTypes(ExperimentProfileType expType) {
+        return uiEfoGraph(efoService.getProtocolTypes(expType));
     }
 
     private OntologyTerm loadSystemTerm(String accession) {

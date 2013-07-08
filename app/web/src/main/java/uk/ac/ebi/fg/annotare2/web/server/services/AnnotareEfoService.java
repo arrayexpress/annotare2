@@ -3,6 +3,8 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
@@ -30,7 +32,8 @@ public class AnnotareEfoService implements EfoService {
     private final EfoSearch efoSearch;
 
     @Inject
-    public AnnotareEfoService(AnnotareProperties properties, EfoSearch efoSearch) {
+    public AnnotareEfoService(AnnotareProperties properties,
+                              EfoSearch efoSearch) {
         this.properties = properties;
         this.efoSearch = efoSearch;
         testSearch();
@@ -138,7 +141,8 @@ public class AnnotareEfoService implements EfoService {
         return null;
     }
 
-    public EfoGraph getProtocolTypes() {
-        return efoSearch.subGraph(properties.getEfoTermAccession(PROTOCOL));
+    public EfoGraph getProtocolTypes(ExperimentProfileType type) {
+       return efoSearch.subGraph(properties.getEfoTermAccession(PROTOCOL))
+               .filter(FileBasedProtocolFilter.create(type));
     }
 }

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services.utils;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.*;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 
@@ -45,7 +46,15 @@ public class EfoGraph {
         }
     }
 
+    public EfoGraph(List<Node> roots) {
+       this.roots.addAll(roots);
+    }
+
     public EfoGraph build(SetMultimap<String, String> parents) {
+        if (map.isEmpty()) {
+            return this;
+        }
+
         List<String> sorted = sort(parents);
         final Map<String, Node> created = newHashMap();
         for (String id : sorted) {
@@ -113,6 +122,35 @@ public class EfoGraph {
             throw new IllegalStateException("Graph has at least one cycle");
         }
         return sorted;
+    }
+
+    public EfoGraph filter(Predicate predicate) {
+        List<Node> newRoots = newArrayList();
+        List<Node> path = newArrayList();
+        for (Node node : roots) {
+            Node filtered = filter(path, node, predicate);
+            if (filtered!= null) {
+                newRoots.add(filtered);
+            }
+        }
+        return new EfoGraph(newRoots);
+    }
+
+    private Node filter(List<Node> path, Node current, Predicate<List<Node>>predicate) {
+        List<Node> newPath = newArrayList(path);
+        newPath.add(current);
+        if (!predicate.apply(newPath)) {
+            return null;
+        }
+        Node newNode = new Node(current.getTerm());
+        for(Node child : current.getChildren()) {
+            Node filtered = filter(newPath, child, predicate);
+            if (filtered!= null) {
+                newNode.addChild(filtered);
+                filtered.addParent(newNode);
+            }
+        }
+        return newNode;
     }
 
     private static class Edges {

@@ -24,7 +24,7 @@
             border: 1px solid grey;
         }
     </ui:style>
-    <g:ResizeLayoutPanel height="500px" width="600px">
+    <g:ResizeLayoutPanel height="500px" width="800px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:SplitLayoutPanel>
@@ -39,7 +39,7 @@
                                 <g:Label>Pre-defined protocols:</g:Label>
                             </g:north>
                             <g:north size="200">
-                                    <g:ListBox visibleItemCount="10" width="100%"/>
+                                    <g:ListBox ui:field="protocolList" visibleItemCount="10" width="100%"/>
                             </g:north>
                         </g:DockLayoutPanel>
                     </g:east>
