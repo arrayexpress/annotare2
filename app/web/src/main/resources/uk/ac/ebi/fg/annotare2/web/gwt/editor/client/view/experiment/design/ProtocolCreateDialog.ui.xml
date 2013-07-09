@@ -23,6 +23,10 @@
         .tree {
             border: 1px solid grey;
         }
+
+        .selection {
+            padding-top: 10px;
+        }
     </ui:style>
     <g:ResizeLayoutPanel height="500px" width="800px">
         <g:DockLayoutPanel>
@@ -48,6 +52,52 @@
                             <g:north size="200">
                                 <g:ListBox ui:field="protocolList" visibleItemCount="10" width="100%"/>
                             </g:north>
+                            <g:center>
+                                <g:ScrollPanel>
+                                    <g:HTMLPanel addStyleNames="{style.selection}">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                <span style="font-style:italic;color:#E5A066">Selected&nbsp;Type:</span>
+                                                                &nbsp;
+                                                            </td>
+                                                            <td>
+                                                                <g:Label ui:field="typeName"/>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <g:Label ui:field="typeDefinition"/>
+                                                </td>
+                                            </tr>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <span style="font-style:italic;color:#E5A066">Selected&nbsp;Protocol:</span>
+                                                            &nbsp;
+                                                        </td>
+                                                        <td>
+                                                            <g:Label ui:field="protocolName"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <tr>
+                                                <td>
+                                                    <g:Label ui:field="protocolDefinition"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </g:HTMLPanel>
+                                </g:ScrollPanel>
+                            </g:center>
                         </g:DockLayoutPanel>
                     </g:east>
                 </g:SplitLayoutPanel>
