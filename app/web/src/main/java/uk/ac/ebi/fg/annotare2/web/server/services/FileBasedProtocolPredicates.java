@@ -23,7 +23,6 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import javax.annotation.Nullable;
@@ -34,68 +33,68 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.EnumSet.allOf;
-import static java.util.EnumSet.noneOf;
-import static java.util.EnumSet.of;
+import static java.util.EnumSet.*;
 import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.ONE_COLOR_MICROARRAY;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.TWO_COLOR_MICROARRAY;
 
 /**
  * @author Olga Melnichuk
  */
-public class FileBasedProtocolFilter implements Predicate<List<EfoGraph.Node>> {
+public class FileBasedProtocolPredicates implements ProtocolPredicates {
 
-    private static final Logger log = LoggerFactory.getLogger(FileBasedProtocolFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(FileBasedProtocolPredicates.class);
 
     private static final String FILE = "/ProtocolFilter.json";
 
     private final Map<String, FilterRecord> recordMap;
 
-    private final ExperimentProfileType expType;
-
-    public FileBasedProtocolFilter(ExperimentProfileType expType, Collection<FilterRecord> records) {
+    public FileBasedProtocolPredicates(Collection<FilterRecord> records) {
         recordMap = newHashMap();
         for (FilterRecord record : records) {
             recordMap.put(record.getId(), record);
         }
-        this.expType = expType;
     }
 
     @Override
-    public boolean apply(@Nullable List<EfoGraph.Node> path) {
-        for (EfoGraph.Node nodeInPath : path) {
-            FilterRecord record = recordMap.get(nodeInPath.getId());
-            if (record == null) {
-                continue;
+    public Predicate<EfoGraph.Node> createProtocolTypePredicate(final ExperimentProfileType expType) {
+        return new Predicate<EfoGraph.Node>() {
+            @Override
+            public boolean apply(@Nullable EfoGraph.Node node) {
+                FilterRecord record = recordMap.get(node.getId());
+                return record == null || (record.isProtocolTYpe() && record.isUsedIn(expType));
             }
-            if (!record.isUsedIn(expType) || record.isProtocol()) {
-                return false;
-            }
-        }
-        return true;
+        };
     }
 
-    public static Predicate create(ExperimentProfileType expType) {
-        InputStream in = FileBasedProtocolFilter.class.getResourceAsStream(FILE);
-        if (in == null) {
-            log.debug(FILE + " was not found");
-            return null;
-        }
+    @Override
+    public Predicate<EfoGraph.Node> createProtocolPredicate(final ExperimentProfileType expType) {
+        return new Predicate<EfoGraph.Node>() {
+            @Override
+            public boolean apply(@Nullable EfoGraph.Node node) {
+                FilterRecord record = recordMap.get(node.getId());
+                return record != null && record.isProtocol() && record.isUsedIn(expType);
+            }
+        };
+    }
 
+    public static ProtocolPredicates create() {
+        InputStream in = FileBasedProtocolPredicates.class.getResourceAsStream(FILE);
         try {
-            List<FilterRecord> records =
-                    new ObjectMapper().readValue(
-                            in,
-                            new TypeReference<List<FilterRecord>>() {
-                            });
-            return new FileBasedProtocolFilter(expType, records);
+            if (in != null) {
+                List<FilterRecord> records =
+                        new ObjectMapper().readValue(
+                                in,
+                                new TypeReference<List<FilterRecord>>() {
+                                });
+                return new FileBasedProtocolPredicates(records);
+            } else {
+                log.error(FILE + " was not found");
+            }
         } catch (IOException e) {
             log.error("Can't parse " + FILE, e);
-            return null;
         }
+        return ALWAYS_FALSE_PREDICATES;
     }
 
     private static class FilterRecord {
@@ -132,6 +131,10 @@ public class FileBasedProtocolFilter implements Predicate<List<EfoGraph.Node>> {
 
         private boolean isUsedIn(ExperimentProfileType expType) {
             return usage.isOkay(expType);
+        }
+
+        public boolean isProtocolTYpe() {
+            return type == RecordType.PROTOCOL_TYPE;
         }
     }
 

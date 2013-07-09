@@ -124,11 +124,10 @@ public class EfoGraph {
         return sorted;
     }
 
-    public EfoGraph filter(Predicate predicate) {
+    public EfoGraph filter(Predicate<EfoGraph.Node> predicate) {
         List<Node> newRoots = newArrayList();
-        List<Node> path = newArrayList();
         for (Node node : roots) {
-            Node filtered = filter(path, node, predicate);
+            Node filtered = filter(node, predicate);
             if (filtered!= null) {
                 newRoots.add(filtered);
             }
@@ -136,15 +135,13 @@ public class EfoGraph {
         return new EfoGraph(newRoots);
     }
 
-    private Node filter(List<Node> path, Node current, Predicate<List<Node>>predicate) {
-        List<Node> newPath = newArrayList(path);
-        newPath.add(current);
-        if (!predicate.apply(newPath)) {
+    private Node filter(Node node, Predicate<Node>predicate) {
+        if (!predicate.apply(node)) {
             return null;
         }
-        Node newNode = new Node(current.getTerm());
-        for(Node child : current.getChildren()) {
-            Node filtered = filter(newPath, child, predicate);
+        Node newNode = new Node(node.getTerm());
+        for(Node child : node.getChildren()) {
+            Node filtered = filter(child, predicate);
             if (filtered!= null) {
                 newNode.addChild(filtered);
                 filtered.addParent(newNode);
