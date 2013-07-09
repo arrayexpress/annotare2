@@ -47,7 +47,7 @@ public class EfoGraph {
     }
 
     public EfoGraph(List<Node> roots) {
-       this.roots.addAll(roots);
+        this.roots.addAll(roots);
     }
 
     public EfoGraph build(SetMultimap<String, String> parents) {
@@ -128,21 +128,21 @@ public class EfoGraph {
         List<Node> newRoots = newArrayList();
         for (Node node : roots) {
             Node filtered = filter(node, predicate);
-            if (filtered!= null) {
+            if (filtered != null) {
                 newRoots.add(filtered);
             }
         }
         return new EfoGraph(newRoots);
     }
 
-    private Node filter(Node node, Predicate<Node>predicate) {
+    private Node filter(Node node, Predicate<Node> predicate) {
         if (!predicate.apply(node)) {
             return null;
         }
         Node newNode = new Node(node.getTerm());
-        for(Node child : node.getChildren()) {
+        for (Node child : node.getChildren()) {
             Node filtered = filter(child, predicate);
-            if (filtered!= null) {
+            if (filtered != null) {
                 newNode.addChild(filtered);
                 filtered.addParent(newNode);
             }
