@@ -28,6 +28,11 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
     private int id;
     private String name;
     private OntologyTerm protocolType;
+    private String description;
+    private String parameters;
+    private String hardware;
+    private String software;
+    private String contact;
 
     ProtocolRow() {
         /* used by GWT serialization */
@@ -58,5 +63,45 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
 
     public void setProtocolType(OntologyTerm protocolType) {
         this.protocolType = protocolType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
+    }
+
+    public String getHardware() {
+        return hardware;
+    }
+
+    public void setHardware(String hardware) {
+        this.hardware = hardware;
+    }
+
+    public String getSoftware() {
+        return software;
+    }
+
+    public void setSoftware(String software) {
+        this.software = software;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 }
