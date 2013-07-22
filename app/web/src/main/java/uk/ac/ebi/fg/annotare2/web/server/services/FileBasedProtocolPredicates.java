@@ -41,6 +41,7 @@ import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.TWO_COLOR
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class FileBasedProtocolPredicates implements ProtocolPredicates {
 
     private static final Logger log = LoggerFactory.getLogger(FileBasedProtocolPredicates.class);

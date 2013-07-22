@@ -24,7 +24,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.List;
 
@@ -38,7 +38,6 @@ public class OntologyData {
 
     private final DataServiceAsync dataService;
     private SystemEfoTermMap systemTerms;
-    private EfoGraphDto protocolTypes;
 
     @Inject
     public OntologyData(DataServiceAsync dataService) {
@@ -102,37 +101,18 @@ public class OntologyData {
         }
     }
 
-    public void getProtocolTypes(ExperimentProfileType expType, final AsyncCallback<EfoGraphDto> callback) {
-        if (protocolTypes != null) {
-            callback.onSuccess(protocolTypes);
-            return;
-        }
-        dataService.getProtocolTypes(expType, new AsyncCallbackWrapper<EfoGraphDto>() {
+    public void getProtocolTypes(ExperimentProfileType expType, final AsyncCallback<List<ProtocolType>> callback) {
+        dataService.getProtocolTypes(expType, new AsyncCallbackWrapper<List<ProtocolType>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(EfoGraphDto result) {
-                protocolTypes = result;
+            public void onSuccess(List<ProtocolType> result) {
                 callback.onSuccess(result);
             }
         }.wrap());
-    }
-
-    public void getProtocols(ExperimentProfileType expType, OntologyTerm protocolType, final AsyncCallback<List<OntologyTerm>> callback) {
-        dataService.getProtocols(expType, protocolType, new AsyncCallbackWrapper<List<OntologyTerm>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                 callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(List<OntologyTerm> result) {
-                callback.onSuccess(result);
-            }
-        });
     }
 
     private static class TermSuggest {

@@ -26,6 +26,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
@@ -63,7 +64,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public void getProtocolTypes(final AsyncCallback<EfoGraphDto> callback) {
+    public void getProtocolTypes(final AsyncCallback<List<ProtocolType>> callback) {
         expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -73,21 +74,6 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
             @Override
             public void onSuccess(ExperimentProfileType result) {
                 ontologyData.getProtocolTypes(result, callback);
-            }
-        });
-    }
-
-    @Override
-    public void getProtocols(final OntologyTerm protocolType, final AsyncCallback<List<OntologyTerm>> callback) {
-        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Server error; Can't get experiment type");
-            }
-
-            @Override
-            public void onSuccess(ExperimentProfileType result) {
-                ontologyData.getProtocols(result, protocolType, callback);
             }
         });
     }

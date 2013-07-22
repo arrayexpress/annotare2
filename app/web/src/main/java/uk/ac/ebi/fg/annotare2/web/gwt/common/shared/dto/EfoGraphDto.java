@@ -27,6 +27,7 @@ import static java.util.Collections.unmodifiableList;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class EfoGraphDto implements IsSerializable {
 
     private List<Node> roots;

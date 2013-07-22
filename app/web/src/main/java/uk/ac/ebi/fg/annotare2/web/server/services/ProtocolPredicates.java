@@ -9,6 +9,7 @@ import static com.google.common.base.Predicates.alwaysFalse;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public interface ProtocolPredicates {
 
     public static final ProtocolPredicates ALWAYS_FALSE_PREDICATES =

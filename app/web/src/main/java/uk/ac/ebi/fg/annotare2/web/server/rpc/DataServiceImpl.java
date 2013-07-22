@@ -30,7 +30,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
@@ -39,6 +41,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.PROTOCOL;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 
 /**
@@ -51,6 +54,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     private final ArrayExpressArrayDesignList adList;
     private final AnnotareEfoService efoService;
     private final AnnotareProperties properties;
+    private final ProtocolTypes protocolTypes;
 
     @Inject
     public DataServiceImpl(ArrayExpressArrayDesignList adList,
@@ -59,6 +63,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
         this.adList = adList;
         this.efoService = efoService;
         this.properties = properties;
+        this.protocolTypes = ProtocolTypes.create();
     }
 
     @Override
@@ -85,7 +90,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     @Override
     public SystemEfoTermMap getSystemEfoTerms() {
         SystemEfoTermMap map = new SystemEfoTermMap();
-        for(SystemEfoTerm systemTerm : SystemEfoTerm.values()) {
+        for (SystemEfoTerm systemTerm : SystemEfoTerm.values()) {
             String accession = properties.getEfoTermAccession(systemTerm);
             if (accession == null) {
                 log.error("application properties do not contain accession for a system term: " + systemTerm);
@@ -97,13 +102,18 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
-    public EfoGraphDto getProtocolTypes(ExperimentProfileType expType) {
-        return uiEfoGraph(efoService.getProtocolTypes(expType));
-    }
-
-    @Override
-    public List<OntologyTerm> getProtocols(ExperimentProfileType expType, OntologyTerm protocolType) {
-        return uiEfoTerms(efoService.getProtocols(expType, protocolType));
+    public List<ProtocolType> getProtocolTypes(ExperimentProfileType expType) {
+        List<ProtocolType> types = newArrayList();
+        for (ProtocolTypes.Config typeConfig : protocolTypes.filter(expType)) {
+            EfoTerm term = efoService.findTermByAccession(typeConfig.getId());
+            if (term == null) {
+                log.error("Protocol Type (" + typeConfig.getId() + ") not found in EFO");
+            } else {
+                //TODO get definition from the term not from config
+                types.add(new ProtocolType(uiEfoTerm(term), typeConfig.getDefinition()));
+            }
+        }
+        return types;
     }
 
     private OntologyTerm loadSystemTerm(String accession) {

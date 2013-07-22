@@ -22,6 +22,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.List;
 
@@ -34,7 +35,5 @@ public interface DataServiceAsync {
 
     void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<OntologyTerm>> async);
 
-    void getProtocolTypes(ExperimentProfileType expType, AsyncCallback<EfoGraphDto> async);
-
-    void getProtocols(ExperimentProfileType expType, OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> async);
+    void getProtocolTypes(ExperimentProfileType type, AsyncCallback<List<ProtocolType>> async);
 }

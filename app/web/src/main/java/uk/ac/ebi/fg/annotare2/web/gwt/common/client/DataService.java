@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.List;
 
@@ -42,7 +43,5 @@ public interface DataService extends RemoteService {
 
     List<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit);
 
-    EfoGraphDto getProtocolTypes(ExperimentProfileType type);
-
-    List<OntologyTerm> getProtocols(ExperimentProfileType expType, OntologyTerm protocolType);
+    List<ProtocolType> getProtocolTypes(ExperimentProfileType type);
 }

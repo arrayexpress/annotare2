@@ -1,26 +1,20 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
+import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.PROTOCOL;
 
@@ -37,14 +31,11 @@ public class AnnotareEfoService implements EfoService {
 
     private final EfoSearch efoSearch;
 
-    private final ProtocolPredicates predicates;
-
     @Inject
     public AnnotareEfoService(AnnotareProperties properties,
                               EfoSearch efoSearch) {
         this.properties = properties;
         this.efoSearch = efoSearch;
-        this.predicates = FileBasedProtocolPredicates.create();
         testSearch();
     }
 
@@ -148,23 +139,5 @@ public class AnnotareEfoService implements EfoService {
             }
         }
         return null;
-    }
-
-    public EfoGraph getProtocolTypes(ExperimentProfileType type) {
-       return efoSearch.subGraph(properties.getEfoTermAccession(PROTOCOL))
-               .filter(predicates.createProtocolTypePredicate(type));
-    }
-
-    public Collection<EfoTerm> getProtocols(ExperimentProfileType expType, OntologyTerm protocolType) {
-        EfoGraph graph = efoSearch.subGraph(protocolType.getAccession());
-        return transform(
-                filter(graph.getRoots(), predicates.createProtocolPredicate(expType)),
-                new Function<EfoGraph.Node, EfoTerm>() {
-                    @Nullable
-                    @Override
-                    public EfoTerm apply(@Nullable EfoGraph.Node node) {
-                        return node.getTerm();
-                    }
-                });
     }
 }

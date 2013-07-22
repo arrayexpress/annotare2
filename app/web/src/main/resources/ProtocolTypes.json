@@ -1,0 +1,63 @@
+[
+    {
+        "label": "growth protocol",
+        "id": "EFO_0003789",
+        "usage": "ANY",
+        "definition": "A growth protocol is a protocol which provides instructions on the growth of a biological sample. E.g. the growth of a specific cell line or Drosophila culture"
+    },
+    {
+        "label": "treatment protocol",
+        "id": "EFO_0003969",
+        "usage": "ANY",
+        "definition": "A protocol in which the aim is to treat a sample, collection of samples, organism or group of organisms for some experimental analysis of outcome."
+    },
+    {
+        "label": "nucleic acid extraction protocol",
+        "id": "EFO_0002944",
+        "usage": "ANY",
+        "definition": "A protocol description in which a material separation to recover the nucleic acid fraction of an input material is performed"
+    },
+    {
+        "label": "nucleic acid labeling protocol",
+        "id": "EFO_0003813",
+        "usage": "MICRO_ARRAY",
+        "definition": "A protocol description in which input nucleic acid material is labeled."
+    },
+    {
+        "label": "nucleic acid hybridization to array protocol",
+        "id": "EFO_0003815",
+        "usage": "MICRO_ARRAY",
+        "definition": "A protocol describing the hybridisation of the target nucleic acid sample to a fixed probe on the array."
+
+    },
+    {
+        "label": "array scanning and feature extraction protocol",
+        "id": "EFO_0003814",
+        "usage": "MICRO_ARRAY",
+        "definition": "A protocol describing an image acquisition process that generates an image and features extracted in numerical form from an array."
+    },
+    {
+        "label": "nucleic acid library construction protocol",
+        "id": "EFO_0004184",
+        "usage": "SEQUENCING",
+        "definition": "A protocol describing the processes performed and equipment used to prepare nucleic acid sequencing library."
+    },
+    {
+        "label": "nucleic acid sequencing protocol",
+        "id": "EFO_0004170",
+        "usage": "SEQUENCING",
+        "definition": "A protocol describing the processes performed and equipment used to determine the order of nucleotide bases in a nucleic acid sample"
+    },
+    {
+        "label": "high throughput sequence alignment protocol",
+        "id": "EFO_0004917",
+        "usage": "SEQUENCING",
+        "definition": "Is a protocol which provides instructions on the alignment of sequencing reads to reference genome"
+    },
+    {
+        "label": "normalization data transformation protocol",
+        "id": "EFO_0003816",
+        "usage": "ANY",
+        "definition": "A protocol describing a data transformation in which data transformation has the objective normalization"
+    }
+]

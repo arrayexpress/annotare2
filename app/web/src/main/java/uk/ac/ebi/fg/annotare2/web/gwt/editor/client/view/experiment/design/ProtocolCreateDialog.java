@@ -17,31 +17,26 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromString;
 
 /**
  * @author Olga Melnichuk
  */
 public class ProtocolCreateDialog extends DialogBox {
-
-    private static final String NONE = "None";
 
     interface Binder extends UiBinder<Widget, ProtocolCreateDialog> {
         Binder BINDER = GWT.create(Binder.class);
@@ -54,25 +49,14 @@ public class ProtocolCreateDialog extends DialogBox {
     Button okButton;
 
     @UiField
-    Tree protocolTypeTree;
+    ListBox protocolTypeList;
 
     @UiField
-    ListBox protocolList;
-
-    @UiField
-    Label typeName;
-
-    @UiField
-    Label typeDefinition;
-
-    @UiField
-    Label protocolName;
-
-    @UiField
-    Label protocolDefinition;
+    Label protocolTypeDefinition;
 
     private final Presenter presenter;
-    private List<OntologyTerm> protocols;
+    private List<ProtocolType> protocolTypes;
+
 
     public ProtocolCreateDialog(Presenter presenter) {
         this.presenter = presenter;
@@ -82,26 +66,17 @@ public class ProtocolCreateDialog extends DialogBox {
         setText("New Protocol");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
-        protocolTypeTree.addSelectionHandler(new SelectionHandler<TreeItem>() {
-            @Override
-            public void onSelection(SelectionEvent<TreeItem> event) {
-                OntologyTerm type = (OntologyTerm) event.getSelectedItem().getUserObject();
-                setTypeSelection(type);
-                loadProtocols(type);
-            }
-        });
 
-        protocolList.addChangeHandler(new ChangeHandler() {
+        protocolTypeList.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                int index = protocolList.getSelectedIndex();
-                setProtocolSelection(index >= 0 ? protocols.get(index) : null);
+                int index = protocolTypeList.getSelectedIndex();
+                setTypeSelection(index >= 0 ? protocolTypes.get(index) : null);
             }
         });
 
         center();
         loadProtocolTypes();
-        showProtocols(new ArrayList<OntologyTerm>());
         setTypeSelection(null);
     }
 
@@ -114,72 +89,36 @@ public class ProtocolCreateDialog extends DialogBox {
         if (presenter == null) {
             return;
         }
-        presenter.getProtocolTypes(new AsyncCallback<EfoGraphDto>() {
+        presenter.getProtocolTypes(new AsyncCallback<List<ProtocolType>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Server error; can't load list of protocol types");
             }
 
             @Override
-            public void onSuccess(EfoGraphDto graph) {
-                for (EfoGraphDto.Node node : graph.getRoots()) {
-                    showProtocolTypes(protocolTypeTree, node);
-                }
+            public void onSuccess(List<ProtocolType> types) {
+                showProtocolTypes(types);
             }
         });
     }
 
-    private void showProtocolTypes(HasTreeItems treeNode, EfoGraphDto.Node graphNode) {
-        OntologyTerm term = graphNode.getTerm();
-        TreeItem treeItem = treeNode.addItem(fromString(term.getLabel()));
-        treeItem.setUserObject(term);
-
-        for (EfoGraphDto.Node child : graphNode.getChildren()) {
-            showProtocolTypes(treeItem, child);
+    private void showProtocolTypes(List<ProtocolType> types) {
+        protocolTypes = new ArrayList<ProtocolType>(types);
+        protocolTypeList.clear();
+        for (ProtocolType type : types) {
+            protocolTypeList.addItem(type.getTerm().getLabel());
+        }
+        if (!protocolTypes.isEmpty()) {
+            protocolTypeList.setItemSelected(0, true);
+            DomEvent.fireNativeEvent(Document.get().createChangeEvent(), protocolTypeList);
         }
     }
 
-    private void loadProtocols(OntologyTerm term) {
-        presenter.getProtocols(term, new AsyncCallback<List<OntologyTerm>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Server error; can't load list of protocols");
-            }
-
-            @Override
-            public void onSuccess(List<OntologyTerm> result) {
-                showProtocols(result);
-            }
-        });
-    }
-
-    private void showProtocols(List<OntologyTerm> protocols) {
-        protocolList.clear();
-        for (OntologyTerm term : protocols) {
-            protocolList.addItem(term.getLabel(), term.getAccession());
-        }
-        if (protocols.isEmpty()) {
-            protocolList.addItem("No Protocols");
-            protocolList.getElement().getElementsByTagName("option").getItem(0).setAttribute("disabled", "disabled");
-        }
-        this.protocols = new ArrayList<OntologyTerm>(protocols);
-    }
-
-    private void setTypeSelection(OntologyTerm type) {
-        typeName.setText(type == null ? NONE : type.getLabel());
-        typeDefinition.setText(type == null ? "" : "the definition TBA..."); //TODO
-        setProtocolSelection(null);
-    }
-
-    private void setProtocolSelection(OntologyTerm protocol) {
-        protocolName.setText(protocol == null ? NONE : protocol.getLabel());
-        protocolDefinition.setText(protocol == null ? "" : "the definition TBA..."); //TODO
+    private void setTypeSelection(ProtocolType type) {
+        protocolTypeDefinition.setText(type == null ? "" : type.getDefinition());
     }
 
     public static interface Presenter {
-
-        void getProtocolTypes(AsyncCallback<EfoGraphDto> callback);
-
-        void getProtocols(OntologyTerm protocolType, AsyncCallback<List<OntologyTerm>> callback);
+        void getProtocolTypes(AsyncCallback<List<ProtocolType>> callback);
     }
 }

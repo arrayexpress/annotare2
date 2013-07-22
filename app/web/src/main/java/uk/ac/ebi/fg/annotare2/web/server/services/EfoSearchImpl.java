@@ -156,6 +156,13 @@ public class EfoSearchImpl implements EfoSearch {
         return null;
     }
 
+    /**
+     * Returns EFO sub graph with the given accession as a root
+     * @param rootAccession EFO term accession of the subtree root
+     * @return {@link EfoGraph} instance
+     * @deprecated not used any more
+     */
+    @Deprecated
     @Override
     public EfoGraph subGraph(String rootAccession) {
         try {
