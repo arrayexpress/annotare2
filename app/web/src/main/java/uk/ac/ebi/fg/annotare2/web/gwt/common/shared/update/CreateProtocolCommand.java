@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ProtocolsView extends IsWidget {
+public class CreateProtocolCommand implements ExperimentUpdateCommand {
 
-    void setData(List<ProtocolRow> rows);
+    private ProtocolType protocolType;
 
-    void setPresenter(Presenter presenter);
+    CreateProtocolCommand() {
+        /* used by GWT serialization*/
+    }
 
-    public interface Presenter extends ProtocolCreateDialog.Presenter {
-        void createProtocol(ProtocolType protocolType);
+    public CreateProtocolCommand(ProtocolType protocolType) {
+        this.protocolType = protocolType;
+    }
+
+    @Override
+    public void execute(ExperimentUpdatePerformer performer) {
+        performer.createProtocol(protocolType);
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }

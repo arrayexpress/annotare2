@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.configmodel;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-
-import java.util.List;
+import com.google.common.annotations.GwtCompatible;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ProtocolsView extends IsWidget {
-
-    void setData(List<ProtocolRow> rows);
-
-    void setPresenter(Presenter presenter);
-
-    public interface Presenter extends ProtocolCreateDialog.Presenter {
-        void createProtocol(ProtocolType protocolType);
-    }
+@GwtCompatible
+public enum ProtocolUsageType {
+    BETWEEN_SAMPLE_AND_EXTRACT,
+    BETWEEN_EXTRACT_AND_LABELED_EXTRACT,
+    BETWEEN_EXTRACT_AND_ASSAY,
+    BETWEEN_LABELED_EXTRACT_AND_ASSAY,
+    BETWEEN_ASSAY_AND_FILE,
+    BETWEEN_FILE_AND_FILE
 }

@@ -56,10 +56,12 @@ public class ProtocolCreateDialog extends DialogBox {
 
     private final Presenter presenter;
     private List<ProtocolType> protocolTypes;
+    private Callback callback;
 
 
-    public ProtocolCreateDialog(Presenter presenter) {
+    public ProtocolCreateDialog(Presenter presenter, Callback callback) {
         this.presenter = presenter;
+        this.callback = callback;
 
         setModal(true);
         setGlassEnabled(true);
@@ -70,8 +72,7 @@ public class ProtocolCreateDialog extends DialogBox {
         protocolTypeList.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                int index = protocolTypeList.getSelectedIndex();
-                setTypeSelection(index >= 0 ? protocolTypes.get(index) : null);
+                setTypeSelection(getSelectedType());
             }
         });
 
@@ -83,6 +84,21 @@ public class ProtocolCreateDialog extends DialogBox {
     @UiHandler("cancelButton")
     void cancelClicked(ClickEvent event) {
         hide();
+        if (callback != null) {
+            callback.onCancel();
+        }
+    }
+
+    @UiHandler("okButton")
+    void okClicked(ClickEvent event) {
+        ProtocolType selected = getSelectedType();
+        if (selected == null) {
+            return;
+        }
+        hide();
+        if (callback != null) {
+            callback.onOkay(selected);
+        }
     }
 
     private void loadProtocolTypes() {
@@ -114,11 +130,22 @@ public class ProtocolCreateDialog extends DialogBox {
         }
     }
 
+    private ProtocolType getSelectedType() {
+        int index = protocolTypeList.getSelectedIndex();
+        return index >= 0 ? protocolTypes.get(index) : null;
+    }
+
     private void setTypeSelection(ProtocolType type) {
         protocolTypeDefinition.setText(type == null ? "" : type.getDefinition());
     }
 
     public static interface Presenter {
         void getProtocolTypes(AsyncCallback<List<ProtocolType>> callback);
+    }
+
+    public interface Callback {
+        void onCancel();
+
+        void onOkay(ProtocolType type);
     }
 }

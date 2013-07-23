@@ -18,31 +18,32 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolsActivity extends AbstractActivity implements ProtocolsView.Presenter{
+public class ProtocolsActivity extends AbstractActivity implements ProtocolsView.Presenter {
 
     private final ProtocolsView view;
     private final OntologyData ontologyData;
     private final ExperimentData expData;
+    private HandlerRegistration criticalUpdateHandler;
 
     @Inject
     public ProtocolsActivity(ProtocolsView view, OntologyData ontologyData, ExperimentData expData) {
@@ -54,10 +55,25 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         view.setPresenter(this);
-        view.setData(new ArrayList<ProtocolRow>());
         panel.setWidget(view);
+        criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
+            @Override
+            public void criticalUpdateStarted(CriticalUpdateEvent event) {
+            }
+
+            @Override
+            public void criticalUpdateFinished(CriticalUpdateEvent event) {
+                loadAsync();
+            }
+        });
+        loadAsync();
     }
 
+    @Override
+    public void onStop() {
+        criticalUpdateHandler.removeHandler();
+        super.onStop();
+    }
 
     public ProtocolsActivity withPlace(ExpDesignPlace designPlace) {
         return this;
@@ -74,6 +90,25 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
             @Override
             public void onSuccess(ExperimentProfileType result) {
                 ontologyData.getProtocolTypes(result, callback);
+            }
+        });
+    }
+
+    @Override
+    public void createProtocol(ProtocolType protocolType) {
+        expData.createProtocol(protocolType);
+    }
+
+    private void loadAsync() {
+        expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error; Can't fetch the protocol list");
+            }
+
+            @Override
+            public void onSuccess(List<ProtocolRow> result) {
+                view.setData(result);
             }
         });
     }

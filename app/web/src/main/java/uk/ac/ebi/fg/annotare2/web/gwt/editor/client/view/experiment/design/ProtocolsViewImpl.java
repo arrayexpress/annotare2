@@ -26,6 +26,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -45,9 +46,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         createButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (presenter != null) {
-                    (new ProtocolCreateDialog(presenter)).show();
-                }
+                createProtocol();
             }
         });
         gridView.addTool(createButton);
@@ -252,5 +251,26 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private void updateRow(ProtocolRow row) {
         //TODO
+    }
+
+    private void createProtocol() {
+        if (presenter == null) {
+            return;
+        }
+        (new ProtocolCreateDialog(presenter,
+                new ProtocolCreateDialog.Callback() {
+                    @Override
+                    public void onCancel() {
+                    }
+
+                    @Override
+                    public void onOkay(ProtocolType protocolType) {
+                        createProtocol(protocolType);
+                    }
+                })).show();
+    }
+
+    private void createProtocol(ProtocolType protocolType) {
+        presenter.createProtocol(protocolType);
     }
 }

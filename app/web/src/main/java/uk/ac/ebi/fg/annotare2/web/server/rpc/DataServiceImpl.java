@@ -110,7 +110,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
                 log.error("Protocol Type (" + typeConfig.getId() + ") not found in EFO");
             } else {
                 //TODO get definition from the term not from config
-                types.add(new ProtocolType(uiEfoTerm(term), typeConfig.getDefinition()));
+                types.add(new ProtocolType(uiEfoTerm(term), typeConfig.getDefinition(), typeConfig.getUsageType()));
             }
         }
         return types;

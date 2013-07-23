@@ -67,6 +67,9 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("publicationMap")
     private Map<Integer, Publication> publicationMap;
 
+    @JsonProperty("protocolMap")
+    private Map<Integer, Protocol> protocolMap;
+
     @JsonProperty("sampleMap")
     private Map<Integer, Sample> sampleMap;
 
@@ -99,6 +102,7 @@ public class ExperimentProfile implements Serializable {
         contactMap = newLinkedHashMap();
         publicationMap = newLinkedHashMap();
 
+        protocolMap = newLinkedHashMap();
         sampleMap = newLinkedHashMap();
         sampleAttributeMap = newLinkedHashMap();
         sampleAttributeOrder = newArrayList();
@@ -209,6 +213,14 @@ public class ExperimentProfile implements Serializable {
 
     public Publication removePublication(int id) {
         return publicationMap.remove(id);
+    }
+
+    public Protocol createProtocol(OntologyTerm term, ProtocolUsageType usageType) {
+        Protocol protocol = new Protocol(nextId());
+        protocol.setType(term);
+        protocol.setUsage(usageType);
+        protocolMap.put(protocol.getId(), protocol);
+        return protocol;
     }
 
     public Sample createSample() {
@@ -350,6 +362,11 @@ public class ExperimentProfile implements Serializable {
     @JsonIgnore
     public Collection<Publication> getPublications() {
         return unmodifiableCollection(publicationMap.values());
+    }
+
+    @JsonIgnore
+    public Collection<Protocol> getProtocols() {
+        return unmodifiableCollection(protocolMap.values());
     }
 
     @JsonIgnore

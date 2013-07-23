@@ -209,6 +209,14 @@ public class ExperimentData {
         return rows;
     }
 
+    private List<ProtocolRow> getProtocolRows(ExperimentProfile exp) {
+        List<ProtocolRow> rows = new ArrayList<ProtocolRow>();
+        for(Protocol protocol : exp.getProtocols()) {
+            rows.add(new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType()));
+        }
+        return rows;
+    }
+
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
@@ -321,6 +329,20 @@ public class ExperimentData {
         });
     }
 
+    public void getProtocolRowsAsync(final AsyncCallback<List<ProtocolRow>> callback) {
+         getExperiment(new AsyncCallback<ExperimentProfile>() {
+             @Override
+             public void onFailure(Throwable caught) {
+                 callback.onFailure(caught);
+             }
+
+             @Override
+             public void onSuccess(ExperimentProfile result) {
+                 callback.onSuccess(getProtocolRows(result));
+             }
+         });
+    }
+
     public void getExperimentProfileTypeAsync(final AsyncCallback<ExperimentProfileType> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
@@ -397,6 +419,10 @@ public class ExperimentData {
 
     public void updateExtractLabelsRow(ExtractLabelsRow row) {
         updateQueue.add(new UpdateExtractLabelsRowCommand(row));
+    }
+
+    public void createProtocol(ProtocolType protocolType) {
+        updateQueue.add(new CreateProtocolCommand(protocolType));
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

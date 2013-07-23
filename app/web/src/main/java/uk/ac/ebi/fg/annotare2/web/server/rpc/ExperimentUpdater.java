@@ -192,6 +192,11 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         }
     }
 
+    @Override
+    public void createProtocol(ProtocolType protocolType) {
+        exp.createProtocol(protocolType.getTerm(), protocolType.getUsageType());
+    }
+
     public void run(List<ExperimentUpdateCommand> commands) {
         for (ExperimentUpdateCommand command : commands) {
             command.execute(this);
