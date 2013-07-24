@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public interface HasTemporaryIdentity extends HasIdentity {
 
     int getTmpId();
