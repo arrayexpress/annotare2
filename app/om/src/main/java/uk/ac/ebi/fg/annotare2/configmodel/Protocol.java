@@ -75,6 +75,10 @@ public class Protocol implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public OntologyTerm getType() {
         return type;
     }
@@ -83,7 +87,43 @@ public class Protocol implements Serializable {
         this.type = type;
     }
 
+    public ProtocolUsageType getUsage() {
+        return usage;
+    }
+
     public void setUsage(ProtocolUsageType usage) {
         this.usage = usage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getHardware() {
+        return hardware;
+    }
+
+    public void setHardware(String hardware) {
+        this.hardware = hardware;
+    }
+
+    public String getSoftware() {
+        return software;
+    }
+
+    public void setSoftware(String software) {
+        this.software = software;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 }

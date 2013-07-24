@@ -212,7 +212,12 @@ public class ExperimentData {
     private List<ProtocolRow> getProtocolRows(ExperimentProfile exp) {
         List<ProtocolRow> rows = new ArrayList<ProtocolRow>();
         for(Protocol protocol : exp.getProtocols()) {
-            rows.add(new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType()));
+            ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType());
+            row.setDescription(protocol.getDescription());
+            row.setSoftware(protocol.getSoftware());
+            row.setHardware(protocol.getHardware());
+            row.setContact(protocol.getContact());
+            rows.add(row);
         }
         return rows;
     }
@@ -423,6 +428,10 @@ public class ExperimentData {
 
     public void createProtocol(ProtocolType protocolType) {
         updateQueue.add(new CreateProtocolCommand(protocolType));
+    }
+
+    public void updateProtocol(ProtocolRow row) {
+        updateQueue.add(new UpdateProtocolCommand(row));
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

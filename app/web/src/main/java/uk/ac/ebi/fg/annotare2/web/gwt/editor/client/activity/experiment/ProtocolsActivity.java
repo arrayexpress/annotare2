@@ -99,6 +99,11 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
         expData.createProtocol(protocolType);
     }
 
+    @Override
+    public void updateUpdateProtocol(ProtocolRow row) {
+        expData.updateProtocol(row);
+    }
+
     private void loadAsync() {
         expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
             @Override

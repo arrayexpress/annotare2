@@ -81,7 +81,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
             public String getValue(ProtocolRow row) {
-                return row.getName();
+                String v = row.getName();
+                return v == null ? "" : v;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
@@ -133,7 +134,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
             public String getValue(ProtocolRow row) {
-                return row.getDescription();
+                String v = row.getDescription();
+                return v == null ? "" : v;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
@@ -167,7 +169,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
             public String getValue(ProtocolRow row) {
-                return row.getHardware();
+                String v = row.getHardware();
+                return v == null ? "" : v;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
@@ -196,7 +199,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
             public String getValue(ProtocolRow row) {
-                return row.getSoftware();
+                String v = row.getSoftware();
+                return v == null ? "" : v;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
@@ -225,7 +229,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
             public String getValue(ProtocolRow row) {
-                return row.getContact();
+                String v = row.getContact();
+                return v == null ? "" : v;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
@@ -251,7 +256,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     }
 
     private void updateRow(ProtocolRow row) {
-        //TODO
+        if (presenter != null) {
+            presenter.updateUpdateProtocol(row);
+        }
     }
 
     private void createProtocol() {

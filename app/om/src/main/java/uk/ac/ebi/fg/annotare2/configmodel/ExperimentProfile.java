@@ -308,6 +308,10 @@ public class ExperimentProfile implements Serializable {
         return publicationMap.get(id);
     }
 
+    public Protocol getProtocol(int id) {
+        return protocolMap.get(id);
+    }
+
     public Sample getSample(int id) {
         return sampleMap.get(id);
     }

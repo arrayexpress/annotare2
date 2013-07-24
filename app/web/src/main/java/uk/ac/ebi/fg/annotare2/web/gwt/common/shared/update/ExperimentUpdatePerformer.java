@@ -53,4 +53,6 @@ public interface ExperimentUpdatePerformer {
     void updateExtractLabels(ExtractLabelsRow row);
 
     void createProtocol(ProtocolType protocolType);
+
+    void updateProtocol(ProtocolRow protocolRow);
 }
