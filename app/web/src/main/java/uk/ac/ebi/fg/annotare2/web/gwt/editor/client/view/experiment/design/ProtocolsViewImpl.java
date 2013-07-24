@@ -62,6 +62,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     @Override
     public void setData(List<ProtocolRow> rows) {
+        gridView.clearAllColumns();
         gridView.setRows(rows);
         setColumns();
     }
