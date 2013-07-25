@@ -296,6 +296,10 @@ public class ExperimentProfile implements Serializable {
         }
     }
 
+    public void removeProtocol(int id) {
+        protocolMap.remove(id);
+    }
+
     public void link(Sample sample, Extract extract) {
         sample2Extracts.put(sample, extract);
     }

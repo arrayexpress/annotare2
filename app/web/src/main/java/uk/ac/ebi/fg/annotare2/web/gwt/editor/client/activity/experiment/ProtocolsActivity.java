@@ -33,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHan
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -102,6 +103,11 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     @Override
     public void updateUpdateProtocol(ProtocolRow row) {
         expData.updateProtocol(row);
+    }
+
+    @Override
+    public void removeProtocols(ArrayList<ProtocolRow> protocolRows) {
+        expData.removeProtocols(protocolRows);
     }
 
     private void loadAsync() {

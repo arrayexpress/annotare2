@@ -434,6 +434,10 @@ public class ExperimentData {
         updateQueue.add(new UpdateProtocolCommand(row));
     }
 
+    public void removeProtocols(List<ProtocolRow> rows) {
+        updateQueue.add(new RemoveProtocolsCommand(rows));
+    }
+
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
         private ColumnValueType valueType;

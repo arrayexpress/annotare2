@@ -54,5 +54,7 @@ public interface ExperimentUpdatePerformer {
 
     void createProtocol(ProtocolType protocolType);
 
-    void updateProtocol(ProtocolRow protocolRow);
+    void updateProtocol(ProtocolRow row);
+
+    void removeProtocols(List<ProtocolRow> rows);
 }

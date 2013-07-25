@@ -27,9 +27,12 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -51,6 +54,12 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         });
         gridView.addTool(createButton);
         Button removeButton = new Button("Delete Selected Rows");
+        removeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                removeSelectedProtocols();
+            }
+        });
         gridView.addTool(removeButton);
         initWidget(gridView);
     }
@@ -280,5 +289,14 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private void createProtocol(ProtocolType protocolType) {
         presenter.createProtocol(protocolType);
+    }
+
+    private void removeSelectedProtocols() {
+        Set<ProtocolRow> selection = gridView.getSelectedRows();
+        if (selection.isEmpty()) {
+            return;
+        }
+        presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
+        gridView.removeSelectedRows();
     }
 }

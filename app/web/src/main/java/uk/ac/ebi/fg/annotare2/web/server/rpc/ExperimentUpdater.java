@@ -209,6 +209,13 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         }
     }
 
+    @Override
+    public void removeProtocols(List<ProtocolRow> rows) {
+        for(ProtocolRow row : rows) {
+            exp.removeProtocol(row.getId());
+        }
+    }
+
     public void run(List<ExperimentUpdateCommand> commands) {
         for (ExperimentUpdateCommand command : commands) {
             command.execute(this);
