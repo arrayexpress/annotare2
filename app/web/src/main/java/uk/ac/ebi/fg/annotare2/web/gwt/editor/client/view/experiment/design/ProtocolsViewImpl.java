@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -157,15 +158,15 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     }
 
     private void addParametersColumn() {
-        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
+        Column<ProtocolRow, List<String>> column = new Column<ProtocolRow, List<String>>(new EditListCell()) {
             @Override
-            public String getValue(ProtocolRow row) {
+            public List<String> getValue(ProtocolRow row) {
                 return row.getParameters();
             }
         };
-        column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
+        column.setFieldUpdater(new FieldUpdater<ProtocolRow, List<String>>() {
             @Override
-            public void update(int index, ProtocolRow row, String value) {
+            public void update(int index, ProtocolRow row, List<String> value) {
                 row.setParameters(value);
                 updateRow(row);
             }

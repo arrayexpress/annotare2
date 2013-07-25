@@ -20,6 +20,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
@@ -29,7 +32,7 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
     private String name;
     private OntologyTerm protocolType;
     private String description;
-    private String parameters;
+    private List<String> parameters = new ArrayList<String>();
     private String hardware;
     private String software;
     private String contact;
@@ -73,12 +76,12 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
         this.description = description;
     }
 
-    public String getParameters() {
+    public List<String> getParameters() {
         return parameters;
     }
 
-    public void setParameters(String parameters) {
-        this.parameters = parameters;
+    public void setParameters(List<String> parameters) {
+        this.parameters = new ArrayList<String>(parameters);
     }
 
     public String getHardware() {
