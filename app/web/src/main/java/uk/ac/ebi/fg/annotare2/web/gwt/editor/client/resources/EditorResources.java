@@ -51,6 +51,9 @@ public interface EditorResources extends ClientBundle {
     @Source("../../public/images/loading64.gif")
     public ImageResource loadingIndicator();
 
+    @Source("../../public/images/cancel-icon.png")
+    public ImageResource cancelIcon();
+
     @Source("../../public/editor-bundled.css")
     public EditorBundledStyles editorStyles();
 }

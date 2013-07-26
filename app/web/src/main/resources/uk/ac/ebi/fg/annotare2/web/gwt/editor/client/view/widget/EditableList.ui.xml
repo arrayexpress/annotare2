@@ -23,6 +23,12 @@
         .scroll {
             border: 1px solid gray;
         }
+        .scroll input[type="text"]{
+            width: 100%;
+            box-sizing: border-box;
+            -webkit-box-sizing:border-box;
+            -moz-box-sizing: border-box;
+        }
     </ui:style>
     <g:DockLayoutPanel>
         <g:center>
@@ -30,8 +36,7 @@
         </g:center>
         <g:south size="35">
             <g:HorizontalPanel spacing="3">
-                <g:Button ui:field="addButton">+</g:Button>
-                <g:Button ui:field="removeButton">-</g:Button>
+                <g:Button ui:field="addButton">Add</g:Button>
             </g:HorizontalPanel>
         </g:south>
     </g:DockLayoutPanel>

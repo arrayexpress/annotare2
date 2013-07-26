@@ -61,6 +61,7 @@ public class EditListCell extends AbstractEditableCell<List<String>, List<String
                 }
             }
         };
+
         panel.addCloseHandler(new CloseHandler<PopupPanel>() {
             public void onClose(CloseEvent<PopupPanel> event) {
                 lastKey = null;
@@ -84,7 +85,6 @@ public class EditListCell extends AbstractEditableCell<List<String>, List<String
                 Object key = lastKey;
                 int index = lastIndex;
                 int column = lastColumn;
-                panel.hide();
 
                 List<String> value = event.getValue();
                 setViewData(key, value);
@@ -149,8 +149,8 @@ public class EditListCell extends AbstractEditableCell<List<String>, List<String
         editableList.setValue((viewData == null) ? lastValue : viewData, false);
         panel.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             public void setPosition(int offsetWidth, int offsetHeight) {
-                panel.setPopupPosition(lastParent.getAbsoluteLeft() + 10,
-                        lastParent.getAbsoluteTop() + 10);
+                panel.setPopupPosition(lastParent.getAbsoluteLeft(),
+                        lastParent.getAbsoluteBottom());
             }
         });
     }
