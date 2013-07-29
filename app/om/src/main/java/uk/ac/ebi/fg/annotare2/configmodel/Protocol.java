@@ -22,6 +22,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,6 +66,7 @@ public class Protocol implements Serializable {
     @JsonCreator
     public Protocol(@JsonProperty("id") int id) {
         this.id = id;
+        this.parameters = new ArrayList<String>();
     }
 
     public int getId() {
@@ -125,5 +127,13 @@ public class Protocol implements Serializable {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = new ArrayList<String>(parameters);
+    }
+
+    public List<String> getParameters() {
+        return parameters;
     }
 }

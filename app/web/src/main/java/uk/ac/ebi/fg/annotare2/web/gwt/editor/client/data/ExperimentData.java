@@ -217,6 +217,7 @@ public class ExperimentData {
             row.setSoftware(protocol.getSoftware());
             row.setHardware(protocol.getHardware());
             row.setContact(protocol.getContact());
+            row.setParameters(protocol.getParameters());
             rows.add(row);
         }
         return rows;
