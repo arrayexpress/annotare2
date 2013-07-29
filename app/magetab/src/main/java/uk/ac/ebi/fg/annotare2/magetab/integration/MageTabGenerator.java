@@ -76,6 +76,16 @@ public class MageTabGenerator {
             //idf.publicationDOI.add(notNull(publication.getPubMedId()));
             //idf.publicationStatus.add(notNull(publication.getStatus()));
         }
+
+        for (Protocol protocol : exp.getProtocols()) {
+            idf.protocolName.add(notNull(protocol.getName()));
+            idf.protocolDescription.add(notNull(protocol.getDescription()));
+            idf.protocolType.add(notNull(protocol.getType().getLabel()));
+            idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
+            //todo: idf.protocolTermSourceREF
+            idf.protocolHardware.add(notNull(protocol.getHardware()));
+            idf.protocolSoftware.add(notNull(protocol.getSoftware()));
+        }
     }
 
     private void generateSdrf(SDRF sdrf) throws ParseException {
