@@ -16,18 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 
 /**
@@ -194,7 +198,27 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void createProtocol(ProtocolType protocolType) {
-        exp.createProtocol(protocolType.getTerm(), protocolType.getUsageType());
+        Collection<String> existedNames = Collections2.transform(
+                exp.getProtocols(),
+                new Function<Protocol, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(@Nullable Protocol input) {
+                        return input.getName();
+                    }
+                }
+        );
+
+        Protocol protocol = exp.createProtocol(protocolType.getTerm(), protocolType.getUsageType());
+        protocol.setName(newName("Protocol", existedNames));
+    }
+
+    private String newName(String prefix, Collection<String> existedNames) {
+        Set<String> names = newHashSet(existedNames);
+        CompositeName name = new CompositeName(prefix);
+        while (names.contains(name.next())) {
+        }
+        return name.toString();
     }
 
     @Override
@@ -212,7 +236,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void removeProtocols(List<ProtocolRow> rows) {
-        for(ProtocolRow row : rows) {
+        for (ProtocolRow row : rows) {
             exp.removeProtocol(row.getId());
         }
     }
@@ -248,6 +272,28 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
         public AttributeValueType getValueType() {
             return valueType;
+        }
+    }
+
+    private static class CompositeName {
+        private final String prefix;
+        private int next;
+
+        private CompositeName(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public String next() {
+            return format(prefix, ++next);
+        }
+
+        private static String format(String p, int n) {
+            return p + " " + n;
+        }
+
+        @Override
+        public String toString() {
+            return format(prefix, next);
         }
     }
 }
