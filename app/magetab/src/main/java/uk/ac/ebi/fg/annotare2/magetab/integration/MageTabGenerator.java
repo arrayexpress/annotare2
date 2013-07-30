@@ -30,6 +30,7 @@ import java.util.List;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolUsageType.*;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
@@ -94,6 +95,28 @@ public class MageTabGenerator {
         }
     }
 
+    private void connect(SDRFNode source, SDRFNode destination, ProtocolUsageType type) {
+        Collection<Protocol> protocols = exp.getProtocols(type);
+        if (protocols.isEmpty()) {
+            source.addChildNode(destination);
+            destination.addParentNode(source);
+            return;
+        }
+
+        SDRFNode prev = source;
+        for(Protocol protocol : protocols) {
+            ProtocolApplicationNode protocolNode = new ProtocolApplicationNode();
+            // protocol node name must be unique
+            protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
+            protocolNode.protocol = protocol.getName();
+            protocolNode.addParentNode(prev);
+            prev.addChildNode(protocolNode);
+            prev = protocolNode;
+        }
+        prev.addChildNode(destination);
+        destination.addParentNode(prev);
+    }
+
     private SampleNode createSampleNode(Sample sample) {
         SampleNode sampleNode = new SampleNode();
         sampleNode.setNodeName(sample.getName());
@@ -104,10 +127,8 @@ public class MageTabGenerator {
         Collection<Extract> extracts = exp.getExtracts(sample);
         for (Extract extract : extracts) {
             ExtractNode extractNode = createExtractNode(extract);
-            sampleNode.addChildNode(extractNode);
-            extractNode.addParentNode(sampleNode);
+            connect(sampleNode, extractNode, SAMPLE_AND_EXTRACT);
         }
-
         return sampleNode;
     }
 
@@ -124,14 +145,12 @@ public class MageTabGenerator {
         Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
         for (LabeledExtract labeledExtract : labeledExtracts) {
             LabeledExtractNode labeledExtractNode = createLabeledExtractNode(labeledExtract);
-            extractNode.addChildNode(labeledExtractNode);
-            labeledExtractNode.addParentNode(extractNode);
+            connect(extractNode, labeledExtractNode, EXTRACT_AND_LABELED_EXTRACT);
         }
 
         if (labeledExtracts.isEmpty()) {
             AssayNode assayNode = createAssayNode(extract.getName());
-            extractNode.addChildNode(assayNode);
-            assayNode.addParentNode(extractNode);
+            connect(extractNode, assayNode, EXTRACT_AND_ASSAY);
         }
         return extractNode;
     }
@@ -159,8 +178,7 @@ public class MageTabGenerator {
         labeledExtractNode.label = label;
 
         AssayNode assayNode = createAssayNode(labeledExtract.getName());
-        labeledExtractNode.addChildNode(assayNode);
-        assayNode.addParentNode(labeledExtractNode);
+        connect(labeledExtractNode, assayNode, LABELED_EXTRACT_AND_ASSAY);
         return labeledExtractNode;
     }
 

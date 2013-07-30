@@ -377,6 +377,10 @@ public class ExperimentProfile implements Serializable {
         return unmodifiableCollection(protocolMap.values());
     }
 
+    public Collection<Protocol> getProtocols(ProtocolUsageType usageType) {
+        return usageType.filter(getProtocols());
+    }
+
     @JsonIgnore
     public Collection<Sample> getSamples() {
         return unmodifiableCollection(sampleMap.values());

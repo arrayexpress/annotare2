@@ -18,15 +18,29 @@ package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
 public enum ProtocolUsageType {
-    BETWEEN_SAMPLE_AND_EXTRACT,
-    BETWEEN_EXTRACT_AND_LABELED_EXTRACT,
-    BETWEEN_EXTRACT_AND_ASSAY,
-    BETWEEN_LABELED_EXTRACT_AND_ASSAY,
-    BETWEEN_ASSAY_AND_FILE,
-    BETWEEN_FILE_AND_FILE
+    SAMPLE_AND_EXTRACT,
+    EXTRACT_AND_LABELED_EXTRACT,
+    EXTRACT_AND_ASSAY,
+    LABELED_EXTRACT_AND_ASSAY,
+    ASSAY_AND_FILE,
+    FILE_AND_FILE;
+
+    public Collection<Protocol> filter(Collection<Protocol> protocols) {
+        List<Protocol> filtered = new ArrayList<Protocol>();
+        for(Protocol protocol : protocols) {
+            if (protocol.getUsage() == this) {
+                filtered.add(protocol);
+            }
+        }
+        return filtered;
+    }
 }
