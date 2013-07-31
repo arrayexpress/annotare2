@@ -25,14 +25,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidationMessage;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -40,6 +39,7 @@ import java.util.Set;
 public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private GridView<ProtocolRow> gridView;
+    private ValidationMessage errorMessage;
 
     private Presenter presenter;
 
@@ -61,6 +61,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             }
         });
         gridView.addTool(removeButton);
+        errorMessage = new ValidationMessage();
+        gridView.addTool(errorMessage);
         initWidget(gridView);
     }
 
@@ -87,7 +89,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     }
 
     private void addNameColumn() {
-        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
+        final EditTextCell nameCell = new EditTextCell();
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(nameCell) {
             @Override
             public String getValue(ProtocolRow row) {
                 String v = row.getName();
@@ -97,9 +100,13 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
             @Override
             public void update(int index, ProtocolRow row, String value) {
-                // TODO check names are unique
-                row.setName(value);
-                updateRow(row);
+                if (isNameValid(value, index)) {
+                    row.setName(value);
+                    updateRow(row);
+                } else {
+                    nameCell.clearViewData(row);
+                    gridView.redraw();
+                }
             }
         });
         column.setSortable(true);
@@ -115,6 +122,35 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             }
         };
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
+    }
+
+    private boolean isNameValid(String name, int rowIndex) {
+        if (name == null || name.trim().isEmpty()) {
+            showErrorMessage("Protocol name can't be empty");
+            return false;
+        }
+        if (isDuplicated(name, rowIndex)) {
+            showErrorMessage("Protocol with the name '" + name + "' already exists");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isDuplicated(String name, int rowIndex) {
+        List<ProtocolRow> rows = gridView.getRows();
+        Set<String> names = new HashSet<String>();
+        int i = 0;
+        for(ProtocolRow row : rows) {
+            if (i != rowIndex) {
+                names.add(row.getName());
+            }
+            i++;
+        }
+        return names.contains(name);
+    }
+
+    private void showErrorMessage(String msg) {
+        errorMessage.setMessage(msg);
     }
 
     private void addTypeColumn() {

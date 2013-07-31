@@ -38,6 +38,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -209,6 +210,10 @@ public class GridView<R extends HasIdentity> extends Composite {
 
     public Set<R> getSelectedRows() {
         return selectionModel.getSelectedSet();
+    }
+
+    public List<R> getRows() {
+        return new ArrayList<R>(dataProvider.getList());
     }
 
     public void removeSelectedRows() {
