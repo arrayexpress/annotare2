@@ -104,7 +104,7 @@ public class MageTabGenerator {
         }
 
         SDRFNode prev = source;
-        for(Protocol protocol : protocols) {
+        for (Protocol protocol : protocols) {
             ProtocolApplicationNode protocolNode = new ProtocolApplicationNode();
             // protocol node name must be unique
             protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
@@ -122,6 +122,7 @@ public class MageTabGenerator {
         sampleNode.setNodeName(sample.getName());
         sampleNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
         sampleNode.materialType = extractMaterialTypeAttribute(sample);
+        sampleNode.description = extractDescriptionAttribute(sample);
         addComments(sampleNode, sample);
 
         Collection<Extract> extracts = exp.getExtracts(sample);
@@ -198,6 +199,15 @@ public class MageTabGenerator {
                 MaterialTypeAttribute attr = new MaterialTypeAttribute();
                 attr.setAttributeValue(sample.getValue(attribute));
                 return attr;
+            }
+        }
+        return null;
+    }
+
+    private String extractDescriptionAttribute(Sample sample) {
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (attribute.getType().isDescription()) {
+                return sample.getValue(attribute);
             }
         }
         return null;
