@@ -32,11 +32,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestBoxCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidationMessage;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -44,6 +42,7 @@ import java.util.Set;
 public class SamplesViewImpl extends Composite implements SamplesView {
 
     private final GridView<SampleRow> gridView;
+    private ValidationMessage errorMessage;
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
 
@@ -89,6 +88,8 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         });
         gridView.addTool(button);
 
+        errorMessage = new ValidationMessage();
+        gridView.addTool(errorMessage);
         initWidget(gridView);
     }
 
@@ -134,7 +135,8 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void addNameColumn() {
-        Column<SampleRow, String> column = new Column<SampleRow, String>(new EditTextCell()) {
+        final EditTextCell nameCell = new EditTextCell();
+        Column<SampleRow, String> column = new Column<SampleRow, String>(nameCell) {
             @Override
             public String getValue(SampleRow row) {
                 return row.getName();
@@ -143,9 +145,13 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
             @Override
             public void update(int index, SampleRow row, String value) {
-                // TODO check names are unique
-                row.setName(value);
-                updateRow(row);
+                if (isNameValid(value, index)) {
+                    row.setName(value);
+                    updateRow(row);
+                } else {
+                    nameCell.clearViewData(row);
+                    gridView.redraw();
+                }
             }
         });
         column.setSortable(true);
@@ -161,6 +167,35 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         };
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
+    }
+
+    private boolean isNameValid(String name, int rowIndex) {
+        if (name == null || name.trim().isEmpty()) {
+            showErrorMessage("Sample name can't be empty");
+            return false;
+        }
+        if (isDuplicated(name, rowIndex)) {
+            showErrorMessage("Sample with the name '" + name + "' already exists");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isDuplicated(String name, int rowIndex) {
+        List<SampleRow> rows = gridView.getRows();
+        Set<String> names = new HashSet<String>();
+        int i = 0;
+        for (SampleRow row : rows) {
+            if (i != rowIndex) {
+                names.add(row.getName());
+            }
+            i++;
+        }
+        return names.contains(name);
+    }
+
+    private void showErrorMessage(String msg) {
+        errorMessage.setMessage(msg);
     }
 
     private void addColumn(final SampleColumn sampleColumn) {
