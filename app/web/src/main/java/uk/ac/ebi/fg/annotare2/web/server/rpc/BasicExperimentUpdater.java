@@ -33,16 +33,14 @@ public class BasicExperimentUpdater extends ExperimentUpdater {
     }
 
     @Override
-    public Sample createSample(String name) {
-        Sample sample  = exp().createSample();
-        sample.setName(name);
+    public void createSample() {
+        Sample sample  = createAndReturnSample();
 
         Extract extract = exp().createExtract(sample);
         extract.setName(sample.getName());
         for(String label : exp().getLabels()) {
             exp().createLabeledExtract(extract, label);
         }
-        return sample;
     }
 
     @Override

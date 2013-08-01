@@ -41,7 +41,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
-                    updater.createSample("New Sample " + i);
+                    updater.createSample();
                 }
                 return exp;
             }
@@ -55,7 +55,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n/2; i++) {
-                    updater.createSample("New Sample " + i);
+                    updater.createSample();
                 }
                 return exp;
             }

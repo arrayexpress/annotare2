@@ -148,12 +148,23 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void createSample() {
-        createSample("New Sample");
+        createAndReturnSample();
     }
 
-    public Sample createSample(String name) {
+    protected final Sample createAndReturnSample() {
+        Collection<String> existedNames = Collections2.transform(
+                exp.getSamples(),
+                new Function<Sample, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(@Nullable Sample input) {
+                        return input.getName();
+                    }
+                }
+        );
+
         Sample sample = exp.createSample();
-        sample.setName(name);
+        sample.setName(newName("Sample", existedNames));
         return sample;
     }
 
