@@ -18,8 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.server.services.utils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.*;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 
 import javax.annotation.Nullable;
 import java.util.*;

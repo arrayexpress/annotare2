@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetabcheck.extension.KnownTermSource;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.VocabularyService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;

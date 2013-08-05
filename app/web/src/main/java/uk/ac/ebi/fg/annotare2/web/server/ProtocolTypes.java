@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -84,6 +85,7 @@ public class ProtocolTypes {
          });
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Config {
 
         @JsonProperty("label")

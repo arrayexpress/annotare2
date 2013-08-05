@@ -45,7 +45,7 @@ import org.apache.lucene.util.Version;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.services.efo.*;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.*;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
@@ -60,6 +60,7 @@ import static com.google.common.collect.Lists.transform;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.io.Closeables.close;
+import static java.lang.Boolean.parseBoolean;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.apache.lucene.document.Field.Store.NO;
@@ -258,6 +259,8 @@ public class EfoSearchImpl implements EfoSearch {
         return new EfoTerm(
                 doc.get(ACCESSION_FIELD.name),
                 doc.get(LABEL_FIELD.name),
+                doc.get(DEFINITION_FIELD.name),
+                parseBoolean(doc.get(ORGANISATIONAL_FLAG_FIELD.name)),
                 Collections.<String>emptyList());
     }
 
@@ -319,6 +322,8 @@ public class EfoSearchImpl implements EfoSearch {
         doc.add(LABEL_FIELD.create(node));
         doc.add(LABEL_FIELD_LOWERCASE.create(node));
         doc.add(TEXT_FIELD.create(node));
+        doc.add(DEFINITION_FIELD.create(node));
+        doc.add(ORGANISATIONAL_FLAG_FIELD.create(node));
 
         for (EfoNode parent : allParents.values()) {
             doc.add(ASCENDANT_FIELD.create(parent));
@@ -378,19 +383,32 @@ public class EfoSearchImpl implements EfoSearch {
         LABEL_FIELD("label") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getName(), YES);
+                return new StringField(name, node.getLabel(), YES);
             }
         },
         LABEL_FIELD_LOWERCASE("label_lowercase") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getName().toLowerCase(), NO);
+                return new StringField(name, node.getLabel().toLowerCase(), NO);
+            }
+        },
+        DEFINITION_FIELD("definition") {
+            @Override
+            protected Field create(String name, EfoNode node) {
+                String d = node.getDefinition();
+                return new StringField(name, d == null ? "" : d, YES);
+            }
+        },
+        ORGANISATIONAL_FLAG_FIELD("organisational_flag") {
+            @Override
+            protected Field create(String name, EfoNode node) {
+                return new StringField(name, Boolean.toString(node.isOrganisational()), YES);
             }
         },
         TEXT_FIELD("text") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new TextField(name, node.getName().toLowerCase(), NO);
+                return new TextField(name, node.getLabel().toLowerCase(), NO);
             }
         },
         ASCENDANT_FIELD("ascendant") {

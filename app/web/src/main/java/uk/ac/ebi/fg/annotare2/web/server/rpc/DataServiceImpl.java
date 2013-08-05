@@ -24,12 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
@@ -41,8 +40,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.PROTOCOL;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
 
 /**
  * @author Olga Melnichuk

@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.utils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -37,11 +37,11 @@ public class EfoGraphTest {
     @Test
     public void test() {
 
-        EfoTerm A = new EfoTerm("A", "A", Collections.<String>emptyList());
-        EfoTerm B = new EfoTerm("B", "B", Collections.<String>emptyList());
-        EfoTerm C = new EfoTerm("C", "C", Collections.<String>emptyList());
-        EfoTerm D = new EfoTerm("D", "D", Collections.<String>emptyList());
-        EfoTerm E = new EfoTerm("E", "E", Collections.<String>emptyList());
+        EfoTerm A = new EfoTerm("A", "A", "", false, Collections.<String>emptyList());
+        EfoTerm B = new EfoTerm("B", "B", "", false, Collections.<String>emptyList());
+        EfoTerm C = new EfoTerm("C", "C", "", false, Collections.<String>emptyList());
+        EfoTerm D = new EfoTerm("D", "D", "", false, Collections.<String>emptyList());
+        EfoTerm E = new EfoTerm("E", "E", "", false, Collections.<String>emptyList());
 
         SetMultimap<String, String> parents = HashMultimap.create();
         parents.putAll("B", asList("A"));

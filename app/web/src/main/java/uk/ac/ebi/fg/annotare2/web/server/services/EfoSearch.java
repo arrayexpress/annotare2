@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import uk.ac.ebi.fg.annotare2.services.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import java.util.Collection;

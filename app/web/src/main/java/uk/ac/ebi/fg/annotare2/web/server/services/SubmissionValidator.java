@@ -41,9 +41,6 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
  */
 public class SubmissionValidator {
 
-    //TODO move it
-
-
     private final MageTabChecker checker;
 
     @Inject
@@ -59,9 +56,7 @@ public class SubmissionValidator {
 
         MageTabFormat mageTab = createMageTab(exp);
 
-        // TODO: wating for the next magetabcheck version
-        // Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
-        Collection<CheckResult> results = emptyList();
+        Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
         return natural().sortedCopy(results);
     }
 }

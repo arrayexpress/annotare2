@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoService;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;

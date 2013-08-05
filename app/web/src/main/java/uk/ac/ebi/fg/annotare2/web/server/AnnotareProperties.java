@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
-import uk.ac.ebi.fg.annotare2.services.efo.EfoServiceProperties;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoServiceProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 
 import java.io.*;
