@@ -37,7 +37,7 @@ import java.util.Set;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.inject.util.Modules.override;
-import static org.reflections.util.ClasspathHelper.forWebInfLib;
+import static org.reflections.util.ClasspathHelper.*;
 
 /**
  * @author Olga Melnichuk
@@ -91,6 +91,10 @@ public class AppServletContextListener extends GuiceServletContextListener {
     }
 
     private void initLibraryPaths(ServletContext context) {
-        libPaths.addAll(forWebInfLib(context));
+        /* note 1: using forWebInfLib() is a bit tricky. Tomcat7 will return jar URLs with 'jndi' path, which is not
+         * easy to use to get the jar file and scan it. Tomcat6 returns real paths, but only for unpacked war file.
+         */
+        //todo: move package names with magetabcheck annotations to the config
+        libPaths.addAll(forPackage("uk.ac.ebi.fg.annotare2.magetabcheck.checks"));
     }
 }

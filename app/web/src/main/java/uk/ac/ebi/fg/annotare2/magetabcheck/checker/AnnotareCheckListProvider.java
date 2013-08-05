@@ -8,6 +8,8 @@ import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.annotation.MageTabCheck;
 
 import java.lang.reflect.Method;
@@ -23,6 +25,8 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Olga Melnichuk
  */
 public class AnnotareCheckListProvider implements Provider<List<CheckDefinition>> {
+
+    private static final Logger log = LoggerFactory.getLogger(AnnotareCheckListProvider.class);
 
     private final List<CheckDefinition> checks = newArrayList();
 
@@ -53,6 +57,7 @@ public class AnnotareCheckListProvider implements Provider<List<CheckDefinition>
         for (Method method : methodBasedChecks) {
             checks.add(new MethodBasedCheckDefinition(method, instanceProvider));
         }
+        log.info("Number of magetabcheck annotations found: {}", checks.size());
     }
 
     @Override
