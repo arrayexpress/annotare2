@@ -49,13 +49,17 @@ public class ExperimentLayout extends Composite implements EditorLayout {
         verticalSplit.setWidgetMinSize(dockPanel, 21);
     }
 
-   /* public void expandLogBar(double size) {
+    public void expandLogBar(double size) {
         Widget w = splitPanel.getWidget(0);
         double widgetSize = splitPanel.getWidgetSize(w);
         if (widgetSize < size) {
             splitPanel.setWidgetSize(w, size);
         }
-    }*/
+    }
+
+    public void toggleDockPanel() {
+        //TODO
+    }
 
     @Override
     public HasOneWidget getTitleBarDisplay() {

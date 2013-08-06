@@ -22,6 +22,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DockBarView;
 
 /**
@@ -37,8 +38,14 @@ public class DockBarActivity extends AbstractActivity {
     }
 
     @Override
-    public void start(AcceptsOneWidget panel, EventBus eventBus) {
+    public void start(AcceptsOneWidget panel, final EventBus eventBus) {
         panel.setWidget(view);
+        view.setPresenter(new DockBarView.Presenter() {
+            @Override
+            public void fileUploadClick() {
+                eventBus.fireEvent(DockBarEvent.toggleFileUpload());
+            }
+        });
     }
 
     public Activity withPlace(Place place) {

@@ -17,8 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -30,7 +34,28 @@ public class DockBarView extends Composite {
         Binder BINDER = GWT.create(Binder.class);
     }
 
+    @UiField
+    Image uploadFilesButton;
+
+    private Presenter presenter;
+
     public DockBarView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+        uploadFilesButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (presenter != null) {
+                    presenter.fileUploadClick();
+                }
+            }
+        });
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public interface Presenter {
+        void fileUploadClick();
     }
 }

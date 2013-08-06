@@ -34,6 +34,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
@@ -132,15 +137,27 @@ public class EditorApp implements EntryPoint {
     }
 
     private Widget initMainLayout(SubmissionType type, EventBus eventBus) {
-        EditorLayout layout = type == EXPERIMENT ? new ExperimentLayout() : new ArrayDesignLayout();
+        EditorLayout layout;
 
-       /* eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
-            @Override
-            public void validationFinished(ValidationResult result) {
-                //TODO not sure about the constant size
-                layout.expandLogBar(250);
-            }
-        });*/
+        if (type == EXPERIMENT) {
+            final ExperimentLayout expLayout = new ExperimentLayout();
+            eventBus.addHandler(DockBarEvent.getType(), new DockBarEventHandler() {
+                @Override
+                public void onFileUploadToggle() {
+                    expLayout.toggleDockPanel();
+                }
+            });
+            eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
+                @Override
+                public void validationFinished(ValidationResult result) {
+                    //TODO not sure about the constant size
+                    expLayout.expandLogBar(250);
+                }
+            });
+            layout = expLayout;
+        } else {
+            layout = new ArrayDesignLayout();
+        }
 
         ActivityMapper titleBarActivityMapper = injector.getTitleBarActivityMapper();
         ActivityManager titleBarActivityManager = new ActivityManager(titleBarActivityMapper, eventBus);
