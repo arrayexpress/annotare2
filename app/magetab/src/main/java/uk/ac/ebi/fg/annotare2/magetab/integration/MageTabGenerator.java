@@ -91,7 +91,7 @@ public class MageTabGenerator {
 
     private void generateSdrf(SDRF sdrf) throws ParseException {
         for (Sample sample : exp.getSamples()) {
-            sdrf.addNode(createSampleNode(sample));
+            sdrf.addNode(createSourceNode(sample));
         }
     }
 
@@ -117,20 +117,21 @@ public class MageTabGenerator {
         destination.addParentNode(prev);
     }
 
-    private SampleNode createSampleNode(Sample sample) {
-        SampleNode sampleNode = new SampleNode();
-        sampleNode.setNodeName(sample.getName());
-        sampleNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
-        sampleNode.materialType = extractMaterialTypeAttribute(sample);
-        sampleNode.description = extractDescriptionAttribute(sample);
-        addComments(sampleNode, sample);
+    private SourceNode createSourceNode(Sample sample) {
+        SourceNode sourceNode = new SourceNode();
+        sourceNode.setNodeName(sample.getName());
+        sourceNode.characteristics.addAll(extractCharacteristicsAttributes(sample));
+        sourceNode.materialType = extractMaterialTypeAttribute(sample);
+        sourceNode.provider = extractProviderAttribute(sample);
+        sourceNode.description = extractDescriptionAttribute(sample);
+        addComments(sourceNode, sample);
 
         Collection<Extract> extracts = exp.getExtracts(sample);
         for (Extract extract : extracts) {
             ExtractNode extractNode = createExtractNode(extract);
-            connect(sampleNode, extractNode, SAMPLE_AND_EXTRACT);
+            connect(sourceNode, extractNode, SAMPLE_AND_EXTRACT);
         }
-        return sampleNode;
+        return sourceNode;
     }
 
     private ExtractNode createExtractNode(Extract extract) {
@@ -204,6 +205,17 @@ public class MageTabGenerator {
         return null;
     }
 
+    private ProviderAttribute extractProviderAttribute(Sample sample) {
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (attribute.getType().isProvider()) {
+                ProviderAttribute attr = new ProviderAttribute();
+                attr.setAttributeValue(sample.getValue(attribute));
+                return attr;
+            }
+        }
+        return null;
+    }
+
     private String extractDescriptionAttribute(Sample sample) {
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
             if (attribute.getType().isDescription()) {
@@ -227,7 +239,7 @@ public class MageTabGenerator {
         return attributes;
     }
 
-    private void addComments(SampleNode node, Sample sample) {
+    private void addComments(SourceNode node, Sample sample) {
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
             if (attribute.getType().isComment()) {
                 String value = sample.getValue(attribute);

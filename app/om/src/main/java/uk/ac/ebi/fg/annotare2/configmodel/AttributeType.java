@@ -60,6 +60,10 @@ public enum AttributeType {
         return this == DESCRIPTION_ATTRIBUTE;
     }
 
+    public boolean isProvider() {
+        return this == PROVIDER_ATTRIBUTE;
+    }
+
     public boolean isComment() {
         return this == COMMENT_ATTRIBUTE;
     }
