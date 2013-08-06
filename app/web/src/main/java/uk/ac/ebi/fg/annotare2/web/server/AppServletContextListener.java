@@ -91,9 +91,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
     }
 
     private void initLibraryPaths(ServletContext context) {
-        /* note 1: using forWebInfLib() is a bit tricky. Tomcat7 will return jar URLs with 'jndi' path, which is not
-         * easy to use to get the jar file and scan it. Tomcat6 returns real paths, but only for unpacked war file.
-         */
+        /* note: better not to use forWebInfLib(), as you can't rely on servletContext.getResource(...) */
         //todo: move package names with magetabcheck annotations to the config
         libPaths.addAll(forPackage("uk.ac.ebi.fg.annotare2.magetabcheck.checks"));
     }
