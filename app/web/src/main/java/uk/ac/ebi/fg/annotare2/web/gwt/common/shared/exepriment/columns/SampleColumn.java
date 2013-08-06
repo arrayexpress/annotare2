@@ -25,9 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.configmodel.AttributeType.CHARACTERISTIC_ATTRIBUTE;
-import static uk.ac.ebi.fg.annotare2.configmodel.AttributeType.MATERIAL_TYPE_ATTRIBUTE;
-import static uk.ac.ebi.fg.annotare2.configmodel.AttributeType.COMMENT_ATTRIBUTE;
+import static uk.ac.ebi.fg.annotare2.configmodel.AttributeType.*;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.*;
 
 /**
@@ -213,13 +211,13 @@ public class SampleColumn implements IsSerializable, HasIdentity {
                 createTemplateColumn(
                         "Provider",
                         null,
-                        COMMENT_ATTRIBUTE,
+                        PROVIDER_ATTRIBUTE,
                         new TextValueType()));
         templates.add(
                 createTemplateColumn(
                         "Description",
                         null,
-                        COMMENT_ATTRIBUTE,
+                        DESCRIPTION_ATTRIBUTE,
                         new TextValueType()));
 
         return templates;
