@@ -19,8 +19,6 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
-    <ui:with field="res" type="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources"/>
-
     <ui:style>
         .border {
             border: 1px solid #48877C;
@@ -59,21 +57,10 @@
                                 <g:east size="20">
                                     <g:DockLayoutPanel ui:field="dockPanel">
                                         <g:east size="20">
-                                           <g:HTMLPanel>
-                                               <g:Image resource="{res.uploadFilesButton}"/>
-                                           </g:HTMLPanel>
+                                            <g:SimpleLayoutPanel ui:field="dockBarDisplay"/>
                                         </g:east>
                                         <g:center>
-                                            <g:TabLayoutPanel barUnit="PX" barHeight="30">
-                                            <g:tab>
-                                                <g:header>All Files</g:header>
-                                                <my:DataFileListView />
-                                            </g:tab>
-                                            <g:tab>
-                                                <g:header>Upload</g:header>
-                                                <g:SimplePanel />
-                                            </g:tab>
-                                            </g:TabLayoutPanel>
+                                            <g:SimpleLayoutPanel ui:field="dockBarPanelDisplay"/>
                                         </g:center>
                                     </g:DockLayoutPanel>
                                 </g:east>

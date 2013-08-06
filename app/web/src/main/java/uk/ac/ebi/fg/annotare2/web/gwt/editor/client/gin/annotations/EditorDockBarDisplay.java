@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations;
 
-import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.BindingAnnotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorLayout extends IsWidget {
-
-    HasOneWidget getTitleBarDisplay();
-
-    HasOneWidget getTabBarDisplay();
-
-    HasOneWidget getLeftMenuDisplay();
-
-    HasOneWidget getContentDisplay();
-
-    HasOneWidget getLogBarDisplay();
-
-    HasOneWidget getDockBarDisplay();
-
-    HasOneWidget getDockBarPanelDisplay();
+@BindingAnnotation
+@Target({FIELD, PARAMETER, METHOD})
+@Retention(RUNTIME)
+public @interface EditorDockBarDisplay {
 }

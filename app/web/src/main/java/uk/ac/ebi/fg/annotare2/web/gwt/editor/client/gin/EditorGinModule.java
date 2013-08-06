@@ -32,6 +32,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadViewImpl;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DockBarView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.*;
 
@@ -50,6 +53,8 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ActivityMapper.class).annotatedWith(EditorContentDisplay.class).to(EditorContentActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLogBarDisplay.class).to(EditorLogBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorStartDisplay.class).to(EditorStartActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorDockBarDisplay.class).to(EditorDockBarActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorDockBarPanelDisplay.class).to(EditorDockBarPanelActivityMapper.class).in(Singleton.class);
 
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
         bind(EditorTabBarView.class).to(EditorTabBarViewImpl.class);
@@ -67,6 +72,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(LabeledExtractsView.class).to(LabeledExtractsViewImpl.class);
         bind(DataFilesView.class).to(DataFilesViewImpl.class);
         bind(ProtocolsView.class).to(ProtocolsViewImpl.class);
+        bind(DataFileUploadView.class).to(DataFileUploadViewImpl.class);
 
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);
 

@@ -57,4 +57,14 @@ public class ArrayDesignLayout extends Composite implements EditorLayout {
     public HasOneWidget getLogBarDisplay() {
         return null;
     }
+
+    @Override
+    public HasOneWidget getDockBarDisplay() {
+        return null;
+    }
+
+    @Override
+    public HasOneWidget getDockBarPanelDisplay() {
+        return null;
+    }
 }

@@ -34,6 +34,12 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     @UiField
     SimpleLayoutPanel titleBarDisplay;
 
+    @UiField
+    SimplePanel dockBarDisplay;
+
+    @UiField
+    SimplePanel dockBarPanelDisplay;
+
     interface Binder extends UiBinder<Widget, ExperimentLayout> {
         Binder BINDER = GWT.create(Binder.class);
     }
@@ -74,5 +80,15 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     @Override
     public HasOneWidget getLogBarDisplay() {
         return logBarDisplay;
+    }
+
+    @Override
+    public HasOneWidget getDockBarDisplay() {
+        return dockBarDisplay;
+    }
+
+    @Override
+    public HasOneWidget getDockBarPanelDisplay() {
+        return dockBarPanelDisplay;
     }
 }
