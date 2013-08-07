@@ -37,9 +37,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.inject.Scopes.SINGLETON;
@@ -48,6 +46,12 @@ import static com.google.inject.Scopes.SINGLETON;
  * @author Olga Melnichuk
  */
 public class AppServletModule extends ServletModule {
+
+    private static final Map<String, String> UPLOAD_SERVLET_PARAMS = new HashMap<String, String>(){
+        {
+            put("maxSize", Long.toString(10*1024*1024));  // 10MB
+        }
+    };
 
     private final AllRpcServicePathsImpl allRpc = new AllRpcServicePathsImpl();
 
@@ -72,7 +76,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
-        serveRegex(".*\\.gupld").with(UploadServlet.class);
+        serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
 
         bind(SecurityFilter.class).in(SINGLETON);
         bind(LoginServlet.class).in(SINGLETON);
