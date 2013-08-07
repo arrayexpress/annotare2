@@ -50,7 +50,7 @@
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
-                            <g:SplitLayoutPanel ui:field="verticalSplit">
+                            <g:SplitLayoutPanel ui:field="verticalSplitPanel">
                                 <g:center>
                                     <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
                                 </g:center>

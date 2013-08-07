@@ -4,11 +4,21 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExperimentLayout extends Composite implements EditorLayout {
+
+    private static final int DEFAULT_OPEN_LOGBAR_SIZE = 250;
+
+    private static final int MIN_DOCK_SIZE = 21;
 
     @UiField
     ScrollPanel logBarDisplay;
@@ -20,7 +30,7 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     SimpleLayoutPanel contentDisplay;
 
     @UiField
-    SplitLayoutPanel verticalSplit;
+    SplitLayoutPanel verticalSplitPanel;
 
     @UiField
     MinimizableScrollPanel leftMenuDisplay;
@@ -40,16 +50,31 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     @UiField
     SimplePanel dockBarPanelDisplay;
 
+    private double dockSize;
+
     interface Binder extends UiBinder<Widget, ExperimentLayout> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public ExperimentLayout() {
+    public ExperimentLayout(EventBus eventBus) {
         initWidget(Binder.BINDER.createAndBindUi(this));
-        verticalSplit.setWidgetMinSize(dockPanel, 21);
+        verticalSplitPanel.setWidgetMinSize(dockPanel, MIN_DOCK_SIZE);
+
+        eventBus.addHandler(DockBarEvent.getType(), new DockBarEventHandler() {
+            @Override
+            public void onFileUploadToggle() {
+                toggleDockPanel();
+            }
+        });
+        eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
+            @Override
+            public void validationFinished(ValidationResult result) {
+                expandLogBar(DEFAULT_OPEN_LOGBAR_SIZE);
+            }
+        });
     }
 
-    public void expandLogBar(double size) {
+    private void expandLogBar(double size) {
         Widget w = splitPanel.getWidget(0);
         double widgetSize = splitPanel.getWidgetSize(w);
         if (widgetSize < size) {
@@ -57,8 +82,17 @@ public class ExperimentLayout extends Composite implements EditorLayout {
         }
     }
 
-    public void toggleDockPanel() {
-        //TODO
+    private void toggleDockPanel() {
+        double widgetSize = verticalSplitPanel.getWidgetSize(dockPanel);
+        double newSize;
+        if (widgetSize <= MIN_DOCK_SIZE + 1.0) {
+            double defaultWidth = (verticalSplitPanel.getOffsetWidth() - MIN_DOCK_SIZE)/2;
+            newSize = dockSize < MIN_DOCK_SIZE + 10.0 ?  defaultWidth : dockSize;
+        } else {
+            dockSize = widgetSize;
+            newSize = MIN_DOCK_SIZE;
+        }
+        verticalSplitPanel.setWidgetSize(dockPanel, newSize);
     }
 
     @Override

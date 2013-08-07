@@ -137,27 +137,7 @@ public class EditorApp implements EntryPoint {
     }
 
     private Widget initMainLayout(SubmissionType type, EventBus eventBus) {
-        EditorLayout layout;
-
-        if (type == EXPERIMENT) {
-            final ExperimentLayout expLayout = new ExperimentLayout();
-            eventBus.addHandler(DockBarEvent.getType(), new DockBarEventHandler() {
-                @Override
-                public void onFileUploadToggle() {
-                    expLayout.toggleDockPanel();
-                }
-            });
-            eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
-                @Override
-                public void validationFinished(ValidationResult result) {
-                    //TODO not sure about the constant size
-                    expLayout.expandLogBar(250);
-                }
-            });
-            layout = expLayout;
-        } else {
-            layout = new ArrayDesignLayout();
-        }
+        EditorLayout layout = (type == EXPERIMENT) ? new ExperimentLayout(eventBus) : new ArrayDesignLayout();
 
         ActivityMapper titleBarActivityMapper = injector.getTitleBarActivityMapper();
         ActivityManager titleBarActivityManager = new ActivityManager(titleBarActivityMapper, eventBus);
