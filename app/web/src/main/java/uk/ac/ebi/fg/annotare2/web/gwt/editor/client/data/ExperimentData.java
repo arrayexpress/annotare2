@@ -194,16 +194,16 @@ public class ExperimentData {
         return new ArrayList<ExtractLabelsRow>(map.values());
     }
 
-    private List<DataFileRow> getDataFileRows(ExperimentProfile exp) {
-        List<DataFileRow> rows = new ArrayList<DataFileRow>();
+    private List<DataAssignmentRow> getDataFileRows(ExperimentProfile exp) {
+        List<DataAssignmentRow> rows = new ArrayList<DataAssignmentRow>();
         if (exp.getType().isMicroarray()) {
             int i = 1;
             for(LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-                rows.add(new DataFileRow(i++, labeledExtract.getName()));
+                rows.add(new DataAssignmentRow(i++, labeledExtract.getName()));
             }
         } else {
             for(Extract extract : exp.getExtracts()) {
-                rows.add(new DataFileRow(extract.getId(), extract.getName()));
+                rows.add(new DataAssignmentRow(extract.getId(), extract.getName()));
             }
         }
         return rows;
@@ -321,7 +321,7 @@ public class ExperimentData {
         });
     }
 
-    public void getDataFileRowsAsync(final AsyncCallback<List<DataFileRow>> callback) {
+    public void getDataFileRowsAsync(final AsyncCallback<List<DataAssignmentRow>> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {

@@ -18,13 +18,21 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListView;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public class DataFileUploadViewImpl extends Composite implements DataFileUploadView {
+
+    @UiField
+    DataFileListView dataFileListView;
 
     interface Binder extends UiBinder<Widget, DataFileUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -32,5 +40,10 @@ public class DataFileUploadViewImpl extends Composite implements DataFileUploadV
 
     public DataFileUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+    }
+
+    @Override
+    public void setRows(List<DataFileRow> rows) {
+        dataFileListView.setRows(rows);
     }
 }

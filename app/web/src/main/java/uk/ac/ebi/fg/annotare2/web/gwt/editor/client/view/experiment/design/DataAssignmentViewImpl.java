@@ -22,7 +22,7 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,9 +31,9 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class DataFilesViewImpl extends Composite implements DataFilesView {
+public class DataAssignmentViewImpl extends Composite implements DataAssignmentView {
 
-    private final GridView<DataFileRow> gridView;
+    private final GridView<DataAssignmentRow> gridView;
     private static List<String> options = new ArrayList<String>();
     static {
         options.add("");
@@ -42,13 +42,13 @@ public class DataFilesViewImpl extends Composite implements DataFilesView {
         options.add("data.raw.3.zip");
     }
 
-    public DataFilesViewImpl() {
-        gridView = new GridView<DataFileRow>();
+    public DataAssignmentViewImpl() {
+        gridView = new GridView<DataAssignmentRow>();
         initWidget(gridView);
     }
 
     @Override
-    public void setData(List<DataFileRow> rows) {
+    public void setRows(List<DataAssignmentRow> rows) {
         gridView.setRows(rows);
         setColumns();
     }
@@ -60,16 +60,16 @@ public class DataFilesViewImpl extends Composite implements DataFilesView {
     }
 
     private void addRawDataFileColumn(List<String> options) {
-        Column<DataFileRow, String> column = new Column<DataFileRow, String>(new SelectionCell(options)) {
+        Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(new SelectionCell(options)) {
             @Override
-            public String getValue(DataFileRow row) {
+            public String getValue(DataAssignmentRow row) {
                 return "";
             }
         };
         column.setCellStyleNames("app-SelectionCell");
-        column.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
+        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
             @Override
-            public void update(int index, DataFileRow row, String value) {
+            public void update(int index, DataAssignmentRow row, String value) {
                 //row.setValue(value);
                 //updateRow(row);
             }
@@ -78,16 +78,16 @@ public class DataFilesViewImpl extends Composite implements DataFilesView {
     }
 
     private void addProcessedDataFileColumn(List<String> options) {
-        Column<DataFileRow, String> column = new Column<DataFileRow, String>(new SelectionCell(options)) {
+        Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(new SelectionCell(options)) {
             @Override
-            public String getValue(DataFileRow row) {
+            public String getValue(DataAssignmentRow row) {
                 return "";
             }
         };
         column.setCellStyleNames("app-SelectionCell");
-        column.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
+        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
             @Override
-            public void update(int index, DataFileRow row, String value) {
+            public void update(int index, DataAssignmentRow row, String value) {
                 //row.setValue(value);
                 //updateRow(row);
             }
@@ -96,16 +96,16 @@ public class DataFilesViewImpl extends Composite implements DataFilesView {
     }
 
     private void addNameColumn() {
-        Column<DataFileRow, String> column = new Column<DataFileRow, String>(new TextCell()) {
+        Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(new TextCell()) {
             @Override
-            public String getValue(DataFileRow row) {
+            public String getValue(DataAssignmentRow row) {
                 return row.getName();
             }
         };
         column.setSortable(true);
-        Comparator<DataFileRow> comparator = new Comparator<DataFileRow>() {
+        Comparator<DataAssignmentRow> comparator = new Comparator<DataAssignmentRow>() {
             @Override
-            public int compare(DataFileRow o1, DataFileRow o2) {
+            public int compare(DataAssignmentRow o1, DataAssignmentRow o2) {
                 if (o1 == o2) {
                     return 0;
                 }

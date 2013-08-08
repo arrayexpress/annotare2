@@ -22,10 +22,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataFilesView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataAssignmentView;
 
 import java.util.List;
 
@@ -34,12 +34,12 @@ import java.util.List;
  */
 public class DataFilesActivity extends AbstractActivity {
 
-    private final DataFilesView view;
+    private final DataAssignmentView view;
     private final ExperimentData expData;
 
 
     @Inject
-    public DataFilesActivity(DataFilesView view, ExperimentData expData) {
+    public DataFilesActivity(DataAssignmentView view, ExperimentData expData) {
         this.view = view;
         this.expData = expData;
     }
@@ -55,15 +55,15 @@ public class DataFilesActivity extends AbstractActivity {
     }
 
     private void loadAsync() {
-        expData.getDataFileRowsAsync(new AsyncCallback<List<DataFileRow>>() {
+        expData.getDataFileRowsAsync(new AsyncCallback<List<DataAssignmentRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Can't load data file rows");
             }
 
             @Override
-            public void onSuccess(List<DataFileRow> result) {
-                view.setData(result);
+            public void onSuccess(List<DataAssignmentRow> result) {
+                view.setRows(result);
             }
         });
 

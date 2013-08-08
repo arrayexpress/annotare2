@@ -22,7 +22,7 @@
     <g:TabLayoutPanel barUnit="PX" barHeight="30">
         <g:tab>
             <g:header>All Files</g:header>
-            <my:DataFileListView/>
+            <my:DataFileListView ui:field="dataFileListView"/>
         </g:tab>
         <g:tab>
             <g:header>HTTP Upload</g:header>

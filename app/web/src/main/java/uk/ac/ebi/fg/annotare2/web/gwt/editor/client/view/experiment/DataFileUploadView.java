@@ -17,9 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
 public interface DataFileUploadView extends IsWidget {
+
+    void setRows(List<DataFileRow> rows);
 }

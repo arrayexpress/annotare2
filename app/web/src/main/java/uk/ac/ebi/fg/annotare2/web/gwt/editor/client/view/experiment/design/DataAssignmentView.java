@@ -17,14 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataFilesView extends IsWidget {
+public interface DataAssignmentView extends IsWidget {
 
-    public void setData(List<DataFileRow> rows);
+    public void setRows(List<DataAssignmentRow> rows);
 }

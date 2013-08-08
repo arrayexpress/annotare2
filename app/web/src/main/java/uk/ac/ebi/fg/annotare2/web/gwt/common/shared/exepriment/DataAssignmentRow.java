@@ -19,52 +19,30 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
-import java.util.Date;
-
 /**
  * @author Olga Melnichuk
  */
-public class DataFileRow implements IsSerializable, HasIdentity {
+public class DataAssignmentRow implements IsSerializable, HasIdentity {
 
     private int id;
 
     private String name;
 
-    private String size;
-
-    private Date created;
-
-    private String md5;
-
-    DataFileRow() {
-        /* used by GWT serialization */
+    public DataAssignmentRow() {
+        /*used by GWT serialization only*/
     }
 
-    public DataFileRow(int id, String name, String md5, String size, Date created) {
+    public DataAssignmentRow(int id, String name) {
         this.id = id;
         this.name = name;
-        this.size = size;
-        this.created = created;
-        this.md5 = md5;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public String getMd5() {
-        return md5;
     }
 }

@@ -13,58 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
+package uk.ac.ebi.fg.annotare2.om;
 
 import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataFileRow implements IsSerializable, HasIdentity {
+public class DataFile {
 
     private int id;
 
     private String name;
 
-    private String size;
-
     private Date created;
 
-    private String md5;
+    private String digest;
 
-    DataFileRow() {
-        /* used by GWT serialization */
-    }
-
-    public DataFileRow(int id, String name, String md5, String size, Date created) {
+    public DataFile(int id, String name, String digest) {
         this.id = id;
         this.name = name;
-        this.size = size;
-        this.created = created;
-        this.md5 = md5;
-    }
-
-    public int getId() {
-        return id;
+        this.digest = digest;
+        created = new Date();
     }
 
     public String getName() {
         return name;
     }
 
-    public String getSize() {
-        return size;
+    public int getId() {
+        return id;
+    }
+
+    public String getDigest() {
+        return digest;
     }
 
     public Date getCreated() {
         return created;
     }
 
-    public String getMd5() {
-        return md5;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataFile dataFile = (DataFile) o;
+
+        if (id != dataFile.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }
