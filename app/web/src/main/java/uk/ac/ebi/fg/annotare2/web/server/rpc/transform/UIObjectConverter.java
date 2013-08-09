@@ -22,11 +22,8 @@ import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
-import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
@@ -34,12 +31,14 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetai
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Collections2.filter;
@@ -98,6 +97,22 @@ public class UIObjectConverter {
         }
     };
 
+    static Function<DataFile, DataFileRow> DATA_FILE_ROW = new Function<DataFile, DataFileRow>() {
+        @Nullable
+        @Override
+        public DataFileRow apply(@Nullable DataFile dataFile) {
+            checkNotNull(dataFile);
+            return new DataFileRow(
+                    dataFile.getId(),
+                    dataFile.getName(),
+                    dataFile.getDigest(),
+                    "0", /* todo */
+                    dataFile.getCreated()
+            );
+        }
+    };
+
+
     public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
@@ -142,19 +157,25 @@ public class UIObjectConverter {
         );
     }
 
+    @Deprecated
     public static EfoGraphDto uiEfoGraph(EfoGraph graph) {
         List<EfoGraphDto.Node> roots = new ArrayList<EfoGraphDto.Node>();
-        for(EfoGraph.Node node : graph.getRoots()) {
+        for (EfoGraph.Node node : graph.getRoots()) {
             roots.add(uiEfoGraphNode(node));
         }
         return new EfoGraphDto(roots);
     }
 
+    @Deprecated
     private static EfoGraphDto.Node uiEfoGraphNode(EfoGraph.Node node) {
         List<EfoGraphDto.Node> children = new ArrayList<EfoGraphDto.Node>();
         for (EfoGraph.Node child : node.getChildren()) {
             children.add(uiEfoGraphNode(child));
         }
         return new EfoGraphDto.Node(uiEfoTerm(node.getTerm()), children);
+    }
+
+    public static List<DataFileRow> uiDataFileRows(Set<DataFile> files) {
+        return new ArrayList<DataFileRow>(transform(files, DATA_FILE_ROW));
     }
 }

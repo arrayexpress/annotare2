@@ -17,41 +17,26 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HasHandlers;
+import com.google.web.bindery.event.shared.Event;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataUpdateEvent<R> extends GwtEvent<DataUpdateEventHandler<R>> {
+public class DataFilesUpdateEvent extends GwtEvent<DataFilesUpdateEventHandler> {
 
-    private static Type<DataUpdateEventHandler<?>> TYPE = new Type<DataUpdateEventHandler<?>>();
+    private static Type<DataFilesUpdateEventHandler> TYPE = new Type<DataFilesUpdateEventHandler>();
 
-    private final R updates;
-
-    private DataUpdateEvent(R updates) {
-        this.updates = updates;
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
-    public Type<DataUpdateEventHandler<R>> getAssociatedType() {
-        return (Type) TYPE;
+    public Type<DataFilesUpdateEventHandler> getAssociatedType() {
+        return null;
     }
 
     @Override
-    protected void dispatch(DataUpdateEventHandler<R> handler) {
-        handler.onDataUpdate(this);
+    protected void dispatch(DataFilesUpdateEventHandler handler) {
+
     }
 
-    public R getUpdates() {
-        return updates;
-    }
-
-    public static Type<DataUpdateEventHandler<?>> getType() {
+    public static Event.Type<DataFilesUpdateEventHandler> getType() {
         return TYPE;
-    }
-
-    public static <T> void fire(HasHandlers source, T result) {
-        source.fireEvent(new DataUpdateEvent<T>(result));
     }
 }

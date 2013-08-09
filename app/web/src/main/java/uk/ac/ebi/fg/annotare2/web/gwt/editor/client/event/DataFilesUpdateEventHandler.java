@@ -16,12 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.EventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface HasDataUpdateEventHandlers<R> {
+public interface DataFilesUpdateEventHandler extends EventHandler {
 
-    HandlerRegistration addDataUpdateEventHandler(DataUpdateEventHandler<R> handler);
+    void onDataFilesUpdate(List<DataFileRow> fileRows);
 }

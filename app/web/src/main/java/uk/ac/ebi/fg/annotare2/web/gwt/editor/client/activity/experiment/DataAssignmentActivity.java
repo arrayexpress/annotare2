@@ -32,14 +32,14 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class DataFilesActivity extends AbstractActivity {
+public class DataAssignmentActivity extends AbstractActivity {
 
     private final DataAssignmentView view;
     private final ExperimentData expData;
 
 
     @Inject
-    public DataFilesActivity(DataAssignmentView view, ExperimentData expData) {
+    public DataAssignmentActivity(DataAssignmentView view, ExperimentData expData) {
         this.view = view;
         this.expData = expData;
     }
@@ -50,7 +50,7 @@ public class DataFilesActivity extends AbstractActivity {
         loadAsync();
     }
 
-    public DataFilesActivity withPlace(ExpDesignPlace designPlace) {
+    public DataAssignmentActivity withPlace(ExpDesignPlace designPlace) {
         return this;
     }
 

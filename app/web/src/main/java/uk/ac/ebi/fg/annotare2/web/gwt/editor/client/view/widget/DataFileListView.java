@@ -24,9 +24,12 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.view.client.ListDataProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,13 +38,14 @@ import java.util.List;
  */
 public class DataFileListView extends Composite {
 
-    private final CellTable<DataFileRow> grid;
+    private ListDataProvider<DataFileRow> dataProvider;
 
     public DataFileListView() {
         ScrollPanel scrollPanel = new ScrollPanel();
         initWidget(scrollPanel);
 
-        grid = new CellTable<DataFileRow>();
+        CellTable<DataFileRow> grid = new CellTable<DataFileRow>();
+        grid.setEmptyTableWidget(new Label("You have not uploaded any data files yet"));
         grid.addColumn(new Column<DataFileRow, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(DataFileRow object) {
@@ -87,9 +91,12 @@ public class DataFileListView extends Composite {
         });
         grid.addColumn(deleteButton);
         scrollPanel.add(grid);
+
+        dataProvider = new ListDataProvider<DataFileRow>();
+        dataProvider.addDataDisplay(grid);
     }
 
     public void setRows(List<DataFileRow> rows) {
-        grid.setRowData(rows);
+        dataProvider.setList(new ArrayList<DataFileRow>(rows));
     }
 }

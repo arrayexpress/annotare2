@@ -5,6 +5,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
@@ -35,4 +36,6 @@ public interface SubmissionServiceAsync {
     void loadExperiment(int id, AsyncCallback<ExperimentProfile> async);
 
     void updateExperiment(int id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentProfile> async);
+
+    void loadDataFiles(int id, AsyncCallback<List<DataFileRow>> async);
 }

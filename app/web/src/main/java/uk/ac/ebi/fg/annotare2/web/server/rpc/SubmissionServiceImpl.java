@@ -36,6 +36,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
@@ -47,11 +48,15 @@ import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperiment;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiArrayDesignDetails;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiDataFileRows;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiSubmissionDetails;
 
 /**
  * @author Olga Melnichuk
@@ -72,7 +77,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = submissionManager.getSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiSubmissionDetails(sb);
+            return uiSubmissionDetails(sb);
         } catch (AccessControlException e) {
             throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
@@ -84,7 +89,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public ArrayDesignDetailsDto getArrayDesignDetails(int id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ArrayDesignSubmission sb = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.VIEW);
-            return UIObjectConverter.uiArrayDesignDetails(sb);
+            return uiArrayDesignDetails(sb);
         } catch (AccessControlException e) {
             throw noPermission(e, Permission.VIEW);
         } catch (RecordNotFoundException e) {
@@ -235,6 +240,18 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw noPermission(e, Permission.UPDATE);
         } catch (DataSerializationException e) {
             throw unexpected(e);
+        }
+    }
+
+    @Override
+    public List<DataFileRow> loadDataFiles(int id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            return uiDataFileRows(submission.getFiles());
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e, Permission.UPDATE);
         }
     }
 

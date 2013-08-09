@@ -20,9 +20,14 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadView;
 
 import java.util.ArrayList;
@@ -35,10 +40,12 @@ import java.util.List;
 public class DataFileUploadActivity extends AbstractActivity {
 
     private final DataFileUploadView view;
+    private final DataFiles dataFiles;
 
     @Inject
-    public DataFileUploadActivity(DataFileUploadView view) {
+    public DataFileUploadActivity(DataFileUploadView view, DataFiles dataFiles) {
         this.view = view;
+        this.dataFiles = dataFiles;
     }
 
     public Activity withPlace(Place place) {
@@ -48,23 +55,30 @@ public class DataFileUploadActivity extends AbstractActivity {
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         panel.setWidget(view);
+        loadAsync();
+        eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
+            @Override
+            public void onDataFilesUpdate(List<DataFileRow> rows) {
+                setFileRows(rows);
+            }
+        });
+    }
 
-        List<DataFileRow> rows = new ArrayList<DataFileRow>();
-        rows.add(new DataFileRow(1,
-                "data.raw.1.zip",
-                "424896a587b9a879c9a66c52bfa76424",
-                "10Mb",
-                new Date()));
-        rows.add(new DataFileRow(2,
-                "data.raw.2.zip",
-                "424896a587b9a879c9a66c52bfa76424",
-                "10Mb",
-                new Date()));
-        rows.add(new DataFileRow(3,
-                "data.raw.3.zip",
-                "424896a587b9a879c9a66c52bfa76424",
-                "10Mb",
-                new Date()));
+    private void loadAsync() {
+        dataFiles.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: can't load file list");
+            }
+
+            @Override
+            public void onSuccess(List<DataFileRow> rows) {
+                setFileRows(rows);
+            }
+        });
+    }
+
+    private void setFileRows(List<DataFileRow> rows) {
         view.setRows(rows);
     }
 }

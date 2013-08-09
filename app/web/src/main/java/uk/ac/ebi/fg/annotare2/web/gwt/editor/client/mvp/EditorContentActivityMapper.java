@@ -40,7 +40,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<SamplesActivity> samplesActivityProvider;
     private final Provider<ExtractAttributesActivity> extractAttributesActivityProvider;
     private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
-    private final Provider<DataFilesActivity> dataFilesActivityProvider;
+    private final Provider<DataAssignmentActivity> dataFilesActivityProvider;
     private final Provider<ProtocolsActivity> protocolsActivityProvider;
 
     private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
@@ -57,7 +57,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<SamplesActivity> samplesActivityProvider,
             Provider<ExtractAttributesActivity> extractAttributesActivityProvider,
             Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
-            Provider<DataFilesActivity> dataFilesActivityProvider,
+            Provider<DataAssignmentActivity> dataFilesActivityProvider,
             Provider<ProtocolsActivity> protocolsActivityProvider,
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
             Provider<IdfPreviewActivity> idfPreviewActivityProvider,
