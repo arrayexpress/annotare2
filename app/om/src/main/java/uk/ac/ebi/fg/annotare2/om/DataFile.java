@@ -30,10 +30,8 @@ public class DataFile {
 
     private String digest;
 
-    public DataFile(int id, String name, String digest) {
-        this.id = id;
+    public DataFile(String name) {
         this.name = name;
-        this.digest = digest;
         created = new Date();
     }
 
@@ -45,8 +43,16 @@ public class DataFile {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getDigest() {
         return digest;
+    }
+
+    public void setDigest(String digest) {
+        this.digest = digest;
     }
 
     public Date getCreated() {
