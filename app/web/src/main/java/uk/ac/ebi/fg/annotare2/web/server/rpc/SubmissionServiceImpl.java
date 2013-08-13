@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
+import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
@@ -42,21 +43,21 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateComm
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
+import uk.ac.ebi.fg.annotare2.web.server.services.datafiles.DataFileManager;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperiment;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiArrayDesignDetails;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiDataFileRows;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiSubmissionDetails;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 
 /**
  * @author Olga Melnichuk
@@ -66,11 +67,14 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     private final SubmissionManager submissionManager;
+    private final DataFileManager dataFileManager;
 
     @Inject
-    public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager) {
+    public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
+                                 DataFileManager dataFileManager) {
         super(authService);
         this.submissionManager = submissionManager;
+        this.dataFileManager = dataFileManager;
     }
 
     @Override
@@ -252,6 +256,21 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e, Permission.UPDATE);
+        }
+    }
+
+    @Override
+    public void uploadDataFile(int id, String fileName) throws ResourceNotFoundException, NoPermissionException {
+        //TODO
+        try {
+            FileItem fileItem = UploadedFiles.get(getSession(), fileName);
+            File tmp = File.createTempFile("annotare", "upload");
+            fileItem.write(tmp);
+            dataFileManager.upload(tmp);
+        } catch (FileNotFoundException e) {
+            throw unexpected(e);
+        } catch (Exception e) {
+            throw unexpected(e);
         }
     }
 

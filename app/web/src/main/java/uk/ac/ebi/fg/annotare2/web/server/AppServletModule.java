@@ -22,8 +22,10 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import gwtupload.server.UploadServlet;
+import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.dao.dummy.DataFileDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
 import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
@@ -34,6 +36,8 @@ import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
+import uk.ac.ebi.fg.annotare2.web.server.services.datafiles.CopyFileMessageQueue;
+import uk.ac.ebi.fg.annotare2.web.server.services.datafiles.DataFileManager;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
@@ -100,8 +104,12 @@ public class AppServletModule extends ServletModule {
 
         bind(UserDao.class).to(UserDaoDummy.class).in(SINGLETON);
         bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(SINGLETON);
+        bind(DataFileDao.class).to(DataFileDaoDummy.class).in(SINGLETON);
+
+        bind(CopyFileMessageQueue.class).in(SINGLETON);
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).in(SINGLETON);
+        bind(DataFileManager.class).in(SINGLETON);
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);

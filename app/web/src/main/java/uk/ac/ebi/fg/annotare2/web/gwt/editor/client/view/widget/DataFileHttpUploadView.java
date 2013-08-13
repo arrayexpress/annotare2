@@ -39,6 +39,8 @@ public class DataFileHttpUploadView extends Composite {
     @UiField
     FlowPanel panel;
 
+    private Presenter presenter;
+
     interface Binder extends UiBinder<Widget, DataFileHttpUploadView> {
         Binder BINDER = GWT.create(Binder.class);
     }
@@ -63,9 +65,20 @@ public class DataFileHttpUploadView extends Composite {
             public void onFinish(IUploader iuploader) {
                 if (iuploader.getStatus() == SUCCESS) {
                     iuploader.getWidget().removeFromParent();
+                    if (presenter != null) {
+                        presenter.fileUploaded(iuploader.getFileName());
+                    }
                 }
             }
         });
         panel.add(uploader);
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public interface Presenter {
+        void fileUploaded(String name);
     }
 }

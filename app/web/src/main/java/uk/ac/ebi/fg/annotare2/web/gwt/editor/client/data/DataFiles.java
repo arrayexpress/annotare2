@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
@@ -68,5 +69,19 @@ public class DataFiles {
         if (!fileRows.equals(newFileRows)) {
             eventBus.fireEvent(new DataFilesUpdateEvent());
         }
+    }
+
+    public void uploadFile(String name) {
+        submissionServiceAsync.uploadDataFile(getSubmissionId(), name, new AsyncCallbackWrapper<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: can't finish file uploading");
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                //do nothing
+            }
+        });
     }
 }

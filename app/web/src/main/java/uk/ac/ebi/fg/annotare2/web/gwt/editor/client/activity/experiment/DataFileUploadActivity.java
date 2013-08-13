@@ -24,6 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import com.sun.java_cup.internal.runtime.virtual_parse_stack;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class DataFileUploadActivity extends AbstractActivity {
+public class DataFileUploadActivity extends AbstractActivity implements DataFileUploadView.Presenter {
 
     private final DataFileUploadView view;
     private final DataFiles dataFiles;
@@ -55,6 +56,7 @@ public class DataFileUploadActivity extends AbstractActivity {
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         panel.setWidget(view);
+        view.setPresenter(this);
         loadAsync();
         eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
@@ -80,5 +82,10 @@ public class DataFileUploadActivity extends AbstractActivity {
 
     private void setFileRows(List<DataFileRow> rows) {
         view.setRows(rows);
+    }
+
+    @Override
+    public void fileUploaded(String name) {
+        dataFiles.uploadFile(name);
     }
 }

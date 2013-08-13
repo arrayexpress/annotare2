@@ -64,7 +64,7 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
         try {
             ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.UPDATE);
 
-            FileItem item = UploadedFiles.getOne(getSession());
+            FileItem item = UploadedFiles.getFirst(getSession());
             Table table = new AdfParser().parseBody(item.getInputStream());
 
             //TODO validation here

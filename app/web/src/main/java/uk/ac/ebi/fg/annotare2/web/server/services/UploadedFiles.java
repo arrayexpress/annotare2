@@ -29,11 +29,22 @@ public class UploadedFiles {
 
     private static final String GWTUPLOAD_ATTRIBUTE_NAME = "LAST_FILES";
 
-    public static FileItem getOne(HttpSession session) throws FileNotFoundException {
+    public static FileItem getFirst(HttpSession session) throws FileNotFoundException {
         ArrayList<FileItem> items = (ArrayList<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
         if (items.isEmpty()) {
             throw new FileNotFoundException("Can't find the uploaded file.");
         }
         return items.get(0);
     }
+
+    public static FileItem get(HttpSession session, String fileName) throws FileNotFoundException {
+        ArrayList<FileItem> items = (ArrayList<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        for (FileItem item : items) {
+            if (item.getName().equals(fileName)) {
+                return item;
+            }
+        }
+        throw new FileNotFoundException("Can't find the uploaded file.");
+    }
+
 }

@@ -61,4 +61,6 @@ public interface SubmissionService extends RemoteService {
     ExperimentProfile updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 
     List<DataFileRow> loadDataFiles(int id) throws ResourceNotFoundException, NoPermissionException;
+
+    void uploadDataFile(int id, String fileName) throws ResourceNotFoundException, NoPermissionException;
 }

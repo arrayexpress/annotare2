@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment;
+package uk.ac.ebi.fg.annotare2.dao.dummy;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
-
-import java.util.List;
+import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
+import uk.ac.ebi.fg.annotare2.om.DataFile;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileUploadView extends IsWidget {
+public class DataFileDaoDummy implements DataFileDao {
 
-    void setRows(List<DataFileRow> rows);
-
-    void setPresenter(Presenter presenter);
-
-    interface Presenter extends DataFileHttpUploadView.Presenter {}
+    @Override
+    public void save(DataFile dataFile) {
+        //TODO
+    }
 }

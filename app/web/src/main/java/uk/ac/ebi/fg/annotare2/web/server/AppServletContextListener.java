@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
+import com.google.common.util.concurrent.Service;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
+import uk.ac.ebi.fg.annotare2.web.server.services.datafiles.CopyFileMessageQueue;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -32,10 +34,12 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
+import static com.google.inject.internal.util.$Lists.newArrayList;
 import static com.google.inject.util.Modules.override;
 import static org.reflections.util.ClasspathHelper.*;
 
@@ -47,6 +51,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(AppServletContextListener.class);
 
     private Set<URL> libPaths = newHashSet();
+    private List<Service> servicesToStop = newArrayList();
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -59,9 +64,23 @@ public class AppServletContextListener extends GuiceServletContextListener {
     }
 
     @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        for (Service service : servicesToStop) {
+            service.stop();
+        }
+        super.contextDestroyed(servletContextEvent);
+    }
+
+    @Override
     protected Injector getInjector() {
-        return Guice.createInjector(Stage.DEVELOPMENT,
+        Injector injector = Guice.createInjector(Stage.DEVELOPMENT,
                 override(new CheckerModule()).with(new AppServletModule(libPaths)));
+
+        Service service = injector.getInstance(CopyFileMessageQueue.class);
+        service.start();
+        servicesToStop.add(service);
+
+        return injector;
     }
 
     private void initEnvironment() {

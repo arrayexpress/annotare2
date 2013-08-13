@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.datafiles;
 
+import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 
 import java.io.File;
@@ -23,12 +25,29 @@ import java.io.File;
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileManager {
+public class DataFileManager {
+
+    private final DataFileDao dataFileDao;
+    private final CopyFileMessageQueue messageQueue;
+
+    @Inject
+    public DataFileManager(DataFileDao dataFileDao, CopyFileMessageQueue messageQueue) {
+        this.dataFileDao = dataFileDao;
+        this.messageQueue = messageQueue;
+    }
 
     /**
      * Creates {@link DataFile} record in the database and schedules a task to copy the file into a file store.
+     *
      * @param file file to be copied
      * @return {@Link DataFile] record
      */
-    DataFile upload(File file);
+    public DataFile upload(File file) {
+        DataFile dataFile = new DataFile(file.getName());
+        //do this in transaction{
+        dataFileDao.save(dataFile);
+        messageQueue.offer(dataFile);
+        //}
+        return dataFile;
+    }
 }

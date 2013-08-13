@@ -38,4 +38,6 @@ public interface SubmissionServiceAsync {
     void updateExperiment(int id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentProfile> async);
 
     void loadDataFiles(int id, AsyncCallback<List<DataFileRow>> async);
+
+    void uploadDataFile(int id, String fileName, AsyncCallback<Void> async);
 }

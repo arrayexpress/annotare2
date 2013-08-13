@@ -27,7 +27,7 @@
         <g:tab>
             <g:header>HTTP Upload</g:header>
             <g:ScrollPanel>
-                <my:DataFileHttpUploadView/>
+                <my:DataFileHttpUploadView ui:field="dataFileHttpUploadView"/>
             </g:ScrollPanel>
         </g:tab>
         <g:tab>
