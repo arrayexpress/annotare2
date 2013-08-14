@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services.datafiles;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 
+import javax.jms.JMSException;
 import java.io.File;
 
 /**
@@ -27,7 +30,10 @@ import java.io.File;
  */
 public class DataFileManager {
 
+    private static final Logger log = LoggerFactory.getLogger(DataFileManager.class);
+
     private final DataFileDao dataFileDao;
+
     private final CopyFileMessageQueue messageQueue;
 
     @Inject
@@ -44,9 +50,15 @@ public class DataFileManager {
      */
     public DataFile upload(File file) {
         DataFile dataFile = new DataFile(file.getName());
-        //do this in transaction{
-        dataFileDao.save(dataFile);
-        messageQueue.offer(dataFile);
+        //todo: do this in transaction{
+        try {
+            dataFileDao.save(dataFile);
+            messageQueue.offer(dataFile);
+        } catch (JMSException e) {
+            log.error("JMS error; please see logs for details", e);
+            // transaction rollback
+            return null;
+        }
         //}
         return dataFile;
     }

@@ -36,8 +36,8 @@ import uk.ac.ebi.fg.annotare2.web.server.login.*;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
-import uk.ac.ebi.fg.annotare2.web.server.services.datafiles.CopyFileMessageQueue;
-import uk.ac.ebi.fg.annotare2.web.server.services.datafiles.DataFileManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.CopyFileMessageQueue;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;

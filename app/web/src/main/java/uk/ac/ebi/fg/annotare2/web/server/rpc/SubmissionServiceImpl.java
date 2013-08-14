@@ -46,7 +46,7 @@ import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
-import uk.ac.ebi.fg.annotare2.web.server.services.datafiles.DataFileManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 
 import java.io.File;
 import java.io.FileInputStream;

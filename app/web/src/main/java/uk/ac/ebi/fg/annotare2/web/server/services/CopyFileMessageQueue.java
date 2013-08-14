@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services.datafiles;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.util.concurrent.AbstractIdleService;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -32,20 +32,21 @@ import javax.jms.*;
 public class CopyFileMessageQueue extends AbstractIdleService {
 
     private static final Logger log = LoggerFactory.getLogger(CopyFileMessageQueue.class);
-    private static final String TOPIC = "FILES_TO_COPY_QUEUE";
+
+    private static final String TOPIC = "FILE_COPY_QUEUE";
 
     private final BrokerService broker;
-    private final MessageSubscriber messageSubscriber;
+    private final CopyFileMessageListener copyFileMessageListener;
 
     public CopyFileMessageQueue() {
         broker = new BrokerService();
         broker.setBrokerName("localhost");
         broker.setUseJmx(false);
 
-        messageSubscriber = new MessageSubscriber();
+        copyFileMessageListener = new CopyFileMessageListener();
     }
 
-    public void offer(DataFile dataFile) {
+    public void offer(DataFile dataFile) throws JMSException {
         //TODO send a real message here
         send();
     }
@@ -56,19 +57,18 @@ public class CopyFileMessageQueue extends AbstractIdleService {
         broker.start();
 
         Thread.sleep(3000);
-        messageSubscriber.startListening();
+        copyFileMessageListener.startListening();
     }
 
     @Override
     protected void shutDown() throws Exception {
-        messageSubscriber.stopListening();
+        copyFileMessageListener.stopListening();
 
         log.info("Stopping JMS broker...");
         broker.stop();
     }
 
-    private void send() {
-        try {
+    private void send() throws JMSException {
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?create=false");
             Connection connection = connectionFactory.createConnection();
             connection.start();
@@ -83,34 +83,31 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             String text = "Hello world! From: " + Thread.currentThread().getName() + " : " + this.hashCode();
             TextMessage message = session.createTextMessage(text);
 
-            log.debug("Sent message: " + message.hashCode() + " : " + Thread.currentThread().getName());
+            log.debug("Sent message: '{}' : {}", message.hashCode(), Thread.currentThread().getName());
             producer.send(message);
 
             session.close();
             connection.close();
-        } catch (Exception e) {
-            log.error("can't send message", e);
-        }
     }
 
-    private static class MessageSubscriber implements MessageListener {
+    private static class CopyFileMessageListener implements MessageListener {
         private Connection connection;
 
         public void startListening() {
-            log.info("Starting to listen JMS topic: " + TOPIC);
+            log.info("Starting to listen JMS topic: {}", TOPIC);
 
             try {
                 ConnectionFactory factory = new ActiveMQConnectionFactory("vm://localhost?create=false");
                 connection = factory.createConnection();
-                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Topic topic = session
-                        .createTopic(TOPIC);
-                MessageConsumer consumer = session.createConsumer(topic);
+                Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+                Destination destination = session.createQueue(TOPIC);
+
+                MessageConsumer consumer = session.createConsumer(destination);
                 consumer.setMessageListener(this);
 
                 connection.start();
             } catch (JMSException e) {
-                log.error("MessageSubscriber can't start listening", e);
+                log.error("The message listener is failed to start", e);
             }
         }
 
@@ -121,7 +118,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     connection.close();
                 }
             } catch (JMSException e) {
-                log.error("MessageSubscriber can't stop listening");
+                log.error("The message listener is failed to stop", e);
             }
         }
 
@@ -129,7 +126,8 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             if (message instanceof TextMessage) {
                 TextMessage txtMsg = (TextMessage) message;
                 try {
-                    log.debug("got message: " + txtMsg.getText());
+                    log.debug("got message: {}", txtMsg.getText());
+                    message.acknowledge();
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }
