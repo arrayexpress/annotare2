@@ -31,7 +31,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import java.net.URL;
 import java.util.List;
@@ -55,19 +54,18 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        initLibraryPaths(servletContextEvent.getServletContext());
+        findMageTabCheckAnnotationPackages();
 
-        initEnvironment();
+        lookupPropertiesInContext();
 
+        //todo: not used any more, need to be moved out
         Magetab.init();
         super.contextInitialized(servletContextEvent);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        for (Service service : servicesToStop) {
-            service.stop();
-        }
+        stopServices();
         super.contextDestroyed(servletContextEvent);
     }
 
@@ -76,14 +74,25 @@ public class AppServletContextListener extends GuiceServletContextListener {
         Injector injector = Guice.createInjector(Stage.DEVELOPMENT,
                 override(new CheckerModule()).with(new AppServletModule(libPaths)));
 
-        Service service = injector.getInstance(CopyFileMessageQueue.class);
-        service.start();
-        servicesToStop.add(service);
-
+        startServices(injector);
         return injector;
     }
 
-    private void initEnvironment() {
+    private void startServices(Injector injector) {
+        log.info("Starting services on context init");
+        Service service = injector.getInstance(CopyFileMessageQueue.class);
+        service.start();
+        servicesToStop.add(service);
+    }
+
+    private void stopServices() {
+        log.info("Stopping services on context destroy");
+        for (Service service : servicesToStop) {
+            service.stop();
+        }
+    }
+
+    private void lookupPropertiesInContext() {
         try {
             Context context = new InitialContext();
             setSystemProperty("annotare.properties", (String) lookup(context, "java:comp/env/annotareProperties"));
@@ -97,19 +106,19 @@ public class AppServletContextListener extends GuiceServletContextListener {
         try {
             return context.lookup(name);
         } catch (NameNotFoundException e) {
-            log.info("name '" + name + "' not found in the naming context");
+            log.debug("name '{}' not found in the naming context", name);
             return null;
         }
     }
 
     private void setSystemProperty(String name, String value) {
         if (!isNullOrEmpty(value)) {
-            log.info("setSystemProperty(" + name + "," + value + ")");
+            log.info("set: {}='{}'", name, value);
             System.setProperty(name, value);
         }
     }
 
-    private void initLibraryPaths(ServletContext context) {
+    private void findMageTabCheckAnnotationPackages() {
         /* note: better not to use forWebInfLib(), as you can't rely on servletContext.getResource(...) */
         //todo: move package names with magetabcheck annotations to the config
         libPaths.addAll(forPackage("uk.ac.ebi.fg.annotare2.magetabcheck.checks"));
