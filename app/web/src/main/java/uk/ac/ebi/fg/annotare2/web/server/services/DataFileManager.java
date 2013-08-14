@@ -53,7 +53,7 @@ public class DataFileManager {
         //todo: do this in transaction{
         try {
             dataFileDao.save(dataFile);
-            messageQueue.offer(dataFile);
+            messageQueue.offer(file, dataFile);
         } catch (JMSException e) {
             log.error("JMS error; please see logs for details", e);
             // transaction rollback

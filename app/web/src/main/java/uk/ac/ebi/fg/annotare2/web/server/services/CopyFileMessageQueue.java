@@ -19,12 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.common.util.concurrent.AbstractIdleService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 
 import javax.jms.*;
+import java.io.File;
 
 /**
  * @author Olga Melnichuk
@@ -33,22 +33,23 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
     private static final Logger log = LoggerFactory.getLogger(CopyFileMessageQueue.class);
 
-    private static final String TOPIC = "FILE_COPY_QUEUE";
-
     private final BrokerService broker;
-    private final CopyFileMessageListener copyFileMessageListener;
+    private final CopyFileMessageConsumer consumer;
+    private final CopyFileMessageProducer producer;
 
     public CopyFileMessageQueue() {
         broker = new BrokerService();
         broker.setBrokerName("localhost");
         broker.setUseJmx(false);
+        // todo broker.setDataDirectory();
 
-        copyFileMessageListener = new CopyFileMessageListener();
+        String topic = "COPY_FILE_QUEUE";
+        producer = new CopyFileMessageProducer("vm://localhost?create=false", topic);
+        consumer = new CopyFileMessageConsumer("vm://localhost?create=false", topic, new CopyFileMessageListener());
     }
 
-    public void offer(DataFile dataFile) throws JMSException {
-        //TODO send a real message here
-        send();
+    public void offer(File source, DataFile destination) throws JMSException {
+        producer.send(new CopyFileMessage(source, destination));
     }
 
     @Override
@@ -57,83 +58,184 @@ public class CopyFileMessageQueue extends AbstractIdleService {
         broker.start();
 
         Thread.sleep(3000);
-        copyFileMessageListener.startListening();
+        consumer.startListening();
     }
 
     @Override
     protected void shutDown() throws Exception {
-        copyFileMessageListener.stopListening();
+        consumer.stopListening();
 
         log.info("Stopping JMS broker...");
         broker.stop();
+        broker.waitUntilStopped();
     }
 
-    private void send() throws JMSException {
-            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?create=false");
+    private static class CopyFileMessageProducer {
+
+        private final String brokerUrl;
+        private final String queueTopic;
+
+        public CopyFileMessageProducer(String brokerUrl, String queueTopic) {
+            this.brokerUrl = brokerUrl;
+            this.queueTopic = queueTopic;
+        }
+
+        private void send(CopyFileMessage message) throws JMSException {
+            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
             Connection connection = connectionFactory.createConnection();
-            connection.start();
+            Session session = null;
+            MessageProducer producer = null;
+            try {
+                connection.start();
 
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            Destination destination = session.createQueue(TOPIC);
+                producer = session.createProducer(session.createQueue(queueTopic));
+                producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
-            MessageProducer producer = session.createProducer(destination);
-            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                TextMessage textMessage = session.createTextMessage(message.asString());
 
-            String text = "Hello world! From: " + Thread.currentThread().getName() + " : " + this.hashCode();
-            TextMessage message = session.createTextMessage(text);
+                log.debug("Sent message: '{}' : {}", textMessage.getText(), Thread.currentThread().getName());
+                producer.send(textMessage);
 
-            log.debug("Sent message: '{}' : {}", message.hashCode(), Thread.currentThread().getName());
-            producer.send(message);
-
-            session.close();
-            connection.close();
+            } finally {
+                if (producer != null) {
+                    try {
+                        producer.close();
+                    } catch (JMSException e) {
+                        // ignore
+                    }
+                }
+                if (session != null) {
+                    try {
+                        session.close();
+                    } catch (JMSException e) {
+                        // ignore
+                    }
+                }
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    // ignore
+                }
+            }
+        }
     }
 
-    private static class CopyFileMessageListener implements MessageListener {
+    private static class CopyFileMessageConsumer {
+
+        private final String brokerUrl;
+        private final String queueTopic;
+        private final CopyFileMessageListener listener;
         private Connection connection;
 
+        public CopyFileMessageConsumer(String brokerUrl, String queueTopic, CopyFileMessageListener listener) {
+            this.brokerUrl = brokerUrl;
+            this.queueTopic = queueTopic;
+            this.listener = listener;
+        }
+
         public void startListening() {
-            log.info("Starting to listen JMS topic: {}", TOPIC);
+            log.info("Starting to listen JMS topic: {}", queueTopic);
 
             try {
-                ConnectionFactory factory = new ActiveMQConnectionFactory("vm://localhost?create=false");
+                ConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
                 connection = factory.createConnection();
-                Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-                Destination destination = session.createQueue(TOPIC);
-
-                MessageConsumer consumer = session.createConsumer(destination);
-                consumer.setMessageListener(this);
-
                 connection.start();
+
+                // We don't want to use AUTO_ACKNOWLEDGE, instead we want to ensure the subscriber has successfully
+                // processed the message before telling ActiveMQ to remove it, so we will use CLIENT_ACKNOWLEDGE
+                Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+                MessageConsumer consumer = session.createConsumer(session.createQueue(queueTopic));
+                consumer.setMessageListener(listener);
             } catch (JMSException e) {
-                log.error("The message listener is failed to start", e);
+                log.error("JMS queue listener is failed to start", e);
             }
         }
 
         public void stopListening() {
-            log.info("Stopping to listen JMS topic: " + TOPIC);
+            log.info("Stopping to listen JMS topic: {}", queueTopic);
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (JMSException e) {
-                log.error("The message listener is failed to stop", e);
-            }
-        }
-
-        public void onMessage(Message message) {
-            if (message instanceof TextMessage) {
-                TextMessage txtMsg = (TextMessage) message;
-                try {
-                    log.debug("got message: {}", txtMsg.getText());
-                    message.acknowledge();
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
+                // ignore
             }
         }
     }
 
+    private static class CopyFileMessage {
 
+        private static String DELIM = ",";
+        private int destinationId;
+        private String sourcePath;
+
+        public CopyFileMessage(File source, DataFile destination) {
+            this(source.getAbsolutePath(), destination.getId());
+        }
+
+        private CopyFileMessage(String sourcePath, int destinationId) {
+            this.destinationId = destinationId;
+            this.sourcePath = sourcePath;
+        }
+
+        public int getDestinationId() {
+            return destinationId;
+        }
+
+        public String getSourcePath() {
+            return sourcePath;
+        }
+
+        public String asString() {
+            return destinationId + DELIM + sourcePath;
+        }
+
+        public static CopyFileMessage fromString(String str) {
+            int index = str.indexOf(DELIM);
+            if (index > 0) {
+                try {
+                    int destId = Integer.parseInt(str.substring(0, index));
+                    String sourcePath = str.substring(index + 1);
+                    return new CopyFileMessage(sourcePath, destId);
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            }
+            log.error("Wrong message format: ", str);
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "CopyFileMessage{" +
+                    "destinationId=" + destinationId +
+                    ", sourcePath='" + sourcePath + '\'' +
+                    '}';
+        }
+    }
+
+    private static class CopyFileMessageListener implements MessageListener {
+
+        private CopyFileMessageListener() {
+        }
+
+        @Override
+        public void onMessage(Message message) {
+            if (message instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) message;
+                try {
+                    log.debug("Received message: {}, {}", textMessage.getText(), Thread.currentThread().getName());
+                    CopyFileMessage obj = CopyFileMessage.fromString(textMessage.getText());
+                    log.debug("Restored message object: {}", obj);
+                    // todo copy file to file store and update status
+                    message.acknowledge();
+                } catch (JMSException e) {
+                    log.error("JMS message receive failure", e);
+                }
+            }
+        }
+
+    }
 }
