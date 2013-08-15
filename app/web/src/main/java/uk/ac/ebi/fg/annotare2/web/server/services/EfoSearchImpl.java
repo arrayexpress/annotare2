@@ -222,7 +222,7 @@ public class EfoSearchImpl implements EfoSearch {
     private List<Document> runDocumentQuery(Query query, int maxHits) throws IOException, ParseException {
         IndexReader reader = null;
         try {
-            reader = DirectoryReader.open(FSDirectory.open(new File(properties.getEfoIndexDir())));
+            reader = DirectoryReader.open(FSDirectory.open(properties.getEfoIndexDir()));
             IndexSearcher searcher = new IndexSearcher(reader);
             log.debug("Searching for: " + query.toString());
 
@@ -280,9 +280,9 @@ public class EfoSearchImpl implements EfoSearch {
         IndexWriter writer = null;
         try {
             long start = System.currentTimeMillis();
-            log.info("Indexing to directory '" + properties.getEfoIndexDir() + "'...");
+            log.info("Indexing to directory '{}'...", properties.getEfoIndexDir());
 
-            Directory dir = FSDirectory.open(new File(properties.getEfoIndexDir()));
+            Directory dir = FSDirectory.open(properties.getEfoIndexDir());
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
             IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_43, analyzer);
 

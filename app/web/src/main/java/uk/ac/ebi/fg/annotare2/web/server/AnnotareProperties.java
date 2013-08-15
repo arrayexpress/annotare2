@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,20 +42,51 @@ public class AnnotareProperties {
 
     private final Properties properties;
 
+    private final File tempDir;
+
     @Inject
     public AnnotareProperties(MageTabCheckProperties mageTabCheckProperties) {
         this.mageTabCheckProperties = mageTabCheckProperties;
         properties = load();
+
+        tempDir = new File(System.getProperty("java.io.tmpdir"));
     }
 
-    public String getEfoIndexDir() {
-        return getProperty("efo.index.dir");
+    public File getEfoIndexDir() {
+        return getDirProperty("efo.index.dir");
+    }
+
+    public File getHttpUploadDir() {
+        return getDirProperty("httpupload.temp.dir");
+    }
+
+    public File getFilePickUpDir() {
+        return getDirProperty("pickup.dir");
+    }
+
+    public File getDataStoreDir() {
+        return getDirProperty("datastore.dir");
+    }
+
+    public File getExportDir() {
+        return getDirProperty("export.dir");
+    }
+
+    private File getDirProperty(String name) {
+        String property = getProperty(name);
+        File dir = property == null ? new File(tempDir, name.replaceAll(".","-")) :
+                new File(property);
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
+                log.error("Can't create directory: {}", dir);
+            }
+        }
+        return dir;
     }
 
     public EfoServiceProperties getEfoServiceProperties() {
         return mageTabCheckProperties;
     }
-
 
     private String getProperty(String key) {
         return properties.getProperty(key);
