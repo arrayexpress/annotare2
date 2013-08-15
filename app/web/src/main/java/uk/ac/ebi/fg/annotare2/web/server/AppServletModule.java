@@ -115,6 +115,7 @@ public class AppServletModule extends ServletModule {
         bind(AllRpcServicePaths.class).toInstance(allRpc);
 
         bind(AnnotareProperties.class).asEagerSingleton();
+        bind(DataFileStore.Properties.class).to(AnnotareProperties.class);
         bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
         bind(AnnotareEfoService.class).in(SINGLETON);
 

@@ -38,6 +38,10 @@ import java.util.List;
  */
 public class DataFileListView extends Composite {
 
+    public static final long KB = 1024;
+    public static final long MB = KB * KB;
+    public static final long GB = MB * KB;
+
     private ListDataProvider<DataFileRow> dataProvider;
 
     public DataFileListView() {
@@ -58,7 +62,7 @@ public class DataFileListView extends Composite {
         grid.addColumn(new Column<DataFileRow, String>(new TextCell()) {
             @Override
             public String getValue(DataFileRow object) {
-                return object.getSize();
+                return object.getSize() + " | " + formatFileSize(object.getSize());
             }
         });
 
@@ -98,5 +102,17 @@ public class DataFileListView extends Composite {
 
     public void setRows(List<DataFileRow> rows) {
         dataProvider.setList(new ArrayList<DataFileRow>(rows));
+    }
+
+    private static String formatFileSize(long size) {
+        if (size < KB) {
+            return size + " bytes";
+        } else if (size < MB) {
+            return ((size * 1.0) / KB) + " KB";
+        } else if (size < GB) {
+            return ((size * 1.0) / MB) + " MB";
+        } else {
+            return ((size * 10) / GB) + " MB";
+        }
     }
 }

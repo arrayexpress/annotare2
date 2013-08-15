@@ -24,10 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
-import uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus;
 
 import javax.jms.*;
 import java.io.File;
+import java.io.IOException;
 
 import static uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus.ERROR;
 import static uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus.STORED;
@@ -258,17 +258,21 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 return;
             }
 
-            File file = message.getSource();
-            if (file.exists() && !file.isDirectory()) {
-                String digest = fileStore.store(file);
-                dataFile.setDigest(digest);
-                dataFile.setStatus(STORED);
-                return;
-            } else {
-                log.error("File doesn't exist or is a directory: {}", file);
+            try {
+                File file = message.getSource();
+                if (file.exists() && !file.isDirectory()) {
+                    String digest = fileStore.store(file);
+                    dataFile.setDigest(digest);
+                    dataFile.setSize(fileStore.getSize(digest));
+                    dataFile.setStatus(STORED);
+                    return;
+                } else {
+                    log.error("File doesn't exist or is a directory: {}", file);
+                }
+            } catch (IOException e) {
+                log.error("Can't store file in the file store", e);
             }
             dataFile.setStatus(ERROR);
         }
-
     }
 }

@@ -16,13 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoServiceProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileStore;
 
 import java.io.*;
 import java.util.Properties;
@@ -32,7 +32,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
-public class AnnotareProperties {
+public class AnnotareProperties implements DataFileStore.Properties {
 
     private static final Logger log = LoggerFactory.getLogger(AnnotareProperties.class);
 

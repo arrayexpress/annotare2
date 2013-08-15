@@ -30,7 +30,7 @@ public class DataFileRow implements IsSerializable, HasIdentity {
 
     private String name;
 
-    private String size;
+    private long size;
 
     private Date created;
 
@@ -40,7 +40,7 @@ public class DataFileRow implements IsSerializable, HasIdentity {
         /* used by GWT serialization */
     }
 
-    public DataFileRow(int id, String name, String md5, String size, Date created) {
+    public DataFileRow(int id, String name, String md5, long size, Date created) {
         this.id = id;
         this.name = name;
         this.size = size;
@@ -56,7 +56,7 @@ public class DataFileRow implements IsSerializable, HasIdentity {
         return name;
     }
 
-    public String getSize() {
+    public long getSize() {
         return size;
     }
 

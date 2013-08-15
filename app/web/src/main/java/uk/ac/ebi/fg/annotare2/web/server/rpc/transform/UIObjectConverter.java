@@ -106,7 +106,7 @@ public class UIObjectConverter {
                     dataFile.getId(),
                     dataFile.getName(),
                     dataFile.getDigest(),
-                    "0", /* todo */
+                    dataFile.getSize(),
                     dataFile.getCreated()
             );
         }
