@@ -19,13 +19,27 @@ package uk.ac.ebi.fg.annotare2.dao.dummy;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author Olga Melnichuk
  */
 public class DataFileDaoDummy implements DataFileDao {
 
+    private final ConcurrentMap<Integer, DataFile> items = new ConcurrentHashMap<Integer, DataFile>();
+    private AtomicInteger id = new AtomicInteger(0);
+
     @Override
-    public void save(DataFile dataFile) {
-        //TODO
+    public DataFile get(int id) {
+        return items.get(id);
+    }
+
+    @Override
+    public DataFile create(String fileName) {
+        DataFile file = new DataFile(fileName, id.incrementAndGet());
+        items.putIfAbsent(file.getId(), file);
+        return file;
     }
 }

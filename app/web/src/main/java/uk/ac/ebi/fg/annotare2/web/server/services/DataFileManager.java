@@ -49,15 +49,14 @@ public class DataFileManager {
      * @return {@Link DataFile] record
      */
     public DataFile upload(File file) {
-        DataFile dataFile = new DataFile(file.getName());
+        DataFile dataFile = null;
         //todo: do this in transaction{
         try {
-            dataFileDao.save(dataFile);
+            dataFile = dataFileDao.create(file.getName());
             messageQueue.offer(file, dataFile);
         } catch (JMSException e) {
             log.error("JMS error; please see logs for details", e);
             // transaction rollback
-            return null;
         }
         //}
         return dataFile;

@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
-
-import uk.ac.ebi.fg.annotare2.om.DataFile;
+package uk.ac.ebi.fg.annotare2.om.enums;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileDao {
-
-    DataFile get(int id);
-
-    DataFile create(String fileName);
+public enum DataFileStatus {
+    TO_BE_STORED, STORED, ERROR
 }

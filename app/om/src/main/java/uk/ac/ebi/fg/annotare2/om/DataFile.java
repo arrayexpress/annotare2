@@ -15,7 +15,11 @@
  */
 package uk.ac.ebi.fg.annotare2.om;
 
+import uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus;
+
 import java.util.Date;
+
+import static uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus.TO_BE_STORED;
 
 /**
  * @author Olga Melnichuk
@@ -30,9 +34,13 @@ public class DataFile {
 
     private String digest;
 
-    public DataFile(String name) {
+    private DataFileStatus status;
+
+    public DataFile(String name, int id) {
         this.name = name;
+        this.id = id;
         created = new Date();
+        status = TO_BE_STORED;
     }
 
     public String getName() {
@@ -41,10 +49,6 @@ public class DataFile {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getDigest() {
@@ -57,6 +61,14 @@ public class DataFile {
 
     public Date getCreated() {
         return created;
+    }
+
+    public DataFileStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DataFileStatus status) {
+        this.status = status;
     }
 
     @Override

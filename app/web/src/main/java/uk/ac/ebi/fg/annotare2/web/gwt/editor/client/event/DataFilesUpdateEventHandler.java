@@ -26,5 +26,5 @@ import java.util.List;
  */
 public interface DataFilesUpdateEventHandler extends EventHandler {
 
-    void onDataFilesUpdate(List<DataFileRow> fileRows);
+    void onDataFilesUpdate();
 }

@@ -17,14 +17,20 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.inject.Inject;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
+import uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus;
 
 import javax.jms.*;
 import java.io.File;
+
+import static uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus.ERROR;
+import static uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus.STORED;
 
 /**
  * @author Olga Melnichuk
@@ -37,7 +43,8 @@ public class CopyFileMessageQueue extends AbstractIdleService {
     private final CopyFileMessageConsumer consumer;
     private final CopyFileMessageProducer producer;
 
-    public CopyFileMessageQueue() {
+    @Inject
+    public CopyFileMessageQueue(DataFileStore fileStore, DataFileDao fileDao) {
         broker = new BrokerService();
         broker.setBrokerName("localhost");
         broker.setUseJmx(false);
@@ -45,7 +52,8 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
         String topic = "COPY_FILE_QUEUE";
         producer = new CopyFileMessageProducer("vm://localhost?create=false", topic);
-        consumer = new CopyFileMessageConsumer("vm://localhost?create=false", topic, new CopyFileMessageListener());
+        consumer = new CopyFileMessageConsumer("vm://localhost?create=false", topic,
+                new CopyFileMessageListener(fileStore, fileDao));
     }
 
     public void offer(File source, DataFile destination) throws JMSException {
@@ -143,9 +151,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 connection = factory.createConnection();
                 connection.start();
 
-                // We don't want to use AUTO_ACKNOWLEDGE, instead we want to ensure the subscriber has successfully
-                // processed the message before telling ActiveMQ to remove it, so we will use CLIENT_ACKNOWLEDGE
-                Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 MessageConsumer consumer = session.createConsumer(session.createQueue(queueTopic));
                 consumer.setMessageListener(listener);
             } catch (JMSException e) {
@@ -169,13 +175,13 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
         private static String DELIM = ",";
         private int destinationId;
-        private String sourcePath;
+        private File sourcePath;
 
         public CopyFileMessage(File source, DataFile destination) {
-            this(source.getAbsolutePath(), destination.getId());
+            this(source, destination.getId());
         }
 
-        private CopyFileMessage(String sourcePath, int destinationId) {
+        private CopyFileMessage(File sourcePath, int destinationId) {
             this.destinationId = destinationId;
             this.sourcePath = sourcePath;
         }
@@ -184,7 +190,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             return destinationId;
         }
 
-        public String getSourcePath() {
+        public File getSource() {
             return sourcePath;
         }
 
@@ -198,7 +204,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 try {
                     int destId = Integer.parseInt(str.substring(0, index));
                     String sourcePath = str.substring(index + 1);
-                    return new CopyFileMessage(sourcePath, destId);
+                    return new CopyFileMessage(new File(sourcePath), destId);
                 } catch (NumberFormatException e) {
                     // ignore
                 }
@@ -218,7 +224,12 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
     private static class CopyFileMessageListener implements MessageListener {
 
-        private CopyFileMessageListener() {
+        private final DataFileStore fileStore;
+        private final DataFileDao fileDao;
+
+        private CopyFileMessageListener(DataFileStore fileStore, DataFileDao fileDao) {
+            this.fileStore = fileStore;
+            this.fileDao = fileDao;
         }
 
         @Override
@@ -227,14 +238,36 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 TextMessage textMessage = (TextMessage) message;
                 try {
                     log.debug("Received message: {}, {}", textMessage.getText(), Thread.currentThread().getName());
-                    CopyFileMessage obj = CopyFileMessage.fromString(textMessage.getText());
-                    log.debug("Restored message object: {}", obj);
-                    // todo copy file to file store and update status
+                    CopyFileMessage messageObject = CopyFileMessage.fromString(textMessage.getText());
+                    log.debug("Restored message object: {}", messageObject);
+
+                    copyFile(messageObject);
+
                     message.acknowledge();
                 } catch (JMSException e) {
                     log.error("JMS message receive failure", e);
                 }
             }
+        }
+
+        // TODO: just a draft; proper database integration is needed
+        private void copyFile(CopyFileMessage message) {
+            DataFile dataFile = fileDao.get(message.getDestinationId());
+            if (dataFile == null) {
+                log.info("The file record with id='{}' was not found in the database. Skipping the task");
+                return;
+            }
+
+            File file = message.getSource();
+            if (file.exists() && !file.isDirectory()) {
+                String digest = fileStore.store(file);
+                dataFile.setDigest(digest);
+                dataFile.setStatus(STORED);
+                return;
+            } else {
+                log.error("File doesn't exist or is a directory: {}", file);
+            }
+            dataFile.setStatus(ERROR);
         }
 
     }

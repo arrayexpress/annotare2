@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.util.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
@@ -29,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.om.DataFile;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
@@ -42,16 +44,14 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSe
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.server.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
@@ -68,13 +68,15 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
+    private final AnnotareProperties properties;
 
     @Inject
     public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
-                                 DataFileManager dataFileManager) {
+                                 DataFileManager dataFileManager, AnnotareProperties properties) {
         super(authService);
         this.submissionManager = submissionManager;
         this.dataFileManager = dataFileManager;
+        this.properties = properties;
     }
 
     @Override
@@ -241,7 +243,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
-            throw noPermission(e, Permission.UPDATE);
+            throw noPermission(e, Permission.VIEW);
         } catch (DataSerializationException e) {
             throw unexpected(e);
         }
@@ -255,21 +257,27 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
-            throw noPermission(e, Permission.UPDATE);
+            throw noPermission(e, Permission.VIEW);
         }
     }
 
     @Override
     public void uploadDataFile(int id, String fileName) throws ResourceNotFoundException, NoPermissionException {
-        //TODO
         try {
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             FileItem fileItem = UploadedFiles.get(getSession(), fileName);
-            File tmp = File.createTempFile("annotare", "upload");
-            fileItem.write(tmp);
-            dataFileManager.upload(tmp);
+            File file = new File(properties.getHttpUploadDir(), fileName);
+            Streams.copy(fileItem.getInputStream(), new FileOutputStream(file), true);
+            DataFile dataFile = dataFileManager.upload(file);
+            submission.getFiles().add(dataFile);
+            //TODO: save submission
+        } catch (AccessControlException e) {
+            throw noPermission(e, Permission.UPDATE);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         } catch (FileNotFoundException e) {
             throw unexpected(e);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw unexpected(e);
         }
     }

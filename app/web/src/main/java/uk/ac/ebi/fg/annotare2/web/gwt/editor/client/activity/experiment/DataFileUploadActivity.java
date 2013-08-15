@@ -24,15 +24,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import com.sun.java_cup.internal.runtime.virtual_parse_stack;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadView;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,6 +40,8 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
 
     private final DataFileUploadView view;
     private final DataFiles dataFiles;
+
+    private HandlerRegistration handlerRegistration;
 
     @Inject
     public DataFileUploadActivity(DataFileUploadView view, DataFiles dataFiles) {
@@ -55,15 +55,24 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        handlerRegistration = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
+            @Override
+            public void onDataFilesUpdate() {
+                loadAsync();
+            }
+        });
+
         panel.setWidget(view);
         view.setPresenter(this);
         loadAsync();
-        eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
-            @Override
-            public void onDataFilesUpdate(List<DataFileRow> rows) {
-                setFileRows(rows);
-            }
-        });
+    }
+
+    @Override
+    public void onStop() {
+        if (handlerRegistration != null) {
+            handlerRegistration.removeHandler();
+        }
+        super.onStop();
     }
 
     private void loadAsync() {
@@ -75,17 +84,13 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
 
             @Override
             public void onSuccess(List<DataFileRow> rows) {
-                setFileRows(rows);
+                view.setRows(rows);
             }
         });
     }
 
-    private void setFileRows(List<DataFileRow> rows) {
-        view.setRows(rows);
-    }
-
     @Override
     public void fileUploaded(String name) {
-        dataFiles.uploadFile(name);
+        dataFiles.uploadFileAsync(name);
     }
 }

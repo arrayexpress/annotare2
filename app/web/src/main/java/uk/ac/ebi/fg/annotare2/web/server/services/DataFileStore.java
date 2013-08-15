@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import uk.ac.ebi.fg.annotare2.om.DataFile;
+import java.io.File;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileDao {
+public class DataFileStore {
 
-    DataFile get(int id);
-
-    DataFile create(String fileName);
+    public String store(File file) {
+        //TODO
+        return "12345";
+    }
 }

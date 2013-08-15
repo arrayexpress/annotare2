@@ -28,12 +28,12 @@ public class DataFilesUpdateEvent extends GwtEvent<DataFilesUpdateEventHandler> 
 
     @Override
     public Type<DataFilesUpdateEventHandler> getAssociatedType() {
-        return null;
+        return TYPE;
     }
 
     @Override
     protected void dispatch(DataFilesUpdateEventHandler handler) {
-
+        handler.onDataFilesUpdate();
     }
 
     public static Event.Type<DataFilesUpdateEventHandler> getType() {

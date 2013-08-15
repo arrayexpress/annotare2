@@ -46,11 +46,15 @@ public class DataFiles {
         this.eventBus = eventBus;
     }
 
-    public void getFilesAsync(final AsyncCallback<List<DataFileRow>> callback) {
+    public void getFilesAsync(AsyncCallback<List<DataFileRow>> callback) {
         if (fileRows != null) {
             callback.onSuccess(new ArrayList<DataFileRow>(fileRows));
             return;
         }
+        load(callback);
+    }
+
+    private void load(final AsyncCallback<List<DataFileRow>> callback) {
         submissionServiceAsync.loadDataFiles(getSubmissionId(), new AsyncCallbackWrapper<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -59,19 +63,35 @@ public class DataFiles {
 
             @Override
             public void onSuccess(List<DataFileRow> result) {
-                fileRows = new ArrayList<DataFileRow>(result);
+                update(result);
                 callback.onSuccess(result);
             }
         }.wrap());
     }
 
+    private void reload() {
+        load(new AsyncCallback<List<DataFileRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Problem reloading list of files");
+            }
+
+            @Override
+            public void onSuccess(List<DataFileRow> result) {
+                // ignore
+            }
+        });
+    }
+
     private void update(List<DataFileRow> newFileRows) {
-        if (!fileRows.equals(newFileRows)) {
+        boolean fireEvent = fileRows != null && !fileRows.equals(newFileRows);
+        fileRows = new ArrayList<DataFileRow>(newFileRows);
+        if (fireEvent) {
             eventBus.fireEvent(new DataFilesUpdateEvent());
         }
     }
 
-    public void uploadFile(String name) {
+    public void uploadFileAsync(String name) {
         submissionServiceAsync.uploadDataFile(getSubmissionId(), name, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -80,7 +100,7 @@ public class DataFiles {
 
             @Override
             public void onSuccess(Void result) {
-                //do nothing
+                reload();
             }
         });
     }
