@@ -33,11 +33,11 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.server.login.*;
+import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
-import uk.ac.ebi.fg.annotare2.web.server.services.CopyFileMessageQueue;
-import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
@@ -115,7 +115,7 @@ public class AppServletModule extends ServletModule {
         bind(AllRpcServicePaths.class).toInstance(allRpc);
 
         bind(AnnotareProperties.class).asEagerSingleton();
-        bind(DataFileStore.Properties.class).to(AnnotareProperties.class);
+        bind(DataFileStoreProperties.class).to(AnnotareProperties.class);
         bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
         bind(AnnotareEfoService.class).in(SINGLETON);
 

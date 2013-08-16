@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server;
+package uk.ac.ebi.fg.annotare2.web.server.properties;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
-public class AnnotareProperties implements DataFileStore.Properties {
+public class AnnotareProperties implements DataFileStoreProperties {
 
     private static final Logger log = LoggerFactory.getLogger(AnnotareProperties.class);
 
@@ -70,6 +70,18 @@ public class AnnotareProperties implements DataFileStore.Properties {
 
     public File getExportDir() {
         return getDirProperty("export.dir");
+    }
+
+    public String getPublicFtpUrl() {
+        return getProperty("ftp.public.url");
+    }
+
+    public String getPublicFtpUsername() {
+        return getProperty("ftp.public.username");
+    }
+
+    public String getPublicFtpPassword() {
+        return getProperty("ftp.public.password");
     }
 
     private File getDirProperty(String name) {

@@ -21,6 +21,7 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +45,7 @@ public class DataFileStore {
     private final File root;
 
     @Inject
-    public DataFileStore(DataFileStore.Properties properties) {
+    public DataFileStore(DataFileStoreProperties properties) {
         root = properties.getDataStoreDir();
     }
 
@@ -111,9 +112,5 @@ public class DataFileStore {
         }
         long duration = currentTimeMillis() - start;
         log.debug("copying {} finished in {} sec", source.getName() + " -> " + dest.getName(), (duration / 1000.0));
-    }
-
-    public interface Properties {
-        File getDataStoreDir();
     }
 }
