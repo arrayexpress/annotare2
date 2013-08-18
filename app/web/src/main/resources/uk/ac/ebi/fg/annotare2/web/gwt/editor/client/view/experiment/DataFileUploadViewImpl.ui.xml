@@ -32,7 +32,9 @@
         </g:tab>
         <g:tab>
             <g:header>FTP Upload</g:header>
-            <g:SimplePanel/>
+            <g:ScrollPanel>
+                <my:DataFileFtpUploadView ui:field="dataFileFtpUploadView"/>
+            </g:ScrollPanel>
         </g:tab>
     </g:TabLayoutPanel>
 

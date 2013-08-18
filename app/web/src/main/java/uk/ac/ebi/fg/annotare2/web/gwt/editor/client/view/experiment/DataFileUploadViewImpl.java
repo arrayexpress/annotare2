@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListView;
 
@@ -37,6 +38,9 @@ public class DataFileUploadViewImpl extends Composite implements DataFileUploadV
 
     @UiField
     DataFileHttpUploadView dataFileHttpUploadView;
+
+    @UiField
+    DataFileFtpUploadView dataFileFtpUploadView;
 
     interface Binder extends UiBinder<Widget, DataFileUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
