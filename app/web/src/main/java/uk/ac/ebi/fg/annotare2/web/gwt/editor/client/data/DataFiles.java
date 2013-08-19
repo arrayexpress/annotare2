@@ -23,10 +23,12 @@ import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
@@ -101,6 +103,21 @@ public class DataFiles {
             @Override
             public void onSuccess(Void result) {
                 reload();
+            }
+        });
+    }
+
+    public void registryFtpFilesAsync(List<FtpFileInfo> details, final  AsyncCallback<Map<Integer, String>> callback) {
+        submissionServiceAsync.registryFtpFiles(getSubmissionId(), details, new AsyncCallbackWrapper<Map<Integer, String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                 callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(Map<Integer, String> result) {
+                reload();
+                callback.onSuccess(result);
             }
         });
     }

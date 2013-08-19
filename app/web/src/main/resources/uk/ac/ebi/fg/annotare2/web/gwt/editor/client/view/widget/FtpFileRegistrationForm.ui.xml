@@ -19,9 +19,20 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <g:FlowPanel>
-        <g:FlowPanel ui:field="panel"/>
-        <g:HTMLPanel>
-            <g:Anchor ui:field="moreFiles">add more file(s)</g:Anchor> or <g:Anchor ui:field="submit">submit</g:Anchor>
+        <g:FlowPanel ui:field="form"/>
+        <g:HTMLPanel ui:field="formControls">
+            <table width="100%">
+                <tr>
+                    <td align="right">
+                        <g:Anchor ui:field="addMore">add file(s)</g:Anchor>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <g:Button ui:field="submit">Submit</g:Button>
+                    </td>
+                </tr>
+            </table>
         </g:HTMLPanel>
     </g:FlowPanel>
 </ui:UiBinder>

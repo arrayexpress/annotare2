@@ -14,23 +14,33 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
-
-import java.util.List;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileUploadView extends IsWidget {
+public class FtpFileInfo implements IsSerializable {
 
-    void setRows(List<DataFileRow> rows);
+    private String name;
 
-    void setPresenter(Presenter presenter);
+    private String md5;
 
-    interface Presenter extends DataFileHttpUploadView.Presenter, DataFileFtpUploadView.Presenter {}
+    FtpFileInfo() {
+        /* used by GWT serialization */
+    }
+
+    public FtpFileInfo(String name, String md5) {
+        this.name = name;
+        this.md5 = md5;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
 }

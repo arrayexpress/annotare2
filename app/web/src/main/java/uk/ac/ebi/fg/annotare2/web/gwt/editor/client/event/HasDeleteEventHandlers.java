@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
-
-import java.util.List;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileUploadView extends IsWidget {
+public interface HasDeleteEventHandlers extends HasHandlers {
 
-    void setRows(List<DataFileRow> rows);
-
-    void setPresenter(Presenter presenter);
-
-    interface Presenter extends DataFileHttpUploadView.Presenter, DataFileFtpUploadView.Presenter {}
+    HandlerRegistration addDeleteEventHandler(DeleteEventHandler handler);
 }

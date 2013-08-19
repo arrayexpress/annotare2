@@ -41,7 +41,7 @@
                     Step 1. Upload your data file(s) to our ftp
                     <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}"/>
                     using the following
-                    username and password:<g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}"/>,
+                    username and password: <g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}"/>,
                     <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}"/>
                 </p>
                 <p class="{style.text}">

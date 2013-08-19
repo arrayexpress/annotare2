@@ -7,11 +7,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SubmissionServiceAsync {
 
@@ -40,4 +42,6 @@ public interface SubmissionServiceAsync {
     void loadDataFiles(int id, AsyncCallback<List<DataFileRow>> async);
 
     void uploadDataFile(int id, String fileName, AsyncCallback<Void> async);
+
+    void registryFtpFiles(int id, List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> async);
 }

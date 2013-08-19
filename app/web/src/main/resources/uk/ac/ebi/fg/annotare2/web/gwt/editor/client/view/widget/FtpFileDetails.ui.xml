@@ -18,16 +18,47 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .label {
+            font-weight: bolder;
+        }
+        .error {
+            color: red;
+            font-weight: normal;
+        }
+    </ui:style>
     <g:HTMLPanel>
         <table width="100%">
             <tr>
-                <td width="150px">filename:</td>
                 <td>
-                    <g:TextBox ui:field="filenameBox"/>
+                    <table width="100%">
+                        <tr>
+                            <td width="50%" class="{style.label}">Filename:
+                                <g:InlineLabel ui:field="fileNameError" addStyleNames="{style.error}"/>
+                            </td>
+                            <td width="50%" class="{style.label}">MD5:
+                                <g:InlineLabel ui:field="md5Error" addStyleNames="{style.error}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <g:TextBox ui:field="fileNameBox" width="100%"/>
+                            </td>
+                            <td>
+                                <g:TextBox ui:field="md5Box" width="100%"/>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
-                <td width="100px">md5:</td>
-                <td>
-                    <g:TextBox ui:field="md5Box"/>
+                <td width="50px" valign="bottom" style="padding-bottom:10px">
+                    <g:Anchor ui:field="cancelIcon" styleName="wgt-button" title="Delete File Details">
+                        <span class="wgt-cancelIcon"/>
+                    </g:Anchor>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <g:InlineLabel ui:field="error" addStyleNames="{style.error}"/>
                 </td>
             </tr>
         </table>

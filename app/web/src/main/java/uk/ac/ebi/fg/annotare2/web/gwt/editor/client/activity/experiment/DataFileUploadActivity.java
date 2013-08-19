@@ -26,12 +26,14 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -92,5 +94,10 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     @Override
     public void fileUploaded(String name) {
         dataFiles.uploadFileAsync(name);
+    }
+
+    @Override
+    public void onFtpRegistrationFormSubmit(List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> callback) {
+        dataFiles.registryFtpFilesAsync(details, callback);
     }
 }

@@ -19,10 +19,15 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -42,10 +47,21 @@ public class DataFileFtpUploadView extends Composite {
     @UiField
     InlineLabel ftpUrl;
 
+    @UiField
+    FtpFileRegistrationForm fileRegistrationForm;
+
     public DataFileFtpUploadView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
         ftpUrl.setText("ftp://public.ftp.com");
         ftpUsername.setText("username");
         ftpPassword.setText("password");
     }
+
+    public void setPresenter(Presenter presenter) {
+        fileRegistrationForm.setPresenter(presenter);
+    }
+
+    public interface Presenter extends FtpFileRegistrationForm.Presenter {
+    }
+
 }

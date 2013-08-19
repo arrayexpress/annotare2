@@ -58,5 +58,6 @@ public class DataFileUploadViewImpl extends Composite implements DataFileUploadV
     @Override
     public void setPresenter(Presenter presenter) {
         dataFileHttpUploadView.setPresenter(presenter);
+        dataFileFtpUploadView.setPresenter(presenter);
     }
 }
