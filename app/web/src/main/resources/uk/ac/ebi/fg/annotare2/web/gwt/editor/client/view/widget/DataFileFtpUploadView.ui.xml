@@ -28,6 +28,7 @@
             line-height: 160%;
             font-style: italic;
         }
+
         .marker {
             color: #E5A066;
             font-weight: bolder;
@@ -39,10 +40,11 @@
             <g:HTMLPanel>
                 <p class="{style.text}">
                     Step 1. Upload your data file(s) to our ftp
-                    <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}"/>
+                    <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}">_ftp_url_</g:InlineLabel>
                     using the following
-                    username and password: <g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}"/>,
-                    <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}"/>
+                    username and password:<g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}">
+                    _ftp_username_</g:InlineLabel>,
+                    <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}">_ftp_password_</g:InlineLabel>
                 </p>
                 <p class="{style.text}">
                     Step 2. Let us know about the files by filling the form below

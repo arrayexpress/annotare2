@@ -26,6 +26,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
@@ -113,6 +114,15 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
             }
         }
         return types;
+    }
+
+    @Override
+    public ApplicationProperties getApplicationProperties() {
+        return new ApplicationProperties.Builder()
+                .setFtpUrl(properties.getPublicFtpUrl())
+                .setFtpUsername(properties.getPublicFtpUsername())
+                .setFtpPassword(properties.getPublicFtpPassword())
+                .build();
     }
 
     private OntologyTerm loadSystemTerm(String accession) {

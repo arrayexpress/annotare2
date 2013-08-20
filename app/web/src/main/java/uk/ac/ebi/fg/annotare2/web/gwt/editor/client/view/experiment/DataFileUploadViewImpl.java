@@ -60,4 +60,9 @@ public class DataFileUploadViewImpl extends Composite implements DataFileUploadV
         dataFileHttpUploadView.setPresenter(presenter);
         dataFileFtpUploadView.setPresenter(presenter);
     }
+
+    @Override
+    public void setFtpProperties(String url, String username, String password) {
+        dataFileFtpUploadView.setFtpProperties(url, username, password);
+    }
 }

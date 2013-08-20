@@ -52,13 +52,16 @@ public class DataFileFtpUploadView extends Composite {
 
     public DataFileFtpUploadView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
-        ftpUrl.setText("ftp://public.ftp.com");
-        ftpUsername.setText("username");
-        ftpPassword.setText("password");
     }
 
     public void setPresenter(Presenter presenter) {
         fileRegistrationForm.setPresenter(presenter);
+    }
+
+    public void setFtpProperties(String url, String username, String password) {
+        ftpUrl.setText(url);
+        ftpUsername.setText(username);
+        ftpPassword.setText(password);
     }
 
     public interface Presenter extends FtpFileRegistrationForm.Presenter {

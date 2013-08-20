@@ -25,8 +25,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ApplicationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
@@ -42,13 +44,15 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
 
     private final DataFileUploadView view;
     private final DataFiles dataFiles;
+    private final ApplicationData appData;
 
     private HandlerRegistration handlerRegistration;
 
     @Inject
-    public DataFileUploadActivity(DataFileUploadView view, DataFiles dataFiles) {
+    public DataFileUploadActivity(DataFileUploadView view, DataFiles dataFiles, ApplicationData appData) {
         this.view = view;
         this.dataFiles = dataFiles;
+        this.appData = appData;
     }
 
     public Activity withPlace(Place place) {
@@ -87,6 +91,17 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
             @Override
             public void onSuccess(List<DataFileRow> rows) {
                 view.setRows(rows);
+            }
+        });
+        appData.getApplicationPropertiesAsync(new AsyncCallback<ApplicationProperties>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: can't load application properties");
+            }
+
+            @Override
+            public void onSuccess(ApplicationProperties result) {
+                view.setFtpProperties(result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword());
             }
         });
     }

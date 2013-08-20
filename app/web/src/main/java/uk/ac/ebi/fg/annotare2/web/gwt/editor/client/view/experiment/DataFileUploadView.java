@@ -32,5 +32,7 @@ public interface DataFileUploadView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
+    void setFtpProperties(String url, String username, String password);
+
     interface Presenter extends DataFileHttpUploadView.Presenter, DataFileFtpUploadView.Presenter {}
 }
