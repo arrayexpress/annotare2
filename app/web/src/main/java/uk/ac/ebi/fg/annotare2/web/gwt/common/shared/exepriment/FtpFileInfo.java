@@ -23,7 +23,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class FtpFileInfo implements IsSerializable {
 
-    private String name;
+    private String fileName;
 
     private String md5;
 
@@ -31,13 +31,13 @@ public class FtpFileInfo implements IsSerializable {
         /* used by GWT serialization */
     }
 
-    public FtpFileInfo(String name, String md5) {
-        this.name = name;
+    public FtpFileInfo(String fileName, String md5) {
+        this.fileName = fileName;
         this.md5 = md5;
     }
 
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
     }
 
     public String getMd5() {

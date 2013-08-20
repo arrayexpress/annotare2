@@ -66,11 +66,11 @@ public class FtpFileDetails extends Composite implements HasDeleteEventHandlers 
     }
 
     public String getFileName() {
-        return fileNameBox.getValue();
+        return fileNameBox.getValue().trim();
     }
 
     public String getMd5() {
-        return md5Box.getValue();
+        return md5Box.getValue().trim();
     }
 
     public boolean isValid() {
@@ -97,17 +97,6 @@ public class FtpFileDetails extends Composite implements HasDeleteEventHandlers 
         DeleteEvent.fire(this);
     }
 
-    private void showError(InlineLabel label, boolean isEmpty) {
-        label.setText(isEmpty ? "Please, specify a value" : "");
-    }
-
-    private boolean ok(InlineLabel... labels) {
-        for (InlineLabel label : labels) {
-            label.setText("");
-        }
-        return true;
-    }
-
     private static class NotEmptyTextBox {
         private final Label label;
         private final TextBox textBox;
@@ -130,7 +119,7 @@ public class FtpFileDetails extends Composite implements HasDeleteEventHandlers 
         private boolean validate() {
             boolean isEmpty = isNullOrEmpty(textBox.getValue());
             label.setText(isEmpty ? "Please, specify a value" : "");
-            return isEmpty;
+            return !isEmpty;
         }
 
         private boolean isNullOrEmpty(String value) {

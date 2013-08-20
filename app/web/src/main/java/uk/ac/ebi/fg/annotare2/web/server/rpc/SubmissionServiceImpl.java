@@ -45,18 +45,21 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
-import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import static com.google.common.hash.Hashing.md5;
+import static com.google.common.io.Files.hash;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperiment;
@@ -271,8 +274,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             FileItem fileItem = UploadedFiles.get(getSession(), fileName);
             File file = new File(properties.getHttpUploadDir(), fileName);
             Streams.copy(fileItem.getInputStream(), new FileOutputStream(file), true);
-            DataFile dataFile = dataFileManager.upload(file);
-            submission.getFiles().add(dataFile);
+            saveFile(file, submission);
             //TODO: save submission
         } catch (AccessControlException e) {
             throw noPermission(e, Permission.UPDATE);
@@ -287,8 +289,48 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     @Override
     public Map<Integer, String> registryFtpFiles(int id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
-        //TODO
-        return new HashMap<Integer, String>();
+        try {
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            File ftpRoot = properties.getFilePickUpDir();
+            Map<Integer, String> errors = new HashMap<Integer, String>();
+            int index = 0;
+            for (FtpFileInfo info : details) {
+                File file = new File(ftpRoot, info.getFileName());
+                if (fileExists(file, info.getMd5())) {
+                    saveFile(file, submission);
+                } else {
+                    errors.put(index, "File not found");
+                }
+                index++;
+            }
+            return errors;
+        } catch (AccessControlException e) {
+            throw noPermission(e, Permission.UPDATE);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (FileNotFoundException e) {
+            throw unexpected(e);
+        } catch (IOException e) {
+            throw unexpected(e);
+        }
+    }
+
+    private void saveFile(File file, ExperimentSubmission submission) {
+        String fileName = file.getName();
+        Set<DataFile> files = submission.getFiles();
+        for(DataFile dataFile : files) {
+            if (fileName.equals(dataFile.getName())) {
+                // TODO: show message: file with such name already exists
+                return;
+            }
+        }
+
+        DataFile dataFile = dataFileManager.upload(file);
+        files.add(dataFile);
+        //TODO: save submission
+    }
+    private static boolean fileExists(File file, String md5) throws IOException {
+        return file.exists() && md5.equals(hash(file, md5()).toString());
     }
 
     private static UnexpectedException unexpected(Exception e) {

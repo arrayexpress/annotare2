@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -45,16 +46,27 @@ public class FtpFileRegistrationForm extends Composite {
     FlowPanel form;
 
     @UiField
+    HTMLPanel formControls;
+
+    @UiField
     Anchor addMore;
 
     @UiField
     Button submit;
 
     private Presenter presenter;
+    private final SuccessMessage successMessage;
 
     public FtpFileRegistrationForm() {
         initWidget(Binder.BINDER.createAndBindUi(this));
         form.add(addWidget());
+        successMessage = new SuccessMessage("All files were successfully submitted.", "Continue");
+        successMessage.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hideSuccessMessage();
+            }
+        });
     }
 
     public void setPresenter(Presenter presenter) {
@@ -116,8 +128,21 @@ public class FtpFileRegistrationForm extends Composite {
             }
         }
         if (errors.isEmpty()) {
-            //TODO showSuccessMessage();
+            showSuccessMessage();
         }
+    }
+
+    private void showSuccessMessage() {
+        if (form.getWidgetCount() == 0) {
+            form.add(successMessage);
+            formControls.setVisible(false);
+        }
+    }
+
+    private void hideSuccessMessage() {
+        form.clear();
+        form.add(addWidget());
+        formControls.setVisible(true);
     }
 
     private boolean isFormValid() {
