@@ -241,7 +241,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     CopyFileMessage messageObject = CopyFileMessage.fromString(textMessage.getText());
                     log.debug("Restored message object: {}", messageObject);
 
-                    copyFile(messageObject);
+                    copyFile(messageObject, true);
 
                     message.acknowledge();
                 } catch (JMSException e) {
@@ -251,26 +251,31 @@ public class CopyFileMessageQueue extends AbstractIdleService {
         }
 
         // TODO: just a draft; proper database integration is needed
-        private void copyFile(CopyFileMessage message) {
+        private void copyFile(CopyFileMessage message, boolean removeSource) {
             DataFile dataFile = fileDao.get(message.getDestinationId());
             if (dataFile == null) {
                 log.info("The file record with id='{}' was not found in the database. Skipping the task");
                 return;
             }
 
+            File source = message.getSource();
             try {
-                File file = message.getSource();
-                if (file.exists() && !file.isDirectory()) {
-                    String digest = fileStore.store(file);
+                if (source.exists() && !source.isDirectory()) {
+                    String digest = fileStore.store(source);
                     dataFile.setDigest(digest);
-                    dataFile.setSize(fileStore.getSize(digest));
                     dataFile.setStatus(STORED);
                     return;
                 } else {
-                    log.error("File doesn't exist or is a directory: {}", file);
+                    log.error("File doesn't exist or is a directory: {}", source);
                 }
             } catch (IOException e) {
                 log.error("Can't store file in the file store", e);
+            } finally {
+                if (removeSource) {
+                    if (!source.delete()) {
+                        log.warn("Can't delete file: " + source);
+                    }
+                }
             }
             dataFile.setStatus(ERROR);
         }

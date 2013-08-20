@@ -34,8 +34,6 @@ public class DataFile {
 
     private String digest;
 
-    private long size;
-
     private DataFileStatus status;
 
     public DataFile(String name, int id) {
@@ -71,14 +69,6 @@ public class DataFile {
 
     public void setStatus(DataFileStatus status) {
         this.status = status;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
     }
 
     @Override

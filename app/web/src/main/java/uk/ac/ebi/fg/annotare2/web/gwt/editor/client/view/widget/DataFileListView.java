@@ -59,13 +59,6 @@ public class DataFileListView extends Composite {
             }
         });
 
-        grid.addColumn(new Column<DataFileRow, String>(new TextCell()) {
-            @Override
-            public String getValue(DataFileRow object) {
-                return object.getSize() + " | " + formatFileSize(object.getSize());
-            }
-        });
-
         grid.addColumn(new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yyyy HH:mm"))) {
             @Override
             public Date getValue(DataFileRow object) {
@@ -102,17 +95,5 @@ public class DataFileListView extends Composite {
 
     public void setRows(List<DataFileRow> rows) {
         dataProvider.setList(new ArrayList<DataFileRow>(rows));
-    }
-
-    private static String formatFileSize(long size) {
-        if (size < KB) {
-            return size + " bytes";
-        } else if (size < MB) {
-            return ((size * 1.0) / KB) + " KB";
-        } else if (size < GB) {
-            return ((size * 1.0) / MB) + " MB";
-        } else {
-            return ((size * 10) / GB) + " MB";
-        }
     }
 }
