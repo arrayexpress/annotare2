@@ -38,10 +38,6 @@ import java.util.List;
  */
 public class DataFileListView extends Composite {
 
-    public static final long KB = 1024;
-    public static final long MB = KB * KB;
-    public static final long GB = MB * KB;
-
     private ListDataProvider<DataFileRow> dataProvider;
 
     public DataFileListView() {
