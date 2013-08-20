@@ -16,9 +16,24 @@
 
 package uk.ac.ebi.fg.annotare2.om.enums;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * @author Olga Melnichuk
  */
+@GwtCompatible
 public enum DataFileStatus {
-    TO_BE_STORED, STORED, ERROR
+    TO_BE_STORED("To be stored..."),
+    STORED("stored"),
+    ERROR("error");
+
+    private final String title;
+
+    private DataFileStatus(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

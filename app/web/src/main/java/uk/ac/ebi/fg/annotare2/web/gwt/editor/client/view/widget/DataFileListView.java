@@ -50,7 +50,8 @@ public class DataFileListView extends Composite {
             @Override
             public SafeHtml getValue(DataFileRow object) {
                 SafeHtmlBuilder sb = new SafeHtmlBuilder();
-                sb.appendEscapedLines(object.getName() + "\n" + object.getMd5());
+                String md5 = object.getMd5();
+                sb.appendEscapedLines(object.getName() + "\n" + (md5 == null || md5.isEmpty() ? "" : md5));
                 return sb.toSafeHtml();
             }
         });
@@ -65,8 +66,7 @@ public class DataFileListView extends Composite {
         grid.addColumn(new Column<DataFileRow, String>(new TextCell()) {
             @Override
             public String getValue(DataFileRow object) {
-                //todo
-                return "ok";
+                return object.getStatus().getTitle();
             }
         });
 

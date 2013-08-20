@@ -20,5 +20,6 @@
     <source path="configmodel"/>
     <source path="om/enums">
         <include name="SubmissionStatus.java"/>
+        <include name="DataFileStatus.java"/>
     </source>
 </module>

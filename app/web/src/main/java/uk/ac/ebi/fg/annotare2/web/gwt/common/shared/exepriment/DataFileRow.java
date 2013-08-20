@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
 import java.util.Date;
@@ -34,15 +35,18 @@ public class DataFileRow implements IsSerializable, HasIdentity {
 
     private String md5;
 
+    private DataFileStatus status;
+
     DataFileRow() {
         /* used by GWT serialization */
     }
 
-    public DataFileRow(int id, String name, String md5, Date created) {
+    public DataFileRow(int id, String name, String md5, DataFileStatus status, Date created) {
         this.id = id;
         this.name = name;
         this.created = created;
         this.md5 = md5;
+        this.status = status;
     }
 
     public int getId() {
@@ -59,5 +63,9 @@ public class DataFileRow implements IsSerializable, HasIdentity {
 
     public String getMd5() {
         return md5;
+    }
+
+    public DataFileStatus getStatus() {
+        return status;
     }
 }

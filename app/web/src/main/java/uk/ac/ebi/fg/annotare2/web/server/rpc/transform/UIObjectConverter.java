@@ -106,6 +106,7 @@ public class UIObjectConverter {
                     dataFile.getId(),
                     dataFile.getName(),
                     dataFile.getDigest(),
+                    dataFile.getStatus(),
                     dataFile.getCreated()
             );
         }
