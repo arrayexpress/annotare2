@@ -116,6 +116,7 @@ public class FtpFileRegistrationForm extends Composite {
             details.setEnabled(enabled);
         }
         submit.setEnabled(enabled);
+        addMore.setVisible(enabled);
     }
 
     private void setFormErrors(Map<Integer, String> errors) {

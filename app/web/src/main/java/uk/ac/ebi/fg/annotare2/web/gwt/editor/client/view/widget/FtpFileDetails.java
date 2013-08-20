@@ -84,7 +84,7 @@ public class FtpFileDetails extends Composite implements HasDeleteEventHandlers 
     public void setEnabled(boolean enabled) {
         fileNameBox.setEnabled(enabled);
         md5Box.setEnabled(enabled);
-        cancelIcon.setEnabled(enabled);
+        cancelIcon.setVisible(enabled);
     }
 
     @Override

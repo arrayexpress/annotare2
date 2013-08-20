@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -72,6 +74,8 @@ public class DataFiles {
     }
 
     private void reload() {
+        GWT.log("Updating data file list...");
+
         load(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -91,6 +95,12 @@ public class DataFiles {
         if (fireEvent) {
             eventBus.fireEvent(new DataFilesUpdateEvent());
         }
+        for (DataFileRow row : fileRows) {
+            if (!row.getStatus().isFinal()) {
+                scheduleUpdate(30*1000);
+                break;
+            }
+        }
     }
 
     public void uploadFileAsync(String name) {
@@ -102,7 +112,7 @@ public class DataFiles {
 
             @Override
             public void onSuccess(Void result) {
-                reload();
+                scheduleUpdate(10);
             }
         });
     }
@@ -111,14 +121,24 @@ public class DataFiles {
         submissionServiceAsync.registryFtpFiles(getSubmissionId(), details, new AsyncCallbackWrapper<Map<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
-                 callback.onFailure(caught);
+                callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(Map<Integer, String> result) {
-                reload();
+                scheduleUpdate(10);
                 callback.onSuccess(result);
             }
         });
+    }
+
+    private void scheduleUpdate(int ms) {
+        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+            @Override
+            public boolean execute() {
+                reload();
+                return false;
+            }
+        }, ms);
     }
 }

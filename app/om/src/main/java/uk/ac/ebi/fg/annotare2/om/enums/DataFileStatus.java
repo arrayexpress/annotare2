@@ -36,4 +36,8 @@ public enum DataFileStatus {
     public String getTitle() {
         return title;
     }
+
+    public boolean isFinal() {
+        return this != TO_BE_STORED;
+    }
 }
