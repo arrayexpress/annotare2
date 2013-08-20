@@ -26,6 +26,7 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public abstract class IdentityMap<T extends HasTemporaryIdentity> {
 
     private int nextId = 0;
