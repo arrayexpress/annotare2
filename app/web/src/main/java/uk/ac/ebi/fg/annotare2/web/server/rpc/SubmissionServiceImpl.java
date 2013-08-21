@@ -315,6 +315,18 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
+    @Override
+    public void removeFile(int id, int fileId) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            dataFileManager.removeFile(submission, fileId);
+        } catch (AccessControlException e) {
+            throw noPermission(e, Permission.UPDATE);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        }
+    }
+
     private void saveFile(File file, ExperimentSubmission submission) {
         String fileName = file.getName();
         Set<DataFile> files = submission.getFiles();

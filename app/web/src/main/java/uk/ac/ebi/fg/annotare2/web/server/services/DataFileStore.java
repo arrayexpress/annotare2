@@ -51,7 +51,7 @@ public class DataFileStore {
 
     public String store(File source) throws IOException {
         String md5 = (Files.hash(source, Hashing.md5())).toString();
-        File destination = destination(md5, true);
+        File destination = new File(dir(md5, true), md5);
 
         if (destination.exists()) {
             log.debug("file already in the repository; don't want to copy");
@@ -62,27 +62,19 @@ public class DataFileStore {
         return md5;
     }
 
-    public long getSize(String hash) {
-        try {
-            File file = destination(hash, false);
-            if (file.exists()) {
-                return file.length();
-            }
-        } catch (IOException e) {
-            // ignore
-        }
-        return 0;
+    private File dir(String hash) {
+        return new File(root, hash.substring(0, 3));
     }
 
-    private File destination(String hash, boolean mkdirs) throws IOException {
-        File dir = new File(root, hash.substring(0, 3));
+    private File dir(String hash, boolean mkdirs) throws IOException {
+        File dir = dir(hash);
         if (mkdirs) {
             if (!dir.exists() && !dir.mkdirs()) {
                 log.error("can't create subdirectories: {}", dir);
                 throw new IOException("Can't create directories for: " + dir);
             }
         }
-        return new File(dir, hash);
+        return dir;
     }
 
     private void copy(File source, File dest) throws IOException {
@@ -112,5 +104,13 @@ public class DataFileStore {
         }
         long duration = currentTimeMillis() - start;
         log.debug("copying {} finished in {} sec", source.getName() + " -> " + dest.getName(), (duration / 1000.0));
+    }
+
+    public void delete(String digest) throws IOException {
+        File file = new File(dir(digest), digest);
+        if (!file.delete()) {
+            throw new IOException("Can't remove file: " + file);
+        }
+        log.debug("File removed: " + file);
     }
 }

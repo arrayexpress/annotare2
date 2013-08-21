@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.dao;
 
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 
+import java.util.List;
+
 /**
  * @author Olga Melnichuk
  */
@@ -26,4 +28,8 @@ public interface DataFileDao {
     DataFile get(int id);
 
     DataFile create(String fileName);
+
+    void delete(DataFile dataFile);
+
+    List<DataFile> getAllWithDigest(String digest);
 }

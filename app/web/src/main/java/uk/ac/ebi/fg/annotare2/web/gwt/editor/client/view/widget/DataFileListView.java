@@ -17,28 +17,39 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.cell.client.*;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ImageResourceRenderer;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
+import static com.google.gwt.user.client.Window.confirm;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources.EDITOR_RESOURCES;
 
 /**
  * @author Olga Melnichuk
  */
 public class DataFileListView extends Composite {
 
-    private ListDataProvider<DataFileRow> dataProvider;
+    private final ListDataProvider<DataFileRow> dataProvider;
+
+    private Set<Integer> selected = new HashSet<Integer>();
+
+    private Presenter presenter;
 
     public DataFileListView() {
         ScrollPanel scrollPanel = new ScrollPanel();
@@ -70,16 +81,25 @@ public class DataFileListView extends Composite {
             }
         });
 
-        Column<DataFileRow, String> deleteButton = new Column<DataFileRow, String>(new ButtonCell()) {
+        ActionCell<DataFileRow> actionCell = new ActionCell<DataFileRow>("delete", EDITOR_RESOURCES.smallLoader()) {
             @Override
-            public String getValue(DataFileRow object) {
-                return "delete";
+            public boolean isActivated(DataFileRow row) {
+                return selected.contains(row);
             }
         };
-        deleteButton.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
+        Column<DataFileRow, DataFileRow> deleteButton = new Column<DataFileRow, DataFileRow>(actionCell) {
             @Override
-            public void update(int index, DataFileRow object, String value) {
-                Window.confirm("The file " + object.getName() + " will be removed from the server. Do you want to continue?");
+            public DataFileRow getValue(DataFileRow object) {
+                return object;
+            }
+        };
+        deleteButton.setFieldUpdater(new FieldUpdater<DataFileRow, DataFileRow>() {
+            @Override
+            public void update(int index, DataFileRow object, DataFileRow value) {
+                if (presenter != null && confirm("The file " + object.getName() + " will be removed from the server. Do you want to continue?")) {
+                    selected.add(object.getId());
+                    presenter.removeFile(object);
+                }
             }
         });
         grid.addColumn(deleteButton);
@@ -91,5 +111,65 @@ public class DataFileListView extends Composite {
 
     public void setRows(List<DataFileRow> rows) {
         dataProvider.setList(new ArrayList<DataFileRow>(rows));
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public interface Presenter {
+
+        void removeFile(DataFileRow dataFileRow);
+    }
+
+    public static abstract class ActionCell<T> extends AbstractCell<T> {
+
+        private final String title;
+        private final ImageResource imageResource;
+        private static ImageResourceRenderer renderer;
+
+        public ActionCell(String title, ImageResource imageResource) {
+            super(CLICK, KEYDOWN);
+            this.title = title;
+            this.imageResource = imageResource;
+            renderer = new ImageResourceRenderer();
+        }
+
+        @Override
+        public void onBrowserEvent(Context context, Element parent, T value,
+                                   NativeEvent event, ValueUpdater<T> valueUpdater) {
+            super.onBrowserEvent(context, parent, value, event, valueUpdater);
+            if (!isActivated(value) && CLICK.equals(event.getType())) {
+                EventTarget eventTarget = event.getEventTarget();
+                if (!Element.is(eventTarget)) {
+                    return;
+                }
+                if (parent.getFirstChildElement().isOrHasChild(Element.as(eventTarget))) {
+                    // Ignore clicks that occur outside of the main element.
+                    onEnterKeyDown(context, parent, value, event, valueUpdater);
+                }
+            }
+        }
+
+        @Override
+        public void render(Context context, T value, SafeHtmlBuilder sb) {
+            if (isActivated(value)) {
+                sb.append(renderer.render(imageResource));
+            } else {
+                sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">");
+                sb.appendEscaped(title);
+                sb.appendHtmlConstant("</button>");
+            }
+        }
+
+        @Override
+        protected void onEnterKeyDown(Context context, Element parent, T value,
+                                      NativeEvent event, ValueUpdater<T> valueUpdater) {
+            if (valueUpdater != null) {
+                valueUpdater.update(value);
+            }
+        }
+
+        public abstract boolean isActivated(T value);
     }
 }

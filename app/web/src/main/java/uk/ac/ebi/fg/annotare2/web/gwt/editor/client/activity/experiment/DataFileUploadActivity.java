@@ -115,4 +115,9 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     public void onFtpRegistrationFormSubmit(List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> callback) {
         dataFiles.registryFtpFilesAsync(details, callback);
     }
+
+    @Override
+    public void removeFile(DataFileRow dataFileRow) {
+        dataFiles.removeFile(dataFileRow);
+    }
 }

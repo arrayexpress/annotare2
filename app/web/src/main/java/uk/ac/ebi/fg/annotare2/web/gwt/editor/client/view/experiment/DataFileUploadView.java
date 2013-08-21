@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListView;
 
 import java.util.List;
 
@@ -34,5 +35,6 @@ public interface DataFileUploadView extends IsWidget {
 
     void setFtpProperties(String url, String username, String password);
 
-    interface Presenter extends DataFileHttpUploadView.Presenter, DataFileFtpUploadView.Presenter {}
+    interface Presenter extends DataFileHttpUploadView.Presenter, DataFileFtpUploadView.Presenter, DataFileListView.Presenter {
+    }
 }

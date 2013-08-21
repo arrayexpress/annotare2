@@ -106,7 +106,6 @@ public class AppServletModule extends ServletModule {
         bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(SINGLETON);
         bind(DataFileDao.class).to(DataFileDaoDummy.class).in(SINGLETON);
 
-        bind(CopyFileMessageQueue.class).in(SINGLETON);
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).in(SINGLETON);
         bind(DataFileManager.class).in(SINGLETON);

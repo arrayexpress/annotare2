@@ -44,4 +44,6 @@ public interface SubmissionServiceAsync {
     void uploadDataFile(int id, String fileName, AsyncCallback<Void> async);
 
     void registryFtpFiles(int id, List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> async);
+
+    void removeFile(int id, int fileId, AsyncCallback<Void> async);
 }

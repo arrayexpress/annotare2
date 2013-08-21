@@ -31,7 +31,7 @@
 }
 
 @sprite .loading-indicator  {
-    gwt-image: "loadingIndicator";
+    gwt-image: "largeLoader";
     background-position: center;
 }
 

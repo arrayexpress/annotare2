@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -43,11 +42,37 @@ public class DataFiles {
     private final EventBus eventBus;
     private List<DataFileRow> fileRows;
 
+    private final Updater updater;
+
     @Inject
     public DataFiles(EventBus eventBus,
                      SubmissionServiceAsync submissionServiceAsync) {
         this.submissionServiceAsync = submissionServiceAsync;
         this.eventBus = eventBus;
+
+        updater = new Updater(5000) {
+            public void onAsyncUpdate(final AsyncCallback<Boolean> callback) {
+                GWT.log("Updating data file list...");
+
+                load(new AsyncCallback<List<DataFileRow>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(List<DataFileRow> result) {
+                        for (DataFileRow row : result) {
+                            if (!row.getStatus().isFinal()) {
+                                callback.onSuccess(true);
+                                break;
+                            }
+                        }
+                        callback.onSuccess(false);
+                    }
+                });
+            }
+        };
     }
 
     public void getFilesAsync(AsyncCallback<List<DataFileRow>> callback) {
@@ -73,33 +98,11 @@ public class DataFiles {
         }.wrap());
     }
 
-    private void reload() {
-        GWT.log("Updating data file list...");
-
-        load(new AsyncCallback<List<DataFileRow>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Problem reloading list of files");
-            }
-
-            @Override
-            public void onSuccess(List<DataFileRow> result) {
-                // ignore
-            }
-        });
-    }
-
     private void update(List<DataFileRow> newFileRows) {
         boolean fireEvent = fileRows != null && !fileRows.equals(newFileRows);
         fileRows = new ArrayList<DataFileRow>(newFileRows);
         if (fireEvent) {
             eventBus.fireEvent(new DataFilesUpdateEvent());
-        }
-        for (DataFileRow row : fileRows) {
-            if (!row.getStatus().isFinal()) {
-                scheduleUpdate(30*1000);
-                break;
-            }
         }
     }
 
@@ -112,12 +115,12 @@ public class DataFiles {
 
             @Override
             public void onSuccess(Void result) {
-                scheduleUpdate(10);
+                updater.update();
             }
-        });
+        }.wrap());
     }
 
-    public void registryFtpFilesAsync(List<FtpFileInfo> details, final  AsyncCallback<Map<Integer, String>> callback) {
+    public void registryFtpFilesAsync(List<FtpFileInfo> details, final AsyncCallback<Map<Integer, String>> callback) {
         submissionServiceAsync.registryFtpFiles(getSubmissionId(), details, new AsyncCallbackWrapper<Map<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -126,19 +129,23 @@ public class DataFiles {
 
             @Override
             public void onSuccess(Map<Integer, String> result) {
-                scheduleUpdate(10);
+                updater.update();
                 callback.onSuccess(result);
             }
-        });
+        }.wrap());
     }
 
-    private void scheduleUpdate(int ms) {
-        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+    public void removeFile(final DataFileRow dataFile) {
+        submissionServiceAsync.removeFile(getSubmissionId(), dataFile.getId(), new AsyncCallbackWrapper<Void>() {
             @Override
-            public boolean execute() {
-                reload();
-                return false;
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: can't remove file " + dataFile.getName());
             }
-        }, ms);
+
+            @Override
+            public void onSuccess(Void result) {
+                updater.update();
+            }
+        }.wrap());
     }
 }

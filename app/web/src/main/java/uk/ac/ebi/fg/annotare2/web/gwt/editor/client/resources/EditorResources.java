@@ -49,7 +49,10 @@ public interface EditorResources extends ClientBundle {
     public ImageResource uploadFilesButton();
 
     @Source("../../public/images/loading64.gif")
-    public ImageResource loadingIndicator();
+    public ImageResource largeLoader();
+
+    @Source("../../public/images/loading16.gif")
+    public ImageResource smallLoader();
 
     @Source("../../public/images/cancel-icon.png")
     public ImageResource cancelIcon();

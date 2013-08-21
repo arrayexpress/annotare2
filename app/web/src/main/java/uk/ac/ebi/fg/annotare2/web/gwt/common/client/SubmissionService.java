@@ -67,4 +67,6 @@ public interface SubmissionService extends RemoteService {
     void uploadDataFile(int id, String fileName) throws ResourceNotFoundException, NoPermissionException;
 
     Map<Integer, String> registryFtpFiles(int id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException;
+
+    void removeFile(int id, int fileId) throws ResourceNotFoundException, NoPermissionException;
 }

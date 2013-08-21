@@ -21,9 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 
 import javax.jms.JMSException;
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -33,13 +36,15 @@ public class DataFileManager {
     private static final Logger log = LoggerFactory.getLogger(DataFileManager.class);
 
     private final DataFileDao dataFileDao;
+    private final DataFileStore fileStore;
 
     private final CopyFileMessageQueue messageQueue;
 
     @Inject
-    public DataFileManager(DataFileDao dataFileDao, CopyFileMessageQueue messageQueue) {
+    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao) {
         this.dataFileDao = dataFileDao;
-        this.messageQueue = messageQueue;
+        this.fileStore = fileStore;
+        this.messageQueue = new CopyFileMessageQueue(fileStore, dataFileDao);
     }
 
     /**
@@ -60,5 +65,25 @@ public class DataFileManager {
         }
         //}
         return dataFile;
+    }
+
+    public void removeFile(ExperimentSubmission submission, int fileId) {
+        DataFile dataFile = dataFileDao.get(fileId);
+        if (dataFile == null || !submission.getFiles().contains(dataFile)) {
+            return;
+        }
+        //todo: do this in transaction{
+        try {
+            dataFileDao.delete(dataFile);
+            submission.getFiles().remove(dataFile);  // todo: while we do not have DB
+            List<DataFile> list = dataFileDao.getAllWithDigest(dataFile.getDigest());
+            if (list.isEmpty()) {
+                fileStore.delete(dataFile.getDigest());
+            }
+        } catch (IOException e) {
+            log.error("File is not deleted", e);
+            // transaction rollback
+        }
+        // }
     }
 }
