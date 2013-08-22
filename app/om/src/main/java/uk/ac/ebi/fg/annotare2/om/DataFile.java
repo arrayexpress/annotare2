@@ -17,6 +17,8 @@ package uk.ac.ebi.fg.annotare2.om;
 
 import uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 import static uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus.TO_BE_STORED;
@@ -24,21 +26,29 @@ import static uk.ac.ebi.fg.annotare2.om.enums.DataFileStatus.TO_BE_STORED;
 /**
  * @author Olga Melnichuk
  */
-public class DataFile {
+@Entity
+@Table(name = "data_files")
+public class DataFile implements Serializable {
 
-    private int id;
+    @Id
+    @GeneratedValue
+    private Integer id;
 
+    @Column(name = "fileName")
     private String name;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created")
     private Date created;
 
+    @Column(name = "digest")
     private String digest;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private DataFileStatus status;
 
-    public DataFile(String name, int id) {
-        this.name = name;
-        this.id = id;
+    public DataFile() {
         created = new Date();
         status = TO_BE_STORED;
     }
@@ -47,8 +57,16 @@ public class DataFile {
         return name;
     }
 
-    public int getId() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getDigest() {
