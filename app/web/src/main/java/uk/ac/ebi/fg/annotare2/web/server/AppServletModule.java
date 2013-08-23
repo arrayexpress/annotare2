@@ -69,6 +69,8 @@ public class AppServletModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
+        filter("/").through(HibernateSessionFilter.class);
+
         filter("/UserApp/*",
                 "/",
                 "/EditorApp/*",
@@ -82,6 +84,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
 
+        bind(HibernateSessionFilter.class).in(SINGLETON);
         bind(SecurityFilter.class).in(SINGLETON);
         bind(LoginServlet.class).in(SINGLETON);
         bind(LogoutServlet.class).in(SINGLETON);
@@ -99,6 +102,13 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(SubmissionValidationService.NAME, SubmissionValidationServiceImpl.class, "EditorApp");
         serveAndBindRpcService(VocabularyService.NAME, VocabularyServiceImpl.class, "EditorApp");
         serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");
+
+        /* Services { */
+
+        bind(HibernateSessionFactoryService.class).asEagerSingleton();
+        bind(CopyFileMessageQueue.class).asEagerSingleton();
+
+        /*}*/
 
         bind(SubmissionListServiceImpl.class).in(SINGLETON);
 

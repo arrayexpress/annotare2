@@ -80,7 +80,10 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     private void startServices(Injector injector) {
         log.info("Starting services on context init");
-        Service service = injector.getInstance(CopyFileMessageQueue.class);
+        Service service = injector.getInstance(HibernateSessionFactoryService.class);
+        service.start();
+
+        service = injector.getInstance(CopyFileMessageQueue.class);
         service.start();
         servicesToStop.add(service);
     }

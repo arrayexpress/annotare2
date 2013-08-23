@@ -41,10 +41,10 @@ public class DataFileManager {
     private final CopyFileMessageQueue messageQueue;
 
     @Inject
-    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao) {
+    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao, CopyFileMessageQueue messageQueue) {
         this.dataFileDao = dataFileDao;
         this.fileStore = fileStore;
-        this.messageQueue = new CopyFileMessageQueue(fileStore, dataFileDao);
+        this.messageQueue = messageQueue;
     }
 
     /**
