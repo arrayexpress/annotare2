@@ -18,18 +18,20 @@ package uk.ac.ebi.fg.annotare2.dao.impl;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import org.hibernate.HibernateException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.junit.*;
+import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.om.DataFile;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Olga Melnichuk
@@ -40,6 +42,28 @@ public class DataFileDaoImplTest {
 
     private static InitialContext initialContext;
     private static HibernateSessionFactory sessionFactory;
+
+    private Session session;
+
+    @Rule
+    private ExternalResource resource = new ExternalResource() {
+        private Transaction tx;
+
+        @Override
+        protected void before() throws Throwable {
+            session = sessionFactory.openSession();
+            dao = new DataFileDaoImpl(sessionFactory);
+            tx = session.beginTransaction();
+        }
+
+        @Override
+        protected void after() {
+            tx.rollback();
+            sessionFactory.closeSession();
+        }
+    };
+
+    private DataFileDaoImpl dao;
 
     @BeforeClass
     public static void beforeClass() throws NamingException, HibernateException {
@@ -93,6 +117,12 @@ public class DataFileDaoImplTest {
 
     @Test
     public void test() {
-        assertTrue(true);
+        DataFile dataFile = dao.create("test");
+        session.flush();
+
+        assertNotNull(dataFile);
+        assertNotNull(dataFile.getId());
+        assertNotNull(dataFile.getCreated());
+        assertNotNull(dataFile.getStatus());
     }
 }

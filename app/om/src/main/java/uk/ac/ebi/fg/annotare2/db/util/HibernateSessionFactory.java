@@ -18,15 +18,8 @@ public class HibernateSessionFactory {
         this.sessionFactory = sessionFactory;
     }
 
-    public Session getCurrentSession(boolean forceCreate) throws HibernateException {
-        try {
-            return getCurrentSession();
-        } catch (HibernateException e) {
-            if (forceCreate) {
-                return sessionFactory.openSession();
-            }
-            throw e;
-        }
+    public Session openSession() throws HibernateException {
+        return sessionFactory.openSession();
     }
 
     public Session getCurrentSession() throws HibernateException {

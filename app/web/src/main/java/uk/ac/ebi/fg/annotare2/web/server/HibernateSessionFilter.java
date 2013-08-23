@@ -42,8 +42,8 @@ public class HibernateSessionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            factoryService.getSessionFactory().getCurrentSession(true);
-            log.debug("Hibernate session is opened");
+            factoryService.getSessionFactory().openSession();
+            log.debug("Hibernate session has been opened");
 
             chain.doFilter(request, response);
         } catch (HibernateException e) {
@@ -51,7 +51,7 @@ public class HibernateSessionFilter implements Filter {
         } finally {
             try {
                 factoryService.getSessionFactory().closeSession();
-                log.debug("Hibernate session is closed");
+                log.debug("Hibernate session has been closed");
             } catch (HibernateException e) {
                 log.error("Can't close hibernate session", e);
             }
