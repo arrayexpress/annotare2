@@ -32,7 +32,7 @@ public class HibernateSessionFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(HibernateSessionFilter.class);
 
     @Inject
-    private HibernateSessionFactoryService factoryService;
+    private HibernateSessionFactoryProvider factoryService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -42,7 +42,7 @@ public class HibernateSessionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            factoryService.getSessionFactory().openSession();
+            factoryService.getSessionFactory().getCurrentSession();
             log.debug("Hibernate session has been opened");
 
             chain.doFilter(request, response);

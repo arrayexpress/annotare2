@@ -31,5 +31,7 @@ public interface DataFileDao {
 
     void delete(DataFile dataFile);
 
+    void save(DataFile dataFile);
+
     List<DataFile> getAllWithDigest(String digest);
 }

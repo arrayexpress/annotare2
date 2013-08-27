@@ -31,6 +31,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -46,12 +50,12 @@ public class DataFileDaoImplTest {
     private Session session;
 
     @Rule
-    private ExternalResource resource = new ExternalResource() {
+    public ExternalResource transactional = new ExternalResource() {
         private Transaction tx;
 
         @Override
         protected void before() throws Throwable {
-            session = sessionFactory.openSession();
+            session = sessionFactory.getCurrentSession();
             dao = new DataFileDaoImpl(sessionFactory);
             tx = session.beginTransaction();
         }
@@ -116,13 +120,41 @@ public class DataFileDaoImplTest {
     }
 
     @Test
-    public void test() {
-        DataFile dataFile = dao.create("test");
+    public void createDataFileTest() {
+        final String name = "create_test";
+        DataFile dataFile = dao.create(name);
         session.flush();
 
         assertNotNull(dataFile);
         assertNotNull(dataFile.getId());
         assertNotNull(dataFile.getCreated());
         assertNotNull(dataFile.getStatus());
+        assertEquals(name, dataFile.getName());
+    }
+
+    @Test
+    public void deleteDataFileTest() {
+        DataFile dataFile = dao.create("delete_test");
+        session.flush();
+        Integer id = dataFile.getId();
+
+        dao.delete(dataFile);
+        dataFile = dao.get(id);
+        assertNull(dataFile);
+    }
+
+    @Test
+    public void getAllWithDigestTest() {
+        final String digest = "12345";
+        final int n = 3;
+        for (int i = 0; i < n; i++) {
+            DataFile dataFile1 = dao.create("test");
+            dataFile1.setDigest(digest);
+            dao.save(dataFile1);
+        }
+        session.flush();
+
+        List<DataFile> list = dao.getAllWithDigest(digest);
+        assertEquals(n, list.size());
     }
 }

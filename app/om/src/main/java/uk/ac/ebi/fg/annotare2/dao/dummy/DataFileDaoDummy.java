@@ -57,6 +57,11 @@ public class DataFileDaoDummy implements DataFileDao {
     }
 
     @Override
+    public void save(DataFile dataFile) {
+        // do nothing
+    }
+
+    @Override
     public List<DataFile> getAllWithDigest(final String digest) {
         return newArrayList(Collections2.filter(items.values(), new Predicate<DataFile>() {
             @Override

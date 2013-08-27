@@ -17,12 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 /**
  * @author Olga Melnichuk
  */
-public class HibernateSessionFactoryService extends AbstractIdleService {
+public class HibernateSessionFactoryProvider extends AbstractIdleService implements Provider<HibernateSessionFactory> {
 
     private HibernateSessionFactory sessionFactory;
 
@@ -38,5 +39,10 @@ public class HibernateSessionFactoryService extends AbstractIdleService {
     @Override
     protected void shutDown() throws Exception {
         sessionFactory.close();
+    }
+
+    @Override
+    public HibernateSessionFactory get() {
+        return sessionFactory;
     }
 }

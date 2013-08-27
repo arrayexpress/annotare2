@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
@@ -40,18 +41,29 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
+    public void save(DataFile dataFile) {
+        getCurrentSession().save(dataFile);
+    }
+
+    @Override
     public DataFile create(String fileName) {
-        return null;
+        DataFile dataFile = new DataFile();
+        dataFile.setName(fileName);
+        save(dataFile);
+        return dataFile;
     }
 
     @Override
     public void delete(DataFile dataFile) {
-
+        getCurrentSession().delete(dataFile);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<DataFile> getAllWithDigest(String digest) {
-        return null;
+        return getCurrentSession().createCriteria(DataFile.class)
+                .add(Restrictions.eq("digest", digest))
+                .list();
     }
 
     private Session getCurrentSession() {

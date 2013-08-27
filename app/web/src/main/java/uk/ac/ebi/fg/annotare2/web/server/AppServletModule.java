@@ -105,7 +105,7 @@ public class AppServletModule extends ServletModule {
 
         /* Services { */
 
-        bind(HibernateSessionFactoryService.class).asEagerSingleton();
+        bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
         bind(CopyFileMessageQueue.class).asEagerSingleton();
 
         /*}*/

@@ -18,10 +18,6 @@ public class HibernateSessionFactory {
         this.sessionFactory = sessionFactory;
     }
 
-    public Session openSession() throws HibernateException {
-        return sessionFactory.openSession();
-    }
-
     public Session getCurrentSession() throws HibernateException {
         return sessionFactory.getCurrentSession();
     }

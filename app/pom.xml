@@ -207,5 +207,20 @@
         </plugins>
     </reporting>
 
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <annotare.test.db.url>test_db_url</annotare.test.db.url>
+                <annotare.test.db.user>test_db_user</annotare.test.db.user>
+                <annotare.test.db.password>test_db_password</annotare.test.db.password>
+                <annotare.test.db.driver>test_db_driver_class</annotare.test.db.driver>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>
 
