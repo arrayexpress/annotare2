@@ -218,6 +218,7 @@
                 <annotare.test.db.user>test_db_user</annotare.test.db.user>
                 <annotare.test.db.password>test_db_password</annotare.test.db.password>
                 <annotare.test.db.driver>test_db_driver_class</annotare.test.db.driver>
+                <annotare.test.db.dataSource>test_db_dataSource_class</annotare.test.db.dataSource>
             </properties>
         </profile>
     </profiles>

@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.db.AnnotareTestDbProperties;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 
@@ -40,6 +41,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.apache.commons.beanutils.BeanUtils.setProperty;
 import static org.junit.Assert.assertNotNull;
+import static uk.ac.ebi.fg.annotare2.db.AnnotareTestDbProperties.*;
 
 /**
  * @author Olga Melnichuk
@@ -110,13 +112,13 @@ public class DataFileDaoImplTest {
         initialContext.createSubcontext("java:comp/env");
         initialContext.createSubcontext("java:comp/env/jdbc");
 
-        Class<?> clazz = Class.forName("com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource");
+        Class<?> clazz = Class.forName(getTestDataSourceClass());
         Constructor<?> constructor = clazz.getConstructor();
         Object ds = constructor.newInstance();
 
-        setProperty(ds, "url", "jdbc:mysql://localhost:3306/annotare2_test");
-        setProperty(ds, "user", "test");
-        setProperty(ds, "password", "test");
+        setProperty(ds, "url", getTestDbUrl());
+        setProperty(ds, "user", getTestDbUser());
+        setProperty(ds, "password", getTestDbPassword());
 
         initialContext.bind("java:comp/env/jdbc/annotareDataSource", ds);
     }
