@@ -136,6 +136,12 @@
             <version>5.0.28</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 </project>

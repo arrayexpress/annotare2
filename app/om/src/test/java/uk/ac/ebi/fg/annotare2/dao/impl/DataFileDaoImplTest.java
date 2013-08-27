@@ -16,11 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +32,13 @@ import uk.ac.ebi.fg.annotare2.om.DataFile;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static org.apache.commons.beanutils.BeanUtils.setProperty;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -70,7 +74,7 @@ public class DataFileDaoImplTest {
     private DataFileDaoImpl dao;
 
     @BeforeClass
-    public static void beforeClass() throws NamingException, HibernateException {
+    public static void beforeClass() throws NamingException, HibernateException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         setUpJndi();
         setUpHibernateSessionFactory();
     }
@@ -94,7 +98,7 @@ public class DataFileDaoImplTest {
         }
     }
 
-    private static void setUpJndi() throws NamingException {
+    private static void setUpJndi() throws NamingException, InvocationTargetException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
                 "org.apache.naming.java.javaURLContextFactory");
         System.setProperty(Context.URL_PKG_PREFIXES,
@@ -106,11 +110,13 @@ public class DataFileDaoImplTest {
         initialContext.createSubcontext("java:comp/env");
         initialContext.createSubcontext("java:comp/env/jdbc");
 
-        //todo move to properties
-        MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-        ds.setURL("jdbc:mysql://localhost:3306/annotare2_test");
-        ds.setUser("test");
-        ds.setPassword("test");
+        Class<?> clazz = Class.forName("com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource");
+        Constructor<?> constructor = clazz.getConstructor();
+        Object ds = constructor.newInstance();
+
+        setProperty(ds, "url", "jdbc:mysql://localhost:3306/annotare2_test");
+        setProperty(ds, "user", "test");
+        setProperty(ds, "password", "test");
 
         initialContext.bind("java:comp/env/jdbc/annotareDataSource", ds);
     }
