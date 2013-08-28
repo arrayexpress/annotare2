@@ -32,7 +32,6 @@ public class ExtractAttributesRow implements IsSerializable, HasIdentity {
     private String name;
     private Map<ExtractAttribute, String> values;
 
-
     ExtractAttributesRow() {
         /*used by GWT serialization only */
     }
@@ -44,6 +43,10 @@ public class ExtractAttributesRow implements IsSerializable, HasIdentity {
     }
 
     @Override
+    public Object getIdentity() {
+        return id;
+    }
+
     public int getId() {
         return id;
     }

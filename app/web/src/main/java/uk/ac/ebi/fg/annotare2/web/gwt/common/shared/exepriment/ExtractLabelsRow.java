@@ -41,6 +41,10 @@ public class ExtractLabelsRow implements HasIdentity, IsSerializable {
     }
 
     @Override
+    public Object getIdentity() {
+        return id;
+    }
+
     public int getId() {
         return id;
     }

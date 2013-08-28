@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.HasName;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.HashMap;
@@ -28,11 +27,9 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class SampleRow implements IsSerializable, HasTemporaryIdentity, HasName {
+public class SampleRow implements IsSerializable, HasName, HasIdentity {
 
     private int id;
-
-    private int tmpId;
 
     private String name;
 
@@ -48,7 +45,6 @@ public class SampleRow implements IsSerializable, HasTemporaryIdentity, HasName 
 
     public SampleRow(int id, String name, Map<Integer, String> values) {
         this.id = id;
-        this.tmpId = id;
         this.name = name;
         this.values = new HashMap<Integer, String>();
         this.values.putAll(values);
@@ -58,12 +54,13 @@ public class SampleRow implements IsSerializable, HasTemporaryIdentity, HasName 
         return new SampleRow(id, name, values);
     }
 
-    public int getId() {
+    @Override
+    public Object getIdentity() {
         return id;
     }
 
-    public int getTmpId() {
-        return tmpId;
+    public int getId() {
+        return id;
     }
 
     public String getName() {

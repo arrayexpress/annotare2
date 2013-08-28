@@ -174,19 +174,19 @@ public class CopyFileMessageQueue extends AbstractIdleService {
     private static class CopyFileMessage {
 
         private static String DELIM = ",";
-        private int destinationId;
+        private long destinationId;
         private File sourcePath;
 
         public CopyFileMessage(File source, DataFile destination) {
             this(source, destination.getId());
         }
 
-        private CopyFileMessage(File sourcePath, int destinationId) {
+        private CopyFileMessage(File sourcePath, long destinationId) {
             this.destinationId = destinationId;
             this.sourcePath = sourcePath;
         }
 
-        public int getDestinationId() {
+        public long getDestinationId() {
             return destinationId;
         }
 

@@ -17,16 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 
 /**
  * @author Olga Melnichuk
  */
-public class PublicationDto implements IsSerializable, HasTemporaryIdentity {
+public class PublicationDto implements IsSerializable {
 
     private int id;
-
-    private int tmpId;
 
     private String title;
 
@@ -40,20 +37,17 @@ public class PublicationDto implements IsSerializable, HasTemporaryIdentity {
 
     public PublicationDto(int id) {
         this.id = id;
-        this.tmpId = id;
     }
 
     public PublicationDto(PublicationDto other) {
         this(other.getId(),
-                other.getTmpId(),
                 other.getTitle(),
                 other.getAuthors(),
                 other.getPubMedId());
     }
 
-    public PublicationDto(int id, int tmpId, String title, String authors, String pubMedId) {
+    public PublicationDto(int id, String title, String authors, String pubMedId) {
         this.id = id;
-        this.tmpId = tmpId;
         this.title = title;
         this.authors = authors;
         this.pubMedId = pubMedId;
@@ -63,14 +57,8 @@ public class PublicationDto implements IsSerializable, HasTemporaryIdentity {
         return authors;
     }
 
-    @Override
     public int getId() {
         return id;
-    }
-
-    @Override
-    public int getTmpId() {
-        return tmpId;
     }
 
     public String getPubMedId() {
@@ -95,7 +83,6 @@ public class PublicationDto implements IsSerializable, HasTemporaryIdentity {
     public PublicationDto updatedCopy(PublicationDto updates) {
         return new PublicationDto(
                 id,
-                updates.getTmpId(),
                 updates.getTitle(),
                 updates.getAuthors(),
                 updates.getPubMedId());

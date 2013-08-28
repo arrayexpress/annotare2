@@ -32,7 +32,7 @@ public class DataFile implements Serializable {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @Column(name = "fileName")
     private String name;
@@ -61,11 +61,11 @@ public class DataFile implements Serializable {
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -96,13 +96,13 @@ public class DataFile implements Serializable {
 
         DataFile dataFile = (DataFile) o;
 
-        if (id != dataFile.id) return false;
+        if (id != null ? !id.equals(dataFile.id) : dataFile.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return id != null ? id.hashCode() : 0;
     }
 }

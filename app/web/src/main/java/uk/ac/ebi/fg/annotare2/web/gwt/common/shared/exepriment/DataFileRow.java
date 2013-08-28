@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public class DataFileRow implements IsSerializable, HasIdentity {
 
-    private int id;
+    private long id;
 
     private String name;
 
@@ -41,7 +41,7 @@ public class DataFileRow implements IsSerializable, HasIdentity {
         /* used by GWT serialization */
     }
 
-    public DataFileRow(int id, String name, String md5, DataFileStatus status, Date created) {
+    public DataFileRow(long id, String name, String md5, DataFileStatus status, Date created) {
         this.id = id;
         this.name = name;
         this.created = created;
@@ -49,7 +49,12 @@ public class DataFileRow implements IsSerializable, HasIdentity {
         this.status = status;
     }
 
-    public int getId() {
+    @Override
+    public Object getIdentity() {
+        return id;
+    }
+
+    public long getId() {
         return id;
     }
 

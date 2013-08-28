@@ -143,7 +143,7 @@ public class DataFileDaoImplTest {
     public void deleteDataFileTest() {
         DataFile dataFile = dao.create("delete_test");
         session.flush();
-        Integer id = dataFile.getId();
+        Long id = dataFile.getId();
 
         dao.delete(dataFile);
         dataFile = dao.get(id);

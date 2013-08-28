@@ -21,5 +21,5 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
  */
 public interface HasIdentity {
 
-    int getId();
+    Object getIdentity();
 }

@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -34,11 +34,11 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 public class DataFileDaoDummy implements DataFileDao {
 
-    private final ConcurrentMap<Integer, DataFile> items = new ConcurrentHashMap<Integer, DataFile>();
-    private AtomicInteger id = new AtomicInteger(0);
+    private final ConcurrentMap<Long, DataFile> items = new ConcurrentHashMap<Long, DataFile>();
+    private AtomicLong id = new AtomicLong(0);
 
     @Override
-    public DataFile get(int id) {
+    public DataFile get(long id) {
         return items.get(id);
     }
 

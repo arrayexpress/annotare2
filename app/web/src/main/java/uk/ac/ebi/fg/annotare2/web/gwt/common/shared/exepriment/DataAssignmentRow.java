@@ -38,6 +38,10 @@ public class DataAssignmentRow implements IsSerializable, HasIdentity {
     }
 
     @Override
+    public Object getIdentity() {
+        return id;
+    }
+
     public int getId() {
         return id;
     }

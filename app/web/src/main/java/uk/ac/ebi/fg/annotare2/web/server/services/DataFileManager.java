@@ -67,7 +67,7 @@ public class DataFileManager {
         return dataFile;
     }
 
-    public void removeFile(ExperimentSubmission submission, int fileId) {
+    public void removeFile(ExperimentSubmission submission, long fileId) {
         DataFile dataFile = dataFileDao.get(fileId);
         if (dataFile == null || !submission.getFiles().contains(dataFile)) {
             return;

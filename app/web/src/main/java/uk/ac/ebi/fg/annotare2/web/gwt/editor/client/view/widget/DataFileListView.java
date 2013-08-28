@@ -47,7 +47,7 @@ public class DataFileListView extends Composite {
 
     private final ListDataProvider<DataFileRow> dataProvider;
 
-    private Set<Integer> selected = new HashSet<Integer>();
+    private Set<Long> selected = new HashSet<Long>();
 
     private Presenter presenter;
 

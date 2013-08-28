@@ -107,7 +107,6 @@ public class ExperimentData {
         for (Contact contact : exp.getContacts()) {
             contacts.add(new ContactDto(
                     contact.getId(),
-                    contact.getId(),
                     contact.getFirstName(),
                     contact.getLastName(),
                     contact.getMidInitials(),
@@ -126,7 +125,6 @@ public class ExperimentData {
         List<PublicationDto> publications = new ArrayList<PublicationDto>();
         for (Publication publication : exp.getPublications()) {
             publications.add(new PublicationDto(
-                    publication.getId(),
                     publication.getId(),
                     publication.getTitle(),
                     publication.getAuthors(),

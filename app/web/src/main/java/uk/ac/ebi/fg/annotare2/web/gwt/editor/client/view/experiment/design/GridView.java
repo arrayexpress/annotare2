@@ -94,7 +94,7 @@ public class GridView<R extends HasIdentity> extends Composite {
                 new MultiSelectionModel<R>(new ProvidesKey<R>() {
                     @Override
                     public Object getKey(R item) {
-                        return item.getId();
+                        return item.getIdentity();
                     }
                 });
 

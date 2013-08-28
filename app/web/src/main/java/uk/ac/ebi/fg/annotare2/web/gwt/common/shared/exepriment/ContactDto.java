@@ -1,8 +1,6 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasTemporaryIdentity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +8,9 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ContactDto implements IsSerializable, HasTemporaryIdentity {
+public class ContactDto implements IsSerializable {
 
     private int id;
-
-    private int tmpId;
 
     private String firstName;
 
@@ -40,12 +36,10 @@ public class ContactDto implements IsSerializable, HasTemporaryIdentity {
 
     public ContactDto(int id) {
         this.id = id;
-        this.tmpId = id;
     }
 
     public ContactDto(ContactDto other) {
         this(other.getId(),
-                other.getTmpId(),
                 other.getFirstName(),
                 other.getLastName(),
                 other.getMidInitials(),
@@ -58,7 +52,6 @@ public class ContactDto implements IsSerializable, HasTemporaryIdentity {
     }
 
     public ContactDto(int id,
-                      int tmpId,
                       String firstName,
                       String lastName,
                       String midInitials,
@@ -69,7 +62,6 @@ public class ContactDto implements IsSerializable, HasTemporaryIdentity {
                       String address,
                       List<String> roles) {
         this.id = id;
-        this.tmpId = tmpId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.midInitials = midInitials;
@@ -83,14 +75,8 @@ public class ContactDto implements IsSerializable, HasTemporaryIdentity {
         }
     }
 
-    @Override
     public int getId() {
         return id;
-    }
-
-    @Override
-    public int getTmpId() {
-        return tmpId;
     }
 
     public String getAddress() {
@@ -149,7 +135,6 @@ public class ContactDto implements IsSerializable, HasTemporaryIdentity {
     public ContactDto updatedCopy(ContactDto updates) {
         return new ContactDto(
                 id,
-                updates.getTmpId(),
                 updates.getFirstName(),
                 updates.getLastName(),
                 updates.getMidInitials(),
@@ -240,10 +225,6 @@ public class ContactDto implements IsSerializable, HasTemporaryIdentity {
 
         public void setRoles(List<String> roles) {
             copy.roles = roles;
-        }
-
-        public void setTmpId(int id) {
-            copy.tmpId = id;
         }
 
         public ContactDto copy() {

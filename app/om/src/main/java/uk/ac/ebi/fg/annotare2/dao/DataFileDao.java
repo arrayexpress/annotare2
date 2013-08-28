@@ -25,7 +25,7 @@ import java.util.List;
  */
 public interface DataFileDao {
 
-    DataFile get(int id);
+    DataFile get(long id);
 
     DataFile create(String fileName);
 

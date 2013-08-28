@@ -36,7 +36,7 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
-    public DataFile get(int id) {
+    public DataFile get(long id) {
         return (DataFile) getCurrentSession().get(DataFile.class, id);
     }
 

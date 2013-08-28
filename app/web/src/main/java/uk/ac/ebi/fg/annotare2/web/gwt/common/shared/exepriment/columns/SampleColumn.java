@@ -31,9 +31,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.*;
 /**
  * @author Olga Melnichuk
  */
-public class SampleColumn implements IsSerializable, HasIdentity {
-
-    private static String NO_NAME = "NEW ATTRIBUTE";
+public class SampleColumn implements IsSerializable {
 
     private int id;
 
@@ -81,6 +79,7 @@ public class SampleColumn implements IsSerializable, HasIdentity {
     }
 
     private void setName(String name) {
+        String NO_NAME = "NEW ATTRIBUTE";
         this.name = name == null || name.trim().isEmpty() ? NO_NAME : name;
     }
 
