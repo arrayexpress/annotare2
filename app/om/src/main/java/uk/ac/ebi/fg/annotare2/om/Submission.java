@@ -20,44 +20,63 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
+import javax.persistence.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Set;
+
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * @author Olga Melnichuk
  */
+@Entity
+@Table(name = "submissions")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Submission implements HasEffectiveAcl {
 
-    private int id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created", nullable = false)
     private Date created;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private SubmissionStatus status;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "accession")
+    private String accession;
+
+    @ManyToOne
     private User createdBy;
 
     private Acl acl;
 
-    private SubmissionStatus status = SubmissionStatus.IN_PROGRESS;
-
-    private String title;
-
-    private String accession;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "submission_id")
+    private Set<DataFile> files;
 
     protected Submission(User createdBy, Acl acl) {
         this.created = new Date();
         this.createdBy = createdBy;
         this.acl = acl;
+        status = SubmissionStatus.IN_PROGRESS;
+        files = newHashSet();
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public void setStatus(SubmissionStatus status) {
-        this.status = status;
-    }
-
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -67,6 +86,10 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public SubmissionStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(SubmissionStatus status) {
+        this.status = status;
     }
 
     public User getCreatedBy() {
@@ -87,6 +110,10 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setAccession(String accession) {
         this.accession = accession;
+    }
+
+    public Set<DataFile> getFiles() {
+        return files;
     }
 
     public EffectiveAcl getEffectiveAcl() {

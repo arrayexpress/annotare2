@@ -47,8 +47,7 @@ public class DataFileDaoImpl implements DataFileDao {
 
     @Override
     public DataFile create(String fileName) {
-        DataFile dataFile = new DataFile();
-        dataFile.setName(fileName);
+        DataFile dataFile = new DataFile(fileName);
         save(dataFile);
         return dataFile;
     }

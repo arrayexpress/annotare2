@@ -17,33 +17,33 @@ import java.util.Map;
 
 public interface SubmissionServiceAsync {
 
-    void getSubmission(int id, AsyncCallback<SubmissionDetails> async);
+    void getSubmission(long id, AsyncCallback<SubmissionDetails> async);
 
-    void createExperimentSubmission(AsyncCallback<Integer> async);
+    void createExperimentSubmission(AsyncCallback<Long> async);
 
-    void createArrayDesignSubmission(AsyncCallback<Integer> async);
+    void createArrayDesignSubmission(AsyncCallback<Long> async);
 
-    void setupExperimentSubmission(int id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
+    void setupExperimentSubmission(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
 
-    void discardSubmissionData(int id, AsyncCallback<Void> async);
+    void discardSubmissionData(long id, AsyncCallback<Void> async);
 
-    void getIdfTable(int submissionId, AsyncCallback<Table> async);
+    void getIdfTable(long id, AsyncCallback<Table> async);
 
-    void getSdrfTable(int submissionId, AsyncCallback<Table> async);
+    void getSdrfTable(long id, AsyncCallback<Table> async);
 
-    void getArrayDesignDetails(int id, AsyncCallback<ArrayDesignDetailsDto> async);
+    void getArrayDesignDetails(long id, AsyncCallback<ArrayDesignDetailsDto> async);
 
-    void updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands, AsyncCallback<ArrayDesignUpdateResult> async);
+    void updateArrayDesign(long id, List<ArrayDesignUpdateCommand> commands, AsyncCallback<ArrayDesignUpdateResult> async);
 
-    void loadExperiment(int id, AsyncCallback<ExperimentProfile> async);
+    void loadExperiment(long id, AsyncCallback<ExperimentProfile> async);
 
-    void updateExperiment(int id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentProfile> async);
+    void updateExperiment(long id, List<ExperimentUpdateCommand> commands, AsyncCallback<ExperimentProfile> async);
 
-    void loadDataFiles(int id, AsyncCallback<List<DataFileRow>> async);
+    void loadDataFiles(long id, AsyncCallback<List<DataFileRow>> async);
 
-    void uploadDataFile(int id, String fileName, AsyncCallback<Void> async);
+    void uploadDataFile(long id, String fileName, AsyncCallback<Void> async);
 
-    void registryFtpFiles(int id, List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> async);
+    void registryFtpFiles(long id, List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> async);
 
-    void removeFile(int id, long fileId, AsyncCallback<Void> async);
+    void removeFile(long id, long fileId, AsyncCallback<Void> async);
 }

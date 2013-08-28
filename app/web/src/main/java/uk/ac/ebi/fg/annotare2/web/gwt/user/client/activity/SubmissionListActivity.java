@@ -112,7 +112,7 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
         placeController.goTo(place);
     }
 
-    public void onSubmissionSelected(int id) {
+    public void onSubmissionSelected(long id) {
         SubmissionViewPlace place = new SubmissionViewPlace();
         place.setSubmissionId(id);
         goTo(place);

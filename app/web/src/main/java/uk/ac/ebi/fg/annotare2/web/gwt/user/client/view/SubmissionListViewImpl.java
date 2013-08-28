@@ -123,7 +123,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             public void onSelectionChange(SelectionChangeEvent event) {
-                int id = selectionModel.getSelectedObject().getId();
+                long id = selectionModel.getSelectedObject().getId();
                 GWT.log("onSelectionChange(" + id + ")");
                 presenter.onSubmissionSelected(id);
             }

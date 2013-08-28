@@ -41,7 +41,7 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     private final SubmissionView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync rpcService;
-    private Integer submissionId;
+    private Long submissionId;
 
     @Inject
     public SubmissionViewActivity(SubmissionView view, PlaceController placeController, SubmissionServiceAsync rpcService) {

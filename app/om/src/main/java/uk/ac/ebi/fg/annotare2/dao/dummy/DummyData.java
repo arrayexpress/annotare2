@@ -48,13 +48,13 @@ public class DummyData {
 
     private static final Map<String, User> userByEmail = newHashMap();
 
-    private static final Map<Integer, Submission> submissions = newHashMap();
+    private static final Map<Long, Submission> submissions = newHashMap();
 
     private static final ListMultimap<User, Submission> userSubmissions = ArrayListMultimap.create();
 
     private static final List<ArrayPrintingProtocol> arrayProtocols = newArrayList();
 
-    private static int count = 1;
+    private static long count = 1;
 
     static {
 
@@ -148,7 +148,7 @@ public class DummyData {
         }
     }
 
-    private static int nextId() {
+    private static long nextId() {
         return count++;
     }
 
@@ -164,7 +164,7 @@ public class DummyData {
         return userSubmissions.get(user);
     }
 
-    public static <T extends Submission> T getSubmission(int id, Class<T> clazz)
+    public static <T extends Submission> T getSubmission(long id, Class<T> clazz)
             throws RecordNotFoundException {
         Submission submission = submissions.get(id);
         if (submission == null)

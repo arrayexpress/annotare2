@@ -72,13 +72,13 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     @Override
     public void onSubmissionCreateClick(SubmissionType type) {
-        AsyncCallback<Integer> callback = new AsyncCallbackWrapper<Integer>() {
+        AsyncCallback<Long> callback = new AsyncCallbackWrapper<Long>() {
             public void onFailure(Throwable caught) {
                 //TODO
                 Window.alert("Can't create new submission");
             }
 
-            public void onSuccess(Integer submissionId) {
+            public void onSuccess(Long submissionId) {
                 gotoSubmissionViewPlace(submissionId);
                 openEditor(editorUrl(submissionId));
             }
@@ -109,7 +109,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         goTo(place);
     }
 
-    private void gotoSubmissionViewPlace(int id) {
+    private void gotoSubmissionViewPlace(Long id) {
         SubmissionViewPlace place = new SubmissionViewPlace();
         place.setSubmissionId(id);
         goTo(place);

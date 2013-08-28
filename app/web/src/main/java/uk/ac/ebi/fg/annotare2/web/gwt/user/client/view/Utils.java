@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 
@@ -25,7 +24,7 @@ import com.google.gwt.user.client.Window;
  */
 public class Utils {
 
-    public static void openSubmissionEditor(int submissionId) {
+    public static void openSubmissionEditor(long submissionId) {
         /*String url = GWT.getHostPageBaseURL() + "editor/";
         if (!GWT.isProdMode()) {
             url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
@@ -33,7 +32,7 @@ public class Utils {
         Window.open(editorUrl(submissionId), "_blank", "");
     }
 
-    public static String editorUrl(int submissionId) {
+    public static String editorUrl(long submissionId) {
         UrlBuilder builder = Window.Location.createUrlBuilder();
         builder.setPath(Window.Location.getPath() + "edit/" + submissionId + "/");
         builder.setHash(null);

@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.om;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.io.InputStream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -28,11 +30,18 @@ import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.toJsonString;
 /**
  * @author Olga Melnichuk
  */
+@Entity
+@DiscriminatorValue("ARRAY_DESIGN")
 public class ArrayDesignSubmission extends Submission {
 
     private String header;
 
     private String body;
+
+    @Override
+    public void setId(Long id) {
+        super.setId(id);
+    }
 
     public ArrayDesignSubmission(User createdBy, Acl acl) {
         super(createdBy, acl);

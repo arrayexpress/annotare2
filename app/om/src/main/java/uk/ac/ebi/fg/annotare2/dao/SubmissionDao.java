@@ -27,9 +27,9 @@ import java.util.List;
  */
 public interface SubmissionDao {
 
-    ExperimentSubmission getExperimentSubmission(int id) throws RecordNotFoundException;
+    ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException;
 
-    ArrayDesignSubmission getArrayDesignSubmission(int id) throws RecordNotFoundException;
+    ArrayDesignSubmission getArrayDesignSubmission(long id) throws RecordNotFoundException;
 
     List<Submission> getSubmissions(User user);
 
@@ -37,5 +37,5 @@ public interface SubmissionDao {
 
     void save(Submission submission);
 
-    Submission getSubmission(int id) throws RecordNotFoundException;
+    Submission getSubmission(long id) throws RecordNotFoundException;
 }

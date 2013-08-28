@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class EffectiveAclTest {
 
-    private int id = 0;
+    private long id = 0;
 
     @Test
     public void testEffectiveAclHasPermission() {

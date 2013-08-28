@@ -86,7 +86,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException {
+    public SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = submissionManager.getSubmission(getCurrentUser(), id, Permission.VIEW);
             return uiSubmissionDetails(sb);
@@ -98,7 +98,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public ArrayDesignDetailsDto getArrayDesignDetails(int id) throws ResourceNotFoundException, NoPermissionException {
+    public ArrayDesignDetailsDto getArrayDesignDetails(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ArrayDesignSubmission sb = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.VIEW);
             return uiArrayDesignDetails(sb);
@@ -112,7 +112,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public Table getIdfTable(int id) throws NoPermissionException, ResourceNotFoundException {
+    public Table getIdfTable(long id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
@@ -131,7 +131,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public Table getSdrfTable(int id) throws NoPermissionException, ResourceNotFoundException {
+    public Table getSdrfTable(long id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
@@ -162,7 +162,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public int createExperimentSubmission() throws NoPermissionException {
+    public long createExperimentSubmission() throws NoPermissionException {
         try {
             return submissionManager.createExperimentSubmission(getCurrentUser()).getId();
         } catch (AccessControlException e) {
@@ -171,7 +171,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public int createArrayDesignSubmission() throws NoPermissionException {
+    public long createArrayDesignSubmission() throws NoPermissionException {
         try {
             return submissionManager.createArrayDesignSubmission(getCurrentUser()).getId();
         } catch (AccessControlException e) {
@@ -180,7 +180,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public void setupExperimentSubmission(int id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException {
+    public void setupExperimentSubmission(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission =
                     submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
@@ -195,7 +195,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException {
+    public void discardSubmissionData(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission =
                     submissionManager.getSubmission(getCurrentUser(), id, Permission.UPDATE);
@@ -208,7 +208,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public ExperimentProfile updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentProfile updateExperiment(long id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             ExperimentProfile experiment = submission.getExperimentProfile();
@@ -225,7 +225,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public ArrayDesignUpdateResult updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
+    public ArrayDesignUpdateResult updateArrayDesign(long id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ArrayDesignSubmission submission = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.UPDATE);
             ArrayDesignHeader header = submission.getHeader();
@@ -242,7 +242,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public ExperimentProfile loadExperiment(int id) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentProfile loadExperiment(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return submission.getExperimentProfile();
@@ -256,7 +256,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public List<DataFileRow> loadDataFiles(int id) throws ResourceNotFoundException, NoPermissionException {
+    public List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
             return uiDataFileRows(submission.getFiles());
@@ -268,7 +268,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public void uploadDataFile(int id, String fileName) throws ResourceNotFoundException, NoPermissionException {
+    public void uploadDataFile(long id, String fileName) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             FileItem fileItem = UploadedFiles.get(getSession(), fileName);
@@ -288,7 +288,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public Map<Integer, String> registryFtpFiles(int id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
+    public Map<Integer, String> registryFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             File ftpRoot = properties.getFilePickUpDir();
@@ -316,7 +316,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     }
 
     @Override
-    public void removeFile(int id, long fileId) throws ResourceNotFoundException, NoPermissionException {
+    public void removeFile(long id, long fileId) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
             dataFileManager.removeFile(submission, fileId);

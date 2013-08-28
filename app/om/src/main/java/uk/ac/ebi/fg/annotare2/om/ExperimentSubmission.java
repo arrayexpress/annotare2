@@ -19,11 +19,11 @@ package uk.ac.ebi.fg.annotare2.om;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 
-import java.util.List;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.fromJson2Experiment;
 import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.toJsonString;
@@ -31,15 +31,14 @@ import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.toJsonString;
 /**
  * @author Olga Melnichuk
  */
+@Entity
+@DiscriminatorValue("EXPERIMENT")
 public class ExperimentSubmission extends Submission {
 
     private String experimentString;
 
-    private Set<DataFile> files;
-
     public ExperimentSubmission(User user, Acl acl) {
         super(user, acl);
-        this.files = newHashSet();
     }
 
     public ExperimentProfile getExperimentProfile() throws DataSerializationException {
@@ -58,9 +57,5 @@ public class ExperimentSubmission extends Submission {
     @Override
     public void discardAll() {
         experimentString = null;
-    }
-
-    public Set<DataFile> getFiles() {
-        return files;
     }
 }

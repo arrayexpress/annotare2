@@ -26,7 +26,7 @@ import java.util.Date;
  */
 public class SubmissionDetails implements IsSerializable {
 
-    private int id;
+    private long id;
 
     private Accession accession;
 
@@ -43,7 +43,7 @@ public class SubmissionDetails implements IsSerializable {
     public SubmissionDetails() {
     }
 
-    public SubmissionDetails(int id,
+    public SubmissionDetails(long id,
                              String accession,
                              String title,
                              Date created,
@@ -59,7 +59,7 @@ public class SubmissionDetails implements IsSerializable {
         this.hasData = hasData;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

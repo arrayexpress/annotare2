@@ -27,13 +27,13 @@ import com.google.inject.Provider;
  */
 public class SubmissionViewPlace extends Place {
 
-    private Integer submissionId;
+    private Long submissionId;
 
-    public int getSubmissionId() {
+    public long getSubmissionId() {
         return submissionId;
     }
 
-    public void setSubmissionId(int submissionId) {
+    public void setSubmissionId(long submissionId) {
         this.submissionId = submissionId;
     }
 

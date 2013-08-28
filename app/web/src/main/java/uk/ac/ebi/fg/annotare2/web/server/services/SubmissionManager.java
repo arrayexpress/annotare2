@@ -57,17 +57,17 @@ public class SubmissionManager {
                 SubmissionStatus.PUBLIC_IN_AE);
     }
 
-    public Submission getSubmission(User user, int id, Permission permission) throws AccessControlException, RecordNotFoundException {
+    public Submission getSubmission(User user, long id, Permission permission) throws AccessControlException, RecordNotFoundException {
         Submission submission = submissionDao.getSubmission(id);
         return withPermission(user, permission, submission);
     }
 
-    public ExperimentSubmission getExperimentSubmission(User user, int id, Permission permission) throws RecordNotFoundException, AccessControlException {
+    public ExperimentSubmission getExperimentSubmission(User user, long id, Permission permission) throws RecordNotFoundException, AccessControlException {
         ExperimentSubmission sb = submissionDao.getExperimentSubmission(id);
         return withPermission(user, permission, sb);
     }
 
-    public ArrayDesignSubmission getArrayDesignSubmission(User user, int id, Permission permission) throws RecordNotFoundException, AccessControlException {
+    public ArrayDesignSubmission getArrayDesignSubmission(User user, long id, Permission permission) throws RecordNotFoundException, AccessControlException {
         ArrayDesignSubmission sb = submissionDao.getArrayDesignSubmission(id);
         return withPermission(user, permission, sb);
     }

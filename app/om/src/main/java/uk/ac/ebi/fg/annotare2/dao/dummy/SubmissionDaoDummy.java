@@ -34,17 +34,17 @@ import static java.util.Arrays.asList;
  */
 public class SubmissionDaoDummy implements SubmissionDao {
     @Override
-    public Submission getSubmission(int id) throws RecordNotFoundException {
+    public Submission getSubmission(long id) throws RecordNotFoundException {
         return DummyData.getSubmission(id, Submission.class);
     }
 
     @Override
-    public ExperimentSubmission getExperimentSubmission(int id) throws RecordNotFoundException {
+    public ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException {
         return DummyData.getSubmission(id, ExperimentSubmission.class);
     }
 
     @Override
-    public ArrayDesignSubmission getArrayDesignSubmission(int id) throws RecordNotFoundException {
+    public ArrayDesignSubmission getArrayDesignSubmission(long id) throws RecordNotFoundException {
         return DummyData.getSubmission(id, ArrayDesignSubmission.class);
     }
 

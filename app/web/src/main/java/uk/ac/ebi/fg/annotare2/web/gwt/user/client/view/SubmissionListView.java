@@ -31,6 +31,6 @@ public interface SubmissionListView extends IsWidget {
     void setSubmissions(List<SubmissionRow> submissions);
 
     public interface Presenter  {
-        void onSubmissionSelected(int id);
+        void onSubmissionSelected(long id);
     }
 }

@@ -28,7 +28,7 @@ public class UserTest {
 
     @Test
     public void defaultInitializationTest() {
-        User user = new User(1, "email", "password");
+        User user = new User(1L, "email", "password");
 
         assertNotNull(user.getRoles());
         assertTrue(user.getRoles().isEmpty());
@@ -43,10 +43,10 @@ public class UserTest {
 
     @Test
     public void equalsAndHashCodeTest() {
-        User user1 = new User(1, "email", "password");
-        User user2 = new User(1, "email", "password");
-        User user3 = new User(1, "Email", "Password");
-        User user4 = new User(2, "email", "password");
+        User user1 = new User(1L, "email", "password");
+        User user2 = new User(1L, "email", "password");
+        User user3 = new User(1L, "Email", "Password");
+        User user4 = new User(2L, "email", "password");
 
         assertTrue(user1.equals(user2));
         assertTrue(user1.equals(user3));

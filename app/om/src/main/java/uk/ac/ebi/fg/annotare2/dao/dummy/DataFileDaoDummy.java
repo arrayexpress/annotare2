@@ -44,9 +44,8 @@ public class DataFileDaoDummy implements DataFileDao {
 
     @Override
     public DataFile create(String fileName) {
-        DataFile file = new DataFile();
+        DataFile file = new DataFile(fileName);
         file.setId(id.incrementAndGet());
-        file.setName(fileName);
         items.putIfAbsent(file.getId(), file);
         return file;
     }

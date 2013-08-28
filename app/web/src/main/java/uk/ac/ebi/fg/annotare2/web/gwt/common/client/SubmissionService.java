@@ -40,33 +40,33 @@ public interface SubmissionService extends RemoteService {
 
     public static final String NAME = "submissionService";
 
-    SubmissionDetails getSubmission(int id) throws ResourceNotFoundException, NoPermissionException;
+    SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    ArrayDesignDetailsDto getArrayDesignDetails(int id) throws ResourceNotFoundException, NoPermissionException;
+    ArrayDesignDetailsDto getArrayDesignDetails(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    Table getIdfTable(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+    Table getIdfTable(long id) throws NoPermissionException, ResourceNotFoundException;
 
-    Table getSdrfTable(int submissionId) throws NoPermissionException, ResourceNotFoundException;
+    Table getSdrfTable(long id) throws NoPermissionException, ResourceNotFoundException;
 
-    int createExperimentSubmission() throws NoPermissionException;
+    long createExperimentSubmission() throws NoPermissionException;
 
-    int createArrayDesignSubmission() throws NoPermissionException;
+    long createArrayDesignSubmission() throws NoPermissionException;
 
-    void setupExperimentSubmission(int id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
+    void setupExperimentSubmission(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
 
-    void discardSubmissionData(int id) throws ResourceNotFoundException, NoPermissionException;
+    void discardSubmissionData(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    ArrayDesignUpdateResult updateArrayDesign(int id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
+    ArrayDesignUpdateResult updateArrayDesign(long id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 
-    ExperimentProfile loadExperiment(int id) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentProfile loadExperiment(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    ExperimentProfile updateExperiment(int id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentProfile updateExperiment(long id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
 
-    List<DataFileRow> loadDataFiles(int id) throws ResourceNotFoundException, NoPermissionException;
+    List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    void uploadDataFile(int id, String fileName) throws ResourceNotFoundException, NoPermissionException;
+    void uploadDataFile(long id, String fileName) throws ResourceNotFoundException, NoPermissionException;
 
-    Map<Integer, String> registryFtpFiles(int id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException;
+    Map<Integer, String> registryFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException;
 
-    void removeFile(int id, long fileId) throws ResourceNotFoundException, NoPermissionException;
+    void removeFile(long id, long fileId) throws ResourceNotFoundException, NoPermissionException;
 }
