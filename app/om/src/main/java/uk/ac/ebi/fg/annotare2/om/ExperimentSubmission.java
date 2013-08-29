@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.om;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.util.Set;
@@ -35,6 +36,7 @@ import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.toJsonString;
 @DiscriminatorValue("EXPERIMENT")
 public class ExperimentSubmission extends Submission {
 
+    @Column(name = "experiment")
     private String experimentString;
 
     public ExperimentSubmission(User user, Acl acl) {

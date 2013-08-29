@@ -20,6 +20,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
+import uk.ac.ebi.fg.annotare2.om.Submission;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,9 +44,10 @@ public class DataFileDaoDummy implements DataFileDao {
     }
 
     @Override
-    public DataFile create(String fileName) {
+    public DataFile create(String fileName, Submission submission) {
         DataFile file = new DataFile(fileName);
         file.setId(id.incrementAndGet());
+        file.setOwnedBy(submission);
         items.putIfAbsent(file.getId(), file);
         return file;
     }

@@ -16,14 +16,17 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 import static com.google.common.collect.ImmutableList.builder;
+import static com.google.common.collect.Lists.transform;
 
 /**
  * @author Olga Melnichuk
@@ -45,7 +48,13 @@ public class EffectiveAcl {
 
     private Collection<? extends Role> getEffectiveRoles(User user) {
         ImmutableList.Builder<Role> roles = builder();
-        roles.addAll(user.getRoles());
+        roles.addAll(transform(user.getRoles(), new Function<UserRole, Role>() {
+            @Nullable
+            @Override
+            public Role apply(@Nullable UserRole input) {
+                return input.getRole();
+            }
+        }));
         if (owner.isPresent() && user.equals(owner.get())) {
             roles.add(Role.OWNER);
         }

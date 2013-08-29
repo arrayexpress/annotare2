@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionFactory;
 import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
@@ -58,7 +59,7 @@ public class SubmissionManager {
     }
 
     public Submission getSubmission(User user, long id, Permission permission) throws AccessControlException, RecordNotFoundException {
-        Submission submission = submissionDao.getSubmission(id);
+        Submission submission = submissionDao.get(id);
         return withPermission(user, permission, submission);
     }
 

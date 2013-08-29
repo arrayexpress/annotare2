@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.om;
+package uk.ac.ebi.fg.annotare2.dao.dummy;
 
 import com.google.common.base.Optional;
+import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
 import static com.google.common.base.Optional.absent;
+import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -31,15 +33,16 @@ public class SubmissionFactory implements HasEffectiveAcl {
     private static Acl submissionAcl;
 
     static {
-        submissionAcl = new Acl()
-                .add(createAclEntry(Role.AUTHENTICATED, Permission.CREATE))
+        submissionAcl = new Acl("submissionAcl");
+        submissionAcl.getEntries().addAll(asList(
+                createAclEntry(Role.AUTHENTICATED, Permission.CREATE),
 
-                .add(createAclEntry(Role.OWNER, Permission.VIEW))
-                .add(createAclEntry(Role.OWNER, Permission.UPDATE))
+                createAclEntry(Role.OWNER, Permission.VIEW),
+                createAclEntry(Role.OWNER, Permission.UPDATE),
 
-                .add(createAclEntry(Role.CURATOR, Permission.CREATE))
-                .add(createAclEntry(Role.CURATOR, Permission.VIEW))
-                .add(createAclEntry(Role.CURATOR, Permission.UPDATE));
+                createAclEntry(Role.CURATOR, Permission.CREATE),
+                createAclEntry(Role.CURATOR, Permission.VIEW),
+                createAclEntry(Role.CURATOR, Permission.UPDATE)));
     }
 
     private static AclEntry createAclEntry(Role role, Permission permission) {

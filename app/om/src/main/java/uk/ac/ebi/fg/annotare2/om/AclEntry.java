@@ -19,19 +19,58 @@ package uk.ac.ebi.fg.annotare2.om;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
+import javax.persistence.*;
 import java.util.Collection;
 
 /**
  * @author Olga Melnichuk
  */
+@Entity
+@Table(name = "acl_entries")
 public class AclEntry {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "permission", nullable = false)
     private Permission permission;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Acl acl;
 
     public AclEntry(Role role, Permission permission) {
         this.role = role;
         this.permission = permission;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Acl getAcl() {
+        return acl;
+    }
+
+    public void setAcl(Acl acl) {
+        this.acl = acl;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public Permission getPermission() {
+        return permission;
     }
 
     public boolean complies(Collection<? extends Role> roles, Permission permission) {

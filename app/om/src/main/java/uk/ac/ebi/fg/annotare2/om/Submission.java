@@ -56,12 +56,15 @@ public abstract class Submission implements HasEffectiveAcl {
     private String accession;
 
     @ManyToOne
+    @JoinColumn(name = "createdBy", nullable = false)
     private User createdBy;
 
+    @ManyToOne
+    @JoinColumn(name = "acl")
     private Acl acl;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "submission_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ownedBy")
+    @OrderBy("created ASC")
     private Set<DataFile> files;
 
     protected Submission(User createdBy, Acl acl) {

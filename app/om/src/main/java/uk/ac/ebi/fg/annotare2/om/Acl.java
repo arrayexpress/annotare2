@@ -19,20 +19,46 @@ package uk.ac.ebi.fg.annotare2.om;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Olga Melnichuk
  */
+@Entity
+@Table(name = "acl")
 public class Acl {
-    private List<AclEntry> entries = newArrayList();
 
-    public Acl add(AclEntry entry) {
-        entries.add(entry);
-        return this;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "acl")
+    @OrderBy("role ASC")
+    private List<AclEntry> entries;
+
+    public Acl(String name) {
+        this.name = name;
+        entries = newArrayList();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<AclEntry> getEntries() {
+        return entries;
     }
 
     public boolean hasPermission(Collection<? extends Role> roles, Permission permission) {

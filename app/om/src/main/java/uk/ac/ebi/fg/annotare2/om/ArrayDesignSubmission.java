@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.om;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.io.InputStream;
@@ -34,8 +35,10 @@ import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.toJsonString;
 @DiscriminatorValue("ARRAY_DESIGN")
 public class ArrayDesignSubmission extends Submission {
 
+    @Column(name = "arrayDesignHeader")
     private String header;
 
+    @Column(name = "arrayDesignBody")
     private String body;
 
     @Override

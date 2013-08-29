@@ -47,7 +47,8 @@ public class DataFile {
     @Column(name = "status", nullable = false)
     private DataFileStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ownedBy", nullable = false)
     private Submission ownedBy;
 
     public DataFile(String name) {
@@ -86,6 +87,14 @@ public class DataFile {
 
     public void setStatus(DataFileStatus status) {
         this.status = status;
+    }
+
+    public Submission getOwnedBy() {
+        return ownedBy;
+    }
+
+    public void setOwnedBy(Submission submission) {
+        this.ownedBy = submission;
     }
 
     @Override

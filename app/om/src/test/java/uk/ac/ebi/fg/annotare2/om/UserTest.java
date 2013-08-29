@@ -34,7 +34,7 @@ public class UserTest {
         assertTrue(user.getRoles().isEmpty());
 
         try {
-            user.getRoles().add(Role.CURATOR);
+            user.getRoles().add(new UserRole(user, Role.CURATOR));
             fail("Collection of user roles should be unmodifiable");
         } catch (Exception e) {
             // ok

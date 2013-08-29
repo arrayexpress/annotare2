@@ -31,10 +31,11 @@ public class AclTest {
 
     @Test
     public void testAclHasPermission() {
-        Acl acl = new Acl();
-        acl.add(new AclEntry(Role.AUTHENTICATED, Permission.VIEW));
-        acl.add(new AclEntry(Role.CURATOR, Permission.VIEW));
-        acl.add(new AclEntry(Role.CURATOR, Permission.UPDATE));
+        Acl acl = new Acl("test");
+        acl.getEntries().addAll(asList(
+                new AclEntry(Role.AUTHENTICATED, Permission.VIEW),
+                new AclEntry(Role.CURATOR, Permission.VIEW),
+                new AclEntry(Role.CURATOR, Permission.UPDATE)));
 
         assertTrue(acl.hasPermission(asList(Role.AUTHENTICATED), Permission.VIEW));
         assertTrue(acl.hasPermission(asList(Role.CURATOR), Permission.UPDATE));

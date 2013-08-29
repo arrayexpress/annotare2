@@ -16,23 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
+import uk.ac.ebi.fg.annotare2.om.Submission;
 
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataFileDaoImpl implements DataFileDao {
-
-    private final HibernateSessionFactory sessionFactory;
+public class DataFileDaoImpl extends AbstractDaoImpl implements DataFileDao {
 
     public DataFileDaoImpl(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+       super(sessionFactory);
     }
 
     @Override
@@ -46,8 +44,9 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
-    public DataFile create(String fileName) {
+    public DataFile create(String fileName, Submission submission) {
         DataFile dataFile = new DataFile(fileName);
+        dataFile.setOwnedBy(submission);
         save(dataFile);
         return dataFile;
     }
@@ -65,7 +64,5 @@ public class DataFileDaoImpl implements DataFileDao {
                 .list();
     }
 
-    private Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
+
 }

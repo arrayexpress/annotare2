@@ -23,12 +23,12 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.io.CharStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.JsonCodec;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -37,7 +37,6 @@ import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -59,7 +58,7 @@ public class DummyData {
     static {
 
         User user = createUser("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee");
-        user.setRoles(asList(Role.AUTHENTICATED));
+        addRole(user, Role.AUTHENTICATED);
 
         createSubmission(user,
                 SubmissionStatus.IN_PROGRESS,
@@ -178,5 +177,10 @@ public class DummyData {
             submissions.put(submission.getId(), submission);
             userSubmissions.put(submission.getCreatedBy(), submission);
         }
+    }
+
+    private static void addRole(User user, Role role) {
+        UserRole userRole = new UserRole(user, role);
+        user.getRoles().add(userRole);
     }
 }

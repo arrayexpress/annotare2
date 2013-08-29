@@ -17,13 +17,11 @@
 package uk.ac.ebi.fg.annotare2.om;
 
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
-import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -42,12 +40,20 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    private List<Role> roles = Collections.emptyList();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OrderBy("role ASC")
+    private List<UserRole> roles;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "createdBy")
+    @OrderBy("created DESC")
+    private List<Submission> submissions;
 
     public User(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
+        submissions = newArrayList();
+        roles = newArrayList();
     }
 
     public Long getId() {
@@ -62,20 +68,16 @@ public class User {
         return password;
     }
 
-    public void setRoles(Collection<? extends Role> roles) {
-        this.roles = new ArrayList<Role>(roles);
-    }
-
-    public boolean isCurator() {
-        return roles.contains(Role.CURATOR);
-    }
-
     public boolean isAllowed(HasEffectiveAcl obj, Permission permission) {
         return obj.getEffectiveAcl().hasPermission(this, permission);
     }
 
-    public List<Role> getRoles() {
-        return Collections.unmodifiableList(roles);
+    public List<UserRole> getRoles() {
+        return roles;
+    }
+
+    public List<Submission> getSubmissions() {
+        return submissions;
     }
 
     @Override

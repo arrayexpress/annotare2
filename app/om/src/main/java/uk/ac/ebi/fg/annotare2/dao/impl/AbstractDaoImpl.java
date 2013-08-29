@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.dao;
+package uk.ac.ebi.fg.annotare2.dao.impl;
 
-import uk.ac.ebi.fg.annotare2.om.DataFile;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-
-import java.util.List;
+import org.hibernate.Session;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileDao {
+public abstract class AbstractDaoImpl {
 
-    DataFile get(long id);
+    private final HibernateSessionFactory sessionFactory;
 
-    DataFile create(String fileName, Submission submission);
+    public AbstractDaoImpl(HibernateSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-    void delete(DataFile dataFile);
-
-    void save(DataFile dataFile);
-
-    List<DataFile> getAllWithDigest(String digest);
+    protected Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 }

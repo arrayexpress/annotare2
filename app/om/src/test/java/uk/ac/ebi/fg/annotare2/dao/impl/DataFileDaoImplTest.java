@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Submission;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -61,7 +63,7 @@ public class DataFileDaoImplTest {
         @Override
         protected void before() throws Throwable {
             session = sessionFactory.getCurrentSession();
-            dao = new DataFileDaoImpl(sessionFactory);
+            dataFileDao = new DataFileDaoImpl(sessionFactory);
             tx = session.beginTransaction();
         }
 
@@ -72,7 +74,8 @@ public class DataFileDaoImplTest {
         }
     };
 
-    private DataFileDaoImpl dao;
+    private DataFileDaoImpl dataFileDao;
+    private SubmissionDaoImpl submissionDao;
 
     @BeforeClass
     public static void beforeClass() throws NamingException, HibernateException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -129,7 +132,7 @@ public class DataFileDaoImplTest {
     @Test
     public void createDataFileTest() {
         final String name = "create_test";
-        DataFile dataFile = dao.create(name);
+        DataFile dataFile = dataFileDao.create(name, createSubmission());
         session.flush();
 
         assertNotNull(dataFile);
@@ -141,12 +144,12 @@ public class DataFileDaoImplTest {
 
     @Test
     public void deleteDataFileTest() {
-        DataFile dataFile = dao.create("delete_test");
+        DataFile dataFile = dataFileDao.create("delete_test", createSubmission());
         session.flush();
         Long id = dataFile.getId();
 
-        dao.delete(dataFile);
-        dataFile = dao.get(id);
+        dataFileDao.delete(dataFile);
+        dataFile = dataFileDao.get(id);
         assertNull(dataFile);
     }
 
@@ -155,13 +158,19 @@ public class DataFileDaoImplTest {
         final String digest = "12345";
         final int n = 3;
         for (int i = 0; i < n; i++) {
-            DataFile dataFile1 = dao.create("test");
+            DataFile dataFile1 = dataFileDao.create("test", createSubmission());
             dataFile1.setDigest(digest);
-            dao.save(dataFile1);
+            dataFileDao.save(dataFile1);
         }
         session.flush();
 
-        List<DataFile> list = dao.getAllWithDigest(digest);
+        List<DataFile> list = dataFileDao.getAllWithDigest(digest);
         assertEquals(n, list.size());
     }
+
+    private Submission createSubmission() {
+        //TODO
+        return null;
+    }
+
 }

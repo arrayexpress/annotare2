@@ -36,10 +36,11 @@ public class EffectiveAclTest {
 
     @Test
     public void testEffectiveAclHasPermission() {
-        Acl acl = new Acl();
-        acl.add(new AclEntry(Role.AUTHENTICATED, Permission.VIEW));
-        acl.add(new AclEntry(Role.OWNER, Permission.VIEW));
-        acl.add(new AclEntry(Role.OWNER, Permission.UPDATE));
+        Acl acl = new Acl("test");
+        acl.getEntries().addAll(
+                asList(new AclEntry(Role.AUTHENTICATED, Permission.VIEW),
+                        new AclEntry(Role.OWNER, Permission.VIEW),
+                        new AclEntry(Role.OWNER, Permission.UPDATE)));
 
         User owner = createUser(asList(Role.AUTHENTICATED));
         User other = createUser(asList(Role.AUTHENTICATED));
@@ -53,7 +54,9 @@ public class EffectiveAclTest {
 
     private User createUser(Collection<? extends Role> roles) {
         User user = new User(id++, "email", "password");
-        user.setRoles(roles);
+        for(Role role : roles) {
+            user.getRoles().add(new UserRole(user, role));
+        }
         return user;
     }
 }

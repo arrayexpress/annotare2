@@ -37,5 +37,5 @@ public interface SubmissionDao {
 
     void save(Submission submission);
 
-    Submission getSubmission(long id) throws RecordNotFoundException;
+    Submission get(long id) throws RecordNotFoundException;
 }
