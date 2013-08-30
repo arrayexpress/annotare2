@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public User getCurrentUser(HttpSession session) {
-        String email = (String)USER_EMAIL.get(session);
+        String email = (String) USER_EMAIL.get(session);
         User user = accountManager.getByEmail(email);
         if (user == null) {
             throw new UnauthorizedAccessException("Sorry, you are not logged in");

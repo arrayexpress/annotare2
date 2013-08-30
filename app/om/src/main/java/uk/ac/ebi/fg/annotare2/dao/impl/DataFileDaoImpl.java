@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
+import com.google.inject.Inject;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
@@ -30,8 +31,9 @@ import java.util.List;
  */
 public class DataFileDaoImpl extends AbstractDaoImpl<DataFile> implements DataFileDao {
 
+    @Inject
     public DataFileDaoImpl(HibernateSessionFactory sessionFactory) {
-       super(sessionFactory);
+        super(sessionFactory);
     }
 
     @Override

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
 import com.google.common.base.Predicate;
+import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
@@ -41,6 +42,7 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
     private final ExperimentSubmissionDaoImpl expSmbDao;
     private final ArrayDesignSubmissionDaoImpl arrayDesignSbmDao;
 
+    @Inject
     public SubmissionDaoImpl(HibernateSessionFactory sessionFactory) {
         super(sessionFactory);
         expSmbDao = new ExperimentSubmissionDaoImpl(sessionFactory);

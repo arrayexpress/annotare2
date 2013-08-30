@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
+import com.google.inject.Inject;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
 
+    @Inject
     public UserDaoImpl(HibernateSessionFactory sessionFactory) {
         super(sessionFactory);
     }

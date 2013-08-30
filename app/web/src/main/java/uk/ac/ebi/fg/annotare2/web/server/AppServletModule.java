@@ -25,9 +25,10 @@ import gwtupload.server.UploadServlet;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
-import uk.ac.ebi.fg.annotare2.dao.dummy.DataFileDaoDummy;
-import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionDaoDummy;
-import uk.ac.ebi.fg.annotare2.dao.dummy.UserDaoDummy;
+import uk.ac.ebi.fg.annotare2.dao.impl.DataFileDaoImpl;
+import uk.ac.ebi.fg.annotare2.dao.impl.SubmissionDaoImpl;
+import uk.ac.ebi.fg.annotare2.dao.impl.UserDaoImpl;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoService;
@@ -69,7 +70,9 @@ public class AppServletModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        filter("/").through(HibernateSessionFilter.class);
+        filter("/*",
+               "/UserApp/*",
+               "/EditorApp/*").through(HibernateSessionFilter.class);
 
         filter("/UserApp/*",
                 "/",
@@ -112,9 +115,10 @@ public class AppServletModule extends ServletModule {
 
         bind(SubmissionListServiceImpl.class).in(SINGLETON);
 
-        bind(UserDao.class).to(UserDaoDummy.class).in(SINGLETON);
-        bind(SubmissionDao.class).to(SubmissionDaoDummy.class).in(SINGLETON);
-        bind(DataFileDao.class).to(DataFileDaoDummy.class).in(SINGLETON);
+        bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
+        bind(UserDao.class).to(UserDaoImpl.class).in(SINGLETON);
+        bind(SubmissionDao.class).to(SubmissionDaoImpl.class).in(SINGLETON);
+        bind(DataFileDao.class).to(DataFileDaoImpl.class).in(SINGLETON);
 
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).in(SINGLETON);

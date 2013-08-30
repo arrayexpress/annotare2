@@ -17,9 +17,10 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 
 import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
 
@@ -29,17 +30,29 @@ import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex
 public class AccountManager {
 
     private UserDao userDao;
+    private TransactionSupport transactionSupport;
 
     @Inject
-    public AccountManager(UserDao userDao) {
+    public AccountManager(UserDao userDao, TransactionSupport transactionSupport) {
         this.userDao = userDao;
+        this.transactionSupport = transactionSupport;
     }
 
-    public boolean isValid(String email, String password) {
-        return userDao.getUserByEmailAndPassword(email, md5Hex(password)) != null;
+    public boolean isValid(final String email, final String password) {
+        return transactionSupport.execute(new TransactionCallback<Boolean>() {
+            @Override
+            public Boolean doInTransaction() {
+                return userDao.getUserByEmailAndPassword(email, md5Hex(password)) != null;
+            }
+        });
     }
 
-    public User getByEmail(String email) {
-        return userDao.getUserByEmail(email);
+    public User getByEmail(final String email) {
+        return transactionSupport.execute(new TransactionCallback<User>() {
+            @Override
+            public User doInTransaction() {
+                return userDao.getUserByEmail(email);
+            }
+        });
     }
 }

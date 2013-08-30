@@ -49,7 +49,8 @@
                         <td><h1>Annotare 2.0</h1></td>
                     </tr>
                     <tr class="error">
-                        <td colspan="2">${dummyErrors}</td>
+                        <td></td>
+                        <td>${dummyErrors}</td>
                     </tr>
                     <tr class="row right">
                         <td>Email</td>

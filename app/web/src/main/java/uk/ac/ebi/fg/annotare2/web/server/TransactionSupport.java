@@ -16,33 +16,34 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
-import com.google.common.util.concurrent.AbstractIdleService;
-import com.google.inject.Provider;
+import com.google.inject.Inject;
+import org.hibernate.Transaction;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 /**
  * @author Olga Melnichuk
  */
-public class HibernateSessionFactoryProvider extends AbstractIdleService implements Provider<HibernateSessionFactory> {
+public class TransactionSupport {
 
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
 
-    public HibernateSessionFactoryProvider() {
-        sessionFactory = HibernateSessionFactory.create();
+    @Inject
+    public TransactionSupport(HibernateSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    @Override
-    protected void startUp() throws Exception {
-        //do nothing
-    }
-
-    @Override
-    protected void shutDown() throws Exception {
-        sessionFactory.close();
-    }
-
-    @Override
-    public HibernateSessionFactory get() {
-        return sessionFactory;
+    public <T> T execute(TransactionCallback<T> transactionCallback) {
+        Transaction tx = sessionFactory.getCurrentSession().beginTransaction();
+        try {
+            T result = transactionCallback.doInTransaction();
+            tx.commit();
+            return result;
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        } catch (Error err) {
+            tx.rollback();
+            throw err;
+        }
     }
 }

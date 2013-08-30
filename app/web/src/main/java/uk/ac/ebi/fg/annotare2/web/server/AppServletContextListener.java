@@ -21,6 +21,14 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.CompositeResourceAccessor;
+import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.resource.ResourceAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
@@ -32,7 +40,10 @@ import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
+import javax.sql.DataSource;
 import java.net.URL;
+import java.sql.Connection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +65,8 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        updateDb(servletContextEvent);
+
         findMageTabCheckAnnotationPackages();
 
         lookupPropertiesInContext();
@@ -125,5 +138,51 @@ public class AppServletContextListener extends GuiceServletContextListener {
         /* note: better not to use forWebInfLib(), as you can't rely on servletContext.getResource(...) */
         //todo: move package names with magetabcheck annotations to the config
         libPaths.addAll(forPackage("uk.ac.ebi.fg.annotare2.magetabcheck.checks"));
+    }
+
+    private void updateDb(ServletContextEvent servletContextEvent) {
+        try {
+            Context ic = null;
+            Connection connection = null;
+            try {
+                ic = new InitialContext();
+                //todo get ds string from web.xml
+                DataSource dataSource = (DataSource) ic.lookup("java:comp/env/jdbc/annotareDataSource");
+
+                connection = dataSource.getConnection();
+
+                Thread currentThread = Thread.currentThread();
+                ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+                ResourceAccessor threadClFO = new ClassLoaderResourceAccessor(contextClassLoader);
+
+                ResourceAccessor clFO = new ClassLoaderResourceAccessor();
+                ResourceAccessor fsFO = new FileSystemResourceAccessor();
+
+
+                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+                //todo move to web.xml
+                Liquibase liquibase = new Liquibase("uk/ac/ebi/fg/annotare2/db/changelog/changelog-master.xml", new CompositeResourceAccessor(clFO, fsFO, threadClFO), database);
+
+                Enumeration<String> initParameters = servletContextEvent.getServletContext().getInitParameterNames();
+                while (initParameters.hasMoreElements()) {
+                    String name = initParameters.nextElement().trim();
+                    if (name.startsWith("liquibase.parameter.")) {
+                        liquibase.setChangeLogParameter(name.substring("liquibase.parameter".length()), servletContextEvent.getServletContext().getInitParameter(name));
+                    }
+                }
+
+                liquibase.update("");
+            } finally {
+                if (ic != null) {
+                    ic.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

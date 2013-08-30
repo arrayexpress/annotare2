@@ -31,10 +31,8 @@
 
     <properties>
         <gxt.version>3.0.1</gxt.version>
-        <guice.version>3.0</guice.version>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <webapp.log.appender.ref>server-log</webapp.log.appender.ref>
     </properties>
 
@@ -148,12 +146,10 @@
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
-            <version>${guice.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
@@ -179,6 +175,7 @@
             <version>6.1.11</version>
             <scope>provided</scope>
         </dependency>
+
         <!-- lucene for efo index -->
 
         <dependency>
@@ -237,6 +234,14 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-kahadb-store</artifactId>
             <version>5.8.0</version>
+        </dependency>
+
+        <!-- Liquibase -->
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
 
         <!-- other stuff -->

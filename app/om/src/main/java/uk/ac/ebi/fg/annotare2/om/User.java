@@ -48,6 +48,9 @@ public class User {
     @OrderBy("created DESC")
     private List<Submission> submissions;
 
+    public User() {
+    }
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;
