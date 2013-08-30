@@ -27,6 +27,8 @@ import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 import java.util.Collection;
 import java.util.List;
 
+import static uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionFactory.*;
+
 /**
  * @author Olga Melnichuk
  */
@@ -77,7 +79,7 @@ public class SubmissionManager {
         if (!user.isAllowed(factory, Permission.CREATE)) {
             throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
         }
-        ExperimentSubmission sb = factory.createExperimentSubmission(user);
+        ExperimentSubmission sb = SubmissionFactory.createExperimentSubmission(user);
         submissionDao.save(sb);
         return sb;
     }
@@ -86,7 +88,7 @@ public class SubmissionManager {
         if (!user.isAllowed(factory, Permission.CREATE)) {
             throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
         }
-        ArrayDesignSubmission sb = factory.createArrayDesignSubmission(user);
+        ArrayDesignSubmission sb = SubmissionFactory.createArrayDesignSubmission(user);
         submissionDao.save(sb);
         return sb;
     }

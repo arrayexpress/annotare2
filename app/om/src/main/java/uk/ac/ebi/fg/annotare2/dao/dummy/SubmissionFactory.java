@@ -28,6 +28,7 @@ import static java.util.Arrays.asList;
  * @author Olga Melnichuk
  */
 public class SubmissionFactory implements HasEffectiveAcl {
+
     public static final Optional<User> OWNER = absent();
 
     private static Acl submissionAcl;
@@ -49,12 +50,16 @@ public class SubmissionFactory implements HasEffectiveAcl {
         return new AclEntry(role, permission);
     }
 
-    public ExperimentSubmission createExperimentSubmission(User creator) {
-        return new ExperimentSubmission(creator, submissionAcl);
+    public static ExperimentSubmission createExperimentSubmission(User creator) {
+        ExperimentSubmission sbm = new ExperimentSubmission(creator);
+        sbm.setAcl(submissionAcl);
+        return sbm;
     }
 
-    public ArrayDesignSubmission createArrayDesignSubmission(User creator) {
-        return new ArrayDesignSubmission(creator, submissionAcl);
+    public static ArrayDesignSubmission createArrayDesignSubmission(User creator) {
+        ArrayDesignSubmission sbm = new ArrayDesignSubmission(creator);
+        sbm.setAcl(submissionAcl);
+        return sbm;
     }
 
     @Override

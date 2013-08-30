@@ -337,8 +337,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             }
         }
 
-        DataFile dataFile = dataFileManager.upload(file);
-        files.add(dataFile);
+        dataFileManager.upload(file, submission);
         //TODO: save submission
     }
     private static boolean fileExists(File file, String md5) throws IOException {

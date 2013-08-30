@@ -38,4 +38,8 @@ public interface SubmissionDao {
     void save(Submission submission);
 
     Submission get(long id) throws RecordNotFoundException;
+
+    ExperimentSubmission createExperimentSubmission(User user);
+
+    ArrayDesignSubmission createArrayDesignSubmission(User user);
 }

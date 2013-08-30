@@ -16,38 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
-import org.hibernate.Session;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 
 /**
  * @author Olga Melnichuk
  */
-public abstract class AbstractDaoImpl<T> {
+public class ExperimentSubmissionDaoImpl extends AbstractDaoImpl<ExperimentSubmission> {
 
-    private final HibernateSessionFactory sessionFactory;
-
-    public AbstractDaoImpl(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public ExperimentSubmissionDaoImpl(HibernateSessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
-    protected Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
-    protected T get(long id, Class<T> clazz) throws RecordNotFoundException {
-        T t = clazz.cast(getCurrentSession().get(clazz, id));
-        if (t == null) {
-            throw new RecordNotFoundException("Object of class=" + clazz + " with id=" + id + " was not found");
-        }
-        return t;
-    }
-
-    public void save(T t) {
-        getCurrentSession().save(t);
-    }
-
-    public void delete(T t) {
-        getCurrentSession().delete(t);
+    public ExperimentSubmission get(long id) throws RecordNotFoundException {
+        return get(id, ExperimentSubmission.class);
     }
 }

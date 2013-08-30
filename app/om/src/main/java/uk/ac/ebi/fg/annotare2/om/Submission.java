@@ -67,10 +67,9 @@ public abstract class Submission implements HasEffectiveAcl {
     @OrderBy("created ASC")
     private Set<DataFile> files;
 
-    protected Submission(User createdBy, Acl acl) {
+    protected Submission(User createdBy) {
         this.created = new Date();
         this.createdBy = createdBy;
-        this.acl = acl;
         status = SubmissionStatus.IN_PROGRESS;
         files = newHashSet();
     }
@@ -113,6 +112,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setAccession(String accession) {
         this.accession = accession;
+    }
+
+    public Acl getAcl() {
+        return acl;
+    }
+
+    public void setAcl(Acl acl) {
+        this.acl = acl;
     }
 
     public Set<DataFile> getFiles() {

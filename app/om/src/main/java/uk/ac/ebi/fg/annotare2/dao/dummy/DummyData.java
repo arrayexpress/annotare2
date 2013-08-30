@@ -93,8 +93,9 @@ public class DummyData {
     private DummyData() {
     }
 
-    private static User createUser(String email, String password) {
-        User user = new User(nextId(), email, password);
+    public static User createUser(String email, String password) {
+        User user = new User(email, password);
+        user.setId(nextId());
         userByEmail.put(user.getEmail(), user);
         return user;
     }

@@ -2,7 +2,8 @@ CREATE TABLE users (
   id       BIGINT AUTO_INCREMENT NOT NULL,
   email    VARCHAR(80),
   password VARCHAR(255),
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  CONSTRAINT unique_email UNIQUE (email)
 )
   ENGINE = InnoDB;
 

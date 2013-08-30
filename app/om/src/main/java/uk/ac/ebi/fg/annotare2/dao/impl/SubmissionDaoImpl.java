@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
+import com.google.common.base.Predicate;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
@@ -25,47 +26,67 @@ import uk.ac.ebi.fg.annotare2.om.Submission;
 import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
+
+import static com.google.common.collect.Collections2.filter;
+import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionDaoImpl extends AbstractDaoImpl implements SubmissionDao {
+public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements SubmissionDao {
+
+    private final ExperimentSubmissionDaoImpl expSmbDao;
+    private final ArrayDesignSubmissionDaoImpl arrayDesignSbmDao;
 
     public SubmissionDaoImpl(HibernateSessionFactory sessionFactory) {
         super(sessionFactory);
-    }
-
-    @Override
-    public ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException {
-        return (ExperimentSubmission) getCurrentSession().get(ExperimentSubmission.class, id);
-    }
-
-    @Override
-    public ArrayDesignSubmission getArrayDesignSubmission(long id) throws RecordNotFoundException {
-        return (ArrayDesignSubmission) getCurrentSession().get(ArrayDesignSubmission.class, id);
-    }
-
-    @Override
-    public List<Submission> getSubmissions(User user) {
-        //TODO
-        return null;
-    }
-
-    @Override
-    public Collection<Submission> getSubmissionsByStatus(User user, SubmissionStatus... statuses) {
-        //TODO
-        return null;
-    }
-
-    @Override
-    public void save(Submission submission) {
-        getCurrentSession().save(submission);
+        expSmbDao = new ExperimentSubmissionDaoImpl(sessionFactory);
+        arrayDesignSbmDao = new ArrayDesignSubmissionDaoImpl(sessionFactory);
     }
 
     @Override
     public Submission get(long id) throws RecordNotFoundException {
-        return (Submission) getCurrentSession().get(Submission.class, id);
+        return get(id, Submission.class);
+    }
+
+    @Override
+    public ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException {
+        return expSmbDao.get(id);
+    }
+
+    @Override
+    public ArrayDesignSubmission getArrayDesignSubmission(long id) throws RecordNotFoundException {
+        return arrayDesignSbmDao.get(id);
+    }
+
+    @Override
+    public List<Submission> getSubmissions(User user) {
+        return user.getSubmissions();
+    }
+
+    @Override
+    public Collection<Submission> getSubmissionsByStatus(User user, final SubmissionStatus... statuses) {
+        return filter(getSubmissions(user), new Predicate<Submission>() {
+            public boolean apply(@Nullable Submission input) {
+                return input != null && asList(statuses).contains(input.getStatus());
+            }
+        });
+    }
+
+    @Override
+    public ExperimentSubmission createExperimentSubmission(User user) {
+        ExperimentSubmission submission = new ExperimentSubmission(user);
+        save(submission);
+        return submission;
+    }
+
+    @Override
+    public ArrayDesignSubmission createArrayDesignSubmission(User user) {
+        ArrayDesignSubmission submission = new ArrayDesignSubmission(user);
+        save(submission);
+        return submission;
     }
 }

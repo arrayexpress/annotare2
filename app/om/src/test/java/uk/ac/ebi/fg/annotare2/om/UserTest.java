@@ -28,25 +28,28 @@ public class UserTest {
 
     @Test
     public void defaultInitializationTest() {
-        User user = new User(1L, "email", "password");
+        User user = new User("email", "password");
 
         assertNotNull(user.getRoles());
         assertTrue(user.getRoles().isEmpty());
 
-        try {
-            user.getRoles().add(new UserRole(user, Role.CURATOR));
-            fail("Collection of user roles should be unmodifiable");
-        } catch (Exception e) {
-            // ok
-        }
+        user.getRoles().add(new UserRole(user, Role.CURATOR));
+        assertEquals(1, user.getRoles().size());
     }
 
     @Test
     public void equalsAndHashCodeTest() {
-        User user1 = new User(1L, "email", "password");
-        User user2 = new User(1L, "email", "password");
-        User user3 = new User(1L, "Email", "Password");
-        User user4 = new User(2L, "email", "password");
+        User user1 = new User("email", "password");
+        user1.setId(1L);
+
+        User user2 = new User("email", "password");
+        user2.setId(1L);
+
+        User user3 = new User("Email", "Password");
+        user3.setId(1L);
+
+        User user4 = new User("email", "password");
+        user4.setId(2L);
 
         assertTrue(user1.equals(user2));
         assertTrue(user1.equals(user3));

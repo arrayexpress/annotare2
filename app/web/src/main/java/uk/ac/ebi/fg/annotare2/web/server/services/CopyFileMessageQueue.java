@@ -23,6 +23,7 @@ import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
+import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 
 import javax.jms.*;
@@ -252,8 +253,10 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
         // TODO: just a draft; proper database integration is needed
         private void copyFile(CopyFileMessage message, boolean removeSource) {
-            DataFile dataFile = fileDao.get(message.getDestinationId());
-            if (dataFile == null) {
+            DataFile dataFile = null;
+            try {
+                dataFile = fileDao.get(message.getDestinationId());
+            } catch (RecordNotFoundException e) {
                 log.info("The file record with id='{}' was not found in the database. Skipping the task");
                 return;
             }

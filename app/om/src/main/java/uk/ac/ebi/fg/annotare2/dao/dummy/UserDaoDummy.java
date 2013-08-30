@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.dao.dummy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.om.User;
 
@@ -43,5 +44,20 @@ public class UserDaoDummy implements UserDao {
 
     public User getUserByEmail(String email) {
         return DummyData.getUserByEmail(email);
+    }
+
+    @Override
+    public User get(long id) throws RecordNotFoundException {
+        return null; // not supported
+    }
+
+    @Override
+    public void save(User user) {
+        // ignore
+    }
+
+    @Override
+    public User create(String email, String password) {
+        return DummyData.createUser(email, password);
     }
 }

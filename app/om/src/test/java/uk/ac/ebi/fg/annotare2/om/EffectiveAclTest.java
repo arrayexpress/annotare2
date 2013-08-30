@@ -53,7 +53,8 @@ public class EffectiveAclTest {
     }
 
     private User createUser(Collection<? extends Role> roles) {
-        User user = new User(id++, "email", "password");
+        User user = new User("email", "password");
+        user.setId(id++);
         for(Role role : roles) {
             user.getRoles().add(new UserRole(user, role));
         }

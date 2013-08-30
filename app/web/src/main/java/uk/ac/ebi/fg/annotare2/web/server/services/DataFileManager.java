@@ -20,8 +20,10 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
+import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Submission;
 
 import javax.jms.JMSException;
 import java.io.File;
@@ -53,23 +55,22 @@ public class DataFileManager {
      * @param file file to be copied
      * @return {@Link DataFile] record
      */
-    public DataFile upload(File file) {
-        DataFile dataFile = null;
+    public void upload(File file, Submission submission) {
         //todo: do this in transaction{
         try {
-            dataFile = dataFileDao.create(file.getName());
+            DataFile dataFile = dataFileDao.create(file.getName(), submission);
+            submission.getFiles().add(dataFile);
             messageQueue.offer(file, dataFile);
         } catch (JMSException e) {
             log.error("JMS error; please see logs for details", e);
             // transaction rollback
         }
         //}
-        return dataFile;
     }
 
-    public void removeFile(ExperimentSubmission submission, long fileId) {
+    public void removeFile(ExperimentSubmission submission, long fileId) throws RecordNotFoundException {
         DataFile dataFile = dataFileDao.get(fileId);
-        if (dataFile == null || !submission.getFiles().contains(dataFile)) {
+        if (submission.getFiles().contains(dataFile)) {
             return;
         }
         //todo: do this in transaction{

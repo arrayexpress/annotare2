@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.dao.impl;
 
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
+import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
 import uk.ac.ebi.fg.annotare2.om.Submission;
@@ -27,20 +28,15 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class DataFileDaoImpl extends AbstractDaoImpl implements DataFileDao {
+public class DataFileDaoImpl extends AbstractDaoImpl<DataFile> implements DataFileDao {
 
     public DataFileDaoImpl(HibernateSessionFactory sessionFactory) {
        super(sessionFactory);
     }
 
     @Override
-    public DataFile get(long id) {
-        return (DataFile) getCurrentSession().get(DataFile.class, id);
-    }
-
-    @Override
-    public void save(DataFile dataFile) {
-        getCurrentSession().save(dataFile);
+    public DataFile get(long id) throws RecordNotFoundException {
+        return get(id, DataFile.class);
     }
 
     @Override
@@ -52,17 +48,10 @@ public class DataFileDaoImpl extends AbstractDaoImpl implements DataFileDao {
     }
 
     @Override
-    public void delete(DataFile dataFile) {
-        getCurrentSession().delete(dataFile);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<DataFile> getAllWithDigest(String digest) {
         return getCurrentSession().createCriteria(DataFile.class)
                 .add(Restrictions.eq("digest", digest))
                 .list();
     }
-
-
 }

@@ -46,8 +46,8 @@ public class ArrayDesignSubmission extends Submission {
         super.setId(id);
     }
 
-    public ArrayDesignSubmission(User createdBy, Acl acl) {
-        super(createdBy, acl);
+    public ArrayDesignSubmission(User createdBy) {
+        super(createdBy);
     }
 
     public void setBody(String body) {

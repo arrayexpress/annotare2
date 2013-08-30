@@ -39,8 +39,8 @@ public class ExperimentSubmission extends Submission {
     @Column(name = "experiment")
     private String experimentString;
 
-    public ExperimentSubmission(User user, Acl acl) {
-        super(user, acl);
+    public ExperimentSubmission(User user) {
+        super(user);
     }
 
     public ExperimentProfile getExperimentProfile() throws DataSerializationException {

@@ -16,124 +16,38 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.User;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static org.apache.commons.beanutils.BeanUtils.setProperty;
-import static org.junit.Assert.assertNotNull;
-import static uk.ac.ebi.fg.annotare2.db.AnnotareTestDbProperties.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataFileDaoImplTest {
-
-    private static final Logger log = LoggerFactory.getLogger(DataFileDaoImplTest.class);
-
-    private static InitialContext initialContext;
-    private static HibernateSessionFactory sessionFactory;
-
-    private Session session;
-
-    @Rule
-    public ExternalResource transactional = new ExternalResource() {
-        private Transaction tx;
-
-        @Override
-        protected void before() throws Throwable {
-            session = sessionFactory.getCurrentSession();
-            dataFileDao = new DataFileDaoImpl(sessionFactory);
-            tx = session.beginTransaction();
-        }
-
-        @Override
-        protected void after() {
-            tx.rollback();
-            sessionFactory.closeSession();
-        }
-    };
+public class DataFileDaoImplTest extends DaoTestBase {
 
     private DataFileDaoImpl dataFileDao;
     private SubmissionDaoImpl submissionDao;
+    private UserDaoImpl userDao;
 
-    @BeforeClass
-    public static void beforeClass() throws NamingException, HibernateException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        setUpJndi();
-        setUpHibernateSessionFactory();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        if (initialContext != null) {
-            try {
-                initialContext.close();
-            } catch (NamingException e) {
-                log.error("Can't close initial context", e);
-            }
-        }
-
-        if (sessionFactory != null) {
-            try {
-                sessionFactory.close();
-            } catch (HibernateException e) {
-                log.error("Can't close session factory", e);
-            }
-        }
-    }
-
-    private static void setUpJndi() throws NamingException, InvocationTargetException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException {
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                "org.apache.naming.java.javaURLContextFactory");
-        System.setProperty(Context.URL_PKG_PREFIXES,
-                "org.apache.naming");
-        initialContext = new InitialContext();
-
-        initialContext.createSubcontext("java:");
-        initialContext.createSubcontext("java:comp");
-        initialContext.createSubcontext("java:comp/env");
-        initialContext.createSubcontext("java:comp/env/jdbc");
-
-        Class<?> clazz = Class.forName(getTestDataSourceClass());
-        Constructor<?> constructor = clazz.getConstructor();
-        Object ds = constructor.newInstance();
-
-        setProperty(ds, "url", getTestDbUrl());
-        setProperty(ds, "user", getTestDbUser());
-        setProperty(ds, "password", getTestDbPassword());
-
-        initialContext.bind("java:comp/env/jdbc/annotareDataSource", ds);
-    }
-
-    private static void setUpHibernateSessionFactory() throws HibernateException {
-        sessionFactory = HibernateSessionFactory.create();
+    @Before
+    public void before() {
+        dataFileDao = new DataFileDaoImpl(getSessionFactory());
+        submissionDao = new SubmissionDaoImpl(getSessionFactory());
+        userDao = new UserDaoImpl(getSessionFactory());
     }
 
     @Test
     public void createDataFileTest() {
         final String name = "create_test";
-        DataFile dataFile = dataFileDao.create(name, createSubmission());
-        session.flush();
+        DataFile dataFile = dataFileDao.create(name, createSubmission(""));
+        flush();
 
         assertNotNull(dataFile);
         assertNotNull(dataFile.getId());
@@ -143,14 +57,18 @@ public class DataFileDaoImplTest {
     }
 
     @Test
-    public void deleteDataFileTest() {
-        DataFile dataFile = dataFileDao.create("delete_test", createSubmission());
-        session.flush();
+    public void deleteDataFileTest() throws RecordNotFoundException {
+        DataFile dataFile = dataFileDao.create("delete_test", createSubmission(""));
+        flush();
         Long id = dataFile.getId();
 
         dataFileDao.delete(dataFile);
-        dataFile = dataFileDao.get(id);
-        assertNull(dataFile);
+        try {
+            dataFileDao.get(id);
+            fail("Exception is expected");
+        } catch (RecordNotFoundException e) {
+            // ok
+        }
     }
 
     @Test
@@ -158,19 +76,18 @@ public class DataFileDaoImplTest {
         final String digest = "12345";
         final int n = 3;
         for (int i = 0; i < n; i++) {
-            DataFile dataFile1 = dataFileDao.create("test", createSubmission());
+            DataFile dataFile1 = dataFileDao.create("test", createSubmission("" + i));
             dataFile1.setDigest(digest);
             dataFileDao.save(dataFile1);
         }
-        session.flush();
+        flush();
 
         List<DataFile> list = dataFileDao.getAllWithDigest(digest);
         assertEquals(n, list.size());
     }
 
-    private Submission createSubmission() {
-        //TODO
-        return null;
+    private Submission createSubmission(String prefix) {
+        User user = userDao.create("email" + prefix, "password");
+        return submissionDao.createExperimentSubmission(user);
     }
-
 }

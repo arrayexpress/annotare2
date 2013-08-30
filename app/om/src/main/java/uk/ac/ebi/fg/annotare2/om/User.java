@@ -48,8 +48,7 @@ public class User {
     @OrderBy("created DESC")
     private List<Submission> submissions;
 
-    public User(Long id, String email, String password) {
-        this.id = id;
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
         submissions = newArrayList();
@@ -60,12 +59,24 @@ public class User {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean isAllowed(HasEffectiveAcl obj, Permission permission) {

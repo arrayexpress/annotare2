@@ -26,7 +26,7 @@ import java.util.List;
  */
 public interface DataFileDao {
 
-    DataFile get(long id);
+    DataFile get(long id) throws RecordNotFoundException;
 
     DataFile create(String fileName, Submission submission);
 

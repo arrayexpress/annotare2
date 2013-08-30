@@ -20,7 +20,10 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import javax.annotation.Nullable;
@@ -33,6 +36,7 @@ import static java.util.Arrays.asList;
  * @author Olga Melnichuk
  */
 public class SubmissionDaoDummy implements SubmissionDao {
+
     @Override
     public Submission get(long id) throws RecordNotFoundException {
         return DummyData.getSubmission(id, Submission.class);
@@ -63,5 +67,15 @@ public class SubmissionDaoDummy implements SubmissionDao {
 
     public void save(Submission submission) {
         DummyData.save(submission);
+    }
+
+    @Override
+    public ExperimentSubmission createExperimentSubmission(User user) {
+        return SubmissionFactory.createExperimentSubmission(user);
+    }
+
+    @Override
+    public ArrayDesignSubmission createArrayDesignSubmission(User user) {
+        return SubmissionFactory.createArrayDesignSubmission(user);
     }
 }
