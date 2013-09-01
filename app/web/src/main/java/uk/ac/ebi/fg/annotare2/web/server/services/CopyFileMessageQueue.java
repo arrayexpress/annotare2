@@ -24,7 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.om.DataFile;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 
 import javax.jms.*;
 import java.io.File;
@@ -45,7 +49,8 @@ public class CopyFileMessageQueue extends AbstractIdleService {
     private final CopyFileMessageProducer producer;
 
     @Inject
-    public CopyFileMessageQueue(DataFileStore fileStore, DataFileDao fileDao) {
+    public CopyFileMessageQueue(DataFileStore fileStore, DataFileDao fileDao, HibernateSessionFactory sessionFactory,
+                                TransactionSupport transactionSupport) {
         broker = new BrokerService();
         broker.setBrokerName("localhost");
         broker.setUseJmx(false);
@@ -54,7 +59,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
         String topic = "COPY_FILE_QUEUE";
         producer = new CopyFileMessageProducer("vm://localhost?create=false", topic);
         consumer = new CopyFileMessageConsumer("vm://localhost?create=false", topic,
-                new CopyFileMessageListener(fileStore, fileDao));
+                new CopyFileMessageListener(fileStore, fileDao, sessionFactory, transactionSupport));
     }
 
     public void offer(File source, DataFile destination) throws JMSException {
@@ -227,10 +232,15 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
         private final DataFileStore fileStore;
         private final DataFileDao fileDao;
+        private final HibernateSessionFactory sessionFactory;
+        private final TransactionSupport transactionSupport;
 
-        private CopyFileMessageListener(DataFileStore fileStore, DataFileDao fileDao) {
+        private CopyFileMessageListener(DataFileStore fileStore, DataFileDao fileDao, HibernateSessionFactory sessionFactory,
+                                        TransactionSupport transactionSupport) {
             this.fileStore = fileStore;
             this.fileDao = fileDao;
+            this.sessionFactory = sessionFactory;
+            this.transactionSupport = transactionSupport;
         }
 
         @Override
@@ -242,18 +252,34 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     CopyFileMessage messageObject = CopyFileMessage.fromString(textMessage.getText());
                     log.debug("Restored message object: {}", messageObject);
 
-                    copyFile(messageObject, true);
+                    copyFileInTransaction(messageObject, true);
 
                     message.acknowledge();
+                } catch (TransactionWrapException e) {
+                    log.error("unexpected error", e.getCause());
                 } catch (JMSException e) {
                     log.error("JMS message receive failure", e);
                 }
             }
         }
 
-        // TODO: just a draft; proper database integration is needed
+        private void copyFileInTransaction(final CopyFileMessage message, final boolean removeSource) throws TransactionWrapException {
+            sessionFactory.openSession();
+            try {
+                transactionSupport.execute(new TransactionCallback<Void>() {
+                    @Override
+                    public Void doInTransaction() throws Exception {
+                        copyFile(message, removeSource);
+                        return null;
+                    }
+                });
+            } finally {
+                sessionFactory.closeSession();
+            }
+        }
+
         private void copyFile(CopyFileMessage message, boolean removeSource) {
-            DataFile dataFile = null;
+            DataFile dataFile;
             try {
                 dataFile = fileDao.get(message.getDestinationId());
             } catch (RecordNotFoundException e) {
@@ -267,6 +293,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     String digest = fileStore.store(source);
                     dataFile.setDigest(digest);
                     dataFile.setStatus(STORED);
+                    fileDao.save(dataFile);
                     return;
                 } else {
                     log.error("File doesn't exist or is a directory: {}", source);
@@ -281,6 +308,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 }
             }
             dataFile.setStatus(ERROR);
+            fileDao.save(dataFile);
         }
     }
 }

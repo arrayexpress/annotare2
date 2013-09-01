@@ -41,13 +41,17 @@ public class ArrayDesignSubmission extends Submission {
     @Column(name = "arrayDesignBody")
     private String body;
 
-    @Override
-    public void setId(Long id) {
-        super.setId(id);
+    public ArrayDesignSubmission() {
+        this(null);
     }
 
     public ArrayDesignSubmission(User createdBy) {
         super(createdBy);
+    }
+
+    @Override
+    public void setId(Long id) {
+        super.setId(id);
     }
 
     public void setBody(String body) {

@@ -48,11 +48,11 @@ public interface SubmissionService extends RemoteService {
 
     Table getSdrfTable(long id) throws NoPermissionException, ResourceNotFoundException;
 
-    long createExperimentSubmission() throws NoPermissionException;
+    long createExperiment() throws NoPermissionException;
 
-    long createArrayDesignSubmission() throws NoPermissionException;
+    long createArrayDesign() throws NoPermissionException;
 
-    void setupExperimentSubmission(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
+    void setupExperiment(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
 
     void discardSubmissionData(long id) throws ResourceNotFoundException, NoPermissionException;
 

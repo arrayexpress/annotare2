@@ -39,6 +39,10 @@ public class ExperimentSubmission extends Submission {
     @Column(name = "experiment")
     private String experimentString;
 
+    public ExperimentSubmission() {
+        this(null);
+    }
+
     public ExperimentSubmission(User user) {
         super(user);
     }

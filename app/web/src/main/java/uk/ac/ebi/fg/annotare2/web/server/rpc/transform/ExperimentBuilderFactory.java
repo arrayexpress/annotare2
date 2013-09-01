@@ -96,7 +96,7 @@ public class ExperimentBuilderFactory {
         }
     }
 
-    public static ExperimentProfile createExperiment(ExperimentSetupSettings settings) {
+    public static ExperimentProfile createExperimentProfile(ExperimentSetupSettings settings) {
         return Builder.build(settings);
     }
 }

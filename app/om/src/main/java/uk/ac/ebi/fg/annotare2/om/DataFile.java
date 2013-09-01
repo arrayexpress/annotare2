@@ -51,6 +51,10 @@ public class DataFile {
     @JoinColumn(name = "ownedBy", nullable = false)
     private Submission ownedBy;
 
+    public DataFile() {
+        this(null);
+    }
+
     public DataFile(String name) {
         created = new Date();
         status = TO_BE_STORED;

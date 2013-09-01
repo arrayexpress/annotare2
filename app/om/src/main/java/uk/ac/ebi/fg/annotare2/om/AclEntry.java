@@ -42,7 +42,12 @@ public class AclEntry {
     private Permission permission;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acl")
     private Acl acl;
+
+    public AclEntry() {
+        this(null, null);
+    }
 
     public AclEntry(Role role, Permission permission) {
         this.role = role;

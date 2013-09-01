@@ -88,10 +88,10 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
         switch (type) {
             case EXPERIMENT:
-                asyncService.createExperimentSubmission(callback);
+                asyncService.createExperiment(callback);
                 return;
             case ARRAY_DESIGN:
-                asyncService.createArrayDesignSubmission(callback);
+                asyncService.createArrayDesign(callback);
                 return;
             default:
                 //TODO

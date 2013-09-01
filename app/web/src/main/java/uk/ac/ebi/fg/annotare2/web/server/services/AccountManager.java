@@ -30,29 +30,17 @@ import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex
 public class AccountManager {
 
     private UserDao userDao;
-    private TransactionSupport transactionSupport;
 
     @Inject
-    public AccountManager(UserDao userDao, TransactionSupport transactionSupport) {
+    public AccountManager(UserDao userDao) {
         this.userDao = userDao;
-        this.transactionSupport = transactionSupport;
     }
 
     public boolean isValid(final String email, final String password) {
-        return transactionSupport.execute(new TransactionCallback<Boolean>() {
-            @Override
-            public Boolean doInTransaction() {
-                return userDao.getUserByEmailAndPassword(email, md5Hex(password)) != null;
-            }
-        });
+        return userDao.getUserByEmailAndPassword(email, md5Hex(password)) != null;
     }
 
     public User getByEmail(final String email) {
-        return transactionSupport.execute(new TransactionCallback<User>() {
-            @Override
-            public User doInTransaction() {
-                return userDao.getUserByEmail(email);
-            }
-        });
+        return userDao.getUserByEmail(email);
     }
 }

@@ -42,7 +42,7 @@ public class HibernateSessionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            sessionFactoryProvider.get().getCurrentSession();
+            sessionFactoryProvider.get().openSession();
             log.debug("Hibernate session has been opened");
 
             chain.doFilter(request, response);

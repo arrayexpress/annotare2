@@ -14,24 +14,31 @@ public class HibernateSessionFactory {
 
     private SessionFactory sessionFactory;
 
+    private static final ThreadLocal<Session> threadSession = new ThreadLocal<Session>();
+
     private HibernateSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     public Session getCurrentSession() throws HibernateException {
-        return sessionFactory.getCurrentSession();
+        Session session = get();
+        if (!isOpen(session)) {
+            throw new HibernateException("no open session");
+        }
+        return session;
+    }
+
+    public Session openSession() {
+        closeSession();
+        Session session = sessionFactory.openSession();
+        threadSession.set(session);
+        return session;
     }
 
     public void closeSession() throws HibernateException {
-        Session currentSession = null;
-        try {
-            currentSession = sessionFactory.getCurrentSession();
-        } catch (HibernateException e) {
-            // no session to close
-        }
-
-        if (currentSession != null && currentSession.isOpen()) {
-            currentSession.close();
+        Session session = threadSession.get();
+        if (isOpen(session)) {
+            session.close();
         }
     }
 
@@ -44,5 +51,13 @@ public class HibernateSessionFactory {
 
     public void close() throws HibernateException {
         sessionFactory.close();
+    }
+
+    private Session get() {
+        return threadSession.get();
+    }
+
+    private boolean isOpen(Session session) {
+        return session != null && session.isOpen();
     }
 }

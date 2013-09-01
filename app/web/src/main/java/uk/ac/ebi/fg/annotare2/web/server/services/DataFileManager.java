@@ -53,38 +53,24 @@ public class DataFileManager {
      * Creates {@link DataFile} record in the database and schedules a task to copy the file into a file store.
      *
      * @param file file to be copied
-     * @return {@Link DataFile] record
+     * @param submission submission to add file to
      */
-    public void upload(File file, Submission submission) {
-        //todo: do this in transaction{
-        try {
-            DataFile dataFile = dataFileDao.create(file.getName(), submission);
-            submission.getFiles().add(dataFile);
-            messageQueue.offer(file, dataFile);
-        } catch (JMSException e) {
-            log.error("JMS error; please see logs for details", e);
-            // transaction rollback
-        }
-        //}
+    public void upload(File file, Submission submission) throws JMSException {
+        DataFile dataFile = dataFileDao.create(file.getName(), submission);
+        submission.getFiles().add(dataFile);
+        messageQueue.offer(file, dataFile);
     }
 
-    public void removeFile(ExperimentSubmission submission, long fileId) throws RecordNotFoundException {
+    public void removeFile(ExperimentSubmission submission, long fileId) throws RecordNotFoundException, IOException {
         DataFile dataFile = dataFileDao.get(fileId);
-        if (submission.getFiles().contains(dataFile)) {
+        if (!submission.getFiles().contains(dataFile)) {
             return;
         }
-        //todo: do this in transaction{
-        try {
-            dataFileDao.delete(dataFile);
-            submission.getFiles().remove(dataFile);  // todo: while we do not have DB
-            List<DataFile> list = dataFileDao.getAllWithDigest(dataFile.getDigest());
-            if (list.isEmpty()) {
-                fileStore.delete(dataFile.getDigest());
-            }
-        } catch (IOException e) {
-            log.error("File is not deleted", e);
-            // transaction rollback
+        dataFileDao.delete(dataFile);
+        submission.getFiles().remove(dataFile);
+        List<DataFile> list = dataFileDao.getAllWithDigest(dataFile.getDigest());
+        if (list.isEmpty()) {
+            fileStore.delete(dataFile.getDigest());
         }
-        // }
     }
 }

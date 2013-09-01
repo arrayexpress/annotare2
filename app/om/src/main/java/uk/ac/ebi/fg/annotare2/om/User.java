@@ -49,6 +49,7 @@ public class User {
     private List<Submission> submissions;
 
     public User() {
+        this(null, null);
     }
 
     public User(String email, String password) {

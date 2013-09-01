@@ -31,7 +31,7 @@ public class AclTest {
 
     @Test
     public void testAclHasPermission() {
-        Acl acl = new Acl("test");
+        Acl acl = new Acl();
         acl.getEntries().addAll(asList(
                 new AclEntry(Role.AUTHENTICATED, Permission.VIEW),
                 new AclEntry(Role.CURATOR, Permission.VIEW),

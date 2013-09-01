@@ -19,11 +19,11 @@ public interface SubmissionServiceAsync {
 
     void getSubmission(long id, AsyncCallback<SubmissionDetails> async);
 
-    void createExperimentSubmission(AsyncCallback<Long> async);
+    void createExperiment(AsyncCallback<Long> async);
 
-    void createArrayDesignSubmission(AsyncCallback<Long> async);
+    void createArrayDesign(AsyncCallback<Long> async);
 
-    void setupExperimentSubmission(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
+    void setupExperiment(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
 
     void discardSubmissionData(long id, AsyncCallback<Void> async);
 

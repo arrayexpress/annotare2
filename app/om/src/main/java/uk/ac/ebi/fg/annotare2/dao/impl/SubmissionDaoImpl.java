@@ -16,15 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.dao.impl;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.inject.Inject;
+import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
-import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.om.enums.AclType;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import javax.annotation.Nullable;
@@ -90,5 +90,19 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
         ArrayDesignSubmission submission = new ArrayDesignSubmission(user);
         save(submission);
         return submission;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Acl getAcl() {
+        List<Acl> list = getCurrentSession().createCriteria(Acl.class)
+                .add(Restrictions.eq("aclType", AclType.SUBMISSION))
+                .list();
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    @Override
+    public EffectiveAcl getEffectiveAcl() {
+        return new EffectiveAcl(getAcl(), Optional.<User>absent());
     }
 }

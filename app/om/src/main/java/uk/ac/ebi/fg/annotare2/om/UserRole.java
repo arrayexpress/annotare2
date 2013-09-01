@@ -16,11 +16,16 @@ public class UserRole {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user")
     private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
+
+    public UserRole() {
+        this(null, null);
+    }
 
     public UserRole(User user, Role role) {
         this.user = user;

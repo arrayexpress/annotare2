@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.io.Closeables.close;
 import static java.lang.System.currentTimeMillis;
 
@@ -107,6 +108,9 @@ public class DataFileStore {
     }
 
     public void delete(String digest) throws IOException {
+        if (isNullOrEmpty(digest)) {
+           return;
+        }
         File file = new File(dir(digest), digest);
         if (!file.delete()) {
             throw new IOException("Can't remove file: " + file);

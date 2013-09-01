@@ -17,9 +17,17 @@
 package uk.ac.ebi.fg.annotare2.web.server;
 
 /**
+ * An exception wrapper for exceptions thrown in transactional context
+ *
  * @author Olga Melnichuk
  */
-public interface TransactionCallback<R> {
+public class TransactionWrapException extends Exception {
 
-    R doInTransaction() throws Exception;
+    public TransactionWrapException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TransactionWrapException(Throwable cause) {
+        super(cause);
+    }
 }

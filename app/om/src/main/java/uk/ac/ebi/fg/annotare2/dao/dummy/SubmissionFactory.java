@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.dao.dummy;
 
 import com.google.common.base.Optional;
 import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.om.enums.AclType;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
@@ -27,14 +28,14 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionFactory implements HasEffectiveAcl {
+public class SubmissionFactory {
 
     public static final Optional<User> OWNER = absent();
 
     private static Acl submissionAcl;
 
     static {
-        submissionAcl = new Acl("submissionAcl");
+        submissionAcl = new Acl(AclType.SUBMISSION);
         submissionAcl.getEntries().addAll(asList(
                 createAclEntry(Role.AUTHENTICATED, Permission.CREATE),
 
@@ -62,8 +63,11 @@ public class SubmissionFactory implements HasEffectiveAcl {
         return sbm;
     }
 
-    @Override
-    public EffectiveAcl getEffectiveAcl() {
+    public static EffectiveAcl getEffectiveAcl() {
         return new EffectiveAcl(submissionAcl, OWNER);
+    }
+
+    public static Acl getAcl() {
+        return submissionAcl;
     }
 }

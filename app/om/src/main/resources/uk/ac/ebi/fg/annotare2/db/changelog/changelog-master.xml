@@ -10,9 +10,6 @@
         <sqlFile path="schema-1.0.sql" relativeToChangelogFile="true"/>
     </changeSet>
     <changeSet id="2" author="olkin">
-        <insert tableName="users">
-            <column name="email" value="user@ebi.ac.uk"/>
-            <column name="password" value="ee11cbb19052e40b07aac0ca060c23ee"/>
-        </insert>
+        <sqlFile path="bootstrap-1.0.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

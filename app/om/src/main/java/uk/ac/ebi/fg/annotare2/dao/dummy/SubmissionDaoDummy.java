@@ -20,10 +20,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.User;
+import uk.ac.ebi.fg.annotare2.om.*;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import javax.annotation.Nullable;
@@ -77,5 +74,15 @@ public class SubmissionDaoDummy implements SubmissionDao {
     @Override
     public ArrayDesignSubmission createArrayDesignSubmission(User user) {
         return SubmissionFactory.createArrayDesignSubmission(user);
+    }
+
+    @Override
+    public Acl getAcl() {
+        return SubmissionFactory.getAcl();
+    }
+
+    @Override
+    public EffectiveAcl getEffectiveAcl() {
+        return SubmissionFactory.getEffectiveAcl();
     }
 }

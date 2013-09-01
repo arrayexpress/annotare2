@@ -67,6 +67,10 @@ public abstract class Submission implements HasEffectiveAcl {
     @OrderBy("created ASC")
     private Set<DataFile> files;
 
+    protected Submission() {
+        this(null);
+    }
+
     protected Submission(User createdBy) {
         this.created = new Date();
         this.createdBy = createdBy;

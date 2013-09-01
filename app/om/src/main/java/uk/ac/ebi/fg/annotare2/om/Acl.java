@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.om;
 
+import uk.ac.ebi.fg.annotare2.om.enums.AclType;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.Role;
 
@@ -37,15 +38,20 @@ public class Acl {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "aclType", nullable = false)
+    private AclType aclType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "acl")
     @OrderBy("role ASC")
     private List<AclEntry> entries;
 
-    public Acl(String name) {
-        this.name = name;
+    public Acl() {
+        this(null);
+    }
+
+    public Acl(AclType type) {
+        this.aclType = type;
         entries = newArrayList();
     }
 

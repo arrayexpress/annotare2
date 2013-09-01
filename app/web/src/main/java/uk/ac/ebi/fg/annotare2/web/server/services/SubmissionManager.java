@@ -19,15 +19,15 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionFactory;
-import uk.ac.ebi.fg.annotare2.om.*;
+import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.om.User;
 import uk.ac.ebi.fg.annotare2.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
 
 import java.util.Collection;
 import java.util.List;
-
-import static uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionFactory.*;
 
 /**
  * @author Olga Melnichuk
@@ -35,12 +35,10 @@ import static uk.ac.ebi.fg.annotare2.dao.dummy.SubmissionFactory.*;
 public class SubmissionManager {
 
     private final SubmissionDao submissionDao;
-    private final SubmissionFactory factory;
 
     @Inject
-    public SubmissionManager(SubmissionDao submissionDao, SubmissionFactory factory) {
+    public SubmissionManager(SubmissionDao submissionDao) {
         this.submissionDao = submissionDao;
-        this.factory = factory;
     }
 
     public List<Submission> getAllSubmissions(User user) {
@@ -76,21 +74,23 @@ public class SubmissionManager {
     }
 
     public ExperimentSubmission createExperimentSubmission(User user) throws AccessControlException {
-        if (!user.isAllowed(factory, Permission.CREATE)) {
+        if (!user.isAllowed(submissionDao, Permission.CREATE)) {
             throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
         }
-        ExperimentSubmission sb = SubmissionFactory.createExperimentSubmission(user);
-        submissionDao.save(sb);
-        return sb;
+        ExperimentSubmission submission = submissionDao.createExperimentSubmission(user);
+        submission.setAcl(submissionDao.getAcl());
+        submissionDao.save(submission);
+        return submission;
     }
 
     public ArrayDesignSubmission createArrayDesignSubmission(User user) throws AccessControlException {
-        if (!user.isAllowed(factory, Permission.CREATE)) {
+        if (!user.isAllowed(submissionDao, Permission.CREATE)) {
             throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
         }
-        ArrayDesignSubmission sb = SubmissionFactory.createArrayDesignSubmission(user);
-        submissionDao.save(sb);
-        return sb;
+        ArrayDesignSubmission submission = submissionDao.createArrayDesignSubmission(user);
+        submission.setAcl(submissionDao.getAcl());
+        submissionDao.save(submission);
+        return submission;
     }
 
     private <T extends Submission> T withPermission(User user, Permission permission, T sb) throws AccessControlException {
@@ -98,5 +98,9 @@ public class SubmissionManager {
             throw new AccessControlException("User " + user + " doesn't have a permission to [" + permission + " ] the submission " + sb);
         }
         return sb;
+    }
+
+    public void save(Submission submission) {
+        submissionDao.save(submission);
     }
 }

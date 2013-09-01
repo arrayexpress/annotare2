@@ -155,7 +155,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback) {
-        submissionService.setupExperimentSubmission(getSubmissionId(), settings, wrap(callback));
+        submissionService.setupExperiment(getSubmissionId(), settings, wrap(callback));
     }
 
     @Override

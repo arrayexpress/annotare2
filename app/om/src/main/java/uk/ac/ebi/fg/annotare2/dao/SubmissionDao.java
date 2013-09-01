@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public interface SubmissionDao {
+public interface SubmissionDao extends HasEffectiveAcl {
 
     ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException;
 
@@ -42,4 +42,6 @@ public interface SubmissionDao {
     ExperimentSubmission createExperimentSubmission(User user);
 
     ArrayDesignSubmission createArrayDesignSubmission(User user);
+
+    Acl getAcl();
 }

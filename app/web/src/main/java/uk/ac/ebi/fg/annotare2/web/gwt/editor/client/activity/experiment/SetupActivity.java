@@ -63,7 +63,7 @@ public class SetupActivity extends AbstractActivity implements StartView.Present
 
     @Override
     public void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback) {
-        submissionService.setupExperimentSubmission(getSubmissionId(), settings, callback);
+        submissionService.setupExperiment(getSubmissionId(), settings, callback);
     }
 
     @Override

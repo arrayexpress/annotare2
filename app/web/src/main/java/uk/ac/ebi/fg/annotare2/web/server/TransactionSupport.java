@@ -32,7 +32,7 @@ public class TransactionSupport {
         this.sessionFactory = sessionFactory;
     }
 
-    public <T> T execute(TransactionCallback<T> transactionCallback) {
+    public <T> T execute(TransactionCallback<T> transactionCallback) throws TransactionWrapException {
         Transaction tx = sessionFactory.getCurrentSession().beginTransaction();
         try {
             T result = transactionCallback.doInTransaction();
@@ -44,6 +44,9 @@ public class TransactionSupport {
         } catch (Error err) {
             tx.rollback();
             throw err;
+        } catch (Exception e) {
+            tx.rollback();
+            throw new TransactionWrapException(e);
         }
     }
 }

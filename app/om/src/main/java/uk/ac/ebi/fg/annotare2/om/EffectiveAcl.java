@@ -43,7 +43,7 @@ public class EffectiveAcl {
     }
 
     public boolean hasPermission(User user, Permission permission) {
-        return acl.hasPermission(getEffectiveRoles(user), permission);
+        return acl != null && acl.hasPermission(getEffectiveRoles(user), permission);
     }
 
     private Collection<? extends Role> getEffectiveRoles(User user) {

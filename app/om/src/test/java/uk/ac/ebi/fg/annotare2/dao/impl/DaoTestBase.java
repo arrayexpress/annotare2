@@ -54,7 +54,7 @@ public class DaoTestBase {
 
         @Override
         protected void before() throws Throwable {
-            session = sessionFactory.getCurrentSession();
+            session = sessionFactory.openSession();
             tx = session.beginTransaction();
         }
 
