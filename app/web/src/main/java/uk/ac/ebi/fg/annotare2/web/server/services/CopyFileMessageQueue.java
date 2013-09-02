@@ -283,7 +283,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             try {
                 dataFile = fileDao.get(message.getDestinationId());
             } catch (RecordNotFoundException e) {
-                log.info("The file record with id='{}' was not found in the database. Skipping the task");
+                log.info("The file record with id='{}' was not found in the database. Skipping the task", message.getDestinationId());
                 return;
             }
 
