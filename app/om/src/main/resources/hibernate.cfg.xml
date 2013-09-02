@@ -41,14 +41,14 @@
         <property name="current_session_context_class">thread</property>
         <property name="transaction.factory_class">org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory</property>
 
-        <mapping class="uk.ac.ebi.fg.annotare2.om.User" />
-        <mapping class="uk.ac.ebi.fg.annotare2.om.UserRole" />
-        <mapping class="uk.ac.ebi.fg.annotare2.om.Acl" />
-        <mapping class="uk.ac.ebi.fg.annotare2.om.AclEntry" />
-        <mapping class="uk.ac.ebi.fg.annotare2.om.Submission" />
-        <mapping class="uk.ac.ebi.fg.annotare2.om.ExperimentSubmission"/>
-        <mapping class="uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission"/>
-        <mapping class="uk.ac.ebi.fg.annotare2.om.DataFile" />
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.User" />
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.UserRole" />
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.Acl" />
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.AclEntry" />
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.Submission" />
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission"/>
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission"/>
+        <mapping class="uk.ac.ebi.fg.annotare2.db.om.DataFile" />
     </session-factory>
 </hibernate-configuration>
 

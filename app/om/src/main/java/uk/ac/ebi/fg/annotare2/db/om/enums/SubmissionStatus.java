@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.db.om.enums;
 
-
-import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import com.google.common.annotations.GwtCompatible;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthService {
+@GwtCompatible
+public enum SubmissionStatus {
+    IN_PROGRESS("In Progress"),
+    SUBMITTED("Submitted"),
+    IN_CURATION("In Curation"),
+    PRIVATE_IN_AE("Private in ArrayExpress"),
+    PUBLIC_IN_AE("Public in ArrayExpress");
 
-    boolean isLoggedIn(HttpServletRequest request);
+    private final String title;
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
+    private SubmissionStatus(String title) {
+        this.title = title;
+    }
 
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    public String getTitle() {
+        return title;
+    }
 }

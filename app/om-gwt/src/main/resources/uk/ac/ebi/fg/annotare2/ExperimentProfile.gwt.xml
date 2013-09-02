@@ -18,7 +18,7 @@
 <module>
     <inherits name="com.google.common.collect.Collect"/>
     <source path="configmodel"/>
-    <source path="om/enums">
+    <source path="db/om/enums">
         <include name="SubmissionType.java" />
         <include name="SubmissionStatus.java"/>
         <include name="DataFileStatus.java"/>

@@ -19,11 +19,11 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.dao.DataFileDao;
-import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.om.DataFile;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
+import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
+import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.db.om.DataFile;
+import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.om.Submission;
 
 import javax.jms.JMSException;
 import java.io.File;

@@ -17,14 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.om.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.om.Submission;
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.om.enums.Permission;
-import uk.ac.ebi.fg.annotare2.om.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.om.Submission;
+import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
 
 import java.util.Collection;
 import java.util.List;

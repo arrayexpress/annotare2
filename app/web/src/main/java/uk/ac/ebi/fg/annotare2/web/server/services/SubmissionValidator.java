@@ -25,15 +25,13 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
-import uk.ac.ebi.fg.annotare2.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 
 import static com.google.common.collect.Ordering.natural;
-import static java.util.Collections.emptyList;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 
 /**

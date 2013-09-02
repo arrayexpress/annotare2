@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.db.dao;
 
+import uk.ac.ebi.fg.annotare2.db.om.ArrayPrintingProtocol;
 
-import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthService {
+public interface ArrayPrintingProtocolDao {
 
-    boolean isLoggedIn(HttpServletRequest request);
-
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    List<ArrayPrintingProtocol> getAllProtocols();
 }

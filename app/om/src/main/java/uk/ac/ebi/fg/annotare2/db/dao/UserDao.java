@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
-
+package uk.ac.ebi.fg.annotare2.db.dao;
 
 import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthService {
+public interface UserDao {
 
-    boolean isLoggedIn(HttpServletRequest request);
+    User getUserByEmailAndPassword(String email, String password);
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
+    User getUserByEmail(String email);
 
-    void logout(HttpSession session);
+    User get(long id) throws RecordNotFoundException;
 
-    User getCurrentUser(HttpSession session);
+    void save(User user);
+
+    User create(String email, String password);
 }

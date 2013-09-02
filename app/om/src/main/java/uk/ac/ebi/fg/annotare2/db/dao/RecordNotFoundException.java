@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
-
-
-import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+package uk.ac.ebi.fg.annotare2.db.dao;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthService {
+public class RecordNotFoundException extends Exception {
 
-    boolean isLoggedIn(HttpServletRequest request);
-
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    public RecordNotFoundException(String expAcc) {
+        super(expAcc);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.db.om.enums;
 
-
-import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import com.google.common.annotations.GwtCompatible;
 
 /**
  * @author Olga Melnichuk
  */
-public interface AuthService {
+@GwtCompatible
+public enum DataFileStatus {
+    TO_BE_STORED("To be stored..."),
+    STORED("stored"),
+    ERROR("error");
 
-    boolean isLoggedIn(HttpServletRequest request);
+    private final String title;
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
+    private DataFileStatus(String title) {
+        this.title = title;
+    }
 
-    void logout(HttpSession session);
+    public String getTitle() {
+        return title;
+    }
 
-    User getCurrentUser(HttpSession session);
+    public boolean isFinal() {
+        return this != TO_BE_STORED;
+    }
 }

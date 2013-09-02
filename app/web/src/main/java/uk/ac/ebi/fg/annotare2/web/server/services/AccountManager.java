@@ -17,10 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.dao.UserDao;
-import uk.ac.ebi.fg.annotare2.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
+import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.db.om.User;
 
 import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
 
