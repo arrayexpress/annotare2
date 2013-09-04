@@ -19,7 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.server;
 /**
  * @author Olga Melnichuk
  */
-public interface TransactionCallback<R> {
+public abstract class TransactionCallback<R> {
 
-    R doInTransaction() throws Exception;
+    public abstract R doInTransaction() throws Exception;
+
+    /**
+     * invoked after successful commit.
+     */
+    public void postCommit() throws Exception {
+        /*override*/
+    }
 }

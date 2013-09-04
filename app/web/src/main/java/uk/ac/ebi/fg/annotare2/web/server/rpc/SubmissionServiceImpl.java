@@ -50,11 +50,9 @@ import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
-import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
+import uk.ac.ebi.fg.annotare2.web.server.services.*;
 
+import javax.jms.JMSException;
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -375,11 +373,20 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
         try {
             transactionSupport.execute(new TransactionCallback<Void>() {
+                private CopyFileMessageQueue.AcknoledgeCallback acknoledgeCallback;
+
                 @Override
                 public Void doInTransaction() throws Exception {
-                    dataFileManager.upload(file, submission);
+                    acknoledgeCallback = dataFileManager.upload(file, submission);
                     submissionManager.save(submission);
                     return null;
+                }
+
+                @Override
+                public void postCommit() throws Exception {
+                    if (acknoledgeCallback != null) {
+                        acknoledgeCallback.acknoledge();
+                    }
                 }
             });
         } catch (TransactionWrapException e) {

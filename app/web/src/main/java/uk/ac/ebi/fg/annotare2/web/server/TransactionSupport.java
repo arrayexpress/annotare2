@@ -37,6 +37,7 @@ public class TransactionSupport {
         try {
             T result = transactionCallback.doInTransaction();
             tx.commit();
+            transactionCallback.postCommit();
             return result;
         } catch (RuntimeException e) {
             tx.rollback();

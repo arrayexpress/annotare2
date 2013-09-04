@@ -55,10 +55,10 @@ public class DataFileManager {
      * @param file file to be copied
      * @param submission submission to add file to
      */
-    public void upload(File file, Submission submission) throws JMSException {
+    public CopyFileMessageQueue.AcknoledgeCallback upload(File file, Submission submission) throws JMSException {
         DataFile dataFile = dataFileDao.create(file.getName(), submission);
         submission.getFiles().add(dataFile);
-        messageQueue.offer(file, dataFile);
+        return messageQueue.offer(file, dataFile);
     }
 
     public void removeFile(ExperimentSubmission submission, long fileId) throws RecordNotFoundException, IOException {

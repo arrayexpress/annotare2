@@ -62,8 +62,8 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 new CopyFileMessageListener(fileStore, fileDao, sessionFactory, transactionSupport));
     }
 
-    public void offer(File source, DataFile destination) throws JMSException {
-        producer.send(new CopyFileMessage(source, destination));
+    public AcknoledgeCallback offer(File source, DataFile destination) throws JMSException {
+        return producer.send(new CopyFileMessage(source, destination));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             this.queueTopic = queueTopic;
         }
 
-        private void send(CopyFileMessage message) throws JMSException {
+        private AcknoledgeCallback send(CopyFileMessage message) throws JMSException {
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
             Connection connection = connectionFactory.createConnection();
             Session session = null;
@@ -102,7 +102,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             try {
                 connection.start();
 
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
                 producer = session.createProducer(session.createQueue(queueTopic));
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
@@ -111,7 +111,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
                 log.debug("Sent message: '{}' : {}", textMessage.getText(), Thread.currentThread().getName());
                 producer.send(textMessage);
-
+                return new AcknoledgeCallback(textMessage);
             } finally {
                 if (producer != null) {
                     try {
@@ -133,6 +133,19 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     // ignore
                 }
             }
+        }
+    }
+
+    public static class AcknoledgeCallback {
+
+        private final Message message;
+
+        private AcknoledgeCallback(Message message) {
+            this.message = message;
+        }
+
+        public void acknoledge() throws JMSException {
+            message.acknowledge();
         }
     }
 
