@@ -52,9 +52,9 @@ import static com.google.inject.Scopes.SINGLETON;
  */
 public class AppServletModule extends ServletModule {
 
-    private static final Map<String, String> UPLOAD_SERVLET_PARAMS = new HashMap<String, String>(){
+    private static final Map<String, String> UPLOAD_SERVLET_PARAMS = new HashMap<String, String>() {
         {
-            put("maxSize", Long.toString(10*1024*1024));  // 10MB
+            put("maxSize", Long.toString(10 * 1024 * 1024));  // 10MB
         }
     };
 
@@ -70,9 +70,10 @@ public class AppServletModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
-        filter("/*",
-               "/UserApp/*",
-               "/EditorApp/*").through(HibernateSessionFilter.class);
+        filter("/login",
+                "/logout",
+                "/UserApp/*",
+                "/EditorApp/*").through(HibernateSessionFilter.class);
 
         filter("/UserApp/*",
                 "/",
