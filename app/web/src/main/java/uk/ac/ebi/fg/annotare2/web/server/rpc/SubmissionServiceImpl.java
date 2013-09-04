@@ -27,13 +27,13 @@ import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
-import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.Submission;
 import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
@@ -50,9 +50,11 @@ import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.*;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
-import javax.jms.JMSException;
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -373,20 +375,11 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
         try {
             transactionSupport.execute(new TransactionCallback<Void>() {
-                private CopyFileMessageQueue.AcknoledgeCallback acknoledgeCallback;
-
                 @Override
                 public Void doInTransaction() throws Exception {
-                    acknoledgeCallback = dataFileManager.upload(file, submission);
+                    dataFileManager.upload(file, submission);
                     submissionManager.save(submission);
                     return null;
-                }
-
-                @Override
-                public void postCommit() throws Exception {
-                    if (acknoledgeCallback != null) {
-                        acknoledgeCallback.acknoledge();
-                    }
                 }
             });
         } catch (TransactionWrapException e) {

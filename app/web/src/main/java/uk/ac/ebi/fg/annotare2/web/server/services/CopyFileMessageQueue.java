@@ -19,13 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.db.om.DataFile;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
@@ -56,14 +57,14 @@ public class CopyFileMessageQueue extends AbstractIdleService {
         broker.setUseJmx(false);
         // todo broker.setDataDirectory();
 
-        String topic = "COPY_FILE_QUEUE";
-        producer = new CopyFileMessageProducer("vm://localhost?create=false", topic);
-        consumer = new CopyFileMessageConsumer("vm://localhost?create=false", topic,
-                new CopyFileMessageListener(fileStore, fileDao, sessionFactory, transactionSupport));
+        String queueName = "COPY_FILE_QUEUE";
+        producer = new CopyFileMessageProducer("vm://localhost?create=false", queueName);
+        consumer = new CopyFileMessageConsumer("vm://localhost?create=false", queueName,
+                fileStore, fileDao, sessionFactory, transactionSupport);
     }
 
-    public AcknoledgeCallback offer(File source, DataFile destination) throws JMSException {
-        return producer.send(new CopyFileMessage(source, destination));
+    public void offer(File source, DataFile destination) throws JMSException {
+        producer.send(new CopyFileMessage(source, destination));
     }
 
     @Override
@@ -87,14 +88,14 @@ public class CopyFileMessageQueue extends AbstractIdleService {
     private static class CopyFileMessageProducer {
 
         private final String brokerUrl;
-        private final String queueTopic;
+        private final String queueName;
 
-        public CopyFileMessageProducer(String brokerUrl, String queueTopic) {
+        public CopyFileMessageProducer(String brokerUrl, String queueName) {
             this.brokerUrl = brokerUrl;
-            this.queueTopic = queueTopic;
+            this.queueName = queueName;
         }
 
-        private AcknoledgeCallback send(CopyFileMessage message) throws JMSException {
+        private void send(CopyFileMessage message) throws JMSException {
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
             Connection connection = connectionFactory.createConnection();
             Session session = null;
@@ -102,16 +103,15 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             try {
                 connection.start();
 
-                session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-                producer = session.createProducer(session.createQueue(queueTopic));
+                producer = session.createProducer(session.createQueue(queueName));
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
                 TextMessage textMessage = session.createTextMessage(message.asString());
 
                 log.debug("Sent message: '{}' : {}", textMessage.getText(), Thread.currentThread().getName());
                 producer.send(textMessage);
-                return new AcknoledgeCallback(textMessage);
             } finally {
                 if (producer != null) {
                     try {
@@ -136,50 +136,57 @@ public class CopyFileMessageQueue extends AbstractIdleService {
         }
     }
 
-    public static class AcknoledgeCallback {
-
-        private final Message message;
-
-        private AcknoledgeCallback(Message message) {
-            this.message = message;
-        }
-
-        public void acknoledge() throws JMSException {
-            message.acknowledge();
-        }
-    }
-
-    private static class CopyFileMessageConsumer {
+    private static class CopyFileMessageConsumer implements MessageListener {
 
         private final String brokerUrl;
-        private final String queueTopic;
-        private final CopyFileMessageListener listener;
-        private Connection connection;
+        private final String queueName;
 
-        public CopyFileMessageConsumer(String brokerUrl, String queueTopic, CopyFileMessageListener listener) {
+        private final DataFileStore fileStore;
+        private final DataFileDao fileDao;
+        private final HibernateSessionFactory sessionFactory;
+        private final TransactionSupport transactionSupport;
+
+        private Connection connection;
+        private Session session;
+
+        public CopyFileMessageConsumer(String brokerUrl, String queueName,
+                                       DataFileStore fileStore, DataFileDao fileDao,
+                                       HibernateSessionFactory sessionFactory, TransactionSupport transactionSupport) {
             this.brokerUrl = brokerUrl;
-            this.queueTopic = queueTopic;
-            this.listener = listener;
+            this.queueName = queueName;
+
+            this.fileStore = fileStore;
+            this.fileDao = fileDao;
+            this.sessionFactory = sessionFactory;
+            this.transactionSupport = transactionSupport;
         }
 
         public void startListening() {
-            log.info("Starting to listen JMS topic: {}", queueTopic);
+            log.info("Starting to listen JMS topic: {}", queueName);
 
             try {
-                ConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
+                RedeliveryPolicy queuePolicy = new RedeliveryPolicy();
+                queuePolicy.setInitialRedeliveryDelay(0);
+                queuePolicy.setRedeliveryDelay(1000);
+                queuePolicy.setUseExponentialBackOff(false);
+                queuePolicy.setMaximumRedeliveries(4);
+
+                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
+                factory.setRedeliveryPolicy(queuePolicy);
+
                 connection = factory.createConnection();
                 connection.start();
 
-                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                MessageConsumer consumer = session.createConsumer(session.createQueue(queueTopic));
-                consumer.setMessageListener(listener);
+                session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                MessageConsumer consumer = session.createConsumer(session.createQueue(queueName));
+                consumer.setMessageListener(this);
             } catch (JMSException e) {
                 log.error("JMS queue listener is failed to start", e);
             }
         }
 
         public void stopListening() {
-            log.info("Stopping to listen JMS topic: {}", queueTopic);
+            log.info("Stopping to listen JMS topic: {}", queueName);
             try {
                 if (connection != null) {
                     connection.close();
@@ -188,6 +195,77 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 // ignore
             }
         }
+
+        @Override
+        public void onMessage(Message message) {
+            if (message instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) message;
+                try {
+                    log.debug("Received message: {}, {}", textMessage.getText(), Thread.currentThread().getName());
+                    CopyFileMessage messageObject = CopyFileMessage.fromString(textMessage.getText());
+                    log.debug("Restored message object: {}", messageObject);
+
+                    copyFileInTransaction(messageObject, true);
+                } catch (TransactionWrapException e) {
+                    log.error("unexpected error", e);
+                    rollback();
+                } catch (JMSException e) {
+                    log.error("JMS message receive failure", e);
+                    rollback();
+                }
+            }
+        }
+
+        private void rollback() {
+            try {
+                session.rollback();
+            } catch (JMSException ex) {
+                log.error("can't rollback JMS session", ex);
+            }
+        }
+
+        private void copyFileInTransaction(final CopyFileMessage message, final boolean removeSource) throws TransactionWrapException {
+            sessionFactory.openSession();
+            try {
+                transactionSupport.execute(new TransactionCallback<Void>() {
+                    @Override
+                    public Void doInTransaction() throws Exception {
+                        copyFile(message, removeSource);
+                        return null;
+                    }
+                });
+            } finally {
+                sessionFactory.closeSession();
+            }
+        }
+
+        private void copyFile(CopyFileMessage message, boolean removeSource) throws RecordNotFoundException {
+            DataFile dataFile = fileDao.get(message.getDestinationId());
+
+            File source = message.getSource();
+            try {
+                if (source.exists() && !source.isDirectory()) {
+                    String digest = fileStore.store(source);
+                    dataFile.setDigest(digest);
+                    dataFile.setStatus(STORED);
+                    fileDao.save(dataFile);
+                    return;
+                } else {
+                    log.error("File doesn't exist or is a directory: {}", source);
+                }
+            } catch (IOException e) {
+                log.error("Can't store file in the file store", e);
+            } finally {
+                if (removeSource) {
+                    if (!source.delete()) {
+                        log.warn("Can't delete file: " + source);
+                    }
+                }
+            }
+            dataFile.setStatus(ERROR);
+            fileDao.save(dataFile);
+        }
+
     }
 
     private static class CopyFileMessage {
@@ -238,90 +316,6 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     "destinationId=" + destinationId +
                     ", sourcePath='" + sourcePath + '\'' +
                     '}';
-        }
-    }
-
-    private static class CopyFileMessageListener implements MessageListener {
-
-        private final DataFileStore fileStore;
-        private final DataFileDao fileDao;
-        private final HibernateSessionFactory sessionFactory;
-        private final TransactionSupport transactionSupport;
-
-        private CopyFileMessageListener(DataFileStore fileStore, DataFileDao fileDao, HibernateSessionFactory sessionFactory,
-                                        TransactionSupport transactionSupport) {
-            this.fileStore = fileStore;
-            this.fileDao = fileDao;
-            this.sessionFactory = sessionFactory;
-            this.transactionSupport = transactionSupport;
-        }
-
-        @Override
-        public void onMessage(Message message) {
-            if (message instanceof TextMessage) {
-                TextMessage textMessage = (TextMessage) message;
-                try {
-                    log.debug("Received message: {}, {}", textMessage.getText(), Thread.currentThread().getName());
-                    CopyFileMessage messageObject = CopyFileMessage.fromString(textMessage.getText());
-                    log.debug("Restored message object: {}", messageObject);
-
-                    copyFileInTransaction(messageObject, true);
-
-                    message.acknowledge();
-                } catch (TransactionWrapException e) {
-                    log.error("unexpected error", e.getCause());
-                } catch (JMSException e) {
-                    log.error("JMS message receive failure", e);
-                }
-            }
-        }
-
-        private void copyFileInTransaction(final CopyFileMessage message, final boolean removeSource) throws TransactionWrapException {
-            sessionFactory.openSession();
-            try {
-                transactionSupport.execute(new TransactionCallback<Void>() {
-                    @Override
-                    public Void doInTransaction() throws Exception {
-                        copyFile(message, removeSource);
-                        return null;
-                    }
-                });
-            } finally {
-                sessionFactory.closeSession();
-            }
-        }
-
-        private void copyFile(CopyFileMessage message, boolean removeSource) {
-            DataFile dataFile;
-            try {
-                dataFile = fileDao.get(message.getDestinationId());
-            } catch (RecordNotFoundException e) {
-                log.info("The file record with id='{}' was not found in the database. Skipping the task", message.getDestinationId());
-                return;
-            }
-
-            File source = message.getSource();
-            try {
-                if (source.exists() && !source.isDirectory()) {
-                    String digest = fileStore.store(source);
-                    dataFile.setDigest(digest);
-                    dataFile.setStatus(STORED);
-                    fileDao.save(dataFile);
-                    return;
-                } else {
-                    log.error("File doesn't exist or is a directory: {}", source);
-                }
-            } catch (IOException e) {
-                log.error("Can't store file in the file store", e);
-            } finally {
-                if (removeSource) {
-                    if (!source.delete()) {
-                        log.warn("Can't delete file: " + source);
-                    }
-                }
-            }
-            dataFile.setStatus(ERROR);
-            fileDao.save(dataFile);
         }
     }
 }
