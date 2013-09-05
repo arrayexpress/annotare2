@@ -16,21 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
-import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
-import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
@@ -39,7 +37,6 @@ import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
@@ -48,40 +45,33 @@ import java.io.IOException;
 /**
  * @author Olga Melnichuk
  */
-public class AdfServiceImpl extends AuthBasedRemoteService implements AdfService {
+public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfService {
 
     private static final Logger log = LoggerFactory.getLogger(AdfServiceImpl.class);
 
-
-    private SubmissionManager submissionManager;
     private TransactionSupport transactionSupport;
 
     @Inject
     public AdfServiceImpl(AuthService authService, SubmissionManager submissionManager,
                           TransactionSupport transactionSupport) {
-        super(authService);
-        this.submissionManager = submissionManager;
+        super(authService, submissionManager);
         this.transactionSupport = transactionSupport;
     }
 
     @Override
     public Table loadBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException {
         try {
-            ArrayDesignSubmission submission = submissionManager.getArrayDesignSubmission(getCurrentUser(), submissionId, Permission.VIEW);
+            ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.VIEW);
             return new TsvParser().parse(submission.getBody());
         } catch (IOException e) {
             throw unexpected(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
         }
     }
 
     @Override
     public void importBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException {
         try {
-            final ArrayDesignSubmission submission = submissionManager.getArrayDesignSubmission(getCurrentUser(), submissionId, Permission.UPDATE);
+            final ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.UPDATE);
 
             FileItem item = UploadedFiles.getFirst(getSession());
             Table bodyTable = new AdfParser().parseBody(item.getInputStream());
@@ -95,19 +85,15 @@ public class AdfServiceImpl extends AuthBasedRemoteService implements AdfService
                 public Void doInTransaction() throws Exception {
                     submission.setBody(body);
                     submission.setHeader(header);
-                    submissionManager.save(submission);
+                    save(submission);
                     return null;
                 }
             });
         } catch (IOException e) {
             log.warn("Can't import ADF body data (submissionId: " + submissionId + ")", e);
             throw new DataImportException(e.getMessage());
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
         } catch (TransactionWrapException e) {
-           throw unexpected(e.getCause());
+            throw unexpected(e.getCause());
         }
     }
 
@@ -123,20 +109,6 @@ public class AdfServiceImpl extends AuthBasedRemoteService implements AdfService
         adHeader.setVersion(header.getVersion().getValue());
         adHeader.setPrintingProtocolBackup(new PrintingProtocol(0, "", ""));
         //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false).getValue());
-        return  adHeader;
-    }
-    private static UnexpectedException unexpected(Throwable e) {
-        log.error("server error", e);
-        return new UnexpectedException("Unexpected server error", e);
-    }
-
-    private static ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
-        log.error("server error", e);
-        return new ResourceNotFoundException("Submission not found");
-    }
-
-    private static NoPermissionException noPermission(AccessControlException e) {
-        log.error("server error", e);
-        return new NoPermissionException("No permission");
+        return adHeader;
     }
 }

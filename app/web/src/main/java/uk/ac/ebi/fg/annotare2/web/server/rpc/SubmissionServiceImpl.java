@@ -71,11 +71,10 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionServiceImpl extends AuthBasedRemoteService implements SubmissionService {
+public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
-    private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
     private final TransactionSupport transactionSupport;
@@ -84,8 +83,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
                                  DataFileManager dataFileManager, AnnotareProperties properties,
                                  TransactionSupport transactionSupport) {
-        super(authService);
-        this.submissionManager = submissionManager;
+        super(authService, submissionManager);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.transactionSupport = transactionSupport;
@@ -93,25 +91,15 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     @Override
     public SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            Submission sb = submissionManager.getSubmission(getCurrentUser(), id, Permission.VIEW);
-            return uiSubmissionDetails(sb);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        }
+        Submission sb = getSubmission(id, Permission.VIEW);
+        return uiSubmissionDetails(sb);
     }
 
     @Override
     public ArrayDesignDetailsDto getArrayDesignDetails(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ArrayDesignSubmission sb = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.VIEW);
+            ArrayDesignSubmission sb = getArrayDesignSubmission(id, Permission.VIEW);
             return uiArrayDesignDetails(sb);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
         } catch (DataSerializationException e) {
             throw unexpected(e);
         }
@@ -120,13 +108,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     @Override
     public Table getIdfTable(long id) throws NoPermissionException, ResourceNotFoundException {
         try {
-            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
             return toIdfTable(exp);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -139,13 +123,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     @Override
     public Table getSdrfTable(long id) throws NoPermissionException, ResourceNotFoundException {
         try {
-            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
             return toSdrfTable(exp);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -170,12 +150,8 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     @Override
     public ExperimentProfile loadExperiment(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             return submission.getExperimentProfile();
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
         } catch (DataSerializationException e) {
             throw unexpected(e);
         }
@@ -183,14 +159,8 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     @Override
     public List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.VIEW);
-            return uiDataFileRows(submission.getFiles());
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
+        ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
+        return uiDataFileRows(submission.getFiles());
     }
 
     @Override
@@ -199,7 +169,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             return transactionSupport.execute(new TransactionCallback<Long>() {
                 @Override
                 public Long doInTransaction() throws Exception {
-                    return submissionManager.createExperimentSubmission(getCurrentUser()).getId();
+                    return createExperimentSubmission().getId();
                 }
             });
         } catch (TransactionWrapException e) {
@@ -213,7 +183,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             return transactionSupport.execute(new TransactionCallback<Long>() {
                 @Override
                 public Long doInTransaction() throws Exception {
-                    return submissionManager.createArrayDesignSubmission(getCurrentUser()).getId();
+                    return createArrayDesignSubmission().getId();
                 }
             });
         } catch (TransactionWrapException e) {
@@ -228,9 +198,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                 @Override
                 public Void doInTransaction() throws Exception {
                     ExperimentSubmission submission =
-                            submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+                            getExperimentSubmission(id, Permission.UPDATE);
                     submission.setExperimentProfile(createExperimentProfile(settings));
-                    submissionManager.save(submission);
+                    save(submission);
                     return null;
                 }
             });
@@ -246,9 +216,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                 @Override
                 public Void doInTransaction() throws Exception {
                     Submission submission =
-                            submissionManager.getSubmission(getCurrentUser(), id, Permission.UPDATE);
+                            getSubmission(id, Permission.UPDATE);
                     submission.discardAll();
-                    submissionManager.save(submission);
+                    save(submission);
                     return null;
                 }
             });
@@ -263,12 +233,12 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             return transactionSupport.execute(new TransactionCallback<ExperimentProfile>() {
                 @Override
                 public ExperimentProfile doInTransaction() throws Exception {
-                    ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+                    ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
                     ExperimentProfile experiment = submission.getExperimentProfile();
                     experimentUpdater(experiment).run(commands);
                     submission.setExperimentProfile(experiment);
                     submission.setTitle(experiment.getTitle());
-                    submissionManager.save(submission);
+                    save(submission);
                     return experiment;
                 }
             });
@@ -283,12 +253,12 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             return transactionSupport.execute(new TransactionCallback<ArrayDesignUpdateResult>() {
                 @Override
                 public ArrayDesignUpdateResult doInTransaction() throws Exception {
-                    ArrayDesignSubmission submission = submissionManager.getArrayDesignSubmission(getCurrentUser(), id, Permission.UPDATE);
+                    ArrayDesignSubmission submission = getArrayDesignSubmission(id, Permission.UPDATE);
                     ArrayDesignHeader header = submission.getHeader();
                     ArrayDesignUpdateResult result = new ArrayDesignUpdatePerformerImpl(header).run(commands);
                     submission.setHeader(header);
                     submission.setTitle(header.getName());
-                    submissionManager.save(submission);
+                    save(submission);
                     return result;
                 }
             });
@@ -300,16 +270,11 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     @Override
     public void uploadDataFile(long id, String fileName) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
             FileItem fileItem = UploadedFiles.get(getSession(), fileName);
             File file = new File(properties.getHttpUploadDir(), fileName);
             Streams.copy(fileItem.getInputStream(), new FileOutputStream(file), true);
             saveFile(file, submission);
-            //TODO: save submission
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
         } catch (FileNotFoundException e) {
             throw unexpected(e);
         } catch (IOException e) {
@@ -320,7 +285,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
     @Override
     public Map<Integer, String> registryFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
             File ftpRoot = properties.getFilePickUpDir();
             Map<Integer, String> errors = new HashMap<Integer, String>();
             int index = 0;
@@ -334,10 +299,6 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                 index++;
             }
             return errors;
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
         } catch (FileNotFoundException e) {
             throw unexpected(e);
         } catch (IOException e) {
@@ -351,9 +312,9 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
             transactionSupport.execute(new TransactionCallback<Void>() {
                 @Override
                 public Void doInTransaction() throws Exception {
-                    ExperimentSubmission submission = submissionManager.getExperimentSubmission(getCurrentUser(), id, Permission.UPDATE);
+                    ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
                     dataFileManager.removeFile(submission, fileId);
-                    submissionManager.save(submission);
+                    save(submission);
                     return null;
                 }
             });
@@ -377,7 +338,7 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
                 @Override
                 public Void doInTransaction() throws Exception {
                     dataFileManager.upload(file, submission);
-                    submissionManager.save(submission);
+                    save(submission);
                     return null;
                 }
             });
@@ -388,34 +349,5 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
 
     private static boolean fileExists(File file, String md5) throws IOException {
         return file.exists() && md5.equals(hash(file, md5()).toString());
-    }
-
-    private static Throwable maybeNoPermission(Throwable e) throws NoPermissionException {
-        if (e instanceof AccessControlException) {
-            throw noPermission((AccessControlException) e);
-        }
-        return e;
-    }
-
-    private static Throwable maybeNoSuchRecord(Throwable e) throws ResourceNotFoundException {
-        if (e instanceof RecordNotFoundException) {
-            throw noSuchRecord((RecordNotFoundException) e);
-        }
-        return e;
-    }
-
-    private static UnexpectedException unexpected(Throwable e) {
-        log.error("server error", e);
-        return new UnexpectedException("Unexpected server error", e);
-    }
-
-    private static ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
-        log.error("server error", e);
-        return new ResourceNotFoundException("Submission not found");
-    }
-
-    private static NoPermissionException noPermission(AccessControlException e) {
-        log.error("server error", e);
-        return new NoPermissionException("No permission");
     }
 }
