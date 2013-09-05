@@ -21,7 +21,10 @@ import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvGenerator;
@@ -81,21 +84,17 @@ public class AdfServiceImpl extends AuthBasedRemoteService implements AdfService
             final ArrayDesignSubmission submission = submissionManager.getArrayDesignSubmission(getCurrentUser(), submissionId, Permission.UPDATE);
 
             FileItem item = UploadedFiles.getFirst(getSession());
-            Table table = new AdfParser().parseBody(item.getInputStream());
+            Table bodyTable = new AdfParser().parseBody(item.getInputStream());
+            final String body = bodyTable.isEmpty() ? "" : new TsvGenerator(bodyTable).generateString();
 
-            //TODO validation here
-            if (table.isEmpty()) {
-                throw new DataImportException("Can't import an empty file.");
-            }
-            if (table.getWidth() <= 1 || table.getHeight() <= 1) {
-                throw new DataImportException("The file contents don't look like a valid ADF data.");
-            }
-            final String body = new TsvGenerator(table).generateString();
+            Table headerTable = new AdfParser().parseHeader(item.getInputStream());
+            final ArrayDesignHeader header = createArrayDesignHeader(headerTable);
 
             transactionSupport.execute(new TransactionCallback<Void>() {
                 @Override
                 public Void doInTransaction() throws Exception {
                     submission.setBody(body);
+                    submission.setHeader(header);
                     submissionManager.save(submission);
                     return null;
                 }
@@ -112,6 +111,20 @@ public class AdfServiceImpl extends AuthBasedRemoteService implements AdfService
         }
     }
 
+    private ArrayDesignHeader createArrayDesignHeader(Table table) {
+        ArrayDesignHeader adHeader = new ArrayDesignHeader();
+        if (table.isEmpty()) {
+            return adHeader;
+        }
+
+        AdfHeader header = new AdfHeader(table);
+        adHeader.setName(header.getArrayDesignName().getValue());
+        adHeader.setDescription(header.getDescription(false).getValue());
+        adHeader.setVersion(header.getVersion().getValue());
+        adHeader.setPrintingProtocolBackup(new PrintingProtocol(0, "", ""));
+        //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false).getValue());
+        return  adHeader;
+    }
     private static UnexpectedException unexpected(Throwable e) {
         log.error("server error", e);
         return new UnexpectedException("Unexpected server error", e);
