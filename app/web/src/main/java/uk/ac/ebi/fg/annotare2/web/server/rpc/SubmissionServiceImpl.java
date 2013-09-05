@@ -297,7 +297,6 @@ public class SubmissionServiceImpl extends AuthBasedRemoteService implements Sub
         }
     }
 
-
     @Override
     public void uploadDataFile(long id, String fileName) throws ResourceNotFoundException, NoPermissionException {
         try {
