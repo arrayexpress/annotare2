@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context allowLinking="false" cookies="true" swallowOutput="false">
+    <Resource
+            name="jdbc/annotareDataSource"
+            type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            url="${annotare.db.url}"
+            driverClassName="${annotare.db.driver}"
+            username="${annotare.db.user}"
+            password="${annotare.db.password}"/>
+
+    <Resource
+            name="jdbc/subsTrackingDataSource"
+            type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            url="${annotare.subsTracking.db.url}"
+            driverClassName="${annotare.subsTracking.db.driver}"
+            username="${annotare.subsTracking.db.user}"
+            password="${annotare.subsTracking.db.password}"/>
+</Context>

@@ -29,6 +29,7 @@
         <module>om</module>
         <module>om-gwt</module>
         <module>web</module>
+        <module>ae-subs-tracking</module>
     </modules>
 
     <licenses>
@@ -226,11 +227,24 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <annotare.db.url>annotare_db_url</annotare.db.url>
+                <annotare.db.user>annotare_db_user</annotare.db.user>
+                <annotare.db.password>annotare_db_password</annotare.db.password>
+                <annotare.db.driver>annotare_db_driver_class</annotare.db.driver>
+                <annotare.db.dataSource>annotare_db_dataSource_class</annotare.db.dataSource>
+
                 <annotare.test.db.url>test_db_url</annotare.test.db.url>
                 <annotare.test.db.user>test_db_user</annotare.test.db.user>
                 <annotare.test.db.password>test_db_password</annotare.test.db.password>
                 <annotare.test.db.driver>test_db_driver_class</annotare.test.db.driver>
                 <annotare.test.db.dataSource>test_db_dataSource_class</annotare.test.db.dataSource>
+
+                <annotare.subsTracking.db.url>subsTracking_db_url</annotare.subsTracking.db.url>
+                <annotare.subsTracking.db.user>subsTracking_db_user</annotare.subsTracking.db.user>
+                <annotare.subsTracking.db.password>subsTracking_db_password</annotare.subsTracking.db.password>
+                <annotare.subsTracking.db.driver>subsTracking_db_driver_class</annotare.subsTracking.db.driver>
+                <annotare.subsTracking.db.dataSource>subsTracking_db_dataSource_class</annotare.subsTracking.db.dataSource>
+
             </properties>
         </profile>
     </profiles>
