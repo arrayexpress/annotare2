@@ -33,8 +33,6 @@
     <filter-mapping>
         <filter-name>guiceFilter</filter-name>
         <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
     <listener>
@@ -54,4 +52,8 @@
         <exception-type>java.lang.Throwable</exception-type>
         <location>/error</location>
     </error-page>
+    <session-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
 </web-app>
