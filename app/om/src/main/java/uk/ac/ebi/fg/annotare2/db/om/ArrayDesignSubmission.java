@@ -63,7 +63,8 @@ public class ArrayDesignSubmission extends Submission {
     }
 
     public ArrayDesignHeader getHeader() throws DataSerializationException {
-        return fromJson2ArrayDesign(header);
+        ArrayDesignHeader adHeader = fromJson2ArrayDesign(header);
+        return adHeader == null ? new ArrayDesignHeader() : adHeader;
     }
 
     public void setHeader(ArrayDesignHeader header) throws DataSerializationException {

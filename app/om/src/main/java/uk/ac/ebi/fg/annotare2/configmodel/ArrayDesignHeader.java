@@ -30,6 +30,8 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArrayDesignHeader implements Serializable {
 
+    private static PrintingProtocol DEFAULT = new PrintingProtocol(0, "", "");
+
     @JsonProperty("name")
     private String name;
 
@@ -50,6 +52,10 @@ public class ArrayDesignHeader implements Serializable {
 
     @JsonProperty("printingProtocolBackup")
     private PrintingProtocol printingProtocolBackup;
+
+    public ArrayDesignHeader() {
+        printingProtocolBackup = DEFAULT;
+    }
 
     public String getDescription() {
         return description;
@@ -87,8 +93,8 @@ public class ArrayDesignHeader implements Serializable {
         return printingProtocolBackup;
     }
 
-    public void setPrintingProtocolBackup(PrintingProtocol printingProtocolBackup) {
-        this.printingProtocolBackup = printingProtocolBackup;
+    public void setPrintingProtocolBackup(PrintingProtocol protocol) {
+        this.printingProtocolBackup = protocol == null ? DEFAULT : protocol;
     }
 
     public Date getPublicReleaseDate() {

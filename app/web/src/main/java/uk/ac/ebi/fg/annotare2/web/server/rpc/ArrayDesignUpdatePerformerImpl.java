@@ -25,7 +25,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateComm
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdatePerformer;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import static com.google.inject.internal.util.$Preconditions.checkNotNull;
 
 /**
  * @author Olga Melnichuk
@@ -36,7 +39,8 @@ public class ArrayDesignUpdatePerformerImpl implements ArrayDesignUpdatePerforme
 
     private ArrayDesignUpdateResult result = new ArrayDesignUpdateResult();
 
-    public ArrayDesignUpdatePerformerImpl(ArrayDesignHeader header) {
+    public ArrayDesignUpdatePerformerImpl(@NotNull ArrayDesignHeader header) {
+        checkNotNull(header);
         this.header = header;
     }
 
@@ -58,7 +62,9 @@ public class ArrayDesignUpdatePerformerImpl implements ArrayDesignUpdatePerforme
         header.setPublicReleaseDate(details.getPublicReleaseDate());
         header.setOrganism(organism == null ? null : new OntologyTerm(organism.getAccession(), organism.getLabel()));
         header.setPrintingProtocolId(details.getPrintingProtocolId());
-        header.setPrintingProtocolBackup(new PrintingProtocol(otherProtocol.getId(), otherProtocol.getName(), otherProtocol.getDescription()));
+        header.setPrintingProtocolBackup(
+                otherProtocol == null ? null :
+                        new PrintingProtocol(otherProtocol.getId(), otherProtocol.getName(), otherProtocol.getDescription()));
         result.setUpdatedDetails(details);
     }
 }
