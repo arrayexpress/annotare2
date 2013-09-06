@@ -239,6 +239,7 @@
                 <annotare.test.db.driver>test_db_driver_class</annotare.test.db.driver>
                 <annotare.test.db.dataSource>test_db_dataSource_class</annotare.test.db.dataSource>
 
+                <annotare.subsTracking.db.schema>subsTracking_db_schema</annotare.subsTracking.db.schema>
                 <annotare.subsTracking.db.url>subsTracking_db_url</annotare.subsTracking.db.url>
                 <annotare.subsTracking.db.user>subsTracking_db_user</annotare.subsTracking.db.user>
                 <annotare.subsTracking.db.password>subsTracking_db_password</annotare.subsTracking.db.password>
