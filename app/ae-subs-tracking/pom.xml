@@ -98,10 +98,10 @@
 
                     <!-- JDBC connection parameters -->
                     <jdbc>
-                        <driver>${subs-tracking.database.connection.driver}</driver>
-                        <url>${subs-tracking.database.connection.url}</url>
-                        <user>${subs-tracking.database.connection.user}</user>
-                        <password>${subs-tracking.database.connection.password}</password>
+                        <driver>${annotare.subsTracking.db.driver}</driver>
+                        <url>${annotare.subsTracking.db.url}</url>
+                        <user>${annotare.subsTracking.db.user}</user>
+                        <password>${annotare.subsTracking.db.password}</password>
                     </jdbc>
 
                     <!-- Generator parameters -->
@@ -111,7 +111,7 @@
                             <name>org.jooq.util.mysql.MySQLDatabase</name>
                             <includes>users|roles|roles_users|experiments|data_files</includes>
                             <excludes/>
-                            <inputSchema>${subs-tracking.database.connection.schema}</inputSchema>
+                            <inputSchema>${annotare.subsTracking.db.schema}</inputSchema>
                         </database>
                         <generate>
 
