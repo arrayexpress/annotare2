@@ -17,14 +17,24 @@ package uk.ac.ebi.fg.annotare2.autosubs;
  *
  */
 
-import com.google.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 public class SubsTracking
 {
-    private final SubsTrackingDbConnections dbConnections;
+    private final DataSource dbDataSource;
 
-    @Inject
-    public SubsTracking(SubsTrackingDbConnections dbConnections) {
-        this.dbConnections = dbConnections;
+    public SubsTracking() {
+        try {
+            InitialContext context = new InitialContext();
+            this.dbDataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
+        } catch (NamingException x) {
+            throw new RuntimeException(x);
+        }
+    }
+
+    public void addSubmission() {
+
     }
 }
