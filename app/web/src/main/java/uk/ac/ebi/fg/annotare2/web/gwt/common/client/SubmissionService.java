@@ -54,6 +54,8 @@ public interface SubmissionService extends RemoteService {
 
     void setupExperiment(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
 
+    void submitSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
+
     void discardSubmissionData(long id) throws ResourceNotFoundException, NoPermissionException;
 
     ArrayDesignUpdateResult updateArrayDesign(long id, List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;

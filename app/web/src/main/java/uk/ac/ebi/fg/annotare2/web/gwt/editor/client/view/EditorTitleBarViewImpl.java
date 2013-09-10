@@ -48,6 +48,9 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     Button validateButton;
 
     @UiField
+    Button submitButton;
+
+    @UiField
     Anchor createNewLink;
 
     @UiField
@@ -133,6 +136,12 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
             }
 
         });
+    }
+
+    @UiHandler("submitButton")
+    public void onSubmitButtonClick(ClickEvent event) {
+        //final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
+        presenter.submitSubmission();
     }
 
     @UiHandler("createNewLink")

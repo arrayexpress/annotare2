@@ -145,6 +145,23 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
         }.wrap());
     }
 
+    @Override
+    public void submitSubmission() {
+        submissionService.submitSubmission(getSubmissionId(), new AsyncCallbackWrapper<Void>() {
+            @Override
+            public void onFailure( Throwable throwable )
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onSuccess( Void aVoid )
+            {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+    }
+
     private void publishValidationResult(ValidationResult result) {
         eventBus.fireEvent(new ValidationFinishedEvent(result));
     }

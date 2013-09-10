@@ -25,6 +25,8 @@ public interface SubmissionServiceAsync {
 
     void setupExperiment(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
 
+    void submitSubmission(long id, AsyncCallback<Void> async);
+
     void discardSubmissionData(long id, AsyncCallback<Void> async);
 
     void getIdfTable(long id, AsyncCallback<Table> async);
