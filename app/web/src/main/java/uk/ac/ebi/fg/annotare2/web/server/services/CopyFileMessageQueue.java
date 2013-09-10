@@ -206,6 +206,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     log.debug("Restored message object: {}", messageObject);
 
                     copyFileInTransaction(messageObject, true);
+                    commit();
                 } catch (TransactionWrapException e) {
                     log.error("unexpected error", e);
                     rollback();
@@ -222,6 +223,10 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             } catch (JMSException ex) {
                 log.error("can't rollback JMS session", ex);
             }
+        }
+
+        private void commit() throws JMSException {
+            session.commit();
         }
 
         private void copyFileInTransaction(final CopyFileMessage message, final boolean removeSource) throws TransactionWrapException {
@@ -249,21 +254,29 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                     dataFile.setDigest(digest);
                     dataFile.setStatus(STORED);
                     fileDao.save(dataFile);
+                    if (removeSource) {
+                        removeFile(source);
+                    }
                     return;
                 } else {
                     log.error("File doesn't exist or is a directory: {}", source);
                 }
             } catch (IOException e) {
                 log.error("Can't store file in the file store", e);
-            } finally {
-                if (removeSource) {
-                    if (!source.delete()) {
-                        log.warn("Can't delete file: " + source);
-                    }
-                }
             }
             dataFile.setStatus(ERROR);
             fileDao.save(dataFile);
+        }
+
+        private void removeFile(File file) {
+            try {
+                if (!file.exists() || file.delete()) {
+                    return;
+                }
+            } catch (SecurityException e) {
+                log.warn("Can't delete file: " + file, e);
+            }
+            log.warn("Can't delete file: " + file);
         }
 
     }

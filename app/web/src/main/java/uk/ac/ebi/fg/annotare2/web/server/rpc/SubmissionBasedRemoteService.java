@@ -16,11 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.gwt.user.server.rpc.UnexpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.om.Submission;
 import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -43,33 +45,82 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
         this.submissionManager = submissionManager;
     }
 
-    protected ExperimentSubmission getExperimentSubmission(int id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
+    public Submission getSubmission(long id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            return submissionManager.getSubmission(getCurrentUser(), id, permission);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
+    }
+
+    protected ExperimentSubmission getExperimentSubmission(long id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
         try {
             return submissionManager.getExperimentSubmission(getCurrentUser(), id, permission);
         } catch (RecordNotFoundException e) {
-            throw noSuchSubmission(id, e);
+            throw noSuchRecord(e);
         } catch (AccessControlException e) {
-            throw noSubmssionAccess(id, e);
+            throw noPermission(e);
         }
     }
 
-    protected ArrayDesignSubmission getArrayDesignSubmission(int id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
+    protected ArrayDesignSubmission getArrayDesignSubmission(long id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
         try {
             return submissionManager.getArrayDesignSubmission(getCurrentUser(), id, permission);
         } catch (RecordNotFoundException e) {
-            throw noSuchSubmission(id, e);
+            throw noSuchRecord(e);
         } catch (AccessControlException e) {
-            throw noSubmssionAccess(id, e);
+            throw noPermission(e);
         }
     }
 
-    private ResourceNotFoundException noSuchSubmission(int id, RecordNotFoundException e) {
-        log.warn("Can't find submission with id: " + id, e);
-        return new ResourceNotFoundException("Submission with id=" + id + " doesn't exist");
+    protected ExperimentSubmission createExperimentSubmission() throws NoPermissionException {
+        try {
+            return submissionManager.createExperimentSubmission(getCurrentUser());
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
     }
 
-    private NoPermissionException noSubmssionAccess(int id, AccessControlException e) {
-        log.warn("Access denied (user: " + getCurrentUser().getId() + ", submission:" + id + ")", e);
-        return new NoPermissionException("You don't have a required permission to this resource");
+    protected ArrayDesignSubmission createArrayDesignSubmission() throws NoPermissionException {
+        try {
+            return submissionManager.createArrayDesignSubmission(getCurrentUser());
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
+    }
+
+    protected void save(Submission submission) {
+        submissionManager.save(submission);
+    }
+
+    protected static Throwable maybeNoPermission(Throwable e) throws NoPermissionException {
+        if (e instanceof AccessControlException) {
+            throw noPermission((AccessControlException) e);
+        }
+        return e;
+    }
+
+    protected static Throwable maybeNoSuchRecord(Throwable e) throws ResourceNotFoundException {
+        if (e instanceof RecordNotFoundException) {
+            throw noSuchRecord((RecordNotFoundException) e);
+        }
+        return e;
+    }
+
+    protected static UnexpectedException unexpected(Throwable e) {
+        log.error("server error", e);
+        return new UnexpectedException("Unexpected server error", e);
+    }
+
+    protected static ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
+        log.error("server error", e);
+        return new ResourceNotFoundException("Submission not found");
+    }
+
+    protected static NoPermissionException noPermission(AccessControlException e) {
+        log.error("server error", e);
+        return new NoPermissionException("No permission");
     }
 }

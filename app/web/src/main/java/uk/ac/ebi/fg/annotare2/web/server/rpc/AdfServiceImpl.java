@@ -20,16 +20,22 @@ import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
+import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
-import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
@@ -43,9 +49,13 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
 
     private static final Logger log = LoggerFactory.getLogger(AdfServiceImpl.class);
 
+    private TransactionSupport transactionSupport;
+
     @Inject
-    public AdfServiceImpl(AuthService authService, SubmissionManager submissionManager) {
+    public AdfServiceImpl(AuthService authService, SubmissionManager submissionManager,
+                          TransactionSupport transactionSupport) {
         super(authService, submissionManager);
+        this.transactionSupport = transactionSupport;
     }
 
     @Override
@@ -54,30 +64,51 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
             ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.VIEW);
             return new TsvParser().parse(submission.getBody());
         } catch (IOException e) {
-            log.error("Can't load ADF data (submissionId: " + submissionId + ")", e);
+            throw unexpected(e);
         }
-        return null;
     }
 
     @Override
     public void importBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException {
         try {
-            ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.UPDATE);
+            final ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.UPDATE);
 
             FileItem item = UploadedFiles.getFirst(getSession());
-            Table table = new AdfParser().parseBody(item.getInputStream());
+            Table bodyTable = new AdfParser().parseBody(item.getInputStream());
+            final String body = bodyTable.isEmpty() ? "" : new TsvGenerator(bodyTable).generateString();
 
-            //TODO validation here
-            if (table.isEmpty()) {
-                throw new DataImportException("Can't import an empty file.");
-            }
-            if (table.getWidth() <= 1 || table.getHeight() <= 1) {
-                throw new DataImportException("The file contents don't look like a valid SDRF data.");
-            }
-            submission.setBody(new TsvGenerator(table).generateString());
+            Table headerTable = new AdfParser().parseHeader(item.getInputStream());
+            final ArrayDesignHeader header = createArrayDesignHeader(headerTable);
+
+            transactionSupport.execute(new TransactionCallback<Void>() {
+                @Override
+                public Void doInTransaction() throws Exception {
+                    submission.setBody(body);
+                    submission.setHeader(header);
+                    save(submission);
+                    return null;
+                }
+            });
         } catch (IOException e) {
             log.warn("Can't import ADF body data (submissionId: " + submissionId + ")", e);
             throw new DataImportException(e.getMessage());
+        } catch (TransactionWrapException e) {
+            throw unexpected(e.getCause());
         }
+    }
+
+    private ArrayDesignHeader createArrayDesignHeader(Table table) {
+        ArrayDesignHeader adHeader = new ArrayDesignHeader();
+        if (table.isEmpty()) {
+            return adHeader;
+        }
+
+        AdfHeader header = new AdfHeader(table);
+        adHeader.setName(header.getArrayDesignName().getValue());
+        adHeader.setDescription(header.getDescription(false).getValue());
+        adHeader.setVersion(header.getVersion().getValue());
+        adHeader.setPrintingProtocolBackup(new PrintingProtocol(0, "", ""));
+        //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false).getValue());
+        return adHeader;
     }
 }
