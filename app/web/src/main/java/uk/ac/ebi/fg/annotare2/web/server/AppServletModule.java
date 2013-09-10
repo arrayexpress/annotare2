@@ -22,6 +22,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import gwtupload.server.UploadServlet;
+import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
@@ -124,6 +125,8 @@ public class AppServletModule extends ServletModule {
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).in(SINGLETON);
         bind(DataFileManager.class).in(SINGLETON);
+
+        bind(SubsTracking.class).in(SINGLETON);
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);

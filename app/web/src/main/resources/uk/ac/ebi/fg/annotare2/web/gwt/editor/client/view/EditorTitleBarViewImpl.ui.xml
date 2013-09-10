@@ -142,7 +142,7 @@
                                     </g:Button>
                                 </td>
                                 <td>
-                                    <g:Button addStyleNames="{style.submitButton}" enabled="false">Submit</g:Button>
+                                    <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton">Submit</g:Button>
                                 </td>
                             </tr>
                         </table>

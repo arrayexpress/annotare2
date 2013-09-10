@@ -210,6 +210,27 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     @Override
+    public void submitSubmission(final long id) throws ResourceNotFoundException, NoPermissionException {
+        /*
+        try {
+            transactionSupport.execute(new TransactionCallback<Void>() {
+                @Override
+                public Void doInTransaction() throws Exception {
+                    Submission submission =
+                            getSubmission(id, Permission.UPDATE);
+                    submission.discardAll();
+                    save(submission);
+                    return null;
+                }
+            });
+        } catch (TransactionWrapException e) {
+            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+        }
+        */
+
+    }
+
+    @Override
     public void discardSubmissionData(final long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             transactionSupport.execute(new TransactionCallback<Void>() {
