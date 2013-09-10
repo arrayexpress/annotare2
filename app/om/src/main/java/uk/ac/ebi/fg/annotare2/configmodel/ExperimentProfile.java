@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
@@ -86,12 +87,22 @@ public class ExperimentProfile implements Serializable {
     private Set<String> labels;
 
     @JsonProperty("sample2Extracts")
-    private MultiSets<Integer, Integer> sample2ExtractsIds;
+    private MultiSets<Integer, Integer> sampleId2ExtractsIds;
     private MultiSets<Sample, Extract> sample2Extracts;
 
-    @JsonProperty("extract2Labels")
-    private MultiSets<Integer, String> extractId2Labels;
-    private MultiSets<Extract, String> extract2Labels;
+    /*@JsonProperty("extract2Labels")
+    @Deprecated private MultiSets<Integer, String> extractId2Labels;
+    @Deprecated private MultiSets<Extract, String> extract2Labels;*/
+
+    @JsonProperty("assayMap")
+    private Map<String, Assay> assayMap;
+
+    @JsonProperty("assay2File")
+    private Map<String, FileRef> assayId2File;
+    private Map<Assay, FileRef> assay2File;
+
+    @JsonProperty("file2File")
+    private Map<FileRef, FileRef> file2File;
 
     ExperimentProfile() {
         /* used by GWT serialization */
@@ -111,13 +122,17 @@ public class ExperimentProfile implements Serializable {
         labels = newLinkedHashSet();
 
         sample2Extracts = new MultiSets<Sample, Extract>();
-        extract2Labels = new MultiSets<Extract, String>();
+        //extract2Labels = new MultiSets<Extract, String>();
+
+        assayMap = newLinkedHashMap();
+        assay2File = newHashMap();
+        file2File = newHashMap();
     }
 
     @JsonProperty("sample2Extracts")
-    MultiSets<Integer, Integer> getSample2ExtractsIds() {
-        if (sample2ExtractsIds != null) {
-            return sample2ExtractsIds;
+    MultiSets<Integer, Integer> getSampleId2ExtractsIds() {
+        if (sampleId2ExtractsIds != null) {
+            return sampleId2ExtractsIds;
         }
         MultiSets<Integer, Integer> map = new MultiSets<Integer, Integer>();
         for (Sample sample : sample2Extracts.keySet()) {
@@ -130,25 +145,25 @@ public class ExperimentProfile implements Serializable {
     }
 
     @JsonProperty("sample2Extracts")
-    void setSample2ExtractsIds(MultiSets<Integer, Integer> sample2ExtractsIds) {
-        this.sample2ExtractsIds = sample2ExtractsIds;
+    void setSampleId2ExtractsIds(MultiSets<Integer, Integer> sampleId2ExtractsIds) {
+        this.sampleId2ExtractsIds = sampleId2ExtractsIds;
     }
 
-    @JsonProperty("extract2Labels")
-    MultiSets<Integer, String> getExtractId2Labels() {
-        if (extractId2Labels != null) {
-            return extractId2Labels;
+    @JsonProperty("assay2File")
+    Map<String, FileRef> getAssay2File() {
+        if (assayId2File != null) {
+            return assayId2File;
         }
-        MultiSets<Integer, String> map = new MultiSets<Integer, String>();
-        for (Extract extract : extract2Labels.keySet()) {
-            map.putAll(extract.getId(), extract2Labels.get(extract));
+        Map<String, FileRef> map = new HashMap<String, FileRef>();
+        for (Assay assay : assay2File.keySet()) {
+            map.put(assay.getId(), assay2File.get(assay));
         }
         return map;
     }
 
-    @JsonProperty("extract2Labels")
-    void setExtractId2Labels(MultiSets<Integer, String> extractId2Labels) {
-        this.extractId2Labels = extractId2Labels;
+    @JsonProperty("assay2File")
+    void setAssayId2File(Map<String, FileRef> assayId2File) {
+        this.assayId2File = assayId2File;
     }
 
     public ExperimentProfileType getType() {
@@ -229,7 +244,7 @@ public class ExperimentProfile implements Serializable {
         return sample;
     }
 
-    public Extract createExtract(Sample... samples) {
+    public Extract createExtract(boolean createAssay, Sample... samples) {
         if (samples.length == 0) {
             throw new IllegalArgumentException("Can't create empty extract");
         }
@@ -238,13 +253,24 @@ public class ExperimentProfile implements Serializable {
         for (Sample sample : samples) {
             link(sample, extract);
         }
+        if (createAssay) {
+            createAssay(extract, null);
+        }
         return extract;
     }
 
     public LabeledExtract createLabeledExtract(Extract extract, String label) {
-        addLabel(label);
-        extract2Labels.put(extract, label);
+        createAssay(extract, label);
         return new LabeledExtract(extract, label);
+    }
+
+    private Assay createAssay(Extract extract, String label) {
+        if (label != null && label.length() > 0) {
+            addLabel(label);
+        }
+        Assay assay = new Assay(extract, label);
+        assayMap.put(assay.getId(), assay);
+        return assay;
     }
 
     public void removeSample(int id) {
@@ -270,29 +296,43 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void removeExtract(Extract extract) {
-        //TODO clear files
         for (Sample sample : sample2Extracts.keySet()) {
             Set<Extract> extracts = sample2Extracts.get(sample);
             extracts.remove(extract);
         }
-        Set<String> labels = extract2Labels.remove(extract);
-        if (labels != null) {
-            for (String label : labels) {
-                removeLabeledExtract(extract, label);
-            }
-        }
+        removeAssays(extract);
         extractMap.remove(extract.getId());
     }
 
     public void removeLabeledExtract(LabeledExtract labeledExtract) {
-        removeLabeledExtract(labeledExtract.getExtract(), labeledExtract.getLabel());
+        removeAssay(new Assay(labeledExtract.getExtract(), labeledExtract.getLabel()));
     }
 
-    public void removeLabeledExtract(Extract extract, String label) {
-        //TODO clear files
-        Set<String> labels = extract2Labels.get(extract);
-        if (labels != null) {
-            labels.remove(label);
+    private void removeAssays(Extract extract) {
+        List<Assay> assays = new ArrayList<Assay>(assayMap.values());
+        for (Assay assay : assays) {
+            if (assay.getExtract().equals(extract)) {
+                removeAssay(assay);
+            }
+        }
+    }
+
+    private void removeAssay(Assay assay) {
+        removeFileRefs(assay);
+        assayMap.remove(assay.getId());
+    }
+
+    private void removeFileRefs(Assay assay) {
+        FileRef fileRef = assay2File.remove(assay);
+        if (fileRef != null && !assay2File.values().contains(fileRef)) {
+            removeFileRefs(fileRef);
+        }
+    }
+
+    private void removeFileRefs(FileRef fileRef1) {
+        FileRef fileRef2 = file2File.remove(fileRef1);
+        if (fileRef2 != null) {
+            removeFileRefs(fileRef2);
         }
     }
 
@@ -399,8 +439,8 @@ public class ExperimentProfile implements Serializable {
     @JsonIgnore
     public Collection<LabeledExtract> getLabeledExtracts() {
         List<LabeledExtract> labeledExtracts = newArrayList();
-        for (Extract extract : extract2Labels.keySet()) {
-            labeledExtracts.addAll(getLabeledExtracts(extract));
+        for (Assay assay : assayMap.values()) {
+            labeledExtracts.add(new LabeledExtract(assay.getExtract(), assay.getLabel()));
         }
         return labeledExtracts;
     }
@@ -408,10 +448,9 @@ public class ExperimentProfile implements Serializable {
     @JsonIgnore
     public Collection<LabeledExtract> getLabeledExtracts(Extract extract) {
         List<LabeledExtract> labeledExtracts = newArrayList();
-        Set<String> labels = extract2Labels.get(extract);
-        if (labels != null) {
-            for (String label : labels) {
-                labeledExtracts.add(new LabeledExtract(extract, label));
+        for (Assay assay : assayMap.values()) {
+            if (assay.getExtract().equals(extract)) {
+                labeledExtracts.add(new LabeledExtract(assay.getExtract(), assay.getLabel()));
             }
         }
         return labeledExtracts;
@@ -431,25 +470,29 @@ public class ExperimentProfile implements Serializable {
 
     protected void fixMe() {
         fixSample2Extracts();
-        fixExtract2Labels();
+        fixAssays();
     }
 
     private void fixSample2Extracts() {
-        MultiSets<Integer, Integer> sample2ExtractsIds = getSample2ExtractsIds();
+        MultiSets<Integer, Integer> sample2ExtractsIds = getSampleId2ExtractsIds();
         for (Integer sampleId : sample2ExtractsIds.keySet()) {
             Sample sample = sampleMap.get(sampleId);
             for (Integer extractId : sample2ExtractsIds.get(sampleId)) {
                 sample2Extracts.put(sample, extractMap.get(extractId));
             }
         }
-        this.sample2ExtractsIds = null;
+        this.sampleId2ExtractsIds = null;
     }
 
-    private void fixExtract2Labels() {
-        MultiSets<Integer, String> extractId2Labels = getExtractId2Labels();
-        for (Integer extractId : extractId2Labels.keySet()) {
-            extract2Labels.putAll(extractMap.get(extractId), extractId2Labels.get(extractId));
+    private void fixAssays() {
+        for(Assay assay : assayMap.values()) {
+            assay.fixMe(this);
         }
-        this.extractId2Labels = null;
+
+        Map<String, FileRef> assayId2File = getAssay2File();
+        for (String assayId : assayId2File.keySet()) {
+            assay2File.put(assayMap.get(assayId), assayId2File.get(assayId));
+        }
+        this.assayId2File = null;
     }
 }
