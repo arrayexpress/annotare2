@@ -20,9 +20,13 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,6 +39,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private final GridView<DataAssignmentRow> gridView;
     private static List<String> options = new ArrayList<String>();
+
     static {
         options.add("");
         options.add("data.raw.1.zip");
@@ -44,6 +49,27 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     public DataAssignmentViewImpl() {
         gridView = new GridView<DataAssignmentRow>();
+        Button removeColumnsButton = new Button("Delete Column(s)");
+        removeColumnsButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new RemoveColumnsDialog(new DialogCallback<List<String>>() {
+                    @Override
+                    public void onCancel() {
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onOkay(List<String> columns) {
+                        removeColumns(columns);
+                    }
+                });
+            }
+        });
+        gridView.addTool(removeColumnsButton);
+
+        Button addColumnButton = new Button("Add Column");
+        gridView.addTool(addColumnButton);
         initWidget(gridView);
     }
 
@@ -55,8 +81,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private void setColumns() {
         addNameColumn();
-        addRawDataFileColumn(options);
-        addProcessedDataFileColumn(options);
     }
 
     private void addRawDataFileColumn(List<String> options) {
@@ -74,10 +98,10 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 //updateRow(row);
             }
         });
-        gridView.addPermanentColumn("Raw Data File", column, null, 150, Style.Unit.PX);
+        gridView.addColumn("Raw Data File", column, null, 150, Style.Unit.PX);
     }
 
-    private void addProcessedDataFileColumn(List<String> options) {
+    private void addProcessedDataFileColumn(List<String> options, int index) {
         Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(new SelectionCell(options)) {
             @Override
             public String getValue(DataAssignmentRow row) {
@@ -92,7 +116,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 //updateRow(row);
             }
         });
-        gridView.addPermanentColumn("Processed Data File", column, null, 150, Style.Unit.PX);
+        gridView.addColumn("Processed Data File (" + index + ")", column, null, 150, Style.Unit.PX);
     }
 
     private void addNameColumn() {
@@ -115,6 +139,10 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             }
         };
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
+    }
+
+    private void removeColumns(List<String> columns) {
+        //TODO
     }
 
 }

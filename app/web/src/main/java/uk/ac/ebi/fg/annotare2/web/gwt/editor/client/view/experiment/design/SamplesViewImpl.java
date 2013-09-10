@@ -29,10 +29,7 @@ import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestBoxCell;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidationMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
 import java.util.*;
 
@@ -56,9 +53,10 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             public void onClick(ClickEvent event) {
                 new SampleColumnsDialog(columns,
                         presenter.getEfoTerms(),
-                        new SampleColumnsDialog.Callback() {
+                        new DialogCallback<List<SampleColumn>>() {
                             @Override
                             public void onCancel() {
+                                // do nothing
                             }
 
                             @Override
