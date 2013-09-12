@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
@@ -36,10 +37,11 @@ public class FileColumn implements Serializable {
     private Map<String, FileRef> assayId2File;
     private Map<Assay, FileRef> assay2File;
 
-    public FileColumn() {
+    FileColumn() {
         /* used by GWT serialization */
     }
 
+    @JsonCreator
     public FileColumn(@JsonProperty("type") FileType type) {
         this.type = type;
         assay2File = new HashMap<Assay, FileRef>();

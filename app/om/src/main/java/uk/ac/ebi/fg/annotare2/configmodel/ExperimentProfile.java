@@ -249,6 +249,12 @@ public class ExperimentProfile implements Serializable {
         return assay;
     }
 
+    public FileColumn createFileColumn(FileType fileType) {
+        FileColumn fileColumn = new FileColumn(fileType);
+        dataFiles.add(fileColumn);
+        return fileColumn;
+    }
+
     public void removeSample(int id) {
         Sample sample = sampleMap.get(id);
         if (sample != null) {
@@ -430,6 +436,7 @@ public class ExperimentProfile implements Serializable {
         return assayMap.get(assayId);
     }
 
+    @JsonIgnore
     public Collection<FileColumn> getFileColumns() {
         return unmodifiableCollection(dataFiles);
     }

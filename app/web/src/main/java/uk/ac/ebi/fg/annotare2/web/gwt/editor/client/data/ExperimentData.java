@@ -208,8 +208,11 @@ public class ExperimentData {
             DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
             for (Assay assay : exp.getAssays()) {
                 FileRef fileRef = fileColumn.getFileRef(assay);
-                column.setFileId(assay.getId(), fileRef.getFileId());
+                if (fileRef != null) {
+                    column.setFileId(assay.getId(), fileRef.getFileId());
+                }
             }
+            columns.add(column);
             index++;
         }
         return columns;
@@ -445,6 +448,10 @@ public class ExperimentData {
 
     public void removeProtocols(List<ProtocolRow> rows) {
         updateQueue.add(new RemoveProtocolsCommand(rows));
+    }
+
+    public void createDataAssignmentColumn(FileType type) {
+        updateQueue.add(new CreateDataAssignmentColumnCommand(type));
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

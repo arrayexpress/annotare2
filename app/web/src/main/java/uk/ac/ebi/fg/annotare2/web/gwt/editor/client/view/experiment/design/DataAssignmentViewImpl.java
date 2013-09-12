@@ -41,6 +41,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private final GridView<DataAssignmentRow> gridView;
     private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
+    private Presenter presenter;
 
     public DataAssignmentViewImpl() {
         gridView = new GridView<DataAssignmentRow>();
@@ -75,13 +76,18 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
                     @Override
                     public void onOkay(ColumnType columnType) {
-
+                        createColumn(columnType.getType());
                     }
                 }, ColumnType.values());
             }
         });
         gridView.addTool(addColumnButton);
         initWidget(gridView);
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -137,7 +143,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 //updateRow(row);
             }
         });
-        gridView.addColumn(columnName, column, null, 150, Style.Unit.PX);
+        gridView.addColumn(columnName, column, null, 200, Style.Unit.PX);
     }
 
     private void addNameColumn() {
@@ -164,6 +170,12 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private void removeColumns(List<String> columns) {
         //TODO
+    }
+
+    private void createColumn(FileType type) {
+        if (presenter != null) {
+            presenter.createColumn(type);
+        }
     }
 
     private static class ColumnType {

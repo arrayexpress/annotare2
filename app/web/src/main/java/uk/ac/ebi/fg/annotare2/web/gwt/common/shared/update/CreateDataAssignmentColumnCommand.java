@@ -14,26 +14,32 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.configmodel.FileType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
-
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface DataAssignmentView extends IsWidget {
+public class CreateDataAssignmentColumnCommand implements ExperimentUpdateCommand {
 
-    void setData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
+    private FileType fileType;
 
-    void setPresenter(Presenter presenter);
+    CreateDataAssignmentColumnCommand() {
+        /* used by GWT serialization */
+    }
 
-    public static interface Presenter {
+    public CreateDataAssignmentColumnCommand(FileType fileType) {
+        this.fileType = fileType;
+    }
 
-        void createColumn(FileType type);
+    @Override
+    public void execute(ExperimentUpdatePerformer performer) {
+        performer.createDataAssignmentColumn(fileType);
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }
