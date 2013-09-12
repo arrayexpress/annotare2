@@ -23,7 +23,7 @@
             <g:center>
                 <g:DockLayoutPanel>
                     <g:north size="20">
-                        <g:Label>Select what type of files column will contain:</g:Label>
+                        <g:Label>Please choose the file type for this column:</g:Label>
                     </g:north>
                     <g:center>
                         <g:ListBox ui:field="columnListBox" visibleItemCount="5" width="100%"/>
