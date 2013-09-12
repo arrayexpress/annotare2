@@ -25,12 +25,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.configmodel.FileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -38,14 +40,7 @@ import java.util.List;
 public class DataAssignmentViewImpl extends Composite implements DataAssignmentView {
 
     private final GridView<DataAssignmentRow> gridView;
-    private static List<String> options = new ArrayList<String>();
-
-    static {
-        options.add("");
-        options.add("data.raw.1.zip");
-        options.add("data.raw.2.zip");
-        options.add("data.raw.3.zip");
-    }
+    private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
 
     public DataAssignmentViewImpl() {
         gridView = new GridView<DataAssignmentRow>();
@@ -69,54 +64,80 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         gridView.addTool(removeColumnsButton);
 
         Button addColumnButton = new Button("Add Column");
+        addColumnButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new AddColumnDialog<ColumnType>(new DialogCallback<ColumnType>() {
+                    @Override
+                    public void onCancel() {
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onOkay(ColumnType columnType) {
+
+                    }
+                }, ColumnType.values());
+            }
+        });
         gridView.addTool(addColumnButton);
         initWidget(gridView);
     }
 
     @Override
-    public void setRows(List<DataAssignmentRow> rows) {
+    public void setData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows) {
+        gridView.clearAllColumns();
         gridView.setRows(rows);
-        setColumns();
+        setColumns(columns);
     }
 
-    private void setColumns() {
+    private void setColumns(List<DataAssignmentColumn> columns) {
+        this.columns.clear();
+        for (DataAssignmentColumn column : columns) {
+            FileType type = column.getType();
+            List<DataAssignmentColumn> list = this.columns.get(type);
+            if (list == null) {
+                list = new ArrayList<DataAssignmentColumn>();
+                this.columns.put(type, list);
+            }
+            list.add(column);
+        }
+
         addNameColumn();
+
+        for (FileType type : FileType.values()) {
+            List<DataAssignmentColumn> list = this.columns.get(type);
+            if (list == null) {
+                continue;
+            }
+            for (DataAssignmentColumn column : list) {
+                addDataFileColumn(column, new ArrayList<String>(), getColumnName(column));
+            }
+        }
     }
 
-    private void addRawDataFileColumn(List<String> options) {
+    private String getColumnName(DataAssignmentColumn column) {
+        FileType type = column.getType();
+        int index = columns.get(type).indexOf(column) + 1;
+        return type.getTitle() + " Data File (" + index + ")";
+    }
+
+    private void addDataFileColumn(final DataAssignmentColumn dataColumn, List<String> options, String columnName) {
         Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(new SelectionCell(options)) {
             @Override
             public String getValue(DataAssignmentRow row) {
-                return "";
+                return dataColumn.getFileId(row) + "";
             }
         };
         column.setCellStyleNames("app-SelectionCell");
         column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
             @Override
             public void update(int index, DataAssignmentRow row, String value) {
-                //row.setValue(value);
+                dataColumn.setFileId(row, Long.parseLong(value));
                 //updateRow(row);
             }
         });
-        gridView.addColumn("Raw Data File", column, null, 150, Style.Unit.PX);
-    }
-
-    private void addProcessedDataFileColumn(List<String> options, int index) {
-        Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(new SelectionCell(options)) {
-            @Override
-            public String getValue(DataAssignmentRow row) {
-                return "";
-            }
-        };
-        column.setCellStyleNames("app-SelectionCell");
-        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
-            @Override
-            public void update(int index, DataAssignmentRow row, String value) {
-                //row.setValue(value);
-                //updateRow(row);
-            }
-        });
-        gridView.addColumn("Processed Data File (" + index + ")", column, null, 150, Style.Unit.PX);
+        gridView.addColumn(columnName, column, null, 150, Style.Unit.PX);
     }
 
     private void addNameColumn() {
@@ -145,4 +166,29 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         //TODO
     }
 
+    private static class ColumnType {
+
+        private final FileType type;
+
+        private ColumnType(FileType type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return type.getTitle();
+        }
+
+        public FileType getType() {
+            return type;
+        }
+
+        public static List<ColumnType> values() {
+            List<ColumnType> values = new ArrayList<ColumnType>();
+            for (FileType type : FileType.values()) {
+                values.add(new ColumnType(type));
+            }
+            return values;
+        }
+    }
 }

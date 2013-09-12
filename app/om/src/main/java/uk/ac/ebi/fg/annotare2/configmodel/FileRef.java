@@ -33,25 +33,17 @@ public class FileRef implements Serializable {
     @JsonProperty("id")
     private Long fileId;
 
-    @JsonProperty("type")
-    private DataFileType type;
-
     FileRef() {
         /* used by GWT serialization */
     }
 
     @JsonCreator
-    public FileRef(@JsonProperty("id") Long fileId, @JsonProperty("id") DataFileType type) {
+    public FileRef(@JsonProperty("id") Long fileId) {
         this.fileId = fileId;
-        this.type = type;
     }
 
     public Long getFileId() {
         return fileId;
-    }
-
-    public DataFileType getType() {
-        return type;
     }
 
     @Override
@@ -61,16 +53,13 @@ public class FileRef implements Serializable {
 
         FileRef fileRef = (FileRef) o;
 
-        if (!fileId.equals(fileRef.fileId)) return false;
-        if (type != fileRef.type) return false;
+        if (fileId != null ? !fileId.equals(fileRef.fileId) : fileRef.fileId != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = fileId.hashCode();
-        result = 31 * result + type.hashCode();
-        return result;
+        return fileId != null ? fileId.hashCode() : 0;
     }
 }

@@ -76,6 +76,11 @@ public class Assay implements Serializable {
         return extractId + (label != null && label.length() > 0 ? "_" + label : "");
     }
 
+    @JsonIgnore
+    public String getName() {
+        return extract.getName() + (label != null && label.length() > 0 ? ":" + label : "");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -171,7 +171,7 @@ public class ExperimentData {
 
     private List<ExtractAttributesRow> getExtractAttributeRows(ExperimentProfile exp) {
         List<ExtractAttributesRow> rows = new ArrayList<ExtractAttributesRow>();
-        for(Extract extract : exp.getExtracts()) {
+        for (Extract extract : exp.getExtracts()) {
             rows.add(new ExtractAttributesRow(extract.getId(), extract.getName(), extract.getAttributeValues()));
         }
         return rows;
@@ -179,7 +179,7 @@ public class ExperimentData {
 
     private List<ExtractLabelsRow> getExtractLabelsRows(ExperimentProfile exp) {
         Map<Integer, ExtractLabelsRow> map = new LinkedHashMap<Integer, ExtractLabelsRow>();
-        for(LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+        for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
             Extract extract = labeledExtract.getExtract();
             Integer extractId = extract.getId();
             ExtractLabelsRow row = map.get(extractId);
@@ -192,24 +192,32 @@ public class ExperimentData {
         return new ArrayList<ExtractLabelsRow>(map.values());
     }
 
-    private List<DataAssignmentRow> getDataFileRows(ExperimentProfile exp) {
+    private List<DataAssignmentRow> getDataAssignmentRows(ExperimentProfile exp) {
         List<DataAssignmentRow> rows = new ArrayList<DataAssignmentRow>();
-        if (exp.getType().isMicroarray()) {
-            int i = 1;
-            for(LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-                rows.add(new DataAssignmentRow(i++, labeledExtract.getName()));
-            }
-        } else {
-            for(Extract extract : exp.getExtracts()) {
-                rows.add(new DataAssignmentRow(extract.getId(), extract.getName()));
-            }
+        for (Assay assay : exp.getAssays()) {
+            DataAssignmentRow row = new DataAssignmentRow(assay.getId(), assay.getName());
+            rows.add(row);
         }
         return rows;
     }
 
+    private List<DataAssignmentColumn> getDataAssignmentColumns(ExperimentProfile exp) {
+        List<DataAssignmentColumn> columns = new ArrayList<DataAssignmentColumn>();
+        int index = 0;
+        for (FileColumn fileColumn : exp.getFileColumns()) {
+            DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
+            for (Assay assay : exp.getAssays()) {
+                FileRef fileRef = fileColumn.getFileRef(assay);
+                column.setFileId(assay.getId(), fileRef.getFileId());
+            }
+            index++;
+        }
+        return columns;
+    }
+
     private List<ProtocolRow> getProtocolRows(ExperimentProfile exp) {
         List<ProtocolRow> rows = new ArrayList<ProtocolRow>();
-        for(Protocol protocol : exp.getProtocols()) {
+        for (Protocol protocol : exp.getProtocols()) {
             ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType());
             row.setDescription(protocol.getDescription());
             row.setSoftware(protocol.getSoftware());
@@ -319,7 +327,7 @@ public class ExperimentData {
         });
     }
 
-    public void getDataFileRowsAsync(final AsyncCallback<List<DataAssignmentRow>> callback) {
+    public void getDataAssignmentColumnsAndRowsAsync(final AsyncCallback<DataAssignmentColumnsAndRows> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -328,23 +336,25 @@ public class ExperimentData {
 
             @Override
             public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(getDataFileRows(result));
+                callback.onSuccess(
+                        new DataAssignmentColumnsAndRows(getDataAssignmentColumns(result), getDataAssignmentRows(result))
+                );
             }
         });
     }
 
     public void getProtocolRowsAsync(final AsyncCallback<List<ProtocolRow>> callback) {
-         getExperiment(new AsyncCallback<ExperimentProfile>() {
-             @Override
-             public void onFailure(Throwable caught) {
-                 callback.onFailure(caught);
-             }
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-             @Override
-             public void onSuccess(ExperimentProfile result) {
-                 callback.onSuccess(getProtocolRows(result));
-             }
-         });
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getProtocolRows(result));
+            }
+        });
     }
 
     public void getExperimentProfileTypeAsync(final AsyncCallback<ExperimentProfileType> callback) {

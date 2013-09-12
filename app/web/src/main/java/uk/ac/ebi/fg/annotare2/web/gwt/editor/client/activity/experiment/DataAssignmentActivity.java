@@ -22,12 +22,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataAssignmentView;
-
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -55,15 +53,15 @@ public class DataAssignmentActivity extends AbstractActivity {
     }
 
     private void loadAsync() {
-        expData.getDataFileRowsAsync(new AsyncCallback<List<DataAssignmentRow>>() {
+        expData.getDataAssignmentColumnsAndRowsAsync(new AsyncCallback<DataAssignmentColumnsAndRows>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Can't load data file rows");
             }
 
             @Override
-            public void onSuccess(List<DataAssignmentRow> result) {
-                view.setRows(result);
+            public void onSuccess(DataAssignmentColumnsAndRows result) {
+                view.setData(result.getColumns(), result.getRows());
             }
         });
 

@@ -28,11 +28,9 @@ import java.io.Serializable;
 import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Olga Melnichuk
@@ -97,12 +95,8 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("assayMap")
     private Map<String, Assay> assayMap;
 
-    @JsonProperty("assay2File")
-    private Map<String, FileRef> assayId2File;
-    private Map<Assay, FileRef> assay2File;
-
-    @JsonProperty("file2File")
-    private Map<FileRef, FileRef> file2File;
+    @JsonProperty("dataFiles")
+    private List<FileColumn> dataFiles;
 
     ExperimentProfile() {
         /* used by GWT serialization */
@@ -125,8 +119,7 @@ public class ExperimentProfile implements Serializable {
         //extract2Labels = new MultiSets<Extract, String>();
 
         assayMap = newLinkedHashMap();
-        assay2File = newHashMap();
-        file2File = newHashMap();
+        dataFiles = newArrayList();
     }
 
     @JsonProperty("sample2Extracts")
@@ -147,23 +140,6 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("sample2Extracts")
     void setSampleId2ExtractsIds(MultiSets<Integer, Integer> sampleId2ExtractsIds) {
         this.sampleId2ExtractsIds = sampleId2ExtractsIds;
-    }
-
-    @JsonProperty("assay2File")
-    Map<String, FileRef> getAssay2File() {
-        if (assayId2File != null) {
-            return assayId2File;
-        }
-        Map<String, FileRef> map = new HashMap<String, FileRef>();
-        for (Assay assay : assay2File.keySet()) {
-            map.put(assay.getId(), assay2File.get(assay));
-        }
-        return map;
-    }
-
-    @JsonProperty("assay2File")
-    void setAssayId2File(Map<String, FileRef> assayId2File) {
-        this.assayId2File = assayId2File;
     }
 
     public ExperimentProfileType getType() {
@@ -323,16 +299,8 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void removeFileRefs(Assay assay) {
-        FileRef fileRef = assay2File.remove(assay);
-        if (fileRef != null && !assay2File.values().contains(fileRef)) {
-            removeFileRefs(fileRef);
-        }
-    }
-
-    private void removeFileRefs(FileRef fileRef1) {
-        FileRef fileRef2 = file2File.remove(fileRef1);
-        if (fileRef2 != null) {
-            removeFileRefs(fileRef2);
+        for(FileColumn fileColumn : dataFiles) {
+            fileColumn.removeFileRefs(assay);
         }
     }
 
@@ -385,10 +353,6 @@ public class ExperimentProfile implements Serializable {
 
     public void setSampleAttributeOrder(Collection<Integer> order) {
         sampleAttributeOrder = newArrayList(order);
-    }
-
-    public Collection<Integer> getSampleAttributeOrder() {
-        return unmodifiableList(sampleAttributeOrder);
     }
 
     @JsonIgnore
@@ -456,6 +420,20 @@ public class ExperimentProfile implements Serializable {
         return labeledExtracts;
     }
 
+    @JsonIgnore
+    public Collection<Assay> getAssays() {
+        return unmodifiableCollection(assayMap.values());
+    }
+
+    @JsonIgnore
+    public Assay getAssay(String assayId) {
+        return assayMap.get(assayId);
+    }
+
+    public Collection<FileColumn> getFileColumns() {
+        return unmodifiableCollection(dataFiles);
+    }
+
     public Collection<String> getLabels() {
         return unmodifiableCollection(labels);
     }
@@ -489,10 +467,8 @@ public class ExperimentProfile implements Serializable {
             assay.fixMe(this);
         }
 
-        Map<String, FileRef> assayId2File = getAssay2File();
-        for (String assayId : assayId2File.keySet()) {
-            assay2File.put(assayMap.get(assayId), assayId2File.get(assayId));
+        for(FileColumn fileColumn : dataFiles) {
+            fileColumn.fixMe(this);
         }
-        this.assayId2File = null;
     }
 }

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 
 import java.util.List;
@@ -26,5 +27,5 @@ import java.util.List;
  */
 public interface DataAssignmentView extends IsWidget {
 
-    public void setRows(List<DataAssignmentRow> rows);
+    void setData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
 }

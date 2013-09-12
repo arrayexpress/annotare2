@@ -22,9 +22,21 @@ import com.google.common.annotations.GwtCompatible;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public enum DataFileType {
+public enum FileType {
 
-    RAW_DATAFILE,
+    RAW_FILE("Raw"),
 
-    PROCESSED_DATAFILE
+    PROCESSED_FILE("Processed"),
+
+    MATRIX_FILE("Matrix");
+
+    private final String title;
+
+    FileType(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }
