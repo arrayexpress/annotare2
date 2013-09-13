@@ -23,6 +23,7 @@ import org.apache.commons.fileupload.util.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
@@ -78,15 +79,17 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
     private final TransactionSupport transactionSupport;
+    private final SubsTracking subsTracking;
 
     @Inject
     public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
                                  DataFileManager dataFileManager, AnnotareProperties properties,
-                                 TransactionSupport transactionSupport) {
+                                 TransactionSupport transactionSupport, SubsTracking subsTracking) {
         super(authService, submissionManager);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.transactionSupport = transactionSupport;
+        this.subsTracking = subsTracking;
     }
 
     @Override
@@ -211,22 +214,24 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Override
     public void submitSubmission(final long id) throws ResourceNotFoundException, NoPermissionException {
-        /*
-        try {
-            transactionSupport.execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction() throws Exception {
-                    Submission submission =
-                            getSubmission(id, Permission.UPDATE);
-                    submission.discardAll();
-                    save(submission);
-                    return null;
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
-        }
-        */
+
+        //try {
+            //transactionSupport.execute(new TransactionCallback<Void>() {
+            //  @Override
+            //  public Void doInTransaction() throws Exception {
+        Submission submission = getSubmission(id, Permission.VIEW);
+        subsTracking.addSubmission(submission);
+
+        //submission.discardAll();
+        //save(submission);
+
+            //      return null;
+            //  }
+            //});
+        //} catch (TransactionWrapException e) {
+        //    throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+        //}
+
 
     }
 

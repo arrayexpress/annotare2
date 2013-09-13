@@ -17,6 +17,11 @@ package uk.ac.ebi.fg.annotare2.autosubs;
  *
  */
 
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+import uk.ac.ebi.fg.annotare2.db.om.Submission;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -34,7 +39,8 @@ public class SubsTracking
         }
     }
 
-    public void addSubmission() {
+    public void addSubmission( Submission submission ) {
 
+        DSLContext context = DSL.using(this.dbDataSource, SQLDialect.MYSQL);
     }
 }
