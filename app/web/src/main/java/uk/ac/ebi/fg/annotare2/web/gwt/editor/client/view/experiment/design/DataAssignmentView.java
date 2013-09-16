@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.configmodel.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
 
@@ -31,6 +32,8 @@ public interface DataAssignmentView extends IsWidget {
     void setData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
 
     void setPresenter(Presenter presenter);
+
+    void setDataFiles(List<DataFileRow> dataFiles);
 
     public static interface Presenter {
 

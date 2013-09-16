@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
 
 /**
  * @author Olga Melnichuk
@@ -36,7 +35,7 @@ public class DataFilesUpdateEvent extends GwtEvent<DataFilesUpdateEventHandler> 
         handler.onDataFilesUpdate();
     }
 
-    public static Event.Type<DataFilesUpdateEventHandler> getType() {
+    public static Type<DataFilesUpdateEventHandler> getType() {
         return TYPE;
     }
 }

@@ -25,11 +25,17 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataAssignmentView;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -38,19 +44,24 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
 
     private final DataAssignmentView view;
     private final ExperimentData expData;
+    private final DataFiles dataFiles;
     private HandlerRegistration criticalUpdateHandler;
+    private HandlerRegistration dataUpdateHandler;
+
 
     @Inject
-    public DataAssignmentActivity(DataAssignmentView view, ExperimentData expData) {
+    public DataAssignmentActivity(DataAssignmentView view, ExperimentData expData, DataFiles dataFiles) {
         this.view = view;
         this.expData = expData;
+        this.dataFiles = dataFiles;
     }
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         view.setPresenter(this);
         panel.setWidget(view);
-        loadAsync();
+        loadDataAsync();
+        loadFilesAsync();
         criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
             @Override
             public void criticalUpdateStarted(CriticalUpdateEvent event) {
@@ -58,7 +69,13 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
 
             @Override
             public void criticalUpdateFinished(CriticalUpdateEvent event) {
-                loadAsync();
+                loadDataAsync();
+            }
+        });
+        dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
+            @Override
+            public void onDataFilesUpdate() {
+                loadFilesAsync();
             }
         });
     }
@@ -66,6 +83,7 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
     @Override
     public void onStop() {
         criticalUpdateHandler.removeHandler();
+        dataUpdateHandler.removeHandler();
         super.onStop();
     }
 
@@ -73,11 +91,11 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
         return this;
     }
 
-    private void loadAsync() {
+    private void loadDataAsync() {
         expData.getDataAssignmentColumnsAndRowsAsync(new AsyncCallback<DataAssignmentColumnsAndRows>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Can't load data file rows");
+                Window.alert("Can't data assignment rows");
             }
 
             @Override
@@ -87,6 +105,19 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
         });
     }
 
+    private void loadFilesAsync() {
+        dataFiles.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Can't load list of data files");
+            }
+
+            @Override
+            public void onSuccess(List<DataFileRow> result) {
+                view.setDataFiles(result);
+            }
+        });
+    }
     @Override
     public void createColumn(FileType type) {
         expData.createDataAssignmentColumn(type);

@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,11 +27,11 @@ import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.configmodel.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FileCell;
 
 import java.util.*;
-
-import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -41,6 +40,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private final GridView<DataAssignmentRow> gridView;
     private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
+    private DataAssignment dataAssignment = new DataAssignment();
     private Presenter presenter;
 
     public DataAssignmentViewImpl() {
@@ -95,6 +95,12 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         gridView.clearAllColumns();
         gridView.setRows(rows);
         setColumns(columns);
+        dataAssignment.init(columns, rows);
+    }
+
+    @Override
+    public void setDataFiles(List<DataFileRow> dataFiles) {
+        dataAssignment.init(dataFiles);
     }
 
     private void setColumns(List<DataAssignmentColumn> columns) {
@@ -117,7 +123,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 continue;
             }
             for (DataAssignmentColumn column : list) {
-                addDataFileColumn(column, new ArrayList<String>(), getColumnName(column));
+                addDataFileColumn(column, getColumnName(column));
             }
         }
     }
@@ -128,18 +134,25 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         return type.getTitle() + " Data File (" + index + ")";
     }
 
-    private void addDataFileColumn(final DataAssignmentColumn dataColumn, List<String> options, String columnName) {
-        Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(new SelectionCell(options)) {
+    private void addDataFileColumn(final DataAssignmentColumn dataColumn, String columnName) {
+        Column<DataAssignmentRow, Long> column = new Column<DataAssignmentRow, Long>(new FileCell(new FileCell.ListProvider<Long>() {
             @Override
-            public String getValue(DataAssignmentRow row) {
-                return dataColumn.getFileId(row) + "";
+            public List<FileCell.Option<Long>> getOptions() {
+                return dataAssignment.getOptions(dataColumn);
+            }
+        })) {
+            @Override
+            public Long getValue(DataAssignmentRow row) {
+                Long fileId = dataColumn.getFileId(row);
+                return fileId == null ? 0L : fileId;
             }
         };
         column.setCellStyleNames("app-SelectionCell");
-        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
+        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, Long>() {
             @Override
-            public void update(int index, DataAssignmentRow row, String value) {
-                dataColumn.setFileId(row, Long.parseLong(value));
+            public void update(int index, DataAssignmentRow row, Long value) {
+                dataColumn.setFileId(row, value == 0L ? null : value);
+                dataAssignment.update(dataColumn);
                 //updateRow(row);
             }
         });
@@ -203,4 +216,60 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             return values;
         }
     }
+
+    private static class DataAssignment {
+
+        private Map<Long, Integer> assignments = new HashMap<Long, Integer>();
+        private List<FileCell.Option<Long>> files = new ArrayList<FileCell.Option<Long>>();
+
+        public void init(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows) {
+            assignments.clear();
+            for (DataAssignmentColumn column : columns) {
+                for (DataAssignmentRow row : rows) {
+                    Long fileId = column.getFileId(row);
+                    if (fileId != null) {
+                        assignments.put(fileId, column.getIndex());
+                    }
+                }
+            }
+        }
+
+        public void init(List<DataFileRow> dataFiles) {
+            files.clear();
+            for (DataFileRow row : dataFiles) {
+                if (row.getStatus().isOk()) {
+                    files.add(new FileCell.Option<Long>(row.getId(), row.getName()));
+                }
+            }
+        }
+
+        public List<FileCell.Option<Long>> getOptions(DataAssignmentColumn dataColumn) {
+            List<FileCell.Option<Long>> options = new ArrayList<FileCell.Option<Long>>();
+            options.add(new FileCell.Option<Long>(0L, "none"));
+            for (FileCell.Option<Long> option : files) {
+                Integer colIndex = assignments.get(option.getValue());
+                if (colIndex == null || colIndex == dataColumn.getIndex()) {
+                    options.add(option);
+                }
+            }
+            return options;
+        }
+
+        public void update(DataAssignmentColumn dataColumn) {
+            List<Long> toRemove = new ArrayList<Long>();
+            for(Map.Entry<Long, Integer> entry : assignments.entrySet()) {
+                if (entry.getValue() == dataColumn.getIndex()) {
+                    toRemove.add(entry.getKey());
+                }
+            }
+            for(Long key : toRemove) {
+                assignments.remove(key);
+            }
+            for(Long key : dataColumn.getValues()) {
+                assignments.put(key, dataColumn.getIndex());
+            }
+        }
+    }
+
+
 }

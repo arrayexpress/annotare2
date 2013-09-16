@@ -3,6 +3,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.FileType;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,12 +40,20 @@ public class DataAssignmentColumn implements IsSerializable {
         return assayId2FileId.get(row.getAssayId());
     }
 
-    public void setFileId(DataAssignmentRow row, long fileId) {
+    public void setFileId(DataAssignmentRow row, Long fileId) {
         setFileId(row.getAssayId(), fileId);
     }
 
-    public void setFileId(String assayId, long fileId) {
-        assayId2FileId.put(assayId, fileId);
+    public void setFileId(String assayId, Long fileId) {
+        if (fileId == null) {
+            assayId2FileId.remove(assayId);
+        } else {
+            assayId2FileId.put(assayId, fileId);
+        }
+    }
+
+    public Collection<Long> getValues() {
+        return assayId2FileId.values();
     }
 
     @Override
