@@ -458,6 +458,10 @@ public class ExperimentData {
         updateQueue.add(new RemoveDataAssignmentColumnsCommand(indices));
     }
 
+    public void updateDataAssignmentColumn(DataAssignmentColumn column) {
+        updateQueue.add(new UpdateDataAssignmentColumnCommand(column));
+    }
+
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
         private ColumnValueType valueType;

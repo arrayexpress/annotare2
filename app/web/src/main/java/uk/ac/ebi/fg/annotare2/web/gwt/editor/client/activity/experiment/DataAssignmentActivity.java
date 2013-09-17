@@ -24,6 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.FileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
@@ -127,5 +128,10 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
     @Override
     public void removeColumns(List<Integer> indices) {
         expData.removeDataAssignmentColumns(indices);
+    }
+
+    @Override
+    public void updateColumn(DataAssignmentColumn column) {
+        expData.updateDataAssignmentColumn(column);
     }
 }

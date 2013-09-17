@@ -62,4 +62,6 @@ public interface ExperimentUpdatePerformer {
     void createDataAssignmentColumn(FileType fileType);
 
     void removeDataAssignmentColumns(List<Integer> indices);
+
+    void updateDataAssignmentColumn(DataAssignmentColumn column);
 }

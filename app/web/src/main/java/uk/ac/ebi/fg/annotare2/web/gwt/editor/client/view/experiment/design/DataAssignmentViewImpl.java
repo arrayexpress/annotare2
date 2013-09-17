@@ -173,7 +173,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             public void update(int index, DataAssignmentRow row, Long value) {
                 dataColumn.setFileId(row, value == 0L ? null : value);
                 dataAssignment.update(dataColumn);
-                //updateRow(row);
+                updateColumn(dataColumn);
             }
         });
         gridView.addColumn(columnName, column, null, 200, Style.Unit.PX);
@@ -216,6 +216,12 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private void createColumn(FileType type) {
         if (presenter != null) {
             presenter.createColumn(type);
+        }
+    }
+
+    private void updateColumn(DataAssignmentColumn column) {
+        if (presenter != null) {
+            presenter.updateColumn(column);
         }
     }
 

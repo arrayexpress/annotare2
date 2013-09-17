@@ -264,6 +264,11 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         }
     }
 
+    @Override
+    public void updateDataAssignmentColumn(DataAssignmentColumn column) {
+        //TODO FileColumn fileColumn = exp.getFileColumn(column.getIndex());
+    }
+
     public void run(List<ExperimentUpdateCommand> commands) {
         for (ExperimentUpdateCommand command : commands) {
             command.execute(this);

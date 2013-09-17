@@ -40,5 +40,7 @@ public interface DataAssignmentView extends IsWidget {
         void createColumn(FileType type);
 
         void removeColumns(List<Integer> indices);
+
+        void updateColumn(DataAssignmentColumn column);
     }
 }
