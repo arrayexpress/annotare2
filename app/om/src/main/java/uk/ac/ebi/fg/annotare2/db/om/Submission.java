@@ -67,6 +67,9 @@ public abstract class Submission implements HasEffectiveAcl {
     @OrderBy("created ASC")
     private Set<DataFile> files;
 
+    @Column(name = "subsTrackingId")
+    private Integer subsTrackingId;
+
     protected Submission() {
         this(null);
     }
@@ -124,6 +127,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setAcl(Acl acl) {
         this.acl = acl;
+    }
+
+    public Integer getSubsTrackingId() {
+        return this.subsTrackingId;
+    }
+
+    public void setSubsTrackingId(Integer subsTrackingId) {
+        this.subsTrackingId = subsTrackingId;
     }
 
     public Set<DataFile> getFiles() {
