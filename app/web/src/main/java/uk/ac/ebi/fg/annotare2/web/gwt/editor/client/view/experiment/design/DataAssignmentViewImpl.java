@@ -45,24 +45,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     public DataAssignmentViewImpl() {
         gridView = new GridView<DataAssignmentRow>();
-        Button removeColumnsButton = new Button("Delete Column(s)");
-        removeColumnsButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                new RemoveColumnsDialog(new DialogCallback<List<String>>() {
-                    @Override
-                    public void onCancel() {
-                        // do nothing
-                    }
-
-                    @Override
-                    public void onOkay(List<String> columns) {
-                        removeColumns(columns);
-                    }
-                });
-            }
-        });
-        gridView.addTool(removeColumnsButton);
 
         Button addColumnButton = new Button("Add Column");
         addColumnButton.addClickHandler(new ClickHandler() {
@@ -82,6 +64,26 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             }
         });
         gridView.addTool(addColumnButton);
+
+        Button removeColumnsButton = new Button("Delete Column(s)");
+        removeColumnsButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new RemoveColumnsDialog(new DialogCallback<List<Integer>>() {
+                    @Override
+                    public void onCancel() {
+                        // do nothing
+                    }
+
+                    @Override
+                    public void onOkay(List<Integer> columns) {
+                        removeColumns(columns);
+                    }
+                }, getDataFileColumnNames());
+            }
+        });
+        gridView.addTool(removeColumnsButton);
+
         initWidget(gridView);
     }
 
@@ -117,21 +119,37 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
         addNameColumn();
 
+        for (DataAssignmentColumn column : getColumns()) {
+            addDataFileColumn(column, getDataFileColumnName(column));
+        }
+    }
+
+    private List<DataAssignmentColumn> getColumns() {
+        List<DataAssignmentColumn> columns = new ArrayList<DataAssignmentColumn>();
         for (FileType type : FileType.values()) {
             List<DataAssignmentColumn> list = this.columns.get(type);
             if (list == null) {
                 continue;
             }
             for (DataAssignmentColumn column : list) {
-                addDataFileColumn(column, getColumnName(column));
+                columns.add(column);
             }
         }
+        return columns;
     }
 
-    private String getColumnName(DataAssignmentColumn column) {
+    private String getDataFileColumnName(DataAssignmentColumn column) {
         FileType type = column.getType();
         int index = columns.get(type).indexOf(column) + 1;
         return type.getTitle() + " Data File (" + index + ")";
+    }
+
+    private List<String> getDataFileColumnNames() {
+        List<String> names = new ArrayList<String>();
+        for (DataAssignmentColumn column : getColumns()) {
+            names.add(getDataFileColumnName(column));
+        }
+        return names;
     }
 
     private void addDataFileColumn(final DataAssignmentColumn dataColumn, String columnName) {
@@ -183,8 +201,16 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
-    private void removeColumns(List<String> columns) {
-        //TODO
+    private void removeColumns(List<Integer> columnPositions) {
+        if (presenter == null) {
+            return;
+        }
+        List<DataAssignmentColumn> columns = getColumns();
+        List<Integer> indices = new ArrayList<Integer>();
+        for(Integer position : columnPositions) {
+            indices.add(columns.get(position).getIndex());
+        }
+        presenter.removeColumns(indices);
     }
 
     private void createColumn(FileType type) {

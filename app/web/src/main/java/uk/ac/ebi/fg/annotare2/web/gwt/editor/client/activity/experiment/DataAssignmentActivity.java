@@ -118,8 +118,14 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
             }
         });
     }
+
     @Override
     public void createColumn(FileType type) {
         expData.createDataAssignmentColumn(type);
+    }
+
+    @Override
+    public void removeColumns(List<Integer> indices) {
+        expData.removeDataAssignmentColumns(indices);
     }
 }

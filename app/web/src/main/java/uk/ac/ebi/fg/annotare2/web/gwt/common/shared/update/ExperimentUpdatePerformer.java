@@ -60,4 +60,6 @@ public interface ExperimentUpdatePerformer {
     void removeProtocols(List<ProtocolRow> rows);
 
     void createDataAssignmentColumn(FileType fileType);
+
+    void removeDataAssignmentColumns(List<Integer> indices);
 }

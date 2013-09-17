@@ -454,6 +454,10 @@ public class ExperimentData {
         updateQueue.add(new CreateDataAssignmentColumnCommand(type));
     }
 
+    public void removeDataAssignmentColumns(List<Integer> indices) {
+        updateQueue.add(new RemoveDataAssignmentColumnsCommand(indices));
+    }
+
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
         private ColumnValueType valueType;

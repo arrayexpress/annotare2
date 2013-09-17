@@ -310,6 +310,10 @@ public class ExperimentProfile implements Serializable {
         }
     }
 
+    public void removeFileColumn(int index) {
+        dataFiles.remove(index);
+    }
+
     public void removeProtocol(int id) {
         protocolMap.remove(id);
     }

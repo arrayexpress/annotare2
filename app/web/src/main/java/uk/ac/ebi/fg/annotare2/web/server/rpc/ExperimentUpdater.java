@@ -254,7 +254,14 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void createDataAssignmentColumn(FileType fileType) {
-         exp.createFileColumn(fileType);
+        exp.createFileColumn(fileType);
+    }
+
+    @Override
+    public void removeDataAssignmentColumns(List<Integer> indices) {
+        for (Integer index : indices) {
+            exp.removeFileColumn(index);
+        }
     }
 
     public void run(List<ExperimentUpdateCommand> commands) {

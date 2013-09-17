@@ -38,5 +38,7 @@ public interface DataAssignmentView extends IsWidget {
     public static interface Presenter {
 
         void createColumn(FileType type);
+
+        void removeColumns(List<Integer> indices);
     }
 }

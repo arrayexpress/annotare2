@@ -26,7 +26,7 @@
                         <g:Label>Select columns to be deleted:</g:Label>
                     </g:center>
                     <g:south size="120">
-                        <g:ListBox ui:field="columnListBox" visibleItemCount="5" width="100%"/>
+                        <g:ListBox ui:field="listBox" visibleItemCount="5" width="100%"/>
                     </g:south>
                 </g:DockLayoutPanel>
             </g:center>

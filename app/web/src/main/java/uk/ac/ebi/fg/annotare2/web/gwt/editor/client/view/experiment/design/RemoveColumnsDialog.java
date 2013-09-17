@@ -45,13 +45,18 @@ public class RemoveColumnsDialog extends DialogBox {
     @UiField
     Button okButton;
 
-    @UiField
-    ListBox columnListBox;
+    @UiField(provided = true)
+    ListBox listBox;
 
-    private final DialogCallback<List<String>> callback;
+    private final DialogCallback<List<Integer>> callback;
 
-    public RemoveColumnsDialog(DialogCallback<List<String>> callback) {
+    public RemoveColumnsDialog(DialogCallback<List<Integer>> callback, List<String> columns) {
         this.callback = callback;
+
+        listBox = new ListBox(true);
+        for (String column : columns) {
+            listBox.addItem(column);
+        }
 
         setModal(true);
         setGlassEnabled(true);
@@ -65,20 +70,22 @@ public class RemoveColumnsDialog extends DialogBox {
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
         hide();
-        if (callback != null) {
-            callback.onOkay(getSelection());
-        }
+        callback.onOkay(getSelection());
     }
 
     @UiHandler("cancelButton")
     void cancelButtonClicked(ClickEvent event) {
         hide();
-        if (callback != null) {
-            callback.onCancel();
-        }
+        callback.onCancel();
     }
 
-    private List<String> getSelection() {
-        return new ArrayList<String>();
+    private List<Integer> getSelection() {
+        List<Integer> selectedValues = new ArrayList<Integer>();
+        for (int i = 0, l = listBox.getItemCount(); i < l; i++) {
+            if (listBox.isItemSelected(i)) {
+                selectedValues.add(i);
+            }
+        }
+        return selectedValues;
     }
 }
