@@ -29,7 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentCol
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FileCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SingleSelectionCell;
 
 import java.util.*;
 
@@ -135,12 +135,14 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     private void addDataFileColumn(final DataAssignmentColumn dataColumn, String columnName) {
-        Column<DataAssignmentRow, Long> column = new Column<DataAssignmentRow, Long>(new FileCell(new FileCell.ListProvider<Long>() {
-            @Override
-            public List<FileCell.Option<Long>> getOptions() {
-                return dataAssignment.getOptions(dataColumn);
-            }
-        })) {
+        Column<DataAssignmentRow, Long> column = new Column<DataAssignmentRow, Long>(
+                new SingleSelectionCell<Long>(
+                        new SingleSelectionCell.ListProvider<Long>() {
+                            @Override
+                            public List<SingleSelectionCell.Option<Long>> getOptions() {
+                                return dataAssignment.getOptions(dataColumn);
+                            }
+                        })) {
             @Override
             public Long getValue(DataAssignmentRow row) {
                 Long fileId = dataColumn.getFileId(row);
@@ -219,18 +221,42 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private static class DataAssignment {
 
-        private Map<Long, Integer> assignments = new HashMap<Long, Integer>();
-        private List<FileCell.Option<Long>> files = new ArrayList<FileCell.Option<Long>>();
+        private Map<Long, Integer> file2Column = new HashMap<Long, Integer>();
+        private Map<Integer, List<Long>> column2Files = new HashMap<Integer, List<Long>>();
+        private List<SingleSelectionCell.Option<Long>> files = new ArrayList<SingleSelectionCell.Option<Long>>();
 
         public void init(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows) {
-            assignments.clear();
+            file2Column.clear();
+            column2Files.clear();
             for (DataAssignmentColumn column : columns) {
                 for (DataAssignmentRow row : rows) {
                     Long fileId = column.getFileId(row);
                     if (fileId != null) {
-                        assignments.put(fileId, column.getIndex());
+                        add(fileId, column);
                     }
                 }
+            }
+        }
+
+        private void add(Long fileId, DataAssignmentColumn column) {
+            int colIndex = column.getIndex();
+            file2Column.put(fileId, colIndex);
+            List<Long> list = column2Files.get(colIndex);
+            if (list == null) {
+                list = new ArrayList<Long>();
+                column2Files.put(colIndex, list);
+            }
+            list.add(fileId);
+        }
+
+        private void remove(DataAssignmentColumn column) {
+            int colIndex = column.getIndex();
+            List<Long> fileIds = column2Files.remove(colIndex);
+            if (fileIds == null) {
+                return;
+            }
+            for (Long fileId : fileIds) {
+                file2Column.remove(fileId);
             }
         }
 
@@ -238,16 +264,16 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             files.clear();
             for (DataFileRow row : dataFiles) {
                 if (row.getStatus().isOk()) {
-                    files.add(new FileCell.Option<Long>(row.getId(), row.getName()));
+                    files.add(new SingleSelectionCell.Option<Long>(row.getId(), row.getName()));
                 }
             }
         }
 
-        public List<FileCell.Option<Long>> getOptions(DataAssignmentColumn dataColumn) {
-            List<FileCell.Option<Long>> options = new ArrayList<FileCell.Option<Long>>();
-            options.add(new FileCell.Option<Long>(0L, "none"));
-            for (FileCell.Option<Long> option : files) {
-                Integer colIndex = assignments.get(option.getValue());
+        public List<SingleSelectionCell.Option<Long>> getOptions(DataAssignmentColumn dataColumn) {
+            List<SingleSelectionCell.Option<Long>> options = new ArrayList<SingleSelectionCell.Option<Long>>();
+            options.add(new SingleSelectionCell.Option<Long>(0L, "none"));
+            for (SingleSelectionCell.Option<Long> option : files) {
+                Integer colIndex = file2Column.get(option.getValue());
                 if (colIndex == null || colIndex == dataColumn.getIndex()) {
                     options.add(option);
                 }
@@ -255,21 +281,11 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             return options;
         }
 
-        public void update(DataAssignmentColumn dataColumn) {
-            List<Long> toRemove = new ArrayList<Long>();
-            for(Map.Entry<Long, Integer> entry : assignments.entrySet()) {
-                if (entry.getValue() == dataColumn.getIndex()) {
-                    toRemove.add(entry.getKey());
-                }
-            }
-            for(Long key : toRemove) {
-                assignments.remove(key);
-            }
-            for(Long key : dataColumn.getValues()) {
-                assignments.put(key, dataColumn.getIndex());
+        public void update(DataAssignmentColumn column) {
+            remove(column);
+            for (Long fileId : column.getFileIds()) {
+                add(fileId, column);
             }
         }
     }
-
-
 }

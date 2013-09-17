@@ -52,7 +52,7 @@ public class DataAssignmentColumn implements IsSerializable {
         }
     }
 
-    public Collection<Long> getValues() {
+    public Collection<Long> getFileIds() {
         return assayId2FileId.values();
     }
 

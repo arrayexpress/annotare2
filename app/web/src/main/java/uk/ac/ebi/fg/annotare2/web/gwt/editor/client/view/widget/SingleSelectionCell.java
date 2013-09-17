@@ -43,35 +43,35 @@ import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
 /**
  * @author Olga Melnichuk
  */
-public class FileCell extends AbstractEditableCell<Long, Long> {
+public class SingleSelectionCell<V> extends AbstractEditableCell<V, V> {
 
     private static final int ESCAPE = 27;
 
     private final PopupPanel panel;
     private final ListBox listBox;
     private final SafeHtmlRenderer<String> renderer;
-    private final ListProvider<Long> listProvider;
-    private final Map<Long, Integer> valueToIndex;
-    private final List<Long> values;
+    private final ListProvider<V> listProvider;
+    private final Map<V, Integer> valueToIndex;
+    private final List<V> values;
 
     private Object lastKey;
-    private Long lastValue;
+    private V lastValue;
     private int lastIndex;
     private int lastColumn;
     private Element lastParent;
-    private ValueUpdater<Long> valueUpdater;
+    private ValueUpdater<V> valueUpdater;
 
-    public FileCell(ListProvider<Long> listProvider) {
+    public SingleSelectionCell(ListProvider<V> listProvider) {
         this(SimpleSafeHtmlRenderer.getInstance(), listProvider);
     }
 
-    public FileCell(SafeHtmlRenderer<String> renderer, ListProvider<Long> listProvider) {
+    public SingleSelectionCell(SafeHtmlRenderer<String> renderer, ListProvider<V> listProvider) {
         super(CLICK, KEYDOWN);
 
         this.renderer = renderer;
         this.listProvider = listProvider;
-        valueToIndex = new HashMap<Long, Integer>();
-        values = new ArrayList<Long>();
+        valueToIndex = new HashMap<V, Integer>();
+        values = new ArrayList<V>();
 
         listBox = new ListBox();
         listBox.setVisibleItemCount(8);
@@ -113,12 +113,12 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
             @Override
             public void onChange(ChangeEvent event) {
                 Element cellParent = lastParent;
-                Long oldValue = lastValue;
+                V oldValue = lastValue;
                 Object key = lastKey;
                 int index = lastIndex;
                 int column = lastColumn;
 
-                Long value = getValue(listBox.getSelectedIndex());
+                V value = getValue(listBox.getSelectedIndex());
                 setViewData(key, value);
                 setValue(new Context(index, column, key), cellParent, oldValue);
                 if (valueUpdater != null) {
@@ -130,14 +130,14 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
     }
 
     @Override
-    public boolean isEditing(Context context, Element parent, Long value) {
+    public boolean isEditing(Context context, Element parent, V value) {
         return lastKey != null && lastKey.equals(context.getKey());
     }
 
     @Override
-    public void render(Context context, Long value, SafeHtmlBuilder sb) {
+    public void render(Context context, V value, SafeHtmlBuilder sb) {
         Object key = context.getKey();
-        Long viewData = getViewData(key);
+        V viewData = getViewData(key);
         if (viewData != null && viewData.equals(value)) {
             clearViewData(key);
             viewData = null;
@@ -160,8 +160,8 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
     }
 
     @Override
-    public void onBrowserEvent(Context context, Element parent, Long value,
-                               NativeEvent event, ValueUpdater<Long> valueUpdater) {
+    public void onBrowserEvent(Context context, Element parent, V value,
+                               NativeEvent event, ValueUpdater<V> valueUpdater) {
         super.onBrowserEvent(context, parent, value, event, valueUpdater);
         if (CLICK.equals(event.getType())) {
             onEnterKeyDown(context, parent, value, event, valueUpdater);
@@ -169,8 +169,8 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
     }
 
     @Override
-    protected void onEnterKeyDown(Context context, Element parent, Long value,
-                                  NativeEvent event, ValueUpdater<Long> valueUpdater) {
+    protected void onEnterKeyDown(Context context, Element parent, V value,
+                                  NativeEvent event, ValueUpdater<V> valueUpdater) {
         this.lastKey = context.getKey();
         this.lastParent = parent;
         this.lastValue = value;
@@ -180,10 +180,8 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
 
         populateList();
 
-        Long viewData = getViewData(lastKey);
-        if (viewData != null) {
-            listBox.setItemSelected(valueToIndex.get(viewData), true);
-        }
+        V viewData = getViewData(lastKey);
+        listBox.setItemSelected(viewData == null ? 0 : valueToIndex.get(viewData), true);
 
         panel.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             public void setPosition(int offsetWidth, int offsetHeight) {
@@ -193,8 +191,8 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
         });
     }
 
-    private String getText(Long value) {
-        for (Option<Long> option : listProvider.getOptions()) {
+    private String getText(V value) {
+        for (Option<V> option : listProvider.getOptions()) {
             if (value.equals(option.getValue())) {
                 return option.getText();
             }
@@ -202,7 +200,7 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
         return null;
     }
 
-    private Long getValue(int index) {
+    private V getValue(int index) {
         return index >= 0 ? values.get(index) : null;
     }
 
@@ -211,25 +209,25 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
         valueToIndex.clear();
         values.clear();
 
-        for (Option<Long> option : listProvider.getOptions()) {
+        for (Option<V> option : listProvider.getOptions()) {
             listBox.addItem(option.getText(), option.getStringValue());
             valueToIndex.put(option.getValue(), values.size());
             values.add(option.getValue());
         }
     }
 
-    public static class Option<V> {
+    public static class Option<T> {
 
-        private final V value;
+        private final T value;
 
         private final String text;
 
-        public Option(V value, String text) {
+        public Option(T value, String text) {
             this.text = text;
             this.value = value;
         }
 
-        public V getValue() {
+        public T getValue() {
             return value;
         }
 
@@ -242,8 +240,8 @@ public class FileCell extends AbstractEditableCell<Long, Long> {
         }
     }
 
-    public static interface ListProvider<V> {
+    public static interface ListProvider<T> {
 
-        List<Option<V>> getOptions();
+        List<Option<T>> getOptions();
     }
 }
