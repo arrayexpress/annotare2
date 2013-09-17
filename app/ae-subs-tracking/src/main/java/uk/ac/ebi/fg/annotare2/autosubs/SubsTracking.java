@@ -50,7 +50,9 @@ public class SubsTracking
         }
     }
 
-    public void addSubmission( Submission submission ) {
+    public Integer addSubmission( Submission submission ) {
+
+        Integer subsTrackngId = null;
 
         if (submission instanceof ExperimentSubmission) {
             DSLContext context = DSL.using(this.dbDataSource, SQLDialect.MYSQL);
@@ -69,7 +71,7 @@ public class SubsTracking
                                 .returning(EXPERIMENTS.ID)
                                 .fetchOne();
                 if (null != r) {
-                    System.out.println(r.getId());
+                    subsTrackngId = r.getId();
                 }
             } catch (DataSerializationException x) {
 
@@ -77,6 +79,7 @@ public class SubsTracking
         } else {
             throw new RuntimeException("Unable to process array design submission just yet, to be implemented");
         }
+        return subsTrackngId;
     }
 
     private Integer getAnnotareUserId( DSLContext context ) {

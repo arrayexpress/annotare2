@@ -33,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.Submission;
 import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
+import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
@@ -215,24 +216,22 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     @Override
     public void submitSubmission(final long id) throws ResourceNotFoundException, NoPermissionException {
 
-        //try {
-            //transactionSupport.execute(new TransactionCallback<Void>() {
-            //  @Override
-            //  public Void doInTransaction() throws Exception {
-        Submission submission = getSubmission(id, Permission.VIEW);
-        subsTracking.addSubmission(submission);
+        try {
+            transactionSupport.execute(new TransactionCallback<Void>() {
+                @Override
+                public Void doInTransaction() throws Exception {
+                    Submission submission = getSubmission(id, Permission.UPDATE);
+                    Integer subsTrackingId = subsTracking.addSubmission(submission);
 
-        //submission.discardAll();
-        //save(submission);
-
-            //      return null;
-            //  }
-            //});
-        //} catch (TransactionWrapException e) {
-        //    throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
-        //}
-
-
+                    submission.setSubsTrackingId(subsTrackingId);
+                    submission.setStatus(SubmissionStatus.SUBMITTED);
+                    save(submission);
+                    return null;
+                }
+            });
+        } catch (TransactionWrapException e) {
+            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+        }
     }
 
     @Override
