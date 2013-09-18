@@ -197,7 +197,7 @@ public class SingleSelectionCell<V> extends AbstractEditableCell<V, V> {
                 return option.getText();
             }
         }
-        return null;
+        return listProvider.getDefault().getText();
     }
 
     private V getValue(int index) {
@@ -209,11 +209,16 @@ public class SingleSelectionCell<V> extends AbstractEditableCell<V, V> {
         valueToIndex.clear();
         values.clear();
 
+        addOption(listProvider.getDefault());
         for (Option<V> option : listProvider.getOptions()) {
-            listBox.addItem(option.getText(), option.getStringValue());
-            valueToIndex.put(option.getValue(), values.size());
-            values.add(option.getValue());
+            addOption(option);
         }
+    }
+
+    private void addOption(Option<V> option) {
+        listBox.addItem(option.getText(), option.getStringValue());
+        valueToIndex.put(option.getValue(), values.size());
+        values.add(option.getValue());
     }
 
     public static class Option<T> {
@@ -243,5 +248,7 @@ public class SingleSelectionCell<V> extends AbstractEditableCell<V, V> {
     public static interface ListProvider<T> {
 
         List<Option<T>> getOptions();
+
+        Option<T> getDefault();
     }
 }

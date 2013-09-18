@@ -103,6 +103,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     @Override
     public void setDataFiles(List<DataFileRow> dataFiles) {
         dataAssignment.init(dataFiles);
+        gridView.redraw();
     }
 
     private void setColumns(List<DataAssignmentColumn> columns) {
@@ -159,6 +160,11 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                             @Override
                             public List<SingleSelectionCell.Option<Long>> getOptions() {
                                 return dataAssignment.getOptions(dataColumn);
+                            }
+
+                            @Override
+                            public SingleSelectionCell.Option<Long> getDefault() {
+                                return new SingleSelectionCell.Option<Long>(0L, "none");
                             }
                         })) {
             @Override
@@ -270,6 +276,15 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             }
         }
 
+        public void init(List<DataFileRow> dataFiles) {
+            files.clear();
+            for (DataFileRow row : dataFiles) {
+                if (row.getStatus().isOk()) {
+                    files.add(new SingleSelectionCell.Option<Long>(row.getId(), row.getName()));
+                }
+            }
+        }
+
         private void add(Long fileId, DataAssignmentColumn column) {
             int colIndex = column.getIndex();
             file2Column.put(fileId, colIndex);
@@ -292,18 +307,8 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             }
         }
 
-        public void init(List<DataFileRow> dataFiles) {
-            files.clear();
-            for (DataFileRow row : dataFiles) {
-                if (row.getStatus().isOk()) {
-                    files.add(new SingleSelectionCell.Option<Long>(row.getId(), row.getName()));
-                }
-            }
-        }
-
         public List<SingleSelectionCell.Option<Long>> getOptions(DataAssignmentColumn dataColumn) {
             List<SingleSelectionCell.Option<Long>> options = new ArrayList<SingleSelectionCell.Option<Long>>();
-            options.add(new SingleSelectionCell.Option<Long>(0L, "none"));
             for (SingleSelectionCell.Option<Long> option : files) {
                 Integer colIndex = file2Column.get(option.getValue());
                 if (colIndex == null || colIndex == dataColumn.getIndex()) {

@@ -295,11 +295,11 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void removeAssay(Assay assay) {
-        removeFileRefs(assay);
+        removeFileMappings(assay);
         assayMap.remove(assay.getId());
     }
 
-    private void removeFileRefs(Assay assay) {
+    private void removeFileMappings(Assay assay) {
         for(FileColumn fileColumn : fileColumns) {
             fileColumn.removeFileId(assay);
         }
@@ -307,6 +307,12 @@ public class ExperimentProfile implements Serializable {
 
     public void removeFileColumn(int index) {
         fileColumns.remove(index);
+    }
+
+    public void removeFile(long fileId) {
+        for(FileColumn fileColumn : fileColumns) {
+            fileColumn.removeFileId(fileId);
+        }
     }
 
     public void removeProtocol(int id) {

@@ -314,6 +314,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 public Void doInTransaction() throws Exception {
                     ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
                     dataFileManager.removeFile(submission, fileId);
+                    submission.getExperimentProfile().removeFile(fileId);
                     save(submission);
                     return null;
                 }

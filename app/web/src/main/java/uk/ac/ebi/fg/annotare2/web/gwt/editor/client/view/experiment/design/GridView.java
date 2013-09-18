@@ -222,7 +222,9 @@ public class GridView<R extends HasIdentity> extends Composite {
     }
 
     public void redraw() {
-        dataGrid.redraw();
+        if (dataGrid != null) {
+            dataGrid.redraw();
+        }
     }
 
     private class CheckboxHeader extends Header<Boolean> implements HasValue<Boolean> {

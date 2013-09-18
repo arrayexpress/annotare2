@@ -21,7 +21,9 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,6 +86,15 @@ public class FileColumn implements Serializable {
 
     public void removeFileId(Assay assay) {
         assay2FileId.remove(assay);
+    }
+
+    public void removeFileId(long fileId) {
+        List<Assay> keys = new ArrayList<Assay>(assay2FileId.keySet());
+        for (Assay assay : keys) {
+            if (assay2FileId.get(assay) == fileId) {
+                assay2FileId.remove(assay);
+            }
+        }
     }
 
     void fixMe(ExperimentProfile exp) {
