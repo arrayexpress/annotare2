@@ -88,15 +88,11 @@ public class ExperimentProfile implements Serializable {
     private MultiSets<Integer, Integer> sampleId2ExtractsIds;
     private MultiSets<Sample, Extract> sample2Extracts;
 
-    /*@JsonProperty("extract2Labels")
-    @Deprecated private MultiSets<Integer, String> extractId2Labels;
-    @Deprecated private MultiSets<Extract, String> extract2Labels;*/
-
     @JsonProperty("assayMap")
     private Map<String, Assay> assayMap;
 
-    @JsonProperty("dataFiles")
-    private List<FileColumn> dataFiles;
+    @JsonProperty("fileColumns")
+    private List<FileColumn> fileColumns;
 
     ExperimentProfile() {
         /* used by GWT serialization */
@@ -116,10 +112,9 @@ public class ExperimentProfile implements Serializable {
         labels = newLinkedHashSet();
 
         sample2Extracts = new MultiSets<Sample, Extract>();
-        //extract2Labels = new MultiSets<Extract, String>();
 
         assayMap = newLinkedHashMap();
-        dataFiles = newArrayList();
+        fileColumns = newArrayList();
     }
 
     @JsonProperty("sample2Extracts")
@@ -251,7 +246,7 @@ public class ExperimentProfile implements Serializable {
 
     public FileColumn createFileColumn(FileType fileType) {
         FileColumn fileColumn = new FileColumn(fileType);
-        dataFiles.add(fileColumn);
+        fileColumns.add(fileColumn);
         return fileColumn;
     }
 
@@ -305,13 +300,13 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void removeFileRefs(Assay assay) {
-        for(FileColumn fileColumn : dataFiles) {
-            fileColumn.removeFileRefs(assay);
+        for(FileColumn fileColumn : fileColumns) {
+            fileColumn.removeFileId(assay);
         }
     }
 
     public void removeFileColumn(int index) {
-        dataFiles.remove(index);
+        fileColumns.remove(index);
     }
 
     public void removeProtocol(int id) {
@@ -442,7 +437,12 @@ public class ExperimentProfile implements Serializable {
 
     @JsonIgnore
     public Collection<FileColumn> getFileColumns() {
-        return unmodifiableCollection(dataFiles);
+        return unmodifiableCollection(fileColumns);
+    }
+
+    @JsonIgnore
+    public FileColumn getFileColumn(int index) {
+        return fileColumns.get(index);
     }
 
     public Collection<String> getLabels() {
@@ -478,7 +478,7 @@ public class ExperimentProfile implements Serializable {
             assay.fixMe(this);
         }
 
-        for(FileColumn fileColumn : dataFiles) {
+        for(FileColumn fileColumn : fileColumns) {
             fileColumn.fixMe(this);
         }
     }

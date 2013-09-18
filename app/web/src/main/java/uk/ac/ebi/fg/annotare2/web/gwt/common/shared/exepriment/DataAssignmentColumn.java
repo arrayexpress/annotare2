@@ -37,7 +37,11 @@ public class DataAssignmentColumn implements IsSerializable {
     }
 
     public Long getFileId(DataAssignmentRow row) {
-        return assayId2FileId.get(row.getAssayId());
+        return getFileId(row.getAssayId());
+    }
+
+    public Long getFileId(String assayId) {
+        return assayId2FileId.get(assayId);
     }
 
     public void setFileId(DataAssignmentRow row, Long fileId) {
@@ -54,6 +58,10 @@ public class DataAssignmentColumn implements IsSerializable {
 
     public Collection<Long> getFileIds() {
         return assayId2FileId.values();
+    }
+
+    public Collection<String> getAssayIds() {
+        return assayId2FileId.keySet();
     }
 
     @Override

@@ -207,9 +207,9 @@ public class ExperimentData {
         for (FileColumn fileColumn : exp.getFileColumns()) {
             DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
             for (Assay assay : exp.getAssays()) {
-                FileRef fileRef = fileColumn.getFileRef(assay);
-                if (fileRef != null) {
-                    column.setFileId(assay.getId(), fileRef.getFileId());
+                Long fileId = fileColumn.getFileId(assay);
+                if (fileId != null) {
+                    column.setFileId(assay.getId(), fileId);
                 }
             }
             columns.add(column);

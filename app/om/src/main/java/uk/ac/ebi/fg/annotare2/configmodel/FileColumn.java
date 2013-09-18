@@ -33,9 +33,9 @@ public class FileColumn implements Serializable {
     @JsonProperty("type")
     private FileType type;
 
-    @JsonProperty("assay2File")
-    private Map<String, FileRef> assayId2File;
-    private Map<Assay, FileRef> assay2File;
+    @JsonProperty("assay2FileId")
+    private Map<String, Long> assayId2FileId;
+    private Map<Assay, Long> assay2FileId;
 
     FileColumn() {
         /* used by GWT serialization */
@@ -44,47 +44,59 @@ public class FileColumn implements Serializable {
     @JsonCreator
     public FileColumn(@JsonProperty("type") FileType type) {
         this.type = type;
-        assay2File = new HashMap<Assay, FileRef>();
+        assay2FileId = new HashMap<Assay, Long>();
     }
 
-    @JsonProperty("assay2File")
-    Map<String, FileRef> getAssayId2File() {
-        if (assayId2File != null) {
-            return assayId2File;
+    @JsonProperty("assay2FileId")
+    Map<String, Long> getAssayId2FileId() {
+        if (assayId2FileId != null) {
+            return assayId2FileId;
         }
 
-        Map<String, FileRef> map = new HashMap<String, FileRef>();
-        for (Assay assay : assay2File.keySet()) {
-            FileRef fileRef = assay2File.get(assay);
-            map.put(assay.getId(), fileRef);
+        Map<String, Long> map = new HashMap<String, Long>();
+        for (Assay assay : assay2FileId.keySet()) {
+            Long fileId = assay2FileId.get(assay);
+            map.put(assay.getId(), fileId);
         }
         return map;
     }
 
-    @JsonProperty("assay2File")
-    void setAssayId2File(Map<String, FileRef> assayId2File) {
-        this.assayId2File = assayId2File;
+    @JsonProperty("assay2FileId")
+    void setAssayId2FileId(Map<String, Long> assayId2FileId) {
+        this.assayId2FileId = assayId2FileId;
     }
 
     public FileType getType() {
         return type;
     }
 
-    public FileRef getFileRef(Assay assay) {
-        return assay2File.get(assay);
+    public Long getFileId(Assay assay) {
+        return assay2FileId.get(assay);
     }
 
-    public void removeFileRefs(Assay assay) {
-        assay2File.remove(assay);
+    public void setFileId(Assay assay, Long fileId) {
+        if (fileId == null) {
+            removeFileId(assay);
+        } else {
+            assay2FileId.put(assay, fileId);
+        }
+    }
+
+    public void removeFileId(Assay assay) {
+        assay2FileId.remove(assay);
     }
 
     void fixMe(ExperimentProfile exp) {
-        Map<String, FileRef> assayId2File = getAssayId2File();
+        Map<String, Long> assayId2File = getAssayId2FileId();
         for (String assayId : assayId2File.keySet()) {
             Assay assay = exp.getAssay(assayId);
-            assay2File.put(assay, assayId2File.get(assayId));
+            assay2FileId.put(assay, assayId2File.get(assayId));
         }
-        this.assayId2File = null;
+        this.assayId2FileId = null;
+    }
+
+    public void clearFileRefs() {
+        assay2FileId = new HashMap<Assay, Long>();
     }
 }
 
