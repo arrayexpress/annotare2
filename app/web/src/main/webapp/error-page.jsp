@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <%--
   ~ Copyright 2009-2012 European Molecular Biology Laboratory
   ~

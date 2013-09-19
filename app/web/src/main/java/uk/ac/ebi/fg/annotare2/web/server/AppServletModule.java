@@ -87,7 +87,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
-        serveRegex("(/error)" + JSESSIONID).with(UncaughtExceptionServlet.class);
+        serve("/error").with(UncaughtExceptionServlet.class);
 
         bind(HibernateSessionFilter.class).in(SINGLETON);
         bind(SecurityFilter.class).in(SINGLETON);

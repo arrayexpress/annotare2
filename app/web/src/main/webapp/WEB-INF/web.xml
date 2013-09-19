@@ -33,6 +33,8 @@
     <filter-mapping>
         <filter-name>guiceFilter</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
     <listener>
@@ -49,8 +51,7 @@
     </servlet>
 
     <error-page>
-        <!-- Uncaught exception -->
-        <error-code>500</error-code>
+        <exception-type>java.lang.Throwable</exception-type>
         <location>/error</location>
     </error-page>
 </web-app>
