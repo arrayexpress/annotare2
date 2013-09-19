@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.integration;
 
+import com.google.common.base.Function;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -24,12 +25,14 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Ordering.natural;
 import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolUsageType.*;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
@@ -150,8 +153,9 @@ public class MageTabGenerator {
             connect(extractNode, labeledExtractNode, EXTRACT_AND_LABELED_EXTRACT);
         }
 
-        if (labeledExtracts.isEmpty()) {
-            AssayNode assayNode = createAssayNode(extract.getName());
+        Assay assay = findAssay(extract);
+        if (assay != null) {
+            AssayNode assayNode = createAssayNode(assay);
             connect(extractNode, assayNode, EXTRACT_AND_ASSAY);
         }
         return extractNode;
@@ -179,19 +183,103 @@ public class MageTabGenerator {
         label.setAttributeValue(labeledExtract.getLabel());
         labeledExtractNode.label = label;
 
-        AssayNode assayNode = createAssayNode(labeledExtract.getName());
-        connect(labeledExtractNode, assayNode, LABELED_EXTRACT_AND_ASSAY);
+        Assay assay = findAssay(labeledExtract);
+        if (assay != null) {
+            AssayNode assayNode = createAssayNode(assay);
+            connect(labeledExtractNode, assayNode, LABELED_EXTRACT_AND_ASSAY);
+        }
         return labeledExtractNode;
     }
 
-    private AssayNode createAssayNode(String assayName) {
+    private Assay findAssay(Extract extract) {
+        return findAssay(extract, null);
+    }
+
+    private Assay findAssay(LabeledExtract labeledExtract) {
+        return findAssay(labeledExtract.getExtract(), labeledExtract.getLabel());
+    }
+
+    private Assay findAssay(Extract extract, String label) {
+        return exp.getAssay(new Assay(extract, label).getId());
+    }
+
+    private AssayNode createAssayNode(Assay assay) {
         AssayNode assayNode = new AssayNode();
-        assayNode.setNodeName(assayName);
+        assayNode.setNodeName(assay.getName());
         TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
         technologyType.setAttributeValue(
                 exp.getType().isMicroarray() ? "array assay" : "sequencing assay");
         assayNode.technologyType = technologyType;
+
+        Collection<SDRFNode> fileNodes = createFileNodes(assay);
+        for (SDRFNode fileNode : fileNodes) {
+            assayNode.addChildNode(fileNode);
+            fileNode.addParentNode(assayNode);
+        }
         return assayNode;
+    }
+
+    private Collection<SDRFNode> createFileNodes(Assay assay) {
+        Collection<FileColumn> fileColumns = getFileColumns();
+
+        SDRFNode start = null;
+        SDRFNode end = null;
+        List<SDRFNode> rootNodes = new ArrayList<SDRFNode>();
+        for (FileColumn fileColumn : fileColumns) {
+            FileType type = fileColumn.getType();
+            Long fileId = fileColumn.getFileId(assay);
+            SDRFNode current;
+            switch (type) {
+                case RAW_FILE:
+                    current = new ArrayDataNode();
+                    break;
+                case RAW_MATRIX_FILE:
+                    current = new ArrayDataMatrixNode();
+                    break;
+                case PROCESSED_FILE:
+                    current = new DerivedArrayDataNode();
+                    break;
+                case PROCESSED_MATRIX_FILE:
+                    current = new DerivedArrayDataMatrixNode();
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported file type: " + type);
+            }
+
+            current.setNodeName(fileId == null ? "none" : fileId + "");
+
+            if (type.isRaw()) {
+                rootNodes.add(current);
+            } else if (start == null) {
+                start = current;
+                end = current;
+            } else {
+                end.addChildNode(current);
+                current.addParentNode(end);
+                end = current;
+            }
+        }
+
+        if (start != null) {
+            for (SDRFNode rootNode : rootNodes) {
+                rootNode.addChildNode(start);
+                start.addParentNode(rootNode);
+            }
+            if (rootNodes.isEmpty()) {
+                rootNodes.add(start);
+            }
+        }
+        return rootNodes;
+    }
+
+    private Collection<FileColumn> getFileColumns() {
+        return natural().onResultOf(new Function<FileColumn, Integer>() {
+            @Nullable
+            @Override
+            public Integer apply(@Nullable FileColumn input) {
+                return input.getType().ordinal();
+            }
+        }).immutableSortedCopy(exp.getFileColumns());
     }
 
     private MaterialTypeAttribute extractMaterialTypeAttribute(Sample sample) {

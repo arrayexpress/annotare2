@@ -26,9 +26,11 @@ public enum FileType {
 
     RAW_FILE("Raw"),
 
+    RAW_MATRIX_FILE("Raw Matrix"),
+
     PROCESSED_FILE("Processed"),
 
-    MATRIX_FILE("Matrix");
+    PROCESSED_MATRIX_FILE("Processed Matrix");
 
     private final String title;
 
@@ -38,5 +40,9 @@ public enum FileType {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean isRaw() {
+        return this == RAW_FILE || this == RAW_MATRIX_FILE;
     }
 }
