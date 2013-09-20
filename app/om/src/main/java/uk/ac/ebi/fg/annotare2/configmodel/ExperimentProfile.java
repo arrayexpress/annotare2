@@ -231,8 +231,8 @@ public class ExperimentProfile implements Serializable {
     }
 
     public LabeledExtract createLabeledExtract(Extract extract, String label) {
-        createAssay(extract, label);
-        return new LabeledExtract(extract, label);
+        Assay assay = createAssay(extract, label);
+        return new LabeledExtract(assay.getId(), extract, label);
     }
 
     private Assay createAssay(Extract extract, String label) {
@@ -415,7 +415,7 @@ public class ExperimentProfile implements Serializable {
     public Collection<LabeledExtract> getLabeledExtracts() {
         List<LabeledExtract> labeledExtracts = newArrayList();
         for (Assay assay : assayMap.values()) {
-            labeledExtracts.add(new LabeledExtract(assay.getExtract(), assay.getLabel()));
+            labeledExtracts.add(assay.asLabeledExtract());
         }
         return labeledExtracts;
     }
@@ -425,10 +425,16 @@ public class ExperimentProfile implements Serializable {
         List<LabeledExtract> labeledExtracts = newArrayList();
         for (Assay assay : assayMap.values()) {
             if (assay.getExtract().equals(extract)) {
-                labeledExtracts.add(new LabeledExtract(assay.getExtract(), assay.getLabel()));
+                labeledExtracts.add(assay.asLabeledExtract());
             }
         }
         return labeledExtracts;
+    }
+
+    @JsonIgnore
+    public LabeledExtract getLabeledExtract(String id) {
+        Assay assay = getAssay(id);
+        return assay == null ? null : assay.asLabeledExtract();
     }
 
     @JsonIgnore

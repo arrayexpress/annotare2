@@ -31,6 +31,7 @@ import java.util.Map;
 @GwtCompatible
 public class LabeledExtract implements Serializable {
 
+    private String id;
     private Extract extract;
     private String label;
 
@@ -38,9 +39,14 @@ public class LabeledExtract implements Serializable {
         /*used by GWT serialization */
     }
 
-    public LabeledExtract(Extract extract, String label) {
+    public LabeledExtract(String id, Extract extract, String label) {
+        this.id = id;
         this.extract = extract;
         this.label = label;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getLabel() {

@@ -178,18 +178,16 @@ public class ExperimentData {
     }
 
     private List<ExtractLabelsRow> getExtractLabelsRows(ExperimentProfile exp) {
-        Map<Integer, ExtractLabelsRow> map = new LinkedHashMap<Integer, ExtractLabelsRow>();
-        for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-            Extract extract = labeledExtract.getExtract();
+        List<ExtractLabelsRow> rows = new ArrayList<ExtractLabelsRow>();
+        for (Extract extract : exp.getExtracts()) {
             Integer extractId = extract.getId();
-            ExtractLabelsRow row = map.get(extractId);
-            if (row == null) {
-                row = new ExtractLabelsRow(extractId, extract.getName());
-                map.put(extractId, row);
+            ExtractLabelsRow row = new ExtractLabelsRow(extractId, extract.getName());
+            for(LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
+                row.addLabel(labeledExtract.getLabel());
             }
-            row.addLabel(labeledExtract.getLabel());
+            rows.add(row);
         }
-        return new ArrayList<ExtractLabelsRow>(map.values());
+        return rows;
     }
 
     private List<DataAssignmentRow> getDataAssignmentRows(ExperimentProfile exp) {

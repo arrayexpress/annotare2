@@ -52,7 +52,7 @@ public class SubmissionValidator {
         ExperimentProfile exp = submission.getExperimentProfile();
         ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
-        MageTabFormat mageTab = createMageTab(exp);
+        MageTabFormat mageTab = createMageTab(exp, submission.getFiles());
 
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
         return natural().sortedCopy(results);

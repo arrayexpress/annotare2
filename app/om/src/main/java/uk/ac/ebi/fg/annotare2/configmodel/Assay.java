@@ -108,4 +108,9 @@ public class Assay implements Serializable {
                     extractId + " was not found in experiment profile)");
         }
     }
+
+    @JsonIgnore
+    public LabeledExtract asLabeledExtract() {
+        return new LabeledExtract(getId(), getExtract(), getLabel());
+    }
 }

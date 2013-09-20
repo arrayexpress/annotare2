@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.util.Streams;
@@ -26,7 +25,6 @@ import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
@@ -50,16 +48,12 @@ import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.hash.Hashing.md5;
 import static com.google.common.io.Files.hash;
@@ -110,7 +104,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
-            return toIdfTable(exp);
+            return toIdfTable(exp, submission.getFiles());
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -125,7 +119,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
-            return toSdrfTable(exp);
+            return toSdrfTable(exp, submission.getFiles());
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -135,14 +129,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private Table toIdfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFormat mageTab = createMageTab(exp);
+    private Table toIdfTable(ExperimentProfile exp, Collection<DataFile> dataFiles) throws IOException, ParseException {
+        MageTabFormat mageTab = createMageTab(exp, dataFiles);
         return new TsvParser().parse(new FileInputStream(mageTab.getIdfFile()));
         //TODO: delete temporary file ?
     }
 
-    private Table toSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFormat mageTab = createMageTab(exp);
+    private Table toSdrfTable(ExperimentProfile exp, Collection<DataFile> dataFiles) throws IOException, ParseException {
+        MageTabFormat mageTab = createMageTab(exp, dataFiles);
         return new TsvParser().parse(new FileInputStream(mageTab.getSdrfFile()));
         //TODO: delete temporary file ?
     }

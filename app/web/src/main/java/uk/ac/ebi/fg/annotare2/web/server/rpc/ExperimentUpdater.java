@@ -200,10 +200,9 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             }
         }
 
-        if (newLabels.removeAll(existedLabels)) {
-            for (String label : newLabels) {
-                exp.createLabeledExtract(extract, label);
-            }
+        newLabels.removeAll(existedLabels);
+        for (String label : newLabels) {
+            exp.createLabeledExtract(extract, label);
         }
     }
 
