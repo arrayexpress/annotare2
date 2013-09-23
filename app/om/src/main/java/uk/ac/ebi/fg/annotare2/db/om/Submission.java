@@ -60,6 +60,10 @@ public abstract class Submission implements HasEffectiveAcl {
     private User createdBy;
 
     @ManyToOne
+    @JoinColumn(name = "ownedBy", nullable = false)
+    private User ownedBy;
+
+    @ManyToOne
     @JoinColumn(name = "acl")
     private Acl acl;
 
@@ -77,6 +81,7 @@ public abstract class Submission implements HasEffectiveAcl {
     protected Submission(User createdBy) {
         this.created = new Date();
         this.createdBy = createdBy;
+        this.ownedBy = createdBy;
         status = SubmissionStatus.IN_PROGRESS;
         files = newHashSet();
     }
@@ -103,6 +108,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public User getCreatedBy() {
         return createdBy;
+    }
+
+    public User getOwnedBy() {
+        return ownedBy;
+    }
+
+    public void setOwnedBy(User owner) {
+        this.ownedBy = owner;
     }
 
     public String getTitle() {
@@ -142,7 +155,7 @@ public abstract class Submission implements HasEffectiveAcl {
     }
 
     public EffectiveAcl getEffectiveAcl() {
-        return new EffectiveAcl(acl, Optional.of(createdBy));
+        return new EffectiveAcl(acl, Optional.of(createdBy), Optional.of(ownedBy));
     }
 
     protected InputStream asStream(String str) {

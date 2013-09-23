@@ -35,10 +35,12 @@ public class EffectiveAcl {
 
     private Acl acl;
 
+    private Optional<User> creator;
     private Optional<User> owner;
 
-    public EffectiveAcl(Acl acl, Optional<User> owner) {
+    public EffectiveAcl(Acl acl, Optional<User> creator, Optional<User> owner) {
         this.acl = acl;
+        this.creator = creator;
         this.owner = owner;
     }
 
@@ -55,6 +57,9 @@ public class EffectiveAcl {
                 return input.getRole();
             }
         }));
+        if (creator.isPresent() && user.equals(creator.get())) {
+            roles.add(Role.CREATOR);
+        }
         if (owner.isPresent() && user.equals(owner.get())) {
             roles.add(Role.OWNER);
         }
