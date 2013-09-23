@@ -64,7 +64,7 @@ public class SubmissionFactory {
     }
 
     public static EffectiveAcl getEffectiveAcl() {
-        return new EffectiveAcl(submissionAcl, OWNER);
+        return new EffectiveAcl(submissionAcl, OWNER, OWNER);
     }
 
     public static Acl getAcl() {

@@ -39,17 +39,24 @@ public class EffectiveAclTest {
     public void testEffectiveAclHasPermission() {
         Acl acl = new Acl();
         acl.getEntries().addAll(
-                asList(new AclEntry(Role.AUTHENTICATED, Permission.VIEW),
+                asList(new AclEntry(Role.AUTHENTICATED, Permission.CREATE),
+                        new AclEntry(Role.CREATOR, Permission.VIEW),
                         new AclEntry(Role.OWNER, Permission.VIEW),
                         new AclEntry(Role.OWNER, Permission.UPDATE)));
 
+        User creator = createUser(asList(Role.AUTHENTICATED));
         User owner = createUser(asList(Role.AUTHENTICATED));
         User other = createUser(asList(Role.AUTHENTICATED));
 
-        EffectiveAcl effectiveAcl = new EffectiveAcl(acl, Optional.of(owner));
+        EffectiveAcl effectiveAcl = new EffectiveAcl(acl, Optional.of(creator), Optional.of(owner));
 
+        assertTrue(effectiveAcl.hasPermission(creator, Permission.CREATE));
+        assertTrue(effectiveAcl.hasPermission(creator, Permission.VIEW));
+        assertFalse(effectiveAcl.hasPermission(creator, Permission.UPDATE));
         assertTrue(effectiveAcl.hasPermission(owner, Permission.VIEW));
         assertTrue(effectiveAcl.hasPermission(owner, Permission.UPDATE));
+        assertTrue(effectiveAcl.hasPermission(other, Permission.CREATE));
+        assertFalse(effectiveAcl.hasPermission(other, Permission.VIEW));
         assertFalse(effectiveAcl.hasPermission(other, Permission.UPDATE));
     }
 

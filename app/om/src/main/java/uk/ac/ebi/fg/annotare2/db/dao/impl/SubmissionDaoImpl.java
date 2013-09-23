@@ -103,6 +103,6 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
 
     @Override
     public EffectiveAcl getEffectiveAcl() {
-        return new EffectiveAcl(getAcl(), Optional.<User>absent());
+        return new EffectiveAcl(getAcl(), Optional.<User>absent(), Optional.<User>absent());
     }
 }

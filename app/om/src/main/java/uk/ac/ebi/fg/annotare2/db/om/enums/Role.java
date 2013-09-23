@@ -23,5 +23,6 @@ public enum Role {
     OWNER,
     AUTHENTICATED,
     CURATOR,
-    ADMIN
+    ADMIN,
+    CREATOR
 }
