@@ -57,7 +57,7 @@ public class Protocol implements Serializable {
     private List<String> parameters;
 
     @JsonProperty("usage")
-    private ProtocolUsageType usage;
+    private ProtocolTargetType usage;
 
     Protocol() {
     /* used by GWT serialization only */
@@ -89,11 +89,11 @@ public class Protocol implements Serializable {
         this.type = type;
     }
 
-    public ProtocolUsageType getUsage() {
+    public ProtocolTargetType getUsage() {
         return usage;
     }
 
-    public void setUsage(ProtocolUsageType usage) {
+    public void setUsage(ProtocolTargetType usage) {
         this.usage = usage;
     }
 

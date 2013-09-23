@@ -33,7 +33,7 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
-import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolUsageType.*;
+import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolTargetType.*;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
@@ -208,9 +208,9 @@ public class MageTabGenerator {
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
             Assay assay = labeledExtract == null ? null : getAssay(labeledExtract);
             if (assay == null) {
-                layer.put("" + (fakeId--), createAssayNode(null, labeledExtractNode, LABELED_EXTRACT_AND_ASSAY));
+                layer.put("" + (fakeId--), createAssayNode(null, labeledExtractNode));
             } else {
-                layer.put(assay.getId(), createAssayNode(assay, labeledExtractNode, LABELED_EXTRACT_AND_ASSAY));
+                layer.put(assay.getId(), createAssayNode(assay, labeledExtractNode));
             }
         }
         return layer;
@@ -228,10 +228,10 @@ public class MageTabGenerator {
             SDRFNode extractNode = extractLayer.get(extractId);
             Assay assay = getAssay(extract);
             if (assay == null) {
-                SDRFNode assayNode = createAssayNode(null, extractNode, EXTRACT_AND_ASSAY);
+                SDRFNode assayNode = createAssayNode(null, extractNode);
                 layer.put("" + (fakeId--), createScanNode(null, assayNode));
             } else {
-                SDRFNode assayNode = createAssayNode(assay, extractNode, EXTRACT_AND_ASSAY);
+                SDRFNode assayNode = createAssayNode(assay, extractNode);
                 layer.put(assay.getId(), createScanNode(assay, assayNode));
             }
         }
@@ -253,7 +253,7 @@ public class MageTabGenerator {
         }
     }
 
-    private void connect(SDRFNode source, SDRFNode destination, ProtocolUsageType type) {
+    private void connect(SDRFNode source, SDRFNode destination, ProtocolTargetType type) {
         Collection<Protocol> protocols = type == null ? Collections.<Protocol>emptyList() : exp.getProtocols(type);
         if (protocols.isEmpty()) {
             source.addChildNode(destination);
@@ -307,7 +307,7 @@ public class MageTabGenerator {
             }
         }
 
-        connect(parentNode, extractNode, SAMPLE_AND_EXTRACT);
+        connect(parentNode, extractNode, EXTRACTS);
         return extractNode;
     }
 
@@ -326,11 +326,11 @@ public class MageTabGenerator {
             labeledExtractNode.label = label;
         }
 
-        connect(extractNode, labeledExtractNode, EXTRACT_AND_LABELED_EXTRACT);
+        connect(extractNode, labeledExtractNode, LABELED_EXTRACTS);
         return labeledExtractNode;
     }
 
-    private AssayNode createAssayNode(Assay assay, SDRFNode prevNode, ProtocolUsageType protocolType) {
+    private AssayNode createAssayNode(Assay assay, SDRFNode prevNode) {
         AssayNode assayNode;
         if (assay == null) {
             assayNode = createFakeNode(AssayNode.class);
@@ -346,7 +346,7 @@ public class MageTabGenerator {
             assayNode.technologyType = technologyType;
         }
 
-        connect(prevNode, assayNode, protocolType);
+        connect(prevNode, assayNode, ASSAYS);
         return assayNode;
     }
 

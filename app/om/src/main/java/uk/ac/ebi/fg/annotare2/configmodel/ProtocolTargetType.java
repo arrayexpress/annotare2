@@ -26,13 +26,12 @@ import java.util.List;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public enum ProtocolUsageType {
-    SAMPLE_AND_EXTRACT,
-    EXTRACT_AND_LABELED_EXTRACT,
-    EXTRACT_AND_ASSAY,
-    LABELED_EXTRACT_AND_ASSAY,
-    ASSAY_AND_FILE,
-    FILE_AND_FILE;
+public enum ProtocolTargetType {
+    EXTRACTS,
+    LABELED_EXTRACTS,
+    ASSAYS,
+    RAW_FILES,
+    PROCESSED_AND_MATRIX_FILES;
 
     public Collection<Protocol> filter(Collection<Protocol> protocols) {
         List<Protocol> filtered = new ArrayList<Protocol>();

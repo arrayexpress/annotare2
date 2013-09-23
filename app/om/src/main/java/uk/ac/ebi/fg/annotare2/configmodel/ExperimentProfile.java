@@ -201,7 +201,7 @@ public class ExperimentProfile implements Serializable {
         return publicationMap.remove(id);
     }
 
-    public Protocol createProtocol(OntologyTerm term, ProtocolUsageType usageType) {
+    public Protocol createProtocol(OntologyTerm term, ProtocolTargetType usageType) {
         Protocol protocol = new Protocol(nextId());
         protocol.setType(term);
         protocol.setUsage(usageType);
@@ -392,7 +392,7 @@ public class ExperimentProfile implements Serializable {
         return unmodifiableCollection(protocolMap.values());
     }
 
-    public Collection<Protocol> getProtocols(ProtocolUsageType usageType) {
+    public Collection<Protocol> getProtocols(ProtocolTargetType usageType) {
         return usageType.filter(getProtocols());
     }
 
