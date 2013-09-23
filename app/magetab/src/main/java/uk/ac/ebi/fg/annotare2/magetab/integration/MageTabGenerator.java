@@ -107,7 +107,7 @@ public class MageTabGenerator {
     }
 
     private <T extends SDRFNode> T createFakeNode(Class<T> clazz) {
-        return createNode(clazz, "unassign-" + (counter++));
+        return createNode(clazz, "__UNASSIGNED__@" + (counter++));
     }
 
     private <T extends SDRFNode> T createNode(Class<T> clazz, String name) {
@@ -159,13 +159,13 @@ public class MageTabGenerator {
         }
 
         Map<Integer, SDRFNode> layer = new LinkedHashMap<Integer, SDRFNode>();
-        int i = -1;
+        int fakeId = -1;
         for (Integer sampleId : sampleLayer.keySet()) {
             Sample sample = exp.getSample(sampleId);
             SDRFNode sampleNode = sampleLayer.get(sampleId);
             Collection<Extract> extracts = exp.getExtracts(sample);
             if (extracts.isEmpty()) {
-                layer.put(i--, createExtractNode(null, sampleNode));
+                layer.put(fakeId--, createExtractNode(null, sampleNode));
             }
             for (Extract extract : extracts) {
                 layer.put(extract.getId(), createExtractNode(extract, sampleNode));
@@ -180,14 +180,14 @@ public class MageTabGenerator {
         }
 
         Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
-        int i = -1;
+        int fakeId = -1;
         for (Integer extractId : extractLayer.keySet()) {
             Extract extract = exp.getExtract(extractId);
             SDRFNode extractNode = extractLayer.get(extractId);
             Collection<LabeledExtract> labeledExtracts = extract == null ?
                     Collections.<LabeledExtract>emptyList() : exp.getLabeledExtracts(extract);
             if (labeledExtracts.isEmpty()) {
-                layer.put("" + (i--), createLabeledExtractNode(null, extractNode));
+                layer.put("" + (fakeId--), createLabeledExtractNode(null, extractNode));
             }
             for (LabeledExtract labeledExtract : labeledExtracts) {
                 layer.put(labeledExtract.getId(), createLabeledExtractNode(labeledExtract, extractNode));
@@ -202,13 +202,13 @@ public class MageTabGenerator {
         }
 
         Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
-        int i = -1;
+        int fakeId = -1;
         for (String labeledExtractId : labeledExtractLayer.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
             Assay assay = labeledExtract == null ? null : getAssay(labeledExtract);
             if (assay == null) {
-                layer.put("" + (i--), createAssayNode(null, labeledExtractNode, LABELED_EXTRACT_AND_ASSAY));
+                layer.put("" + (fakeId--), createAssayNode(null, labeledExtractNode, LABELED_EXTRACT_AND_ASSAY));
             } else {
                 layer.put(assay.getId(), createAssayNode(assay, labeledExtractNode, LABELED_EXTRACT_AND_ASSAY));
             }
@@ -222,14 +222,14 @@ public class MageTabGenerator {
         }
 
         Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
-        int i = -1;
+        int fakeId = -1;
         for (Integer extractId : extractLayer.keySet()) {
             Extract extract = exp.getExtract(extractId);
             SDRFNode extractNode = extractLayer.get(extractId);
             Assay assay = getAssay(extract);
             if (assay == null) {
                 SDRFNode assayNode = createAssayNode(null, extractNode, EXTRACT_AND_ASSAY);
-                layer.put("" + (i--), createScanNode(null, assayNode));
+                layer.put("" + (fakeId--), createScanNode(null, assayNode));
             } else {
                 SDRFNode assayNode = createAssayNode(assay, extractNode, EXTRACT_AND_ASSAY);
                 layer.put(assay.getId(), createScanNode(assay, assayNode));

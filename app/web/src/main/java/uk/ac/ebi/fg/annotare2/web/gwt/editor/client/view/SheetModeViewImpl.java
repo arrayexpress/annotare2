@@ -135,7 +135,9 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
             Column<IndexedRow, String> column = new Column<IndexedRow, String>(new TextCell()) {
                 @Override
                 public String getValue(IndexedRow row) {
-                    return row.getValue(colIndex);
+                    String value = row.getValue(colIndex);
+                    // make a specific TextCell to mark these cells with red
+                    return value == null || value.startsWith("__UNASSIGNED__@") ? "" : value;
                 }
             };
             sortHandler.setComparator(column, new Comparator<IndexedRow>() {
