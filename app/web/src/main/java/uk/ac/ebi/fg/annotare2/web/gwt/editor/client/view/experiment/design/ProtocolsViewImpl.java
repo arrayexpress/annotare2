@@ -135,9 +135,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
             @Override
-            public void update(int index, ProtocolRow object, String value) {
-                //TODO open dialog
-                Window.alert("TBA");
+            public void update(int index, ProtocolRow row, String value) {
+                new ProtocolAssignmentDialog(row).show();
             }
         });
         gridView.addPermanentColumn("Assignment", column, null, 100, Style.Unit.PX);
@@ -329,8 +328,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         if (presenter == null) {
             return;
         }
-        (new ProtocolCreateDialog(presenter,
-                new ProtocolCreateDialog.Callback() {
+        (new ProtocolCreationDialog(presenter,
+                new ProtocolCreationDialog.Callback() {
                     @Override
                     public void onCancel() {
                     }
