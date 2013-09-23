@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
@@ -23,6 +24,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
@@ -79,6 +81,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private void setColumns() {
         addNameColumn();
+        addAssignmentColumn();
         addTypeColumn();
         addDescriptionColumn();
         addParametersColumn();
@@ -123,6 +126,23 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
+    private void addAssignmentColumn() {
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell()) {
+            @Override
+            public String getValue(ProtocolRow object) {
+                return "Assign...";
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
+            @Override
+            public void update(int index, ProtocolRow object, String value) {
+                //TODO open dialog
+                Window.alert("TBA");
+            }
+        });
+        gridView.addPermanentColumn("Assignment", column, null, 100, Style.Unit.PX);
+    }
+
     private boolean isNameValid(String name, int rowIndex) {
         if (name == null || name.trim().isEmpty()) {
             showErrorMessage("Protocol name can't be empty");
@@ -139,7 +159,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         List<ProtocolRow> rows = gridView.getRows();
         Set<String> names = new HashSet<String>();
         int i = 0;
-        for(ProtocolRow row : rows) {
+        for (ProtocolRow row : rows) {
             if (i != rowIndex) {
                 names.add(row.getName());
             }
