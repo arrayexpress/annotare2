@@ -14,7 +14,18 @@
     </changeSet>
     <changeSet id="3" author="kolais">
         <addColumn tableName="submissions">
-            <column name="subsTrackingId" type="int(11)"/>
+            <column name="subsTrackingId" type="INT"/>
         </addColumn>
+    </changeSet>
+    <changeSet id="4" author="kolais">
+
+        <addColumn tableName="submissions">
+            <column name="ownedBy" type="BIGINT"/>
+        </addColumn>
+        <sql>
+            UPDATE submissions SET ownedBy = createdBy;
+            ALTER TABLE submissions MODIFY ownedBy BIGINT NOT NULL;
+            ALTER TABLE submissions ADD CONSTRAINT FOREIGN KEY (ownedBy) REFERENCES users (id) ON DELETE CASCADE;
+        </sql>
     </changeSet>
 </databaseChangeLog>
