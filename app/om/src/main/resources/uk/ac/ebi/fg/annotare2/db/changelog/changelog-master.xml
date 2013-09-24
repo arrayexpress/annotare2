@@ -23,9 +23,10 @@
             ALTER TABLE submissions ADD ownedBy BIGINT;
             UPDATE submissions SET ownedBy = createdBy;
             ALTER TABLE submissions MODIFY ownedBy BIGINT NOT NULL;
-            ALTER TABLE submissions ADD CONSTRAINT FOREIGN KEY (ownedBy) REFERENCES users (id) ON DELETE CASCADE;
+            ALTER TABLE submissions ADD CONSTRAINT FOREIGN KEY (ownedBy) REFERENCES users (id);
 
             ALTER TABLE acl_entries CHANGE role role ENUM('CREATOR','OWNER','AUTHENTICATED','CURATOR','ADMIN') NOT NULL;
+
             SELECT id FROM acl WHERE aclType = 'SUBMISSION' INTO @subAclId;
             INSERT INTO acl_entries (acl, role, permission) VALUES (@subAclId, 'CREATOR', 'VIEW');
 
