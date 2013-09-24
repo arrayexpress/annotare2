@@ -21,7 +21,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -38,6 +40,9 @@ public class Extract implements Serializable {
     @JsonProperty("attributes")
     private Map<ExtractAttribute, String> values;
 
+    @JsonProperty("protocols")
+    private Set<Integer> protocolIds;
+
     Extract() {
     /* used by GWT serialization */
     }
@@ -45,6 +50,7 @@ public class Extract implements Serializable {
     public Extract(@JsonProperty("id") int id) {
         this.id = id;
         this.values = new HashMap<ExtractAttribute, String>();
+        this.protocolIds = new HashSet<Integer>();
     }
 
     public int getId() {
@@ -86,5 +92,17 @@ public class Extract implements Serializable {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public boolean hasProtocol(Protocol protocol) {
+        return protocolIds.contains(protocol.getId());
+    }
+
+    public void assign(Protocol protocol, boolean assigned) {
+        if (!assigned && hasProtocol(protocol)) {
+            protocolIds.remove(protocol.getId());
+        } else {
+            protocolIds.add(protocol.getId());
+        }
     }
 }

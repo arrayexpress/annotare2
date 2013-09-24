@@ -25,7 +25,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
 /**
  * @author Olga Melnichuk
@@ -46,22 +49,30 @@ public class ProtocolAssignmentDialog extends DialogBox {
     ListBox assignedListBox;
 
     @UiField
+    ListBox availableListBox;
+
+    @UiField
     Button removeButton;
 
     @UiField
     Button addButton;
 
-    @UiField
-    ListBox availableListBox;
+    private DialogCallback<ProtocolAssignmentProfile> callback;
+    private final ProtocolAssignmentProfile profile;
 
-    public ProtocolAssignmentDialog(ProtocolRow row) {
+    public ProtocolAssignmentDialog(ProtocolAssignmentProfile profile, DialogCallback<ProtocolAssignmentProfile> callback) {
+        this.callback = callback;
+        this.profile = profile;
+
         setModal(true);
         setGlassEnabled(true);
-        setText("Assign " + row.getName() + " to...");
+        setText("Assign " + profile.getProtocolName() + " to...");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
 
         center();
+        //TODO updateAssignedList();
+        //TODO updateAvailableList();
     }
 
     @UiHandler("cancelButton")
@@ -72,6 +83,9 @@ public class ProtocolAssignmentDialog extends DialogBox {
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
         hide();
+        if (callback != null) {
+            callback.onOkay(profile);
+        }
     }
 
     @UiHandler("removeButton")

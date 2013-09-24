@@ -18,28 +18,97 @@ package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Collections.EMPTY_SET;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
 public enum ProtocolTargetType {
-    EXTRACTS,
-    LABELED_EXTRACTS,
-    ASSAYS,
-    RAW_FILES,
-    PROCESSED_AND_MATRIX_FILES;
+    EXTRACTS {
+        @Override
+        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
+            Set<String> assigned = new HashSet<String>();
+            for (Extract extract : exp.getExtracts()) {
+                String id = Integer.toString(extract.getId());
+                if (extract.hasProtocol(protocol)) {
+                    assigned.add(id);
+                }
+            }
+            return assigned;
+        }
+
+        @Override
+        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            boolean assign2All = assignments.isEmpty();
+            for (Extract extract : exp.getExtracts()) {
+                extract.assign(protocol, !assign2All);
+            }
+            protocol.setAssign2All(assign2All);
+        }
+    },
+    LABELED_EXTRACTS {
+        @Override
+        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
+            //TODO
+            return EMPTY_SET;
+        }
+
+        @Override
+        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            //TODO
+        }
+    },
+    ASSAYS {
+        @Override
+        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
+            //TODO
+            return EMPTY_SET;
+        }
+
+        @Override
+        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            //TODO
+        }
+    },
+    RAW_FILES {
+        @Override
+        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
+            //TODO
+            return EMPTY_SET;
+        }
+
+        @Override
+        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            //TODO
+        }
+    },
+    PROCESSED_AND_MATRIX_FILES {
+        @Override
+        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
+            //TODO
+            return EMPTY_SET;
+        }
+
+        @Override
+        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            //TODO
+        }
+    };
 
     public Collection<Protocol> filter(Collection<Protocol> protocols) {
         List<Protocol> filtered = new ArrayList<Protocol>();
-        for(Protocol protocol : protocols) {
+        for (Protocol protocol : protocols) {
             if (protocol.getUsage() == this) {
                 filtered.add(protocol);
             }
         }
         return filtered;
     }
+
+    public abstract Set<String> getAssignments(Protocol protocol, ExperimentProfile exp);
+
+    public abstract void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments);
 }

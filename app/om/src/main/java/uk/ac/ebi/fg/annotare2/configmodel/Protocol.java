@@ -58,6 +58,7 @@ public class Protocol implements Serializable {
 
     @JsonProperty("usage")
     private ProtocolTargetType usage;
+    private boolean assign2All;
 
     Protocol() {
     /* used by GWT serialization only */
@@ -135,5 +136,30 @@ public class Protocol implements Serializable {
 
     public List<String> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Protocol protocol = (Protocol) o;
+
+        if (id != protocol.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    public void setAssign2All(boolean assign2All) {
+        this.assign2All = assign2All;
+    }
+
+    public boolean isAssign2All() {
+        return assign2All;
     }
 }

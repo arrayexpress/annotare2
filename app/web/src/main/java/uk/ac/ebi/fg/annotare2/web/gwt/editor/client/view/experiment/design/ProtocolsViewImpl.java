@@ -25,10 +25,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidationMessage;
 
@@ -136,7 +139,27 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
             @Override
             public void update(int index, ProtocolRow row, String value) {
-                new ProtocolAssignmentDialog(row).show();
+                presenter.getAssignmentProfileAsync(row.getId(), new AsyncCallback<ProtocolAssignmentProfile>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Can't load protocol assignments");
+                    }
+
+                    @Override
+                    public void onSuccess(ProtocolAssignmentProfile result) {
+                        new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfile>() {
+                            @Override
+                            public void onCancel() {
+                                // do nothing
+                            }
+
+                            @Override
+                            public void onOkay(ProtocolAssignmentProfile assignmentProfile) {
+                                //TODO update protocol assignments
+                            }
+                        }).show();
+                    }
+                });
             }
         });
         gridView.addPermanentColumn("Assignment", column, null, 100, Style.Unit.PX);
@@ -329,7 +352,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             return;
         }
         (new ProtocolCreationDialog(presenter,
-                new ProtocolCreationDialog.Callback() {
+                new DialogCallback<ProtocolType>() {
                     @Override
                     public void onCancel() {
                     }

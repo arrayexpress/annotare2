@@ -460,6 +460,10 @@ public class ExperimentData {
         updateQueue.add(new UpdateDataAssignmentColumnCommand(column));
     }
 
+    public void getProtocolAssignmentProfileAsync(int protocolId, AsyncCallback<ProtocolAssignmentProfile> callback) {
+        //TODO
+    }
+
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
         private ColumnValueType valueType;
