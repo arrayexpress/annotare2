@@ -204,7 +204,7 @@ public class ExperimentProfile implements Serializable {
     public Protocol createProtocol(OntologyTerm term, ProtocolTargetType usageType) {
         Protocol protocol = new Protocol(nextId());
         protocol.setType(term);
-        protocol.setUsage(usageType);
+        protocol.setTargetType(usageType);
         protocolMap.put(protocol.getId(), protocol);
         return protocol;
     }
@@ -231,8 +231,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     public LabeledExtract createLabeledExtract(Extract extract, String label) {
-        Assay assay = createAssay(extract, label);
-        return new LabeledExtract(assay.getId(), extract, label);
+        return new LabeledExtract(createAssay(extract, label));
     }
 
     private Assay createAssay(Extract extract, String label) {
@@ -300,7 +299,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void removeFileMappings(Assay assay) {
-        for(FileColumn fileColumn : fileColumns) {
+        for (FileColumn fileColumn : fileColumns) {
             fileColumn.removeFileId(assay);
         }
     }
@@ -310,7 +309,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     public void removeFile(long fileId) {
-        for(FileColumn fileColumn : fileColumns) {
+        for (FileColumn fileColumn : fileColumns) {
             fileColumn.removeFileId(fileId);
         }
     }
@@ -465,6 +464,10 @@ public class ExperimentProfile implements Serializable {
         labels.add(label);
     }
 
+    public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol) {
+        return protocol.getTargetType().getProtocolAssignments(protocol, this);
+    }
+
     private int nextId() {
         return ++nextId;
     }
@@ -486,12 +489,13 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void fixAssays() {
-        for(Assay assay : assayMap.values()) {
+        for (Assay assay : assayMap.values()) {
             assay.fixMe(this);
         }
 
-        for(FileColumn fileColumn : fileColumns) {
+        for (FileColumn fileColumn : fileColumns) {
             fileColumn.fixMe(this);
         }
     }
+
 }

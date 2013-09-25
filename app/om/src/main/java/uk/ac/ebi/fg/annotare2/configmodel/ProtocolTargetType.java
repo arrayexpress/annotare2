@@ -20,7 +20,7 @@ import com.google.common.annotations.GwtCompatible;
 
 import java.util.*;
 
-import static java.util.Collections.EMPTY_SET;
+import static java.util.Collections.EMPTY_MAP;
 
 /**
  * @author Olga Melnichuk
@@ -29,71 +29,58 @@ import static java.util.Collections.EMPTY_SET;
 public enum ProtocolTargetType {
     EXTRACTS {
         @Override
-        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
-            Set<String> assigned = new HashSet<String>();
-            for (Extract extract : exp.getExtracts()) {
-                String id = Integer.toString(extract.getId());
-                if (extract.hasProtocol(protocol)) {
-                    assigned.add(id);
-                }
-            }
-            return assigned;
+        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
+            return getAssignments(protocol, exp.getExtracts());
         }
 
         @Override
-        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            boolean assign2All = assignments.isEmpty();
-            for (Extract extract : exp.getExtracts()) {
-                extract.assign(protocol, !assign2All);
-            }
-            protocol.setAssign2All(assign2All);
+        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            setAssignments(protocol, assignments, exp.getExtracts());
         }
     },
     LABELED_EXTRACTS {
         @Override
-        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
-            //TODO
-            return EMPTY_SET;
+        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
+            return getAssignments(protocol, exp.getLabeledExtracts());
         }
 
         @Override
-        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            //TODO
+        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            setAssignments(protocol, assignments, exp.getLabeledExtracts());
         }
     },
     ASSAYS {
         @Override
-        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
-            //TODO
-            return EMPTY_SET;
+        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
+            return getAssignments(protocol, exp.getAssays());
         }
 
         @Override
-        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            //TODO
+        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+            setAssignments(protocol, assignments, exp.getAssays());
         }
     },
     RAW_FILES {
         @Override
-        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
+        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
             //TODO
-            return EMPTY_SET;
+            return EMPTY_MAP;
         }
 
         @Override
-        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
             //TODO
         }
     },
     PROCESSED_AND_MATRIX_FILES {
         @Override
-        public Set<String> getAssignments(Protocol protocol, ExperimentProfile exp) {
+        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
             //TODO
-            return EMPTY_SET;
+            return EMPTY_MAP;
         }
 
         @Override
-        public void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
             //TODO
         }
     };
@@ -101,14 +88,30 @@ public enum ProtocolTargetType {
     public Collection<Protocol> filter(Collection<Protocol> protocols) {
         List<Protocol> filtered = new ArrayList<Protocol>();
         for (Protocol protocol : protocols) {
-            if (protocol.getUsage() == this) {
+            if (protocol.getTargetType() == this) {
                 filtered.add(protocol);
             }
         }
         return filtered;
     }
 
-    public abstract Set<String> getAssignments(Protocol protocol, ExperimentProfile exp);
+    private static Map<AssignmentItem, Boolean> getAssignments(Protocol protocol, Collection<? extends HasProtocolAssignment> items) {
+        Map<AssignmentItem, Boolean> assigned = new LinkedHashMap<AssignmentItem, Boolean>();
+        for (HasProtocolAssignment item : items) {
+            assigned.put(item.getProtocolAssignmentItem(), item.hasProtocol(protocol) || protocol.isAssigned2All());
+        }
+        return assigned;
+    }
 
-    public abstract void setAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments);
+    private static void setAssignments(Protocol protocol, Set<String> assignments, Collection<? extends HasProtocolAssignment> items) {
+        boolean assign2All = assignments.isEmpty();
+        for (HasProtocolAssignment item : items) {
+            item.assignProtocol(protocol, !assign2All && assignments.contains(item.getProtocolAssignmentItem().getId()));
+        }
+        protocol.setAssigned2All(assign2All);
+    }
+
+    public abstract Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp);
+
+    public abstract void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments);
 }

@@ -29,7 +29,7 @@ import java.io.Serializable;
  */
 @GwtCompatible
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Assay implements Serializable {
+public class Assay implements Serializable, HasProtocolAssignment {
 
     @JsonProperty("extract")
     private Integer extractId;
@@ -37,6 +37,12 @@ public class Assay implements Serializable {
 
     @JsonProperty("label")
     private String label;
+
+    @JsonProperty("assayProtocols")
+    private ProtocolAssignment assayProtocols;
+
+    @JsonProperty("labeledExtractProtocols")
+    private ProtocolAssignment labeledExtractProtocols;
 
     Assay() {
         /* used by GWT serialization only */
@@ -46,6 +52,8 @@ public class Assay implements Serializable {
     Assay(@JsonProperty("extract") int extractId, @JsonProperty("label") String label) {
         this.extractId = extractId;
         this.label = label;
+        assayProtocols = new ProtocolAssignment();
+        labeledExtractProtocols = new ProtocolAssignment();
     }
 
     public Assay(Extract extract) {
@@ -111,6 +119,29 @@ public class Assay implements Serializable {
 
     @JsonIgnore
     public LabeledExtract asLabeledExtract() {
-        return new LabeledExtract(getId(), getExtract(), getLabel());
+        return new LabeledExtract(this);
+    }
+
+    @Override
+    public boolean hasProtocol(Protocol protocol) {
+        return assayProtocols.contains(protocol);
+    }
+
+    @Override
+    public void assignProtocol(Protocol protocol, boolean assigned) {
+        assayProtocols.set(protocol, assigned);
+    }
+
+    @Override
+    public AssignmentItem getProtocolAssignmentItem() {
+        return new AssignmentItem(getId(), getName());
+    }
+
+    boolean hasLabeledExtractProtocol(Protocol protocol) {
+        return labeledExtractProtocols.contains(protocol);
+    }
+
+    void assignLabelExtractProtocol(Protocol protocol, boolean assigned) {
+        labeledExtractProtocols.set(protocol, assigned);
     }
 }

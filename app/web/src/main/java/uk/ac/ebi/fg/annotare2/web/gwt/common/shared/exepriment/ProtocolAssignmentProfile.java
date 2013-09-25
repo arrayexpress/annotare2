@@ -17,7 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.AssignmentItem;
 import uk.ac.ebi.fg.annotare2.configmodel.Protocol;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -28,13 +32,22 @@ public class ProtocolAssignmentProfile implements IsSerializable {
 
     private String protocolName;
 
+    private Map<String, String> names;
+    private Map<String, Boolean> assignments;
+
     ProtocolAssignmentProfile() {
         /* used by GWT serialization */
     }
 
-    public ProtocolAssignmentProfile(Protocol protocol) {
+    public ProtocolAssignmentProfile(Protocol protocol, Map<AssignmentItem, Boolean> protocolAssignments) {
         protocolId = protocol.getId();
         protocolName = protocol.getName();
+        names = new LinkedHashMap<String, String>();
+        assignments = new LinkedHashMap<String, Boolean>();
+        for (AssignmentItem item : protocolAssignments.keySet()) {
+            names.put(item.getId(), item.getName());
+            assignments.put(item.getId(), protocolAssignments.get(item));
+        }
     }
 
     public String getProtocolName() {
@@ -43,5 +56,13 @@ public class ProtocolAssignmentProfile implements IsSerializable {
 
     public int getProtocolId() {
         return protocolId;
+    }
+
+    public Map<String, Boolean> getAssignments() {
+        return assignments;
+    }
+
+    public Map<String, String> getNames() {
+        return names;
     }
 }

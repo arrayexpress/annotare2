@@ -56,9 +56,11 @@ public class Protocol implements Serializable {
     @JsonProperty("parameters")
     private List<String> parameters;
 
-    @JsonProperty("usage")
-    private ProtocolTargetType usage;
-    private boolean assign2All;
+    @JsonProperty("targetType")
+    private ProtocolTargetType targetType;
+
+    @JsonProperty("assigned2All")
+    private boolean assigned2All;
 
     Protocol() {
     /* used by GWT serialization only */
@@ -68,6 +70,7 @@ public class Protocol implements Serializable {
     public Protocol(@JsonProperty("id") int id) {
         this.id = id;
         this.parameters = new ArrayList<String>();
+        assigned2All = true;
     }
 
     public int getId() {
@@ -90,12 +93,12 @@ public class Protocol implements Serializable {
         this.type = type;
     }
 
-    public ProtocolTargetType getUsage() {
-        return usage;
+    public ProtocolTargetType getTargetType() {
+        return targetType;
     }
 
-    public void setUsage(ProtocolTargetType usage) {
-        this.usage = usage;
+    public void setTargetType(ProtocolTargetType targetType) {
+        this.targetType = targetType;
     }
 
     public String getDescription() {
@@ -155,11 +158,11 @@ public class Protocol implements Serializable {
         return id;
     }
 
-    public void setAssign2All(boolean assign2All) {
-        this.assign2All = assign2All;
+    public void setAssigned2All(boolean assigned2All) {
+        this.assigned2All = assigned2All;
     }
 
-    public boolean isAssign2All() {
-        return assign2All;
+    public boolean isAssigned2All() {
+        return assigned2All;
     }
 }

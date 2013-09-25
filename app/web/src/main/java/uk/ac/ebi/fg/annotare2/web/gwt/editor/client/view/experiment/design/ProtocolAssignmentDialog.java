@@ -26,9 +26,13 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -57,12 +61,16 @@ public class ProtocolAssignmentDialog extends DialogBox {
     @UiField
     Button addButton;
 
-    private DialogCallback<ProtocolAssignmentProfile> callback;
-    private final ProtocolAssignmentProfile profile;
+    private DialogCallback<ProtocolAssignmentProfileUpdates> callback;
+    private final int protocolId;
+    private Map<String, Boolean> assignments;
+    private Map<String, String> names;
 
-    public ProtocolAssignmentDialog(ProtocolAssignmentProfile profile, DialogCallback<ProtocolAssignmentProfile> callback) {
+    public ProtocolAssignmentDialog(ProtocolAssignmentProfile profile, DialogCallback<ProtocolAssignmentProfileUpdates> callback) {
         this.callback = callback;
-        this.profile = profile;
+        this.protocolId = profile.getProtocolId();
+        this.assignments = new LinkedHashMap<String, Boolean>(profile.getAssignments());
+        this.names = new LinkedHashMap<String, String>(profile.getNames());
 
         setModal(true);
         setGlassEnabled(true);
@@ -71,8 +79,7 @@ public class ProtocolAssignmentDialog extends DialogBox {
         setWidget(Binder.BINDER.createAndBindUi(this));
 
         center();
-        //TODO updateAssignedList();
-        //TODO updateAvailableList();
+        updateListBoxes();
     }
 
     @UiHandler("cancelButton")
@@ -84,7 +91,7 @@ public class ProtocolAssignmentDialog extends DialogBox {
     void okClicked(ClickEvent event) {
         hide();
         if (callback != null) {
-            callback.onOkay(profile);
+            callback.onOkay(getAssignmentUpdates());
         }
     }
 
@@ -96,5 +103,27 @@ public class ProtocolAssignmentDialog extends DialogBox {
     @UiHandler("addButton")
     void addButtonClicked(ClickEvent event) {
         //TODO
+    }
+
+    private ProtocolAssignmentProfileUpdates getAssignmentUpdates() {
+        Set<String> assignments = new HashSet<String>();
+        for(int i= 0; i < assignedListBox.getItemCount(); i++) {
+            assignments.add(assignedListBox.getValue(i));
+        }
+        return new ProtocolAssignmentProfileUpdates(protocolId, assignments);
+    }
+
+    private void updateListBoxes() {
+        assignedListBox.clear();
+        availableListBox.clear();
+
+        for(String id : assignments.keySet()) {
+            boolean assigned = assignments.get(id);
+            if (assigned) {
+                assignedListBox.addItem(names.get(id), id);
+            } else {
+                availableListBox.addItem(names.get(id), id);
+            }
+        }
     }
 }

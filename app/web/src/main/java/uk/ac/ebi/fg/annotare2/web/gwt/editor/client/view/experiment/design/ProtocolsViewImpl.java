@@ -29,6 +29,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
@@ -147,14 +148,14 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
                     @Override
                     public void onSuccess(ProtocolAssignmentProfile result) {
-                        new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfile>() {
+                        new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
                             @Override
                             public void onCancel() {
                                 // do nothing
                             }
 
                             @Override
-                            public void onOkay(ProtocolAssignmentProfile assignmentProfile) {
+                            public void onOkay(ProtocolAssignmentProfileUpdates profileUpdates) {
                                 //TODO update protocol assignments
                             }
                         }).show();

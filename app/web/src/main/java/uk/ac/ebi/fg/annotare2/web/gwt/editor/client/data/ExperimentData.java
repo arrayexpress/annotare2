@@ -29,7 +29,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -182,7 +181,7 @@ public class ExperimentData {
         for (Extract extract : exp.getExtracts()) {
             Integer extractId = extract.getId();
             ExtractLabelsRow row = new ExtractLabelsRow(extractId, extract.getName());
-            for(LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
+            for (LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
                 row.addLabel(labeledExtract.getLabel());
             }
             rows.add(row);
@@ -228,6 +227,12 @@ public class ExperimentData {
             rows.add(row);
         }
         return rows;
+    }
+
+    private ProtocolAssignmentProfile getProtocolAssignmentProfile(int protocolId, ExperimentProfile exp) {
+        Protocol protocol = exp.getProtocol(protocolId);
+        Map<AssignmentItem, Boolean> protocolAssignments = exp.getProtocolAssignments(protocol);
+        return new ProtocolAssignmentProfile(protocol, protocolAssignments);
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -372,6 +377,20 @@ public class ExperimentData {
         });
     }
 
+    public void getProtocolAssignmentProfileAsync(final int protocolId, final AsyncCallback<ProtocolAssignmentProfile> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getProtocolAssignmentProfile(protocolId, result));
+            }
+        });
+    }
+
     public void createContact() {
         updateQueue.add(new CreateContactCommand());
     }
@@ -458,10 +477,6 @@ public class ExperimentData {
 
     public void updateDataAssignmentColumn(DataAssignmentColumn column) {
         updateQueue.add(new UpdateDataAssignmentColumnCommand(column));
-    }
-
-    public void getProtocolAssignmentProfileAsync(int protocolId, AsyncCallback<ProtocolAssignmentProfile> callback) {
-        //TODO
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

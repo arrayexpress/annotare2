@@ -17,48 +17,54 @@
 package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class LabeledExtract implements Serializable {
+public class LabeledExtract implements Serializable, HasProtocolAssignment {
 
-    private String id;
-    private Extract extract;
-    private String label;
+    private Assay assay;
 
     LabeledExtract() {
         /*used by GWT serialization */
     }
 
-    public LabeledExtract(String id, Extract extract, String label) {
-        this.id = id;
-        this.extract = extract;
-        this.label = label;
+    public LabeledExtract(Assay assay) {
+        this.assay = assay;
     }
 
     public String getId() {
-        return id;
+        return assay.getId();
     }
 
     public String getLabel() {
-        return label;
+        return assay.getLabel();
     }
 
     public Extract getExtract() {
-        return extract;
+        return assay.getExtract();
     }
 
     public String getName() {
-        return extract.getName() + ":" + label;
+        return assay.getName();
+    }
+
+    @Override
+    public boolean hasProtocol(Protocol protocol) {
+        return assay.hasLabeledExtractProtocol(protocol);
+    }
+
+    @Override
+    public void assignProtocol(Protocol protocol, boolean assigned) {
+        assay.assignLabelExtractProtocol(protocol, assigned);
+    }
+
+    @Override
+    public AssignmentItem getProtocolAssignmentItem() {
+        return new AssignmentItem(getId(), getName());
     }
 }
 
