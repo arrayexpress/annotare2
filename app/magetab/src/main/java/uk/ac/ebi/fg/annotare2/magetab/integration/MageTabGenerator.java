@@ -24,7 +24,6 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
-import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -42,16 +41,12 @@ import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate
 public class MageTabGenerator {
 
     private final ExperimentProfile exp;
-    private final Map<Long, DataFile> dataFiles = new HashMap<Long, DataFile>();
 
     private final Map<String, SDRFNode> nodeCache = new HashMap<String, SDRFNode>();
     private int counter;
 
-    public MageTabGenerator(ExperimentProfile exp, Collection<DataFile> files) {
+    public MageTabGenerator(ExperimentProfile exp) {
         this.exp = exp;
-        for (DataFile file : files) {
-            this.dataFiles.put(file.getId(), file);
-        }
     }
 
     public MAGETABInvestigation generate() throws ParseException {
@@ -400,20 +395,20 @@ public class MageTabGenerator {
         List<SDRFNode> rootNodes = new ArrayList<SDRFNode>();
         for (FileColumn fileColumn : fileColumns) {
             FileType type = fileColumn.getType();
-            Long fileId = fileColumn.getFileId(assay);
+            String fileName = fileColumn.getFileName(assay);
             SDRFNode current;
             switch (type) {
                 case RAW_FILE:
-                    current = createDataFileNode(fileId, ArrayDataNode.class);
+                    current = createDataFileNode(fileName, ArrayDataNode.class);
                     break;
                 case RAW_MATRIX_FILE:
-                    current = createDataFileNode(fileId, ArrayDataMatrixNode.class);
+                    current = createDataFileNode(fileName, ArrayDataMatrixNode.class);
                     break;
                 case PROCESSED_FILE:
-                    current = createDataFileNode(fileId, DerivedArrayDataNode.class);
+                    current = createDataFileNode(fileName, DerivedArrayDataNode.class);
                     break;
                 case PROCESSED_MATRIX_FILE:
-                    current = createDataFileNode(fileId, DerivedArrayDataMatrixNode.class);
+                    current = createDataFileNode(fileName, DerivedArrayDataMatrixNode.class);
                     break;
                 default:
                     throw new IllegalStateException("Unsupported file type: " + type);
@@ -442,16 +437,15 @@ public class MageTabGenerator {
         return rootNodes;
     }
 
-    private <T extends SDRFNode> SDRFNode createDataFileNode(Long fileId, Class<T> clazz) {
-        DataFile dataFile = fileId == null ? null : dataFiles.get(fileId);
-        if (dataFile == null) {
+    private <T extends SDRFNode> SDRFNode createDataFileNode(String fileName, Class<T> clazz) {
+        if (fileName == null) {
             return createFakeNode(clazz);
         }
-        T node = getNode(clazz, dataFile.getName());
+        T node = getNode(clazz, fileName);
         if (node != null) {
             return node;
         }
-        return createNode(clazz, dataFile.getName());
+        return createNode(clazz, fileName);
     }
 
     private Collection<FileColumn> getFileColumns() {
@@ -518,11 +512,6 @@ public class MageTabGenerator {
                 }
             }
         }
-    }
-
-    private String getFileName(Long fileId, int colIndex) {
-        DataFile dataFile = dataFiles.get(fileId);
-        return dataFile == null ? "none-" + colIndex : dataFile.getName();
     }
 
     private static String notNull(String str) {

@@ -53,7 +53,10 @@ import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.hash.Hashing.md5;
 import static com.google.common.io.Files.hash;
@@ -104,7 +107,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
-            return toIdfTable(exp, submission.getFiles());
+            return toIdfTable(exp);
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -119,7 +122,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
-            return toSdrfTable(exp, submission.getFiles());
+            return toSdrfTable(exp);
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -129,14 +132,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private Table toIdfTable(ExperimentProfile exp, Collection<DataFile> dataFiles) throws IOException, ParseException {
-        MageTabFormat mageTab = createMageTab(exp, dataFiles);
+    private Table toIdfTable(ExperimentProfile exp) throws IOException, ParseException {
+        MageTabFormat mageTab = createMageTab(exp);
         return new TsvParser().parse(new FileInputStream(mageTab.getIdfFile()));
         //TODO: delete temporary file ?
     }
 
-    private Table toSdrfTable(ExperimentProfile exp, Collection<DataFile> dataFiles) throws IOException, ParseException {
-        MageTabFormat mageTab = createMageTab(exp, dataFiles);
+    private Table toSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
+        MageTabFormat mageTab = createMageTab(exp);
         return new TsvParser().parse(new FileInputStream(mageTab.getSdrfFile()));
         //TODO: delete temporary file ?
     }
@@ -307,9 +310,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 @Override
                 public Void doInTransaction() throws Exception {
                     ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-                    dataFileManager.removeFile(submission, fileId);
-                    submission.getExperimentProfile().removeFile(fileId);
-                    save(submission);
+                    DataFile dataFile = dataFileManager.get(fileId);
+                    String fileName = dataFile.getName();
+                    if (dataFileManager.removeFile(submission, dataFile)) {
+                        submission.getExperimentProfile().removeFile(fileName);
+                        save(submission);
+                    }
                     return null;
                 }
             });

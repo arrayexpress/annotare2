@@ -270,7 +270,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         for (String assayId : column.getAssayIds()) {
             Assay assay = exp.getAssay(assayId);
             if (assay != null) {
-                fileColumn.setFileId(assay, column.getFileId(assayId));
+                fileColumn.setFileName(assay, column.getFileName(assayId));
             }
         }
     }

@@ -27,7 +27,6 @@ import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.NodeFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.UnexpectedException;
 
@@ -38,7 +37,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 
 import static com.google.common.io.Closeables.close;
 
@@ -56,8 +54,8 @@ public class MageTabFormat {
     private IDF idf;
     private SDRF sdrf;
 
-    private void init(ExperimentProfile exp, Collection<DataFile> dataFiles) throws IOException, ParseException {
-        MAGETABInvestigation generated = (new MageTabGenerator(exp, dataFiles)).generate();
+    private void init(ExperimentProfile exp) throws IOException, ParseException {
+        MAGETABInvestigation generated = (new MageTabGenerator(exp)).generate();
 
         /* Generated MAGE-TAB lucks cell locations, which are good to have during validation.
          * So we have to write files to disk and parse again */
@@ -117,9 +115,9 @@ public class MageTabFormat {
         return sdrfFile;
     }
 
-    public static MageTabFormat createMageTab(ExperimentProfile exp, Collection<DataFile> dataFiles) throws IOException, ParseException {
+    public static MageTabFormat createMageTab(ExperimentProfile exp) throws IOException, ParseException {
         MageTabFormat format = new MageTabFormat();
-        format.init(exp, dataFiles);
+        format.init(exp);
         return format;
     }
 

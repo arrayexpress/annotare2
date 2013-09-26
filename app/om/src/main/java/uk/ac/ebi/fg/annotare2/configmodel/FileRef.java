@@ -27,39 +27,30 @@ import java.io.Serializable;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class FileRef implements Serializable {
+public class FileRef implements HasProtocolAssignment {
 
-    @JsonProperty("id")
-    private Long fileId;
+    private long fileId;
+    private String fileName;
+    private ProtocolAssignment protocolAssignment;
 
-    FileRef() {
-        /* used by GWT serialization */
-    }
-
-    @JsonCreator
-    public FileRef(@JsonProperty("id") Long fileId) {
+    public FileRef(long fileId, String fileName, ProtocolAssignment protocolAssignment) {
         this.fileId = fileId;
-    }
-
-    public Long getFileId() {
-        return fileId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FileRef fileRef = (FileRef) o;
-
-        if (fileId != null ? !fileId.equals(fileRef.fileId) : fileRef.fileId != null) return false;
-
-        return true;
+        this.fileName = fileName;
+        this.protocolAssignment = protocolAssignment;
     }
 
     @Override
-    public int hashCode() {
-        return fileId != null ? fileId.hashCode() : 0;
+    public boolean hasProtocol(Protocol protocol) {
+        return false;
+    }
+
+    @Override
+    public void assignProtocol(Protocol protocol, boolean assigned) {
+
+    }
+
+    @Override
+    public AssignmentItem getProtocolAssignmentItem() {
+        return new AssignmentItem(Long.toString(fileId), fileName);
     }
 }

@@ -63,13 +63,12 @@ public enum ProtocolTargetType {
     RAW_FILES("raw files") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            //TODO
-            return EMPTY_MAP;
+            return getAssignments(protocol, exp.getRawFiles());
         }
 
         @Override
         public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            //TODO
+            setAssignments(protocol, assignments, exp.getRawFiles());
         }
     },
     PROCESSED_AND_MATRIX_FILES("processed and matrix files") {

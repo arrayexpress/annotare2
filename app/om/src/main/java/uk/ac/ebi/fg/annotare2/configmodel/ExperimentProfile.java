@@ -300,7 +300,7 @@ public class ExperimentProfile implements Serializable {
 
     private void removeFileMappings(Assay assay) {
         for (FileColumn fileColumn : fileColumns) {
-            fileColumn.removeFileId(assay);
+            fileColumn.removeFileName(assay);
         }
     }
 
@@ -308,9 +308,9 @@ public class ExperimentProfile implements Serializable {
         fileColumns.remove(index);
     }
 
-    public void removeFile(long fileId) {
+    public void removeFile(String fileName) {
         for (FileColumn fileColumn : fileColumns) {
-            fileColumn.removeFileId(fileId);
+            fileColumn.removeFileName(fileName);
         }
     }
 
@@ -456,6 +456,12 @@ public class ExperimentProfile implements Serializable {
         return fileColumns.get(index);
     }
 
+    @JsonIgnore
+    public Collection<FileRef> getRawFiles() {
+        //TODO
+        return Collections.emptyList();
+    }
+
     public Collection<String> getLabels() {
         return unmodifiableCollection(labels);
     }
@@ -497,5 +503,4 @@ public class ExperimentProfile implements Serializable {
             fileColumn.fixMe(this);
         }
     }
-
 }

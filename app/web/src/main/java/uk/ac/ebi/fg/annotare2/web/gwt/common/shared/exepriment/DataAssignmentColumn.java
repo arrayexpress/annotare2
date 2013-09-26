@@ -16,7 +16,7 @@ public class DataAssignmentColumn implements IsSerializable {
 
     private FileType type;
 
-    private Map<String, Long> assayId2FileId;
+    private Map<String, String> assayId2FileName;
 
     DataAssignmentColumn() {
         /* used by GWT serialization */
@@ -25,7 +25,7 @@ public class DataAssignmentColumn implements IsSerializable {
     public DataAssignmentColumn(int index, FileType type) {
         this.index = index;
         this.type = type;
-        this.assayId2FileId = new HashMap<String, Long>();
+        this.assayId2FileName = new HashMap<String, String>();
     }
 
     public int getIndex() {
@@ -36,32 +36,32 @@ public class DataAssignmentColumn implements IsSerializable {
         return type;
     }
 
-    public Long getFileId(DataAssignmentRow row) {
-        return getFileId(row.getAssayId());
+    public String getFileName(DataAssignmentRow row) {
+        return getFileName(row.getAssayId());
     }
 
-    public Long getFileId(String assayId) {
-        return assayId2FileId.get(assayId);
+    public String getFileName(String assayId) {
+        return assayId2FileName.get(assayId);
     }
 
-    public void setFileId(DataAssignmentRow row, Long fileId) {
-        setFileId(row.getAssayId(), fileId);
+    public void setFileName(DataAssignmentRow row, String fileName) {
+        setFileName(row.getAssayId(), fileName);
     }
 
-    public void setFileId(String assayId, Long fileId) {
-        if (fileId == null) {
-            assayId2FileId.remove(assayId);
+    public void setFileName(String assayId, String fileName) {
+        if (fileName == null) {
+            assayId2FileName.remove(assayId);
         } else {
-            assayId2FileId.put(assayId, fileId);
+            assayId2FileName.put(assayId, fileName);
         }
     }
 
-    public Collection<Long> getFileIds() {
-        return assayId2FileId.values();
+    public Collection<String> getFileNames() {
+        return assayId2FileName.values();
     }
 
     public Collection<String> getAssayIds() {
-        return assayId2FileId.keySet();
+        return assayId2FileName.keySet();
     }
 
     @Override
