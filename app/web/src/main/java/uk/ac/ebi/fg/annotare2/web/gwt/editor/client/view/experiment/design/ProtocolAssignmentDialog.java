@@ -74,7 +74,7 @@ public class ProtocolAssignmentDialog extends DialogBox {
 
         setModal(true);
         setGlassEnabled(true);
-        setText("Assign " + profile.getProtocolName() + " to...");
+        setText("Assign " + profile.getProtocolName() + " to " + profile.getTarget() + "...");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
 

@@ -27,7 +27,7 @@ import static java.util.Collections.EMPTY_MAP;
  */
 @GwtCompatible
 public enum ProtocolTargetType {
-    EXTRACTS {
+    EXTRACTS("extracts") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
             return getAssignments(protocol, exp.getExtracts());
@@ -38,7 +38,7 @@ public enum ProtocolTargetType {
             setAssignments(protocol, assignments, exp.getExtracts());
         }
     },
-    LABELED_EXTRACTS {
+    LABELED_EXTRACTS("labeled extracts") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
             return getAssignments(protocol, exp.getLabeledExtracts());
@@ -49,7 +49,7 @@ public enum ProtocolTargetType {
             setAssignments(protocol, assignments, exp.getLabeledExtracts());
         }
     },
-    ASSAYS {
+    ASSAYS("assays") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
             return getAssignments(protocol, exp.getAssays());
@@ -60,7 +60,7 @@ public enum ProtocolTargetType {
             setAssignments(protocol, assignments, exp.getAssays());
         }
     },
-    RAW_FILES {
+    RAW_FILES("raw files") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
             //TODO
@@ -72,7 +72,7 @@ public enum ProtocolTargetType {
             //TODO
         }
     },
-    PROCESSED_AND_MATRIX_FILES {
+    PROCESSED_AND_MATRIX_FILES("processed and matrix files") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
             //TODO
@@ -84,6 +84,16 @@ public enum ProtocolTargetType {
             //TODO
         }
     };
+
+    private final String title;
+
+    ProtocolTargetType(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 
     public Collection<Protocol> filter(Collection<Protocol> protocols) {
         List<Protocol> filtered = new ArrayList<Protocol>();

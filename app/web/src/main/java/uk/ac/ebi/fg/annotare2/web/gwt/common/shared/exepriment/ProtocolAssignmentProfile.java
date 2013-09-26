@@ -29,8 +29,8 @@ import java.util.Map;
 public class ProtocolAssignmentProfile implements IsSerializable {
 
     private int protocolId;
-
     private String protocolName;
+    private String target;
 
     private Map<String, String> names;
     private Map<String, Boolean> assignments;
@@ -42,6 +42,7 @@ public class ProtocolAssignmentProfile implements IsSerializable {
     public ProtocolAssignmentProfile(Protocol protocol, Map<AssignmentItem, Boolean> protocolAssignments) {
         protocolId = protocol.getId();
         protocolName = protocol.getName();
+        target = protocol.getTargetType().getTitle();
         names = new LinkedHashMap<String, String>();
         assignments = new LinkedHashMap<String, Boolean>();
         for (AssignmentItem item : protocolAssignments.keySet()) {
@@ -64,5 +65,9 @@ public class ProtocolAssignmentProfile implements IsSerializable {
 
     public Map<String, String> getNames() {
         return names;
+    }
+
+    public String getTarget() {
+        return target;
     }
 }
