@@ -46,24 +46,28 @@ public class Assay implements Serializable, HasProtocolAssignment {
 
     Assay() {
         /* used by GWT serialization only */
+        this(0, null, "");
     }
 
     @JsonCreator
     Assay(@JsonProperty("extract") int extractId, @JsonProperty("label") String label) {
-        this.extractId = extractId;
-        this.label = label;
-        assayProtocols = new ProtocolAssignment();
-        labeledExtractProtocols = new ProtocolAssignment();
+        this(extractId, null, label);
     }
 
     public Assay(Extract extract) {
-        this(extract, null);
+        this(extract.getId(), extract, null);
     }
 
     public Assay(Extract extract, String label) {
+        this(extract.getId(), extract, label);
+    }
+
+    private Assay(int extractId, Extract extract, String label) {
+        this.extractId = extractId;
         this.extract = extract;
         this.label = label;
-        this.extractId = extract.getId();
+        assayProtocols = new ProtocolAssignment();
+        labeledExtractProtocols = new ProtocolAssignment();
     }
 
     @JsonIgnore
@@ -73,11 +77,6 @@ public class Assay implements Serializable, HasProtocolAssignment {
 
     public String getLabel() {
         return label;
-    }
-
-    @JsonProperty("extract")
-    int getExtractId() {
-        return extractId;
     }
 
     public String getId() {
