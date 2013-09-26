@@ -17,22 +17,17 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -49,10 +44,10 @@ public class ProtocolAssignmentDialog extends DialogBox {
     @UiField
     Button cancelButton;
 
-    @UiField
+    @UiField(provided = true)
     ListBox assignedListBox;
 
-    @UiField
+    @UiField(provided = true)
     ListBox availableListBox;
 
     @UiField
@@ -60,6 +55,9 @@ public class ProtocolAssignmentDialog extends DialogBox {
 
     @UiField
     Button addButton;
+
+    @UiField
+    Label errorMessage;
 
     private DialogCallback<ProtocolAssignmentProfileUpdates> callback;
     private final int protocolId;
@@ -72,6 +70,9 @@ public class ProtocolAssignmentDialog extends DialogBox {
         this.assignments = new LinkedHashMap<String, Boolean>(profile.getAssignments());
         this.names = new LinkedHashMap<String, String>(profile.getNames());
 
+        assignedListBox = new ListBox(true);
+        availableListBox = new ListBox(true);
+
         setModal(true);
         setGlassEnabled(true);
         setText("Assign " + profile.getProtocolName() + " to " + profile.getTarget() + "...");
@@ -82,6 +83,11 @@ public class ProtocolAssignmentDialog extends DialogBox {
         updateListBoxes();
     }
 
+    @UiHandler(value = {"assignedListBox", "availableListBox"})
+    void listBoxChanged(ChangeEvent event) {
+        hideError();
+    }
+
     @UiHandler("cancelButton")
     void cancelClicked(ClickEvent event) {
         hide();
@@ -89,41 +95,70 @@ public class ProtocolAssignmentDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
+        ProtocolAssignmentProfileUpdates updates = getAssignmentUpdates();
+        if (updates.getAssignments().isEmpty()) {
+            showError("Assigned list can't be empty");
+            return;
+        }
         hide();
         if (callback != null) {
-            callback.onOkay(getAssignmentUpdates());
+            callback.onOkay(updates);
         }
     }
 
     @UiHandler("removeButton")
     void removeButtonClicked(ClickEvent event) {
-        //TODO
+        assign(getSelected(assignedListBox), false);
     }
 
     @UiHandler("addButton")
     void addButtonClicked(ClickEvent event) {
-        //TODO
+        assign(getSelected(availableListBox), true);
     }
 
     private ProtocolAssignmentProfileUpdates getAssignmentUpdates() {
         Set<String> assignments = new HashSet<String>();
-        for(int i= 0; i < assignedListBox.getItemCount(); i++) {
+        for (int i = 0; i < assignedListBox.getItemCount(); i++) {
             assignments.add(assignedListBox.getValue(i));
         }
         return new ProtocolAssignmentProfileUpdates(protocolId, assignments);
+    }
+
+    private void assign(Set<String> assigned, boolean assign) {
+        for (String key : assignments.keySet()) {
+            if (assigned.contains(key)) {
+                assignments.put(key, assign);
+            }
+        }
+        updateListBoxes();
+    }
+
+    private Set<String> getSelected(ListBox listBox) {
+        Set<String> selected = new HashSet<String>();
+        for (int i = 0, len = listBox.getItemCount(); i < len; i++) {
+            if (listBox.isItemSelected(i)) {
+                selected.add(listBox.getValue(i));
+            }
+        }
+        return selected;
+    }
+
+    private void hideError() {
+        showError(null);
+    }
+
+    private void showError(String msg) {
+        errorMessage.setText(msg == null ? "" : "Error:" + msg);
     }
 
     private void updateListBoxes() {
         assignedListBox.clear();
         availableListBox.clear();
 
-        for(String id : assignments.keySet()) {
+        for (String id : assignments.keySet()) {
             boolean assigned = assignments.get(id);
-            if (assigned) {
-                assignedListBox.addItem(names.get(id), id);
-            } else {
-                availableListBox.addItem(names.get(id), id);
-            }
+            ListBox listBox = assigned ? assignedListBox : availableListBox;
+            listBox.addItem(names.get(id), id);
         }
     }
 }

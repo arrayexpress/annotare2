@@ -19,7 +19,12 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
-
+    <ui:style>
+        .errorMessage {
+            color: red;
+            font-size: 12px;
+        }
+    </ui:style>
     <g:ResizeLayoutPanel height="300px" width="600px">
         <g:DockLayoutPanel>
             <g:center>
@@ -70,9 +75,10 @@
                 <g:HTMLPanel>
                     <table style="width:100%">
                         <tr>
+                            <td><g:Label ui:field="errorMessage" addStyleNames="{style.errorMessage}"/></td>
                             <td align="right">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
-                                <g:Button ui:field="okButton">Ok</g:Button>
+                                <g:Button ui:field="okButton">Save</g:Button>
                             </td>
                         </tr>
                     </table>
