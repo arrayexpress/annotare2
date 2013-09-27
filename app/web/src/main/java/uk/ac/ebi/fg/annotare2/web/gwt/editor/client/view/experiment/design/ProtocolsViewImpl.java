@@ -66,6 +66,10 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             }
         });
         gridView.addTool(removeButton);
+        Button moveUpButton = new Button("Move Up");
+        gridView.addTool(moveUpButton);
+        Button moveDownButton = new Button("Move Down");
+        gridView.addTool(moveDownButton);
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
@@ -148,6 +152,10 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
                     @Override
                     public void onSuccess(ProtocolAssignmentProfile result) {
+                        if (result.getNames().isEmpty()) {
+                            Window.alert("You do not have any " + result.getTarget() + " to assign protocols to.");
+                            return;
+                        }
                         new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
                             @Override
                             public void onCancel() {
