@@ -17,9 +17,11 @@
 package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
 import com.google.inject.Inject;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.db.om.enums.Role;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.db.om.User;
 
@@ -67,7 +69,12 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public User getCuratorUser() {
-        return getUserByEmail("curator@ebi.ac.uk");
+        List<User> users = (List<User>) getCurrentSession().createCriteria(User.class)
+                .createCriteria("roles")
+                .add(Restrictions.eq("role", Role.CURATOR))
+                .list();
+        return users.isEmpty() ? null : users.get(0);
     }
 }
