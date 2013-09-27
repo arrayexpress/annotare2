@@ -20,8 +20,6 @@ import com.google.common.annotations.GwtCompatible;
 
 import java.util.*;
 
-import static java.util.Collections.EMPTY_MAP;
-
 /**
  * @author Olga Melnichuk
  */
@@ -63,24 +61,39 @@ public enum ProtocolTargetType {
     RAW_FILES("raw files") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            return getAssignments(protocol, exp.getRawFiles());
+            return getAssignments(protocol, getFileRefs(exp));
         }
 
         @Override
         public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            setAssignments(protocol, assignments, exp.getRawFiles());
+            setAssignments(protocol, assignments, getFileRefs(exp));
+        }
+
+        private Collection<FileRef> getFileRefs(ExperimentProfile exp) {
+            List<FileRef> fileRefs = new ArrayList<FileRef>();
+            for (String fileName : exp.getRawFiles()) {
+                fileRefs.add(new FileRef(fileName, exp));
+            }
+            return fileRefs;
         }
     },
-    PROCESSED_AND_MATRIX_FILES("processed and matrix files") {
+    PROCESSED_AND_MATRIX_FILES("processed files") {
         @Override
         public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            //TODO
-            return EMPTY_MAP;
+            return getAssignments(protocol, getFileRefs(exp));
         }
 
         @Override
         public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            //TODO
+            setAssignments(protocol, assignments, getFileRefs(exp));
+        }
+
+        private Collection<FileRef> getFileRefs(ExperimentProfile exp) {
+            List<FileRef> fileRefs = new ArrayList<FileRef>();
+            for (String fileName : exp.getProcessedFiles()) {
+                fileRefs.add(new FileRef(fileName, exp));
+            }
+            return fileRefs;
         }
     };
 

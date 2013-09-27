@@ -17,40 +17,33 @@
 package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class FileRef implements HasProtocolAssignment {
+class FileRef implements HasProtocolAssignment {
 
-    private long fileId;
     private String fileName;
-    private ProtocolAssignment protocolAssignment;
+    private ExperimentProfile exp;
 
-    public FileRef(long fileId, String fileName, ProtocolAssignment protocolAssignment) {
-        this.fileId = fileId;
+    public FileRef(String fileName, ExperimentProfile exp) {
         this.fileName = fileName;
-        this.protocolAssignment = protocolAssignment;
+        this.exp = exp;
     }
 
     @Override
     public boolean hasProtocol(Protocol protocol) {
-        return false;
+        return exp.isProtocolAssigned2File(protocol, fileName);
     }
 
     @Override
     public void assignProtocol(Protocol protocol, boolean assigned) {
-
+        exp.assignProtocol2File(protocol, fileName, assigned);
     }
 
     @Override
     public AssignmentItem getProtocolAssignmentItem() {
-        return new AssignmentItem(Long.toString(fileId), fileName);
+        return new AssignmentItem(fileName, fileName);
     }
 }

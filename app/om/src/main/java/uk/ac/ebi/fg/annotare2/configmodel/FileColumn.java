@@ -18,18 +18,18 @@ package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
  */
 @GwtCompatible
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FileColumn implements Serializable {
 
     @JsonProperty("type")
@@ -106,8 +106,13 @@ public class FileColumn implements Serializable {
         this.assayId2FileName = null;
     }
 
-    public void clearFileRefs() {
+    public void clear() {
         assay2FileName = new HashMap<Assay, String>();
+    }
+
+    @JsonIgnore
+    public Collection<? extends String> getFileNames() {
+        return assay2FileName.values();
     }
 }
 

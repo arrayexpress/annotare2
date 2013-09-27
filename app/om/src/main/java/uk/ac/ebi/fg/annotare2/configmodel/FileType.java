@@ -45,4 +45,8 @@ public enum FileType {
     public boolean isRaw() {
         return this == RAW_FILE || this == RAW_MATRIX_FILE;
     }
+
+    public boolean isProcessed() {
+        return this == PROCESSED_FILE || this == PROCESSED_MATRIX_FILE;
+    }
 }
