@@ -60,6 +60,10 @@ public class DummyData {
         User user = createUser("user@ebi.ac.uk", "ee11cbb19052e40b07aac0ca060c23ee");
         addRole(user, Role.AUTHENTICATED);
 
+        user = createUser("curator@ebi.ac.uk", "b06bb1bec903b5f87a7a482cd8385267");
+        addRole(user, Role.AUTHENTICATED);
+        addRole(user, Role.CURATOR);
+
         createSubmission(user,
                 SubmissionStatus.IN_PROGRESS,
                 "E-MTAB-1160.json.txt",

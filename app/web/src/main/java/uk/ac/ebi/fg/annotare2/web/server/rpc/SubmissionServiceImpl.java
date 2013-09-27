@@ -28,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
@@ -81,16 +82,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final AnnotareProperties properties;
     private final TransactionSupport transactionSupport;
     private final SubsTracking subsTracking;
+    private final UserDao userDao;
 
     @Inject
     public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
                                  DataFileManager dataFileManager, AnnotareProperties properties,
-                                 TransactionSupport transactionSupport, SubsTracking subsTracking) {
+                                 TransactionSupport transactionSupport, SubsTracking subsTracking, UserDao userDao) {
         super(authService, submissionManager);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.transactionSupport = transactionSupport;
         this.subsTracking = subsTracking;
+        this.userDao = userDao;
     }
 
     @Override
@@ -225,6 +228,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
                     submission.setSubsTrackingId(subsTrackingId);
                     submission.setStatus(SubmissionStatus.SUBMITTED);
+                    submission.setOwnedBy(userDao.getCuratorUser());
                     save(submission);
                     return null;
                 }
