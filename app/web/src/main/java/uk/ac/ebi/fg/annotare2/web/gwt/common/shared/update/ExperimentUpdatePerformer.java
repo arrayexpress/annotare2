@@ -64,4 +64,6 @@ public interface ExperimentUpdatePerformer {
     void removeDataAssignmentColumns(List<Integer> indices);
 
     void updateDataAssignmentColumn(DataAssignmentColumn column);
+
+    void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates);
 }

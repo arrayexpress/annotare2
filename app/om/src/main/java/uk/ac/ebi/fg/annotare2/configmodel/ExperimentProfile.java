@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
@@ -95,9 +94,6 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("fileColumns")
     private List<FileColumn> fileColumns;
 
-    @JsonProperty("file2ProtocolAssignmentMap")
-    private Map<String, ProtocolAssignment> file2ProtocolAssignmentMap;
-
     ExperimentProfile() {
         /* used by GWT serialization */
     }
@@ -119,7 +115,6 @@ public class ExperimentProfile implements Serializable {
 
         assayMap = newLinkedHashMap();
         fileColumns = newArrayList();
-        file2ProtocolAssignmentMap = newHashMap();
     }
 
     @JsonProperty("sample2Extracts")
@@ -319,9 +314,12 @@ public class ExperimentProfile implements Serializable {
         }
     }
 
-    public void removeProtocol(int id) {
-        //TODO update protocol assignments
-        protocolMap.remove(id);
+    public void removeProtocol(Protocol protocol) {
+        if (protocol == null) {
+            return;
+        }
+        protocol.getTargetType().removeProtocolAssignments(protocol, this);
+        protocolMap.remove(protocol.getId());
     }
 
     public void link(Sample sample, Extract extract) {
@@ -463,39 +461,25 @@ public class ExperimentProfile implements Serializable {
     }
 
     @JsonIgnore
-    Collection<String> getRawFiles() {
-        Set<String> fileNames = new HashSet<String>();
+    Collection<FileRef> getRawFileRefs() {
+        Set<FileRef> fileRefs = new HashSet<FileRef>();
         for (FileColumn fileColumn : fileColumns) {
             if (fileColumn.getType().isRaw()) {
-                fileNames.addAll(fileColumn.getFileNames());
+                fileRefs.addAll(fileColumn.getFileRefs());
             }
         }
-        return fileNames;
+        return fileRefs;
     }
 
     @JsonIgnore
-    Collection<String> getProcessedFiles() {
-        Set<String> fileNames = new HashSet<String>();
+    Collection<FileRef> getProcessedFileRefs() {
+        Set<FileRef> fileRefs = new HashSet<FileRef>();
         for (FileColumn fileColumn : fileColumns) {
             if (fileColumn.getType().isProcessed()) {
-                fileNames.addAll(fileColumn.getFileNames());
+                fileRefs.addAll(fileColumn.getFileRefs());
             }
         }
-        return fileNames;
-    }
-
-    boolean isProtocolAssigned2File(Protocol protocol, String fileName) {
-        ProtocolAssignment assignment = file2ProtocolAssignmentMap.get(fileName);
-        return assignment != null && assignment.contains(protocol);
-    }
-
-    void assignProtocol2File(Protocol protocol, String fileName, boolean assigned) {
-        ProtocolAssignment assignment = file2ProtocolAssignmentMap.get(fileName);
-        if (assignment == null) {
-            assignment = new ProtocolAssignment();
-            file2ProtocolAssignmentMap.put(fileName, assignment);
-        }
-        assignment.set(protocol, assigned);
+        return fileRefs;
     }
 
     public Collection<String> getLabels() {

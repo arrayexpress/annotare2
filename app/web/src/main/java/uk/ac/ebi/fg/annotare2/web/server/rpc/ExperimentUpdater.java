@@ -247,7 +247,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void removeProtocols(List<ProtocolRow> rows) {
         for (ProtocolRow row : rows) {
-            exp.removeProtocol(row.getId());
+            Protocol protocol = exp.getProtocol(row.getId());
+            exp.removeProtocol(protocol);
         }
     }
 
@@ -266,12 +267,25 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void updateDataAssignmentColumn(DataAssignmentColumn column) {
         FileColumn fileColumn = exp.getFileColumn(column.getIndex());
-        fileColumn.clear();
-        for (String assayId : column.getAssayIds()) {
+        Set<String> assayIds = new HashSet<String>(column.getAssayIds());
+        for (String assayId : assayIds) {
             Assay assay = exp.getAssay(assayId);
             if (assay != null) {
                 fileColumn.setFileName(assay, column.getFileName(assayId));
             }
+        }
+        for (Assay assay : fileColumn.getAssays()) {
+            if (!assayIds.contains(assay.getId())) {
+                fileColumn.setFileName(assay, null);
+            }
+        }
+    }
+
+    @Override
+    public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
+        Protocol protocol = exp.getProtocol(updates.getProtocolId());
+        if (protocol != null) {
+            protocol.getTargetType().setProtocolAssignments(protocol, exp, updates.getAssignments());
         }
     }
 

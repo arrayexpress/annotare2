@@ -180,8 +180,7 @@ public class SingleSelectionCell<V> extends AbstractEditableCell<V, V> {
 
         populateList();
 
-        V viewData = getViewData(lastKey);
-        listBox.setItemSelected(viewData == null ? 0 : valueToIndex.get(viewData), true);
+        listBox.setItemSelected(value == null ? 0 : valueToIndex.get(value), true);
 
         panel.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             public void setPosition(int offsetWidth, int offsetHeight) {

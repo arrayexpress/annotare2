@@ -164,7 +164,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
                             @Override
                             public void onOkay(ProtocolAssignmentProfileUpdates profileUpdates) {
-                                //TODO update protocol assignments
+                                updateProtocolAssignments(profileUpdates);
                             }
                         }).show();
                     }
@@ -350,9 +350,15 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         gridView.addPermanentColumn("Contact", column, comparator, 150, Style.Unit.PX);
     }
 
+    private void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
+        if (presenter != null) {
+            presenter.updateProtocolAssignments(updates);
+        }
+    }
+
     private void updateRow(ProtocolRow row) {
         if (presenter != null) {
-            presenter.updateUpdateProtocol(row);
+            presenter.updateProtocol(row);
         }
     }
 

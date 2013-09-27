@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
@@ -102,8 +103,13 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public void updateUpdateProtocol(ProtocolRow row) {
+    public void updateProtocol(ProtocolRow row) {
         expData.updateProtocol(row);
+    }
+
+    @Override
+    public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
+        expData.updateProtocolAssignments(updates);
     }
 
     @Override

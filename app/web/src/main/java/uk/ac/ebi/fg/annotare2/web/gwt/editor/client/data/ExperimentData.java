@@ -479,6 +479,10 @@ public class ExperimentData {
         updateQueue.add(new UpdateDataAssignmentColumnCommand(column));
     }
 
+    public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
+        updateQueue.add(new UpdateProtocolAssignmentsCommand(updates));
+    }
+
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
         private ColumnValueType valueType;

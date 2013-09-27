@@ -25,25 +25,42 @@ import com.google.common.annotations.GwtCompatible;
 class FileRef implements HasProtocolAssignment {
 
     private String fileName;
-    private ExperimentProfile exp;
+    private FileColumn fileColumn;
 
-    public FileRef(String fileName, ExperimentProfile exp) {
+    public FileRef(String fileName, FileColumn fileColumn) {
         this.fileName = fileName;
-        this.exp = exp;
+        this.fileColumn = fileColumn;
     }
 
     @Override
     public boolean hasProtocol(Protocol protocol) {
-        return exp.isProtocolAssigned2File(protocol, fileName);
+        return fileColumn.isProtocolAssigned2File(protocol, fileName);
     }
 
     @Override
     public void assignProtocol(Protocol protocol, boolean assigned) {
-        exp.assignProtocol2File(protocol, fileName, assigned);
+        fileColumn.assignProtocol2File(protocol, fileName, assigned);
     }
 
     @Override
     public AssignmentItem getProtocolAssignmentItem() {
         return new AssignmentItem(fileName, fileName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FileRef fileRef = (FileRef) o;
+
+        if (!fileName.equals(fileRef.fileName)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return fileName.hashCode();
     }
 }

@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
@@ -38,10 +39,12 @@ public interface ProtocolsView extends IsWidget {
 
         void createProtocol(ProtocolType protocolType);
 
-        void updateUpdateProtocol(ProtocolRow row);
+        void updateProtocol(ProtocolRow row);
 
         void removeProtocols(ArrayList<ProtocolRow> protocolRows);
 
         void getAssignmentProfileAsync(int protocolId, AsyncCallback<ProtocolAssignmentProfile> asyncCallback);
+
+        void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates);
     }
 }

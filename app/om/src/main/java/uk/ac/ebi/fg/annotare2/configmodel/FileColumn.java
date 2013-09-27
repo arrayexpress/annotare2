@@ -39,6 +39,9 @@ public class FileColumn implements Serializable {
     private Map<String, String> assayId2FileName;
     private Map<Assay, String> assay2FileName;
 
+    @JsonProperty("file2ProtocolAssignmentMap")
+    private Map<String, ProtocolAssignment> file2ProtocolAssignmentMap;
+
     FileColumn() {
         /* used by GWT serialization */
     }
@@ -47,6 +50,7 @@ public class FileColumn implements Serializable {
     public FileColumn(@JsonProperty("type") FileType type) {
         this.type = type;
         assay2FileName = new HashMap<Assay, String>();
+        file2ProtocolAssignmentMap = new HashMap<String, ProtocolAssignment>();
     }
 
     @JsonProperty("assay2FileName")
@@ -85,14 +89,17 @@ public class FileColumn implements Serializable {
     }
 
     public void removeFileName(Assay assay) {
-        assay2FileName.remove(assay);
+        String fileName = assay2FileName.remove(assay);
+        if (!assay2FileName.containsValue(fileName)) {
+            file2ProtocolAssignmentMap.remove(fileName);
+        }
     }
 
     public void removeFileName(String fileName) {
         List<Assay> keys = new ArrayList<Assay>(assay2FileName.keySet());
         for (Assay assay : keys) {
             if (fileName.equals(assay2FileName.get(assay))) {
-                assay2FileName.remove(assay);
+                removeFileName(assay);
             }
         }
     }
@@ -106,13 +113,32 @@ public class FileColumn implements Serializable {
         this.assayId2FileName = null;
     }
 
-    public void clear() {
-        assay2FileName = new HashMap<Assay, String>();
+    @JsonIgnore
+    public Collection<FileRef> getFileRefs() {
+        Set<FileRef> fileRefs = new HashSet<FileRef>();
+        for (String fileName : assay2FileName.values()) {
+            fileRefs.add(new FileRef(fileName, this));
+        }
+        return fileRefs;
     }
 
     @JsonIgnore
-    public Collection<? extends String> getFileNames() {
-        return assay2FileName.values();
+    public Collection<Assay> getAssays() {
+        return assay2FileName.keySet();
+    }
+
+    boolean isProtocolAssigned2File(Protocol protocol, String fileName) {
+        ProtocolAssignment assignment = file2ProtocolAssignmentMap.get(fileName);
+        return assignment != null && assignment.contains(protocol);
+    }
+
+    void assignProtocol2File(Protocol protocol, String fileName, boolean assigned) {
+        ProtocolAssignment assignment = file2ProtocolAssignmentMap.get(fileName);
+        if (assignment == null) {
+            assignment = new ProtocolAssignment();
+            file2ProtocolAssignmentMap.put(fileName, assignment);
+        }
+        assignment.set(protocol, assigned);
     }
 }
 

@@ -27,73 +27,32 @@ import java.util.*;
 public enum ProtocolTargetType {
     EXTRACTS("extracts") {
         @Override
-        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            return getAssignments(protocol, exp.getExtracts());
-        }
-
-        @Override
-        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            setAssignments(protocol, assignments, exp.getExtracts());
+        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
+            return exp.getExtracts();
         }
     },
     LABELED_EXTRACTS("labeled extracts") {
         @Override
-        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            return getAssignments(protocol, exp.getLabeledExtracts());
-        }
-
-        @Override
-        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            setAssignments(protocol, assignments, exp.getLabeledExtracts());
+        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
+            return exp.getLabeledExtracts();
         }
     },
     ASSAYS("assays") {
         @Override
-        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            return getAssignments(protocol, exp.getAssays());
-        }
-
-        @Override
-        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            setAssignments(protocol, assignments, exp.getAssays());
+        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
+            return exp.getAssays();
         }
     },
     RAW_FILES("raw files") {
         @Override
-        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            return getAssignments(protocol, getFileRefs(exp));
-        }
-
-        @Override
-        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            setAssignments(protocol, assignments, getFileRefs(exp));
-        }
-
-        private Collection<FileRef> getFileRefs(ExperimentProfile exp) {
-            List<FileRef> fileRefs = new ArrayList<FileRef>();
-            for (String fileName : exp.getRawFiles()) {
-                fileRefs.add(new FileRef(fileName, exp));
-            }
-            return fileRefs;
+        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
+            return exp.getRawFileRefs();
         }
     },
     PROCESSED_AND_MATRIX_FILES("processed files") {
         @Override
-        public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-            return getAssignments(protocol, getFileRefs(exp));
-        }
-
-        @Override
-        public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-            setAssignments(protocol, assignments, getFileRefs(exp));
-        }
-
-        private Collection<FileRef> getFileRefs(ExperimentProfile exp) {
-            List<FileRef> fileRefs = new ArrayList<FileRef>();
-            for (String fileName : exp.getProcessedFiles()) {
-                fileRefs.add(new FileRef(fileName, exp));
-            }
-            return fileRefs;
+        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
+            return exp.getProcessedFileRefs();
         }
     };
 
@@ -117,23 +76,36 @@ public enum ProtocolTargetType {
         return filtered;
     }
 
-    private static Map<AssignmentItem, Boolean> getAssignments(Protocol protocol, Collection<? extends HasProtocolAssignment> items) {
+    abstract Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp);
+
+    public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
         Map<AssignmentItem, Boolean> assigned = new LinkedHashMap<AssignmentItem, Boolean>();
-        for (HasProtocolAssignment item : items) {
+        for (HasProtocolAssignment item : getAssignmentItems(exp)) {
             assigned.put(item.getProtocolAssignmentItem(), item.hasProtocol(protocol) || protocol.isAssigned2All());
         }
         return assigned;
     }
 
-    private static void setAssignments(Protocol protocol, Set<String> assignments, Collection<? extends HasProtocolAssignment> items) {
-        boolean assign2All = assignments.isEmpty();
-        for (HasProtocolAssignment item : items) {
-            item.assignProtocol(protocol, !assign2All && assignments.contains(item.getProtocolAssignmentItem().getId()));
+    public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
+        Collection<? extends HasProtocolAssignment> items = getAssignmentItems(exp);
+        boolean assign2All = assignments.size() == items.size();
+        if (assign2All) {
+            assign2All(protocol, items);
+            return;
         }
-        protocol.setAssigned2All(assign2All);
+        for (HasProtocolAssignment item : items) {
+            item.assignProtocol(protocol, assignments.contains(item.getProtocolAssignmentItem().getId()));
+        }
     }
 
-    public abstract Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp);
+    public void removeProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
+        assign2All(protocol, getAssignmentItems(exp));
+    }
 
-    public abstract void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments);
+    private void assign2All(Protocol protocol, Collection<? extends HasProtocolAssignment> items) {
+        for (HasProtocolAssignment item : items) {
+            item.assignProtocol(protocol, false);
+        }
+        protocol.setAssigned2All(true);
+    }
 }
