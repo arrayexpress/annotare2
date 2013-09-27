@@ -65,4 +65,9 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
                 .list();
         return users.isEmpty() ? null : users.get(0);
     }
+
+    @Override
+    public User getCuratorUser() {
+        return getUserByEmail("curator@ebi.ac.uk");
+    }
 }

@@ -27,6 +27,8 @@ public interface UserDao {
 
     User getUserByEmail(String email);
 
+    User getCuratorUser();
+
     User get(long id) throws RecordNotFoundException;
 
     void save(User user);
