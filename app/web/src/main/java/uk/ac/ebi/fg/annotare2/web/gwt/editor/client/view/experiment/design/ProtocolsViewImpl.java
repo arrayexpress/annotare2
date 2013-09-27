@@ -50,7 +50,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     public ProtocolsViewImpl() {
         gridView = new GridView<ProtocolRow>();
-        Button createButton = new Button("Add Protocol");
+        Button createButton = new Button("Add Protocol...");
         createButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

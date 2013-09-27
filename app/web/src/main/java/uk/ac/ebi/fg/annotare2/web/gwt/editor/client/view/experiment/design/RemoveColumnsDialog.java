@@ -69,8 +69,11 @@ public class RemoveColumnsDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        hide();
-        callback.onOkay(getSelection());
+        List<Integer> selection = getSelection();
+        if (!selection.isEmpty()) {
+            hide();
+            callback.onOkay(getSelection());
+        }
     }
 
     @UiHandler("cancelButton")
