@@ -117,7 +117,7 @@ public class FileColumn implements Serializable {
     public Collection<FileRef> getFileRefs() {
         Set<FileRef> fileRefs = new HashSet<FileRef>();
         for (String fileName : assay2FileName.values()) {
-            fileRefs.add(new FileRef(fileName, this));
+            fileRefs.add(getFileRef(fileName));
         }
         return fileRefs;
     }
@@ -139,6 +139,10 @@ public class FileColumn implements Serializable {
             file2ProtocolAssignmentMap.put(fileName, assignment);
         }
         assignment.set(protocol, assigned);
+    }
+
+    public FileRef getFileRef(String fileName) {
+        return new FileRef(fileName, this);
     }
 }
 

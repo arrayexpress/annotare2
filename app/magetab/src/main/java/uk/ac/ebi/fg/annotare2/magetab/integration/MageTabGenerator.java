@@ -240,15 +240,11 @@ public class MageTabGenerator {
         for (String assayId : assayLayer.keySet()) {
             Assay assay = exp.getAssay(assayId);
             SDRFNode assayNode = assayLayer.get(assayId);
-            Collection<SDRFNode> fileNodes = createFileNodes(assay);
-            for (SDRFNode fileNode : fileNodes) {
-                assayNode.addChildNode(fileNode);
-                fileNode.addParentNode(assayNode);
-            }
+            createFileNodes(assay, assayNode);
         }
     }
 
-    private void connect(SDRFNode source, SDRFNode destination, ProtocolTargetType type) {
+    private void connect(SDRFNode source, SDRFNode destination, ProtocolTargetType type, HasProtocolAssignment protocolAssignment) {
         Collection<Protocol> protocols = type == null ? Collections.<Protocol>emptyList() : exp.getProtocols(type);
         if (protocols.isEmpty()) {
             source.addChildNode(destination);
@@ -258,13 +254,15 @@ public class MageTabGenerator {
 
         SDRFNode prev = source;
         for (Protocol protocol : protocols) {
-            ProtocolApplicationNode protocolNode = new ProtocolApplicationNode();
-            // protocol node name must be unique
-            protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
-            protocolNode.protocol = protocol.getName();
-            protocolNode.addParentNode(prev);
-            prev.addChildNode(protocolNode);
-            prev = protocolNode;
+            if (protocol.isAssigned2All() || protocolAssignment.hasProtocol(protocol)) {
+                ProtocolApplicationNode protocolNode = new ProtocolApplicationNode();
+                // protocol node name must be unique
+                protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
+                protocolNode.protocol = protocol.getName();
+                protocolNode.addParentNode(prev);
+                prev.addChildNode(protocolNode);
+                prev = protocolNode;
+            }
         }
         prev.addChildNode(destination);
         destination.addParentNode(prev);
@@ -302,7 +300,7 @@ public class MageTabGenerator {
             }
         }
 
-        connect(parentNode, extractNode, EXTRACTS);
+        connect(parentNode, extractNode, EXTRACTS, extract);
         return extractNode;
     }
 
@@ -321,7 +319,7 @@ public class MageTabGenerator {
             labeledExtractNode.label = label;
         }
 
-        connect(extractNode, labeledExtractNode, LABELED_EXTRACTS);
+        connect(extractNode, labeledExtractNode, LABELED_EXTRACTS, labeledExtract);
         return labeledExtractNode;
     }
 
@@ -341,7 +339,7 @@ public class MageTabGenerator {
             assayNode.technologyType = technologyType;
         }
 
-        connect(prevNode, assayNode, ASSAYS);
+        connect(prevNode, assayNode, ASSAYS, assay);
         return assayNode;
     }
 
@@ -356,7 +354,7 @@ public class MageTabGenerator {
             }
         }
 
-        connect(assayNode, scanNode, null);
+        connect(assayNode, scanNode, null, null);
         return scanNode;
     }
 
@@ -387,12 +385,12 @@ public class MageTabGenerator {
         return exp.getAssay(new Assay(extract, label).getId());
     }
 
-    private Collection<SDRFNode> createFileNodes(Assay assay) {
-        Collection<FileColumn> fileColumns = getFileColumns();
+    private void createFileNodes(Assay assay, SDRFNode assayNode) {
+        Collection<FileColumn> fileColumns = getSortedFileColumns();
 
-        SDRFNode start = null;
-        SDRFNode end = null;
-        List<SDRFNode> rootNodes = new ArrayList<SDRFNode>();
+        List<SDRFNode> prev = new ArrayList<SDRFNode>();
+        prev.add(assayNode);
+        List<SDRFNode> next = new ArrayList<SDRFNode>();
         for (FileColumn fileColumn : fileColumns) {
             FileType type = fileColumn.getType();
             String fileName = fileColumn.getFileName(assay);
@@ -414,27 +412,18 @@ public class MageTabGenerator {
                     throw new IllegalStateException("Unsupported file type: " + type);
             }
             if (type.isRaw()) {
-                rootNodes.add(current);
-            } else if (start == null) {
-                start = current;
-                end = current;
+                for(SDRFNode prevNode : prev) {
+                    connect(prevNode, current, RAW_FILES, fileColumn.getFileRef(fileName));
+                }
+                next.add(current);
             } else {
-                end.addChildNode(current);
-                current.addParentNode(end);
-                end = current;
+                for(SDRFNode prevNode : prev) {
+                    connect(prevNode, current, PROCESSED_AND_MATRIX_FILES, fileColumn.getFileRef(fileName));
+                }
+                next.add(current);
+                prev = next;
             }
         }
-
-        if (start != null) {
-            for (SDRFNode rootNode : rootNodes) {
-                rootNode.addChildNode(start);
-                start.addParentNode(rootNode);
-            }
-            if (rootNodes.isEmpty()) {
-                rootNodes.add(start);
-            }
-        }
-        return rootNodes;
     }
 
     private <T extends SDRFNode> SDRFNode createDataFileNode(String fileName, Class<T> clazz) {
@@ -448,7 +437,7 @@ public class MageTabGenerator {
         return createNode(clazz, fileName);
     }
 
-    private Collection<FileColumn> getFileColumns() {
+    private Collection<FileColumn> getSortedFileColumns() {
         return natural().onResultOf(new Function<FileColumn, Integer>() {
             @Nullable
             @Override
