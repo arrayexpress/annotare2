@@ -96,6 +96,7 @@ public enum ProtocolTargetType {
         for (HasProtocolAssignment item : items) {
             item.assignProtocol(protocol, assignments.contains(item.getProtocolAssignmentItem().getId()));
         }
+        protocol.setAssigned2All(false);
     }
 
     public void removeProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
