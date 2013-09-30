@@ -66,4 +66,8 @@ public interface ExperimentUpdatePerformer {
     void updateDataAssignmentColumn(DataAssignmentColumn column);
 
     void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates);
+
+    void moveProtocolDown(ProtocolRow row);
+
+    void moveProtocolUp(ProtocolRow row);
 }

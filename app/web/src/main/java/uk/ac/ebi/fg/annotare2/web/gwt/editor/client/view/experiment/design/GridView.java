@@ -216,6 +216,32 @@ public class GridView<R extends HasIdentity> extends Composite {
         return new ArrayList<R>(dataProvider.getList());
     }
 
+    public void moveRowUp(R row) {
+        List<R> rows = dataProvider.getList();
+        int index = rows.indexOf(row);
+        if (swapRow(rows, index, index - 1)) {
+            dataProvider.refresh();
+        }
+    }
+
+    public void moveRowDown(R row) {
+        List<R> rows = dataProvider.getList();
+        int index = rows.indexOf(row);
+        if (swapRow(rows, index, index + 1)) {
+            dataProvider.refresh();
+        }
+    }
+
+    private boolean swapRow(List<R> rows, int from, int to) {
+        if ((to >= rows.size()) || (to < 0)) {
+            return false;
+        }
+        R toMove = rows.get(from);
+        rows.set(from, rows.get(to));
+        rows.set(to, toMove);
+        return true;
+    }
+
     public void removeSelectedRows() {
         Set<R> selectedRows = getSelectedRows();
         dataProvider.getList().removeAll(selectedRows);

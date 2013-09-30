@@ -28,6 +28,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.inject.internal.cglib.core.$ReflectUtils;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
@@ -66,9 +67,25 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             }
         });
         gridView.addTool(removeButton);
-        Button moveUpButton = new Button("Move Up");
+        Button moveUpButton = new Button();
+        moveUpButton.setHTML("&#8593;");
+        moveUpButton.setTitle("Move selected protocol one position up");
+        moveUpButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                moveProtocolUp();
+            }
+        });
         gridView.addTool(moveUpButton);
-        Button moveDownButton = new Button("Move Down");
+        Button moveDownButton = new Button();
+        moveDownButton.setHTML("&#8595;");
+        moveDownButton.setTitle("Move selected protocol one position down");
+        moveDownButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                moveProtocolDown();
+            }
+        });
         gridView.addTool(moveDownButton);
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
@@ -390,5 +407,36 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         }
         presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
         gridView.removeSelectedRows();
+    }
+
+    private void moveProtocolUp() {
+        ProtocolRow row = getSelectedProtocolRowToMove();
+        if (row == null) {
+            return;
+        }
+        gridView.moveRowUp(row);
+        presenter.moveProtocolUp(row);
+    }
+
+    private void moveProtocolDown() {
+        ProtocolRow row = getSelectedProtocolRowToMove();
+        if (row == null) {
+            return;
+        }
+        gridView.moveRowDown(row);
+        presenter.moveProtocolDown(row);
+    }
+
+    private ProtocolRow getSelectedProtocolRowToMove() {
+        Set<ProtocolRow> selected = gridView.getSelectedRows();
+        if (selected.isEmpty()) {
+            Window.alert("Please select a row to move");
+            return null;
+        }
+        if (selected.size() > 1) {
+            Window.alert("Sorry, can't move more than one row at a time");
+            return null;
+        }
+        return selected.iterator().next();
     }
 }

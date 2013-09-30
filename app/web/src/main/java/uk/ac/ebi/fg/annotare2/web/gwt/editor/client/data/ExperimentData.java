@@ -463,6 +463,14 @@ public class ExperimentData {
         updateQueue.add(new UpdateProtocolCommand(row));
     }
 
+    public void moveProtocolUp(ProtocolRow row) {
+        updateQueue.add(MoveProtocolCommand.up(row));
+    }
+
+    public void moveProtocolDown(ProtocolRow row) {
+        updateQueue.add(MoveProtocolCommand.down(row));
+    }
+
     public void removeProtocols(List<ProtocolRow> rows) {
         updateQueue.add(new RemoveProtocolsCommand(rows));
     }

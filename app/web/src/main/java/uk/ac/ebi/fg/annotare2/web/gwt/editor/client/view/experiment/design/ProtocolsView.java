@@ -46,5 +46,9 @@ public interface ProtocolsView extends IsWidget {
         void getAssignmentProfileAsync(int protocolId, AsyncCallback<ProtocolAssignmentProfile> asyncCallback);
 
         void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates);
+
+        void moveProtocolDown(ProtocolRow row);
+
+        void moveProtocolUp(ProtocolRow row);
     }
 }

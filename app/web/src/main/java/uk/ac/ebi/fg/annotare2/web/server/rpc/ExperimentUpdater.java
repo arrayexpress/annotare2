@@ -289,6 +289,16 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         }
     }
 
+    @Override
+    public void moveProtocolDown(ProtocolRow row) {
+        exp.moveProtocolDown(exp.getProtocol(row.getId()));
+    }
+
+    @Override
+    public void moveProtocolUp(ProtocolRow row) {
+        exp.moveProtocolUp(exp.getProtocol(row.getId()));
+    }
+
     public void run(List<ExperimentUpdateCommand> commands) {
         for (ExperimentUpdateCommand command : commands) {
             command.execute(this);

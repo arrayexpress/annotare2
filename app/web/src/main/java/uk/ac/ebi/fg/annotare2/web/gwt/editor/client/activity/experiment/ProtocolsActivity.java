@@ -108,6 +108,16 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
+    public void moveProtocolDown(ProtocolRow row) {
+        expData.moveProtocolUp(row);
+    }
+
+    @Override
+    public void moveProtocolUp(ProtocolRow row) {
+        expData.moveProtocolDown(row);
+    }
+
+    @Override
     public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
         expData.updateProtocolAssignments(updates);
     }

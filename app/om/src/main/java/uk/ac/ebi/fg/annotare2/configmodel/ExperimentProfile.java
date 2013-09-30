@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
@@ -81,6 +82,9 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("sampleAttributeOrder")
     private List<Integer> sampleAttributeOrder;
 
+    @JsonProperty("protocolOrder")
+    private List<Integer> protocolOrder;
+
     @JsonProperty("labels")
     private Set<String> labels;
 
@@ -103,7 +107,8 @@ public class ExperimentProfile implements Serializable {
         contactMap = newLinkedHashMap();
         publicationMap = newLinkedHashMap();
 
-        protocolMap = newLinkedHashMap();
+        protocolMap = newHashMap();
+        protocolOrder = newArrayList();
         sampleMap = newLinkedHashMap();
         sampleAttributeMap = newLinkedHashMap();
         sampleAttributeOrder = newArrayList();
@@ -206,6 +211,7 @@ public class ExperimentProfile implements Serializable {
         protocol.setType(term);
         protocol.setTargetType(usageType);
         protocolMap.put(protocol.getId(), protocol);
+        protocolOrder.add(protocol.getId());
         return protocol;
     }
 
@@ -320,6 +326,33 @@ public class ExperimentProfile implements Serializable {
         }
         protocol.getTargetType().removeProtocolAssignments(protocol, this);
         protocolMap.remove(protocol.getId());
+        protocolOrder.remove(Integer.valueOf(protocol.getId()));
+    }
+
+    public void moveProtocolUp(Protocol protocol) {
+        if (protocol == null) {
+            return;
+        }
+
+        int from = protocolOrder.indexOf(protocol.getId());
+        moveProtocol(from, from - 1);
+    }
+
+    public void moveProtocolDown(Protocol protocol) {
+        if (protocol == null) {
+            return;
+        }
+        int from = protocolOrder.indexOf(protocol.getId());
+        moveProtocol(from, from + 1);
+    }
+
+    private void moveProtocol(int from, int to) {
+        if (to < 0 || to >= protocolOrder.size()) {
+            return;
+        }
+        Integer swap = protocolOrder.get(from);
+        protocolOrder.set(from, protocolOrder.get(to));
+        protocolOrder.set(to, swap);
     }
 
     public void link(Sample sample, Extract extract) {
@@ -392,7 +425,11 @@ public class ExperimentProfile implements Serializable {
 
     @JsonIgnore
     public Collection<Protocol> getProtocols() {
-        return unmodifiableCollection(protocolMap.values());
+        List<Protocol> list = newArrayList();
+        for (Integer id : protocolOrder) {
+            list.add(protocolMap.get(id));
+        }
+        return list;
     }
 
     public Collection<Protocol> getProtocols(ProtocolTargetType usageType) {
