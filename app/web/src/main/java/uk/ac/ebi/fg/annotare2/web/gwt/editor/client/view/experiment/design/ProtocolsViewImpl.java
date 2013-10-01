@@ -411,20 +411,16 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private void moveProtocolUp() {
         ProtocolRow row = getSelectedProtocolRowToMove();
-        if (row == null) {
-            return;
+        if (gridView.moveRowUp(row)) {
+            presenter.moveProtocolUp(row);
         }
-        gridView.moveRowUp(row);
-        presenter.moveProtocolUp(row);
     }
 
     private void moveProtocolDown() {
         ProtocolRow row = getSelectedProtocolRowToMove();
-        if (row == null) {
-            return;
+        if (gridView.moveRowDown(row)) {
+            presenter.moveProtocolDown(row);
         }
-        gridView.moveRowDown(row);
-        presenter.moveProtocolDown(row);
     }
 
     private ProtocolRow getSelectedProtocolRowToMove() {

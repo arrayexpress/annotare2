@@ -333,7 +333,6 @@ public class ExperimentProfile implements Serializable {
         if (protocol == null) {
             return;
         }
-
         int from = protocolOrder.indexOf(protocol.getId());
         moveProtocol(from, from - 1);
     }
@@ -347,7 +346,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     private void moveProtocol(int from, int to) {
-        if (to < 0 || to >= protocolOrder.size()) {
+        if (from < 0 || to < 0 || to >= protocolOrder.size()) {
             return;
         }
         Integer swap = protocolOrder.get(from);
