@@ -47,7 +47,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     public SamplesViewImpl() {
         gridView = new GridView<SampleRow>();
-        Button button = new Button("Sample Attributes");
+        Button button = new Button("Sample Attributes...");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
