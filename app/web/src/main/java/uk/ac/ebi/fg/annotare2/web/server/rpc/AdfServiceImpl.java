@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
+import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
@@ -37,6 +38,7 @@ import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
 
@@ -65,6 +67,10 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
             return new TsvParser().parse(submission.getBody());
         } catch (IOException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -94,6 +100,10 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
             throw new DataImportException(e.getMessage());
         } catch (TransactionWrapException e) {
             throw unexpected(e.getCause());
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 

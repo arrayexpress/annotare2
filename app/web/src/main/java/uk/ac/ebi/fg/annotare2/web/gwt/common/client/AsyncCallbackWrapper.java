@@ -24,11 +24,18 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
  * @author Olga Melnichuk
  */
 public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
+
+    public void onPermissionDenied() {
+        Window.alert("Sorry, you do not have permissions to proceed with this operation");
+    }
+
     public AsyncCallback<T> wrap() {
         return new AsyncCallback<T>() {
             public void onFailure(Throwable caught) {
                 if (isUnauthorizedRequestError(caught)) {
                     Window.Location.reload();
+                } else if (isPermissionDenied(caught)) {
+                    AsyncCallbackWrapper.this.onPermissionDenied();
                 } else {
                     AsyncCallbackWrapper.this.onFailure(caught);
                 }
@@ -40,6 +47,10 @@ public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
 
             private boolean isUnauthorizedRequestError(Throwable caught) {
                 return (caught instanceof StatusCodeException && ((StatusCodeException) caught).getStatusCode() == 401);
+            }
+
+            private boolean isPermissionDenied(Throwable caught) {
+                return caught instanceof NoPermissionException;
             }
         };
     }

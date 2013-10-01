@@ -16,8 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
@@ -35,18 +35,18 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateE
 /**
  * @author Olga Melnichuk
  */
-public class UpdateQueue<C extends UpdateCommand, R> {
+public class UpdateQueue<C extends UpdateCommand> {
 
     private static final int REPEAT_INTERVAL = 2000;
 
     private final EventBus eventBus;
-    private final Transport<C, R> transport;
+    private final Transport<C> transport;
 
     private Queue<C> queue = new LinkedList<C>();
     private boolean isActive;
     private boolean criticalUpdateStarted;
 
-    public UpdateQueue(EventBus eventBus, Transport<C, R> transport) {
+    public UpdateQueue(EventBus eventBus, Transport<C> transport) {
         this.eventBus = eventBus;
         this.transport = transport;
 
@@ -79,22 +79,42 @@ public class UpdateQueue<C extends UpdateCommand, R> {
             return;
         }
         List<C> commands = new ArrayList<C>(queue);
-        final int queueSize = commands.size();
-        transport.sendUpdates(commands, new AsyncCallback<R>() {
+        final int batchSize = commands.size();
+        transport.sendUpdates(commands, new AsyncCallback<Result>() {
             @Override
             public void onFailure(Throwable caught) {
-                notifyStop(caught);
+                GWT.log("unexpected error", caught);
+                handleError("Can't save changes; unexpected server error");
             }
 
             @Override
-            public void onSuccess(R result) {
-                for (int i = 0; i < queueSize; i++) {
-                    queue.poll();
+            public void onSuccess(Result result) {
+                switch (result) {
+                    case SUCCESS:
+                        handleSuccess(batchSize);
+                        break;
+                    case NO_PERMISSION:
+                        handleError("Can't save changes; no permission");
+                        break;
+                    default:
+                        handleError("Unsupported result type: " + result);
                 }
-                notifyCriticalUpdateStop();
-                next();
             }
         });
+    }
+
+    private void handleSuccess(int bacthSize) {
+        for (int i = 0; i < bacthSize; i++) {
+            queue.poll();
+        }
+        notifyCriticalUpdateStop();
+        next();
+    }
+
+    private void handleError(String errorMessage) {
+        queue.clear();
+        notifyCriticalUpdateStop();
+        notifyStop(errorMessage);
     }
 
     private void notifyStart() {
@@ -102,12 +122,9 @@ public class UpdateQueue<C extends UpdateCommand, R> {
         eventBus.fireEvent(autoSaveStarted());
     }
 
-    private void notifyStop(Throwable caught) {
+    private void notifyStop(String errorMessage) {
         isActive = false;
-        eventBus.fireEvent(autoSaveStopped(caught));
-        if (caught != null) {
-            Window.alert(caught.getMessage());
-        }
+        eventBus.fireEvent(autoSaveStopped(errorMessage));
     }
 
     private void notifyCriticalUpdateStart() {
@@ -129,8 +146,13 @@ public class UpdateQueue<C extends UpdateCommand, R> {
         }
     }
 
-    public interface Transport<C, R> {
-        void sendUpdates(List<C> commands, AsyncCallback<R> callback);
+    public interface Transport<C> {
+        void sendUpdates(List<C> commands, AsyncCallback<Result> callback);
+    }
+
+    public enum Result {
+        SUCCESS,
+        NO_PERMISSION
     }
 }
 

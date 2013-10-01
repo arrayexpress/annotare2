@@ -41,7 +41,7 @@ public class ExperimentData {
 
     private final SubmissionServiceAsync submissionService;
 
-    private final UpdateQueue<ExperimentUpdateCommand, ExperimentProfile> updateQueue;
+    private final UpdateQueue<ExperimentUpdateCommand> updateQueue;
 
     private ExperimentProfile exp;
 
@@ -51,10 +51,10 @@ public class ExperimentData {
         submissionService = submissionServiceAsync;
 
         updateQueue =
-                new UpdateQueue<ExperimentUpdateCommand, ExperimentProfile>(eventBus,
-                        new UpdateQueue.Transport<ExperimentUpdateCommand, ExperimentProfile>() {
+                new UpdateQueue<ExperimentUpdateCommand>(eventBus,
+                        new UpdateQueue.Transport<ExperimentUpdateCommand>() {
                             @Override
-                            public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<ExperimentProfile> callback) {
+                            public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<UpdateQueue.Result> callback) {
                                 submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<ExperimentProfile>() {
                                     @Override
                                     public void onFailure(Throwable caught) {
@@ -62,9 +62,14 @@ public class ExperimentData {
                                     }
 
                                     @Override
+                                    public void onPermissionDenied() {
+                                        callback.onSuccess(UpdateQueue.Result.NO_PERMISSION);
+                                    }
+
+                                    @Override
                                     public void onSuccess(ExperimentProfile result) {
                                         exp = result;
-                                        callback.onSuccess(result);
+                                        callback.onSuccess(UpdateQueue.Result.SUCCESS);
                                     }
                                 }.wrap());
                             }

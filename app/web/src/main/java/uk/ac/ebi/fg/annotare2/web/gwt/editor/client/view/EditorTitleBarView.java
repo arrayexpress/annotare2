@@ -34,7 +34,7 @@ public interface EditorTitleBarView extends IsWidget {
 
     void autoSaveStarted();
 
-    void autoSaveStopped(Throwable caught);
+    void autoSaveStopped(String errorMessage);
 
     void criticalUpdateStarted();
 

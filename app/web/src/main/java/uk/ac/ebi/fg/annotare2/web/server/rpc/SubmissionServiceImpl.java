@@ -25,6 +25,7 @@ import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
@@ -48,6 +49,7 @@ import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
@@ -99,6 +101,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             return uiArrayDesignDetails(sb);
         } catch (DataSerializationException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -114,6 +120,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (ParseException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -129,6 +139,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (ParseException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -151,13 +165,23 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             return submission.getExperimentProfile();
         } catch (DataSerializationException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
     @Override
     public List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
-        ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
-        return uiDataFileRows(submission.getFiles());
+        try {
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
+            return uiDataFileRows(submission.getFiles());
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
     }
 
     @Override
@@ -276,6 +300,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (IOException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -300,6 +328,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (IOException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 

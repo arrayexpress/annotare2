@@ -86,14 +86,16 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void autoSaveStarted() {
         autoSaveLabel.show("Saving...");
+        autoSaveLabel.getElement().getStyle().setColor("inherit");
     }
 
     @Override
-    public void autoSaveStopped(Throwable caught) {
-        if (caught == null) {
+    public void autoSaveStopped(String errorMessage) {
+        if (errorMessage == null) {
             autoSaveLabel.hide();
         } else {
-            autoSaveLabel.show("Can't save changes; unexpected server error");
+            autoSaveLabel.show(errorMessage);
+            autoSaveLabel.getElement().getStyle().setColor("red");
         }
     }
 

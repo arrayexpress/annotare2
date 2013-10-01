@@ -406,7 +406,6 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             return;
         }
         presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
-        gridView.removeSelectedRows();
     }
 
     private void moveProtocolUp() {

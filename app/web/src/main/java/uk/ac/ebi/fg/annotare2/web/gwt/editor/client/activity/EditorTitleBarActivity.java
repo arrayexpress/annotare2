@@ -85,7 +85,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
             @Override
             public void autoSaveFailed(AutoSaveEvent event) {
-                view.autoSaveStopped(event.getCaught());
+                view.autoSaveStopped(event.getErrorMessage());
             }
         });
 

@@ -42,6 +42,6 @@ public class RemoveProtocolsCommand implements ExperimentUpdateCommand {
 
     @Override
     public boolean isCritical() {
-        return false;
+        return true;
     }
 }
