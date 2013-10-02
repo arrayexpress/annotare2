@@ -92,8 +92,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.transactionSupport = transactionSupport;
-        this.subsTracking = subsTracking;
         this.userDao = userDao;
+        if (properties.getAeSubsTrackingEnabled()) {
+            this.subsTracking = subsTracking;
+        } else {
+            this.subsTracking = null;
+        }
     }
 
     @Override
@@ -224,9 +228,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 @Override
                 public Void doInTransaction() throws Exception {
                     Submission submission = getSubmission(id, Permission.UPDATE);
-                    Integer subsTrackingId = subsTracking.addSubmission(submission);
-
-                    submission.setSubsTrackingId(subsTrackingId);
+                    if (null != subsTracking) {
+                        Integer subsTrackingId = subsTracking.addSubmission(submission);
+                        submission.setSubsTrackingId(subsTrackingId);
+                    }
                     submission.setStatus(SubmissionStatus.SUBMITTED);
                     submission.setOwnedBy(userDao.getCuratorUser());
                     save(submission);

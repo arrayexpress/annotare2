@@ -84,6 +84,10 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("ftp.public.password");
     }
 
+    public Boolean getAeSubsTrackingEnabled() {
+        return Boolean.parseBoolean(getProperty("ae-subs-tracking.enabled"));
+    }
+
     private File getDirProperty(String name) {
         String property = getProperty(name);
         File dir = property == null ? new File(tempDir, name.replaceAll(".","-")) :
