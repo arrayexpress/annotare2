@@ -124,7 +124,7 @@ public class FileColumn implements Serializable {
 
     @JsonIgnore
     public Collection<Assay> getAssays() {
-        return assay2FileName.keySet();
+        return new ArrayList<Assay>(assay2FileName.keySet());
     }
 
     boolean isProtocolAssigned2File(Protocol protocol, String fileName) {
