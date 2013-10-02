@@ -134,7 +134,7 @@
                                     </g:Anchor>
                                 </td>
                                 <td>
-                                    <g:Anchor addStyleNames="{style.wiredLink}">Export</g:Anchor>
+                                    <g:Anchor addStyleNames="{style.wiredLink}" ui:field="exportLink">Export</g:Anchor>
                                 </td>
                                 <td>
                                     <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton">
