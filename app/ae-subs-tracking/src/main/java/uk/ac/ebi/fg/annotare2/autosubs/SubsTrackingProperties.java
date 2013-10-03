@@ -17,7 +17,11 @@ package uk.ac.ebi.fg.annotare2.autosubs;
  *
  */
 
+import java.io.File;
+
 public interface SubsTrackingProperties
 {
     public Boolean getAeSubsTrackingEnabled();
+    public String getAeSubsTrackingUser();
+    public File getAeSubsTrackingExportDir();
 }

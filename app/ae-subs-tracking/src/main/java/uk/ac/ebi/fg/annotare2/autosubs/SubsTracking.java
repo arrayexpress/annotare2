@@ -41,8 +41,6 @@ public class SubsTracking
     private final SubsTrackingProperties properties;
     private final DataSource dbDataSource;
 
-    private final static String ANNOTARE_USER_NAME = "annotare";
-
     @Inject
     public SubsTracking( SubsTrackingProperties properties ) {
         this.properties = properties;
@@ -91,17 +89,21 @@ public class SubsTracking
     }
 
     private Integer getAnnotareUserId( DSLContext context ) {
-        // attempt to fetch a user id for user name 'annotare'; create one if not found
+        String subsTrackingUser = properties.getAeSubsTrackingUser();
+        if (null == subsTrackingUser || "".equals(subsTrackingUser) ) {
+            throw new RuntimeException("Submission tracking user name is not defined in the configuration");
+        }
+
         UsersRecord r =
                 context.selectFrom(USERS)
-                        .where(USERS.LOGIN.equal(ANNOTARE_USER_NAME))
+                        .where(USERS.LOGIN.equal(subsTrackingUser))
                         .and(USERS.IS_DELETED.equal(0))
                         .fetchOne();
 
         if (null == r) {
             // here we create the user
             r = context.insertInto(USERS)
-                    .set(USERS.LOGIN, ANNOTARE_USER_NAME)
+                    .set(USERS.LOGIN, subsTrackingUser)
                     .set(USERS.PASSWORD, RandomStringUtils.randomAlphanumeric(16))
                     .set(USERS.IS_DELETED, 0)
                     .returning(USERS.ID)
