@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.configmodel.ProtocolUsageType;
+import uk.ac.ebi.fg.annotare2.configmodel.ProtocolTargetType;
 
 /**
  * @author Olga Melnichuk
@@ -29,12 +29,12 @@ public class ProtocolType implements IsSerializable {
 
     private String definition;
 
-    private ProtocolUsageType usageType;
+    private ProtocolTargetType usageType;
 
     public ProtocolType() {
     }
 
-    public ProtocolType(OntologyTerm term, String definition, ProtocolUsageType usageType) {
+    public ProtocolType(OntologyTerm term, String definition, ProtocolTargetType usageType) {
         this.term = term;
         this.definition = definition;
         this.usageType = usageType;
@@ -48,7 +48,7 @@ public class ProtocolType implements IsSerializable {
         return definition;
     }
 
-    public ProtocolUsageType getUsageType() {
+    public ProtocolTargetType getUsageType() {
         return usageType;
     }
 }

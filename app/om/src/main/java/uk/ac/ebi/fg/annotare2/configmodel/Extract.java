@@ -17,6 +17,9 @@
 package uk.ac.ebi.fg.annotare2.configmodel;
 
 import com.google.common.annotations.GwtCompatible;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
@@ -27,7 +30,8 @@ import java.util.Map;
  * @author Olga Melnichuk
  */
 @GwtCompatible
-public class Extract implements Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Extract implements Serializable, HasProtocolAssignment {
 
     @JsonProperty("id")
     private int id;
@@ -38,13 +42,18 @@ public class Extract implements Serializable {
     @JsonProperty("attributes")
     private Map<ExtractAttribute, String> values;
 
+    @JsonProperty("protocols")
+    private ProtocolAssignment protocols;
+
     Extract() {
     /* used by GWT serialization */
     }
 
+    @JsonCreator
     public Extract(@JsonProperty("id") int id) {
         this.id = id;
         this.values = new HashMap<ExtractAttribute, String>();
+        this.protocols = new ProtocolAssignment();
     }
 
     public int getId() {
@@ -63,10 +72,12 @@ public class Extract implements Serializable {
         return values.get(attribute);
     }
 
+    @JsonIgnore
     public Map<ExtractAttribute, String> getAttributeValues() {
         return new HashMap<ExtractAttribute, String>(values);
     }
 
+    @JsonIgnore
     public void setAttributeValues(Map<ExtractAttribute, String> values) {
         this.values = new HashMap<ExtractAttribute, String>(values);
     }
@@ -86,5 +97,20 @@ public class Extract implements Serializable {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    @Override
+    public boolean hasProtocol(Protocol protocol) {
+        return protocols.contains(protocol);
+    }
+
+    @Override
+    public void assignProtocol(Protocol protocol, boolean assigned) {
+        protocols.set(protocol, assigned);
+    }
+
+    @Override
+    public AssignmentItem getProtocolAssignmentItem() {
+        return new AssignmentItem(Integer.toString(id), getName());
     }
 }

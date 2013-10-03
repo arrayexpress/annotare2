@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.server.rpc.UnexpectedException;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.util.Streams;
@@ -109,6 +108,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             return uiArrayDesignDetails(sb);
         } catch (DataSerializationException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -124,6 +127,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (ParseException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -139,6 +146,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (ParseException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -161,13 +172,23 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             return submission.getExperimentProfile();
         } catch (DataSerializationException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
     @Override
     public List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
-        ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
-        return uiDataFileRows(submission.getFiles());
+        try {
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
+            return uiDataFileRows(submission.getFiles());
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
     }
 
     @Override
@@ -309,6 +330,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (IOException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -333,6 +358,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (IOException e) {
             throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
         }
     }
 
@@ -343,8 +372,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 @Override
                 public Void doInTransaction() throws Exception {
                     ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-                    dataFileManager.removeFile(submission, fileId);
-                    save(submission);
+                    DataFile dataFile = dataFileManager.get(fileId);
+                    String fileName = dataFile.getName();
+                    if (dataFileManager.removeFile(submission, dataFile)) {
+                        submission.getExperimentProfile().removeFile(fileName);
+                        save(submission);
+                    }
                     return null;
                 }
             });

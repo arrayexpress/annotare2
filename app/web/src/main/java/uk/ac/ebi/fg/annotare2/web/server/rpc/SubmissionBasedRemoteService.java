@@ -55,40 +55,20 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
         }
     }
 
-    protected ExperimentSubmission getExperimentSubmission(long id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            return submissionManager.getExperimentSubmission(getCurrentUser(), id, permission);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
+    protected ExperimentSubmission getExperimentSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
+        return submissionManager.getExperimentSubmission(getCurrentUser(), id, permission);
     }
 
-    protected ArrayDesignSubmission getArrayDesignSubmission(long id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            return submissionManager.getArrayDesignSubmission(getCurrentUser(), id, permission);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
+    protected ArrayDesignSubmission getArrayDesignSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
+        return submissionManager.getArrayDesignSubmission(getCurrentUser(), id, permission);
     }
 
-    protected ExperimentSubmission createExperimentSubmission() throws NoPermissionException {
-        try {
-            return submissionManager.createExperimentSubmission(getCurrentUser());
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
+    protected ExperimentSubmission createExperimentSubmission() throws AccessControlException {
+        return submissionManager.createExperimentSubmission(getCurrentUser());
     }
 
-    protected ArrayDesignSubmission createArrayDesignSubmission() throws NoPermissionException {
-        try {
-            return submissionManager.createArrayDesignSubmission(getCurrentUser());
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
+    protected ArrayDesignSubmission createArrayDesignSubmission() throws AccessControlException {
+        return submissionManager.createArrayDesignSubmission(getCurrentUser());
     }
 
     protected void save(Submission submission) {

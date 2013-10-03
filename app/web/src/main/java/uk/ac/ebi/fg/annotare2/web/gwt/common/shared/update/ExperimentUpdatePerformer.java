@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
+import uk.ac.ebi.fg.annotare2.configmodel.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
@@ -57,4 +58,16 @@ public interface ExperimentUpdatePerformer {
     void updateProtocol(ProtocolRow row);
 
     void removeProtocols(List<ProtocolRow> rows);
+
+    void createDataAssignmentColumn(FileType fileType);
+
+    void removeDataAssignmentColumns(List<Integer> indices);
+
+    void updateDataAssignmentColumn(DataAssignmentColumn column);
+
+    void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates);
+
+    void moveProtocolDown(ProtocolRow row);
+
+    void moveProtocolUp(ProtocolRow row);
 }

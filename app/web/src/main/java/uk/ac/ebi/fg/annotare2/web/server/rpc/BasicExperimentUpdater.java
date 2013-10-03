@@ -36,7 +36,8 @@ public class BasicExperimentUpdater extends ExperimentUpdater {
     public void createSample() {
         Sample sample  = createAndReturnSample();
 
-        Extract extract = exp().createExtract(sample);
+        boolean hasLabeledExtracts = exp().getType().isMicroarray();
+        Extract extract = exp().createExtract(!hasLabeledExtracts, sample);
         extract.setName(sample.getName());
         for(String label : exp().getLabels()) {
             exp().createLabeledExtract(extract, label);

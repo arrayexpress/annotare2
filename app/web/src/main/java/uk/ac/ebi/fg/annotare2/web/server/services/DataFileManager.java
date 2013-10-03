@@ -52,7 +52,7 @@ public class DataFileManager {
     /**
      * Creates {@link DataFile} record in the database and schedules a task to copy the file into a file store.
      *
-     * @param file file to be copied
+     * @param file       file to be copied
      * @param submission submission to add file to
      */
     public void upload(File file, Submission submission) throws JMSException {
@@ -61,10 +61,9 @@ public class DataFileManager {
         messageQueue.offer(file, dataFile);
     }
 
-    public void removeFile(ExperimentSubmission submission, long fileId) throws RecordNotFoundException, IOException {
-        DataFile dataFile = dataFileDao.get(fileId);
+    public boolean removeFile(ExperimentSubmission submission, DataFile dataFile) throws IOException {
         if (!submission.getFiles().contains(dataFile)) {
-            return;
+            return false;
         }
         dataFileDao.delete(dataFile);
         submission.getFiles().remove(dataFile);
@@ -72,5 +71,10 @@ public class DataFileManager {
         if (list.isEmpty()) {
             fileStore.delete(dataFile.getDigest());
         }
+        return true;
+    }
+
+    public DataFile get(long fileId) throws RecordNotFoundException {
+        return dataFileDao.get(fileId);
     }
 }

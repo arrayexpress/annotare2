@@ -29,7 +29,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ public class ExperimentData {
 
     private final SubmissionServiceAsync submissionService;
 
-    private final UpdateQueue<ExperimentUpdateCommand, ExperimentProfile> updateQueue;
+    private final UpdateQueue<ExperimentUpdateCommand> updateQueue;
 
     private ExperimentProfile exp;
 
@@ -52,10 +51,10 @@ public class ExperimentData {
         submissionService = submissionServiceAsync;
 
         updateQueue =
-                new UpdateQueue<ExperimentUpdateCommand, ExperimentProfile>(eventBus,
-                        new UpdateQueue.Transport<ExperimentUpdateCommand, ExperimentProfile>() {
+                new UpdateQueue<ExperimentUpdateCommand>(eventBus,
+                        new UpdateQueue.Transport<ExperimentUpdateCommand>() {
                             @Override
-                            public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<ExperimentProfile> callback) {
+                            public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<UpdateQueue.Result> callback) {
                                 submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<ExperimentProfile>() {
                                     @Override
                                     public void onFailure(Throwable caught) {
@@ -63,9 +62,14 @@ public class ExperimentData {
                                     }
 
                                     @Override
+                                    public void onPermissionDenied() {
+                                        callback.onSuccess(UpdateQueue.Result.NO_PERMISSION);
+                                    }
+
+                                    @Override
                                     public void onSuccess(ExperimentProfile result) {
                                         exp = result;
-                                        callback.onSuccess(result);
+                                        callback.onSuccess(UpdateQueue.Result.SUCCESS);
                                     }
                                 }.wrap());
                             }
@@ -171,45 +175,54 @@ public class ExperimentData {
 
     private List<ExtractAttributesRow> getExtractAttributeRows(ExperimentProfile exp) {
         List<ExtractAttributesRow> rows = new ArrayList<ExtractAttributesRow>();
-        for(Extract extract : exp.getExtracts()) {
+        for (Extract extract : exp.getExtracts()) {
             rows.add(new ExtractAttributesRow(extract.getId(), extract.getName(), extract.getAttributeValues()));
         }
         return rows;
     }
 
     private List<ExtractLabelsRow> getExtractLabelsRows(ExperimentProfile exp) {
-        Map<Integer, ExtractLabelsRow> map = new LinkedHashMap<Integer, ExtractLabelsRow>();
-        for(LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-            Extract extract = labeledExtract.getExtract();
+        List<ExtractLabelsRow> rows = new ArrayList<ExtractLabelsRow>();
+        for (Extract extract : exp.getExtracts()) {
             Integer extractId = extract.getId();
-            ExtractLabelsRow row = map.get(extractId);
-            if (row == null) {
-                row = new ExtractLabelsRow(extractId, extract.getName());
-                map.put(extractId, row);
+            ExtractLabelsRow row = new ExtractLabelsRow(extractId, extract.getName());
+            for (LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
+                row.addLabel(labeledExtract.getLabel());
             }
-            row.addLabel(labeledExtract.getLabel());
-        }
-        return new ArrayList<ExtractLabelsRow>(map.values());
-    }
-
-    private List<DataAssignmentRow> getDataFileRows(ExperimentProfile exp) {
-        List<DataAssignmentRow> rows = new ArrayList<DataAssignmentRow>();
-        if (exp.getType().isMicroarray()) {
-            int i = 1;
-            for(LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-                rows.add(new DataAssignmentRow(i++, labeledExtract.getName()));
-            }
-        } else {
-            for(Extract extract : exp.getExtracts()) {
-                rows.add(new DataAssignmentRow(extract.getId(), extract.getName()));
-            }
+            rows.add(row);
         }
         return rows;
     }
 
+    private List<DataAssignmentRow> getDataAssignmentRows(ExperimentProfile exp) {
+        List<DataAssignmentRow> rows = new ArrayList<DataAssignmentRow>();
+        for (Assay assay : exp.getAssays()) {
+            DataAssignmentRow row = new DataAssignmentRow(assay.getId(), assay.getName());
+            rows.add(row);
+        }
+        return rows;
+    }
+
+    private List<DataAssignmentColumn> getDataAssignmentColumns(ExperimentProfile exp) {
+        List<DataAssignmentColumn> columns = new ArrayList<DataAssignmentColumn>();
+        int index = 0;
+        for (FileColumn fileColumn : exp.getFileColumns()) {
+            DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
+            for (Assay assay : exp.getAssays()) {
+                String fileName = fileColumn.getFileName(assay);
+                if (fileName != null) {
+                    column.setFileName(assay.getId(), fileName);
+                }
+            }
+            columns.add(column);
+            index++;
+        }
+        return columns;
+    }
+
     private List<ProtocolRow> getProtocolRows(ExperimentProfile exp) {
         List<ProtocolRow> rows = new ArrayList<ProtocolRow>();
-        for(Protocol protocol : exp.getProtocols()) {
+        for (Protocol protocol : exp.getProtocols()) {
             ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType());
             row.setDescription(protocol.getDescription());
             row.setSoftware(protocol.getSoftware());
@@ -219,6 +232,12 @@ public class ExperimentData {
             rows.add(row);
         }
         return rows;
+    }
+
+    private ProtocolAssignmentProfile getProtocolAssignmentProfile(int protocolId, ExperimentProfile exp) {
+        Protocol protocol = exp.getProtocol(protocolId);
+        Map<AssignmentItem, Boolean> protocolAssignments = exp.getProtocolAssignments(protocol);
+        return new ProtocolAssignmentProfile(protocol, protocolAssignments);
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -319,7 +338,7 @@ public class ExperimentData {
         });
     }
 
-    public void getDataFileRowsAsync(final AsyncCallback<List<DataAssignmentRow>> callback) {
+    public void getDataAssignmentColumnsAndRowsAsync(final AsyncCallback<DataAssignmentColumnsAndRows> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -328,23 +347,25 @@ public class ExperimentData {
 
             @Override
             public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(getDataFileRows(result));
+                callback.onSuccess(
+                        new DataAssignmentColumnsAndRows(getDataAssignmentColumns(result), getDataAssignmentRows(result))
+                );
             }
         });
     }
 
     public void getProtocolRowsAsync(final AsyncCallback<List<ProtocolRow>> callback) {
-         getExperiment(new AsyncCallback<ExperimentProfile>() {
-             @Override
-             public void onFailure(Throwable caught) {
-                 callback.onFailure(caught);
-             }
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-             @Override
-             public void onSuccess(ExperimentProfile result) {
-                 callback.onSuccess(getProtocolRows(result));
-             }
-         });
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getProtocolRows(result));
+            }
+        });
     }
 
     public void getExperimentProfileTypeAsync(final AsyncCallback<ExperimentProfileType> callback) {
@@ -357,6 +378,20 @@ public class ExperimentData {
             @Override
             public void onSuccess(ExperimentProfile result) {
                 callback.onSuccess(result.getType());
+            }
+        });
+    }
+
+    public void getProtocolAssignmentProfileAsync(final int protocolId, final AsyncCallback<ProtocolAssignmentProfile> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(getProtocolAssignmentProfile(protocolId, result));
             }
         });
     }
@@ -433,8 +468,32 @@ public class ExperimentData {
         updateQueue.add(new UpdateProtocolCommand(row));
     }
 
+    public void moveProtocolUp(ProtocolRow row) {
+        updateQueue.add(MoveProtocolCommand.up(row));
+    }
+
+    public void moveProtocolDown(ProtocolRow row) {
+        updateQueue.add(MoveProtocolCommand.down(row));
+    }
+
     public void removeProtocols(List<ProtocolRow> rows) {
         updateQueue.add(new RemoveProtocolsCommand(rows));
+    }
+
+    public void createDataAssignmentColumn(FileType type) {
+        updateQueue.add(new CreateDataAssignmentColumnCommand(type));
+    }
+
+    public void removeDataAssignmentColumns(List<Integer> indices) {
+        updateQueue.add(new RemoveDataAssignmentColumnsCommand(indices));
+    }
+
+    public void updateDataAssignmentColumn(DataAssignmentColumn column) {
+        updateQueue.add(new UpdateDataAssignmentColumnCommand(column));
+    }
+
+    public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
+        updateQueue.add(new UpdateProtocolAssignmentsCommand(updates));
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

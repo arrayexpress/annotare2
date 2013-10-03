@@ -147,15 +147,16 @@ public class ExperimentMageTabImporter {
 
     private void addExtracts(Sample sample, Collection<ExtractNode> extractNodes) {
         for(ExtractNode node : extractNodes) {
+            List<LabeledExtractNode> labeledExtracts = findLabeledExtracts(node);
             Extract extract = extracts.get(node);
             if (extract == null) {
-                extract = exp.createExtract(sample);
+                extract = exp.createExtract(labeledExtracts.isEmpty(), sample);
                 extract.setName(node.getNodeName());
                 extracts.put(node, extract);
             } else {
                 exp.link(sample, extract);
             }
-            addLabeledExtracts(extract, findLabeledExtracts(node));
+            addLabeledExtracts(extract, labeledExtracts);
         }
     }
 

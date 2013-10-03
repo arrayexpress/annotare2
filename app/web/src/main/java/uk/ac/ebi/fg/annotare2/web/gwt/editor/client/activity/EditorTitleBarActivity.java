@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
@@ -85,7 +86,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
             @Override
             public void autoSaveFailed(AutoSaveEvent event) {
-                view.autoSaveStopped(event.getCaught());
+                view.autoSaveStopped(event.getErrorMessage());
             }
         });
 
@@ -183,5 +184,10 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     @Override
     public void importFile(AsyncCallback<Void> callback) {
         adfService.importBodyData(getSubmissionId(), wrap(callback));
+    }
+
+    @Override
+    public String getSubmissionExportUrl() {
+        return GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "export?submissionId=" + getSubmissionId();
     }
 }

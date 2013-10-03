@@ -200,10 +200,9 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             }
         }
 
-        if (newLabels.removeAll(existedLabels)) {
-            for (String label : newLabels) {
-                exp.createLabeledExtract(extract, label);
-            }
+        newLabels.removeAll(existedLabels);
+        for (String label : newLabels) {
+            exp.createLabeledExtract(extract, label);
         }
     }
 
@@ -248,8 +247,56 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void removeProtocols(List<ProtocolRow> rows) {
         for (ProtocolRow row : rows) {
-            exp.removeProtocol(row.getId());
+            Protocol protocol = exp.getProtocol(row.getId());
+            exp.removeProtocol(protocol);
         }
+    }
+
+    @Override
+    public void createDataAssignmentColumn(FileType fileType) {
+        exp.createFileColumn(fileType);
+    }
+
+    @Override
+    public void removeDataAssignmentColumns(List<Integer> indices) {
+        for (Integer index : indices) {
+            exp.removeFileColumn(index);
+        }
+    }
+
+    @Override
+    public void updateDataAssignmentColumn(DataAssignmentColumn column) {
+        FileColumn fileColumn = exp.getFileColumn(column.getIndex());
+        Set<String> assayIds = new HashSet<String>(column.getAssayIds());
+        for (String assayId : assayIds) {
+            Assay assay = exp.getAssay(assayId);
+            if (assay != null) {
+                fileColumn.setFileName(assay, column.getFileName(assayId));
+            }
+        }
+        for (Assay assay : fileColumn.getAssays()) {
+            if (!assayIds.contains(assay.getId())) {
+                fileColumn.setFileName(assay, null);
+            }
+        }
+    }
+
+    @Override
+    public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
+        Protocol protocol = exp.getProtocol(updates.getProtocolId());
+        if (protocol != null) {
+            protocol.getTargetType().setProtocolAssignments(protocol, exp, updates.getAssignments());
+        }
+    }
+
+    @Override
+    public void moveProtocolDown(ProtocolRow row) {
+        exp.moveProtocolDown(exp.getProtocol(row.getId()));
+    }
+
+    @Override
+    public void moveProtocolUp(ProtocolRow row) {
+        exp.moveProtocolUp(exp.getProtocol(row.getId()));
     }
 
     public void run(List<ExperimentUpdateCommand> commands) {

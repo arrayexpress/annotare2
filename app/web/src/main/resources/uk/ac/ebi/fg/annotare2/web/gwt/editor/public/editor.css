@@ -543,3 +543,11 @@ table.GWTUpld {
     margin: 5px;
     float: left;
 }
+
+.app-MageTabEmptyCell {
+    background-color: #FEEFB3;
+}
+
+.app-MageTabUnassignedCell {
+    background-color: #FFBABA;
+}

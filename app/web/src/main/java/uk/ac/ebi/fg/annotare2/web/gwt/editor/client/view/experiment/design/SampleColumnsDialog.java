@@ -31,6 +31,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
 import java.util.*;
 
@@ -74,7 +75,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     private Map<Integer, SampleColumn> columnMap = new HashMap<Integer, SampleColumn>();
 
-    private Callback callback;
+    private DialogCallback<List<SampleColumn>> callback;
 
     private int nextId;
 
@@ -84,7 +85,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     public SampleColumnsDialog(List<SampleColumn> columns,
                                ColumnValueTypeEfoTerms efoSuggestService,
-                               Callback callback) {
+                               DialogCallback<List<SampleColumn>> callback) {
         setModal(true);
         setGlassEnabled(true);
         setText("Sample Attributes");
@@ -316,12 +317,5 @@ public class SampleColumnsDialog extends DialogBox {
     private static void setItemSelected(ListBox listBox, int index) {
         listBox.setItemSelected(index, true);
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
-    }
-
-    public interface Callback {
-
-        void onCancel();
-
-        void onOkay(List<SampleColumn> columns);
     }
 }

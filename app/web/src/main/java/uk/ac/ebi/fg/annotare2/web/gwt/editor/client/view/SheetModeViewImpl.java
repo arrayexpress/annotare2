@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style;
@@ -134,8 +135,25 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
             String title = hasHeaders ? headerRow.getValue(colIndex) : (i + 1) + "";
             Column<IndexedRow, String> column = new Column<IndexedRow, String>(new TextCell()) {
                 @Override
+                public String getCellStyleNames(Cell.Context context, IndexedRow row) {
+                    String value = row.getValue(colIndex);
+                    return isEmpty(value) ? "app-MageTabEmptyCell" :
+                            isUnassigned(value) ? "app-MageTabUnassignedCell" :
+                                    null;
+                }
+
+                @Override
                 public String getValue(IndexedRow row) {
-                    return row.getValue(colIndex);
+                    String value = row.getValue(colIndex);
+                    return isEmpty(value) || isUnassigned(value) ? "" : value;
+                }
+
+                private boolean isUnassigned(String value) {
+                    return value != null && value.startsWith("__UNASSIGNED__@");
+                }
+
+                private boolean isEmpty(String value) {
+                    return value == null || value.isEmpty();
                 }
             };
             sortHandler.setComparator(column, new Comparator<IndexedRow>() {

@@ -74,13 +74,15 @@ public class AppServletModule extends ServletModule {
     protected void configureServlets() {
         filter("/login",
                 "/logout",
+                "/export",
                 "/UserApp/*",
                 "/EditorApp/*").through(HibernateSessionFilter.class);
 
         filter("/UserApp/*",
                 "/",
                 "/EditorApp/*",
-                "/edit/*"
+                "/edit/*",
+                "/export"
         ).through(SecurityFilter.class);
 
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
@@ -89,6 +91,8 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
+        serve("/export").with(ExportServlet.class);
+        serve("/error").with(UncaughtExceptionServlet.class);
 
         bind(HibernateSessionFilter.class).in(SINGLETON);
         bind(SecurityFilter.class).in(SINGLETON);
@@ -98,6 +102,8 @@ public class AppServletModule extends ServletModule {
         bind(EditorServlet.class).in(SINGLETON);
         bind(WelcomeServlet.class).in(SINGLETON);
         bind(UploadServlet.class).in(SINGLETON);
+        bind(ExportServlet.class).in(SINGLETON);
+        bind(UncaughtExceptionServlet.class).in(SINGLETON);
 
         serveAndBindRpcService(CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class, "UserApp");
         serveAndBindRpcService(SubmissionListService.NAME, SubmissionListServiceImpl.class, "UserApp");

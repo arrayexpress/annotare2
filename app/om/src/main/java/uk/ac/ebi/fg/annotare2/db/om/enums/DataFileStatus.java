@@ -40,4 +40,8 @@ public enum DataFileStatus {
     public boolean isFinal() {
         return this != TO_BE_STORED;
     }
+
+    public boolean isOk() {
+        return this == STORED;
+    }
 }

@@ -19,12 +19,15 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Olga Melnichuk
  */
 public class DataAssignmentRow implements IsSerializable, HasIdentity {
 
-    private int id;
+    private String assayId;
 
     private String name;
 
@@ -32,18 +35,18 @@ public class DataAssignmentRow implements IsSerializable, HasIdentity {
         /*used by GWT serialization only*/
     }
 
-    public DataAssignmentRow(int id, String name) {
-        this.id = id;
+    public DataAssignmentRow(String assayId, String name) {
+        this.assayId = assayId;
         this.name = name;
     }
 
     @Override
     public Object getIdentity() {
-        return id;
+        return assayId;
     }
 
-    public int getId() {
-        return id;
+    public String getAssayId() {
+        return assayId;
     }
 
     public String getName() {

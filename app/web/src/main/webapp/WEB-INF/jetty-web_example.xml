@@ -21,4 +21,12 @@
             </New>
         </Arg>
     </New>
+    <Set name="initParams">
+        <Map>
+            <Entry>
+                <Item>org.mortbay.jetty.servlet.SessionURL</Item>
+                <Item>none</Item>
+            </Entry>
+        </Map>
+    </Set>
 </Configure>

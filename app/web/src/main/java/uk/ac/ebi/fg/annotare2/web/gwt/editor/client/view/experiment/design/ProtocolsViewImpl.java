@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
@@ -23,10 +24,15 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidationMessage;
 
@@ -44,7 +50,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     public ProtocolsViewImpl() {
         gridView = new GridView<ProtocolRow>();
-        Button createButton = new Button("Add Protocol");
+        Button createButton = new Button("Add Protocol...");
         createButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -60,6 +66,26 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             }
         });
         gridView.addTool(removeButton);
+        Button moveUpButton = new Button();
+        moveUpButton.setHTML("&#8593;");
+        moveUpButton.setTitle("Move selected protocol one position up");
+        moveUpButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                moveProtocolUp();
+            }
+        });
+        gridView.addTool(moveUpButton);
+        Button moveDownButton = new Button();
+        moveDownButton.setHTML("&#8595;");
+        moveDownButton.setTitle("Move selected protocol one position down");
+        moveDownButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                moveProtocolDown();
+            }
+        });
+        gridView.addTool(moveDownButton);
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
@@ -79,6 +105,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private void setColumns() {
         addNameColumn();
+        addAssignmentColumn();
         addTypeColumn();
         addDescriptionColumn();
         addParametersColumn();
@@ -123,6 +150,46 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
+    private void addAssignmentColumn() {
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell()) {
+            @Override
+            public String getValue(ProtocolRow object) {
+                return "Assign...";
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
+            @Override
+            public void update(int index, ProtocolRow row, String value) {
+                presenter.getAssignmentProfileAsync(row.getId(), new AsyncCallback<ProtocolAssignmentProfile>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Can't load protocol assignments");
+                    }
+
+                    @Override
+                    public void onSuccess(ProtocolAssignmentProfile result) {
+                        if (result.getNames().isEmpty()) {
+                            Window.alert("You do not have any " + result.getTarget() + " to assign protocols to.");
+                            return;
+                        }
+                        new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
+                            @Override
+                            public void onCancel() {
+                                // do nothing
+                            }
+
+                            @Override
+                            public void onOkay(ProtocolAssignmentProfileUpdates profileUpdates) {
+                                updateProtocolAssignments(profileUpdates);
+                            }
+                        }).show();
+                    }
+                });
+            }
+        });
+        gridView.addPermanentColumn("Assignment", column, null, 100, Style.Unit.PX);
+    }
+
     private boolean isNameValid(String name, int rowIndex) {
         if (name == null || name.trim().isEmpty()) {
             showErrorMessage("Protocol name can't be empty");
@@ -139,7 +206,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         List<ProtocolRow> rows = gridView.getRows();
         Set<String> names = new HashSet<String>();
         int i = 0;
-        for(ProtocolRow row : rows) {
+        for (ProtocolRow row : rows) {
             if (i != rowIndex) {
                 names.add(row.getName());
             }
@@ -299,9 +366,15 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         gridView.addPermanentColumn("Contact", column, comparator, 150, Style.Unit.PX);
     }
 
+    private void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
+        if (presenter != null) {
+            presenter.updateProtocolAssignments(updates);
+        }
+    }
+
     private void updateRow(ProtocolRow row) {
         if (presenter != null) {
-            presenter.updateUpdateProtocol(row);
+            presenter.updateProtocol(row);
         }
     }
 
@@ -309,8 +382,8 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         if (presenter == null) {
             return;
         }
-        (new ProtocolCreateDialog(presenter,
-                new ProtocolCreateDialog.Callback() {
+        (new ProtocolCreationDialog(presenter,
+                new DialogCallback<ProtocolType>() {
                     @Override
                     public void onCancel() {
                     }
@@ -332,6 +405,32 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             return;
         }
         presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
-        gridView.removeSelectedRows();
+    }
+
+    private void moveProtocolUp() {
+        ProtocolRow row = getSelectedProtocolRowToMove();
+        if (gridView.moveRowUp(row)) {
+            presenter.moveProtocolUp(row);
+        }
+    }
+
+    private void moveProtocolDown() {
+        ProtocolRow row = getSelectedProtocolRowToMove();
+        if (gridView.moveRowDown(row)) {
+            presenter.moveProtocolDown(row);
+        }
+    }
+
+    private ProtocolRow getSelectedProtocolRowToMove() {
+        Set<ProtocolRow> selected = gridView.getSelectedRows();
+        if (selected.isEmpty()) {
+            Window.alert("Please select a row to move");
+            return null;
+        }
+        if (selected.size() > 1) {
+            Window.alert("Sorry, can't move more than one row at a time");
+            return null;
+        }
+        return selected.iterator().next();
     }
 }

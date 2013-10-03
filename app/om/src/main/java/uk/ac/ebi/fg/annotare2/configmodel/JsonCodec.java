@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.configmodel;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.IOException;
 
@@ -65,6 +66,7 @@ public class JsonCodec {
 
     public static String toJsonString(ExperimentProfile exp) throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         try {
             return mapper.writeValueAsString(exp);
         } catch (JsonGenerationException e) {
@@ -78,6 +80,7 @@ public class JsonCodec {
 
     public static String toJsonString(ArrayDesignHeader header) throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         try {
             return mapper.writeValueAsString(header);
         } catch (JsonGenerationException e) {

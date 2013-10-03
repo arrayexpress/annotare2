@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
@@ -30,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionValidator;
 
@@ -59,11 +61,12 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
 
     @Override
     public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
-        ExperimentSubmission subm = getExperimentSubmission(submissionId, Permission.VIEW);
+        List<String> failures = newArrayList();
         List<String> errors = newArrayList();
         List<String> warnings = newArrayList();
-        List<String> failures = newArrayList();
+
         try {
+            ExperimentSubmission subm = getExperimentSubmission(submissionId, Permission.VIEW);
             Collection<CheckResult> results = validator.validate(subm);
             for (CheckResult cr : results) {
                 switch (cr.getStatus()) {
@@ -78,6 +81,10 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
                         break;
                 }
             }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
         } catch (IOException e) {
             log.error("Validation failure", e);
             failures.add("Failure: " + e.getMessage());

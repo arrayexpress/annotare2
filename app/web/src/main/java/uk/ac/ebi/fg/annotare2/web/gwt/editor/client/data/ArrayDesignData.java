@@ -37,7 +37,7 @@ public class ArrayDesignData {
 
     private final SubmissionServiceAsync submissionService;
 
-    private final UpdateQueue<ArrayDesignUpdateCommand, ArrayDesignUpdateResult> updateQueue;
+    private final UpdateQueue<ArrayDesignUpdateCommand> updateQueue;
 
     private ArrayDesignDetailsDto details;
 
@@ -47,10 +47,10 @@ public class ArrayDesignData {
             SubmissionServiceAsync submissionServiceAsync) {
         submissionService = submissionServiceAsync;
 
-        updateQueue = new UpdateQueue<ArrayDesignUpdateCommand, ArrayDesignUpdateResult>(eventBus,
-                new UpdateQueue.Transport<ArrayDesignUpdateCommand, ArrayDesignUpdateResult>() {
+        updateQueue = new UpdateQueue<ArrayDesignUpdateCommand>(eventBus,
+                new UpdateQueue.Transport<ArrayDesignUpdateCommand>() {
                     @Override
-                    public void sendUpdates(List<ArrayDesignUpdateCommand> commands, final AsyncCallback<ArrayDesignUpdateResult> callback) {
+                    public void sendUpdates(List<ArrayDesignUpdateCommand> commands, final AsyncCallback<UpdateQueue.Result> callback) {
                         submissionService.updateArrayDesign(getSubmissionId(), commands, new AsyncCallbackWrapper<ArrayDesignUpdateResult>() {
                             @Override
                             public void onFailure(Throwable caught) {
@@ -58,9 +58,14 @@ public class ArrayDesignData {
                             }
 
                             @Override
+                            public void onPermissionDenied() {
+                                callback.onSuccess(UpdateQueue.Result.NO_PERMISSION);
+                            }
+
+                            @Override
                             public void onSuccess(ArrayDesignUpdateResult result) {
                                 applyUpdates(result);
-                                callback.onSuccess(result);
+                                callback.onSuccess(UpdateQueue.Result.SUCCESS);
                             }
                         }.wrap());
                     }
@@ -91,7 +96,7 @@ public class ArrayDesignData {
     }
 
     private void applyUpdates(ArrayDesignUpdateResult result) {
-       details = result.getUpdatedDetails();
+        details = result.getUpdatedDetails();
     }
 
 }

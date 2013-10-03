@@ -34,7 +34,7 @@ public interface EditorTitleBarView extends IsWidget {
 
     void autoSaveStarted();
 
-    void autoSaveStopped(Throwable caught);
+    void autoSaveStopped(String errorMessage);
 
     void criticalUpdateStarted();
 
@@ -49,6 +49,8 @@ public interface EditorTitleBarView extends IsWidget {
         void discardSubmissionData(AsyncCallback<Void> callback);
 
         void importFile(AsyncCallback<Void> callback);
+
+        String getSubmissionExportUrl();
     }
 
     public interface ValidationHandler {

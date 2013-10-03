@@ -59,6 +59,9 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiField
     AutoSaveLabel autoSaveLabel;
 
+    @UiField
+    Anchor exportLink;
+
     private Presenter presenter;
 
     private WaitingPopup criticalUpdatePopup;
@@ -83,20 +86,23 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         boolean isExperimentSubmission = type.isExperimentSubmission();
         validateButton.setVisible(isExperimentSubmission);
         createNewLink.setVisible(isExperimentSubmission);
+        exportLink.setVisible(isExperimentSubmission);
         importLink.setVisible(!isExperimentSubmission);
     }
 
     @Override
     public void autoSaveStarted() {
         autoSaveLabel.show("Saving...");
+        autoSaveLabel.getElement().getStyle().setColor("inherit");
     }
 
     @Override
-    public void autoSaveStopped(Throwable caught) {
-        if (caught == null) {
+    public void autoSaveStopped(String errorMessage) {
+        if (errorMessage == null) {
             autoSaveLabel.hide();
         } else {
-            autoSaveLabel.show("Can't save changes; unexpected server error");
+            autoSaveLabel.show(errorMessage);
+            autoSaveLabel.getElement().getStyle().setColor("red");
         }
     }
 
@@ -168,6 +174,13 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                 }
             });
             importFileDialog.show();
+        }
+    }
+
+    @UiHandler("exportLink")
+    public void onExportLinkClick(ClickEvent event) {
+        if (presenter != null) {
+            Window.open(presenter.getSubmissionExportUrl(), "export", "");
         }
     }
 }

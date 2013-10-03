@@ -27,7 +27,7 @@ public class AutoSaveEvent extends GwtEvent<AutoSaveEventHandler> {
 
     private boolean isStart;
 
-    private Throwable caught;
+    private String errorMessage;
 
     private AutoSaveEvent() {
     }
@@ -36,7 +36,7 @@ public class AutoSaveEvent extends GwtEvent<AutoSaveEventHandler> {
     protected void dispatch(AutoSaveEventHandler handler) {
         if (isStart) {
             handler.autoSaveStarted(this);
-        } else if (caught != null) {
+        } else if (errorMessage != null) {
             handler.autoSaveFailed(this);
         } else {
             handler.autoSaveStopped(this);
@@ -52,8 +52,8 @@ public class AutoSaveEvent extends GwtEvent<AutoSaveEventHandler> {
         return TYPE;
     }
 
-    public Throwable getCaught() {
-        return caught;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     public static AutoSaveEvent autoSaveStarted() {
@@ -62,9 +62,9 @@ public class AutoSaveEvent extends GwtEvent<AutoSaveEventHandler> {
         return event;
     }
 
-    public static AutoSaveEvent autoSaveStopped(Throwable caught) {
+    public static AutoSaveEvent autoSaveStopped(String errorMessage) {
         AutoSaveEvent event = new AutoSaveEvent();
-        event.caught = caught;
+        event.errorMessage = errorMessage;
         return event;
     }
 }

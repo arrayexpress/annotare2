@@ -25,7 +25,7 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.configmodel.ProtocolUsageType;
+import uk.ac.ebi.fg.annotare2.configmodel.ProtocolTargetType;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -97,8 +97,8 @@ public class ProtocolTypes {
         @JsonProperty("usage")
         private final Usage usage;
 
-        @JsonProperty("between")
-        private final ProtocolUsageType usageType;
+        @JsonProperty("target")
+        private final ProtocolTargetType targetType;
 
         @JsonProperty("definition")
         private final String definition;
@@ -106,12 +106,12 @@ public class ProtocolTypes {
         public Config(@JsonProperty("label") String label,
                       @JsonProperty("id") String id,
                       @JsonProperty("usage") Usage usage,
-                      @JsonProperty("between") ProtocolUsageType usageType,
+                      @JsonProperty("target") ProtocolTargetType usageType,
                       @JsonProperty("definition") String definition) {
             this.label = label;
             this.id = id;
             this.usage = usage;
-            this.usageType = usageType;
+            this.targetType = usageType;
             this.definition = definition;
         }
 
@@ -123,8 +123,8 @@ public class ProtocolTypes {
             return definition;
         }
 
-        public ProtocolUsageType getUsageType() {
-            return usageType;
+        public ProtocolTargetType getTargetType() {
+            return targetType;
         }
 
         private boolean isUsedIn(ExperimentProfileType expType) {

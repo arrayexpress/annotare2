@@ -29,6 +29,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +37,9 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolCreateDialog extends DialogBox {
+public class ProtocolCreationDialog extends DialogBox {
 
-    interface Binder extends UiBinder<Widget, ProtocolCreateDialog> {
+    interface Binder extends UiBinder<Widget, ProtocolCreationDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -56,10 +57,9 @@ public class ProtocolCreateDialog extends DialogBox {
 
     private final Presenter presenter;
     private List<ProtocolType> protocolTypes;
-    private Callback callback;
+    private DialogCallback<ProtocolType> callback;
 
-
-    public ProtocolCreateDialog(Presenter presenter, Callback callback) {
+    public ProtocolCreationDialog(Presenter presenter, DialogCallback<ProtocolType> callback) {
         this.presenter = presenter;
         this.callback = callback;
 
@@ -141,11 +141,5 @@ public class ProtocolCreateDialog extends DialogBox {
 
     public static interface Presenter {
         void getProtocolTypes(AsyncCallback<List<ProtocolType>> callback);
-    }
-
-    public interface Callback {
-        void onCancel();
-
-        void onOkay(ProtocolType type);
     }
 }
