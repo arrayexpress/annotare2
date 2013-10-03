@@ -21,8 +21,10 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+
 import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.EXPERIMENTS;
 import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.USERS;
+
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
@@ -35,8 +37,7 @@ import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class SubsTracking
-{
+public class SubsTracking {
     private final DataSource dbDataSource;
 
     private final static String ANNOTARE_USER_NAME = "annotare";
@@ -44,13 +45,13 @@ public class SubsTracking
     public SubsTracking() {
         try {
             InitialContext context = new InitialContext();
-            this.dbDataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
+            this.dbDataSource = (DataSource) context.lookup("java:/comp/env/jdbc/subsTrackingDataSource");
         } catch (NamingException x) {
             throw new RuntimeException(x);
         }
     }
 
-    public Integer addSubmission( Submission submission ) {
+    public Integer addSubmission(Submission submission) {
 
         Integer subsTrackngId = null;
 
@@ -82,7 +83,7 @@ public class SubsTracking
         return subsTrackngId;
     }
 
-    private Integer getAnnotareUserId( DSLContext context ) {
+    private Integer getAnnotareUserId(DSLContext context) {
         // attempt to fetch a user id for user name 'annotare'; create one if not found
         UsersRecord r =
                 context.selectFrom(USERS)
@@ -99,6 +100,6 @@ public class SubsTracking
                     .returning(USERS.ID)
                     .fetchOne();
         }
-        return ( null != r ) ? r.getId() : null;
+        return (null != r) ? r.getId() : null;
     }
 }
