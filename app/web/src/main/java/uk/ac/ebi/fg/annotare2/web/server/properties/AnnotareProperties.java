@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.properties;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoServiceProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
@@ -32,7 +33,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * @author Olga Melnichuk
  */
-public class AnnotareProperties implements DataFileStoreProperties {
+public class AnnotareProperties implements DataFileStoreProperties, SubsTrackingProperties {
 
     private static final Logger log = LoggerFactory.getLogger(AnnotareProperties.class);
 
@@ -64,6 +65,7 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getDirProperty("pickup.dir");
     }
 
+    @Override
     public File getDataStoreDir() {
         return getDirProperty("datastore.dir");
     }
@@ -84,6 +86,7 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("ftp.public.password");
     }
 
+    @Override
     public Boolean getAeSubsTrackingEnabled() {
         return Boolean.parseBoolean(getProperty("ae-subs-tracking.enabled"));
     }

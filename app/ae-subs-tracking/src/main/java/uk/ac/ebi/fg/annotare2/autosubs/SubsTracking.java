@@ -17,6 +17,7 @@ package uk.ac.ebi.fg.annotare2.autosubs;
  *
  */
 
+import com.google.inject.Inject;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -37,16 +38,23 @@ import java.util.Date;
 
 public class SubsTracking
 {
+    private final SubsTrackingProperties properties;
     private final DataSource dbDataSource;
 
     private final static String ANNOTARE_USER_NAME = "annotare";
 
-    public SubsTracking() {
-        try {
-            InitialContext context = new InitialContext();
-            this.dbDataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
-        } catch (NamingException x) {
-            throw new RuntimeException(x);
+    @Inject
+    public SubsTracking( SubsTrackingProperties properties ) {
+        this.properties = properties;
+        if (properties.getAeSubsTrackingEnabled()) {
+            try {
+                InitialContext context = new InitialContext();
+                this.dbDataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
+            } catch (NamingException x) {
+                throw new RuntimeException(x);
+            }
+        } else {
+            this.dbDataSource = null;
         }
     }
 
@@ -54,7 +62,7 @@ public class SubsTracking
 
         Integer subsTrackngId = null;
 
-        if (submission instanceof ExperimentSubmission) {
+        if (properties.getAeSubsTrackingEnabled() && submission instanceof ExperimentSubmission) {
             DSLContext context = DSL.using(this.dbDataSource, SQLDialect.MYSQL);
 
             try {

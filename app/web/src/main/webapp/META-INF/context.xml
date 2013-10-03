@@ -8,7 +8,6 @@
             driverClassName="${annotare.db.driver}"
             username="${annotare.db.user}"
             password="${annotare.db.password}"/>
-
     <Resource
             name="jdbc/subsTrackingDataSource"
             type="javax.sql.DataSource"

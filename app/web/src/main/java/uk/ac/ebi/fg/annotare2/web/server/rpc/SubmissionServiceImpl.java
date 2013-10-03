@@ -93,11 +93,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         this.properties = properties;
         this.transactionSupport = transactionSupport;
         this.userDao = userDao;
-        if (properties.getAeSubsTrackingEnabled()) {
-            this.subsTracking = subsTracking;
-        } else {
-            this.subsTracking = null;
-        }
+        this.subsTracking = subsTracking;
     }
 
     @Override
@@ -228,7 +224,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 @Override
                 public Void doInTransaction() throws Exception {
                     Submission submission = getSubmission(id, Permission.UPDATE);
-                    if (null != subsTracking) {
+                    if (properties.getAeSubsTrackingEnabled()) {
                         Integer subsTrackingId = subsTracking.addSubmission(submission);
                         submission.setSubsTrackingId(subsTrackingId);
                     }
