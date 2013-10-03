@@ -168,7 +168,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         }
     }
 
-    @UiHandler("importLink")
+    @UiHandler("exportLink")
     public void onExportLinkClick(ClickEvent event) {
         if (presenter != null) {
             Window.open(presenter.getSubmissionExportUrl(), "export", "");
