@@ -39,8 +39,14 @@ public class UserDaoDummy implements UserDao {
         return u;
     }
 
+    @Override
     public User getUserByEmail(String email) {
         return DummyData.getUserByEmail(email);
+    }
+
+    @Override
+    public User getCuratorUser() {
+        return DummyData.getUserByEmail("curator@ebi.ac.uk");
     }
 
     @Override
