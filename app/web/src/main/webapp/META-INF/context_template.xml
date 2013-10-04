@@ -23,6 +23,7 @@
             username="${dbUser}"
             password="${dbPassword}"/>
 
+    <% if (st_dbUrl != null) { %>
     <Resource
             name="jdbc/subsTrackingDataSource"
             type="javax.sql.DataSource"
@@ -31,5 +32,6 @@
             driverClassName="${st_dbDriver}"
             username="${st_dbUser}"
             password="${st_dbPassword}"/>
+    <% } %>
 
 </Context>
