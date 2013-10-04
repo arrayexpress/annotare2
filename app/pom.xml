@@ -222,30 +222,38 @@
 
     <profiles>
         <profile>
-            <id>test</id>
+            <id>properties</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <annotare.contextPath>/</annotare.contextPath>
+                <!-- external properties -->
+                <!--
+                <annotare.properties.path>path/to/Annotare.properties</annotare.properties.path>
+                <magetabcheck.properties.path>path/to/MageTabCheck.properties</magetabcheck.properties.path>
+                -->
                 <annotare.db.url>annotare_db_url</annotare.db.url>
                 <annotare.db.user>annotare_db_user</annotare.db.user>
                 <annotare.db.password>annotare_db_password</annotare.db.password>
-                <annotare.db.driver>annotare_db_driver_class</annotare.db.driver>
-                <annotare.db.dataSource>annotare_db_dataSource_class</annotare.db.dataSource>
+                <annotare.db.driver>com.mysql.jdbc.Driver</annotare.db.driver>
+                <annotare.db.dataSource>com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource</annotare.db.dataSource>
 
-                <annotare.test.db.url>test_db_url</annotare.test.db.url>
-                <annotare.test.db.user>test_db_user</annotare.test.db.user>
-                <annotare.test.db.password>test_db_password</annotare.test.db.password>
-                <annotare.test.db.driver>test_db_driver_class</annotare.test.db.driver>
-                <annotare.test.db.dataSource>test_db_dataSource_class</annotare.test.db.dataSource>
-
+                <!-- SubsTracking DB integration -->
+                <!--
                 <annotare.subsTracking.db.schema>subsTracking_db_schema</annotare.subsTracking.db.schema>
                 <annotare.subsTracking.db.url>subsTracking_db_url</annotare.subsTracking.db.url>
                 <annotare.subsTracking.db.user>subsTracking_db_user</annotare.subsTracking.db.user>
                 <annotare.subsTracking.db.password>subsTracking_db_password</annotare.subsTracking.db.password>
                 <annotare.subsTracking.db.driver>subsTracking_db_driver_class</annotare.subsTracking.db.driver>
                 <annotare.subsTracking.db.dataSource>subsTracking_db_dataSource_class</annotare.subsTracking.db.dataSource>
+                -->
 
+                <annotare.test.db.url>test_db_url</annotare.test.db.url>
+                <annotare.test.db.user>test_db_user</annotare.test.db.user>
+                <annotare.test.db.password>test_db_password</annotare.test.db.password>
+                <annotare.test.db.driver>com.mysql.jdbc.Driver</annotare.test.db.driver>
+                <annotare.test.db.dataSource>com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource</annotare.test.db.dataSource>
             </properties>
         </profile>
     </profiles>

@@ -14,7 +14,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.ebi.fg.annotare2.web</groupId>
@@ -300,6 +301,56 @@
                     </webResources>
                     <!--packagingExcludes>**/client/**</packagingExcludes-->
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-context-xml</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <defaults>
+                                <contextTemplate>src/main/webapp/META-INF/context_template.xml</contextTemplate>
+                                <jettyWebTemplate>src/main/webapp/WEB-INF/jetty-web_template.xml</jettyWebTemplate>
+                            </defaults>
+                            <source>
+                                import groovy.text.SimpleTemplateEngine
+
+                                def templateFiles = [
+                                        new File(project.basedir, project.properties['contextTemplate']),
+                                        new File(project.basedir, project.properties['jettyWebTemplate'])
+                                ]
+
+                                def engine = new SimpleTemplateEngine()
+                                def binding = [
+                                                 'annotareProperties': project.properties['annotare.properties.path'],
+                                                 'mageTabCheckProperties': project.properties['magetabcheck.properties.path'],
+                                                 'contextPath': project.properties['annotare.contextPath'],
+                                                 'dbUrl': project.properties['annotare.db.url'],
+                                                 'dbDriver': project.properties['annotare.db.driver'],
+                                                 'dbUser': project.properties['annotare.db.user'],
+                                                 'dbPassword': project.properties['annotare.db.password'],
+                                                 'st_dbUrl': project.properties['annotare.subsTracking.db.url'],
+                                                 'st_dbDriver': project.properties['annotare.subsTracking.db.driver'],
+                                                 'st_dbUser': project.properties['annotare.subsTracking.db.user'],
+                                                 'st_dbPassword': project.properties['annotare.subsTracking.db.password']
+                                ]
+
+                                for(file in templateFiles) {
+                                    def template = engine.createTemplate(file).make(binding)
+                                    def destination = file.name.replace("_template", "")
+                                    def toFile = new File(file.parent, destination)
+                                    toFile.write(template.toString())
+                                }
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

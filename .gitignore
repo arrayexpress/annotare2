@@ -7,3 +7,7 @@ _idea
 .idea-files
 github-gxa
 .DS_Store
+context.xml
+jetty-web.xml
+Annotare.properties
+MageTabCheck.properties
