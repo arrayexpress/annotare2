@@ -61,6 +61,10 @@ public class DataFileManager {
         messageQueue.offer(file, dataFile);
     }
 
+    public File getFile(DataFile dataFile) throws IOException {
+        return fileStore.get(dataFile.getDigest());
+    }
+
     public boolean removeFile(ExperimentSubmission submission, DataFile dataFile) throws IOException {
         if (!submission.getFiles().contains(dataFile)) {
             return false;

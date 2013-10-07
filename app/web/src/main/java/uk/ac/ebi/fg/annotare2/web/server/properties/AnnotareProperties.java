@@ -97,6 +97,11 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
     }
 
     @Override
+    public String getAeSubsTrackingExperimentType() {
+        return getProperty("ae-subs-tracking.experiment-type");
+    }
+
+    @Override
     public File getAeSubsTrackingExportDir() {
         return getDirProperty("ae-subs-tracking.export.dir");
     }

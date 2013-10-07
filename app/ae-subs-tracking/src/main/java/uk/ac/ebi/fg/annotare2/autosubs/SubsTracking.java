@@ -36,8 +36,7 @@ import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class SubsTracking
-{
+public class SubsTracking {
     private final SubsTrackingProperties properties;
     private final DataSource dbDataSource;
 
@@ -58,7 +57,7 @@ public class SubsTracking
 
     public Integer addSubmission( Submission submission ) {
 
-        Integer subsTrackngId = null;
+        Integer subsTrackingId = null;
 
         if (properties.getAeSubsTrackingEnabled() && submission instanceof ExperimentSubmission) {
             DSLContext context = DSL.using(this.dbDataSource, SQLDialect.MYSQL);
@@ -74,10 +73,11 @@ public class SubsTracking
                                 .set(EXPERIMENTS.ACCESSION, submission.getAccession())
                                 .set(EXPERIMENTS.NAME, submission.getTitle())
                                 .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, ((ExperimentSubmission) submission).getExperimentProfile().getDescription())
+                                .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
                                 .returning(EXPERIMENTS.ID)
                                 .fetchOne();
                 if (null != r) {
-                    subsTrackngId = r.getId();
+                    subsTrackingId = r.getId();
                 }
             } catch (DataSerializationException x) {
 
@@ -85,7 +85,7 @@ public class SubsTracking
         } else {
             throw new RuntimeException("Unable to process array design submission just yet, to be implemented");
         }
-        return subsTrackngId;
+        return subsTrackingId;
     }
 
     private Integer getAnnotareUserId( DSLContext context ) {

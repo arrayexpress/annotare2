@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.util.Streams;
@@ -245,9 +246,25 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 @Override
                 public Void doInTransaction() throws Exception {
                     Submission submission = getSubmission(id, Permission.UPDATE);
+                    File exportDir;
+
                     if (properties.getAeSubsTrackingEnabled()) {
                         Integer subsTrackingId = subsTracking.addSubmission(submission);
                         submission.setSubsTrackingId(subsTrackingId);
+                        exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
+                        if (!exportDir.exists()) {
+                            exportDir.mkdir();
+                        }
+                        exportDir = new File(exportDir, properties.getAeSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
+                        if (!exportDir.exists()) {
+                            exportDir.mkdir();
+                        }
+                    } else {
+                        exportDir = properties.getExportDir();
+                    }
+
+                    if (submission instanceof ExperimentSubmission) {
+                        exportSubmissionFiles((ExperimentSubmission)submission, exportDir);
                     }
                     submission.setStatus(SubmissionStatus.SUBMITTED);
                     submission.setOwnedBy(userDao.getCuratorUser());
@@ -409,6 +426,30 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e.getCause());
         }
     }
+
+    private void exportSubmissionFiles( ExperimentSubmission submission, File exportDirectory ) {
+        try {
+            ExperimentProfile exp = submission.getExperimentProfile();
+            String accession = null == submission.getAccession() ? "submission" : submission.getAccession();
+            MageTabFormat mageTab = createMageTab(exp);
+            // copy idf
+            Files.copy(mageTab.getIdfFile(), new File(exportDirectory, accession + ".idf"));
+            // copy sdrf
+            Files.copy(mageTab.getSdrfFile(), new File(exportDirectory, accession + ".sdrf"));
+            // copy data files
+            Set<DataFile> dataFiles = submission.getFiles();
+            for (DataFile dataFile : dataFiles) {
+                Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
+            }
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        } catch (ParseException e) {
+            throw unexpected(e);
+        } catch (IOException e) {
+            throw unexpected(e);
+        }
+    }
+
 
     private static boolean fileExists(File file, String md5) throws IOException {
         return file.exists() && md5.equals(hash(file, md5()).toString());

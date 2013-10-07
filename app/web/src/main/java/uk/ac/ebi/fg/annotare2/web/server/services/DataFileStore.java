@@ -107,11 +107,19 @@ public class DataFileStore {
         log.debug("copying {} finished in {} sec", source.getName() + " -> " + dest.getName(), (duration / 1000.0));
     }
 
-    public void delete(String digest) throws IOException {
+    public File get(String digest) throws IOException {
         if (isNullOrEmpty(digest)) {
-           return;
+            return null;
         }
-        File file = new File(dir(digest), digest);
+        return new File(dir(digest), digest);
+    }
+
+    public void delete(String digest) throws IOException {
+        File file = get(digest);
+        if (null == file) {
+            return;
+        }
+
         if (!file.delete()) {
             throw new IOException("Can't remove file: " + file);
         }

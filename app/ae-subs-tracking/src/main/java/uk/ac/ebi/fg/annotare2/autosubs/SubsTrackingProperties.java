@@ -23,5 +23,6 @@ public interface SubsTrackingProperties
 {
     public Boolean getAeSubsTrackingEnabled();
     public String getAeSubsTrackingUser();
+    public String getAeSubsTrackingExperimentType();
     public File getAeSubsTrackingExportDir();
 }
