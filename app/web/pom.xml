@@ -316,14 +316,12 @@
                         <configuration>
                             <defaults>
                                 <contextTemplate>src/main/webapp/META-INF/context_template.xml</contextTemplate>
-                                <jettyWebTemplate>src/main/webapp/WEB-INF/jetty-web_template.xml</jettyWebTemplate>
                             </defaults>
                             <source>
                                 import groovy.text.SimpleTemplateEngine
 
                                 def templateFiles = [
-                                        new File(project.basedir, project.properties['contextTemplate']),
-                                        new File(project.basedir, project.properties['jettyWebTemplate'])
+                                        new File(project.basedir, project.properties['contextTemplate'])
                                 ]
 
                                 def engine = new SimpleTemplateEngine()
