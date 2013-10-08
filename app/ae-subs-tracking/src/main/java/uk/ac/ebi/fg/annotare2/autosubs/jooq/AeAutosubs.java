@@ -11,7 +11,7 @@ package uk.ac.ebi.fg.annotare2.autosubs.jooq;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AeAutosubs extends org.jooq.impl.SchemaImpl {
 
-	private static final long serialVersionUID = -1238648373;
+	private static final long serialVersionUID = 997870593;
 
 	/**
 	 * The singleton instance of <code>ae_autosubs</code>
@@ -38,6 +38,7 @@ public class AeAutosubs extends org.jooq.impl.SchemaImpl {
 			uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Experiments.EXPERIMENTS,
 			uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Roles.ROLES,
 			uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.RolesUsers.ROLES_USERS,
+			uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS,
 			uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS);
 	}
 }

@@ -34,6 +34,11 @@ public class Tables {
 	public static final uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.RolesUsers ROLES_USERS = uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.RolesUsers.ROLES_USERS;
 
 	/**
+	 * The table ae_autosubs.spreadsheets
+	 */
+	public static final uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets SPREADSHEETS = uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS;
+
+	/**
 	 * The table ae_autosubs.users
 	 */
 	public static final uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users USERS = uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS;

@@ -21,6 +21,7 @@ public class Keys {
 	public static final org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord, java.lang.Integer> IDENTITY_DATA_FILES = Identities0.IDENTITY_DATA_FILES;
 	public static final org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord, java.lang.Integer> IDENTITY_EXPERIMENTS = Identities0.IDENTITY_EXPERIMENTS;
 	public static final org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesRecord, java.lang.Integer> IDENTITY_ROLES = Identities0.IDENTITY_ROLES;
+	public static final org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord, java.lang.Integer> IDENTITY_SPREADSHEETS = Identities0.IDENTITY_SPREADSHEETS;
 	public static final org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord, java.lang.Integer> IDENTITY_USERS = Identities0.IDENTITY_USERS;
 
 	// -------------------------------------------------------------------------
@@ -30,6 +31,7 @@ public class Keys {
 	public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord> KEY_DATA_FILES_PRIMARY = UniqueKeys0.KEY_DATA_FILES_PRIMARY;
 	public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord> KEY_EXPERIMENTS_PRIMARY = UniqueKeys0.KEY_EXPERIMENTS_PRIMARY;
 	public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesRecord> KEY_ROLES_PRIMARY = UniqueKeys0.KEY_ROLES_PRIMARY;
+	public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord> KEY_SPREADSHEETS_PRIMARY = UniqueKeys0.KEY_SPREADSHEETS_PRIMARY;
 	public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> KEY_USERS_PRIMARY = UniqueKeys0.KEY_USERS_PRIMARY;
 	public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> KEY_USERS_LOGIN = UniqueKeys0.KEY_USERS_LOGIN;
 
@@ -41,6 +43,7 @@ public class Keys {
 	public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> EXPERIMENTS_IBFK_1 = ForeignKeys0.EXPERIMENTS_IBFK_1;
 	public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesUsersRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> ROLES_USERS_IBFK_1 = ForeignKeys0.ROLES_USERS_IBFK_1;
 	public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesUsersRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesRecord> ROLES_USERS_IBFK_2 = ForeignKeys0.ROLES_USERS_IBFK_2;
+	public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord> SPREADSHEETS_IBFK_1 = ForeignKeys0.SPREADSHEETS_IBFK_1;
 
 	// -------------------------------------------------------------------------
 	// [#1459] distribute members to avoid static initialisers > 64kb
@@ -50,6 +53,7 @@ public class Keys {
 		public static org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord, java.lang.Integer> IDENTITY_DATA_FILES = createIdentity(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.DataFiles.DATA_FILES, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.DataFiles.DATA_FILES.ID);
 		public static org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord, java.lang.Integer> IDENTITY_EXPERIMENTS = createIdentity(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Experiments.EXPERIMENTS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Experiments.EXPERIMENTS.ID);
 		public static org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesRecord, java.lang.Integer> IDENTITY_ROLES = createIdentity(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Roles.ROLES, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Roles.ROLES.ID);
+		public static org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord, java.lang.Integer> IDENTITY_SPREADSHEETS = createIdentity(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS.ID);
 		public static org.jooq.Identity<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord, java.lang.Integer> IDENTITY_USERS = createIdentity(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS.ID);
 	}
 
@@ -57,6 +61,7 @@ public class Keys {
 		public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord> KEY_DATA_FILES_PRIMARY = createUniqueKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.DataFiles.DATA_FILES, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.DataFiles.DATA_FILES.ID);
 		public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord> KEY_EXPERIMENTS_PRIMARY = createUniqueKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Experiments.EXPERIMENTS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Experiments.EXPERIMENTS.ID);
 		public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesRecord> KEY_ROLES_PRIMARY = createUniqueKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Roles.ROLES, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Roles.ROLES.ID);
+		public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord> KEY_SPREADSHEETS_PRIMARY = createUniqueKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS.ID);
 		public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> KEY_USERS_PRIMARY = createUniqueKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS.ID);
 		public static final org.jooq.UniqueKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> KEY_USERS_LOGIN = createUniqueKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Users.USERS.LOGIN);
 	}
@@ -66,5 +71,6 @@ public class Keys {
 		public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> EXPERIMENTS_IBFK_1 = createForeignKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.Keys.KEY_USERS_PRIMARY, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Experiments.EXPERIMENTS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Experiments.EXPERIMENTS.USER_ID);
 		public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesUsersRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord> ROLES_USERS_IBFK_1 = createForeignKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.Keys.KEY_USERS_PRIMARY, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.RolesUsers.ROLES_USERS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.RolesUsers.ROLES_USERS.USER_ID);
 		public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesUsersRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.RolesRecord> ROLES_USERS_IBFK_2 = createForeignKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.Keys.KEY_ROLES_PRIMARY, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.RolesUsers.ROLES_USERS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.RolesUsers.ROLES_USERS.ROLE_ID);
+		public static final org.jooq.ForeignKey<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord> SPREADSHEETS_IBFK_1 = createForeignKey(uk.ac.ebi.fg.annotare2.autosubs.jooq.Keys.KEY_EXPERIMENTS_PRIMARY, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS, uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.Spreadsheets.SPREADSHEETS.EXPERIMENT_ID);
 	}
 }

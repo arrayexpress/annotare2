@@ -81,19 +81,19 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
     private final TransactionSupport transactionSupport;
-    private final SubsTracking subsTracking;
+    private final SubsTracking subsTrackingDb;
     private final UserDao userDao;
 
     @Inject
     public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
                                  DataFileManager dataFileManager, AnnotareProperties properties,
-                                 TransactionSupport transactionSupport, SubsTracking subsTracking, UserDao userDao) {
+                                 TransactionSupport transactionSupport, SubsTracking subsTrackingDb, UserDao userDao) {
         super(authService, submissionManager);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.transactionSupport = transactionSupport;
         this.userDao = userDao;
-        this.subsTracking = subsTracking;
+        this.subsTrackingDb = subsTrackingDb;
     }
 
     @Override
@@ -249,8 +249,15 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                     File exportDir;
 
                     if (properties.getAeSubsTrackingEnabled()) {
-                        Integer subsTrackingId = subsTracking.addSubmission(submission);
-                        submission.setSubsTrackingId(subsTrackingId);
+
+                        Integer subsTrackingId = submission.getSubsTrackingId();
+                        if (null == subsTrackingId) {
+                            subsTrackingId = subsTrackingDb.addSubmission(submission);
+                            submission.setSubsTrackingId(subsTrackingId);
+                        } else {
+                            subsTrackingDb.updateSubmission(submission);
+                        }
+
                         exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
                         if (!exportDir.exists()) {
                             exportDir.mkdir();
@@ -265,6 +272,9 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
                     if (submission instanceof ExperimentSubmission) {
                         exportSubmissionFiles((ExperimentSubmission)submission, exportDir);
+                    }
+                    if (properties.getAeSubsTrackingEnabled()) {
+                        subsTrackingDb.sendSubmission(submission.getSubsTrackingId());
                     }
                     submission.setStatus(SubmissionStatus.SUBMITTED);
                     submission.setOwnedBy(userDao.getCuratorUser());
@@ -433,13 +443,25 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             String accession = null == submission.getAccession() ? "submission" : submission.getAccession();
             MageTabFormat mageTab = createMageTab(exp);
             // copy idf
-            Files.copy(mageTab.getIdfFile(), new File(exportDirectory, accession + ".idf"));
+            String fileName = accession + ".idf.txt";
+            Files.copy(mageTab.getIdfFile(), new File(exportDirectory, fileName));
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTrackingDb.deleteFiles(submission.getSubsTrackingId());
+                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
+            }
             // copy sdrf
-            Files.copy(mageTab.getSdrfFile(), new File(exportDirectory, accession + ".sdrf"));
+            fileName = accession + ".sdrf.txt";
+            Files.copy(mageTab.getSdrfFile(), new File(exportDirectory, fileName));
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
+            }
             // copy data files
             Set<DataFile> dataFiles = submission.getFiles();
             for (DataFile dataFile : dataFiles) {
                 Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
+                if (properties.getAeSubsTrackingEnabled()) {
+                    subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), dataFile.getName());
+                }
             }
         } catch (DataSerializationException e) {
             throw unexpected(e);
