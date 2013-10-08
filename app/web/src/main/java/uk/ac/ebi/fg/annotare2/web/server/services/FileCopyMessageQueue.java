@@ -16,17 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
-import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.RedeliveryPolicy;
-import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.web.server.JmsResources;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
@@ -41,62 +40,39 @@ import static uk.ac.ebi.fg.annotare2.db.om.enums.DataFileStatus.STORED;
 /**
  * @author Olga Melnichuk
  */
-public class CopyFileMessageQueue extends AbstractIdleService {
+public class FileCopyMessageQueue {
 
-    private static final Logger log = LoggerFactory.getLogger(CopyFileMessageQueue.class);
+    private static final Logger log = LoggerFactory.getLogger(FileCopyMessageQueue.class);
 
-    private final BrokerService broker;
-    private final CopyFileMessageConsumer consumer;
-    private final CopyFileMessageProducer producer;
+    private final FileCopyConsumer consumer;
+    private final FileCopyProducer producer;
 
     @Inject
-    public CopyFileMessageQueue(DataFileStore fileStore, DataFileDao fileDao, HibernateSessionFactory sessionFactory,
+    public FileCopyMessageQueue(JmsResources jmsResources, DataFileStore fileStore, DataFileDao fileDao, HibernateSessionFactory sessionFactory,
                                 TransactionSupport transactionSupport) {
-        broker = new BrokerService();
-        broker.setBrokerName("localhost");
-        broker.setUseJmx(false);
-        // todo broker.setDataDirectory();
 
-        String queueName = "COPY_FILE_QUEUE";
-        producer = new CopyFileMessageProducer("vm://localhost?create=false", queueName);
-        consumer = new CopyFileMessageConsumer("vm://localhost?create=false", queueName,
-                fileStore, fileDao, sessionFactory, transactionSupport);
+        producer = new FileCopyProducer();
+        consumer = new FileCopyConsumer(fileStore, fileDao, sessionFactory, transactionSupport);
+
+        producer.start(jmsResources.getConnectionFactory(), jmsResources.getFileCopyQueue());
+        consumer.start(jmsResources.getConnectionFactory(), jmsResources.getFileCopyQueue());
     }
 
     public void offer(File source, DataFile destination) throws JMSException {
-        producer.send(new CopyFileMessage(source, destination));
+        producer.send(new FileCopyMessage(source, destination));
     }
 
-    @Override
-    protected void startUp() throws Exception {
-        log.info("Starting JMS broker...");
-        broker.start();
+    private static class FileCopyProducer {
 
-        Thread.sleep(3000);
-        consumer.startListening();
-    }
+        private ConnectionFactory connectionFactory;
+        private Queue queue;
 
-    @Override
-    protected void shutDown() throws Exception {
-        consumer.stopListening();
-
-        log.info("Stopping JMS broker...");
-        broker.stop();
-        broker.waitUntilStopped();
-    }
-
-    private static class CopyFileMessageProducer {
-
-        private final String brokerUrl;
-        private final String queueName;
-
-        public CopyFileMessageProducer(String brokerUrl, String queueName) {
-            this.brokerUrl = brokerUrl;
-            this.queueName = queueName;
+        public void start(ConnectionFactory connectionFactory, Queue queue) {
+            this.connectionFactory = connectionFactory;
+            this.queue = queue;
         }
 
-        private void send(CopyFileMessage message) throws JMSException {
-            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
+        private void send(FileCopyMessage message) throws JMSException {
             Connection connection = connectionFactory.createConnection();
             Session session = null;
             MessageProducer producer = null;
@@ -105,7 +81,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
                 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-                producer = session.createProducer(session.createQueue(queueName));
+                producer = session.createProducer(queue);
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
                 TextMessage textMessage = session.createTextMessage(message.asString());
@@ -136,33 +112,26 @@ public class CopyFileMessageQueue extends AbstractIdleService {
         }
     }
 
-    private static class CopyFileMessageConsumer implements MessageListener {
-
-        private final String brokerUrl;
-        private final String queueName;
+    private static class FileCopyConsumer implements MessageListener {
 
         private final DataFileStore fileStore;
         private final DataFileDao fileDao;
         private final HibernateSessionFactory sessionFactory;
         private final TransactionSupport transactionSupport;
 
-        private Connection connection;
+        private ActiveMQConnection connection;
         private Session session;
 
-        public CopyFileMessageConsumer(String brokerUrl, String queueName,
-                                       DataFileStore fileStore, DataFileDao fileDao,
-                                       HibernateSessionFactory sessionFactory, TransactionSupport transactionSupport) {
-            this.brokerUrl = brokerUrl;
-            this.queueName = queueName;
-
+        public FileCopyConsumer(DataFileStore fileStore, DataFileDao fileDao,
+                                HibernateSessionFactory sessionFactory, TransactionSupport transactionSupport) {
             this.fileStore = fileStore;
             this.fileDao = fileDao;
             this.sessionFactory = sessionFactory;
             this.transactionSupport = transactionSupport;
         }
 
-        public void startListening() {
-            log.info("Starting to listen JMS topic: {}", queueName);
+        public void start(ConnectionFactory connectionFactory, Queue queue) {
+            log.info("Starting JMS queue listener", queue);
 
             try {
                 RedeliveryPolicy queuePolicy = new RedeliveryPolicy();
@@ -171,22 +140,20 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 queuePolicy.setUseExponentialBackOff(false);
                 queuePolicy.setMaximumRedeliveries(4);
 
-                ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
-                factory.setRedeliveryPolicy(queuePolicy);
-
-                connection = factory.createConnection();
+                connection = (ActiveMQConnection) connectionFactory.createConnection();
+                connection.setRedeliveryPolicy(queuePolicy);
                 connection.start();
 
                 session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-                MessageConsumer consumer = session.createConsumer(session.createQueue(queueName));
+                MessageConsumer consumer = session.createConsumer(queue);
                 consumer.setMessageListener(this);
             } catch (JMSException e) {
                 log.error("JMS queue listener is failed to start", e);
             }
         }
 
-        public void stopListening() {
-            log.info("Stopping to listen JMS topic: {}", queueName);
+        public void stop() {
+            log.info("Stopping JMS queue listener");
             try {
                 if (connection != null) {
                     connection.close();
@@ -202,7 +169,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
                 TextMessage textMessage = (TextMessage) message;
                 try {
                     log.debug("Received message: {}, {}", textMessage.getText(), Thread.currentThread().getName());
-                    CopyFileMessage messageObject = CopyFileMessage.fromString(textMessage.getText());
+                    FileCopyMessage messageObject = FileCopyMessage.fromString(textMessage.getText());
                     log.debug("Restored message object: {}", messageObject);
 
                     copyFileInTransaction(messageObject, true);
@@ -229,7 +196,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             session.commit();
         }
 
-        private void copyFileInTransaction(final CopyFileMessage message, final boolean removeSource) throws TransactionWrapException {
+        private void copyFileInTransaction(final FileCopyMessage message, final boolean removeSource) throws TransactionWrapException {
             sessionFactory.openSession();
             try {
                 transactionSupport.execute(new TransactionCallback<Void>() {
@@ -244,7 +211,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             }
         }
 
-        private void copyFile(CopyFileMessage message, boolean removeSource) throws RecordNotFoundException {
+        private void copyFile(FileCopyMessage message, boolean removeSource) throws RecordNotFoundException {
             DataFile dataFile = fileDao.get(message.getDestinationId());
 
             File source = message.getSource();
@@ -278,20 +245,19 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             }
             log.warn("Can't delete file: " + file);
         }
-
     }
 
-    private static class CopyFileMessage {
+    private static class FileCopyMessage {
 
         private static String DELIM = ",";
         private long destinationId;
         private File sourcePath;
 
-        public CopyFileMessage(File source, DataFile destination) {
+        public FileCopyMessage(File source, DataFile destination) {
             this(source, destination.getId());
         }
 
-        private CopyFileMessage(File sourcePath, long destinationId) {
+        private FileCopyMessage(File sourcePath, long destinationId) {
             this.destinationId = destinationId;
             this.sourcePath = sourcePath;
         }
@@ -308,13 +274,13 @@ public class CopyFileMessageQueue extends AbstractIdleService {
             return destinationId + DELIM + sourcePath;
         }
 
-        public static CopyFileMessage fromString(String str) {
+        public static FileCopyMessage fromString(String str) {
             int index = str.indexOf(DELIM);
             if (index > 0) {
                 try {
                     int destId = Integer.parseInt(str.substring(0, index));
                     String sourcePath = str.substring(index + 1);
-                    return new CopyFileMessage(new File(sourcePath), destId);
+                    return new FileCopyMessage(new File(sourcePath), destId);
                 } catch (NumberFormatException e) {
                     // ignore
                 }
@@ -325,7 +291,7 @@ public class CopyFileMessageQueue extends AbstractIdleService {
 
         @Override
         public String toString() {
-            return "CopyFileMessage{" +
+            return getClass().getName() + "@{" +
                     "destinationId=" + destinationId +
                     ", sourcePath='" + sourcePath + '\'' +
                     '}';

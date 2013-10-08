@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
-import uk.ac.ebi.fg.annotare2.web.server.services.CopyFileMessageQueue;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -94,9 +93,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
     private void startServices(Injector injector) {
         log.info("Starting services on context init");
         Service service = injector.getInstance(HibernateSessionFactoryProvider.class);
-        service.start();
-
-        service = injector.getInstance(CopyFileMessageQueue.class);
         service.start();
         servicesToStop.add(service);
     }

@@ -115,12 +115,9 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(VocabularyService.NAME, VocabularyServiceImpl.class, "EditorApp");
         serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");
 
-        /* Services { */
-
+        bind(JmsResources.class).toProvider(JmsResources.Creator.class).asEagerSingleton();
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
-        bind(CopyFileMessageQueue.class).asEagerSingleton();
-
-        /*}*/
+        bind(FileCopyMessageQueue.class).asEagerSingleton();
 
         bind(SubmissionListServiceImpl.class).in(SINGLETON);
 

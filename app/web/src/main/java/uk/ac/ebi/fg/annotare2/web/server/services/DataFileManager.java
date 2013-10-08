@@ -40,10 +40,10 @@ public class DataFileManager {
     private final DataFileDao dataFileDao;
     private final DataFileStore fileStore;
 
-    private final CopyFileMessageQueue messageQueue;
+    private final FileCopyMessageQueue messageQueue;
 
     @Inject
-    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao, CopyFileMessageQueue messageQueue) {
+    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao, FileCopyMessageQueue messageQueue) {
         this.dataFileDao = dataFileDao;
         this.fileStore = fileStore;
         this.messageQueue = messageQueue;
