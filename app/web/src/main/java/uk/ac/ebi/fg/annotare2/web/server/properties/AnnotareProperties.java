@@ -91,6 +91,21 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         return Boolean.parseBoolean(getProperty("ae-subs-tracking.enabled"));
     }
 
+    @Override
+    public String getAeSubsTrackingUser() {
+        return getProperty("ae-subs-tracking.user");
+    }
+
+    @Override
+    public String getAeSubsTrackingExperimentType() {
+        return getProperty("ae-subs-tracking.experiment-type");
+    }
+
+    @Override
+    public File getAeSubsTrackingExportDir() {
+        return getDirProperty("ae-subs-tracking.export.dir");
+    }
+
     private File getDirProperty(String name) {
         String property = getProperty(name);
         File dir = property == null ? new File(tempDir, name.replaceAll(".","-")) :

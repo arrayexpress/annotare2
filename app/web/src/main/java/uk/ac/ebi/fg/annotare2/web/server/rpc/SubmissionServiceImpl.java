@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.util.Streams;
@@ -80,19 +81,19 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
     private final TransactionSupport transactionSupport;
-    private final SubsTracking subsTracking;
+    private final SubsTracking subsTrackingDb;
     private final UserDao userDao;
 
     @Inject
     public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
                                  DataFileManager dataFileManager, AnnotareProperties properties,
-                                 TransactionSupport transactionSupport, SubsTracking subsTracking, UserDao userDao) {
+                                 TransactionSupport transactionSupport, SubsTracking subsTrackingDb, UserDao userDao) {
         super(authService, submissionManager);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.transactionSupport = transactionSupport;
         this.userDao = userDao;
-        this.subsTracking = subsTracking;
+        this.subsTrackingDb = subsTrackingDb;
     }
 
     @Override
@@ -245,9 +246,35 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 @Override
                 public Void doInTransaction() throws Exception {
                     Submission submission = getSubmission(id, Permission.UPDATE);
+                    File exportDir;
+
                     if (properties.getAeSubsTrackingEnabled()) {
-                        Integer subsTrackingId = subsTracking.addSubmission(submission);
-                        submission.setSubsTrackingId(subsTrackingId);
+
+                        Integer subsTrackingId = submission.getSubsTrackingId();
+                        if (null == subsTrackingId) {
+                            subsTrackingId = subsTrackingDb.addSubmission(submission);
+                            submission.setSubsTrackingId(subsTrackingId);
+                        } else {
+                            subsTrackingDb.updateSubmission(submission);
+                        }
+
+                        exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
+                        if (!exportDir.exists()) {
+                            exportDir.mkdir();
+                        }
+                        exportDir = new File(exportDir, properties.getAeSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
+                        if (!exportDir.exists()) {
+                            exportDir.mkdir();
+                        }
+                    } else {
+                        exportDir = properties.getExportDir();
+                    }
+
+                    if (submission instanceof ExperimentSubmission) {
+                        exportSubmissionFiles((ExperimentSubmission)submission, exportDir);
+                    }
+                    if (properties.getAeSubsTrackingEnabled()) {
+                        subsTrackingDb.sendSubmission(submission.getSubsTrackingId());
                     }
                     submission.setStatus(SubmissionStatus.SUBMITTED);
                     submission.setOwnedBy(userDao.getCuratorUser());
@@ -409,6 +436,42 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e.getCause());
         }
     }
+
+    private void exportSubmissionFiles( ExperimentSubmission submission, File exportDirectory ) {
+        try {
+            ExperimentProfile exp = submission.getExperimentProfile();
+            String accession = null == submission.getAccession() ? "submission" : submission.getAccession();
+            MageTabFormat mageTab = createMageTab(exp);
+            // copy idf
+            String fileName = accession + ".idf.txt";
+            Files.copy(mageTab.getIdfFile(), new File(exportDirectory, fileName));
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTrackingDb.deleteFiles(submission.getSubsTrackingId());
+                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
+            }
+            // copy sdrf
+            fileName = accession + ".sdrf.txt";
+            Files.copy(mageTab.getSdrfFile(), new File(exportDirectory, fileName));
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
+            }
+            // copy data files
+            Set<DataFile> dataFiles = submission.getFiles();
+            for (DataFile dataFile : dataFiles) {
+                Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
+                if (properties.getAeSubsTrackingEnabled()) {
+                    subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), dataFile.getName());
+                }
+            }
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        } catch (ParseException e) {
+            throw unexpected(e);
+        } catch (IOException e) {
+            throw unexpected(e);
+        }
+    }
+
 
     private static boolean fileExists(File file, String md5) throws IOException {
         return file.exists() && md5.equals(hash(file, md5()).toString());

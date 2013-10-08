@@ -54,6 +54,9 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     @UiField
     Button editButton;
 
+    @UiField
+    Button submitButton;
+
     public SubmissionViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
@@ -73,6 +76,11 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     @UiHandler("editButton")
     public void onViewEditButtonClick(ClickEvent event) {
         presenter.onEditButtonClick();
+    }
+
+    @UiHandler("submitButton")
+    public void onSubmitButtonClick(ClickEvent event) {
+        presenter.onSubmitButtonClick();
     }
 
 }

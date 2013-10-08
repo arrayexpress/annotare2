@@ -22,9 +22,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.EXPERIMENTS;
-import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.USERS;
+import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord;
+import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
@@ -36,12 +36,12 @@ import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class SubsTracking
-{
-    private final SubsTrackingProperties properties;
-    private final DataSource dbDataSource;
+import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 
-    private final static String ANNOTARE_USER_NAME = "annotare";
+public class SubsTracking {
+    private final SubsTrackingProperties properties;
+    private final DSLContext jooqDslContext;
+    private static final String STATUS_PENDING = "Waiting";
 
     @Inject
     public SubsTracking( SubsTrackingProperties properties ) {
@@ -49,26 +49,26 @@ public class SubsTracking
         if (properties.getAeSubsTrackingEnabled()) {
             try {
                 InitialContext context = new InitialContext();
-                this.dbDataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
+                DataSource dataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
+                this.jooqDslContext = DSL.using(dataSource, SQLDialect.MYSQL);
             } catch (NamingException x) {
                 throw new RuntimeException(x);
             }
         } else {
-            this.dbDataSource = null;
+            this.jooqDslContext = null;
         }
     }
 
     public Integer addSubmission( Submission submission ) {
 
-        Integer subsTrackngId = null;
+        Integer subsTrackingId = null;
 
-        if (properties.getAeSubsTrackingEnabled() && submission instanceof ExperimentSubmission) {
-            DSLContext context = DSL.using(this.dbDataSource, SQLDialect.MYSQL);
+        if (submission instanceof ExperimentSubmission) {
 
             try {
-                Integer userId = getAnnotareUserId(context);
+                Integer userId = getAnnotareUserId();
                 ExperimentsRecord r =
-                        context.insertInto(EXPERIMENTS)
+                        getContext().insertInto(EXPERIMENTS)
                                 .set(EXPERIMENTS.IS_DELETED, 0)
                                 .set(EXPERIMENTS.IN_CURATION, 0)
                                 .set(EXPERIMENTS.USER_ID, userId)
@@ -76,37 +76,134 @@ public class SubsTracking
                                 .set(EXPERIMENTS.ACCESSION, submission.getAccession())
                                 .set(EXPERIMENTS.NAME, submission.getTitle())
                                 .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, ((ExperimentSubmission) submission).getExperimentProfile().getDescription())
+                                .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
                                 .returning(EXPERIMENTS.ID)
                                 .fetchOne();
                 if (null != r) {
-                    subsTrackngId = r.getId();
+                    subsTrackingId = r.getId();
                 }
             } catch (DataSerializationException x) {
-
+                throw new RuntimeException(x);
             }
         } else {
             throw new RuntimeException("Unable to process array design submission just yet, to be implemented");
         }
-        return subsTrackngId;
+        return subsTrackingId;
     }
 
-    private Integer getAnnotareUserId( DSLContext context ) {
-        // attempt to fetch a user id for user name 'annotare'; create one if not found
+    public void updateSubmission( Submission submission ) {
+        if (submission instanceof ExperimentSubmission) {
+            try {
+                Timestamp updateDate = new Timestamp(new Date().getTime());
+                getContext().update(EXPERIMENTS)
+                        .set(EXPERIMENTS.IS_DELETED, 0)
+                        .set(EXPERIMENTS.IN_CURATION, 0)
+                        .set(EXPERIMENTS.DATE_LAST_EDITED, updateDate)
+                        .set(EXPERIMENTS.DATE_SUBMITTED, updateDate)
+                        .set(EXPERIMENTS.ACCESSION, submission.getAccession())
+                        .set(EXPERIMENTS.NAME, submission.getTitle())
+                        .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, ((ExperimentSubmission) submission).getExperimentProfile().getDescription())
+                        .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
+                        .execute();
+
+            } catch (DataSerializationException x) {
+                throw new RuntimeException(x);
+            }
+        } else {
+            throw new RuntimeException("Unable to process array design submission just yet, to be implemented");
+        }
+    }
+
+    public void sendSubmission( Integer subsTrackingId ) {
+        if (null != subsTrackingId) {
+            getContext().update(EXPERIMENTS)
+                    .set(EXPERIMENTS.STATUS, STATUS_PENDING)
+                    .set(EXPERIMENTS.IN_CURATION, 1)
+                    .where(EXPERIMENTS.ID.equal(subsTrackingId))
+                    .execute();
+        }
+    }
+
+    public void deleteFiles( Integer subsTrackingId ) {
+        if (null != subsTrackingId) {
+            getContext().update(SPREADSHEETS)
+                    .set(SPREADSHEETS.IS_DELETED, 1)
+                    .where(SPREADSHEETS.EXPERIMENT_ID.equal(subsTrackingId))
+                    .execute();
+
+            getContext().update(DATA_FILES)
+                    .set(DATA_FILES.IS_DELETED, 1)
+                    .where(DATA_FILES.EXPERIMENT_ID.equal(subsTrackingId))
+                    .execute();
+        }
+    }
+
+    public Integer addMageTabFile( Integer subsTrackingId, String fileName ) {
+        Integer spreadsheetId = null;
+
+        if (null != subsTrackingId) {
+            //try {
+                SpreadsheetsRecord r =
+                        getContext().insertInto(SPREADSHEETS)
+                                .set(SPREADSHEETS.IS_DELETED, 0)
+                                .set(SPREADSHEETS.EXPERIMENT_ID, subsTrackingId)
+                                .set(SPREADSHEETS.NAME, fileName)
+                                .returning(SPREADSHEETS.ID)
+                                .fetchOne();
+                if (null != r) {
+                    spreadsheetId = r.getId();
+                }
+            //}
+        }
+        return spreadsheetId;
+    }
+
+    public Integer addDataFile( Integer subsTrackingId, String fileName ) {
+        Integer dataFileId = null;
+
+        if (null != subsTrackingId) {
+            //try {
+            DataFilesRecord r =
+                    getContext().insertInto(DATA_FILES)
+                            .set(DATA_FILES.IS_DELETED, 0)
+                            .set(DATA_FILES.IS_UNPACKED, 0)
+                            .set(DATA_FILES.EXPERIMENT_ID, subsTrackingId)
+                            .set(DATA_FILES.NAME, fileName)
+                            .returning(DATA_FILES.ID)
+                            .fetchOne();
+            if (null != r) {
+                dataFileId = r.getId();
+            }
+            //}
+        }
+        return dataFileId;
+    }
+
+    private Integer getAnnotareUserId() {
+        String subsTrackingUser = properties.getAeSubsTrackingUser();
+        if (null == subsTrackingUser || "".equals(subsTrackingUser) ) {
+            throw new RuntimeException("Submission tracking user name is not defined in the configuration");
+        }
+
         UsersRecord r =
-                context.selectFrom(USERS)
-                        .where(USERS.LOGIN.equal(ANNOTARE_USER_NAME))
+                getContext().selectFrom(USERS)
+                        .where(USERS.LOGIN.equal(subsTrackingUser))
                         .and(USERS.IS_DELETED.equal(0))
                         .fetchOne();
 
         if (null == r) {
             // here we create the user
-            r = context.insertInto(USERS)
-                    .set(USERS.LOGIN, ANNOTARE_USER_NAME)
+            r = getContext().insertInto(USERS)
+                    .set(USERS.LOGIN, subsTrackingUser)
                     .set(USERS.PASSWORD, RandomStringUtils.randomAlphanumeric(16))
                     .set(USERS.IS_DELETED, 0)
                     .returning(USERS.ID)
                     .fetchOne();
         }
         return ( null != r ) ? r.getId() : null;
+    }
+
+    private DSLContext getContext() {
+        return this.jooqDslContext;
     }
 }
