@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord;
@@ -50,7 +51,9 @@ public class SubsTracking {
             try {
                 InitialContext context = new InitialContext();
                 DataSource dataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
-                this.jooqDslContext = DSL.using(dataSource, SQLDialect.MYSQL);
+                Settings settings = new Settings()
+                        .withRenderSchema(false);
+                this.jooqDslContext = DSL.using(dataSource, SQLDialect.MYSQL, settings);
             } catch (NamingException x) {
                 throw new RuntimeException(x);
             }
