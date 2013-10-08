@@ -31,5 +31,6 @@ public interface SubmissionView extends IsWidget {
     public interface Presenter {
 
         void onEditButtonClick();
+        void onSubmitButtonClick();
     }
 }

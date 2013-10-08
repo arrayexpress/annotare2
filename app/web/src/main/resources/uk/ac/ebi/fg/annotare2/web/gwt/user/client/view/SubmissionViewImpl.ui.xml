@@ -82,7 +82,7 @@
             <div class="{style.submit}">
                 <g:TextArea width="99%" visibleLines="2"></g:TextArea>
                 <div style="margin-bottom:5px;">
-                    <g:Button>Submit</g:Button>
+                    <g:Button ui:field="submitButton">Submit</g:Button>
                     The investigation data specified is not complete. Please
                     <a href="#">complete</a>
                     it before submit.

@@ -88,4 +88,18 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
         }
         //TODO log or show error otherwise
     }
+
+    public void onSubmitButtonClick() {
+        if (submissionId != null) {
+            rpcService.submitSubmission(submissionId,  new AsyncCallbackWrapper<Void>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                }
+
+                @Override
+                public void onSuccess(Void aVoid) {
+                }
+            }.wrap());
+        }
+    }
 }
