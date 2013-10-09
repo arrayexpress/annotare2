@@ -460,7 +460,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             for (DataFile dataFile : dataFiles) {
                 Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
                 if (properties.getAeSubsTrackingEnabled()) {
-                    subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), dataFile.getName());
+                    subsTrackingDb.addDataFile(submission.getSubsTrackingId(), dataFile.getName());
                 }
             }
         } catch (DataSerializationException e) {

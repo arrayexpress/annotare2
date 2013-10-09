@@ -169,7 +169,7 @@ public class SubsTracking {
             DataFilesRecord r =
                     getContext().insertInto(DATA_FILES)
                             .set(DATA_FILES.IS_DELETED, 0)
-                            .set(DATA_FILES.IS_UNPACKED, 0)
+                            .set(DATA_FILES.IS_UNPACKED, 1)
                             .set(DATA_FILES.EXPERIMENT_ID, subsTrackingId)
                             .set(DATA_FILES.NAME, fileName)
                             .returning(DATA_FILES.ID)
