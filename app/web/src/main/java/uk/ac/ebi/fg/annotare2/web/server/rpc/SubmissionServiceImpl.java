@@ -452,9 +452,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             // copy sdrf
             fileName = accession + ".sdrf.txt";
             Files.copy(mageTab.getSdrfFile(), new File(exportDirectory, fileName));
-            if (properties.getAeSubsTrackingEnabled()) {
-                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
-            }
+
             // copy data files
             Set<DataFile> dataFiles = submission.getFiles();
             for (DataFile dataFile : dataFiles) {
