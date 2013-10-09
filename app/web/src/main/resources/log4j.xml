@@ -34,7 +34,7 @@
     </appender>
 
     <category name="uk.ac.ebi.fg.annotare2.web.server" additivity="false">
-        <priority value="DEBUG" />
+        <priority value="INFO" />
         <appender-ref ref="${webapp.log.appender.ref}" />
     </category>
 
