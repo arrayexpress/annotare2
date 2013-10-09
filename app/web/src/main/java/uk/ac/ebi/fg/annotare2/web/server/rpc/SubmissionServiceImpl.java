@@ -455,10 +455,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
             // copy data files
             Set<DataFile> dataFiles = submission.getFiles();
-            for (DataFile dataFile : dataFiles) {
-                Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
-                if (properties.getAeSubsTrackingEnabled()) {
-                    subsTrackingDb.addDataFile(submission.getSubsTrackingId(), dataFile.getName());
+            if (dataFiles.size() > 0) {
+                exportDirectory = new File(exportDirectory, "unpacked");
+                if (!exportDirectory.exists()) {
+                    exportDirectory.mkdir();
+                }
+                for (DataFile dataFile : dataFiles) {
+                    Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
+                    if (properties.getAeSubsTrackingEnabled()) {
+                        subsTrackingDb.addDataFile(submission.getSubsTrackingId(), dataFile.getName());
+                    }
                 }
             }
         } catch (DataSerializationException e) {
