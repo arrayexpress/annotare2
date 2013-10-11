@@ -45,8 +45,8 @@ import static com.google.common.io.Closeables.close;
  */
 public class MageTabFormat {
 
-    private static final String IDF_FILE_NAME = "idf";
-    private static final String SDRF_FILE_NAME = "sdrf";
+    private static final String DEFAULT_IDF_FILE_NAME = "idf";
+    private static final String DEFAULT_SDRF_FILE_NAME = "sdrf";
 
     private File idfFile;
     private File sdrfFile;
@@ -54,17 +54,24 @@ public class MageTabFormat {
     private IDF idf;
     private SDRF sdrf;
 
+    public MageTabFormat() {
+        File tmp = Files.createTempDir();
+        idfFile = new File(tmp, DEFAULT_IDF_FILE_NAME);
+        sdrfFile = new File(tmp, DEFAULT_SDRF_FILE_NAME);
+    }
+
+    private MageTabFormat(File idfFile, File sdrfFile) {
+        this.idfFile = idfFile;
+        this.sdrfFile = sdrfFile;
+    }
+
     private void init(ExperimentProfile exp) throws IOException, ParseException {
         MAGETABInvestigation generated = (new MageTabGenerator(exp)).generate();
 
-        /* Generated MAGE-TAB lucks cell locations, which are good to have during validation.
+        /* Generated MAGE-TAB lacks cell locations, which are good to have during validation.
          * So we have to write files to disk and parse again */
 
         useDirtyHack();
-
-        File tmp = Files.createTempDir();
-        idfFile = new File(tmp, IDF_FILE_NAME);
-        sdrfFile = new File(tmp, SDRF_FILE_NAME);
 
         generated.IDF.sdrfFile.add(sdrfFile.getName());
 
@@ -119,6 +126,12 @@ public class MageTabFormat {
         MageTabFormat format = new MageTabFormat();
         format.init(exp);
         return format;
+    }
+
+    public static boolean exportMageTab(ExperimentProfile exp, File idfFile, File sdrfFile) throws IOException, ParseException {
+        MageTabFormat format = new MageTabFormat(idfFile, sdrfFile);
+        format.init(exp);
+        return format.getIdfFile().exists() && format.getSdrfFile().exists();
     }
 
     /**

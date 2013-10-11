@@ -261,10 +261,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                         exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
                         if (!exportDir.exists()) {
                             exportDir.mkdir();
+                            exportDir.setWritable(true, false);
                         }
                         exportDir = new File(exportDir, properties.getAeSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
                         if (!exportDir.exists()) {
                             exportDir.mkdir();
+                            exportDir.setWritable(true, false);
                         }
                     } else {
                         exportDir = properties.getExportDir();
@@ -441,17 +443,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             ExperimentProfile exp = submission.getExperimentProfile();
             String accession = null == submission.getAccession() ? "submission" : submission.getAccession();
-            MageTabFormat mageTab = createMageTab(exp);
             // copy idf
-            String fileName = accession + ".idf.txt";
-            Files.copy(mageTab.getIdfFile(), new File(exportDirectory, fileName));
-            if (properties.getAeSubsTrackingEnabled()) {
-                subsTrackingDb.deleteFiles(submission.getSubsTrackingId());
-                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
+            File idfFile = new File(exportDirectory, accession + ".idf.txt");
+            File sdrfFile = new File(exportDirectory, accession + ".sdrf.txt");
+
+            if (MageTabFormat.exportMageTab(exp, idfFile, sdrfFile)) {
+                idfFile.setWritable(true, false);
+                sdrfFile.setWritable(true, false);
+                if (properties.getAeSubsTrackingEnabled()) {
+                    subsTrackingDb.deleteFiles(submission.getSubsTrackingId());
+                    subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), idfFile.getName());
+                }
             }
-            // copy sdrf
-            fileName = accession + ".sdrf.txt";
-            Files.copy(mageTab.getSdrfFile(), new File(exportDirectory, fileName));
 
             // copy data files
             Set<DataFile> dataFiles = submission.getFiles();
@@ -459,9 +462,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 exportDirectory = new File(exportDirectory, "unpacked");
                 if (!exportDirectory.exists()) {
                     exportDirectory.mkdir();
+                    exportDirectory.setWritable(true, false);
                 }
                 for (DataFile dataFile : dataFiles) {
-                    Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
+                    File f = new File(exportDirectory, dataFile.getName());
+                    Files.copy(dataFileManager.getFile(dataFile), f);
+                    f.setWritable(true, false);
                     if (properties.getAeSubsTrackingEnabled()) {
                         subsTrackingDb.addDataFile(submission.getSubsTrackingId(), dataFile.getName());
                     }
