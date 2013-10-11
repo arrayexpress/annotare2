@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 /**
  * @author Olga Melnichuk
@@ -32,10 +33,13 @@ public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implem
         super(authService);
     }
 
+    @Transactional
+    @Override
     public UserDto me() {
         return UIObjectConverter.uiUser(getCurrentUser());
     }
 
+    @Override
     public void logout() {
         doLogout();
     }

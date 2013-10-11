@@ -21,6 +21,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
@@ -34,13 +35,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.IOException;
 
@@ -51,15 +50,12 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
 
     private static final Logger log = LoggerFactory.getLogger(AdfServiceImpl.class);
 
-    private TransactionSupport transactionSupport;
-
     @Inject
-    public AdfServiceImpl(AuthService authService, SubmissionManager submissionManager,
-                          TransactionSupport transactionSupport) {
+    public AdfServiceImpl(AuthService authService, SubmissionManager submissionManager) {
         super(authService, submissionManager);
-        this.transactionSupport = transactionSupport;
     }
 
+    @Transactional
     @Override
     public Table loadBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException {
         try {
@@ -74,6 +70,7 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class, DataImportException.class})
     @Override
     public void importBodyData(int submissionId) throws NoPermissionException, ResourceNotFoundException, DataImportException {
         try {
@@ -86,24 +83,18 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
             Table headerTable = new AdfParser().parseHeader(item.getInputStream());
             final ArrayDesignHeader header = createArrayDesignHeader(headerTable);
 
-            transactionSupport.execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction() throws Exception {
-                    submission.setBody(body);
-                    submission.setHeader(header);
-                    save(submission);
-                    return null;
-                }
-            });
+            submission.setBody(body);
+            submission.setHeader(header);
+            save(submission);
         } catch (IOException e) {
             log.warn("Can't import ADF body data (submissionId: " + submissionId + ")", e);
             throw new DataImportException(e.getMessage());
-        } catch (TransactionWrapException e) {
-            throw unexpected(e.getCause());
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 

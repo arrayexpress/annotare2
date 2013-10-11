@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server;
+package uk.ac.ebi.fg.annotare2.web.server.transaction;
 
 import com.google.inject.Inject;
 import org.hibernate.Transaction;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 
 /**
  * @author Olga Melnichuk
@@ -41,9 +42,6 @@ public class TransactionSupport {
         } catch (RuntimeException e) {
             tx.rollback();
             throw e;
-        } catch (Error err) {
-            tx.rollback();
-            throw err;
         } catch (Exception e) {
             tx.rollback();
             throw new TransactionWrapException(e);

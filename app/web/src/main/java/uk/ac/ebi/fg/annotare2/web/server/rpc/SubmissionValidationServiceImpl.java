@@ -20,12 +20,12 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationService;
@@ -34,6 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionValidator;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -48,7 +49,6 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionValidationServiceImpl.class);
 
-
     private final SubmissionValidator validator;
 
     @Inject
@@ -59,6 +59,7 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
         this.validator = validator;
     }
 
+    @Transactional
     @Override
     public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
         List<String> failures = newArrayList();

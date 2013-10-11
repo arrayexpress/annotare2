@@ -25,7 +25,7 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
  */
 public class HibernateSessionFactoryProvider extends AbstractIdleService implements Provider<HibernateSessionFactory> {
 
-    private HibernateSessionFactory sessionFactory;
+    private final HibernateSessionFactory sessionFactory;
 
     public HibernateSessionFactoryProvider() {
         sessionFactory = HibernateSessionFactory.create();

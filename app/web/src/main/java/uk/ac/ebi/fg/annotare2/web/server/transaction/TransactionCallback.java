@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server;
+package uk.ac.ebi.fg.annotare2.web.server.transaction;
 
 /**
  * @author Olga Melnichuk
