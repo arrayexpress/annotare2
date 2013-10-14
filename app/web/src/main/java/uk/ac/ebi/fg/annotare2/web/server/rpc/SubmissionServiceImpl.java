@@ -48,16 +48,15 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
+import javax.jms.JMSException;
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -80,28 +79,37 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
-    private final TransactionSupport transactionSupport;
     private final SubsTracking subsTrackingDb;
     private final UserDao userDao;
 
     @Inject
-    public SubmissionServiceImpl(AuthService authService, SubmissionManager submissionManager,
-                                 DataFileManager dataFileManager, AnnotareProperties properties,
-                                 TransactionSupport transactionSupport, SubsTracking subsTrackingDb, UserDao userDao) {
+    public SubmissionServiceImpl(AuthService authService,
+                                 SubmissionManager submissionManager,
+                                 DataFileManager dataFileManager,
+                                 AnnotareProperties properties,
+                                 SubsTracking subsTrackingDb,
+                                 UserDao userDao) {
         super(authService, submissionManager);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
-        this.transactionSupport = transactionSupport;
         this.userDao = userDao;
         this.subsTrackingDb = subsTrackingDb;
     }
 
+    @Transactional
     @Override
     public SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
-        Submission sb = getSubmission(id, Permission.VIEW);
-        return uiSubmissionDetails(sb);
+        try {
+            Submission sb = getSubmission(id, Permission.VIEW);
+            return uiSubmissionDetails(sb);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
     }
 
+    @Transactional
     @Override
     public ArrayDesignDetailsDto getArrayDesignDetails(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
@@ -116,12 +124,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    @Transactional
     @Override
     public Table getIdfTable(long id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
-            return toIdfTable(exp);
+            return asIdfTable(exp);
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -135,12 +144,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    @Transactional
     @Override
     public Table getSdrfTable(long id) throws NoPermissionException, ResourceNotFoundException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
-            return toSdrfTable(exp);
+            return asSdrfTable(exp);
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
@@ -154,18 +164,19 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private Table toIdfTable(ExperimentProfile exp) throws IOException, ParseException {
+    private Table asIdfTable(ExperimentProfile exp) throws IOException, ParseException {
         MageTabFormat mageTab = createMageTab(exp);
         return new TsvParser().parse(new FileInputStream(mageTab.getIdfFile()));
         //TODO: delete temporary file ?
     }
 
-    private Table toSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
+    private Table asSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
         MageTabFormat mageTab = createMageTab(exp);
         return new TsvParser().parse(new FileInputStream(mageTab.getSdrfFile()));
         //TODO: delete temporary file ?
     }
 
+    @Transactional
     @Override
     public ExperimentProfile loadExperiment(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
@@ -180,6 +191,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    @Transactional
     @Override
     public List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
@@ -192,161 +204,145 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    @Transactional(rollbackOn = NoPermissionException.class)
     @Override
     public long createExperiment() throws NoPermissionException {
         try {
-            return transactionSupport.execute(new TransactionCallback<Long>() {
-                @Override
-                public Long doInTransaction() throws Exception {
-                    return createExperimentSubmission().getId();
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(e.getCause()));
+            return createExperimentSubmission().getId();
+        } catch (AccessControlException e) {
+            throw noPermission(e);
         }
     }
 
+    @Transactional(rollbackOn = NoPermissionException.class)
     @Override
     public long createArrayDesign() throws NoPermissionException {
         try {
-            return transactionSupport.execute(new TransactionCallback<Long>() {
-                @Override
-                public Long doInTransaction() throws Exception {
-                    return createArrayDesignSubmission().getId();
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(e.getCause()));
+            return createArrayDesignSubmission().getId();
+        } catch (AccessControlException e) {
+            throw noPermission(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void setupExperiment(final long id, final ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException {
         try {
-            transactionSupport.execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction() throws Exception {
-                    ExperimentSubmission submission =
-                            getExperimentSubmission(id, Permission.UPDATE);
-                    submission.setExperimentProfile(createExperimentProfile(settings));
-                    save(submission);
-                    return null;
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+            ExperimentSubmission submission =
+                    getExperimentSubmission(id, Permission.UPDATE);
+            submission.setExperimentProfile(createExperimentProfile(settings));
+            save(submission);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void submitSubmission(final long id) throws ResourceNotFoundException, NoPermissionException {
-
         try {
-            transactionSupport.execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction() throws Exception {
-                    Submission submission = getSubmission(id, Permission.UPDATE);
-                    File exportDir;
+            Submission submission = getSubmission(id, Permission.UPDATE);
+            File exportDir;
 
-                    if (properties.getAeSubsTrackingEnabled()) {
+            if (properties.getAeSubsTrackingEnabled()) {
 
-                        Integer subsTrackingId = submission.getSubsTrackingId();
-                        if (null == subsTrackingId) {
-                            subsTrackingId = subsTrackingDb.addSubmission(submission);
-                            submission.setSubsTrackingId(subsTrackingId);
-                        } else {
-                            subsTrackingDb.updateSubmission(submission);
-                        }
-
-                        exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
-                        if (!exportDir.exists()) {
-                            exportDir.mkdir();
-                            exportDir.setWritable(true, false);
-                        }
-                        exportDir = new File(exportDir, properties.getAeSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
-                        if (!exportDir.exists()) {
-                            exportDir.mkdir();
-                            exportDir.setWritable(true, false);
-                        }
-                    } else {
-                        exportDir = properties.getExportDir();
-                    }
-
-                    if (submission instanceof ExperimentSubmission) {
-                        exportSubmissionFiles((ExperimentSubmission)submission, exportDir);
-                    }
-                    if (properties.getAeSubsTrackingEnabled()) {
-                        subsTrackingDb.sendSubmission(submission.getSubsTrackingId());
-                    }
-                    submission.setStatus(SubmissionStatus.SUBMITTED);
-                    submission.setOwnedBy(userDao.getCuratorUser());
-                    save(submission);
-                    return null;
+                Integer subsTrackingId = submission.getSubsTrackingId();
+                if (null == subsTrackingId) {
+                    subsTrackingId = subsTrackingDb.addSubmission(submission);
+                    submission.setSubsTrackingId(subsTrackingId);
+                } else {
+                    subsTrackingDb.updateSubmission(submission);
                 }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+
+                exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
+                if (!exportDir.exists()) {
+                    exportDir.mkdir();
+                    exportDir.setWritable(true, false);
+                }
+                exportDir = new File(exportDir, properties.getAeSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
+                if (!exportDir.exists()) {
+                    exportDir.mkdir();
+                    exportDir.setWritable(true, false);
+                }
+            } else {
+                exportDir = properties.getExportDir();
+            }
+
+            if (submission instanceof ExperimentSubmission) {
+                exportSubmissionFiles((ExperimentSubmission)submission, exportDir);
+            }
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTrackingDb.sendSubmission(submission.getSubsTrackingId());
+            }
+            submission.setStatus(SubmissionStatus.SUBMITTED);
+            submission.setOwnedBy(userDao.getCuratorUser());
+            save(submission);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void discardSubmissionData(final long id) throws ResourceNotFoundException, NoPermissionException {
         try {
-            transactionSupport.execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction() throws Exception {
-                    Submission submission =
-                            getSubmission(id, Permission.UPDATE);
-                    submission.discardAll();
-                    save(submission);
-                    return null;
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+            Submission submission = getSubmission(id, Permission.UPDATE);
+            submission.discardAll();
+            save(submission);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public ExperimentProfile updateExperiment(final long id, final List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
-            return transactionSupport.execute(new TransactionCallback<ExperimentProfile>() {
-                @Override
-                public ExperimentProfile doInTransaction() throws Exception {
-                    ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-                    ExperimentProfile experiment = submission.getExperimentProfile();
-                    experimentUpdater(experiment).run(commands);
-                    submission.setExperimentProfile(experiment);
-                    submission.setTitle(experiment.getTitle());
-                    save(submission);
-                    return experiment;
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
+            ExperimentProfile experiment = submission.getExperimentProfile();
+            experimentUpdater(experiment).run(commands);
+            submission.setExperimentProfile(experiment);
+            submission.setTitle(experiment.getTitle());
+            save(submission);
+            return experiment;
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public ArrayDesignUpdateResult updateArrayDesign(final long id, final List<ArrayDesignUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
-            return transactionSupport.execute(new TransactionCallback<ArrayDesignUpdateResult>() {
-                @Override
-                public ArrayDesignUpdateResult doInTransaction() throws Exception {
-                    ArrayDesignSubmission submission = getArrayDesignSubmission(id, Permission.UPDATE);
-                    ArrayDesignHeader header = submission.getHeader();
-                    ArrayDesignUpdateResult result = new ArrayDesignUpdatePerformerImpl(header).run(commands);
-                    submission.setHeader(header);
-                    submission.setTitle(header.getName());
-                    save(submission);
-                    return result;
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+            ArrayDesignSubmission submission = getArrayDesignSubmission(id, Permission.UPDATE);
+            ArrayDesignHeader header = submission.getHeader();
+            ArrayDesignUpdateResult result = new ArrayDesignUpdatePerformerImpl(header).run(commands);
+            submission.setHeader(header);
+            submission.setTitle(header.getName());
+            save(submission);
+            return result;
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void uploadDataFile(long id, String fileName) throws ResourceNotFoundException, NoPermissionException {
         try {
@@ -363,9 +359,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
+        } catch (JMSException e) {
+            throw unexpected(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public Map<Integer, String> registryFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
         try {
@@ -391,31 +390,34 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
+        } catch (JMSException e) {
+            throw unexpected(e);
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void removeFile(final long id, final long fileId) throws ResourceNotFoundException, NoPermissionException {
         try {
-            transactionSupport.execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction() throws Exception {
-                    ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-                    DataFile dataFile = dataFileManager.get(fileId);
-                    String fileName = dataFile.getName();
-                    if (dataFileManager.removeFile(submission, dataFile)) {
-                        submission.getExperimentProfile().removeFile(fileName);
-                        save(submission);
-                    }
-                    return null;
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(maybeNoPermission(maybeNoSuchRecord(e.getCause())));
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
+            DataFile dataFile = dataFileManager.get(fileId);
+            String fileName = dataFile.getName();
+            if (dataFileManager.removeFile(submission, dataFile)) {
+                submission.getExperimentProfile().removeFile(fileName);
+                save(submission);
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (IOException e) {
+            throw unexpected(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 
-    private void saveFile(final File file, final ExperimentSubmission submission) {
+    private void saveFile(final File file, final ExperimentSubmission submission) throws JMSException {
         String fileName = file.getName();
         Set<DataFile> files = submission.getFiles();
         for (DataFile dataFile : files) {
@@ -425,21 +427,11 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
         }
 
-        try {
-            transactionSupport.execute(new TransactionCallback<Void>() {
-                @Override
-                public Void doInTransaction() throws Exception {
-                    dataFileManager.upload(file, submission);
-                    save(submission);
-                    return null;
-                }
-            });
-        } catch (TransactionWrapException e) {
-            throw unexpected(e.getCause());
-        }
+        dataFileManager.upload(file, submission);
+        save(submission);
     }
 
-    private void exportSubmissionFiles( ExperimentSubmission submission, File exportDirectory ) {
+    private void exportSubmissionFiles(ExperimentSubmission submission, File exportDirectory) {
         try {
             ExperimentProfile exp = submission.getExperimentProfile();
             Integer subsTrackingId = submission.getSubsTrackingId();
@@ -494,7 +486,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         }
     }
-
 
     private static boolean fileExists(File file, String md5) throws IOException {
         return file.exists() && md5.equals(hash(file, md5()).toString());
