@@ -34,8 +34,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     SAMPLES("Create your samples", allOf(ExperimentProfileType.class)),
     EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING)),
     LABELED_EXTRACTS("Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
-    RAW_FILES("Upload raw files", allOf(ExperimentProfileType.class)),
-    PROCESSED_FILES("Upload processed files", allOf(ExperimentProfileType.class)),
+    RAW_FILES("Upload Files", allOf(ExperimentProfileType.class)),
     PROTOCOLS("Protocols", allOf(ExperimentProfileType.class)),
     NONE("None", noneOf(ExperimentProfileType.class));
 
