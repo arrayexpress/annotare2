@@ -162,13 +162,14 @@ public class SubsTracking {
 
     public boolean hasMageTabFileAdded( Integer subsTrackingId, String fileName ) {
         if (null != subsTrackingId) {
-            Select<?> count =
+            Integer count =
                     getContext().selectCount()
                             .from(SPREADSHEETS)
                             .where(SPREADSHEETS.EXPERIMENT_ID.equal(subsTrackingId)
-                                    .and(SPREADSHEETS.NAME.equal(fileName)));
+                                    .and(SPREADSHEETS.NAME.equal(fileName)))
+                            .fetchOne(0, Integer.class);
 
-            return (count.fetchCount() > 0);
+            return (count > 0);
         } else {
             return false;
         }

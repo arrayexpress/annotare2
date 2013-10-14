@@ -439,10 +439,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             if (null == fileName) {
                 fileName = "submission" + submission.getId() + "_annotare";
             }
-            // copy idf
-            File idfFile = new File(exportDirectory, fileName + ".idf.txt");
-            File sdrfFile = new File(exportDirectory, fileName + ".sdrf.txt");
-
             if (properties.getAeSubsTrackingEnabled()) {
                 int version = 1;
                 while (subsTrackingDb.hasMageTabFileAdded(
@@ -450,7 +446,11 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                         fileName + "_v" + version + ".idf.txt")) {
                     version++;
                 }
+                fileName = fileName + "_v" + version;
             }
+            // copy idf
+            File idfFile = new File(exportDirectory, fileName + ".idf.txt");
+            File sdrfFile = new File(exportDirectory, fileName + ".sdrf.txt");
 
             if (MageTabFormat.exportMageTab(exp, idfFile, sdrfFile)) {
                 idfFile.setWritable(true, false);
