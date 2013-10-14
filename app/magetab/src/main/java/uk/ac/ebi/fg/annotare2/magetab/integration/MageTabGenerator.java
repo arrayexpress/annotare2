@@ -389,7 +389,6 @@ public class MageTabGenerator {
         Collection<FileColumn> fileColumns = getSortedFileColumns();
 
         List<SDRFNode> prev = new ArrayList<SDRFNode>();
-        prev.add(assayNode);
         List<SDRFNode> next = new ArrayList<SDRFNode>();
         for (FileColumn fileColumn : fileColumns) {
             FileType type = fileColumn.getType();
@@ -412,11 +411,14 @@ public class MageTabGenerator {
                     throw new IllegalStateException("Unsupported file type: " + type);
             }
             if (type.isRaw()) {
-                for(SDRFNode prevNode : prev) {
-                    connect(prevNode, current, RAW_FILES, fileColumn.getFileRef(fileName));
-                }
-                next.add(current);
+                // always connect raw data files to assays
+                connect(assayNode, current, RAW_FILES, fileColumn.getFileRef(fileName));
+                prev.add(current);
             } else {
+                if (prev.isEmpty()) {
+                    // no raw data files are defined
+                    prev.add(assayNode);
+                }
                 for(SDRFNode prevNode : prev) {
                     connect(prevNode, current, PROCESSED_AND_MATRIX_FILES, fileColumn.getFileRef(fileName));
                 }
