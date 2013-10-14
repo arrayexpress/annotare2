@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.Select;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord;
@@ -145,20 +146,33 @@ public class SubsTracking {
         Integer spreadsheetId = null;
 
         if (null != subsTrackingId) {
-            //try {
-                SpreadsheetsRecord r =
-                        getContext().insertInto(SPREADSHEETS)
-                                .set(SPREADSHEETS.IS_DELETED, 0)
-                                .set(SPREADSHEETS.EXPERIMENT_ID, subsTrackingId)
-                                .set(SPREADSHEETS.NAME, fileName)
-                                .returning(SPREADSHEETS.ID)
-                                .fetchOne();
-                if (null != r) {
-                    spreadsheetId = r.getId();
-                }
-            //}
+            SpreadsheetsRecord r =
+                    getContext().insertInto(SPREADSHEETS)
+                            .set(SPREADSHEETS.IS_DELETED, 0)
+                            .set(SPREADSHEETS.EXPERIMENT_ID, subsTrackingId)
+                            .set(SPREADSHEETS.NAME, fileName)
+                            .returning(SPREADSHEETS.ID)
+                            .fetchOne();
+            if (null != r) {
+                spreadsheetId = r.getId();
+            }
         }
         return spreadsheetId;
+    }
+
+    public boolean hasMageTabFileAdded( Integer subsTrackingId, String fileName ) {
+        if (null != subsTrackingId) {
+            Integer count =
+                    getContext().selectCount()
+                            .from(SPREADSHEETS)
+                            .where(SPREADSHEETS.EXPERIMENT_ID.equal(subsTrackingId)
+                                    .and(SPREADSHEETS.NAME.equal(fileName)))
+                            .fetchOne(0, Integer.class);
+
+            return (count > 0);
+        } else {
+            return false;
+        }
     }
 
     public Integer addDataFile( Integer subsTrackingId, String fileName ) {
@@ -169,7 +183,7 @@ public class SubsTracking {
             DataFilesRecord r =
                     getContext().insertInto(DATA_FILES)
                             .set(DATA_FILES.IS_DELETED, 0)
-                            .set(DATA_FILES.IS_UNPACKED, 0)
+                            .set(DATA_FILES.IS_UNPACKED, 1)
                             .set(DATA_FILES.EXPERIMENT_ID, subsTrackingId)
                             .set(DATA_FILES.NAME, fileName)
                             .returning(DATA_FILES.ID)

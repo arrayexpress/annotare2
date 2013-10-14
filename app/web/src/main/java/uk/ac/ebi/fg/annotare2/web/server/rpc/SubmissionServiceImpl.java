@@ -261,17 +261,19 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
                 if (!exportDir.exists()) {
                     exportDir.mkdir();
+                    exportDir.setWritable(true, false);
                 }
                 exportDir = new File(exportDir, properties.getAeSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
                 if (!exportDir.exists()) {
                     exportDir.mkdir();
+                    exportDir.setWritable(true, false);
                 }
             } else {
                 exportDir = properties.getExportDir();
             }
 
             if (submission instanceof ExperimentSubmission) {
-                exportSubmissionFiles((ExperimentSubmission) submission, exportDir);
+                exportSubmissionFiles((ExperimentSubmission)submission, exportDir);
             }
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTrackingDb.sendSubmission(submission.getSubsTrackingId());
@@ -432,27 +434,48 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private void exportSubmissionFiles(ExperimentSubmission submission, File exportDirectory) {
         try {
             ExperimentProfile exp = submission.getExperimentProfile();
-            String accession = null == submission.getAccession() ? "submission" : submission.getAccession();
-            MageTabFormat mageTab = createMageTab(exp);
+            Integer subsTrackingId = submission.getSubsTrackingId();
+            String fileName = submission.getAccession();
+            if (null == fileName) {
+                fileName = "submission" + submission.getId() + "_annotare";
+            }
+            if (properties.getAeSubsTrackingEnabled()) {
+                int version = 1;
+                while (subsTrackingDb.hasMageTabFileAdded(
+                        subsTrackingId,
+                        fileName + "_v" + version + ".idf.txt")) {
+                    version++;
+                }
+                fileName = fileName + "_v" + version;
+            }
             // copy idf
-            String fileName = accession + ".idf.txt";
-            Files.copy(mageTab.getIdfFile(), new File(exportDirectory, fileName));
-            if (properties.getAeSubsTrackingEnabled()) {
-                subsTrackingDb.deleteFiles(submission.getSubsTrackingId());
-                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
+            File idfFile = new File(exportDirectory, fileName + ".idf.txt");
+            File sdrfFile = new File(exportDirectory, fileName + ".sdrf.txt");
+
+            if (MageTabFormat.exportMageTab(exp, idfFile, sdrfFile)) {
+                idfFile.setWritable(true, false);
+                sdrfFile.setWritable(true, false);
+                if (properties.getAeSubsTrackingEnabled()) {
+                    subsTrackingDb.deleteFiles(subsTrackingId);
+                    subsTrackingDb.addMageTabFile(subsTrackingId, idfFile.getName());
+                }
             }
-            // copy sdrf
-            fileName = accession + ".sdrf.txt";
-            Files.copy(mageTab.getSdrfFile(), new File(exportDirectory, fileName));
-            if (properties.getAeSubsTrackingEnabled()) {
-                subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), fileName);
-            }
+
             // copy data files
             Set<DataFile> dataFiles = submission.getFiles();
-            for (DataFile dataFile : dataFiles) {
-                Files.copy(dataFileManager.getFile(dataFile), new File(exportDirectory, dataFile.getName()));
-                if (properties.getAeSubsTrackingEnabled()) {
-                    subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), dataFile.getName());
+            if (dataFiles.size() > 0) {
+                exportDirectory = new File(exportDirectory, "unpacked");
+                if (!exportDirectory.exists()) {
+                    exportDirectory.mkdir();
+                    exportDirectory.setWritable(true, false);
+                }
+                for (DataFile dataFile : dataFiles) {
+                    File f = new File(exportDirectory, dataFile.getName());
+                    Files.copy(dataFileManager.getFile(dataFile), f);
+                    f.setWritable(true, false);
+                    if (properties.getAeSubsTrackingEnabled()) {
+                        subsTrackingDb.addDataFile(subsTrackingId, dataFile.getName());
+                    }
                 }
             }
         } catch (DataSerializationException e) {
