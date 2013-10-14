@@ -442,17 +442,30 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private void exportSubmissionFiles( ExperimentSubmission submission, File exportDirectory ) {
         try {
             ExperimentProfile exp = submission.getExperimentProfile();
-            String accession = null == submission.getAccession() ? "submission" : submission.getAccession();
+            Integer subsTrackingId = submission.getSubsTrackingId();
+            String fileName = submission.getAccession();
+            if (null == fileName) {
+                fileName = "submission" + submission.getId() + "_annotare";
+            }
             // copy idf
-            File idfFile = new File(exportDirectory, accession + ".idf.txt");
-            File sdrfFile = new File(exportDirectory, accession + ".sdrf.txt");
+            File idfFile = new File(exportDirectory, fileName + ".idf.txt");
+            File sdrfFile = new File(exportDirectory, fileName + ".sdrf.txt");
+
+            if (properties.getAeSubsTrackingEnabled()) {
+                int version = 1;
+                while (subsTrackingDb.hasMageTabFileAdded(
+                        subsTrackingId,
+                        fileName + "_v" + version + ".idf.txt")) {
+                    version++;
+                }
+            }
 
             if (MageTabFormat.exportMageTab(exp, idfFile, sdrfFile)) {
                 idfFile.setWritable(true, false);
                 sdrfFile.setWritable(true, false);
                 if (properties.getAeSubsTrackingEnabled()) {
-                    subsTrackingDb.deleteFiles(submission.getSubsTrackingId());
-                    subsTrackingDb.addMageTabFile(submission.getSubsTrackingId(), idfFile.getName());
+                    subsTrackingDb.deleteFiles(subsTrackingId);
+                    subsTrackingDb.addMageTabFile(subsTrackingId, idfFile.getName());
                 }
             }
 
@@ -469,7 +482,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                     Files.copy(dataFileManager.getFile(dataFile), f);
                     f.setWritable(true, false);
                     if (properties.getAeSubsTrackingEnabled()) {
-                        subsTrackingDb.addDataFile(submission.getSubsTrackingId(), dataFile.getName());
+                        subsTrackingDb.addDataFile(subsTrackingId, dataFile.getName());
                     }
                 }
             }
