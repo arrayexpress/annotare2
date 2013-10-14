@@ -26,9 +26,9 @@ import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.om.DataFile;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.web.server.JmsResources;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionCallback;
-import uk.ac.ebi.fg.annotare2.web.server.TransactionSupport;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionCallback;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionSupport;
 
 import javax.jms.*;
 import java.io.File;

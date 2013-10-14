@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 import javax.servlet.*;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class HibernateSessionFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(HibernateSessionFilter.class);
 
     @Inject
-    private HibernateSessionFactoryProvider sessionFactoryProvider;
+    private HibernateSessionFactory sessionFactory;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -42,7 +43,7 @@ public class HibernateSessionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            sessionFactoryProvider.get().openSession();
+            sessionFactory.openSession();
             log.debug("Hibernate session has been opened");
 
             chain.doFilter(request, response);
@@ -50,7 +51,7 @@ public class HibernateSessionFilter implements Filter {
             throw new ServletException(e);
         } finally {
             try {
-                sessionFactoryProvider.get().closeSession();
+                sessionFactory.closeSession();
                 log.debug("Hibernate session has been closed");
             } catch (HibernateException e) {
                 log.error("Can't close hibernate session", e);

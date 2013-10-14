@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import gwtupload.server.UploadServlet;
@@ -41,6 +42,8 @@ import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
@@ -116,7 +119,10 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");
 
         bind(JmsResources.class).toProvider(JmsResources.Creator.class).asEagerSingleton();
+
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
+        bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
+
         bind(FileCopyMessageQueue.class).asEagerSingleton();
 
         bind(SubmissionListServiceImpl.class).in(SINGLETON);
@@ -140,6 +146,10 @@ public class AppServletModule extends ServletModule {
         bind(SubsTrackingProperties.class).to(AnnotareProperties.class);
         bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
         bind(AnnotareEfoService.class).in(SINGLETON);
+
+        TransactionalMethodInterceptor txMethodInterceptor = new TransactionalMethodInterceptor();
+        requestInjection(txMethodInterceptor);
+        bindInterceptor(Matchers.any(), Matchers.annotatedWith(Transactional.class), txMethodInterceptor);
 
         overrideMageTabCheck();
     }

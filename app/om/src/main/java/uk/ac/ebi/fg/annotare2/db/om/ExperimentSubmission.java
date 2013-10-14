@@ -24,7 +24,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Sets.newHashSet;
 import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.fromJson2Experiment;
 import static uk.ac.ebi.fg.annotare2.configmodel.JsonCodec.toJsonString;
 

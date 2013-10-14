@@ -25,6 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    private static final SessionAttribute USER_EMAIL = new SessionAttribute("email");
+    private static final SessionAttribute USER_EMAIL_ATTRIBUTE = new SessionAttribute("email");
 
     private AccountManager accountManager;
 
@@ -48,9 +49,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public boolean isLoggedIn(HttpServletRequest request) {
-        return USER_EMAIL.exists(request.getSession());
+        return USER_EMAIL_ATTRIBUTE.exists(request.getSession());
     }
 
+    @Transactional
     public ValidationErrors login(HttpServletRequest request) throws LoginException {
         LoginParams params = new LoginParams(request);
         ValidationErrors errors = params.validate();
@@ -60,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
                 throw new LoginException("Sorry, the email or password you entered is not valid.");
             }
             log.debug("User '{}' logged in", params.getEmail());
-            USER_EMAIL.set(request.getSession(), params.getEmail());
+            USER_EMAIL_ATTRIBUTE.set(request.getSession(), params.getEmail());
         }
         return errors;
     }
@@ -70,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public User getCurrentUser(HttpSession session) {
-        String email = (String) USER_EMAIL.get(session);
+        String email = (String) USER_EMAIL_ATTRIBUTE.get(session);
         User user = accountManager.getByEmail(email);
         if (user == null) {
             throw new UnauthorizedAccessException("Sorry, you are not logged in");

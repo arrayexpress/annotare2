@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,24 +34,29 @@ import static com.google.common.collect.Lists.newArrayList;
  * @author Olga Melnichuk
  */
 public class SubmissionListServiceImpl extends AuthBasedRemoteService implements SubmissionListService {
+
     private final SubmissionManager submissionManager;
 
     @Inject
-    public SubmissionListServiceImpl(AuthService authService,
-                                     SubmissionManager submissionManager) {
+    public SubmissionListServiceImpl(AuthService authService, SubmissionManager submissionManager) {
         super(authService);
         this.submissionManager = submissionManager;
     }
 
+    @Transactional
+    @Override
     public ArrayList<SubmissionRow> getAllSubmissions() {
         return UIObjectConverter.uiSubmissionRows(getMyAllSubmissions());
     }
 
+    @Transactional
+    @Override
     public ArrayList<SubmissionRow> getCompletedSubmissions() {
         return UIObjectConverter.uiSubmissionRows(getMyCompletedSubmissions());
     }
 
-
+    @Transactional
+    @Override
     public ArrayList<SubmissionRow> getIncompleteSubmissions() {
         return UIObjectConverter.uiSubmissionRows(getMyIncompleteSubmissions());
     }

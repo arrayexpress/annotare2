@@ -45,14 +45,8 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
         this.submissionManager = submissionManager;
     }
 
-    public Submission getSubmission(long id, Permission permission) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            return submissionManager.getSubmission(getCurrentUser(), id, permission);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
+    protected Submission getSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
+        return submissionManager.getSubmission(getCurrentUser(), id, permission);
     }
 
     protected ExperimentSubmission getExperimentSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
@@ -73,20 +67,6 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
 
     protected void save(Submission submission) {
         submissionManager.save(submission);
-    }
-
-    protected static Throwable maybeNoPermission(Throwable e) throws NoPermissionException {
-        if (e instanceof AccessControlException) {
-            throw noPermission((AccessControlException) e);
-        }
-        return e;
-    }
-
-    protected static Throwable maybeNoSuchRecord(Throwable e) throws ResourceNotFoundException {
-        if (e instanceof RecordNotFoundException) {
-            throw noSuchRecord((RecordNotFoundException) e);
-        }
-        return e;
     }
 
     protected static UnexpectedException unexpected(Throwable e) {

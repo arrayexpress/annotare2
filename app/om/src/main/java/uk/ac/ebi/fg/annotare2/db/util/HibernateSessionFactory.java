@@ -39,6 +39,7 @@ public class HibernateSessionFactory {
         Session session = threadSession.get();
         if (isOpen(session)) {
             session.close();
+            threadSession.set(null);
         }
     }
 
