@@ -38,11 +38,11 @@ public class AdHeaderPlace extends ArrayDesignPlace {
         return ArrayDesignTab.Header;
     }
 
-    @Prefix("adfHeader")
+    @Prefix("ADF_HEADER")
     public static class Tokenizer implements PlaceTokenizer<AdHeaderPlace> {
 
         public String getToken(AdHeaderPlace place) {
-            return "";
+            return "0";
         }
 
         public AdHeaderPlace getPlace(String token) {

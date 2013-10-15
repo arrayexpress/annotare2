@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.SdrfPreviewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.SdrfPreviewView;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -55,7 +56,7 @@ public class SdrfPreviewActivity extends AbstractActivity {
         initAsync();
     }
 
-    public SdrfPreviewActivity withPlace(Place place) {
+    public SdrfPreviewActivity withPlace(SdrfPreviewPlace place) {
         return this;
     }
 

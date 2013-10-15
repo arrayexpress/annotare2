@@ -34,7 +34,7 @@ public class SdrfPreviewPlace extends ExperimentPlace {
     public static class Tokenizer implements PlaceTokenizer<SdrfPreviewPlace> {
 
         public String getToken(SdrfPreviewPlace place) {
-            return "";
+            return "0";
         }
 
         public SdrfPreviewPlace getPlace(String token) {

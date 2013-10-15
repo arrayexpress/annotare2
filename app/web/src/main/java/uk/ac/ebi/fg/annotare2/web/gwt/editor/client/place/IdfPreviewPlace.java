@@ -34,7 +34,7 @@ public class IdfPreviewPlace extends ExperimentPlace {
     public static class Tokenizer implements PlaceTokenizer<IdfPreviewPlace> {
 
         public String getToken(IdfPreviewPlace place) {
-            return "";
+            return "0";
         }
 
         public IdfPreviewPlace getPlace(String token) {

@@ -111,7 +111,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
         } else if (place instanceof IdfPreviewPlace) {
             return (idfPreviewActivityProvider.get()).withPlace((IdfPreviewPlace) place);
         } else if (place instanceof SdrfPreviewPlace) {
-            return (sdrfPreviewActivityProvider.get()).withPlace(place);
+            return (sdrfPreviewActivityProvider.get()).withPlace((SdrfPreviewPlace) place);
         } else if (place instanceof AdHeaderPlace) {
             AdHeaderPlace adHeaderPlace = (AdHeaderPlace) place;
             return (adfDetailsActivityProvider.get()).withPlace(adHeaderPlace);

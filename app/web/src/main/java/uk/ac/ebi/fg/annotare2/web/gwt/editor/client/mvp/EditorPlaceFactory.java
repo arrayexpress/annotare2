@@ -20,8 +20,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.*;
 
-import java.security.PrivateKey;
-
 /**
  * @author Olga Melnichuk
  */
@@ -53,32 +51,35 @@ public class EditorPlaceFactory {
     @Inject
     Provider<AdTablePlace> adTablePlaceProvider;
 
-
-    public ExpInfoPlace.Tokenizer getExpInfoPlaceTokenizer() {
-        return expInfoPlaceTokenizer;
-    }
-
     public ExpInfoPlace getExpInfoPlace() {
         return expInfoPlaceProvider.get();
-    }
-
-    public ExpDesignPlace.Tokenizer getExpDesignPlaceTokenizer() {
-        return expDesignPlaceTokenizer;
-    }
-
-    public AdHeaderPlace.Tokenizer getAdHeaderPlaceTokenizer() {
-        return adHeaderPlaceTokenizer;
     }
 
     public AdHeaderPlace getAdHeaderPlace() {
         return adHeaderPlaceProvider.get();
     }
 
-    public AdTablePlace.Tokenizer getAdTablePlaceTokenizer() {
-        return adTablePlaceTokenizer;
+    public ExpInfoPlace.Tokenizer getExpInfoPlaceTokenizer() {
+        return expInfoPlaceTokenizer;
     }
 
-    public AdTablePlace getAdTablePlace() {
-        return adTablePlaceProvider.get();
+    public ExpDesignPlace.Tokenizer getExpDesignPlaceTokenizer() {
+        return expDesignPlaceTokenizer;
+    }
+
+    public IdfPreviewPlace.Tokenizer getIdfPreviewPlaceTokenizer() {
+        return idfPreviewPlaceTokenizer;
+    }
+
+    public SdrfPreviewPlace.Tokenizer getSdrfPreviewPlaceTokenizer() {
+        return sdrfPreviewPlaceTokenizer;
+    }
+
+    public AdHeaderPlace.Tokenizer getAdHeaderPlaceTokenizer() {
+        return adHeaderPlaceTokenizer;
+    }
+
+    public AdTablePlace.Tokenizer getAdTablePlaceTokenizer() {
+        return adTablePlaceTokenizer;
     }
 }

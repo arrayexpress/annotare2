@@ -27,7 +27,6 @@ public abstract class ExperimentPlace extends Place {
     public abstract ExperimentTab getSelectedTab();
 
     public static ExperimentPlace create(ExperimentTab tab) {
-        //TODO
         switch (tab) {
             case EXP_INFO:
                 return new ExpInfoPlace();

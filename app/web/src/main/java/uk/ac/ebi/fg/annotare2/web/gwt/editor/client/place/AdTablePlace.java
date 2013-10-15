@@ -30,11 +30,11 @@ public class AdTablePlace extends ArrayDesignPlace {
         return ArrayDesignTab.Table;
     }
 
-    @Prefix("adfTable")
+    @Prefix("ADF_TABLE")
     public static class Tokenizer implements PlaceTokenizer<AdTablePlace> {
 
         public String getToken(AdTablePlace place) {
-            return "";
+            return "0";
         }
 
         public AdTablePlace getPlace(String token) {
