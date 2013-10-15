@@ -27,8 +27,6 @@ import com.google.gwt.user.client.ui.Label;
 
 import java.util.*;
 
-import static com.googlecode.concurrenttrees.common.Iterables.toList;
-
 /**
  * @author Olga Melnichuk
  */
