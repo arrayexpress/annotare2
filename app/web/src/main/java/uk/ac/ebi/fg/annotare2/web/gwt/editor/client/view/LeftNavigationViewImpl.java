@@ -24,6 +24,9 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentSettingsPanel;
 
 import java.util.*;
 
@@ -51,6 +54,7 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
 
     private final Style style;
     private final FlowPanel panel;
+    private final VerticalPanel verticalPanel;
 
     private final Map<String, Integer> indexMap = new HashMap<String, Integer>();
     private Section selected;
@@ -63,7 +67,11 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
 
         panel = new FlowPanel();
         panel.setStyleName(style.navigationPanel());
-        initWidget(panel);
+
+        verticalPanel = new VerticalPanel();
+        verticalPanel.setWidth("100%");
+        verticalPanel.add(panel);
+        initWidget(verticalPanel);
     }
 
     @Override
@@ -71,6 +79,11 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
         List<Section> list = new ArrayList<Section>();
         Collections.addAll(list, sections);
         setSections(list);
+    }
+
+    @Override
+    public void setExperimentSettings(ExperimentSettings settings) {
+        verticalPanel.add(new ExperimentSettingsPanel(settings));
     }
 
     @Override

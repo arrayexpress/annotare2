@@ -25,6 +25,8 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 public class ExperimentSettings implements IsSerializable {
 
     private ExperimentProfileType experimentType;
+    private String arrayDesign;
+    private String label;
 
     public ExperimentSettings() {
     }
@@ -35,5 +37,13 @@ public class ExperimentSettings implements IsSerializable {
 
     public ExperimentProfileType getExperimentType() {
         return experimentType;
+    }
+
+    public String getArrayDesign() {
+        return arrayDesign;
+    }
+
+    public String getLabel() {
+        return label;
     }
 }

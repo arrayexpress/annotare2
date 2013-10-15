@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentSetting;
 
 import java.util.List;
 
@@ -32,6 +34,8 @@ public interface LeftNavigationView extends IsWidget {
     void setSections(List<? extends Section> sections);
 
     void setSelected(Section section);
+
+    void setExperimentSettings(ExperimentSettings settings);
 
     public interface Presenter {
 

@@ -19,8 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
@@ -33,12 +37,15 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
     private final LeftNavigationView view;
     private final PlaceController placeController;
     private ExpInfoSection section;
+    private final ExperimentData expData;
 
     @Inject
     public InfoNavigationActivity(LeftNavigationView view,
-                                  PlaceController placeController) {
+                                  PlaceController placeController,
+                                  ExperimentData expData) {
         this.view = view;
         this.placeController = placeController;
+        this.expData = expData;
     }
 
     public InfoNavigationActivity withPlace(ExpInfoPlace place) {
@@ -51,10 +58,27 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
         view.setSections(ExpInfoSection.values());
         view.setSelected(section);
         containerWidget.setWidget(view.asWidget());
+        loadExperimentSettings();
     }
 
     @Override
     public void navigateTo(LeftNavigationView.Section section) {
         placeController.goTo(new ExpInfoPlace((ExpInfoSection) section));
+    }
+
+    private void loadExperimentSettings() {
+        expData.getSettingsAsync(
+                new AsyncCallback<ExperimentSettings>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        //TODO
+                        Window.alert(caught.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(ExperimentSettings result) {
+                        view.setExperimentSettings(result);
+                    }
+                });
     }
 }

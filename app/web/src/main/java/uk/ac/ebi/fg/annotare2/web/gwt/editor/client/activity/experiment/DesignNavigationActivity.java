@@ -61,7 +61,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
-        loadExperimentDetails();
+        loadExperimentSettings();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
         placeController.goTo(place);
     }
 
-    private void loadExperimentDetails() {
+    private void loadExperimentSettings() {
         expData.getSettingsAsync(
                 new AsyncCallback<ExperimentSettings>() {
                     @Override
@@ -93,6 +93,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
                         } else {
                             goTo(new ExpDesignPlace(ExpDesignSection.NONE));
                         }
+                        view.setExperimentSettings(result);
                     }
                 });
     }
