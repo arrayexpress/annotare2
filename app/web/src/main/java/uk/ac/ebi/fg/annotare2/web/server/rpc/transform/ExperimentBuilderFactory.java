@@ -54,7 +54,7 @@ public class ExperimentBuilderFactory {
                 exp.addLabel("Cy5");
                 ExperimentUpdater updater = experimentUpdater(exp);
                 int n = settings.getNumberOfHybs();
-                for (int i = 0; i < n/2; i++) {
+                for (int i = 0; i < n / 2; i++) {
                     updater.createSample();
                 }
                 return exp;
@@ -62,7 +62,7 @@ public class ExperimentBuilderFactory {
         },
         SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
             @Override
-            ExperimentProfile setupExperiment( ExperimentSetupSettings settings) {
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
                 return new ExperimentProfile(SEQUENCING);
             }
         };
