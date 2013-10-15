@@ -29,27 +29,39 @@ public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
         Window.alert("Sorry, you do not have permissions to proceed with this operation");
     }
 
+    @Override
+    public void onFailure(Throwable caught) {
+        Window.alert("Server error; please try again later");
+    }
+
     public AsyncCallback<T> wrap() {
+        final AsyncCallbackWrapper<T> wrapper = this;
+
         return new AsyncCallback<T>() {
             public void onFailure(Throwable caught) {
-                if (isUnauthorizedRequestError(caught)) {
+                if (unableToConnect(caught) ||
+                        nonAuthorizedRequest(caught)) {
                     Window.Location.reload();
-                } else if (isPermissionDenied(caught)) {
-                    AsyncCallbackWrapper.this.onPermissionDenied();
+                } else if (noPermission(caught)) {
+                    wrapper.onPermissionDenied();
                 } else {
-                    AsyncCallbackWrapper.this.onFailure(caught);
+                    wrapper.onFailure(caught);
                 }
             }
 
             public void onSuccess(T result) {
-                AsyncCallbackWrapper.this.onSuccess(result);
+                wrapper.onSuccess(result);
             }
 
-            private boolean isUnauthorizedRequestError(Throwable caught) {
+            private boolean unableToConnect(Throwable caught) {
+                return (caught instanceof StatusCodeException && ((StatusCodeException) caught).getStatusCode() == 0);
+            }
+
+            private boolean nonAuthorizedRequest(Throwable caught) {
                 return (caught instanceof StatusCodeException && ((StatusCodeException) caught).getStatusCode() == 401);
             }
 
-            private boolean isPermissionDenied(Throwable caught) {
+            private boolean noPermission(Throwable caught) {
                 return caught instanceof NoPermissionException;
             }
         };

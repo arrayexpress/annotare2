@@ -20,7 +20,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.magetab.table.Table;
@@ -67,12 +66,6 @@ public class IdfPreviewActivity extends AbstractActivity {
 
     private void initAsync() {
         submissionService.getIdfTable(getSubmissionId(), new AsyncCallbackWrapper<Table>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Can't load IDF table: " + caught.getMessage());
-            }
-
             @Override
             public void onSuccess(Table result) {
                 view.setTable(result, false);
