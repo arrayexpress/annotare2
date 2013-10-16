@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
 import java.util.HashMap;
@@ -37,7 +38,7 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class SetupExpSubmissionView extends Composite implements SubmissionSettingsDataSource {
+public class SetupExpSubmissionView extends Composite implements SuggestService<ArrayDesignRef> {
 
     interface Binder extends UiBinder<Widget, SetupExpSubmissionView> {
         Binder BINDER = GWT.create(Binder.class);

@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Olga Melnichuk
  */
-interface SubmissionSettingsDataSource extends SuggestService<ArrayDesignRef>{
+public interface Editor<T> extends IsWidget {
+
+    void setValues(T t);
+
+    T getValues();
+
 }

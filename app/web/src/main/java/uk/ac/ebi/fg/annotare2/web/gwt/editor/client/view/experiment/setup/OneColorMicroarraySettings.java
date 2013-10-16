@@ -17,13 +17,15 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
+import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
 import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.ONE_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
@@ -48,10 +50,10 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public OneColorMicroarraySettings(SubmissionSettingsDataSource dataSource) {
-        arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(dataSource));
+    public OneColorMicroarraySettings(SuggestService<ArrayDesignRef> suggestService) {
+        arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(suggestService));
         initWidget(Binder.BINDER.createAndBindUi(this));
-        description.setHTML(SafeHtmlUtils.fromSafeConstant(
+        description.setHTML(fromSafeConstant(
                 "An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-641/'>" +
                         "E-MTAB-641</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/21980142'>" +
                         "Europe PMC 21980142</a>. A one colour experiment uses one dye or label. For " +

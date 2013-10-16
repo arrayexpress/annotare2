@@ -14,37 +14,30 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
-
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface LeftNavigationView extends IsWidget {
+public class DummySettingsEditor extends Composite implements Editor<ExperimentSettings> {
 
-    void setPresenter(Presenter presenter);
+    private ExperimentSettings settings;
 
-    void setSections(Section... sections);
-
-    void setSections(List<? extends Section> sections);
-
-    void setSelected(Section section);
-
-    void setExperimentSettings(ExperimentSettings settings);
-
-    public interface Presenter {
-
-        void navigateTo(Section section);
+    public DummySettingsEditor() {
+        initWidget(new SimplePanel());
     }
 
-    public interface Section {
+    @Override
+    public void setValues(ExperimentSettings settings) {
+        this.settings = settings;
+    }
 
-        String getTitle();
-
-        String getKey();
+    @Override
+    public ExperimentSettings getValues() {
+        return this.settings;
     }
 }

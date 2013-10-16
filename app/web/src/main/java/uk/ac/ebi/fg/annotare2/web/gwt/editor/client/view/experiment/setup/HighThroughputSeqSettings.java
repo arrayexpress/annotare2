@@ -16,11 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
+import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
 import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.SEQUENCING;
 
 
@@ -31,7 +31,7 @@ public class HighThroughputSeqSettings extends Composite implements HasSubmissio
 
     public HighThroughputSeqSettings() {
         initWidget(new HTML(
-                SafeHtmlUtils.fromSafeConstant("An example is " +
+                fromSafeConstant("An example is " +
                         "<a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-582/'>E-MTAB-582</a>, " +
                         "<a target='_blank' href='http://europepmc.org/abstract/MED/21983088/reload=0;jsessionid=tcoeGSkyb7AXGQXpR7vz.6'>" +
                         "Europe PMC 21983088</a>. Sequencing experiments produce raw sequence data " +
