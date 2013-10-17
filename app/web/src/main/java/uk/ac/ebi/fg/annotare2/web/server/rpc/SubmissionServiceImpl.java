@@ -65,7 +65,7 @@ import java.util.Set;
 
 import static com.google.common.hash.Hashing.md5;
 import static com.google.common.io.Files.hash;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;

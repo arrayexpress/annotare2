@@ -41,10 +41,6 @@ public class ExperimentBuilderFactoryTest {
         Enum e = (Enum) reflection.newConstructorAccessor(cstr).newInstance(
                 new Object[]{"MISSING_EXPERIMENT_TYPE", ExperimentProfileType.values().length, "Missing Experiment Type"});
 
-        ExperimentSetupSettings settings = new ExperimentSetupSettings.Builder()
-                .setExperimentType((ExperimentProfileType) e)
-                .build();
-
-        createExperimentProfile(settings);
+        createExperimentProfile(new ExperimentSetupSettings((ExperimentProfileType) e));
     }
 }

@@ -61,6 +61,9 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("publicReleaseDate")
     private Date publicReleaseDate;
 
+    @JsonProperty("arrayDesign")
+    private String arrayDesign;
+
     @JsonProperty("contactMap")
     private Map<Integer, Contact> contactMap;
 
@@ -184,6 +187,14 @@ public class ExperimentProfile implements Serializable {
 
     public void setPublicReleaseDate(Date publicReleaseDate) {
         this.publicReleaseDate = publicReleaseDate;
+    }
+
+    public String getArrayDesign() {
+        return arrayDesign;
+    }
+
+    public void setArrayDesign(String arrayDesign) {
+        this.arrayDesign = arrayDesign;
     }
 
     public Contact createContact() {
@@ -523,7 +534,46 @@ public class ExperimentProfile implements Serializable {
     }
 
     public void addLabel(String label) {
+        if (label == null || label.isEmpty()) {
+            return;
+        }
         labels.add(label);
+    }
+
+    public void removeLabel(String label) {
+        if (label == null || label.isEmpty()) {
+            return;
+        }
+        List<Assay> assays = new ArrayList<Assay>(getAssays());
+        for (Assay assay : assays) {
+            if (label.equals(assay.getLabel())) {
+                removeAssay(assay);
+            }
+        }
+        labels.remove(label);
+    }
+
+    public void addOrReLabel(String oldLabel, String newLabel) {
+        if (oldLabel == null) {
+            addLabel(newLabel);
+            return;
+        }
+        if (oldLabel.equals(newLabel)) {
+            return;
+        }
+        addLabel(newLabel);
+        for (Assay assay : getAssays()) {
+            if (oldLabel.equals(assay.getLabel())) {
+                reLabelAssay(assay, newLabel);
+            }
+        }
+        removeLabel(oldLabel);
+    }
+
+    private void reLabelAssay(Assay assay, String newLabel) {
+        assayMap.remove(assay.getId());
+        assay.setLabel(newLabel);
+        assayMap.put(assay.getId(), assay);
     }
 
     public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol) {

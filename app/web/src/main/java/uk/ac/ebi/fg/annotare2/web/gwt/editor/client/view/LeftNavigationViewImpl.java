@@ -93,6 +93,13 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
                     presenter.getArrayDesigns(query, limit, callback);
                 }
             }
+
+            @Override
+            public void saveSettings(ExperimentSettings settings) {
+                if (presenter != null) {
+                    presenter.saveSettings(settings);
+                }
+            }
         });
         verticalPanel.add(settingsPanel);
     }

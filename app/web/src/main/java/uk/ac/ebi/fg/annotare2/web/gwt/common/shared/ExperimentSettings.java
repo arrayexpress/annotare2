@@ -17,7 +17,10 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
+
+import java.util.Collection;
 
 /**
  * @author Olga Melnichuk
@@ -28,11 +31,20 @@ public class ExperimentSettings implements IsSerializable {
     private String arrayDesign;
     private String label;
 
-    public ExperimentSettings() {
+    protected ExperimentSettings() {
+        /* used by GWT serialization */
     }
 
     public ExperimentSettings(ExperimentProfileType experimentType) {
         this.experimentType = experimentType;
+    }
+
+    public void setArrayDesign(String arrayDesign) {
+        this.arrayDesign = arrayDesign;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public ExperimentProfileType getExperimentType() {
@@ -45,5 +57,14 @@ public class ExperimentSettings implements IsSerializable {
 
     public String getLabel() {
         return label;
+    }
+
+    public static ExperimentSettings create(ExperimentProfile exp) {
+        Collection<String> labels = exp.getLabels();
+
+        ExperimentSettings settings = new ExperimentSettings(exp.getType());
+        settings.setArrayDesign(exp.getArrayDesign());
+        settings.setLabel(labels.isEmpty() ? null : labels.iterator().next());
+        return settings;
     }
 }

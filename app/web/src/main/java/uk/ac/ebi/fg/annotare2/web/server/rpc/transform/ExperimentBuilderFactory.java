@@ -19,13 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater;
 
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.*;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.ExperimentUpdater.experimentUpdater;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
 /**
  * @author Olga Melnichuk
@@ -37,8 +37,8 @@ public class ExperimentBuilderFactory {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
                 ExperimentProfile exp = new ExperimentProfile(ONE_COLOR_MICROARRAY);
-                exp.addLabel(settings.getLabel());
                 ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n; i++) {
                     updater.createSample();
@@ -52,7 +52,9 @@ public class ExperimentBuilderFactory {
                 ExperimentProfile exp = new ExperimentProfile(TWO_COLOR_MICROARRAY);
                 exp.addLabel("Cy3");
                 exp.addLabel("Cy5");
+
                 ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
                 int n = settings.getNumberOfHybs();
                 for (int i = 0; i < n / 2; i++) {
                     updater.createSample();

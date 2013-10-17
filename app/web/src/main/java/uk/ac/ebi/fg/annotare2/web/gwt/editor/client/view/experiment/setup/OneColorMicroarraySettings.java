@@ -66,12 +66,11 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        return new ExperimentSetupSettings.Builder()
-                .setExperimentType(ONE_COLOR_MICROARRAY)
-                .setArrayDesign(arrayDesignList.getValue())
-                .setNumberOfHybritisations(intValue(numberOfHybs.getValue()))
-                .setLabel(label.getValue())
-                .build();
+        ExperimentSetupSettings settings = new ExperimentSetupSettings(ONE_COLOR_MICROARRAY);
+        settings.setArrayDesign(arrayDesignList.getValue());
+        settings.setNumberOfHybs(intValue(numberOfHybs.getValue()));
+        settings.setLabel(label.getValue());
+        return settings;
     }
 
     private int intValue(String value) {

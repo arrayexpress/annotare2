@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.rpc;
+package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.configmodel.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
@@ -49,9 +50,11 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         ExperimentProfileType type = exp.getType();
         switch (type) {
             case ONE_COLOR_MICROARRAY:
+                return new OneColorMicroarrayUpdater(exp);
             case TWO_COLOR_MICROARRAY:
+                return new TwoColorMicroarrayUpdater(exp);
             case SEQUENCING:
-                return new BasicExperimentUpdater(exp);
+                return new SequencingUpdater(exp);
         }
         throw new IllegalArgumentException("No updater for experiment type: " + type);
     }
@@ -297,6 +300,11 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void moveProtocolUp(ProtocolRow row) {
         exp.moveProtocolUp(exp.getProtocol(row.getId()));
+    }
+
+    @Override
+    public void updateSettings(ExperimentSettings settings) {
+        // override me
     }
 
     public void run(List<ExperimentUpdateCommand> commands) {

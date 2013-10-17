@@ -41,8 +41,6 @@ public class HighThroughputSeqSettings extends Composite implements HasSubmissio
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        return new ExperimentSetupSettings.Builder()
-                .setExperimentType(SEQUENCING)
-                .build();
+        return new ExperimentSetupSettings(SEQUENCING);
     }
 }

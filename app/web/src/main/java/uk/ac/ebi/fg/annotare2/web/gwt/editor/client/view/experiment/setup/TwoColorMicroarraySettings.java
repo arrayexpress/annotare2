@@ -62,11 +62,10 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
 
     @Override
     public ExperimentSetupSettings getSettings() {
-        return new ExperimentSetupSettings.Builder()
-                .setExperimentType(TWO_COLOR_MICROARRAY)
-                .setArrayDesign(arrayDesignList.getValue())
-                .setNumberOfHybritisations(intValue(numberOfHybs.getValue()))
-                .build();
+        ExperimentSetupSettings settings = new ExperimentSetupSettings(TWO_COLOR_MICROARRAY);
+        settings.setArrayDesign(arrayDesignList.getValue());
+        settings.setNumberOfHybs(intValue(numberOfHybs.getValue()));
+        return settings;
     }
 
     private int intValue(String value) {

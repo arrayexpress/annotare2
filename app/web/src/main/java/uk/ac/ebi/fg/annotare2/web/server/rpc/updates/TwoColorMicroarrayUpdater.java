@@ -14,42 +14,42 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.rpc;
+package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.configmodel.Extract;
 import uk.ac.ebi.fg.annotare2.configmodel.Sample;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 
-import java.util.Collection;
+import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.TWO_COLOR_MICROARRAY;
 
 /**
  * @author Olga Melnichuk
  */
-public class BasicExperimentUpdater extends ExperimentUpdater {
+public class TwoColorMicroarrayUpdater extends BasicExperimentUpdater {
 
-    BasicExperimentUpdater(ExperimentProfile exp) {
+    public TwoColorMicroarrayUpdater(ExperimentProfile exp) {
         super(exp);
     }
 
     @Override
     public void createSample() {
-        Sample sample  = createAndReturnSample();
+        Sample sample = createAndReturnSample();
 
-        boolean hasLabeledExtracts = exp().getType().isMicroarray();
-        Extract extract = exp().createExtract(!hasLabeledExtracts, sample);
+        Extract extract = exp().createExtract(false, sample);
         extract.setName(sample.getName());
-        for(String label : exp().getLabels()) {
+
+        for (String label : exp().getLabels()) {
             exp().createLabeledExtract(extract, label);
         }
     }
 
     @Override
-    public void updateSample(SampleRow row) {
-        super.updateSample(row);
-        Sample sample = exp().getSample(row.getId());
-        Collection<Extract> extracts = exp().getExtracts(sample);
-        Extract first = extracts.iterator().next();
-        first.setName(sample.getName());
+    public void updateSettings(ExperimentSettings settings) {
+        if (settings.getExperimentType() != TWO_COLOR_MICROARRAY) {
+            return;
+        }
+        exp().setArrayDesign(settings.getArrayDesign());
+        super.updateSettings(settings);
     }
 }

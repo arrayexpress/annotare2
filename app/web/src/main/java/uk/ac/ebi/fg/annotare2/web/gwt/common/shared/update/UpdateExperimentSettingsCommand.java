@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentSetupSettings extends ExperimentSettings {
+public class UpdateExperimentSettingsCommand implements ExperimentUpdateCommand {
 
-    private int numberOfHybs;
+    private ExperimentSettings settings;
 
-    ExperimentSetupSettings() {
-        /*used by GWT serialization*/
+    UpdateExperimentSettingsCommand() {
+        /* used by GWT serialization */
     }
 
-    public ExperimentSetupSettings(ExperimentProfileType experimentType) {
-        super(experimentType);
+    public UpdateExperimentSettingsCommand(ExperimentSettings settings) {
+        this.settings = settings;
     }
 
-    public int getNumberOfHybs() {
-        return numberOfHybs;
+    @Override
+    public void execute(ExperimentUpdatePerformer performer) {
+        performer.updateSettings(settings);
     }
 
-    public void setNumberOfHybs(int numberOfHybs) {
-        this.numberOfHybs = numberOfHybs;
+    @Override
+    public boolean isCritical() {
+        return false;
     }
 }

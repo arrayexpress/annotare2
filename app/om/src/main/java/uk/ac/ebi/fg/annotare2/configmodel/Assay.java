@@ -79,6 +79,10 @@ public class Assay implements Serializable, HasProtocolAssignment {
         return label;
     }
 
+    void setLabel(String label) {
+        this.label = label;
+    }
+
     public String getId() {
         return extractId + (label != null && label.length() > 0 ? "_" + label : "");
     }

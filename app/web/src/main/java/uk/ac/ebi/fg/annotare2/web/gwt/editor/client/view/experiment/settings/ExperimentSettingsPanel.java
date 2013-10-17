@@ -115,8 +115,10 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                     }
 
                     @Override
-                    public void onOkay(ExperimentSettings experimentSettings) {
-                        //todo submit settings
+                    public void onOkay(ExperimentSettings settings) {
+                        if (presenter != null) {
+                            presenter.saveSettings(settings);
+                        }
                     }
                 }).show();
     }
@@ -133,6 +135,9 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
     }
 
     public interface Presenter {
+
         void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback);
+
+        void saveSettings(ExperimentSettings settings);
     }
 }

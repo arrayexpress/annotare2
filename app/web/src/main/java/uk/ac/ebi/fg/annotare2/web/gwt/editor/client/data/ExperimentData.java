@@ -249,7 +249,7 @@ public class ExperimentData {
 
             @Override
             public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(new ExperimentSettings(result.getType()));
+                callback.onSuccess(ExperimentSettings.create(result));
             }
         });
     }
@@ -494,6 +494,10 @@ public class ExperimentData {
 
     public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
         updateQueue.add(new UpdateProtocolAssignmentsCommand(updates));
+    }
+
+    public void updateExperimentSettings(ExperimentSettings settings) {
+        updateQueue.add(new UpdateExperimentSettingsCommand(settings));
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {

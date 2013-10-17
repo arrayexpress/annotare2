@@ -14,31 +14,26 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
+package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.configmodel.Extract;
+import uk.ac.ebi.fg.annotare2.configmodel.Sample;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentSetupSettings extends ExperimentSettings {
+public class SequencingUpdater extends BasicExperimentUpdater {
 
-    private int numberOfHybs;
-
-    ExperimentSetupSettings() {
-        /*used by GWT serialization*/
+    public SequencingUpdater(ExperimentProfile exp) {
+         super(exp);
     }
 
-    public ExperimentSetupSettings(ExperimentProfileType experimentType) {
-        super(experimentType);
-    }
+    @Override
+    public void createSample() {
+        Sample sample  = createAndReturnSample();
 
-    public int getNumberOfHybs() {
-        return numberOfHybs;
-    }
-
-    public void setNumberOfHybs(int numberOfHybs) {
-        this.numberOfHybs = numberOfHybs;
+        Extract extract = exp().createExtract(true, sample);
+        extract.setName(sample.getName());
     }
 }

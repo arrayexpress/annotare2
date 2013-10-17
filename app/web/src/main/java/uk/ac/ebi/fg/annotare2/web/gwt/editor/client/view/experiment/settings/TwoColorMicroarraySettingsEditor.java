@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
@@ -46,11 +47,14 @@ public class TwoColorMicroarraySettingsEditor extends Composite implements Edito
 
     @Override
     public void setValues(ExperimentSettings experimentSettings) {
-
+        String ad = experimentSettings.getArrayDesign();
+        arrayDesign.setValue(ad == null ? "" : ad);
     }
 
     @Override
     public ExperimentSettings getValues() {
-        return null;
+        ExperimentSettings settings = new ExperimentSettings(ExperimentProfileType.TWO_COLOR_MICROARRAY);
+        settings.setArrayDesign(arrayDesign.getValue().trim());
+        return settings;
     }
 }

@@ -76,6 +76,11 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     }
 
     @Override
+    public void saveSettings(ExperimentSettings settings) {
+        expData.updateExperimentSettings(settings);
+    }
+
+    @Override
     public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
         dataService.getArrayDesignList(query, limit, AsyncCallbackWrapper.wrap(callback));
     }
