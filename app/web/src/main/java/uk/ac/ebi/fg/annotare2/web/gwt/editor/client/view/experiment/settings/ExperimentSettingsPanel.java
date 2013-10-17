@@ -76,7 +76,7 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
                                 "<br/> array design: " + settings.getArrayDesign() +
-                                "<br/> color: " + settings.getLabel())));
+                                "<br/> dye: " + settings.getLabel())));
                 changeLink.setVisible(true);
                 break;
             case TWO_COLOR_MICROARRAY:
