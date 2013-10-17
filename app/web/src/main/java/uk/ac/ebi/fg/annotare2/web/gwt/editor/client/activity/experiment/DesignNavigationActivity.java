@@ -23,6 +23,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
@@ -41,16 +44,19 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     private final LeftNavigationView view;
     private final PlaceController placeController;
     private final ExperimentData expData;
+    private final DataServiceAsync dataService;
 
     private ExpDesignSection section;
 
     @Inject
     public DesignNavigationActivity(LeftNavigationView view,
                                     PlaceController placeController,
-                                    ExperimentData expData) {
+                                    ExperimentData expData,
+                                    DataServiceAsync dataService) {
         this.view = view;
         this.placeController = placeController;
         this.expData = expData;
+        this.dataService = dataService;
     }
 
     public DesignNavigationActivity withPlace(ExpDesignPlace place) {
@@ -67,6 +73,11 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     @Override
     public void navigateTo(LeftNavigationView.Section section) {
         goTo(new ExpDesignPlace((ExpDesignSection) section));
+    }
+
+    @Override
+    public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+        dataService.getArrayDesignList(query, limit, AsyncCallbackWrapper.wrap(callback));
     }
 
     private void goTo(ExpDesignPlace place) {

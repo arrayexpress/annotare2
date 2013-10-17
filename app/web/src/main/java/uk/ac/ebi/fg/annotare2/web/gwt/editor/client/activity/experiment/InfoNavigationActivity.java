@@ -23,11 +23,16 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfoSection;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -37,15 +42,19 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
     private final LeftNavigationView view;
     private final PlaceController placeController;
     private ExpInfoSection section;
+
     private final ExperimentData expData;
+    private final DataServiceAsync dataService;
 
     @Inject
     public InfoNavigationActivity(LeftNavigationView view,
                                   PlaceController placeController,
-                                  ExperimentData expData) {
+                                  ExperimentData expData,
+                                  DataServiceAsync dataService) {
         this.view = view;
         this.placeController = placeController;
         this.expData = expData;
+        this.dataService = dataService;
     }
 
     public InfoNavigationActivity withPlace(ExpInfoPlace place) {
@@ -64,6 +73,11 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
     @Override
     public void navigateTo(LeftNavigationView.Section section) {
         placeController.goTo(new ExpInfoPlace((ExpInfoSection) section));
+    }
+
+    @Override
+    public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+        dataService.getArrayDesignList(query,limit, AsyncCallbackWrapper.wrap(callback));
     }
 
     private void loadExperimentSettings() {

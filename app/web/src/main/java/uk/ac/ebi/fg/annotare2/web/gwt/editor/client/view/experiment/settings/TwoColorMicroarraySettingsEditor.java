@@ -22,7 +22,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 /**
  * @author Olga Melnichuk
@@ -33,10 +36,11 @@ public class TwoColorMicroarraySettingsEditor extends Composite implements Edito
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    @UiField
+    @UiField(provided = true)
     SuggestBox arrayDesign;
 
-    public TwoColorMicroarraySettingsEditor() {
+    public TwoColorMicroarraySettingsEditor(SuggestService<ArrayDesignRef> suggestService) {
+        arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(suggestService));
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 

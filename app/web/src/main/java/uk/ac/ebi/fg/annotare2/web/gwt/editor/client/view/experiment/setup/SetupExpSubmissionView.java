@@ -156,6 +156,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
         void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback);
 
-        void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> list);
+        void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback);
     }
 }

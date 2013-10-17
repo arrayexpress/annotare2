@@ -21,10 +21,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.ExperimentSettingsPanel;
 
@@ -83,7 +85,16 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
 
     @Override
     public void setExperimentSettings(ExperimentSettings settings) {
-        verticalPanel.add(new ExperimentSettingsPanel(settings));
+        ExperimentSettingsPanel settingsPanel = new ExperimentSettingsPanel(settings);
+        settingsPanel.setPresenter(new ExperimentSettingsPanel.Presenter() {
+            @Override
+            public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+                if (presenter != null) {
+                    presenter.getArrayDesigns(query, limit, callback);
+                }
+            }
+        });
+        verticalPanel.add(settingsPanel);
     }
 
     @Override

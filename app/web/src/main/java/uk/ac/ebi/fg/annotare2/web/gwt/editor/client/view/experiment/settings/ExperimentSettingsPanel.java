@@ -23,9 +23,14 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
+
+import java.util.List;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromTrustedString;
@@ -33,7 +38,7 @@ import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromTrustedString;
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentSettingsPanel extends Composite {
+public class ExperimentSettingsPanel extends Composite implements SuggestService<ArrayDesignRef> {
     interface Templates extends SafeHtmlTemplates {
         @SafeHtmlTemplates.Template("<div>{0}</div>")
         SafeHtml div(SafeHtml value);
@@ -52,6 +57,7 @@ public class ExperimentSettingsPanel extends Composite {
     Anchor changeLink;
 
     private ExperimentSettings settings;
+    private Presenter presenter;
 
     public ExperimentSettingsPanel(ExperimentSettings settings) {
         this.settings = settings;
@@ -89,9 +95,9 @@ public class ExperimentSettingsPanel extends Composite {
     private Editor<ExperimentSettings> createEditor(ExperimentSettings settings) {
         switch (settings.getExperimentType()) {
             case ONE_COLOR_MICROARRAY:
-                return new OneColorMicroarraySettingsEditor();
+                return new OneColorMicroarraySettingsEditor(this);
             case TWO_COLOR_MICROARRAY:
-                return new TwoColorMicroarraySettingsEditor();
+                return new TwoColorMicroarraySettingsEditor(this);
             default:
                 return new DummySettingsEditor();
         }
@@ -113,5 +119,20 @@ public class ExperimentSettingsPanel extends Composite {
                         //todo submit settings
                     }
                 }).show();
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void suggest(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+        if (presenter != null) {
+            presenter.getArrayDesigns(query, limit, callback);
+        }
+    }
+
+    public interface Presenter {
+        void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback);
     }
 }
