@@ -534,14 +534,14 @@ public class ExperimentProfile implements Serializable {
     }
 
     public void addLabel(String label) {
-        if (label == null || label.isEmpty()) {
+        if (label == null) {
             return;
         }
         labels.add(label);
     }
 
     public void removeLabel(String label) {
-        if (label == null || label.isEmpty()) {
+        if (label == null) {
             return;
         }
         List<Assay> assays = new ArrayList<Assay>(getAssays());

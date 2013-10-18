@@ -76,14 +76,14 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
             case ONE_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
-                                "<br/> array design: " + settings.getArrayDesign() +
-                                "<br/> dye: " + settings.getLabel())));
+                                "<br/> array design: " + valueOrNone(settings.getArrayDesign()) +
+                                "<br/> dye: " + valueOrNone(settings.getLabel()))));
                 changeLink.setVisible(true);
                 break;
             case TWO_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
-                                "<br/> array design: " + settings.getArrayDesign())));
+                                "<br/> array design: " + valueOrNone(settings.getArrayDesign()))));
                 changeLink.setVisible(true);
                 break;
             default:
@@ -91,6 +91,10 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                 changeLink.setVisible(false);
                 break;
         }
+    }
+
+    private static String valueOrNone(String value) {
+        return value == null || value.isEmpty() ? "none" : value;
     }
 
     private Editor<ExperimentSettings> createEditor(ExperimentSettings settings) {
