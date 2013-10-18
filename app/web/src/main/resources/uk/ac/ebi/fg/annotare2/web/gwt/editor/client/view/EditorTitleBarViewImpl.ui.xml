@@ -123,8 +123,8 @@
                             </tr>
                         </table>
                     </td>
-                    <td style="text-align:right;width:300px">
-                        <table>
+                    <td>
+                        <table style="margin-right: 0; margin-left: auto;">
                             <tr>
                                 <td>
                                     <g:Anchor addStyleNames="{style.wiredLink}" ui:field="importLink">Import</g:Anchor>
