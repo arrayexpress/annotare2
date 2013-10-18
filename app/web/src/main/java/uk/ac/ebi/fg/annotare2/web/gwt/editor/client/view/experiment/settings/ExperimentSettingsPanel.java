@@ -39,6 +39,7 @@ import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromTrustedString;
  * @author Olga Melnichuk
  */
 public class ExperimentSettingsPanel extends Composite implements SuggestService<ArrayDesignRef> {
+
     interface Templates extends SafeHtmlTemplates {
         @SafeHtmlTemplates.Template("<div>{0}</div>")
         SafeHtml div(SafeHtml value);
@@ -66,11 +67,11 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
             initWidget(new SimplePanel());
         } else {
             initWidget(Binder.BINDER.createAndBindUi(this));
-            initContent(settings);
+            update(settings);
         }
     }
 
-    private void initContent(ExperimentSettings settings) {
+    public void update(ExperimentSettings settings) {
         switch (settings.getExperimentType()) {
             case ONE_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(

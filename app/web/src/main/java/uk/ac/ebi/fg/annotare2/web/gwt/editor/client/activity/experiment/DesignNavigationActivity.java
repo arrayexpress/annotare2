@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,6 +29,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
@@ -47,6 +50,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     private final DataServiceAsync dataService;
 
     private ExpDesignSection section;
+    private HandlerRegistration experimentUpdateHandler;
 
     @Inject
     public DesignNavigationActivity(LeftNavigationView view,
@@ -64,10 +68,24 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
         return this;
     }
 
+    @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
-        loadExperimentSettings();
+
+        experimentUpdateHandler = eventBus.addHandler(ExperimentUpdateEvent.getType(), new ExperimentUpdateEventHandler() {
+            @Override
+            public void onExperimentUpdate() {
+                loadExperimentSettings(false);
+            }
+        });
+        loadExperimentSettings(true);
+    }
+
+    @Override
+    public void onStop() {
+        experimentUpdateHandler.removeHandler();
+        super.onStop();
     }
 
     @Override
@@ -89,7 +107,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
         placeController.goTo(place);
     }
 
-    private void loadExperimentSettings() {
+    private void loadExperimentSettings(final boolean setSections) {
         expData.getSettingsAsync(
                 new AsyncCallback<ExperimentSettings>() {
                     @Override
@@ -100,14 +118,16 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
 
                     @Override
                     public void onSuccess(ExperimentSettings result) {
-                        List<ExpDesignSection> sections = experimentDesignSectionsFor(result.getExperimentType());
-                        view.setSections(sections);
-                        if (sections.contains(section)) {
-                            view.setSelected(section);
-                        } else if (!sections.isEmpty()) {
-                            view.setSelected(sections.get(0));
-                        } else {
-                            goTo(new ExpDesignPlace(ExpDesignSection.NONE));
+                        if (setSections) {
+                            List<ExpDesignSection> sections = experimentDesignSectionsFor(result.getExperimentType());
+                            view.setSections(sections);
+                            if (sections.contains(section)) {
+                                view.setSelected(section);
+                            } else if (!sections.isEmpty()) {
+                                view.setSelected(sections.get(0));
+                            } else {
+                                goTo(new ExpDesignPlace(ExpDesignSection.NONE));
+                            }
                         }
                         view.setExperimentSettings(result);
                     }

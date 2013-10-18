@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +45,13 @@ public class ExperimentData {
     private final UpdateQueue<ExperimentUpdateCommand> updateQueue;
 
     private ExperimentProfile exp;
+    private EventBus eventBus;
 
     @Inject
     public ExperimentData(EventBus eventBus,
                           SubmissionServiceAsync submissionServiceAsync) {
-        submissionService = submissionServiceAsync;
+        this.submissionService = submissionServiceAsync;
+        this.eventBus = eventBus;
 
         updateQueue =
                 new UpdateQueue<ExperimentUpdateCommand>(eventBus,
@@ -70,12 +73,17 @@ public class ExperimentData {
                                     public void onSuccess(ExperimentProfile result) {
                                         exp = result;
                                         callback.onSuccess(UpdateQueue.Result.SUCCESS);
+                                        notifyExperimentUpdated();
                                     }
                                 }.wrap());
                             }
                         });
 
         GWT.log(getClass().getName() + ": initialized");
+    }
+
+    private void notifyExperimentUpdated() {
+        eventBus.fireEvent(new ExperimentUpdateEvent());
     }
 
     private void getExperiment(final AsyncCallback<ExperimentProfile> callback) {

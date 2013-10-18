@@ -57,6 +57,7 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
     private final Style style;
     private final FlowPanel panel;
     private final VerticalPanel verticalPanel;
+    private ExperimentSettingsPanel settingsPanel;
 
     private final Map<String, Integer> indexMap = new HashMap<String, Integer>();
     private Section selected;
@@ -85,7 +86,12 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
 
     @Override
     public void setExperimentSettings(ExperimentSettings settings) {
-        ExperimentSettingsPanel settingsPanel = new ExperimentSettingsPanel(settings);
+        if (settingsPanel != null) {
+            settingsPanel.update(settings);
+            return;
+        }
+
+        settingsPanel = new ExperimentSettingsPanel(settings);
         settingsPanel.setPresenter(new ExperimentSettingsPanel.Presenter() {
             @Override
             public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
