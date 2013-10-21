@@ -16,8 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.HasValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +30,11 @@ public class ItemView<T> extends DisclosurePanelContent {
 
     private final List<EditableField<T, ?>> fields = new ArrayList<EditableField<T, ?>>();
 
-    private final List<HasChangeableValue<?>> header = new ArrayList<HasChangeableValue<?>>();
+    private final List<HasValue<?>> header = new ArrayList<HasValue<?>>();
 
-    private final ChangeHandler headerChangeHandler = new ChangeHandler() {
+    private final ValueChangeHandler<String> headerChangeHandler = new ValueChangeHandler<String>() {
         @Override
-        public void onChange(ChangeEvent changeEvent) {
+        public void onValueChange(ValueChangeEvent event) {
             fireHeaderChangeEvent();
         }
     };
@@ -52,20 +53,20 @@ public class ItemView<T> extends DisclosurePanelContent {
         return item;
     }
 
-    protected void addField(final EditableField<T, ?> field) {
+    protected <S> void addField(final EditableField<T, S> field) {
         fields.add(field);
-        field.addChangeHandler(new ChangeHandler() {
+        field.addValueChangeHandler(new ValueChangeHandler<S>() {
             @Override
-            public void onChange(ChangeEvent changeEvent) {
+            public void onValueChange(ValueChangeEvent<S> event) {
                 field.saveValueTo(item);
                 fireItemChangeEvent();
             }
         });
     }
 
-    protected void addHeaderField(HasChangeableValue<String> field) {
+    protected void addHeaderField(HasValue<String> field) {
         header.add(field);
-        field.addChangeHandler(headerChangeHandler);
+        field.addValueChangeHandler(headerChangeHandler);
     }
 
     private void fireHeaderChangeEvent() {
@@ -76,7 +77,7 @@ public class ItemView<T> extends DisclosurePanelContent {
     public String getHeaderText() {
         StringBuilder sb = new StringBuilder();
         int i = header.size();
-        for (HasChangeableValue<?> w : header) {
+        for (HasValue<?> w : header) {
             String value = w.getValue().toString();
             sb.append(value).append(--i > 0 ? " " : "");
         }

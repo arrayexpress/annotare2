@@ -23,8 +23,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
-
 /**
  * @author Olga Melnichuk
  */
@@ -46,11 +44,11 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
     public PublicationView(PublicationDto publication) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        addHeaderField(hasChangeableValue(authors));
-        addHeaderField(hasChangeableValue(title));
-        addHeaderField(hasChangeableValue(pubMedId));
+        addHeaderField(authors);
+        addHeaderField(title);
+        addHeaderField(pubMedId);
 
-        addField(new EditableField<PublicationDto.Editor, String>(hasChangeableValue(title)) {
+        addField(new EditableField<PublicationDto.Editor, String>(title) {
             @Override
             protected String getValue(PublicationDto.Editor p) {
                 return p.getTitle();
@@ -62,7 +60,7 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
             }
         });
 
-        addField(new EditableField<PublicationDto.Editor, String>(hasChangeableValue(authors)) {
+        addField(new EditableField<PublicationDto.Editor, String>(authors) {
             @Override
             protected String getValue(PublicationDto.Editor p) {
                 return p.getAuthors();
@@ -74,7 +72,7 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
             }
         });
 
-        addField(new EditableField<PublicationDto.Editor, String>(hasChangeableValue(pubMedId)) {
+        addField(new EditableField<PublicationDto.Editor, String>(pubMedId) {
             @Override
             protected String getValue(PublicationDto.Editor p) {
                 return p.getPubMedId();

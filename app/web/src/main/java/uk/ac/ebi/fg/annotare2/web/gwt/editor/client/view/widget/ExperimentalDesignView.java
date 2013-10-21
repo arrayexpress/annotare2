@@ -29,8 +29,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.DynamicList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
-
 /**
  * @author Olga Melnichuk
  */
@@ -60,9 +58,9 @@ public class ExperimentalDesignView extends ItemView<Term> {
 
         updateListBox(termSources, term);
 
-        addHeaderField(hasChangeableValue(nameBox));
+        addHeaderField(nameBox);
 
-        addField(new EditableField<Term, String>(hasChangeableValue(nameBox)) {
+        addField(new EditableField<Term, String>(nameBox) {
 
             @Override
             protected String getValue(Term obj) {
@@ -75,7 +73,7 @@ public class ExperimentalDesignView extends ItemView<Term> {
             }
         });
 
-        addField(new EditableField<Term, Integer>(hasChangeableValue(termSourceBox)) {
+        addField(new EditableField<Term, Integer>(new ListBoxValueIndex(termSourceBox)) {
 
             @Override
             protected Integer getValue(Term obj) {

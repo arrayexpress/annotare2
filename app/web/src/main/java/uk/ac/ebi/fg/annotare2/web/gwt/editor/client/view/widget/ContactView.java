@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -59,17 +59,19 @@ public class ContactView extends ItemView<ContactDto.Editor> {
     @UiField
     TextArea address;
 
-    @UiField
-    TextArea roles;
+    @UiField(provided = true)
+    MultiSelectList roles;
 
     public ContactView(ContactDto contact) {
+        roles = new MultiSelectList();
+
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        addHeaderField(hasChangeableValue(firstName));
-        addHeaderField(hasChangeableValue(midInitials));
-        addHeaderField(hasChangeableValue(lastName));
+        addHeaderField(firstName);
+        addHeaderField(midInitials);
+        addHeaderField(lastName);
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(firstName)) {
+        addField(new EditableField<ContactDto.Editor, String>(firstName) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getFirstName();
@@ -81,7 +83,7 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             }
         });
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(midInitials)) {
+        addField(new EditableField<ContactDto.Editor, String>(midInitials) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getMidInitials();
@@ -93,7 +95,7 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             }
         });
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(lastName)) {
+        addField(new EditableField<ContactDto.Editor, String>(lastName) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getLastName();
@@ -105,7 +107,7 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             }
         });
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(phone)) {
+        addField(new EditableField<ContactDto.Editor, String>(phone) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getPhone();
@@ -117,7 +119,7 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             }
         });
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(fax)) {
+        addField(new EditableField<ContactDto.Editor, String>(fax) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getFax();
@@ -129,7 +131,7 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             }
         });
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(email)) {
+        addField(new EditableField<ContactDto.Editor, String>(email) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getEmail();
@@ -141,7 +143,7 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             }
         });
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(affiliation)) {
+        addField(new EditableField<ContactDto.Editor, String>(affiliation) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getAffiliation();
@@ -153,7 +155,7 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             }
         });
 
-        addField(new EditableField<ContactDto.Editor, String>(hasChangeableValue(address)) {
+        addField(new EditableField<ContactDto.Editor, String>(address) {
             @Override
             protected String getValue(ContactDto.Editor p) {
                 return p.getAddress();
@@ -162,6 +164,18 @@ public class ContactView extends ItemView<ContactDto.Editor> {
             @Override
             protected void setValue(ContactDto.Editor p, String value) {
                 p.setAddress(value);
+            }
+        });
+
+        addField(new EditableField<ContactDto.Editor, List<String>>(roles) {
+            @Override
+            protected List<String> getValue(ContactDto.Editor p) {
+                return p.getRoles();
+            }
+
+            @Override
+            protected void setValue(ContactDto.Editor p, List<String> value) {
+                p.setRoles(value);
             }
         });
 

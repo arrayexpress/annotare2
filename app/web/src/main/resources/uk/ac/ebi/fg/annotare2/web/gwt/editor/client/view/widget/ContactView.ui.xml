@@ -17,7 +17,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
-        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+        xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
     <g:HTMLPanel>
         <table cellpadding="0" cellspacing="0">
@@ -77,7 +78,7 @@
                         <tr>
                             <td class="label">Roles</td>
                             <td style="padding-bottom:0">
-                                <g:TextArea visibleLines="2" ui:field="roles"/>
+                                <wgt:MultiSelectList ui:field="roles"/>
                             </td>
                         </tr>
                     </table>
