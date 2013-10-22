@@ -54,6 +54,16 @@ public class SubmissionDaoDummy implements SubmissionDao {
         return DummyData.getSubmissions(user);
     }
 
+    @Override
+    public Collection<Submission> getSubmissionsByStatus(final SubmissionStatus... statuses) {
+        return Collections2.filter(DummyData.getSubmissions(), new Predicate<Submission>() {
+            public boolean apply(@Nullable Submission input) {
+                return input != null && asList(statuses).contains(input.getStatus());
+            }
+        });
+    }
+
+    @Override
     public Collection<Submission> getSubmissionsByStatus(User user, final SubmissionStatus... statuses) {
         return Collections2.filter(getSubmissions(user), new Predicate<Submission>() {
             public boolean apply(@Nullable Submission input) {
@@ -62,6 +72,7 @@ public class SubmissionDaoDummy implements SubmissionDao {
         });
     }
 
+    @Override
     public void save(Submission submission) {
         DummyData.save(submission);
     }

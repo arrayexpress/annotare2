@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.db.dao.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.inject.Inject;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
@@ -67,6 +68,15 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
     @Override
     public List<Submission> getSubmissions(User user) {
         return user.getSubmissions();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<Submission> getSubmissionsByStatus(final SubmissionStatus... statuses) {
+        return getCurrentSession()
+                .createCriteria(Submission.class)
+                .add(Restrictions.in("status", statuses))
+                .list();
     }
 
     @Override
