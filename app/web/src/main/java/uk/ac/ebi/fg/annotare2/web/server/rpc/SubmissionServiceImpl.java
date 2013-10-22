@@ -65,10 +65,10 @@ import java.util.Set;
 
 import static com.google.common.hash.Hashing.md5;
 import static com.google.common.io.Files.hash;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
 /**
  * @author Olga Melnichuk
@@ -403,7 +403,9 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             DataFile dataFile = dataFileManager.get(fileId);
             String fileName = dataFile.getName();
             if (dataFileManager.removeFile(submission, dataFile)) {
-                submission.getExperimentProfile().removeFile(fileName);
+                ExperimentProfile expProfile = submission.getExperimentProfile();
+                expProfile.removeFile(fileName);
+                submission.setExperimentProfile(expProfile);
                 save(submission);
             }
         } catch (RecordNotFoundException e) {
