@@ -100,7 +100,7 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
 
     @Override
     public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
-        dataService.getArrayDesignList(query, limit, AsyncCallbackWrapper.wrap(callback));
+        dataService.getArrayDesignList(query, limit, AsyncCallbackWrapper.callbackWrap(callback));
     }
 
     private void loadExperimentSettings() {

@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface ContactListView extends IsWidget {
 
     List<ContactDto> getContacts();
 
-    public interface Presenter {
+    public interface Presenter extends ContactView.Presenter {
 
         void createContact();
 

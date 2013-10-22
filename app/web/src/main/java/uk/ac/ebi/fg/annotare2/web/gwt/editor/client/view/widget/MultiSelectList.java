@@ -20,27 +20,50 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
  */
 public class MultiSelectList extends Composite implements HasChangeHandlers, HasValue<List<String>> {
 
-    private final InlineLabel label;
+    private final HTML label;
 
     private List<String> value;
+    private final String dialogTitle;
 
-    public MultiSelectList() {
-        label = new InlineLabel();
+    public MultiSelectList(String title, final AsyncListItemProvider listItemProvider) {
+        this.dialogTitle = title;
+
+        label = new HTML();
         Anchor anchor = new Anchor("change...");
         anchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-               //todo new MultiSelectListDialog();
+                if (listItemProvider == null) {
+                    return;
+                }
+                listItemProvider.getListItems(new AsyncCallback<List<String>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(List<String> result) {
+                        Set<String> selected = new HashSet<String>(getValue());
+                        List<String> allItems = new ArrayList<String>(result);
+                        Collections.sort(allItems);
+                        Map<String, Boolean> map = new LinkedHashMap<String, Boolean>();
+                        for(String item : allItems) {
+                            map.put(item, selected.contains(item));
+                        }
+                        showDialog(map);
+                    }
+                });
             }
         });
 
@@ -49,6 +72,20 @@ public class MultiSelectList extends Composite implements HasChangeHandlers, Has
         panel.add(anchor);
 
         initWidget(panel);
+    }
+
+    private void showDialog(Map<String, Boolean> listItems) {
+        new MultiSelectListDialog(dialogTitle, listItems, new DialogCallback<List<String>>() {
+            @Override
+            public void onCancel() {
+                // ignore
+            }
+
+            @Override
+            public void onOkay(List<String> strings) {
+                setValue(strings, true);
+            }
+        });
     }
 
     @Override
@@ -82,17 +119,21 @@ public class MultiSelectList extends Composite implements HasChangeHandlers, Has
     }
 
     private void updateLabel() {
-        label.setText(join(value));
+        label.setHTML(join(value));
     }
 
     private static String join(List<String> list) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
             if (i > 0) {
-                sb.append(",");
+                sb.append("<br/>");
             }
             sb.append(list.get(i));
         }
         return sb.toString();
+    }
+
+    public interface AsyncListItemProvider {
+        void getListItems(AsyncCallback<List<String>> callback);
     }
 }

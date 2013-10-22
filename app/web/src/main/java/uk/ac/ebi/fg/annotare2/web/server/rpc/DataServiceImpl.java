@@ -38,6 +38,8 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -114,6 +116,21 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
             }
         }
         return types;
+    }
+
+    @Override
+    public List<OntologyTerm> getContactRoles() {
+        Collection<String> accessions = properties.getContactRoleAccessions();
+        List<OntologyTerm> terms = new ArrayList<OntologyTerm>();
+        for (String accession : accessions) {
+            EfoTerm term = efoService.findTermByAccession(accession);
+            if (term == null) {
+                log.error("Contact Role (" + accession + ") not found in EFO");
+            } else {
+                terms.add(uiEfoTerm(term));
+            }
+        }
+        return terms;
     }
 
     @Override

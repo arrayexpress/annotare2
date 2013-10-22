@@ -19,11 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,8 +64,19 @@ public class ContactView extends ItemView<ContactDto.Editor> {
     @UiField(provided = true)
     MultiSelectList roles;
 
+    private Presenter presenter;
+
     public ContactView(ContactDto contact) {
-        roles = new MultiSelectList();
+        roles = new MultiSelectList("Roles", new MultiSelectList.AsyncListItemProvider() {
+            @Override
+            public void getListItems(AsyncCallback<List<String>> callback) {
+                if (presenter == null) {
+                    callback.onSuccess(Collections.<String>emptyList());
+                } else {
+                    presenter.getRoles(callback);
+                }
+            }
+        });
 
         initWidget(Binder.BINDER.createAndBindUi(this));
 
@@ -182,8 +195,17 @@ public class ContactView extends ItemView<ContactDto.Editor> {
         setItem(contact.editor());
     }
 
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
     public ContactDto getContact() {
         return getItem().copy();
+    }
+
+    public interface Presenter {
+
+        void getRoles(AsyncCallback<List<String>> callback);
     }
 }
 
