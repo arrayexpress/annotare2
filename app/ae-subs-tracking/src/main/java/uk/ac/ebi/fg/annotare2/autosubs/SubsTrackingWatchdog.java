@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.autosubs;
  */
 
 import com.google.inject.Inject;
+import org.hibernate.Session;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.om.Submission;
 import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
@@ -52,14 +53,14 @@ public class SubsTrackingWatchdog {
         final Runnable watchdogProcess = new Runnable() {
             @Override
             public void run() {
-                sessionFactory.openSession();
+                Session session = sessionFactory.openSession();
                 try {
-                    Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(SubmissionStatus.IN_CURATION);
+                    Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(SubmissionStatus.SUBMITTED);
                     for (Submission submission : submissions) {
                         System.out.println(submission.getId());
                     }
                 } finally {
-                    sessionFactory.close();
+                    session.close();
                 }
             }
         };
