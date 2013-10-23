@@ -25,7 +25,7 @@ public class OntologyTermValueType implements ColumnValueType {
 
     private OntologyTerm term;
 
-    public OntologyTermValueType() {
+    OntologyTermValueType() {
         /* used by GWT serialization only */
     }
 

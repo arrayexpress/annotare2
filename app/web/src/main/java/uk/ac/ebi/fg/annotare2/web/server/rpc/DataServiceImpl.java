@@ -98,7 +98,14 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
                 log.error("application properties do not contain accession for a system term: " + systemTerm);
                 continue;
             }
-            map.put(systemTerm, loadSystemTerm(accession));
+
+            OntologyTerm term = loadSystemTerm(accession);
+            if (term == null) {
+                log.error("can't load system term by accession: " + accession);
+                continue;
+            }
+
+            map.put(systemTerm, term);
         }
         return map;
     }
@@ -143,10 +150,6 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     private OntologyTerm loadSystemTerm(String accession) {
-        EfoTerm term = efoService.findTermByAccession(accession);
-        if (term == null) {
-            log.error("Can't find system used EFO term: " + accession);
-        }
-        return uiEfoTerm(term);
+        return uiEfoTerm(efoService.findTermByAccession(accession));
     }
 }

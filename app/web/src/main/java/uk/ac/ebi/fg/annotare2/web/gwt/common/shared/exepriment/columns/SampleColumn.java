@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.AttributeType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 
 import java.util.ArrayList;
@@ -49,15 +48,7 @@ public class SampleColumn implements IsSerializable {
         /* used by GWT serialization only */
     }
 
-    public SampleColumn(int id, String name, OntologyTerm term) {
-        this(id, name, term, CHARACTERISTIC_ATTRIBUTE, new TextValueType(), true);
-    }
-
-    public SampleColumn(int id, SampleColumn template) {
-        this(id, template.name, template.term, template.type, template.valueType, template.isEditable);
-    }
-
-    public SampleColumn(int id, String name, OntologyTerm term, AttributeType type, ColumnValueType valueType, boolean isEditable) {
+    private SampleColumn(int id, String name, OntologyTerm term, AttributeType type, ColumnValueType valueType, boolean isEditable) {
         setName(name);
         this.id = id;
         this.term = term;
@@ -115,111 +106,133 @@ public class SampleColumn implements IsSerializable {
         return new Editor(this);
     }
 
-    private static SampleColumn createTemplateColumn(String name, OntologyTerm term, AttributeType type, ColumnValueType valueType) {
-        return new SampleColumn(0, name, term, type, valueType, false);
+    public static SampleColumn create(int id, String name, OntologyTerm term) {
+        return create(id, name, term, CHARACTERISTIC_ATTRIBUTE, new TextValueType(), true);
     }
 
-    private static SampleColumn createTemplateColumn(String name, OntologyTerm term, ColumnValueType valueType) {
-        return new SampleColumn(0, name, term, CHARACTERISTIC_ATTRIBUTE, valueType, false);
+    public static SampleColumn create(int id, SampleColumn template) {
+        return create(id, template.name, template.term, template.type, template.valueType, template.isEditable);
+    }
+
+    public static SampleColumn create(int id, String name, OntologyTerm term, AttributeType type, ColumnValueType valueType, boolean isEditable) {
+        return new SampleColumn(id, name, term, type, valueType, isEditable);
+    }
+
+    private static SampleColumn createTemplate(String name, OntologyTerm term, ColumnValueType valueType) {
+        return createTemplate(name, term, CHARACTERISTIC_ATTRIBUTE, valueType);
+    }
+
+    private static SampleColumn createTemplate(String name, OntologyTerm term, AttributeType type, ColumnValueType valueType) {
+        if (valueType instanceof OntologyTermValueType &&
+                ((OntologyTermValueType) valueType).getEfoTerm() == null) {
+            return null;
+        }
+        return create(0, name, term, type, valueType, false);
     }
 
     public static List<SampleColumn> getTemplateColumns(SystemEfoTermMap result) {
         List<SampleColumn> templates = new ArrayList<SampleColumn>();
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         MATERIAL_TYPE.getFriendlyName(),
                         result.getEfoTerm(MATERIAL_TYPE),
                         MATERIAL_TYPE_ATTRIBUTE,
                         new OntologyTermValueType(result.getEfoTerm(MATERIAL_TYPE))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         ORGANISM.getFriendlyName(),
                         result.getEfoTerm(ORGANISM),
                         new OntologyTermValueType(result.getEfoTerm(ORGANISM))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         ORGANISM_PART.getFriendlyName(),
                         result.getEfoTerm(ORGANISM_PART),
                         new OntologyTermValueType(result.getEfoTerm(ORGANISM_PART))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         STRAIN.getFriendlyName(),
                         result.getEfoTerm(STRAIN),
                         new TextValueType()));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         DISEASE.getFriendlyName(),
                         result.getEfoTerm(DISEASE),
                         new OntologyTermValueType(result.getEfoTerm(DISEASE))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         GENOTYPE.getFriendlyName(),
                         result.getEfoTerm(GENOTYPE),
                         new OntologyTermValueType(result.getEfoTerm(GENOTYPE))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         AGE.getFriendlyName(),
                         result.getEfoTerm(AGE),
                         new NumericValueType(null)));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         CELL_LINE.getFriendlyName(),
                         result.getEfoTerm(CELL_LINE),
                         new OntologyTermValueType(result.getEfoTerm(CELL_LINE))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         CELL_TYPE.getFriendlyName(),
                         result.getEfoTerm(CELL_TYPE),
                         new OntologyTermValueType(result.getEfoTerm(CELL_TYPE))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         DEVELOPMENTAL_STAGE.getFriendlyName(),
                         result.getEfoTerm(DEVELOPMENTAL_STAGE),
                         new OntologyTermValueType(result.getEfoTerm(DEVELOPMENTAL_STAGE))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         GENETIC_MODIFICATION.getFriendlyName(),
                         result.getEfoTerm(GENETIC_MODIFICATION),
                         new OntologyTermValueType(result.getEfoTerm(GENETIC_MODIFICATION))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         ENVIRONMENTAL_HISTORY.getFriendlyName(),
                         result.getEfoTerm(ENVIRONMENTAL_HISTORY),
                         new OntologyTermValueType(result.getEfoTerm(ENVIRONMENTAL_HISTORY))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         INDIVIDUAL.getFriendlyName(),
                         result.getEfoTerm(INDIVIDUAL),
                         new OntologyTermValueType(result.getEfoTerm(INDIVIDUAL))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         SEX.getFriendlyName(),
                         result.getEfoTerm(SEX),
                         new OntologyTermValueType(result.getEfoTerm(SEX))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         SPECIMEN_WITH_KNOWN_STORAGE_STATE.getFriendlyName(),
                         result.getEfoTerm(SPECIMEN_WITH_KNOWN_STORAGE_STATE),
                         new OntologyTermValueType(result.getEfoTerm(SPECIMEN_WITH_KNOWN_STORAGE_STATE))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         GROWTH_CONDITION.getFriendlyName(),
                         result.getEfoTerm(GROWTH_CONDITION),
                         new OntologyTermValueType(result.getEfoTerm(GROWTH_CONDITION))));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         "Provider",
                         null,
                         PROVIDER_ATTRIBUTE,
                         new TextValueType()));
         templates.add(
-                createTemplateColumn(
+                createTemplate(
                         "Description",
                         null,
                         DESCRIPTION_ATTRIBUTE,
                         new TextValueType()));
 
-        return templates;
+        List<SampleColumn> filteredTemplates = new ArrayList<SampleColumn>();
+        for (SampleColumn column : templates) {
+            if (column != null) {
+                filteredTemplates.add(column);
+            }
+        }
+        return filteredTemplates;
     }
 
     public static class Editor {
@@ -227,7 +240,7 @@ public class SampleColumn implements IsSerializable {
         private SampleColumn column;
 
         public Editor(SampleColumn column) {
-            this.column = new SampleColumn(column.id, column);
+            this.column = SampleColumn.create(column.id, column);
         }
 
         public boolean isEditable() {
@@ -267,7 +280,7 @@ public class SampleColumn implements IsSerializable {
         }
 
         public SampleColumn copy() {
-            return new SampleColumn(column.id, column);
+            return SampleColumn.create(column.id, column);
         }
     }
 }

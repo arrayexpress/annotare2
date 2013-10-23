@@ -184,10 +184,10 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
     }
 
     public String getEfoTermAccession(SystemEfoTerm term) {
-        return term.getPropertyName();
+        return getEfoTermAccession(term.getPropertyName());
     }
 
-    public String getEfoTermAccession(String termProperty) {
+    private String getEfoTermAccession(String termProperty) {
         return getProperty("efo.term." + termProperty.trim());
     }
 

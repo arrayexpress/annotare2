@@ -149,7 +149,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        addColumn(new SampleColumn(0, "", null));
+        addColumn(SampleColumn.create(0, "", null));
     }
 
     @UiHandler("okButton")
@@ -206,7 +206,10 @@ public class SampleColumnsDialog extends DialogBox {
 
     private void addColumn(SampleColumn template) {
         if (!getColumnNames().contains(template.getName())) {
-            setColumn(new SampleColumn(0, template), true);
+            SampleColumn column = SampleColumn.create(0, template);
+            if (column != null) {
+                setColumn(column, true);
+            }
         }
     }
 
