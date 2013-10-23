@@ -413,7 +413,7 @@ public class EfoSearchImpl implements EfoSearch {
         ASCENDANT_FIELD("ascendant") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getAccession(), YES);
+                return new StringField(name, node.getAccession().toLowerCase(), YES);
             }
         };
 
