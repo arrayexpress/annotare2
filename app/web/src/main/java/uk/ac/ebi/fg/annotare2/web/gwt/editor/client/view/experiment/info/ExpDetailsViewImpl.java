@@ -56,7 +56,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     DateBox dateOfPublicRelease;
 
     @UiField
-    ListBox experimentDesigns;
+    ListBox experimentalDesigns;
 
     private Presenter presenter;
 
@@ -65,7 +65,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
 
-        experimentDesigns.addItem("TBA");
+        experimentalDesigns.addItem("TBA");
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
         dateOfExperiment.setFormat(format);

@@ -58,10 +58,10 @@
                     </tr>
                     <tr>
                         <td class="{style.title}">
-                            Experiment Design
+                            Experimental Designs
                         </td>
                         <td>
-                            <g:ListBox width="200px" ui:field="experimentDesigns"/>
+                            <g:ListBox width="200px" ui:field="experimentalDesigns"/>
                         </td>
                     </tr>
                     <tr>
