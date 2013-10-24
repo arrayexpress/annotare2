@@ -163,11 +163,6 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
-    public void discardSubmissionData(AsyncCallback<Void> callback) {
-        submissionService.discardSubmissionData(getSubmissionId(), callbackWrap(callback));
-    }
-
-    @Override
     public void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback) {
         submissionService.setupExperiment(getSubmissionId(), settings, callbackWrap(callback));
     }

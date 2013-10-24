@@ -290,20 +290,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void discardSubmissionData(final long id) throws ResourceNotFoundException, NoPermissionException {
-        try {
-            Submission submission = getSubmission(id, Permission.UPDATE);
-            submission.discardAll();
-            save(submission);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
-    }
-
-    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
-    @Override
     public ExperimentProfile updateExperiment(final long id, final List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);

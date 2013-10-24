@@ -130,10 +130,6 @@
                                     <g:Anchor addStyleNames="{style.wiredLink}" ui:field="importLink">Import</g:Anchor>
                                 </td>
                                 <td>
-                                    <g:Anchor addStyleNames="{style.wiredLink}" ui:field="createNewLink">Create New
-                                    </g:Anchor>
-                                </td>
-                                <td>
                                     <g:Anchor addStyleNames="{style.wiredLink}" ui:field="exportLink">Export</g:Anchor>
                                 </td>
                                 <td>
