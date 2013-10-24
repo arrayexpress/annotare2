@@ -25,7 +25,6 @@ import com.google.inject.servlet.ServletModule;
 import gwtupload.server.UploadServlet;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
-import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingWatchdog;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;

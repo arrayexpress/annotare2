@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.autosubs;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
 /*
  * Copyright 2009-2013 European Molecular Biology Laboratory
@@ -19,52 +19,61 @@ package uk.ac.ebi.fg.annotare2.autosubs;
 
 import com.google.inject.Inject;
 import org.hibernate.Session;
+import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
+import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.om.Submission;
 import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class SubsTrackingWatchdog {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final SubsTrackingProperties properties;
     private final HibernateSessionFactory sessionFactory;
+    private final SubsTracking subsTracking;
     private final SubmissionDao submissionDao;
 
 
     @Inject
-    public SubsTrackingWatchdog(SubsTrackingProperties subsTrackingProperties, HibernateSessionFactory sessionFactory,
+    public SubsTrackingWatchdog(HibernateSessionFactory sessionFactory,
+                                SubsTrackingProperties subsTrackingProperties, SubsTracking subsTracking,
                                 SubmissionDao submissionDao) {
-        this.properties = subsTrackingProperties;
         this.sessionFactory = sessionFactory;
+        this.subsTracking = subsTracking;
         this.submissionDao = submissionDao;
 
-        if (properties.getAeSubsTrackingEnabled()) {
+        if (subsTrackingProperties.getAeSubsTrackingEnabled()) {
             start();
         }
     }
 
     public void start() {
-        final Runnable watchdogProcess = new Runnable() {
+        final Runnable periodicProcess = new Runnable() {
             @Override
             public void run() {
                 Session session = sessionFactory.openSession();
                 try {
-                    Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(SubmissionStatus.SUBMITTED);
-                    for (Submission submission : submissions) {
-                        System.out.println(submission.getId());
-                    }
+                    runInTransaction();
                 } finally {
                     session.close();
                 }
             }
+
+            @Transactional
+            private void runInTransaction() {
+                Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(SubmissionStatus.SUBMITTED);
+                for (Submission submission : submissions) {
+                    System.out.println(submission.getId());
+                }
+            }
         };
 
-        scheduler.scheduleAtFixedRate(watchdogProcess, 0, 1, MINUTES);
+        scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
     }
 }
