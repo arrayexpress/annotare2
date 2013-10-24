@@ -17,9 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.base.Function;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.SetMultimap;
 import com.google.inject.Inject;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
@@ -47,7 +45,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.*;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -148,46 +145,6 @@ public class EfoSearchImpl implements EfoSearch {
                     ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase()));
             List<EfoTerm> result = runQuery(query, 1);
             return result.isEmpty() ? null : result.get(0);
-        } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
-        }
-        return null;
-    }
-
-    /**
-     * Returns EFO sub graph with the given accession as a root
-     * @param rootAccession EFO term accession of the subtree root
-     * @return {@link EfoGraph} instance
-     * @deprecated not used any more
-     */
-    @Deprecated
-    @Override
-    public EfoGraph subGraph(String rootAccession) {
-        try {
-            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
-            Query query = parser.parse(ASCENDANT_FIELD.matchesPhrase(rootAccession));
-            List<Document> docs = runDocumentQuery(query, 1000);
-
-            Map<String, EfoTerm> terms = newHashMap();
-            SetMultimap<String, String> parents = HashMultimap.create();
-            for (Document doc : docs) {
-                String[] values = doc.getValues(ASCENDANT_FIELD.name);
-                EfoTerm term = asTerm(doc);
-                terms.put(term.getAccession(), term);
-                parents.putAll(term.getAccession(), asList(values));
-            }
-
-            for (String id : newHashSet(parents.keySet())) {
-                Set<String> parentList = newHashSet(parents.get(id));
-                for (String p : parentList) {
-                    if (!terms.containsKey(p)) {
-                        parents.remove(id, p);
-                    }
-                }
-            }
-            return new EfoGraph(terms.values()).build(parents);
         } catch (ParseException e) {
             logError(e);
         } catch (IOException e) {
@@ -359,9 +316,9 @@ public class EfoSearchImpl implements EfoSearch {
             }
             return roots;
         } catch (NoSuchFieldException e) {
-            log.error("can't hack EfoGraph", e);
+            log.error("can't hack efo graph", e);
         } catch (IllegalAccessException e) {
-            log.error("can't hack EfoGraph", e);
+            log.error("can't hack efo graph", e);
         }
         return emptyList();
     }
