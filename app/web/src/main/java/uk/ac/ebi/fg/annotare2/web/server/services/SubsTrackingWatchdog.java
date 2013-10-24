@@ -38,15 +38,17 @@ public class SubsTrackingWatchdog {
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
     private final SubmissionDao submissionDao;
+    private final SubmissionManager submissionManager;
 
 
     @Inject
     public SubsTrackingWatchdog(HibernateSessionFactory sessionFactory,
                                 SubsTrackingProperties subsTrackingProperties, SubsTracking subsTracking,
-                                SubmissionDao submissionDao) {
+                                SubmissionDao submissionDao, SubmissionManager submissionManager) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
         this.submissionDao = submissionDao;
+        this.submissionManager = submissionManager;
 
         if (subsTrackingProperties.getAeSubsTrackingEnabled()) {
             start();
@@ -59,21 +61,27 @@ public class SubsTrackingWatchdog {
             public void run() {
                 Session session = sessionFactory.openSession();
                 try {
-                    runInTransaction();
+                    runTransaction();
                 } finally {
                     session.close();
                 }
             }
 
-            @Transactional
-            private void runInTransaction() {
-                Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(SubmissionStatus.SUBMITTED);
-                for (Submission submission : submissions) {
-                    System.out.println(submission.getId());
-                }
-            }
         };
 
         scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
     }
+
+    @Transactional
+    public void runTransaction() {
+        Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(SubmissionStatus.SUBMITTED);
+        for (Submission submission : submissions) {
+            if (!subsTracking.isInCuration(submission.getSubsTrackingId())) {
+                submission.setStatus(SubmissionStatus.IN_PROGRESS);
+                submission.setOwnedBy(submission.getCreatedBy());
+                submissionManager.save(submission);
+            }
+        }
+    }
+
 }
