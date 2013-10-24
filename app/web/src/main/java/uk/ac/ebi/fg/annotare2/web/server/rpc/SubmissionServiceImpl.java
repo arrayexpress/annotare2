@@ -450,6 +450,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
             // copy idf
             File idfFile = new File(exportDirectory, fileName + ".idf.txt");
+
+            exportDirectory = new File(exportDirectory, "unpacked");
+            if (!exportDirectory.exists()) {
+                exportDirectory.mkdir();
+                exportDirectory.setWritable(true, false);
+            }
+
             File sdrfFile = new File(exportDirectory, fileName + ".sdrf.txt");
 
             if (MageTabFormat.exportMageTab(exp, idfFile, sdrfFile)) {
@@ -464,11 +471,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             // copy data files
             Set<DataFile> dataFiles = submission.getFiles();
             if (dataFiles.size() > 0) {
-                exportDirectory = new File(exportDirectory, "unpacked");
-                if (!exportDirectory.exists()) {
-                    exportDirectory.mkdir();
-                    exportDirectory.setWritable(true, false);
-                }
+
                 for (DataFile dataFile : dataFiles) {
                     File f = new File(exportDirectory, dataFile.getName());
                     Files.copy(dataFileManager.getFile(dataFile), f);
