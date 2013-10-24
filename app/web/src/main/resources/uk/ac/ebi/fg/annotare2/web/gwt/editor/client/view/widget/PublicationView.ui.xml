@@ -39,6 +39,16 @@
                     <g:TextBox width="200px" ui:field="pubMedId"/>
                 </td>
             </tr>
+            <tr>
+                <td class="label">DOI</td>
+                <td>
+                    <g:TextBox width="200px" ui:field="doi"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Status</td>
+                <td><g:ListBox ui:field="statusBox"/></td>
+            </tr>
         </table>
     </g:HTMLPanel>
 </ui:UiBinder>

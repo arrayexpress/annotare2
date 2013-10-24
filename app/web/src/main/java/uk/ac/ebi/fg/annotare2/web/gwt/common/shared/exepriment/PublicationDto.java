@@ -27,9 +27,13 @@ public class PublicationDto implements IsSerializable {
 
     private String title;
 
+    private String authors;
+
     private String pubMedId;
 
-    private String authors;
+    private String doi;
+
+    private String status;
 
     PublicationDto() {
         /*used by GWT serialization only*/
@@ -43,49 +47,46 @@ public class PublicationDto implements IsSerializable {
         this(other.getId(),
                 other.getTitle(),
                 other.getAuthors(),
-                other.getPubMedId());
+                other.getPubMedId(),
+                other.getDoi(),
+                other.getStatus());
     }
 
-    public PublicationDto(int id, String title, String authors, String pubMedId) {
+    public PublicationDto(int id, String title, String authors, String pubMedId, String doi, String status) {
         this.id = id;
         this.title = title;
         this.authors = authors;
         this.pubMedId = pubMedId;
-    }
-
-    public String getAuthors() {
-        return authors;
+        this.doi = doi;
+        this.status = status;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getPubMedId() {
-        return pubMedId;
-    }
-
     public String getTitle() {
         return title;
     }
 
+    public String getAuthors() {
+        return authors;
+    }
+
+    public String getPubMedId() {
+        return pubMedId;
+    }
+
+    public String getDoi() {
+        return doi;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
     public Editor editor() {
         return new Editor(this);
-    }
-
-    public boolean isTheSameAs(PublicationDto that) {
-        if (authors != null ? !authors.equals(that.authors) : that.authors != null) return false;
-        if (pubMedId != null ? !pubMedId.equals(that.pubMedId) : that.pubMedId != null) return false;
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        return true;
-    }
-
-    public PublicationDto updatedCopy(PublicationDto updates) {
-        return new PublicationDto(
-                id,
-                updates.getTitle(),
-                updates.getAuthors(),
-                updates.getPubMedId());
     }
 
     public static class Editor {
@@ -118,6 +119,22 @@ public class PublicationDto implements IsSerializable {
 
         public String getPubMedId() {
             return copy.pubMedId;
+        }
+
+        public void setDoi(String doi) {
+            copy.doi = doi;
+        }
+
+        public String getDoi() {
+            return copy.doi;
+        }
+
+        public void setStatus(String status) {
+            copy.status = status;
+        }
+
+        public String getStatus() {
+            return copy.status;
         }
 
         public PublicationDto copy() {

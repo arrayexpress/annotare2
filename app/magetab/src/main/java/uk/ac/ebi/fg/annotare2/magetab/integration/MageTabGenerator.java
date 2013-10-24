@@ -84,8 +84,8 @@ public class MageTabGenerator {
             idf.publicationTitle.add(notNull(publication.getTitle()));
             idf.publicationAuthorList.add(notNull(publication.getAuthors()));
             idf.pubMedId.add(notNull(publication.getPubMedId()));
-            //idf.publicationDOI.add(notNull(publication.getPubMedId()));
-            //idf.publicationStatus.add(notNull(publication.getStatus()));
+            idf.publicationDOI.add(notNull(publication.getDoi()));
+            idf.publicationStatus.add(notNull(publication.getStatus()));
         }
 
         for (Protocol protocol : exp.getProtocols()) {
@@ -100,7 +100,7 @@ public class MageTabGenerator {
     }
 
     private void addTermSources(IDF idf) {
-        for(TermSource termSource: usedTermSources) {
+        for (TermSource termSource : usedTermSources) {
             idf.termSourceName.add(notNull(termSource.getName()));
             idf.termSourceVersion.add(notNull(termSource.getVersion()));
             idf.termSourceFile.add(notNull(termSource.getUrl()));
@@ -438,7 +438,7 @@ public class MageTabGenerator {
                     // no raw data files are defined
                     prev.add(assayNode);
                 }
-                for(SDRFNode prevNode : prev) {
+                for (SDRFNode prevNode : prev) {
                     connect(prevNode, current, PROCESSED_AND_MATRIX_FILES, fileColumn.getFileRef(fileName));
                 }
                 next.add(current);

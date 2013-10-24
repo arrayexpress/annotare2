@@ -36,11 +36,17 @@ public class Publication implements Serializable {
     @JsonProperty("title")
     private String title;
 
+    @JsonProperty("authors")
+    private String authors;
+
     @JsonProperty("pubMedId")
     private String pubMedId;
 
-    @JsonProperty("authors")
-    private String authors;
+    @JsonProperty("doi")
+    private String doi;
+
+    @JsonProperty("status")
+    private String status;
 
     Publication() {
     /* used by GWT serialization */
@@ -67,6 +73,14 @@ public class Publication implements Serializable {
         this.title = title;
     }
 
+    public String getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String authors) {
+        this.authors = authors;
+    }
+
     public String getPubMedId() {
         return pubMedId;
     }
@@ -75,11 +89,19 @@ public class Publication implements Serializable {
         this.pubMedId = pubMedId;
     }
 
-    public String getAuthors() {
-        return authors;
+    public String getDoi() {
+        return doi;
     }
 
-    public void setAuthors(String authors) {
-        this.authors = authors;
+    public void setDoi(String doi) {
+        this.doi = doi;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

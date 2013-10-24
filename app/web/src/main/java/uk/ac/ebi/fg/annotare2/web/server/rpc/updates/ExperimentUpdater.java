@@ -104,6 +104,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         publication.setTitle(dto.getTitle());
         publication.setAuthors(dto.getAuthors());
         publication.setPubMedId(dto.getPubMedId());
+        publication.setDoi(dto.getDoi());
+        publication.setStatus(dto.getStatus());
     }
 
     @Override

@@ -32,6 +32,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ExperimentalDesignView extends ItemView<Term> {
 
     interface Binder extends UiBinder<Widget, ExperimentalDesignView> {
