@@ -33,6 +33,8 @@ public interface SubmissionDao extends HasEffectiveAcl {
 
     List<Submission> getSubmissions(User user);
 
+    Collection<Submission> getSubmissionsByStatus(SubmissionStatus... statuses);
+
     Collection<Submission> getSubmissionsByStatus(User user, SubmissionStatus... statuses);
 
     void save(Submission submission);

@@ -137,6 +137,7 @@ public class AppServletModule extends ServletModule {
         bind(DataFileManager.class).in(SINGLETON);
 
         bind(SubsTracking.class).in(SINGLETON);
+        bind(SubsTrackingWatchdog.class).asEagerSingleton();
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);

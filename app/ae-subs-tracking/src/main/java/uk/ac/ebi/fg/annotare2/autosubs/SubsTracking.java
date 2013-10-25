@@ -196,6 +196,21 @@ public class SubsTracking {
         return dataFileId;
     }
 
+    public boolean isInCuration( Integer subsTrackingId ) {
+        if (null != subsTrackingId) {
+            ExperimentsRecord r =
+                    getContext().selectFrom(EXPERIMENTS)
+                        .where(EXPERIMENTS.ID.equal(subsTrackingId))
+                        .fetchOne();
+
+            if (null != r) {
+                return 1 == r.getInCuration();
+            }
+        }
+
+        return false;
+    }
+
     private Integer getAnnotareUserId() {
         String subsTrackingUser = properties.getAeSubsTrackingUser();
         if (null == subsTrackingUser || "".equals(subsTrackingUser) ) {

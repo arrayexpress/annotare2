@@ -436,27 +436,33 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 }
                 fileName = fileName + "_v" + version;
             }
-            // copy idf
-            File idfFile = new File(exportDirectory, fileName + ".idf.txt");
-            File sdrfFile = new File(exportDirectory, fileName + ".sdrf.txt");
+            MageTabFormat mageTab = MageTabFormat.exportMageTab(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
 
-            if (MageTabFormat.exportMageTab(exp, idfFile, sdrfFile)) {
-                idfFile.setWritable(true, false);
-                sdrfFile.setWritable(true, false);
-                if (properties.getAeSubsTrackingEnabled()) {
-                    subsTrackingDb.deleteFiles(subsTrackingId);
-                    subsTrackingDb.addMageTabFile(subsTrackingId, idfFile.getName());
-                }
+            if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
+                ; // throw something
             }
+            mageTab.getIdfFile().setWritable(true, false);
+
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTrackingDb.deleteFiles(subsTrackingId);
+                subsTrackingDb.addMageTabFile(subsTrackingId, mageTab.getIdfFile().getName());
+            }
+
+            exportDirectory = new File(exportDirectory, "unpacked");
+            if (!exportDirectory.exists()) {
+                exportDirectory.mkdir();
+                exportDirectory.setWritable(true, false);
+            }
+
+            // move sdrf file
+            File exportedSdrfFile = new File(exportDirectory, mageTab.getSdrfFile().getName());
+            Files.move(mageTab.getSdrfFile(), exportedSdrfFile);
+            exportedSdrfFile.setWritable(true, false);
 
             // copy data files
             Set<DataFile> dataFiles = submission.getFiles();
             if (dataFiles.size() > 0) {
-                exportDirectory = new File(exportDirectory, "unpacked");
-                if (!exportDirectory.exists()) {
-                    exportDirectory.mkdir();
-                    exportDirectory.setWritable(true, false);
-                }
+
                 for (DataFile dataFile : dataFiles) {
                     File f = new File(exportDirectory, dataFile.getName());
                     Files.copy(dataFileManager.getFile(dataFile), f);

@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -168,6 +169,10 @@ public class DummyData {
 
     public static User getCuratorUser() {
         return curatorUser;
+    }
+
+    public static List<Submission> getSubmissions() {
+        return new ArrayList<Submission>(submissions.values());
     }
 
     public static List<Submission> getSubmissions(User user) {
