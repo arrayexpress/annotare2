@@ -43,6 +43,7 @@ public class MageTabGenerator {
     private final ExperimentProfile exp;
 
     private final Map<String, SDRFNode> nodeCache = new HashMap<String, SDRFNode>();
+    private final Set<TermSource> usedTermSources = new HashSet<TermSource>();
     private int counter;
 
     public MageTabGenerator(ExperimentProfile exp) {
@@ -56,6 +57,7 @@ public class MageTabGenerator {
         MAGETABInvestigation inv = new MAGETABInvestigation();
         generateIdf(inv.IDF);
         generateSdrf(inv.SDRF);
+        addTermSources(inv.IDF);
         return inv;
     }
 
@@ -91,9 +93,17 @@ public class MageTabGenerator {
             idf.protocolDescription.add(notNull(protocol.getDescription()));
             idf.protocolType.add(notNull(protocol.getType().getLabel()));
             idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
-            //todo: idf.protocolTermSourceREF
+            idf.protocolTermSourceREF.add(useTermSource(TermSource.EFO_TERM_SOURCE).getName());
             idf.protocolHardware.add(notNull(protocol.getHardware()));
             idf.protocolSoftware.add(notNull(protocol.getSoftware()));
+        }
+    }
+
+    private void addTermSources(IDF idf) {
+        for(TermSource termSource: usedTermSources) {
+            idf.termSourceName.add(notNull(termSource.getName()));
+            idf.termSourceVersion.add(notNull(termSource.getVersion()));
+            idf.termSourceFile.add(notNull(termSource.getUrl()));
         }
     }
 
@@ -337,6 +347,15 @@ public class MageTabGenerator {
             technologyType.setAttributeValue(
                     exp.getType().isMicroarray() ? "array assay" : "sequencing assay");
             assayNode.technologyType = technologyType;
+
+            String arrayDesign = exp.getArrayDesign();
+            if (!isNullOrEmpty(arrayDesign)) {
+                ArrayDesignAttribute arrayDesignAttribute = new ArrayDesignAttribute();
+                arrayDesignAttribute.setAttributeValue(arrayDesign);
+                arrayDesignAttribute.termAccessionNumber = arrayDesign;
+                arrayDesignAttribute.termSourceREF = useTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
+                assayNode.arrayDesigns.add(arrayDesignAttribute);
+            }
         }
 
         connect(prevNode, assayNode, ASSAYS, assay);
@@ -437,6 +456,11 @@ public class MageTabGenerator {
             return node;
         }
         return createNode(clazz, fileName);
+    }
+
+    private TermSource useTermSource(TermSource termSource) {
+        usedTermSources.add(termSource);
+        return termSource;
     }
 
     private Collection<FileColumn> getSortedFileColumns() {

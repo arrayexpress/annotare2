@@ -45,5 +45,7 @@ public interface DataService extends RemoteService {
 
     List<ProtocolType> getProtocolTypes(ExperimentProfileType type);
 
+    List<OntologyTerm> getContactRoles();
+
     ApplicationProperties getApplicationProperties();
 }

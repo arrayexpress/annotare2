@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.properties;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +25,18 @@ import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoServiceProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
-import uk.ac.ebi.fg.annotare2.web.server.services.DataFileStore;
 
+import javax.annotation.Nullable;
 import java.io.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.transform;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 /**
  * @author Olga Melnichuk
@@ -108,7 +116,7 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
 
     private File getDirProperty(String name) {
         String property = getProperty(name);
-        File dir = property == null ? new File(tempDir, name.replaceAll(".","-")) :
+        File dir = property == null ? new File(tempDir, name.replaceAll(".", "-")) :
                 new File(property);
         if (!dir.exists()) {
             if (!dir.mkdirs()) {
@@ -116,6 +124,14 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
             }
         }
         return dir;
+    }
+
+    private List<String> getListProperty(String name) {
+        String property = getProperty(name);
+        if (isNullOrEmpty(property)) {
+            return emptyList();
+        }
+        return asList(property.split("\\s*,\\s*"));
     }
 
     public EfoServiceProperties getEfoServiceProperties() {
@@ -168,6 +184,25 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
     }
 
     public String getEfoTermAccession(SystemEfoTerm term) {
-        return getProperty("efo.term." + term.getPropertyName());
+        return getEfoTermAccession(term.getPropertyName());
+    }
+
+    private String getEfoTermAccession(String termProperty) {
+        return getProperty("efo.term." + termProperty.trim());
+    }
+
+    public Collection<String> getContactRoleAccessions() {
+        return filter(transform(getListProperty("contact.roles"), new Function<String, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable String input) {
+                return getEfoTermAccession(input);
+            }
+        }), new Predicate<String>() {
+            @Override
+            public boolean apply(@Nullable String input) {
+                return input != null;
+            }
+        });
     }
 }

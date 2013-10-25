@@ -26,8 +26,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper.callbackWrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.ORGANISM;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.UNIT;
 
@@ -38,6 +40,7 @@ public class OntologyData {
 
     private final DataServiceAsync dataService;
     private SystemEfoTermMap systemTerms;
+    private List<OntologyTerm> contactRoles;
 
     @Inject
     public OntologyData(DataServiceAsync dataService) {
@@ -102,17 +105,21 @@ public class OntologyData {
     }
 
     public void getProtocolTypes(ExperimentProfileType expType, final AsyncCallback<List<ProtocolType>> callback) {
-        dataService.getProtocolTypes(expType, new AsyncCallbackWrapper<List<ProtocolType>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
+        dataService.getProtocolTypes(expType, callbackWrap(callback));
+    }
 
+    public void getContactRoles(final AsyncCallback<List<OntologyTerm>> callback) {
+        if (contactRoles != null && !contactRoles.isEmpty()) {
+            callback.onSuccess(new ArrayList<OntologyTerm>(contactRoles));
+            return;
+        }
+        dataService.getContactRoles(new AsyncCallbackWrapper<List<OntologyTerm>>() {
             @Override
-            public void onSuccess(List<ProtocolType> result) {
+            public void onSuccess(List<OntologyTerm> result) {
+                contactRoles = new ArrayList<OntologyTerm>(result);
                 callback.onSuccess(result);
             }
-        }.wrap());
+        });
     }
 
     private static class TermSuggest {

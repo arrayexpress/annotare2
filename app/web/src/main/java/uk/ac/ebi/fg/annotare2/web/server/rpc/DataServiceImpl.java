@@ -38,6 +38,8 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -96,7 +98,14 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
                 log.error("application properties do not contain accession for a system term: " + systemTerm);
                 continue;
             }
-            map.put(systemTerm, loadSystemTerm(accession));
+
+            OntologyTerm term = loadSystemTerm(accession);
+            if (term == null) {
+                log.error("can't load system term by accession: " + accession);
+                continue;
+            }
+
+            map.put(systemTerm, term);
         }
         return map;
     }
@@ -117,6 +126,21 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
+    public List<OntologyTerm> getContactRoles() {
+        Collection<String> accessions = properties.getContactRoleAccessions();
+        List<OntologyTerm> terms = new ArrayList<OntologyTerm>();
+        for (String accession : accessions) {
+            EfoTerm term = efoService.findTermByAccession(accession);
+            if (term == null) {
+                log.error("Contact Role (" + accession + ") not found in EFO");
+            } else {
+                terms.add(uiEfoTerm(term));
+            }
+        }
+        return terms;
+    }
+
+    @Override
     public ApplicationProperties getApplicationProperties() {
         return new ApplicationProperties.Builder()
                 .setFtpUrl(properties.getPublicFtpUrl())
@@ -126,10 +150,6 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     private OntologyTerm loadSystemTerm(String accession) {
-        EfoTerm term = efoService.findTermByAccession(accession);
-        if (term == null) {
-            log.error("Can't find system used EFO term: " + accession);
-        }
-        return uiEfoTerm(term);
+        return uiEfoTerm(efoService.findTermByAccession(accession));
     }
 }

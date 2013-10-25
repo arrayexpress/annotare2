@@ -169,7 +169,7 @@ public class ExperimentData {
         for (SampleAttribute attr : exp.getSampleAttributes()) {
             AttributeValueTypeVisitor visitor = new AttributeValueTypeVisitor();
             attr.getValueType().visit(visitor);
-            columns.add(new SampleColumn(
+            columns.add(SampleColumn.create(
                     attr.getId(),
                     attr.getName(),
                     attr.getTerm(),

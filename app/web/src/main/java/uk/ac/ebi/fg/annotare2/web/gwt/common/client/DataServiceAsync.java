@@ -22,7 +22,6 @@ import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.List;
@@ -39,4 +38,6 @@ public interface DataServiceAsync {
     void getProtocolTypes(ExperimentProfileType type, AsyncCallback<List<ProtocolType>> async);
 
     void getApplicationProperties(AsyncCallback<ApplicationProperties> async);
+
+    void getContactRoles(AsyncCallback<List<OntologyTerm>> async);
 }

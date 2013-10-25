@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEventHandler;
@@ -25,12 +26,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ContactListViewImpl extends ListView<ContactDto.Editor> implements ContactListView {
+public class ContactListViewImpl extends ListView<ContactDto.Editor> implements ContactListView, ContactView.Presenter {
 
     private Presenter presenter;
 
@@ -68,6 +70,15 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     }
 
     @Override
+    public void getRoles(AsyncCallback<List<String>> callback) {
+        if (presenter == null) {
+            callback.onSuccess(Collections.<String>emptyList());
+        } else {
+            presenter.getRoles(callback);
+        }
+    }
+
+    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
@@ -81,9 +92,12 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
         view.addContentChangeEventHandler(new ContentChangeEventHandler() {
             @Override
             public void onContentChange(ContentChangeEvent event) {
-                presenter.updateContact(view.getContact());
+                if (presenter != null) {
+                    presenter.updateContact(view.getContact());
+                }
             }
         });
+        view.setPresenter(this);
         return addListItem(view);
     }
 

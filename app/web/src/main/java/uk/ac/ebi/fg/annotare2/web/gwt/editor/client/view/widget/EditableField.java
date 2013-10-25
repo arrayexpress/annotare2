@@ -16,22 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasValue;
 
 /**
  * @author Olga Melnichuk
  */
 public abstract class EditableField<T, S> {
 
-    private final HasChangeableValue<S> field;
+    private final HasValue<S> field;
 
-    protected EditableField(HasChangeableValue<S> field) {
+    protected EditableField(HasValue<S> field) {
         this.field = field;
     }
 
-    public HandlerRegistration addChangeHandler(ChangeHandler changeHandler) {
-        return field.addChangeHandler(changeHandler);
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<S> changeHandler) {
+        return field.addValueChangeHandler(changeHandler);
     }
 
     public void readValueFrom(T obj) {

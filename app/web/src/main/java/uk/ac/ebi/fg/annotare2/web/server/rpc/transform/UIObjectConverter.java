@@ -29,10 +29,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.EfoGraphDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.EfoGraph;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -155,24 +153,6 @@ public class UIObjectConverter {
                 header.getPrintingProtocolId(),
                 uiPrintingProtocol(header.getPrintingProtocolBackup())
         );
-    }
-
-    @Deprecated
-    public static EfoGraphDto uiEfoGraph(EfoGraph graph) {
-        List<EfoGraphDto.Node> roots = new ArrayList<EfoGraphDto.Node>();
-        for (EfoGraph.Node node : graph.getRoots()) {
-            roots.add(uiEfoGraphNode(node));
-        }
-        return new EfoGraphDto(roots);
-    }
-
-    @Deprecated
-    private static EfoGraphDto.Node uiEfoGraphNode(EfoGraph.Node node) {
-        List<EfoGraphDto.Node> children = new ArrayList<EfoGraphDto.Node>();
-        for (EfoGraph.Node child : node.getChildren()) {
-            children.add(uiEfoGraphNode(child));
-        }
-        return new EfoGraphDto.Node(uiEfoTerm(node.getTerm()), children);
     }
 
     public static List<DataFileRow> uiDataFileRows(Set<DataFile> files) {

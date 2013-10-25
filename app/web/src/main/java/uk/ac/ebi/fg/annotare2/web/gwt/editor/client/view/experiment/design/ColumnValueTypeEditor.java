@@ -118,6 +118,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
             @Override
             public void onValueChange(ValueChangeEvent<EditorType> event) {
                 event.getValue().visit(visitor);
+                fireValueChangeEvent(editor.getValue());
             }
         });
     }
@@ -208,26 +209,35 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private static class EfoTermEditor extends Composite implements Editor<OntologyTermValueType> {
 
-        private SuggestBox efoTermBox;
+        private SuggestBox efoBranchSuggest;
 
         private OntologyTerm selection;
 
         private EfoTermEditor(OntologyTermValueType valueType, SuggestService<OntologyTerm> suggestService) {
-            efoTermBox = new SuggestBox(new EfoSuggestOracle(suggestService));
-            efoTermBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
+            efoBranchSuggest = new SuggestBox(new EfoSuggestOracle(suggestService));
+            efoBranchSuggest.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
                 @Override
                 public void onSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
                     EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) event.getSelectedItem();
                     selection = suggestion.getTerm();
+                }
+            });
+            efoBranchSuggest.addValueChangeHandler(new ValueChangeHandler<String>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    String value = event.getValue();
+                    if (selection != null && !selection.getLabel().equals(value)) {
+                        selection = null;
+                    }
                     fireChangeEvent();
                 }
             });
 
             if (valueType != null) {
                 selection = valueType.getEfoTerm();
-                efoTermBox.setValue(selection == null ? "" : selection.getLabel());
+                efoBranchSuggest.setValue(selection == null ? "" : selection.getLabel());
             }
-            initWidget(efoTermBox);
+            initWidget(efoBranchSuggest);
         }
 
         @Override
@@ -242,7 +252,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
         @Override
         public void setEnabled(boolean enabled) {
-            efoTermBox.setEnabled(enabled);
+            efoBranchSuggest.setEnabled(enabled);
         }
 
         @Override
@@ -257,24 +267,34 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private static class NumberEditor extends Composite implements Editor<NumericValueType> {
 
-        private SuggestBox suggestBox;
-        private OntologyTerm term;
+        private SuggestBox measureSuggest;
+
+        private OntologyTerm selection;
 
         private NumberEditor(NumericValueType value, SuggestService<OntologyTerm> suggestService) {
-            suggestBox = new SuggestBox(new EfoSuggestOracle(suggestService));
-            suggestBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
+            measureSuggest = new SuggestBox(new EfoSuggestOracle(suggestService));
+            measureSuggest.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
                 @Override
                 public void onSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
                     EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) event.getSelectedItem();
-                    term = suggestion.getTerm();
+                    selection = suggestion.getTerm();
+                }
+            });
+            measureSuggest.addValueChangeHandler(new ValueChangeHandler<String>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    String value = event.getValue();
+                    if (selection != null && !selection.getLabel().equals(value)) {
+                        selection = null;
+                    }
                     fireChangeEvent();
                 }
             });
             if (value != null) {
-                term = value.getUnits();
-                suggestBox.setValue(term == null ? "" : term.getLabel());
+                selection = value.getUnits();
+                measureSuggest.setValue(selection == null ? "" : selection.getLabel());
             }
-            initWidget(suggestBox);
+            initWidget(measureSuggest);
         }
 
         @Override
@@ -284,18 +304,18 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
         @Override
         public Widget getWidget() {
-            return suggestBox;
+            return measureSuggest;
         }
 
         @Override
         public NumericValueType getValue() {
-            return new NumericValueType(term);
+            return new NumericValueType(selection);
         }
 
         @Override
         public void setEnabled(boolean enabled) {
             //TODO: are units always enabled?
-            // suggestBox.setEnabled(enabled);
+            // measureSuggest.setEnabled(enabled);
         }
 
         @Override

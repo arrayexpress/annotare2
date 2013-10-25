@@ -23,11 +23,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.TermSource;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ChangeableValues.hasChangeableValue;
-
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class TermSourceView extends ItemView<TermSource> {
 
     interface Binder extends UiBinder<Widget, TermSourceView> {
@@ -46,9 +45,9 @@ public class TermSourceView extends ItemView<TermSource> {
     public TermSourceView(TermSource ts) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        addHeaderField(hasChangeableValue(nameBox));
+        addHeaderField(nameBox);
 
-        addField(new EditableField<TermSource, String>(hasChangeableValue(nameBox)) {
+        addField(new EditableField<TermSource, String>(nameBox) {
 
             @Override
             protected String getValue(TermSource obj) {
@@ -61,7 +60,7 @@ public class TermSourceView extends ItemView<TermSource> {
             }
         });
 
-        addField(new EditableField<TermSource, String>(hasChangeableValue(urlBox)) {
+        addField(new EditableField<TermSource, String>(urlBox) {
             @Override
             protected String getValue(TermSource obj) {
                 return obj.getFile().getValue();
@@ -73,7 +72,7 @@ public class TermSourceView extends ItemView<TermSource> {
             }
         });
 
-        addField(new EditableField<TermSource, String>(hasChangeableValue(versionBox)) {
+        addField(new EditableField<TermSource, String>(versionBox) {
             @Override
             protected String getValue(TermSource obj) {
                 return obj.getVersion().getValue();

@@ -35,7 +35,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper.wrap;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper.callbackWrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -164,22 +164,22 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void discardSubmissionData(AsyncCallback<Void> callback) {
-        submissionService.discardSubmissionData(getSubmissionId(), wrap(callback));
+        submissionService.discardSubmissionData(getSubmissionId(), callbackWrap(callback));
     }
 
     @Override
     public void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback) {
-        submissionService.setupExperiment(getSubmissionId(), settings, wrap(callback));
+        submissionService.setupExperiment(getSubmissionId(), settings, callbackWrap(callback));
     }
 
     @Override
     public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
-        dataService.getArrayDesignList(query, limit, wrap(callback));
+        dataService.getArrayDesignList(query, limit, callbackWrap(callback));
     }
 
     @Override
     public void importFile(AsyncCallback<Void> callback) {
-        adfService.importBodyData(getSubmissionId(), wrap(callback));
+        adfService.importBodyData(getSubmissionId(), callbackWrap(callback));
     }
 
     @Override
