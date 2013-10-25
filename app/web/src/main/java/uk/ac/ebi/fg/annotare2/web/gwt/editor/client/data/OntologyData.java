@@ -32,6 +32,7 @@ import java.util.List;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper.callbackWrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.ORGANISM;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.UNIT;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.PUBLICATION_STATUS;
 
 /**
  * @author Olga Melnichuk
@@ -41,6 +42,7 @@ public class OntologyData {
     private final DataServiceAsync dataService;
     private SystemEfoTermMap systemTerms;
     private List<OntologyTerm> contactRoles;
+    private List<OntologyTerm> publicationStatuses;
 
     @Inject
     public OntologyData(DataServiceAsync dataService) {
@@ -64,6 +66,20 @@ public class OntologyData {
                 callback.onSuccess(result);
             }
         }.wrap());
+    }
+
+    public void getPublicationStatuses(final AsyncCallback<List<OntologyTerm>> callback) {
+        if (publicationStatuses != null && !publicationStatuses.isEmpty()) {
+            callback.onSuccess(new ArrayList<OntologyTerm>(publicationStatuses));
+            return;
+        }
+        getTerms(new TermSuggest(PUBLICATION_STATUS), "", 20, new AsyncCallbackWrapper<List<OntologyTerm>>() {
+            @Override
+            public void onSuccess(List<OntologyTerm> result) {
+                publicationStatuses = new ArrayList<OntologyTerm>(result);
+                callback.onSuccess(result);
+            }
+        });
     }
 
     public void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {

@@ -52,10 +52,13 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
     @UiField
     ListBox statusBox;
 
-    private List<OntologyTerm> statusList = new ArrayList<OntologyTerm>();
+    private final List<OntologyTerm> statusList = new ArrayList<OntologyTerm>();
 
-    public PublicationView(PublicationDto publication) {
+    public PublicationView(PublicationDto publication, List<OntologyTerm> statuses) {
         initWidget(Binder.BINDER.createAndBindUi(this));
+
+        this.statusList.addAll(statuses);
+        initStatusBox();
 
         addHeaderField(authors);
         addHeaderField(title);
@@ -113,28 +116,24 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
         addField(new EditableField<PublicationDto.Editor, Integer>(new ListBoxValueIndex(statusBox)) {
             @Override
             protected Integer getValue(PublicationDto.Editor p) {
-/* TODO
                 int index = 1;
-                for(OntologyTerm term : statusList) {
+                for (OntologyTerm term : statusList) {
                     if (term.getLabel().equals(p.getStatus())) {
-                        break;
+                        return index;
                     }
                     index++;
                 }
-                return index;
-*/
                 return 0;
             }
 
             @Override
             protected void setValue(PublicationDto.Editor p, Integer value) {
-/* TODO
                 if (value > 0) {
-                    p.setStatus(statusList.get(value - 1));
+                    OntologyTerm term = statusList.get(value - 1);
+                    p.setStatus(term == null ? null : term.getLabel());
                 } else {
                     p.setStatus(null);
                 }
-*/
             }
         });
 
@@ -143,5 +142,12 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
 
     public PublicationDto getPublication() {
         return getItem().copy();
+    }
+
+    private void initStatusBox() {
+        statusBox.addItem("unknown");
+        for (OntologyTerm term : statusList) {
+            statusBox.addItem(term.getLabel());
+        }
     }
 }

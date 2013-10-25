@@ -82,6 +82,6 @@ public class ListBoxValueIndex implements HasValue<Integer> {
 
     @Override
     public void fireEvent(GwtEvent<?> gwtEvent) {
-        box.fireEvent(gwtEvent);
+        handlerManager.fireEvent(gwtEvent);
     }
 }
