@@ -60,9 +60,9 @@ public class MageTabFormat {
         sdrfFile = new File(tmp, DEFAULT_SDRF_FILE_NAME);
     }
 
-    private MageTabFormat(File idfFile, File sdrfFile) {
-        this.idfFile = idfFile;
-        this.sdrfFile = sdrfFile;
+    private MageTabFormat(File directory, String idfFileName, String sdrfFileName) {
+        this.idfFile = new File(directory, idfFileName);
+        this.sdrfFile = new File(directory, sdrfFileName);
     }
 
     private void init(ExperimentProfile exp) throws IOException, ParseException {
@@ -128,10 +128,11 @@ public class MageTabFormat {
         return format;
     }
 
-    public static boolean exportMageTab(ExperimentProfile exp, File idfFile, File sdrfFile) throws IOException, ParseException {
-        MageTabFormat format = new MageTabFormat(idfFile, sdrfFile);
+    public static MageTabFormat exportMageTab(ExperimentProfile exp, File exportDirectory,
+                                        String idfFileName, String sdrfFileName) throws IOException, ParseException {
+        MageTabFormat format = new MageTabFormat(exportDirectory, idfFileName, sdrfFileName);
         format.init(exp);
-        return format.getIdfFile().exists() && format.getSdrfFile().exists();
+        return format;
     }
 
     /**
