@@ -85,7 +85,10 @@ public class MageTabGenerator {
             idf.publicationAuthorList.add(notNull(publication.getAuthors()));
             idf.pubMedId.add(notNull(publication.getPubMedId()));
             idf.publicationDOI.add(notNull(publication.getDoi()));
-            idf.publicationStatus.add(notNull(publication.getStatus()));
+            OntologyTerm status = publication.getStatus();
+            idf.publicationStatus.add(notNull(status == null ? null : status.getLabel()));
+            idf.publicationStatusTermAccession.add(notNull(status == null ? null : status.getAccession()));
+            idf.publicationStatusTermSourceREF.add(useTermSource(TermSource.EFO_TERM_SOURCE).getName());
         }
 
         for (Protocol protocol : exp.getProtocols()) {

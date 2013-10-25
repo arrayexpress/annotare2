@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
 /**
  * @author Olga Melnichuk
@@ -33,7 +34,7 @@ public class PublicationDto implements IsSerializable {
 
     private String doi;
 
-    private String status;
+    private OntologyTerm status;
 
     PublicationDto() {
         /*used by GWT serialization only*/
@@ -52,7 +53,7 @@ public class PublicationDto implements IsSerializable {
                 other.getStatus());
     }
 
-    public PublicationDto(int id, String title, String authors, String pubMedId, String doi, String status) {
+    public PublicationDto(int id, String title, String authors, String pubMedId, String doi, OntologyTerm status) {
         this.id = id;
         this.title = title;
         this.authors = authors;
@@ -81,7 +82,7 @@ public class PublicationDto implements IsSerializable {
         return doi;
     }
 
-    public String getStatus() {
+    public OntologyTerm getStatus() {
         return status;
     }
 
@@ -129,11 +130,11 @@ public class PublicationDto implements IsSerializable {
             return copy.doi;
         }
 
-        public void setStatus(String status) {
+        public void setStatus(OntologyTerm status) {
             copy.status = status;
         }
 
-        public String getStatus() {
+        public OntologyTerm getStatus() {
             return copy.status;
         }
 

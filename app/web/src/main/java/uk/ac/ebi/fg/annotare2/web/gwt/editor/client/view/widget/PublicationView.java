@@ -118,7 +118,7 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
             protected Integer getValue(PublicationDto.Editor p) {
                 int index = 1;
                 for (OntologyTerm term : statusList) {
-                    if (term.getLabel().equals(p.getStatus())) {
+                    if (term.equals(p.getStatus())) {
                         return index;
                     }
                     index++;
@@ -130,7 +130,7 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
             protected void setValue(PublicationDto.Editor p, Integer value) {
                 if (value > 0) {
                     OntologyTerm term = statusList.get(value - 1);
-                    p.setStatus(term == null ? null : term.getLabel());
+                    p.setStatus(term == null ? null : term);
                 } else {
                     p.setStatus(null);
                 }

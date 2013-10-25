@@ -54,4 +54,21 @@ public class OntologyTerm implements Serializable {
     public String getLabel() {
         return label;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OntologyTerm that = (OntologyTerm) o;
+
+        if (!accession.equals(that.accession)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return accession.hashCode();
+    }
 }

@@ -46,7 +46,7 @@ public class Publication implements Serializable {
     private String doi;
 
     @JsonProperty("status")
-    private String status;
+    private OntologyTerm status;
 
     Publication() {
     /* used by GWT serialization */
@@ -97,11 +97,11 @@ public class Publication implements Serializable {
         this.doi = doi;
     }
 
-    public String getStatus() {
+    public OntologyTerm getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OntologyTerm status) {
         this.status = status;
     }
 }
