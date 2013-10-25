@@ -61,7 +61,17 @@
                             Experimental Designs
                         </td>
                         <td>
-                            <g:ListBox width="200px" ui:field="experimentalDesigns"/>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <g:ListBox width="300px" visibleItemCount="5" ui:field="experimentalDesigns"/>
+                                    </td>
+                                    <td valign="top">
+                                        <div><g:Button ui:field="removeExpDesignsButton">Delete Selected</g:Button></div>
+                                        <div><g:Button ui:field="addExpDesignsButton">Add...</g:Button></div>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     <tr>

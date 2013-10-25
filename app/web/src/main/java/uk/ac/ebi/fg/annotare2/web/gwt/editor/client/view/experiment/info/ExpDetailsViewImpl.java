@@ -18,14 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
@@ -41,6 +39,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
 public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
     interface Binder extends UiBinder<Widget, ExpDetailsViewImpl> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
@@ -55,17 +54,21 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     @UiField
     DateBox dateOfPublicRelease;
 
-    @UiField
+    @UiField(provided = true)
     ListBox experimentalDesigns;
+
+    @UiField
+    Button addExpDesignsButton;
+
+    @UiField
+    Button removeExpDesignsButton;
 
     private Presenter presenter;
 
     @Inject
     public ExpDetailsViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
-
-        experimentalDesigns.addItem("TBA");
+        experimentalDesigns = new ListBox(true);
+        initWidget(Binder.BINDER.createAndBindUi(this));
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
         dateOfExperiment.setFormat(format);
@@ -99,23 +102,33 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     }
 
     @UiHandler("title")
-    public void titleChanged(ChangeEvent event) {
+    void titleChanged(ChangeEvent event) {
         save();
     }
 
     @UiHandler("description")
-    public void descriptionChanged(ChangeEvent event) {
+    void descriptionChanged(ChangeEvent event) {
         save();
     }
 
     @UiHandler("dateOfExperiment")
-    public void dateOfExperimentChanged(ValueChangeEvent<Date> event) {
+    void dateOfExperimentChanged(ValueChangeEvent<Date> event) {
         save();
     }
 
     @UiHandler("dateOfPublicRelease")
-    public void dateOfPublicReleaseChanged(ValueChangeEvent<Date> event) {
+    void dateOfPublicReleaseChanged(ValueChangeEvent<Date> event) {
         save();
+    }
+
+    @UiHandler("addExpDesignsButton")
+    void addExperimentalDesignsClicked(ClickEvent event) {
+        (new AddExperimentalDesignsDialog()).show();
+    }
+
+    @UiHandler("removeExpDesignsButton")
+    void removeExperimentalDesignsClicked(ClickEvent event) {
+        //TODO
     }
 
     private ExperimentDetailsDto getResult() {

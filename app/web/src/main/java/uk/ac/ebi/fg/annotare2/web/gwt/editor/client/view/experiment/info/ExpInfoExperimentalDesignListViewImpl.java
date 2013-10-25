@@ -36,6 +36,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ExpInfoExperimentalDesignListViewImpl extends ListView<Term>
         implements IdfExperimentalDesignListView {
 
