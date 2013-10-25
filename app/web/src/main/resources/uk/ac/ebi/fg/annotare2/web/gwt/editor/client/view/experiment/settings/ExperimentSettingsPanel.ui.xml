@@ -21,16 +21,20 @@
 
     <ui:style>
         .outer {
-            margin: 20px 10px;
+            margin: 0;
             color: #48877C;
             width: 100%;
         }
 
         .summary {
             font-style: italic;
+            margin-top: 20px;
+            margin-left: 10px;
         }
+
         .clickable {
             cursor: pointer;
+            margin-left: 10px;
         }
     </ui:style>
 
