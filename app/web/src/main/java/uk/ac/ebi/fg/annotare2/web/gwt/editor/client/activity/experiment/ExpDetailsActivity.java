@@ -24,10 +24,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpDetailsView;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -40,13 +44,17 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
 
     private final ExperimentData experimentData;
 
+    private final OntologyData ontologyData;
+
     @Inject
     public ExpDetailsActivity(ExpDetailsView view,
                               PlaceController placeController,
-                              ExperimentData experimentData) {
+                              ExperimentData experimentData,
+                              OntologyData ontologyData) {
         this.view = view;
         this.placeController = placeController;
         this.experimentData = experimentData;
+        this.ontologyData = ontologyData;
     }
 
     public ExpDetailsActivity withPlace(ExpInfoPlace place) {
@@ -88,6 +96,11 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
     @Override
     public void saveDetails(ExperimentDetailsDto details) {
         experimentData.updateDetails(details);
+    }
+
+    @Override
+    public void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> callback) {
+        ontologyData.getExperimentalDesigns(callback);
     }
 }
 

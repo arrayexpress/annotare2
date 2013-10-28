@@ -1,0 +1,94 @@
+/*
+ * Copyright 2009-2013 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
+
+import java.util.List;
+
+import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
+
+/**
+ * @author Olga Melnichuk
+ */
+public class ExperimentalDesignsDialog extends DialogBox {
+
+    interface Binder extends UiBinder<Widget, ExperimentalDesignsDialog> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
+    @UiField
+    Button cancelButton;
+
+    @UiField
+    Button okButton;
+
+    @UiField
+    SimpleLayoutPanel contentPanel;
+
+    public ExperimentalDesignsDialog(List<OntologyTermGroup> groups) {
+        setModal(true);
+        setGlassEnabled(true);
+        setText("Experimental Designs");
+
+        setWidget(Binder.BINDER.createAndBindUi(this));
+        contentPanel.add(createContent(groups));
+
+        center();
+    }
+
+    @UiHandler("okButton")
+    void okButtonClicked(ClickEvent event) {
+        hide();
+    }
+
+    @UiHandler("cancelButton")
+    void cancelButtonClicked(ClickEvent event) {
+        hide();
+    }
+
+    private Widget createContent(List<OntologyTermGroup> groups) {
+        StackLayoutPanel stackPanel = new StackLayoutPanel(Style.Unit.PX);
+        stackPanel.setWidth("100%");
+        for (OntologyTermGroup group : groups) {
+            stackPanel.add(createSectionContent(group), fromSafeConstant(group.getName()), 25);
+        }
+        return stackPanel;
+    }
+
+    private Widget createSectionContent(OntologyTermGroup group) {
+        VerticalPanel panel = new VerticalPanel();
+        panel.setSpacing(4);
+
+        for(OntologyTerm term : group.getTerms()) {
+            panel.add(new Label(term.getLabel()));
+        }
+
+        ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.add(panel);
+        return scrollPanel;
+    }
+}

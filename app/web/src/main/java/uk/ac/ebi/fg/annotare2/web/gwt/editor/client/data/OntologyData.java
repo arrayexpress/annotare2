@@ -22,6 +22,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
@@ -43,6 +44,7 @@ public class OntologyData {
     private SystemEfoTermMap systemTerms;
     private List<OntologyTerm> contactRoles;
     private List<OntologyTerm> publicationStatuses;
+    private List<OntologyTermGroup> experimentalDesigns;
 
     @Inject
     public OntologyData(DataServiceAsync dataService) {
@@ -133,6 +135,24 @@ public class OntologyData {
             @Override
             public void onSuccess(List<OntologyTerm> result) {
                 contactRoles = new ArrayList<OntologyTerm>(result);
+                callback.onSuccess(result);
+            }
+        });
+    }
+
+    public void getExperimentalDesigns(final AsyncCallback<List<OntologyTermGroup>> callback) {
+        if (experimentalDesigns != null && !experimentalDesigns.isEmpty()) {
+            callback.onSuccess(new ArrayList<OntologyTermGroup>(experimentalDesigns));
+        }
+        dataService.getExperimentalDesigns(new AsyncCallbackWrapper<List<OntologyTermGroup>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(List<OntologyTermGroup> result) {
+                experimentalDesigns = new ArrayList<OntologyTermGroup>(result);
                 callback.onSuccess(result);
             }
         });

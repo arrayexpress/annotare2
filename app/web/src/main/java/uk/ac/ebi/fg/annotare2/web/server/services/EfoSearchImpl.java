@@ -103,6 +103,21 @@ public class EfoSearchImpl implements EfoSearch {
     }
 
     @Override
+    public Collection<EfoTerm> getSubTerms(EfoTerm efoTerm, int limit) {
+        try {
+            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+            Query query = parser.parse(
+                    PARENT_FIELD.matchesPhrase(efoTerm.getAccession().toLowerCase()));
+            return runQuery(query, limit);
+        } catch (ParseException e) {
+            logError(e);
+        } catch (IOException e) {
+            logError(e);
+        }
+        return emptyList();
+    }
+
+    @Override
     public EfoTerm searchByLabel(String label, String branchAccession) {
         try {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
@@ -269,8 +284,8 @@ public class EfoSearchImpl implements EfoSearch {
 
         visited.add(node.getAccession());
 
-        Map<String, EfoNode> allParents = newHashMap();
-        goBackForMoreParents(allParents, node);
+        Map<String, EfoNode> ascendants = newHashMap();
+        collectAscendants(ascendants, node);
 
         Document doc = new Document();
         doc.add(ACCESSION_FIELD.create(node));
@@ -281,8 +296,12 @@ public class EfoSearchImpl implements EfoSearch {
         doc.add(DEFINITION_FIELD.create(node));
         doc.add(ORGANISATIONAL_FLAG_FIELD.create(node));
 
-        for (EfoNode parent : allParents.values()) {
-            doc.add(ASCENDANT_FIELD.create(parent));
+        for (EfoNode parent : node.getParents()) {
+            doc.add(PARENT_FIELD.create(parent));
+        }
+
+        for (EfoNode ascendant : ascendants.values()) {
+            doc.add(ASCENDANT_FIELD.create(ascendant));
         }
 
         writer.addDocument(doc);
@@ -294,11 +313,11 @@ public class EfoSearchImpl implements EfoSearch {
         }
     }
 
-    private void goBackForMoreParents(Map<String, EfoNode> parents, EfoNode node) {
+    private void collectAscendants(Map<String, EfoNode> parents, EfoNode node) {
         for(EfoNode parent : node.getParents()) {
             if (!parents.containsKey(parent.getAccession())) {
                 parents.put(parent.getAccession(), parent);
-                goBackForMoreParents(parents, parent);
+                collectAscendants(parents, parent);
             }
         }
     }
@@ -370,7 +389,13 @@ public class EfoSearchImpl implements EfoSearch {
         ASCENDANT_FIELD("ascendant") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getAccession().toLowerCase(), YES);
+                return new StringField(name, node.getAccession().toLowerCase(), NO);
+            }
+        },
+        PARENT_FIELD("parent") {
+            @Override
+            protected Field create(String name, EfoNode node) {
+                return new StringField(name, node.getAccession().toLowerCase(), NO);
             }
         };
 

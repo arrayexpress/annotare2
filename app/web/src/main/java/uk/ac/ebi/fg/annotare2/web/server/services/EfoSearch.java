@@ -29,6 +29,8 @@ public interface EfoSearch {
 
     Collection<EfoTerm> searchByPrefix(String prefix, String branchAccession, int limit);
 
+    Collection<EfoTerm> getSubTerms(EfoTerm efoTerm, int limit);
+
     EfoTerm searchByLabel(String label, String branchAccession);
 
     EfoTerm searchByAccession(String accession, String branchAccession);

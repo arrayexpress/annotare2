@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -26,13 +27,10 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
+import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
@@ -40,8 +38,10 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
@@ -147,6 +147,31 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
                 .setFtpUsername(properties.getPublicFtpUsername())
                 .setFtpPassword(properties.getPublicFtpPassword())
                 .build();
+    }
+
+    @Override
+    public List<OntologyTermGroup> getExperimentalDesigns() {
+        EfoTerm term = efoService.findTermByAccession(properties.getEfoTermAccession(SystemEfoTerm.STUDY_DESIGN));
+        if (term == null) {
+            log.error("Can't find system required efo term: " + SystemEfoTerm.STUDY_DESIGN);
+            return Collections.emptyList();
+        }
+        Collection<EfoTerm> subTerms = efoService.getSubTerms(term, 100);
+        List<OntologyTermGroup> groups = new ArrayList<OntologyTermGroup>();
+        for (EfoTerm subTerm : subTerms) {
+            List<OntologyTerm> descendants =
+                    uiEfoTerms(
+                            filter(
+                                    efoService.suggest("", subTerm.getAccession(), 100),
+                                    new Predicate<EfoTerm>() {
+                                        @Override
+                                        public boolean apply(@Nullable EfoTerm input) {
+                                            return !input.isOrganisational();
+                                        }
+                                    }));
+            groups.add(new OntologyTermGroup(subTerm.getLabel(), descendants));
+        }
+        return groups;
     }
 
     private OntologyTerm loadSystemTerm(String accession) {

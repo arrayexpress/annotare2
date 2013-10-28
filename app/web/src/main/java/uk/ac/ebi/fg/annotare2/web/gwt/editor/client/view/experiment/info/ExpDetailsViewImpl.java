@@ -23,12 +23,16 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 
 import java.util.Date;
+import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
@@ -123,7 +127,20 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
     @UiHandler("addExpDesignsButton")
     void addExperimentalDesignsClicked(ClickEvent event) {
-        (new AddExperimentalDesignsDialog()).show();
+        if (presenter == null) {
+            return;
+        }
+        presenter.getExperimentalDesigns(new AsyncCallback<List<OntologyTermGroup>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //?
+            }
+
+            @Override
+            public void onSuccess(List<OntologyTermGroup> result) {
+                (new ExperimentalDesignsDialog(result)).show();
+            }
+        });
     }
 
     @UiHandler("removeExpDesignsButton")
