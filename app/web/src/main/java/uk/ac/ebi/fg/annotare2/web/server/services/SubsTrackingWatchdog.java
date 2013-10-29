@@ -148,6 +148,8 @@ public class SubsTrackingWatchdog {
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTracking.sendSubmission(submission.getSubsTrackingId());
             }
+
+            return true;
         } catch (Exception x) {
             //
         }
