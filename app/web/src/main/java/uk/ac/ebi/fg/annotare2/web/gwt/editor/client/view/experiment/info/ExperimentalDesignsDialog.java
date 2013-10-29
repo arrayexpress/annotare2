@@ -19,15 +19,21 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SelectableLabel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.Tooltip;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
 
@@ -49,10 +55,19 @@ public class ExperimentalDesignsDialog extends DialogBox {
     @UiField
     SimpleLayoutPanel contentPanel;
 
-    public ExperimentalDesignsDialog(List<OntologyTermGroup> groups) {
+    private Tooltip tooltip;
+    private Set<OntologyTerm> selection = new HashSet<OntologyTerm>();
+    private DialogCallback<List<OntologyTerm>> callback;
+
+    public ExperimentalDesignsDialog(List<OntologyTermGroup> groups, DialogCallback<List<OntologyTerm>> callback) {
+        this.callback = callback;
+
         setModal(true);
         setGlassEnabled(true);
         setText("Experimental Designs");
+
+        tooltip = new Tooltip();
+        tooltip.setWidth("200px");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
         contentPanel.add(createContent(groups));
@@ -62,11 +77,17 @@ public class ExperimentalDesignsDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
+        if (callback != null) {
+            callback.onOkay(getSelection());
+        }
         hide();
     }
 
     @UiHandler("cancelButton")
     void cancelButtonClicked(ClickEvent event) {
+        if (callback != null) {
+            callback.onCancel();
+        }
         hide();
     }
 
@@ -81,14 +102,38 @@ public class ExperimentalDesignsDialog extends DialogBox {
 
     private Widget createSectionContent(OntologyTermGroup group) {
         VerticalPanel panel = new VerticalPanel();
+        panel.setWidth("100%");
         panel.setSpacing(4);
 
-        for(OntologyTerm term : group.getTerms()) {
-            panel.add(new Label(term.getLabel()));
+        for (OntologyTerm term : group.getTerms()) {
+            final SelectableLabel<OntologyTerm> label = new SelectableLabel<OntologyTerm>(term.getLabel(), term);
+            label.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+                @Override
+                public void onSelectionChange(SelectionChangeEvent event) {
+                    updateSelection(label.getValue(), label.isSelected());
+                }
+            });
+            String definition = group.getDefinition(term);
+            if (definition != null && !definition.isEmpty()) {
+                tooltip.attach(label.info(), definition);
+            }
+            panel.add(label);
         }
 
         ScrollPanel scrollPanel = new ScrollPanel();
         scrollPanel.add(panel);
         return scrollPanel;
+    }
+
+    private void updateSelection(OntologyTerm term, boolean selected) {
+        if (selected) {
+            selection.add(term);
+        } else if (selection.contains(term)) {
+            selection.remove(term);
+        }
+    }
+
+    private List<OntologyTerm> getSelection() {
+        return new ArrayList<OntologyTerm>(selection);
     }
 }

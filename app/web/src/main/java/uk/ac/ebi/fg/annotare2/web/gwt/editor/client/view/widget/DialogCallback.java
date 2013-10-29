@@ -19,9 +19,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 /**
  * @author Olga Melnichuk
  */
-public interface DialogCallback<T> {
+public abstract class DialogCallback<T> {
 
-    void onCancel();
+    public void onCancel() {
+    }
 
-    void onOkay(T t);
+    public abstract void onOkay(T t);
 }

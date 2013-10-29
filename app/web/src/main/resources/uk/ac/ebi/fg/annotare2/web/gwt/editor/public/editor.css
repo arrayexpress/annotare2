@@ -286,6 +286,7 @@
 .gwt-StackLayoutPanel {
     border-bottom: 1px solid #bbbbbb;
 }
+
 .gwt-StackLayoutPanel .gwt-StackLayoutPanelHeader {
     cursor: pointer;
     cursor: hand;
@@ -296,9 +297,11 @@
     border-bottom: 0;
     background: #d3def6;
 }
+
 .gwt-StackLayoutPanel .gwt-StackLayoutPanelHeader-hovering {
     background: #d3def6;
 }
+
 .gwt-StackLayoutPanel .gwt-StackLayoutPanelContent {
     border: 1px solid #bbbbbb;
     border-bottom: 0;
@@ -349,7 +352,7 @@
    http://code.google.com/p/google-web-toolkit/issues/detail?id=3800&q=tree%20item%20selected&colspec=ID%20Type%20Status%20Owner%20Milestone%20Summary%20Stars
  */
 
-.gwt-Tree .gwt-TreeItem-selected  {
+.gwt-Tree .gwt-TreeItem-selected {
     display: table !important;
 }
 
@@ -532,8 +535,8 @@ table.GWTUpld {
 .app-TabItem {
     padding: 5px 10px 5px 10px;
     font-size: 14px;
-    border-bottom: 4px solid  #eeeeee;
-    border-right: 1px solid  #eeeeee;
+    border-bottom: 4px solid #eeeeee;
+    border-right: 1px solid #eeeeee;
     background-color: #eeeeee;
     margin: 0;
     cursor: pointer;
@@ -558,7 +561,7 @@ table.GWTUpld {
 }
 
 .app-SelectionCell select {
-    width:100%;
+    width: 100%;
 }
 
 /* list of items with remove button */
@@ -591,10 +594,25 @@ table.GWTUpld {
     float: left;
 }
 
+/* MageTab preview */
 .app-MageTabEmptyCell {
     background-color: #FEEFB3;
 }
 
 .app-MageTabUnassignedCell {
     background-color: #FFBABA;
+}
+
+/* SelectableLabel */
+
+.app-SelectableLabel {
+    cursor: pointer;
+    cursor: hand;
+    background-color: #fff;
+    color: #000;
+}
+
+.app-SelectableLabel.selected {
+    background-color:  #3a6aad;
+    color: #fff;
 }

@@ -64,7 +64,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <g:ListBox width="300px" visibleItemCount="5" ui:field="experimentalDesigns"/>
+                                        <g:ListBox width="300px" visibleItemCount="5" ui:field="experimentalDesignList"/>
                                     </td>
                                     <td valign="top">
                                         <div><g:Button ui:field="removeExpDesignsButton">Delete Selected</g:Button></div>

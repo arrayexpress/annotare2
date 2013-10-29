@@ -77,11 +77,6 @@ public class MultiSelectList extends Composite implements HasChangeHandlers, Has
     private void showDialog(Map<String, Boolean> listItems) {
         new MultiSelectListDialog(dialogTitle, listItems, new DialogCallback<List<String>>() {
             @Override
-            public void onCancel() {
-                // ignore
-            }
-
-            @Override
             public void onOkay(List<String> strings) {
                 setValue(strings, true);
             }

@@ -159,17 +159,17 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
         Collection<EfoTerm> subTerms = efoService.getSubTerms(term, 100);
         List<OntologyTermGroup> groups = new ArrayList<OntologyTermGroup>();
         for (EfoTerm subTerm : subTerms) {
-            List<OntologyTerm> descendants =
-                    uiEfoTerms(
-                            filter(
-                                    efoService.suggest("", subTerm.getAccession(), 100),
-                                    new Predicate<EfoTerm>() {
-                                        @Override
-                                        public boolean apply(@Nullable EfoTerm input) {
-                                            return !input.isOrganisational();
-                                        }
-                                    }));
-            groups.add(new OntologyTermGroup(subTerm.getLabel(), descendants));
+            Collection<EfoTerm> descendants =
+                            efoService.suggest("", subTerm.getAccession(), 100);
+
+            OntologyTermGroup group = new OntologyTermGroup(subTerm.getLabel());
+            for (EfoTerm descendant : descendants) {
+                if (descendant.isOrganisational()) {
+                    continue;
+                }
+                group.add(uiEfoTerm(descendant), descendant.getDefinition());
+            }
+            groups.add(group);
         }
         return groups;
     }

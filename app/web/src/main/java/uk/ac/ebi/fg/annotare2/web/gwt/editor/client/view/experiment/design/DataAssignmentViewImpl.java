@@ -53,11 +53,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             public void onClick(ClickEvent event) {
                 new AddColumnDialog<ColumnType>(new DialogCallback<ColumnType>() {
                     @Override
-                    public void onCancel() {
-                        // do nothing
-                    }
-
-                    @Override
                     public void onOkay(ColumnType columnType) {
                         createColumn(columnType.getType());
                     }
@@ -71,11 +66,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             @Override
             public void onClick(ClickEvent event) {
                 new RemoveColumnsDialog(new DialogCallback<List<Integer>>() {
-                    @Override
-                    public void onCancel() {
-                        // do nothing
-                    }
-
                     @Override
                     public void onOkay(List<Integer> columns) {
                         removeColumns(columns);

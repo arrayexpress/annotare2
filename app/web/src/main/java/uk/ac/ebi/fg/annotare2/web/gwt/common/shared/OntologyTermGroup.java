@@ -20,7 +20,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -29,14 +31,21 @@ public class OntologyTermGroup implements IsSerializable {
 
     private String name;
     private List<OntologyTerm> terms;
+    private Map<String, String> definitions;
 
     OntologyTermGroup() {
         /* used by GWT serialization */
     }
 
-    public OntologyTermGroup(String name, List<OntologyTerm> terms) {
+    public OntologyTermGroup(String name) {
         this.name = name;
-        this.terms = new ArrayList<OntologyTerm>(terms);
+        this.terms = new ArrayList<OntologyTerm>();
+        this.definitions = new HashMap<String, String>();
+    }
+
+    public void add(OntologyTerm term, String definition) {
+        this.terms.add(term);
+        definitions.put(term.getAccession(), definition);
     }
 
     public String getName() {
@@ -45,5 +54,9 @@ public class OntologyTermGroup implements IsSerializable {
 
     public List<OntologyTerm> getTerms() {
         return new ArrayList<OntologyTerm>(terms);
+    }
+
+    public String getDefinition(OntologyTerm term) {
+        return definitions.get(term.getAccession());
     }
 }

@@ -57,6 +57,9 @@ public interface EditorResources extends ClientBundle {
     @Source("../../public/images/cancel-icon.png")
     public ImageResource cancelIcon();
 
+    @Source("../../public/images/info-icon.png")
+    public ImageResource infoIcon();
+
     @Source("../../public/editor-bundled.css")
     public EditorBundledStyles editorStyles();
 }
