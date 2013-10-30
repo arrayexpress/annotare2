@@ -110,7 +110,8 @@ public class ExperimentData {
                 exp.getTitle(),
                 exp.getDescription(),
                 exp.getExperimentDate(),
-                exp.getPublicReleaseDate()
+                exp.getPublicReleaseDate(),
+                exp.getExperimentalDesigns()
         );
     }
 

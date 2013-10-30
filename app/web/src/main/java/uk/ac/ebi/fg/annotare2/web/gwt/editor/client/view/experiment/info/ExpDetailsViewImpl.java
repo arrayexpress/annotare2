@@ -101,8 +101,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         dateOfPublicRelease.setValue(details.getPublicReleaseDate());
 
         experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
-        // todo
-        addExperimentalDesigns(Collections.<OntologyTerm>emptyList());
+        addExperimentalDesigns(details.getExperimentalDesigns());
     }
 
     @Override
@@ -157,6 +156,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
                     @Override
                     public void onOkay(List<OntologyTerm> ontologyTerms) {
                         addExperimentalDesigns(ontologyTerms);
+                        save();
                     }
                 })).show();
             }
@@ -208,7 +208,8 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
                 title.getValue(),
                 description.getValue(),
                 dateOfExperiment.getValue(),
-                dateOfPublicRelease.getValue());
+                dateOfPublicRelease.getValue(),
+                experimentalDesigns.values());
     }
 
     private void save() {
