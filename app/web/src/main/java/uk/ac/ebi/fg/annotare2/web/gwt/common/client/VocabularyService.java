@@ -26,6 +26,7 @@ import java.util.ArrayList;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 @RemoteServiceRelativePath(VocabularyService.NAME)
 public interface VocabularyService extends RemoteService {
 
