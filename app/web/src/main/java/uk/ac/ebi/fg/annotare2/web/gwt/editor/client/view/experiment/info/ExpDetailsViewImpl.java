@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
+import com.google.common.base.Predicate;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
@@ -146,8 +148,12 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
             @Override
             public void onSuccess(List<OntologyTermGroup> result) {
-                // todo filter experiment designs
-                (new ExperimentalDesignsDialog(result, new DialogCallback<List<OntologyTerm>>() {
+                List<OntologyTermGroup> filteredResult = filterExperimentalDesigns(result);
+                if (filteredResult.isEmpty()) {
+                    // nothing to add
+                    return;
+                }
+                (new ExperimentalDesignsDialog(filteredResult, new DialogCallback<List<OntologyTerm>>() {
                     @Override
                     public void onOkay(List<OntologyTerm> ontologyTerms) {
                         addExperimentalDesigns(ontologyTerms);
@@ -179,6 +185,22 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         for (OntologyTerm term : experimentalDesigns.values()) {
             experimentalDesignList.addItem(term.getLabel(), term.getAccession());
         }
+    }
+
+    private List<OntologyTermGroup> filterExperimentalDesigns(List<OntologyTermGroup> designGroups) {
+        List<OntologyTermGroup> filtered = new ArrayList<OntologyTermGroup>();
+        for(OntologyTermGroup group : designGroups) {
+            OntologyTermGroup newGroup = group.filter(new Predicate<OntologyTerm>() {
+                @Override
+                public boolean apply(@Nullable OntologyTerm input) {
+                    return input != null && !experimentalDesigns.containsKey(input.getAccession());
+                }
+            });
+            if (!newGroup.isEmpty()) {
+                filtered.add(newGroup);
+            }
+        }
+        return filtered;
     }
 
     private ExperimentDetailsDto getResult() {

@@ -143,6 +143,7 @@ public class OntologyData {
     public void getExperimentalDesigns(final AsyncCallback<List<OntologyTermGroup>> callback) {
         if (experimentalDesigns != null && !experimentalDesigns.isEmpty()) {
             callback.onSuccess(new ArrayList<OntologyTermGroup>(experimentalDesigns));
+            return;
         }
         dataService.getExperimentalDesigns(new AsyncCallbackWrapper<List<OntologyTermGroup>>() {
             @Override

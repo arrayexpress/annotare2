@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
+import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
@@ -58,5 +59,19 @@ public class OntologyTermGroup implements IsSerializable {
 
     public String getDefinition(OntologyTerm term) {
         return definitions.get(term.getAccession());
+    }
+
+    public boolean isEmpty() {
+        return this.terms.isEmpty();
+    }
+
+    public OntologyTermGroup filter(Predicate<OntologyTerm> predicate) {
+        OntologyTermGroup filtered = new OntologyTermGroup(getName());
+        for(OntologyTerm term : getTerms()) {
+            if (predicate.apply(term)) {
+                filtered.add(term, getDefinition(term));
+            }
+        }
+        return filtered;
     }
 }
