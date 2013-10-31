@@ -94,6 +94,14 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         return getProperty("ftp.public.password");
     }
 
+    public String getEmailSmtpHost() {
+        return getProperty("mail.smtp.host");
+    }
+
+    public String getEmailSmtpPort() {
+        return getProperty("mail.smtp.port");
+    }
+
     @Override
     public Boolean getAeSubsTrackingEnabled() {
         return Boolean.parseBoolean(getProperty("ae-subs-tracking.enabled"));

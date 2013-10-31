@@ -135,6 +135,7 @@ public class AppServletModule extends ServletModule {
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).in(SINGLETON);
         bind(DataFileManager.class).in(SINGLETON);
+        bind(EmailSender.class).in(SINGLETON);
 
         bind(SubsTracking.class).in(SINGLETON);
         bind(SubsTrackingWatchdog.class).asEagerSingleton();
