@@ -33,6 +33,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
 import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolTargetType.*;
+import static uk.ac.ebi.fg.annotare2.configmodel.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
@@ -71,7 +72,7 @@ public class MageTabGenerator {
         for (OntologyTerm term : exp.getExperimentalDesigns()) {
             idf.experimentalDesign.add(notNull(term.getLabel()));
             idf.experimentalDesignTermAccession.add(notNull(term.getAccession()));
-            idf.experimentalDesignTermSourceREF.add(ensureTermSource(TermSource.EFO_TERM_SOURCE).getName());
+            idf.experimentalDesignTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
         }
 
         for (Contact contact : exp.getContacts()) {
@@ -94,7 +95,7 @@ public class MageTabGenerator {
             OntologyTerm status = publication.getStatus();
             idf.publicationStatus.add(notNull(status == null ? null : status.getLabel()));
             idf.publicationStatusTermAccession.add(notNull(status == null ? null : status.getAccession()));
-            idf.publicationStatusTermSourceREF.add(notNull(status == null ? null : ensureTermSource(TermSource.EFO_TERM_SOURCE).getName()));
+            idf.publicationStatusTermSourceREF.add(notNull(status == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
         }
 
         for (Protocol protocol : exp.getProtocols()) {
@@ -102,9 +103,20 @@ public class MageTabGenerator {
             idf.protocolDescription.add(notNull(protocol.getDescription()));
             idf.protocolType.add(notNull(protocol.getType().getLabel()));
             idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
-            idf.protocolTermSourceREF.add(ensureTermSource(TermSource.EFO_TERM_SOURCE).getName());
+            idf.protocolTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
             idf.protocolHardware.add(notNull(protocol.getHardware()));
             idf.protocolSoftware.add(notNull(protocol.getSoftware()));
+        }
+
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (!attribute.getType().isFactorValue()) {
+                continue;
+            }
+            OntologyTerm term = attribute.getTerm();
+            idf.experimentalFactorName.add(attribute.getName());
+            idf.experimentalFactorType.add(notNull(term == null ? null : term.getLabel()));
+            idf.experimentalFactorTermAccession.add(notNull(term == null ? null : term.getAccession()));
+            idf.experimentalFactorTermSourceREF.add(notNull(term == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
         }
     }
 
