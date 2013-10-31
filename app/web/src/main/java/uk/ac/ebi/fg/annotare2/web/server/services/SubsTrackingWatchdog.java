@@ -51,6 +51,7 @@ public class SubsTrackingWatchdog {
     private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
+    private final EmailSender emailer;
 
 
     @Inject
@@ -59,13 +60,15 @@ public class SubsTrackingWatchdog {
                                 SubsTracking subsTracking,
                                 SubmissionDao submissionDao,
                                 SubmissionManager submissionManager,
-                                DataFileManager dataFileManager) {
+                                DataFileManager dataFileManager,
+                                EmailSender emailer) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
         this.submissionDao = submissionDao;
         this.submissionManager = submissionManager;
         this.dataFileManager = dataFileManager;
         this.properties = properties;
+        this.emailer = emailer;
 
         if (properties.getAeSubsTrackingEnabled()) {
             start();
@@ -147,6 +150,12 @@ public class SubsTrackingWatchdog {
             }
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTracking.sendSubmission(submission.getSubsTrackingId());
+                emailer.send(
+                        new String[]{"kolais@ebi.ac.uk"},
+                        null,
+                        properties.getEmailSubject("initial-submission"),
+                        properties.getEmailTemplate("initial-submission"),
+                        properties.getEmailFromAddress());
             }
 
             return true;

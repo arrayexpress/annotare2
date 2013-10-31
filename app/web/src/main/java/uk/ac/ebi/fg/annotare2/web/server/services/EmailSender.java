@@ -64,11 +64,13 @@ public class EmailSender
         msg.setRecipients(Message.RecipientType.TO, addressTo);
 
         // set hidden recipients (BCC) address
-        InternetAddress[] addressBcc = new InternetAddress[hiddenRecipients.length];
-        for (int i = 0; i < hiddenRecipients.length; i++) {
-            addressBcc[i] = new InternetAddress(hiddenRecipients[i]);
+        if (null != hiddenRecipients) {
+            InternetAddress[] addressBcc = new InternetAddress[hiddenRecipients.length];
+            for (int i = 0; i < hiddenRecipients.length; i++) {
+                addressBcc[i] = new InternetAddress(hiddenRecipients[i]);
+            }
+            msg.setRecipients(Message.RecipientType.BCC, addressBcc);
         }
-        msg.setRecipients(Message.RecipientType.BCC, addressBcc);
 
         // Setting the Subject and Content Type
         msg.setSubject(subject);
