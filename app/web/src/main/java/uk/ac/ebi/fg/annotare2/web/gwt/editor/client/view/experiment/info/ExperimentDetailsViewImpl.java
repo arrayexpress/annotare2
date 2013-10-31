@@ -42,9 +42,9 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
 /**
  * @author Olga Melnichuk
  */
-public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
+public class ExperimentDetailsViewImpl extends Composite implements ExperimentDetailsView {
 
-    interface Binder extends UiBinder<Widget, ExpDetailsViewImpl> {
+    interface Binder extends UiBinder<Widget, ExperimentDetailsViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -69,12 +69,15 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     @UiField
     Button removeExpDesignsButton;
 
+    @UiField
+    ListBox aeExperimentType;
+
     private Presenter presenter;
 
     private Map<String, OntologyTerm> experimentalDesigns;
 
     @Inject
-    public ExpDetailsViewImpl() {
+    public ExperimentDetailsViewImpl() {
         experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
 
         experimentalDesignList = new ListBox(true);

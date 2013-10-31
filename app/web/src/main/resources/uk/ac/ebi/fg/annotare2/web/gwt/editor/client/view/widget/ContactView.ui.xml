@@ -36,7 +36,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Last Name</td>
+                            <td class="label">Last Name &#42;</td>
                             <td colspan="3">
                                 <g:TextBox width="100%" ui:field="lastName"/>
                             </td>

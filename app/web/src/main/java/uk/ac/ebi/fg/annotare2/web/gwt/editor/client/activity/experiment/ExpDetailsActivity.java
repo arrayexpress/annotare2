@@ -29,16 +29,16 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpDetailsView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExperimentDetailsView;
 
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsView.Presenter {
+public class ExpDetailsActivity extends AbstractActivity implements ExperimentDetailsView.Presenter {
 
-    private final ExpDetailsView view;
+    private final ExperimentDetailsView view;
 
     private final PlaceController placeController;
 
@@ -47,7 +47,7 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
     private final OntologyData ontologyData;
 
     @Inject
-    public ExpDetailsActivity(ExpDetailsView view,
+    public ExpDetailsActivity(ExperimentDetailsView view,
                               PlaceController placeController,
                               ExperimentData experimentData,
                               OntologyData ontologyData) {

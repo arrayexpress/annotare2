@@ -60,7 +60,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(SheetModeView.class).to(SheetModeViewImpl.class);
         bind(LeftNavigationView.class).to(LeftNavigationViewImpl.class);
 
-        bind(ExpDetailsView.class).to(ExpDetailsViewImpl.class);
+        bind(ExperimentDetailsView.class).to(ExperimentDetailsViewImpl.class);
         bind(ContactListView.class).to(ContactListViewImpl.class);
         bind(PublicationListView.class).to(PublicationListViewImpl.class);
 

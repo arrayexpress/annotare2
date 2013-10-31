@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public interface ExpDetailsView extends IsWidget {
+public interface ExperimentDetailsView extends IsWidget {
 
     public void setDetails(ExperimentDetailsDto details);
 
