@@ -18,28 +18,23 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
-
-    <ui:style>
-        .outer {
-            margin: 0;
-            color: #48877C;
-            width: 100%;
-        }
-
-        .summary {
-            font-style: italic;
-            margin-top: 20px;
-            margin-left: 10px;
-        }
-
-        .clickable {
-            cursor: pointer;
-            margin-left: 10px;
-        }
-    </ui:style>
-
-    <g:VerticalPanel addStyleNames="{style.outer}">
-        <g:HTML ui:field="summary" addStyleNames="{style.summary}"/>
-        <g:Anchor ui:field="changeLink" visible="false" addStyleNames="{style.clickable}">change...</g:Anchor>
-    </g:VerticalPanel>
+    <g:ResizeLayoutPanel height="400px" width="300px">
+        <g:DockLayoutPanel>
+            <g:center>
+                <g:SimpleLayoutPanel ui:field="contentPanel"/>
+            </g:center>
+            <g:south size="50">
+                <g:HTMLPanel>
+                    <table style="width:100%">
+                        <tr>
+                            <td align="right">
+                                <g:Button ui:field="cancelButton">Cancel</g:Button>
+                                <g:Button ui:field="okButton">Add</g:Button>
+                            </td>
+                        </tr>
+                    </table>
+                </g:HTMLPanel>
+            </g:south>
+        </g:DockLayoutPanel>
+    </g:ResizeLayoutPanel>
 </ui:UiBinder>

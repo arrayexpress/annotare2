@@ -16,8 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -33,5 +37,7 @@ public interface ExpDetailsView extends IsWidget {
     public interface Presenter {
 
         void saveDetails(ExperimentDetailsDto details);
+
+        void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> callback);
     }
 }

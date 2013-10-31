@@ -32,6 +32,9 @@ public interface EditorBundledStyles extends CssResource {
     @ClassName("loading-indicator")
     String loadingIndicator();
 
+    @ClassName("info")
+    String infoIconClass();
+
     @ClassName("center")
     String center();
 }

@@ -21,6 +21,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
@@ -40,4 +41,6 @@ public interface DataServiceAsync {
     void getApplicationProperties(AsyncCallback<ApplicationProperties> async);
 
     void getContactRoles(AsyncCallback<List<OntologyTerm>> async);
+
+    void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> async);
 }

@@ -68,6 +68,12 @@ public class MageTabGenerator {
         idf.dateOfExperiment = notNull(formatDate(exp.getExperimentDate()));
         idf.accession = notNull(exp.getAccession());
 
+        for (OntologyTerm term : exp.getExperimentalDesigns()) {
+            idf.experimentalDesign.add(notNull(term.getLabel()));
+            idf.experimentalDesignTermAccession.add(notNull(term.getAccession()));
+            idf.experimentalDesignTermSourceREF.add(ensureTermSource(TermSource.EFO_TERM_SOURCE).getName());
+        }
+
         for (Contact contact : exp.getContacts()) {
             idf.personFirstName.add(notNull(contact.getFirstName()));
             idf.personLastName.add(notNull(contact.getLastName()));
@@ -84,8 +90,11 @@ public class MageTabGenerator {
             idf.publicationTitle.add(notNull(publication.getTitle()));
             idf.publicationAuthorList.add(notNull(publication.getAuthors()));
             idf.pubMedId.add(notNull(publication.getPubMedId()));
-            //idf.publicationDOI.add(notNull(publication.getPubMedId()));
-            //idf.publicationStatus.add(notNull(publication.getStatus()));
+            idf.publicationDOI.add(notNull(publication.getDoi()));
+            OntologyTerm status = publication.getStatus();
+            idf.publicationStatus.add(notNull(status == null ? null : status.getLabel()));
+            idf.publicationStatusTermAccession.add(notNull(status == null ? null : status.getAccession()));
+            idf.publicationStatusTermSourceREF.add(notNull(status == null ? null : ensureTermSource(TermSource.EFO_TERM_SOURCE).getName()));
         }
 
         for (Protocol protocol : exp.getProtocols()) {
@@ -93,14 +102,14 @@ public class MageTabGenerator {
             idf.protocolDescription.add(notNull(protocol.getDescription()));
             idf.protocolType.add(notNull(protocol.getType().getLabel()));
             idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
-            idf.protocolTermSourceREF.add(useTermSource(TermSource.EFO_TERM_SOURCE).getName());
+            idf.protocolTermSourceREF.add(ensureTermSource(TermSource.EFO_TERM_SOURCE).getName());
             idf.protocolHardware.add(notNull(protocol.getHardware()));
             idf.protocolSoftware.add(notNull(protocol.getSoftware()));
         }
     }
 
     private void addTermSources(IDF idf) {
-        for(TermSource termSource: usedTermSources) {
+        for (TermSource termSource : usedTermSources) {
             idf.termSourceName.add(notNull(termSource.getName()));
             idf.termSourceVersion.add(notNull(termSource.getVersion()));
             idf.termSourceFile.add(notNull(termSource.getUrl()));
@@ -353,7 +362,7 @@ public class MageTabGenerator {
                 ArrayDesignAttribute arrayDesignAttribute = new ArrayDesignAttribute();
                 arrayDesignAttribute.setAttributeValue(arrayDesign);
                 arrayDesignAttribute.termAccessionNumber = arrayDesign;
-                arrayDesignAttribute.termSourceREF = useTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
+                arrayDesignAttribute.termSourceREF = ensureTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
                 assayNode.arrayDesigns.add(arrayDesignAttribute);
             }
         }
@@ -438,7 +447,7 @@ public class MageTabGenerator {
                     // no raw data files are defined
                     prev.add(assayNode);
                 }
-                for(SDRFNode prevNode : prev) {
+                for (SDRFNode prevNode : prev) {
                     connect(prevNode, current, PROCESSED_AND_MATRIX_FILES, fileColumn.getFileRef(fileName));
                 }
                 next.add(current);
@@ -458,7 +467,7 @@ public class MageTabGenerator {
         return createNode(clazz, fileName);
     }
 
-    private TermSource useTermSource(TermSource termSource) {
+    private TermSource ensureTermSource(TermSource termSource) {
         usedTermSources.add(termSource);
         return termSource;
     }

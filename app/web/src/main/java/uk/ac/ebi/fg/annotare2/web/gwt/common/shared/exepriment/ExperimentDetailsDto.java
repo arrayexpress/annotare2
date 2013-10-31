@@ -1,8 +1,11 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
-import java.util.Date;
+import java.util.*;
+
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * @author Olga Melnichuk
@@ -17,14 +20,19 @@ public class ExperimentDetailsDto implements IsSerializable {
 
     private Date publicReleaseDate;
 
-    public ExperimentDetailsDto() {
+    private List<OntologyTerm> experimentalDesigns;
+
+    ExperimentDetailsDto() {
+        /*used by GWT serialization*/
     }
 
-    public ExperimentDetailsDto(String title, String description, Date experimentDate, Date publicReleaseDate) {
+    public ExperimentDetailsDto(String title, String description, Date experimentDate, Date publicReleaseDate,
+                                Collection<OntologyTerm> experimentalDesigns) {
         this.title = title;
         this.description = description;
         this.experimentDate = experimentDate;
         this.publicReleaseDate = publicReleaseDate;
+        this.experimentalDesigns = new ArrayList<OntologyTerm>(experimentalDesigns);
     }
 
     public String getDescription() {
@@ -43,13 +51,7 @@ public class ExperimentDetailsDto implements IsSerializable {
         return title;
     }
 
-    public boolean isContentEqual(ExperimentDetailsDto that) {
-        if (that == null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (experimentDate != null ? !experimentDate.equals(that.experimentDate) : that.experimentDate != null)
-            return false;
-        if (publicReleaseDate != null ? !publicReleaseDate.equals(that.publicReleaseDate) : that.publicReleaseDate != null)
-            return false;
-        return !(title != null ? !title.equals(that.title) : that.title != null);
+    public Collection<OntologyTerm> getExperimentalDesigns() {
+        return unmodifiableCollection(experimentalDesigns);
     }
 }

@@ -24,6 +24,7 @@ public enum SystemEfoTerm {
     PROTOCOL("Protocol", "protocol"),
     STUDY_DESIGN("Experiment Design", "study_design"),
     UNIT("Unit", "unit"),
+    PUBLICATION_STATUS("Publication Status", "publication_status"),
 
     MATERIAL_TYPE("Material Type", "material_type"),
     ORGANISM("Organism", "organism"),

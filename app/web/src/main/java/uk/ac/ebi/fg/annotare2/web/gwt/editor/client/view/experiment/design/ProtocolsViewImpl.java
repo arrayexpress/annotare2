@@ -174,11 +174,6 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                         }
                         new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
                             @Override
-                            public void onCancel() {
-                                // do nothing
-                            }
-
-                            @Override
                             public void onOkay(ProtocolAssignmentProfileUpdates profileUpdates) {
                                 updateProtocolAssignments(profileUpdates);
                             }
@@ -384,10 +379,6 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         }
         (new ProtocolCreationDialog(presenter,
                 new DialogCallback<ProtocolType>() {
-                    @Override
-                    public void onCancel() {
-                    }
-
                     @Override
                     public void onOkay(ProtocolType protocolType) {
                         createProtocol(protocolType);

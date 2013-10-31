@@ -46,8 +46,6 @@ public interface EditorTitleBarView extends IsWidget {
 
         void submitSubmission();
 
-        void discardSubmissionData(AsyncCallback<Void> callback);
-
         void importFile(AsyncCallback<Void> callback);
 
         String getSubmissionExportUrl();

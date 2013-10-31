@@ -17,22 +17,34 @@
 @sprite .expand {
     gwt-image: "expandIcon";
     background-repeat: no-repeat;
+    background-position: center;
     padding-left: 20px;
     cursor: pointer;
-    background-position: center;
+    cursor: hand;
 }
 
 @sprite .collapse {
     gwt-image: "collapseIcon";
     background-repeat: no-repeat;
+    background-position: center;
     padding-left: 20px;
     cursor: pointer;
+    cursor: hand;
+}
+
+@sprite .loading-indicator {
+    gwt-image: "largeLoader";
     background-position: center;
 }
 
-@sprite .loading-indicator  {
-    gwt-image: "largeLoader";
+@sprite .info {
+    gwt-image: "infoIcon";
+    background-repeat: no-repeat;
     background-position: center;
+    padding-left: 16px;
+    cursor: pointer;
+    cursor: hand;
+    opacity: 0.5;
 }
 
 .center {

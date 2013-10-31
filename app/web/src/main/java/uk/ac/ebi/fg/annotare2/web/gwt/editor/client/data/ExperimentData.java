@@ -110,7 +110,8 @@ public class ExperimentData {
                 exp.getTitle(),
                 exp.getDescription(),
                 exp.getExperimentDate(),
-                exp.getPublicReleaseDate()
+                exp.getPublicReleaseDate(),
+                exp.getExperimentalDesigns()
         );
     }
 
@@ -140,7 +141,9 @@ public class ExperimentData {
                     publication.getId(),
                     publication.getTitle(),
                     publication.getAuthors(),
-                    publication.getPubMedId()
+                    publication.getPubMedId(),
+                    publication.getDoi(),
+                    publication.getStatus()
             ));
         }
         return publications;
