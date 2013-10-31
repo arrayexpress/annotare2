@@ -38,8 +38,7 @@
               type="org.apache.activemq.ActiveMQConnectionFactory"
               description="JMS Connection Factory"
               factory="org.apache.activemq.jndi.JNDIReferenceFactory"
-              brokerURL="vm://localhost"
-              brokerName="LocalActiveMQBroker"/>
+              brokerURL="vm://localhost?create=false"/>
 
     <Resource name="jms/fileCopyQueue"
               auth="Container"
