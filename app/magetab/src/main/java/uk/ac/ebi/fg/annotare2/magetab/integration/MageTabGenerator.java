@@ -63,6 +63,10 @@ public class MageTabGenerator {
     }
 
     private void generateIdf(IDF idf) {
+        if (!isNullOrEmpty(exp.getAeExperimentType())) {
+            idf.addComment("AEExperimentType", exp.getAeExperimentType());
+        }
+
         idf.investigationTitle = notNull(exp.getTitle());
         idf.experimentDescription = notNull(exp.getDescription());
         idf.publicReleaseDate = notNull(formatDate(exp.getPublicReleaseDate()));
