@@ -117,7 +117,7 @@ public class MageTabGenerator {
                 continue;
             }
             OntologyTerm term = attribute.getTerm();
-            idf.experimentalFactorName.add(attribute.getName());
+            idf.experimentalFactorName.add(notNull(attribute.getName()));
             idf.experimentalFactorType.add(notNull(term == null ? null : term.getLabel()));
             idf.experimentalFactorTermAccession.add(notNull(term == null ? null : term.getAccession()));
             idf.experimentalFactorTermSourceREF.add(notNull(term == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
@@ -532,7 +532,7 @@ public class MageTabGenerator {
     private List<CharacteristicsAttribute> extractCharacteristicsAttributes(Sample sample) {
         List<CharacteristicsAttribute> attributes = new ArrayList<CharacteristicsAttribute>();
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
-            if (attribute.getType().isCharacteristic()) {
+            if (attribute.getType().isCharacteristicOrFactorValue()) {
                 CharacteristicsAttribute attr = new CharacteristicsAttribute();
                 attr.type = attribute.getName();
                 attribute.getValueType().visit(new AttributeValueTypeVisitor(attr));
@@ -555,11 +555,15 @@ public class MageTabGenerator {
     }
 
     private static String notNull(String str) {
-        return str == null || str.trim().isEmpty() ? "" : str;
+        return str == null || str.trim().isEmpty() ? "" : escape(str);
     }
 
     private static String notNull(Collection<String> collection) {
-        return on(",").join(collection);
+        return escape(on(",").join(collection));
+    }
+
+    private static String escape(String str) {
+        return "\"" + str.replaceAll("\"","\\\\\"") + "\"";
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
