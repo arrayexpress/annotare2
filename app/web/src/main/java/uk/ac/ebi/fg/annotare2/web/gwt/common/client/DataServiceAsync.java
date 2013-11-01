@@ -43,4 +43,6 @@ public interface DataServiceAsync {
     void getContactRoles(AsyncCallback<List<OntologyTerm>> async);
 
     void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> async);
+
+    void getAeExperimentTypes(AsyncCallback<List<String>> async);
 }

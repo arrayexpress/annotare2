@@ -42,6 +42,7 @@ import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
+import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
 
@@ -159,6 +160,12 @@ public class AppServletModule extends ServletModule {
     @Provides
     public ArrayExpressArrayDesignList getArrayExpressArrayDesignList() {
         return ArrayExpressArrayDesignList.create();
+    }
+
+    @Singleton
+    @Provides
+    public ArrayExpressExperimentTypeList getArrayExpressExperimentTypeList() {
+        return ArrayExpressExperimentTypeList.create();
     }
 
     private void overrideMageTabCheck() {

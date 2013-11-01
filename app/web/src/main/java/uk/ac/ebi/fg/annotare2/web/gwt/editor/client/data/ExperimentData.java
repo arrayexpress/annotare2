@@ -111,6 +111,7 @@ public class ExperimentData {
                 exp.getDescription(),
                 exp.getExperimentDate(),
                 exp.getPublicReleaseDate(),
+                exp.getAeExperimentType(),
                 exp.getExperimentalDesigns()
         );
     }

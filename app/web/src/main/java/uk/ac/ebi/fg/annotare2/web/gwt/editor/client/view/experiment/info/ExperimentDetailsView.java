@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
  */
 public interface ExperimentDetailsView extends IsWidget {
 
-    public void setDetails(ExperimentDetailsDto details);
+    public void setDetails(ExperimentDetailsDto details, Collection<String> aeExperimentTypes);
 
     public ExperimentDetailsDto getDetails();
 

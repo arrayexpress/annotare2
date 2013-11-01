@@ -64,6 +64,9 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("arrayDesign")
     private String arrayDesign;
 
+    @JsonProperty("aeExperimentType")
+    private String aeExperimentType;
+
     @JsonProperty("experimentalDesigns")
     private List<OntologyTerm> experimentalDesigns;
 
@@ -199,6 +202,14 @@ public class ExperimentProfile implements Serializable {
 
     public void setArrayDesign(String arrayDesign) {
         this.arrayDesign = arrayDesign;
+    }
+
+    public String getAeExperimentType() {
+        return aeExperimentType;
+    }
+
+    public void setAeExperimentType(String aeExperimentType) {
+        this.aeExperimentType = aeExperimentType;
     }
 
     public Collection<OntologyTerm> getExperimentalDesigns() {

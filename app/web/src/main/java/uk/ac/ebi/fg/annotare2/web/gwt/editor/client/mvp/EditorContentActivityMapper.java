@@ -33,7 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpInfo
  */
 public class EditorContentActivityMapper implements ActivityMapper {
 
-    private final Provider<ExpDetailsActivity> expDetailsActivityProvider;
+    private final Provider<ExperimentDetailsActivity> expDetailsActivityProvider;
     private final Provider<ContactListActivity> contactsActivityProvider;
     private final Provider<PublicationListActivity> publicationsActivityProvider;
 
@@ -51,7 +51,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
 
     @Inject
     public EditorContentActivityMapper(
-            Provider<ExpDetailsActivity> expDetailsActivityProvider,
+            Provider<ExperimentDetailsActivity> expDetailsActivityProvider,
             Provider<ContactListActivity> contactsActivityProvider,
             Provider<PublicationListActivity> publicationsActivityProvider,
             Provider<SamplesActivity> samplesActivityProvider,

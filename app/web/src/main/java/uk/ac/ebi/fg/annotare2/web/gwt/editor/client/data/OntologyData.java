@@ -77,6 +77,11 @@ public class OntologyData {
         }
         getTerms(new TermSuggest(PUBLICATION_STATUS), "", 20, new AsyncCallbackWrapper<List<OntologyTerm>>() {
             @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
             public void onSuccess(List<OntologyTerm> result) {
                 publicationStatuses = new ArrayList<OntologyTerm>(result);
                 callback.onSuccess(result);
@@ -132,6 +137,11 @@ public class OntologyData {
             return;
         }
         dataService.getContactRoles(new AsyncCallbackWrapper<List<OntologyTerm>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
             @Override
             public void onSuccess(List<OntologyTerm> result) {
                 contactRoles = new ArrayList<OntologyTerm>(result);

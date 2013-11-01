@@ -26,6 +26,7 @@ import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ public class PublicationView extends ItemView<PublicationDto.Editor> {
 
     private final List<OntologyTerm> statusList = new ArrayList<OntologyTerm>();
 
-    public PublicationView(PublicationDto publication, List<OntologyTerm> statuses) {
+    public PublicationView(PublicationDto publication, Collection<OntologyTerm> statuses) {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         this.statusList.addAll(statuses);

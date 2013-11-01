@@ -3,7 +3,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import static java.util.Collections.unmodifiableCollection;
 
@@ -20,6 +23,8 @@ public class ExperimentDetailsDto implements IsSerializable {
 
     private Date publicReleaseDate;
 
+    private String aeExperimentType;
+
     private List<OntologyTerm> experimentalDesigns;
 
     ExperimentDetailsDto() {
@@ -27,11 +32,12 @@ public class ExperimentDetailsDto implements IsSerializable {
     }
 
     public ExperimentDetailsDto(String title, String description, Date experimentDate, Date publicReleaseDate,
-                                Collection<OntologyTerm> experimentalDesigns) {
+                                String aeExperimentType, Collection<OntologyTerm> experimentalDesigns) {
         this.title = title;
         this.description = description;
         this.experimentDate = experimentDate;
         this.publicReleaseDate = publicReleaseDate;
+        this.aeExperimentType = aeExperimentType;
         this.experimentalDesigns = new ArrayList<OntologyTerm>(experimentalDesigns);
     }
 
@@ -49,6 +55,10 @@ public class ExperimentDetailsDto implements IsSerializable {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getAeExperimentType() {
+        return aeExperimentType;
     }
 
     public Collection<OntologyTerm> getExperimentalDesigns() {

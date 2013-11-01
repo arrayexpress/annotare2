@@ -26,17 +26,19 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ApplicationData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExperimentDetailsView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExpDetailsActivity extends AbstractActivity implements ExperimentDetailsView.Presenter {
+public class ExperimentDetailsActivity extends AbstractActivity implements ExperimentDetailsView.Presenter {
 
     private final ExperimentDetailsView view;
 
@@ -46,18 +48,22 @@ public class ExpDetailsActivity extends AbstractActivity implements ExperimentDe
 
     private final OntologyData ontologyData;
 
+    private final ApplicationData applicationData;
+
     @Inject
-    public ExpDetailsActivity(ExperimentDetailsView view,
-                              PlaceController placeController,
-                              ExperimentData experimentData,
-                              OntologyData ontologyData) {
+    public ExperimentDetailsActivity(ExperimentDetailsView view,
+                                     PlaceController placeController,
+                                     ExperimentData experimentData,
+                                     OntologyData ontologyData,
+                                     ApplicationData applicationData) {
         this.view = view;
         this.placeController = placeController;
         this.experimentData = experimentData;
         this.ontologyData = ontologyData;
+        this.applicationData = applicationData;
     }
 
-    public ExpDetailsActivity withPlace(ExpInfoPlace place) {
+    public ExperimentDetailsActivity withPlace(ExpInfoPlace place) {
         return this;
     }
 
@@ -82,13 +88,27 @@ public class ExpDetailsActivity extends AbstractActivity implements ExperimentDe
         experimentData.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
-                //TODO
                 Window.alert("Can't load experiment details.");
             }
 
             @Override
             public void onSuccess(ExperimentDetailsDto details) {
-                view.setDetails(details);
+                setDetails(details);
+            }
+        });
+    }
+
+    private void setDetails(final ExperimentDetailsDto details) {
+        applicationData.getAeExperimentTypesAsync(new AsyncCallback<List<String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Can't load ArrayExpress Experiment Type options");
+                view.setDetails(details, Collections.<String>emptyList());
+            }
+
+            @Override
+            public void onSuccess(List<String> result) {
+                view.setDetails(details, result);
             }
         });
     }

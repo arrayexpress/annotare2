@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -32,8 +31,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
-import uk.ac.ebi.fg.annotare2.web.server.services.ae.AE;
+import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpress;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
+import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
@@ -53,16 +52,20 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 
     private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
 
-    private final ArrayExpressArrayDesignList adList;
+    private final ArrayExpressArrayDesignList arrayDesignList;
+    private final ArrayExpressExperimentTypeList experimentTypeList;
+
     private final AnnotareEfoService efoService;
     private final AnnotareProperties properties;
     private final ProtocolTypes protocolTypes;
 
     @Inject
-    public DataServiceImpl(ArrayExpressArrayDesignList adList,
+    public DataServiceImpl(ArrayExpressArrayDesignList arrayDesignList,
+                           ArrayExpressExperimentTypeList experimentTypeList,
                            AnnotareEfoService efoService,
                            AnnotareProperties properties) {
-        this.adList = adList;
+        this.arrayDesignList = arrayDesignList;
+        this.experimentTypeList = experimentTypeList;
         this.efoService = efoService;
         this.properties = properties;
         this.protocolTypes = ProtocolTypes.create();
@@ -70,10 +73,10 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
 
     @Override
     public List<ArrayDesignRef> getArrayDesignList(String query, int limit) {
-        return newArrayList(Iterables.transform(Iterables.limit(adList.getArrayDesigns(query), limit), new Function<AE.ArrayDesign, ArrayDesignRef>() {
+        return newArrayList(Iterables.transform(Iterables.limit(arrayDesignList.getArrayDesigns(query), limit), new Function<ArrayExpress.ArrayDesign, ArrayDesignRef>() {
             @Nullable
             @Override
-            public ArrayDesignRef apply(@Nullable AE.ArrayDesign ad) {
+            public ArrayDesignRef apply(@Nullable ArrayExpress.ArrayDesign ad) {
                 return new ArrayDesignRef(ad.getName(), ad.getDesription());
             }
         }));
@@ -150,6 +153,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
+    public List<String> getAeExperimentTypes() {
+        return new ArrayList<String>(experimentTypeList.getExperimentTypes());
+    }
+
+    @Override
     public List<OntologyTermGroup> getExperimentalDesigns() {
         EfoTerm term = efoService.findTermByAccession(properties.getEfoTermAccession(SystemEfoTerm.STUDY_DESIGN));
         if (term == null) {
@@ -160,7 +168,7 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
         List<OntologyTermGroup> groups = new ArrayList<OntologyTermGroup>();
         for (EfoTerm subTerm : subTerms) {
             Collection<EfoTerm> descendants =
-                            efoService.suggest("", subTerm.getAccession(), 100);
+                    efoService.suggest("", subTerm.getAccession(), 100);
 
             OntologyTermGroup group = new OntologyTermGroup(subTerm.getLabel());
             for (EfoTerm descendant : descendants) {

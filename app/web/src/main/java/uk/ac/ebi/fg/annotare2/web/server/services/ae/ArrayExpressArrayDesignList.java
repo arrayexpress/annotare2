@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.ae;
 
-import com.google.common.io.Closeables;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.slf4j.Logger;
@@ -27,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import static com.google.common.io.Closeables.close;
+
 /**
  * List of arrays from ArrayExpress.
  *
@@ -36,19 +37,19 @@ public class ArrayExpressArrayDesignList {
 
     private static final Logger log = LoggerFactory.getLogger(ArrayExpressArrayDesignList.class);
 
-    private final ConcurrentRadixTree<AE.ArrayDesign> trie;
+    private final ConcurrentRadixTree<ArrayExpress.ArrayDesign> trie;
 
     public ArrayExpressArrayDesignList() {
-        trie = new ConcurrentRadixTree<AE.ArrayDesign>(new DefaultCharArrayNodeFactory());
+        trie = new ConcurrentRadixTree<ArrayExpress.ArrayDesign>(new DefaultCharArrayNodeFactory());
     }
 
     private ArrayExpressArrayDesignList load() throws IOException {
-        InputStream in = ArrayExpressArrayDesignList.class.getResourceAsStream("/ArrayExpressArrayDesigns-16042013.txt");
+        InputStream in = getClass().getResourceAsStream("/ArrayExpressArrayDesigns-16042013.txt");
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String line;
             while ((line = reader.readLine()) != null) {
-                AE.ArrayDesign ad = createArrayDesign(line);
+                ArrayExpress.ArrayDesign ad = createArrayDesign(line);
                 if (ad != null) {
                     trie.put(ad.getName(), ad);
                     trie.put(ad.getDesription(), ad);
@@ -56,24 +57,24 @@ public class ArrayExpressArrayDesignList {
             }
             return this;
         } finally {
-            Closeables.close(in, true);
+            close(in, true);
         }
     }
 
-    private AE.ArrayDesign createArrayDesign(String line) {
+    private ArrayExpress.ArrayDesign createArrayDesign(String line) {
         String[] parts = line.split("\t");
         if (parts.length != 3) {
             return null;
         }
         try {
-            return new AE.ArrayDesign(Integer.parseInt(parts[0]), parts[1], parts[2]);
+            return new ArrayExpress.ArrayDesign(Integer.parseInt(parts[0]), parts[1], parts[2]);
         } catch (NumberFormatException e) {
             log.error("Can't parse Array Design: [" + line + "]", e);
             return null;
         }
     }
 
-    public Iterable<AE.ArrayDesign> getArrayDesigns(String query) {
+    public Iterable<ArrayExpress.ArrayDesign> getArrayDesigns(String query) {
         return trie.getValuesForClosestKeys(query);
     }
 
@@ -82,7 +83,7 @@ public class ArrayExpressArrayDesignList {
         try {
             return list.load();
         } catch (IOException e) {
-            log.error("Can't load array designs", e);
+            log.error("Can't load AE Array Designs", e);
         }
         return list;
     }

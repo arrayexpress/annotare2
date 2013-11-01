@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHan
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.PublicationListView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
     @Inject
     public PublicationListActivity(PublicationListView view,
                                    ExperimentData experimentData,
-                                   OntologyData ontologyData ) {
+                                   OntologyData ontologyData) {
         this.view = view;
         this.experimentData = experimentData;
         this.ontologyData = ontologyData;
@@ -96,22 +97,31 @@ public class PublicationListActivity extends AbstractActivity implements Publica
         experimentData.removePublications(publications);
     }
 
-    @Override
-    public void getPublicationStatuses(AsyncCallback<List<OntologyTerm>> callback) {
-        ontologyData.getPublicationStatuses(callback);
-    }
-
     private void loadAsync() {
         experimentData.getPublicationsAsync(new AsyncCallback<List<PublicationDto>>() {
             @Override
             public void onFailure(Throwable caught) {
-                //TODO
                 Window.alert("Can't load publication list.");
             }
 
             @Override
             public void onSuccess(List<PublicationDto> result) {
-                view.setPublications(result);
+                setPublications(result);
+            }
+        });
+    }
+
+    private void setPublications(final List<PublicationDto> publications) {
+        ontologyData.getPublicationStatuses(new AsyncCallback<List<OntologyTerm>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Can't load publication status options");
+                view.setPublications(publications, Collections.<OntologyTerm>emptyList());
+            }
+
+            @Override
+            public void onSuccess(List<OntologyTerm> result) {
+                view.setPublications(publications, result);
             }
         });
     }
