@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -38,7 +38,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.PUBLICA
 /**
  * @author Olga Melnichuk
  */
-public class OntologyData {
+public class OntologyDataProxy {
 
     private final DataServiceAsync dataService;
     private SystemEfoTermMap systemTerms;
@@ -47,7 +47,7 @@ public class OntologyData {
     private List<OntologyTermGroup> experimentalDesigns;
 
     @Inject
-    public OntologyData(DataServiceAsync dataService) {
+    public OntologyDataProxy(DataServiceAsync dataService) {
         this.dataService = dataService;
     }
 

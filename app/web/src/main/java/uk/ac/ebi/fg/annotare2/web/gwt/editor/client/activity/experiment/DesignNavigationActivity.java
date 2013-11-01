@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
@@ -46,7 +46,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
 
     private final LeftNavigationView view;
     private final PlaceController placeController;
-    private final ExperimentData expData;
+    private final ExperimentDataProxy expData;
     private final DataServiceAsync dataService;
 
     private ExpDesignSection section;
@@ -55,7 +55,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     @Inject
     public DesignNavigationActivity(LeftNavigationView view,
                                     PlaceController placeController,
-                                    ExperimentData expData,
+                                    ExperimentDataProxy expData,
                                     DataServiceAsync dataService) {
         this.view = view;
         this.placeController = placeController;

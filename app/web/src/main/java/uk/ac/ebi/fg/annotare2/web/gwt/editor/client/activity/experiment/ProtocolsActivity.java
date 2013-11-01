@@ -28,8 +28,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmen
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
@@ -44,14 +44,14 @@ import java.util.List;
 public class ProtocolsActivity extends AbstractActivity implements ProtocolsView.Presenter {
 
     private final ProtocolsView view;
-    private final OntologyData ontologyData;
-    private final ExperimentData expData;
+    private final OntologyDataProxy ontologyDataProxy;
+    private final ExperimentDataProxy expData;
     private HandlerRegistration criticalUpdateHandler;
 
     @Inject
-    public ProtocolsActivity(ProtocolsView view, OntologyData ontologyData, ExperimentData expData) {
+    public ProtocolsActivity(ProtocolsView view, OntologyDataProxy ontologyDataProxy, ExperimentDataProxy expData) {
         this.view = view;
-        this.ontologyData = ontologyData;
+        this.ontologyDataProxy = ontologyDataProxy;
         this.expData = expData;
     }
 
@@ -92,7 +92,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
 
             @Override
             public void onSuccess(ExperimentProfileType result) {
-                ontologyData.getProtocolTypes(result, callback);
+                ontologyDataProxy.getProtocolTypes(result, callback);
             }
         });
     }

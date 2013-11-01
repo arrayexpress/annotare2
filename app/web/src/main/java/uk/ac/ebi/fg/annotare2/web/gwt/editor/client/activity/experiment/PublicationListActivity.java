@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
@@ -41,17 +41,17 @@ import java.util.List;
 public class PublicationListActivity extends AbstractActivity implements PublicationListView.Presenter {
 
     private final PublicationListView view;
-    private final ExperimentData experimentData;
+    private final ExperimentDataProxy experimentDataProxy;
     private HandlerRegistration criticalUpdateHandler;
-    private final OntologyData ontologyData;
+    private final OntologyDataProxy ontologyDataProxy;
 
     @Inject
     public PublicationListActivity(PublicationListView view,
-                                   ExperimentData experimentData,
-                                   OntologyData ontologyData) {
+                                   ExperimentDataProxy experimentDataProxy,
+                                   OntologyDataProxy ontologyDataProxy) {
         this.view = view;
-        this.experimentData = experimentData;
-        this.ontologyData = ontologyData;
+        this.experimentDataProxy = experimentDataProxy;
+        this.ontologyDataProxy = ontologyDataProxy;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
 
     @Override
     public void onStop() {
-        experimentData.updatePublications(view.getPublications());
+        experimentDataProxy.updatePublications(view.getPublications());
         criticalUpdateHandler.removeHandler();
         super.onStop();
     }
@@ -84,21 +84,21 @@ public class PublicationListActivity extends AbstractActivity implements Publica
 
     @Override
     public void updatePublication(PublicationDto publication) {
-        experimentData.updatePublication(publication);
+        experimentDataProxy.updatePublication(publication);
     }
 
     @Override
     public void createPublication() {
-        experimentData.createPublication();
+        experimentDataProxy.createPublication();
     }
 
     @Override
     public void removePublications(List<PublicationDto> publications) {
-        experimentData.removePublications(publications);
+        experimentDataProxy.removePublications(publications);
     }
 
     private void loadAsync() {
-        experimentData.getPublicationsAsync(new AsyncCallback<List<PublicationDto>>() {
+        experimentDataProxy.getPublicationsAsync(new AsyncCallback<List<PublicationDto>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Can't load publication list.");
@@ -112,7 +112,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
     }
 
     private void setPublications(final List<PublicationDto> publications) {
-        ontologyData.getPublicationStatuses(new AsyncCallback<List<OntologyTerm>>() {
+        ontologyDataProxy.getPublicationStatuses(new AsyncCallback<List<OntologyTerm>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Can't load publication status options");

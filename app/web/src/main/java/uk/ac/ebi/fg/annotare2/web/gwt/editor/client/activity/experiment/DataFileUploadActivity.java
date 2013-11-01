@@ -28,8 +28,8 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ApplicationData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadView;
@@ -43,15 +43,15 @@ import java.util.Map;
 public class DataFileUploadActivity extends AbstractActivity implements DataFileUploadView.Presenter {
 
     private final DataFileUploadView view;
-    private final DataFiles dataFiles;
-    private final ApplicationData appData;
+    private final DataFilesProxy dataFilesProxy;
+    private final ApplicationDataProxy appData;
 
     private HandlerRegistration handlerRegistration;
 
     @Inject
-    public DataFileUploadActivity(DataFileUploadView view, DataFiles dataFiles, ApplicationData appData) {
+    public DataFileUploadActivity(DataFileUploadView view, DataFilesProxy dataFilesProxy, ApplicationDataProxy appData) {
         this.view = view;
-        this.dataFiles = dataFiles;
+        this.dataFilesProxy = dataFilesProxy;
         this.appData = appData;
     }
 
@@ -82,7 +82,7 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     }
 
     private void loadAsync() {
-        dataFiles.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
+        dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Server error: can't load file list");
@@ -108,16 +108,16 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
 
     @Override
     public void fileUploaded(String name) {
-        dataFiles.uploadFileAsync(name);
+        dataFilesProxy.uploadFileAsync(name);
     }
 
     @Override
     public void onFtpRegistrationFormSubmit(List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> callback) {
-        dataFiles.registryFtpFilesAsync(details, callback);
+        dataFilesProxy.registryFtpFilesAsync(details, callback);
     }
 
     @Override
     public void removeFile(DataFileRow dataFileRow) {
-        dataFiles.removeFile(dataFileRow);
+        dataFilesProxy.removeFile(dataFileRow);
     }
 }

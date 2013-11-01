@@ -26,9 +26,9 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ApplicationData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExperimentDetailsView;
 
@@ -44,23 +44,23 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
 
     private final PlaceController placeController;
 
-    private final ExperimentData experimentData;
+    private final ExperimentDataProxy experimentDataProxy;
 
-    private final OntologyData ontologyData;
+    private final OntologyDataProxy ontologyDataProxy;
 
-    private final ApplicationData applicationData;
+    private final ApplicationDataProxy applicationDataProxy;
 
     @Inject
     public ExperimentDetailsActivity(ExperimentDetailsView view,
                                      PlaceController placeController,
-                                     ExperimentData experimentData,
-                                     OntologyData ontologyData,
-                                     ApplicationData applicationData) {
+                                     ExperimentDataProxy experimentDataProxy,
+                                     OntologyDataProxy ontologyDataProxy,
+                                     ApplicationDataProxy applicationDataProxy) {
         this.view = view;
         this.placeController = placeController;
-        this.experimentData = experimentData;
-        this.ontologyData = ontologyData;
-        this.applicationData = applicationData;
+        this.experimentDataProxy = experimentDataProxy;
+        this.ontologyDataProxy = ontologyDataProxy;
+        this.applicationDataProxy = applicationDataProxy;
     }
 
     public ExperimentDetailsActivity withPlace(ExpInfoPlace place) {
@@ -76,7 +76,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
 
     @Override
     public void onStop() {
-        experimentData.updateDetails(view.getDetails());
+        experimentDataProxy.updateDetails(view.getDetails());
         super.onStop();
     }
 
@@ -85,7 +85,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
     }
 
     private void loadAsync() {
-        experimentData.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
+        experimentDataProxy.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Can't load experiment details.");
@@ -99,7 +99,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
     }
 
     private void setDetails(final ExperimentDetailsDto details) {
-        applicationData.getAeExperimentTypesAsync(new AsyncCallback<List<String>>() {
+        applicationDataProxy.getAeExperimentTypesAsync(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Can't load ArrayExpress Experiment Type options");
@@ -115,12 +115,12 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
 
     @Override
     public void saveDetails(ExperimentDetailsDto details) {
-        experimentData.updateDetails(details);
+        experimentDataProxy.updateDetails(details);
     }
 
     @Override
     public void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> callback) {
-        ontologyData.getExperimentalDesigns(callback);
+        ontologyDataProxy.getExperimentalDesigns(callback);
     }
 }
 

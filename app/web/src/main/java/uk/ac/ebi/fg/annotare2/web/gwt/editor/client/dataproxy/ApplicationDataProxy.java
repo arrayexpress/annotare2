@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ApplicationData {
+public class ApplicationDataProxy {
 
     private final DataServiceAsync dataService;
 
@@ -36,7 +36,7 @@ public class ApplicationData {
     private List<String> aeExperimentTypes;
 
     @Inject
-    public ApplicationData(DataServiceAsync dataService) {
+    public ApplicationDataProxy(DataServiceAsync dataService) {
         this.dataService = dataService;
     }
 
