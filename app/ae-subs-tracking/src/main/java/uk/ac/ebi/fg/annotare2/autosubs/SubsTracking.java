@@ -50,11 +50,10 @@ public class SubsTracking {
         this.properties = properties;
         if (properties.getAeSubsTrackingEnabled()) {
             try {
-                InitialContext context = new InitialContext();
-                DataSource dataSource = (DataSource) context.lookup( "java:/comp/env/jdbc/subsTrackingDataSource" );
+
                 Settings settings = new Settings()
                         .withRenderSchema(false);
-                this.jooqDslContext = DSL.using(dataSource, SQLDialect.MYSQL, settings);
+                this.jooqDslContext = DSL.using(new SubsTrackingConnectionProvider(), SQLDialect.MYSQL, settings);
             } catch (NamingException x) {
                 throw new RuntimeException(x);
             }
