@@ -381,10 +381,30 @@ public class MageTabGenerator {
                 arrayDesignAttribute.termSourceREF = ensureTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
                 assayNode.arrayDesigns.add(arrayDesignAttribute);
             }
+
+            Sample sample = findSample(assay);
+            for (SampleAttribute attribute : exp.getSampleAttributes()) {
+                if (!attribute.getType().isFactorValue()) {
+                    continue;
+                }
+                FactorValueAttribute attr = new FactorValueAttribute();
+                attr.type = attribute.getName();
+                attribute.getValueType().visit(AttributeValueTypeVisitor.visitFactorValue(attr));
+                attr.setAttributeValue(sample.getValue(attribute));
+                assayNode.factorValues.add(attr);
+            }
         }
 
         connect(prevNode, assayNode, ASSAYS, assay);
         return assayNode;
+    }
+
+    private Sample findSample(Assay assay) {
+        Collection<Sample> samples = exp.getSamples(assay.getExtract());
+        if (samples.size() != 1) {
+            throw new IllegalStateException("Too many samples per assya found: " + samples.size());
+        }
+        return samples.iterator().next();
     }
 
     private ScanNode createScanNode(Assay assay, SDRFNode assayNode) {
@@ -535,7 +555,7 @@ public class MageTabGenerator {
             if (attribute.getType().isCharacteristicOrFactorValue()) {
                 CharacteristicsAttribute attr = new CharacteristicsAttribute();
                 attr.type = attribute.getName();
-                attribute.getValueType().visit(new AttributeValueTypeVisitor(attr));
+                attribute.getValueType().visit(AttributeValueTypeVisitor.visitCharacteristic(attr));
                 attr.setAttributeValue(sample.getValue(attribute));
                 attributes.add(attr);
             }
@@ -563,14 +583,14 @@ public class MageTabGenerator {
     }
 
     private static String escape(String str) {
-        return "\"" + str.replaceAll("\"","\\\\\"") + "\"";
+        return "\"" + str.replaceAll("\"", "\\\\\"") + "\"";
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
-        private final CharacteristicsAttribute attribute;
+        private final FactorValueOrCharacteristicAttribute attribute;
 
-        private AttributeValueTypeVisitor(CharacteristicsAttribute attribute) {
+        private AttributeValueTypeVisitor(FactorValueOrCharacteristicAttribute attribute) {
             this.attribute = attribute;
         }
 
@@ -584,7 +604,7 @@ public class MageTabGenerator {
             unitAttribute.termAccessionNumber = valueType.getUnits().getAccession();
             unitAttribute.setAttributeValue(valueType.getUnits().getLabel());
             //TODO unitAttribute.termSourceREF = ??
-            this.attribute.unit = unitAttribute;
+            this.attribute.setUnit(unitAttribute);
         }
 
         @Override
@@ -593,7 +613,42 @@ public class MageTabGenerator {
 
         @Override
         public void visitTermValueType(TermAttributeValueType valueType) {
-            attribute.type = valueType.getBranch().getLabel();
+            attribute.setType(valueType.getBranch().getLabel());
         }
+
+        public static AttributeValueType.Visitor visitCharacteristic(final CharacteristicsAttribute attribute) {
+            return new AttributeValueTypeVisitor(new FactorValueOrCharacteristicAttribute() {
+                @Override
+                public void setUnit(UnitAttribute unitAttribute) {
+                    attribute.unit = unitAttribute;
+                }
+
+                @Override
+                public void setType(String label) {
+                    attribute.type = label;
+                }
+            });
+        }
+
+        public static AttributeValueType.Visitor visitFactorValue(final FactorValueAttribute attribute) {
+            return new AttributeValueTypeVisitor(new FactorValueOrCharacteristicAttribute() {
+                @Override
+                public void setUnit(UnitAttribute unitAttribute) {
+                    attribute.unit = unitAttribute;
+                }
+
+                @Override
+                public void setType(String label) {
+                    attribute.type = label;
+                }
+            });
+        }
+    }
+
+    private abstract static class FactorValueOrCharacteristicAttribute {
+
+        public abstract void setUnit(UnitAttribute unitAttribute);
+
+        public abstract void setType(String label);
     }
 }

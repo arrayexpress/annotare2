@@ -474,6 +474,16 @@ public class ExperimentProfile implements Serializable {
         return unmodifiableCollection(sampleMap.values());
     }
 
+    public Collection<Sample> getSamples(Extract extract) {
+        List<Sample> samples = new ArrayList<Sample>();
+        for(Sample sample : sample2Extracts.keySet()) {
+            if (sample2Extracts.get(sample).contains(extract)) {
+                samples.add(sample);
+            }
+        }
+        return samples;
+    }
+
     @JsonIgnore
     public Collection<Extract> getExtracts() {
         return unmodifiableCollection(extractMap.values());
