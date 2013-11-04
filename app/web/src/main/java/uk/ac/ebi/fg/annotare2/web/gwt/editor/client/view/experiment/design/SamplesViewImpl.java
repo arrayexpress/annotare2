@@ -55,11 +55,6 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                         presenter.getEfoTerms(),
                         new DialogCallback<List<SampleColumn>>() {
                             @Override
-                            public void onCancel() {
-                                // do nothing
-                            }
-
-                            @Override
                             public void onOkay(List<SampleColumn> columns) {
                                 updateColumns(columns);
                             }

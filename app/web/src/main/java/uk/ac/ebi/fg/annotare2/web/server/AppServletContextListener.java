@@ -29,6 +29,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
+import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
@@ -61,10 +62,13 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     private Set<URL> libPaths = newHashSet();
     private List<Service> servicesToStop = newArrayList();
+    private BrokerService brokerService;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         updateDb(servletContextEvent);
+
+        startActiveMqBroker();
 
         findMageTabCheckAnnotationPackages();
 
@@ -77,7 +81,10 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        stopActiveMQBroker();
+
         stopServices();
+
         super.contextDestroyed(servletContextEvent);
     }
 
@@ -181,4 +188,26 @@ public class AppServletContextListener extends GuiceServletContextListener {
             throw new RuntimeException(e);
         }
     }
+
+    private void startActiveMqBroker() {
+        try {
+            log.info("Starting local JMS broker...");
+            brokerService = new BrokerService();
+            brokerService.setBrokerName("localhost");
+            brokerService.setUseJmx(false);
+            brokerService.start();
+        } catch (Exception e) {
+            log.error("Can't start jms broker", e);
+        }
+    }
+
+    private void stopActiveMQBroker() {
+        try {
+            log.info("Stopping local JMS broker...");
+            brokerService.stop();
+        } catch (Exception e) {
+            log.error("Can't stop jms broker", e);
+        }
+    }
+
 }

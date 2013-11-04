@@ -51,9 +51,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     Button submitButton;
 
     @UiField
-    Anchor createNewLink;
-
-    @UiField
     Anchor importLink;
 
     @UiField
@@ -85,7 +82,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     public void setSubmissionType(SubmissionType type) {
         boolean isExperimentSubmission = type.isExperimentSubmission();
         validateButton.setVisible(isExperimentSubmission);
-        createNewLink.setVisible(isExperimentSubmission);
         exportLink.setVisible(isExperimentSubmission);
         importLink.setVisible(!isExperimentSubmission);
     }
@@ -142,25 +138,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     public void onSubmitButtonClick(ClickEvent event) {
         //final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
         presenter.submitSubmission();
-    }
-
-    @UiHandler("createNewLink")
-    public void onCreateLinkClick(ClickEvent event) {
-        if (Window.confirm(CONFIRMATION_MESSAGE)) {
-            final WaitingPopup popup = new WaitingPopup("Creating new submission, please wait...");
-            popup.positionAtWindowCenter();
-            presenter.discardSubmissionData(new AsyncCallback<Void>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    popup.showError(caught);
-                }
-
-                @Override
-                public void onSuccess(Void result) {
-                    Window.Location.reload();
-                }
-            });
-        }
     }
 
     @UiHandler("importLink")

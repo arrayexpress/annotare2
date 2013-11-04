@@ -115,11 +115,6 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                 settings,
                 new DialogCallback<ExperimentSettings>() {
                     @Override
-                    public void onCancel() {
-                        //ignore
-                    }
-
-                    @Override
                     public void onOkay(ExperimentSettings settings) {
                         if (presenter != null) {
                             presenter.saveSettings(settings);

@@ -64,6 +64,9 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("arrayDesign")
     private String arrayDesign;
 
+    @JsonProperty("experimentalDesigns")
+    private List<OntologyTerm> experimentalDesigns;
+
     @JsonProperty("contactMap")
     private Map<Integer, Contact> contactMap;
 
@@ -107,6 +110,7 @@ public class ExperimentProfile implements Serializable {
 
     public ExperimentProfile(@JsonProperty("type") ExperimentProfileType type) {
         this.type = type;
+        experimentalDesigns = newArrayList();
         contactMap = newLinkedHashMap();
         publicationMap = newLinkedHashMap();
 
@@ -195,6 +199,14 @@ public class ExperimentProfile implements Serializable {
 
     public void setArrayDesign(String arrayDesign) {
         this.arrayDesign = arrayDesign;
+    }
+
+    public Collection<OntologyTerm> getExperimentalDesigns() {
+        return unmodifiableCollection(experimentalDesigns);
+    }
+
+    public void setExperimentalDesigns(Collection<OntologyTerm> experimentalDesigns) {
+        this.experimentalDesigns = new ArrayList<OntologyTerm>(experimentalDesigns);
     }
 
     public Contact createContact() {

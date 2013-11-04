@@ -92,6 +92,10 @@ public class AnnotareEfoService implements EfoService {
         return efoSearch.searchByPrefix(prefix, branchAccession, limit);
     }
 
+    public Collection<EfoTerm> getSubTerms(EfoTerm term, int limit) {
+        return efoSearch.getSubTerms(term, limit);
+    }
+
     @Override
     public EfoTerm findTermByLabel(String label, String rootAccession) {
         return efoSearch.searchByLabel(label, rootAccession);

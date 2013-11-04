@@ -23,8 +23,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
@@ -40,12 +42,15 @@ public class PublicationListActivity extends AbstractActivity implements Publica
     private final PublicationListView view;
     private final ExperimentData experimentData;
     private HandlerRegistration criticalUpdateHandler;
+    private final OntologyData ontologyData;
 
     @Inject
     public PublicationListActivity(PublicationListView view,
-                                   ExperimentData experimentData) {
+                                   ExperimentData experimentData,
+                                   OntologyData ontologyData ) {
         this.view = view;
         this.experimentData = experimentData;
+        this.ontologyData = ontologyData;
     }
 
     @Override
@@ -89,6 +94,11 @@ public class PublicationListActivity extends AbstractActivity implements Publica
     @Override
     public void removePublications(List<PublicationDto> publications) {
         experimentData.removePublications(publications);
+    }
+
+    @Override
+    public void getPublicationStatuses(AsyncCallback<List<OntologyTerm>> callback) {
+        ontologyData.getPublicationStatuses(callback);
     }
 
     private void loadAsync() {

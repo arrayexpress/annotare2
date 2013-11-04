@@ -16,21 +16,25 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
+import com.google.common.base.Predicate;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
-import java.util.Date;
+import javax.annotation.Nullable;
+import java.util.*;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
@@ -41,6 +45,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
 public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
     interface Binder extends UiBinder<Widget, ExpDetailsViewImpl> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
@@ -55,17 +60,25 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     @UiField
     DateBox dateOfPublicRelease;
 
+    @UiField(provided = true)
+    ListBox experimentalDesignList;
+
     @UiField
-    ListBox experimentDesigns;
+    Button addExpDesignsButton;
+
+    @UiField
+    Button removeExpDesignsButton;
 
     private Presenter presenter;
 
+    private Map<String, OntologyTerm> experimentalDesigns;
+
     @Inject
     public ExpDetailsViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+        experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
 
-        experimentDesigns.addItem("TBA");
+        experimentalDesignList = new ListBox(true);
+        initWidget(Binder.BINDER.createAndBindUi(this));
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
         dateOfExperiment.setFormat(format);
@@ -86,6 +99,9 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         description.setText(details.getDescription());
         dateOfExperiment.setValue(details.getExperimentDate());
         dateOfPublicRelease.setValue(details.getPublicReleaseDate());
+
+        experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
+        addExperimentalDesigns(details.getExperimentalDesigns());
     }
 
     @Override
@@ -99,23 +115,92 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     }
 
     @UiHandler("title")
-    public void titleChanged(ChangeEvent event) {
+    void titleChanged(ChangeEvent event) {
         save();
     }
 
     @UiHandler("description")
-    public void descriptionChanged(ChangeEvent event) {
+    void descriptionChanged(ChangeEvent event) {
         save();
     }
 
     @UiHandler("dateOfExperiment")
-    public void dateOfExperimentChanged(ValueChangeEvent<Date> event) {
+    void dateOfExperimentChanged(ValueChangeEvent<Date> event) {
         save();
     }
 
     @UiHandler("dateOfPublicRelease")
-    public void dateOfPublicReleaseChanged(ValueChangeEvent<Date> event) {
+    void dateOfPublicReleaseChanged(ValueChangeEvent<Date> event) {
         save();
+    }
+
+    @UiHandler("addExpDesignsButton")
+    void addExperimentalDesignsClicked(ClickEvent event) {
+        if (presenter == null) {
+            return;
+        }
+        presenter.getExperimentalDesigns(new AsyncCallback<List<OntologyTermGroup>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //?
+            }
+
+            @Override
+            public void onSuccess(List<OntologyTermGroup> result) {
+                List<OntologyTermGroup> filteredResult = filterExperimentalDesigns(result);
+                if (filteredResult.isEmpty()) {
+                    // nothing to add
+                    return;
+                }
+                (new ExperimentalDesignsDialog(filteredResult, new DialogCallback<List<OntologyTerm>>() {
+                    @Override
+                    public void onOkay(List<OntologyTerm> ontologyTerms) {
+                        addExperimentalDesigns(ontologyTerms);
+                        save();
+                    }
+                })).show();
+            }
+        });
+    }
+
+    @UiHandler("removeExpDesignsButton")
+    void removeExperimentalDesignsClicked(ClickEvent event) {
+        for (int i = 0; i < experimentalDesignList.getItemCount(); i++) {
+            if (experimentalDesignList.isItemSelected(i)) {
+                experimentalDesigns.remove(experimentalDesignList.getValue(i));
+            }
+        }
+        renderExperimentalDesigns();
+    }
+
+    private void addExperimentalDesigns(Collection<OntologyTerm> termsToAdd) {
+        for (OntologyTerm term : termsToAdd) {
+            experimentalDesigns.put(term.getAccession(), term);
+        }
+        renderExperimentalDesigns();
+    }
+
+    private void renderExperimentalDesigns() {
+        experimentalDesignList.clear();
+        for (OntologyTerm term : experimentalDesigns.values()) {
+            experimentalDesignList.addItem(term.getLabel(), term.getAccession());
+        }
+    }
+
+    private List<OntologyTermGroup> filterExperimentalDesigns(List<OntologyTermGroup> designGroups) {
+        List<OntologyTermGroup> filtered = new ArrayList<OntologyTermGroup>();
+        for(OntologyTermGroup group : designGroups) {
+            OntologyTermGroup newGroup = group.filter(new Predicate<OntologyTerm>() {
+                @Override
+                public boolean apply(@Nullable OntologyTerm input) {
+                    return input != null && !experimentalDesigns.containsKey(input.getAccession());
+                }
+            });
+            if (!newGroup.isEmpty()) {
+                filtered.add(newGroup);
+            }
+        }
+        return filtered;
     }
 
     private ExperimentDetailsDto getResult() {
@@ -123,7 +208,8 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
                 title.getValue(),
                 description.getValue(),
                 dateOfExperiment.getValue(),
-                dateOfPublicRelease.getValue());
+                dateOfPublicRelease.getValue(),
+                experimentalDesigns.values());
     }
 
     private void save() {

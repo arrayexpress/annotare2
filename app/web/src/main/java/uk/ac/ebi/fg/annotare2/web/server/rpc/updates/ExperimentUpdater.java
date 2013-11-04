@@ -65,6 +65,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         exp.setDescription(details.getDescription());
         exp.setPublicReleaseDate(details.getPublicReleaseDate());
         exp.setExperimentDate(details.getExperimentDate());
+        exp.setExperimentalDesigns(details.getExperimentalDesigns());
     }
 
     @Override
@@ -104,6 +105,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         publication.setTitle(dto.getTitle());
         publication.setAuthors(dto.getAuthors());
         publication.setPubMedId(dto.getPubMedId());
+        publication.setDoi(dto.getDoi());
+        publication.setStatus(dto.getStatus());
     }
 
     @Override

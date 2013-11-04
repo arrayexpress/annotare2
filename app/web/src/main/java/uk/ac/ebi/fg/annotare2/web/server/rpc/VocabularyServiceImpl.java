@@ -31,6 +31,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class VocabularyServiceImpl extends RemoteServiceServlet implements VocabularyService {
 
     private final EfoService efoService;

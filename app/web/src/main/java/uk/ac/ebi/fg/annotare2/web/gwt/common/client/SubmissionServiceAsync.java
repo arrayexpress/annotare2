@@ -27,8 +27,6 @@ public interface SubmissionServiceAsync {
 
     void submitSubmission(long id, AsyncCallback<Void> async);
 
-    void discardSubmissionData(long id, AsyncCallback<Void> async);
-
     void getIdfTable(long id, AsyncCallback<Table> async);
 
     void getSdrfTable(long id, AsyncCallback<Table> async);

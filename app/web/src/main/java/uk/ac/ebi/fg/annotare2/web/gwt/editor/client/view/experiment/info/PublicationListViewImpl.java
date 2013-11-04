@@ -18,6 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.PublicationDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEventHandler;
@@ -25,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DisclosureListIt
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.PublicationView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,9 +59,27 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
     }
 
     @Override
-    public void setPublications(List<PublicationDto> publications) {
+    public void setPublications(final List<PublicationDto> publications) {
+        if (presenter != null) {
+            presenter.getPublicationStatuses(new AsyncCallback<List<OntologyTerm>>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    //ignore
+                }
+
+                @Override
+                public void onSuccess(List<OntologyTerm> result) {
+                    setPublications(publications, result);
+                }
+            });
+        } else {
+            setPublications(publications, Collections.<OntologyTerm>emptyList());
+        }
+    }
+
+    private void setPublications(List<PublicationDto> publications, List<OntologyTerm> publicationStatuses) {
         for (PublicationDto p : publications) {
-            addPublicationView(p);
+            addPublicationView(p, publicationStatuses);
         }
     }
 
@@ -71,8 +93,8 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
         return publications;
     }
 
-    private DisclosureListItem addPublicationView(PublicationDto p) {
-        final PublicationView view = new PublicationView(p);
+    private DisclosureListItem addPublicationView(PublicationDto p, List<OntologyTerm> publicationStatuses) {
+        final PublicationView view = new PublicationView(p, publicationStatuses);
         view.addContentChangeEventHandler(new ContentChangeEventHandler() {
             @Override
             public void onContentChange(ContentChangeEvent event) {
