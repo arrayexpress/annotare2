@@ -46,4 +46,6 @@ public interface SubmissionServiceAsync {
     void registryFtpFiles(long id, List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> async);
 
     void removeFile(long id, long fileId, AsyncCallback<Void> async);
+
+    void deleteSubmission(long id, AsyncCallback<Boolean> async);
 }

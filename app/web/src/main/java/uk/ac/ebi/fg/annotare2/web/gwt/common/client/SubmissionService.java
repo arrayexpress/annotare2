@@ -40,6 +40,8 @@ public interface SubmissionService extends RemoteService {
 
     public static final String NAME = "submissionService";
 
+    boolean deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
+
     SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 
     ArrayDesignDetailsDto getArrayDesignDetails(long id) throws ResourceNotFoundException, NoPermissionException;

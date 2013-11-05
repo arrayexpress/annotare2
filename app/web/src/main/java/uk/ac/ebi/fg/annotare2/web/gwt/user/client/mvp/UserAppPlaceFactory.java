@@ -28,24 +28,14 @@ public class UserAppPlaceFactory {
 
     @Inject
     SubmissionViewPlace.Tokenizer sbmViewPlaceTokenizer;
-
     @Inject
     SubmissionListPlace.Tokenizer sbmListPlaceTokenizer;
-
-
-    @Inject
-    Provider<SubmissionViewPlace> sbmViewPlaceProvider;
 
     @Inject
     Provider<SubmissionListPlace> sbmListPlaceProvider;
 
-
     public SubmissionViewPlace.Tokenizer getSubmissionViewPlaceTokenizer() {
         return sbmViewPlaceTokenizer;
-    }
-
-    public SubmissionViewPlace getSubmissionViewPlace() {
-        return sbmViewPlaceProvider.get();
     }
 
     public SubmissionListPlace.Tokenizer getSubmissionListPlaceTokenizer() {

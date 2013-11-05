@@ -93,6 +93,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional
     @Override
+    public boolean deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
+        //TODO
+        return true;
+    }
+
+    @Transactional
+    @Override
     public SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = getSubmission(id, Permission.VIEW);

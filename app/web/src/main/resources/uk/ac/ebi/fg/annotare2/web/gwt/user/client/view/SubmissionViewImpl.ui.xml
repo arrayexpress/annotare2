@@ -29,7 +29,7 @@
         }
 
         .submissionTitle h1 {
-            margin:0;
+            margin: 0;
             padding-bottom: 0;
         }
 
@@ -52,28 +52,55 @@
         .editButton:hover {
             -webkit-box-shadow: inset 0 0 5px white;
             -moz-box-shadow: inset 0 0 5px white;
-            box-shadow: inset 0 0 5px  white;
+            box-shadow: inset 0 0 5px white;
+        }
+
+        .deleteButton {
+            border: 1px solid white;
+            background: #48877C;
+            color: white;
+        }
+
+        .deleteButton:hover {
+            -webkit-box-shadow: inset 0 0 5px white;
+            -moz-box-shadow: inset 0 0 5px white;
+            box-shadow: inset 0 0 5px white;
         }
     </ui:style>
 
     <g:HTMLPanel>
         <div class="{style.submissionView}">
             <div class="{style.submissionTitle}">
-                <table cellpadding="0" cellspacing="0">
-                    <tbody>
+                <table width="100%">
                     <tr>
-                        <td style="padding-left:0">
-                            <h1 ui:field="accession"></h1>
+                        <td>
+                            <table cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-left:0">
+                                            <h1 ui:field="accession"></h1>
+                                        </td>
+                                        <td style="border-left: 1px solid #ddd;">
+                                            <b>
+                                                <span ui:field="status"/>
+                                            </b>
+                                        </td>
+                                        <td style="border-left: 1px solid #ddd;">
+                                            <g:Button ui:field="editButton" addStyleNames="{style.editButton}">View /
+                                                Edit
+                                            </g:Button>
+                                            <span style="color:#aaa;font-style:italic">Last updated:
+                                                <span ui:field="created"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </td>
-                        <td style="border-left: 1px solid #ddd;"><b><span ui:field="status"/></b></td>
-                        <td style="border-left: 1px solid #ddd;">
-                            <g:Button ui:field="editButton" addStyleNames="{style.editButton}">View / Edit</g:Button>
-                            <span style="color:#aaa;font-style:italic">Last updated:
-                                <span ui:field="created"/>
-                            </span>
+                        <td align="right">
+                            <g:Button ui:field="deleteButton" addStyleNames="{style.deleteButton}">Delete</g:Button>
                         </td>
                     </tr>
-                    </tbody>
                 </table>
             </div>
             <div style="padding-top:10px; padding-bottom:10px">
