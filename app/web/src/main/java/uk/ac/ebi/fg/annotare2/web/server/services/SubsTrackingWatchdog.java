@@ -36,6 +36,8 @@ import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -108,7 +110,7 @@ public class SubsTrackingWatchdog {
                     break;
 
                 case IN_CURATION:
-                    if (!subsTracking.isInCuration(submission.getSubsTrackingId())) {
+                    if (!isInCuration(submission.getSubsTrackingId())) {
                         submission.setStatus(SubmissionStatus.IN_PROGRESS);
                         submission.setOwnedBy(submission.getCreatedBy());
                         submissionManager.save(submission);
@@ -118,17 +120,20 @@ public class SubsTrackingWatchdog {
     }
 
     private boolean submitSubmission(Submission submission) {
+        Connection subsTrackingConnection = null;
         try {
             File exportDir;
 
             if (properties.getAeSubsTrackingEnabled()) {
+                subsTrackingConnection = subsTracking.getConnection();
+                subsTrackingConnection.setAutoCommit(false);
 
                 Integer subsTrackingId = submission.getSubsTrackingId();
                 if (null == subsTrackingId) {
-                    subsTrackingId = subsTracking.addSubmission(submission);
+                    subsTrackingId = subsTracking.addSubmission(subsTrackingConnection, submission);
                     submission.setSubsTrackingId(subsTrackingId);
                 } else {
-                    subsTracking.updateSubmission(submission);
+                    subsTracking.updateSubmission(subsTrackingConnection, submission);
                 }
 
                 exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
@@ -146,10 +151,11 @@ public class SubsTrackingWatchdog {
             }
 
             if (submission instanceof ExperimentSubmission) {
-                exportSubmissionFiles((ExperimentSubmission)submission, exportDir);
+                exportSubmissionFiles(subsTrackingConnection, (ExperimentSubmission)submission, exportDir);
             }
             if (properties.getAeSubsTrackingEnabled()) {
-                subsTracking.sendSubmission(submission.getSubsTrackingId());
+                subsTracking.sendSubmission(subsTrackingConnection, submission.getSubsTrackingId());
+                subsTrackingConnection.commit();
                 emailer.send(
                         new String[]{"kolais@ebi.ac.uk"},
                         null,
@@ -160,12 +166,20 @@ public class SubsTrackingWatchdog {
 
             return true;
         } catch (Exception x) {
-            //
+            try {
+                subsTrackingConnection.rollback();
+            } catch (SQLException xx) {
+                //
+            }
+        } finally {
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTracking.releaseConnection(subsTrackingConnection);
+            }
         }
         return false;
     }
 
-    private void exportSubmissionFiles(ExperimentSubmission submission, File exportDirectory)
+    private void exportSubmissionFiles(Connection connection, ExperimentSubmission submission, File exportDirectory)
             throws DataSerializationException, ParseException, IOException {
         ExperimentProfile exp = submission.getExperimentProfile();
         Integer subsTrackingId = submission.getSubsTrackingId();
@@ -176,6 +190,7 @@ public class SubsTrackingWatchdog {
         if (properties.getAeSubsTrackingEnabled()) {
             int version = 1;
             while (subsTracking.hasMageTabFileAdded(
+                    connection,
                     subsTrackingId,
                     fileName + "_v" + version + ".idf.txt")) {
                 version++;
@@ -190,8 +205,8 @@ public class SubsTrackingWatchdog {
         mageTab.getIdfFile().setWritable(true, false);
 
         if (properties.getAeSubsTrackingEnabled()) {
-            subsTracking.deleteFiles(subsTrackingId);
-            subsTracking.addMageTabFile(subsTrackingId, mageTab.getIdfFile().getName());
+            subsTracking.deleteFiles(connection, subsTrackingId);
+            subsTracking.addMageTabFile(connection, subsTrackingId, mageTab.getIdfFile().getName());
         }
 
         exportDirectory = new File(exportDirectory, "unpacked");
@@ -214,10 +229,18 @@ public class SubsTrackingWatchdog {
                 Files.copy(dataFileManager.getFile(dataFile), f);
                 f.setWritable(true, false);
                 if (properties.getAeSubsTrackingEnabled()) {
-                    subsTracking.addDataFile(subsTrackingId, dataFile.getName());
+                    subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
                 }
             }
         }
     }
 
+    private boolean isInCuration(Integer subsTrackingId) {
+        Connection dbConnection = subsTracking.getConnection();
+        try {
+            return subsTracking.isInCuration(dbConnection, subsTrackingId);
+        } finally {
+            subsTracking.releaseConnection(dbConnection);
+        }
+    }
 }

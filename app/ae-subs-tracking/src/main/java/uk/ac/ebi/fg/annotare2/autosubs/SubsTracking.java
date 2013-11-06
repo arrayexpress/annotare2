@@ -24,6 +24,8 @@ import org.jooq.SQLDialect;
 import org.jooq.Select;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.impl.DefaultConnectionProvider;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord;
@@ -35,6 +37,8 @@ import uk.ac.ebi.fg.annotare2.db.om.Submission;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -42,36 +46,44 @@ import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 
 public class SubsTracking {
     private final SubsTrackingProperties properties;
-    private final DSLContext jooqDslContext;
-    private static final String STATUS_PENDING = "Waiting";
+
+    private final static String STATUS_PENDING = "Waiting";
+    private final static String SUBS_TRACKING_DATA_SOURCE = "java:/comp/env/jdbc/subsTrackingDataSource";
 
     @Inject
     public SubsTracking( SubsTrackingProperties properties ) {
         this.properties = properties;
-        if (properties.getAeSubsTrackingEnabled()) {
-            try {
+    }
 
-                Settings settings = new Settings()
-                        .withRenderSchema(false);
-                this.jooqDslContext = DSL.using(new SubsTrackingConnectionProvider(), SQLDialect.MYSQL, settings);
-            } catch (NamingException x) {
-                throw new RuntimeException(x);
-            }
-        } else {
-            this.jooqDslContext = null;
+    public Connection getConnection() {
+        try {
+            return ((DataSource)(new InitialContext().lookup(SUBS_TRACKING_DATA_SOURCE))).getConnection();
+        } catch (Exception x) {
+            throw new RuntimeException(x);
         }
     }
 
-    public Integer addSubmission( Submission submission ) {
+    public void releaseConnection(Connection connection) {
+        try {
+            if (null != connection && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException x) {
+            throw new RuntimeException(x);
+        }
+    }
+
+    public Integer addSubmission(Connection connection, Submission submission) {
 
         Integer subsTrackingId = null;
+        DSLContext context = getContext(connection);
 
         if (submission instanceof ExperimentSubmission) {
 
             try {
-                Integer userId = getAnnotareUserId();
+                Integer userId = getAnnotareUserId(context);
                 ExperimentsRecord r =
-                        getContext().insertInto(EXPERIMENTS)
+                        context.insertInto(EXPERIMENTS)
                                 .set(EXPERIMENTS.IS_DELETED, 0)
                                 .set(EXPERIMENTS.IN_CURATION, 0)
                                 .set(EXPERIMENTS.USER_ID, userId)
@@ -95,11 +107,11 @@ public class SubsTracking {
         return subsTrackingId;
     }
 
-    public void updateSubmission( Submission submission ) {
+    public void updateSubmission(Connection connection, Submission submission) {
         if (submission instanceof ExperimentSubmission) {
             try {
                 Timestamp updateDate = new Timestamp(new Date().getTime());
-                getContext().update(EXPERIMENTS)
+                getContext(connection).update(EXPERIMENTS)
                         .set(EXPERIMENTS.IS_DELETED, 0)
                         .set(EXPERIMENTS.IN_CURATION, 0)
                         .set(EXPERIMENTS.DATE_LAST_EDITED, updateDate)
@@ -108,6 +120,7 @@ public class SubsTracking {
                         .set(EXPERIMENTS.NAME, submission.getTitle())
                         .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, ((ExperimentSubmission) submission).getExperimentProfile().getDescription())
                         .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
+                        .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isMicroarray() ? 0 : 1)
                         .execute();
 
             } catch (DataSerializationException x) {
@@ -118,9 +131,9 @@ public class SubsTracking {
         }
     }
 
-    public void sendSubmission( Integer subsTrackingId ) {
+    public void sendSubmission(Connection connection, Integer subsTrackingId) {
         if (null != subsTrackingId) {
-            getContext().update(EXPERIMENTS)
+            getContext(connection).update(EXPERIMENTS)
                     .set(EXPERIMENTS.STATUS, STATUS_PENDING)
                     .set(EXPERIMENTS.IN_CURATION, 1)
                     .where(EXPERIMENTS.ID.equal(subsTrackingId))
@@ -128,26 +141,28 @@ public class SubsTracking {
         }
     }
 
-    public void deleteFiles( Integer subsTrackingId ) {
+    public void deleteFiles(Connection connection, Integer subsTrackingId) {
+        DSLContext context = getContext(connection);
+
         if (null != subsTrackingId) {
-            getContext().update(SPREADSHEETS)
+            context.update(SPREADSHEETS)
                     .set(SPREADSHEETS.IS_DELETED, 1)
                     .where(SPREADSHEETS.EXPERIMENT_ID.equal(subsTrackingId))
                     .execute();
 
-            getContext().update(DATA_FILES)
+            context.update(DATA_FILES)
                     .set(DATA_FILES.IS_DELETED, 1)
                     .where(DATA_FILES.EXPERIMENT_ID.equal(subsTrackingId))
                     .execute();
         }
     }
 
-    public Integer addMageTabFile( Integer subsTrackingId, String fileName ) {
+    public Integer addMageTabFile(Connection connection, Integer subsTrackingId, String fileName) {
         Integer spreadsheetId = null;
 
         if (null != subsTrackingId) {
             SpreadsheetsRecord r =
-                    getContext().insertInto(SPREADSHEETS)
+                    getContext(connection).insertInto(SPREADSHEETS)
                             .set(SPREADSHEETS.IS_DELETED, 0)
                             .set(SPREADSHEETS.EXPERIMENT_ID, subsTrackingId)
                             .set(SPREADSHEETS.NAME, fileName)
@@ -160,10 +175,10 @@ public class SubsTracking {
         return spreadsheetId;
     }
 
-    public boolean hasMageTabFileAdded( Integer subsTrackingId, String fileName ) {
+    public boolean hasMageTabFileAdded(Connection connection, Integer subsTrackingId, String fileName) {
         if (null != subsTrackingId) {
             Integer count =
-                    getContext().selectCount()
+                    getContext(connection).selectCount()
                             .from(SPREADSHEETS)
                             .where(SPREADSHEETS.EXPERIMENT_ID.equal(subsTrackingId)
                                     .and(SPREADSHEETS.NAME.equal(fileName)))
@@ -175,13 +190,13 @@ public class SubsTracking {
         }
     }
 
-    public Integer addDataFile( Integer subsTrackingId, String fileName ) {
+    public Integer addDataFile(Connection connection, Integer subsTrackingId, String fileName) {
         Integer dataFileId = null;
 
         if (null != subsTrackingId) {
             //try {
             DataFilesRecord r =
-                    getContext().insertInto(DATA_FILES)
+                    getContext(connection).insertInto(DATA_FILES)
                             .set(DATA_FILES.IS_DELETED, 0)
                             .set(DATA_FILES.IS_UNPACKED, 1)
                             .set(DATA_FILES.EXPERIMENT_ID, subsTrackingId)
@@ -196,10 +211,10 @@ public class SubsTracking {
         return dataFileId;
     }
 
-    public boolean isInCuration( Integer subsTrackingId ) {
+    public boolean isInCuration(Connection connection, Integer subsTrackingId) {
         if (null != subsTrackingId) {
             ExperimentsRecord r =
-                    getContext().selectFrom(EXPERIMENTS)
+                    getContext(connection).selectFrom(EXPERIMENTS)
                         .where(EXPERIMENTS.ID.equal(subsTrackingId))
                         .fetchOne();
 
@@ -211,21 +226,21 @@ public class SubsTracking {
         return false;
     }
 
-    private Integer getAnnotareUserId() {
+    private Integer getAnnotareUserId(DSLContext context) {
         String subsTrackingUser = properties.getAeSubsTrackingUser();
         if (null == subsTrackingUser || "".equals(subsTrackingUser) ) {
             throw new RuntimeException("Submission tracking user name is not defined in the configuration");
         }
 
         UsersRecord r =
-                getContext().selectFrom(USERS)
+                context.selectFrom(USERS)
                         .where(USERS.LOGIN.equal(subsTrackingUser))
                         .and(USERS.IS_DELETED.equal(0))
                         .fetchOne();
 
         if (null == r) {
             // here we create the user
-            r = getContext().insertInto(USERS)
+            r = context.insertInto(USERS)
                     .set(USERS.LOGIN, subsTrackingUser)
                     .set(USERS.PASSWORD, RandomStringUtils.randomAlphanumeric(16))
                     .set(USERS.IS_DELETED, 0)
@@ -235,7 +250,18 @@ public class SubsTracking {
         return ( null != r ) ? r.getId() : null;
     }
 
-    private DSLContext getContext() {
-        return this.jooqDslContext;
+    private DSLContext getContext(Connection connection) {
+        if (properties.getAeSubsTrackingEnabled()) {
+            try {
+                Settings settings = new Settings()
+                        .withRenderSchema(false);
+                return DSL.using(new DefaultConnectionProvider(connection), SQLDialect.MYSQL, settings);
+            } catch (Exception x) {
+                throw new RuntimeException(x);
+            }
+        } else {
+            return null;
+        }
+
     }
 }
