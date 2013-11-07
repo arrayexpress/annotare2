@@ -20,7 +20,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.Filters;
 import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
 
 import javax.persistence.*;
@@ -30,6 +29,7 @@ import java.util.Date;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static uk.ac.ebi.fg.annotare2.db.om.FilterNames.NONE_DELETED_SUBMISSIONS_FILTER;
 
 /**
  * @author Olga Melnichuk
@@ -38,10 +38,8 @@ import static com.google.common.collect.Sets.newHashSet;
 @Table(name = "submissions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@FilterDef(name = "ignoreDeletedSubmissions")
-//@Filters({
-@Filter(name = "ignoreDeletedSubmissions", condition = "deleted <> 1")
-//})
+@FilterDef(name = NONE_DELETED_SUBMISSIONS_FILTER, defaultCondition = "deleted = 0")
+@Filter(name = NONE_DELETED_SUBMISSIONS_FILTER)
 public abstract class Submission implements HasEffectiveAcl {
 
     @Id
@@ -172,7 +170,7 @@ public abstract class Submission implements HasEffectiveAcl {
         return new ByteArrayInputStream((str == null ? "" : str).getBytes(Charsets.UTF_8));
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

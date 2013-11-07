@@ -18,7 +18,6 @@ package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.inject.Inject;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
@@ -44,8 +43,7 @@ public class HibernateSessionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            Session session = sessionFactory.openSession();
-            session.enableFilter("ignoreDeletedSubmissions");
+            sessionFactory.openSession();
             log.debug("Hibernate session has been opened");
 
             chain.doFilter(request, response);

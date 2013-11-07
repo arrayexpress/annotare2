@@ -51,10 +51,17 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
 
     @Override
     public Submission get(long id) throws RecordNotFoundException {
-        return get(id, Submission.class);
+        return get(id, false);
     }
 
-
+    @Override
+    public Submission get(long id, boolean allowDeleted) throws RecordNotFoundException {
+        Submission submission = get(id, Submission.class);
+        if (submission.isDeleted() && !allowDeleted) {
+            throw new RecordNotFoundException("Object of class=" + Submission.class + " with id=" + id + " was not found");
+        }
+        return submission;
+    }
 
     @Override
     public ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException {

@@ -16,12 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.db.om;
 
+import org.hibernate.annotations.Filter;
 import uk.ac.ebi.fg.annotare2.db.om.enums.Permission;
 
 import javax.persistence.*;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static uk.ac.ebi.fg.annotare2.db.om.FilterNames.NONE_DELETED_SUBMISSIONS_FILTER;
 
 /**
  * @author Olga Melnichuk
@@ -44,6 +46,7 @@ public class User {
     @OrderBy("role ASC")
     private List<UserRole> roles;
 
+    @Filter(name = NONE_DELETED_SUBMISSIONS_FILTER)
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "createdBy")
     @OrderBy("created DESC")
     private List<Submission> submissions;
