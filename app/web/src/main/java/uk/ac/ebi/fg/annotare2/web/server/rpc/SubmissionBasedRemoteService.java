@@ -69,6 +69,10 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
         submissionManager.save(submission);
     }
 
+    protected void deleteSubmissionSoftly(Submission submission) {
+        submissionManager.deleteSubmissionSoftly(submission);
+    }
+
     protected static UnexpectedException unexpected(Throwable e) {
         log.error("server error", e);
         return new UnexpectedException("Unexpected server error", e);

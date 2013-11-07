@@ -18,6 +18,9 @@ package uk.ac.ebi.fg.annotare2.db.om;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.Filters;
 import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
 
 import javax.persistence.*;
@@ -35,6 +38,10 @@ import static com.google.common.collect.Sets.newHashSet;
 @Table(name = "submissions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@FilterDef(name = "ignoreDeletedSubmissions")
+//@Filters({
+@Filter(name = "ignoreDeletedSubmissions", condition = "deleted <> 1")
+//})
 public abstract class Submission implements HasEffectiveAcl {
 
     @Id
@@ -73,6 +80,9 @@ public abstract class Submission implements HasEffectiveAcl {
 
     @Column(name = "subsTrackingId")
     private Integer subsTrackingId;
+
+    @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean deleted;
 
     protected Submission() {
         this(null);
@@ -162,7 +172,13 @@ public abstract class Submission implements HasEffectiveAcl {
         return new ByteArrayInputStream((str == null ? "" : str).getBytes(Charsets.UTF_8));
     }
 
-    public abstract boolean hasNoData();
+    public Boolean getDeleted() {
+        return deleted;
+    }
 
-    public abstract void discardAll();
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public abstract boolean hasNoData();
 }

@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.db.dao.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.inject.Inject;
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
@@ -54,6 +53,8 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
     public Submission get(long id) throws RecordNotFoundException {
         return get(id, Submission.class);
     }
+
+
 
     @Override
     public ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException {
@@ -100,6 +101,12 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
         ArrayDesignSubmission submission = new ArrayDesignSubmission(user);
         save(submission);
         return submission;
+    }
+
+    @Override
+    public void softDelete(Submission submission) {
+        submission.setDeleted(true);
+        save(submission);
     }
 
     @Override

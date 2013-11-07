@@ -87,17 +87,15 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     @Override
     public void deleteSubmission() {
         if (submissionId != null) {
-            submissionService.deleteSubmission(submissionId, new AsyncCallbackWrapper<Boolean>() {
+            submissionService.deleteSubmission(submissionId, new AsyncCallbackWrapper<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     Window.alert("Server error: can't delete submission");
                 }
 
                 @Override
-                public void onSuccess(Boolean result) {
-                    if (result) {
+                public void onSuccess(Void result) {
                         goTo(new SubmissionListPlace());
-                    }
                 }
             });
         }

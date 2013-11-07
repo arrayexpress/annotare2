@@ -37,4 +37,10 @@
             INSERT INTO user_roles (user, role) VALUES (@curatorId, 'CURATOR');
         </sql>
     </changeSet>
+    <changeSet id="addDeleteColumn2Submissions" author="olkin">
+        <sql>
+            ALTER TABLE submissions ADD deleted TINYINT(1) NOT NULL DEFAULT 0;
+            ALTER TABLE data_files ADD deleted TINYINT(1) NOT NULL DEFAULT 0;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

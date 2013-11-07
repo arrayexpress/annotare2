@@ -46,4 +46,8 @@ public interface SubmissionDao extends HasEffectiveAcl {
     ArrayDesignSubmission createArrayDesignSubmission(User user);
 
     Acl getAcl();
+
+    void softDelete(Submission submission);
+
+    void delete(Submission submission);
 }

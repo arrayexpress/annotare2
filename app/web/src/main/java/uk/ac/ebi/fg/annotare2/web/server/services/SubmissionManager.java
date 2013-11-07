@@ -103,4 +103,8 @@ public class SubmissionManager {
     public void save(Submission submission) {
         submissionDao.save(submission);
     }
+
+    public void deleteSubmissionSoftly(Submission submission) {
+        submissionDao.softDelete(submission);
+    }
 }
