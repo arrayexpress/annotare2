@@ -165,18 +165,18 @@ public class SubsTrackingWatchdog {
             }
 
             return true;
-        } catch (Exception x) {
+        } catch (Throwable x) {
             try {
                 subsTrackingConnection.rollback();
             } catch (SQLException xx) {
                 //
             }
+            throw new RuntimeException(x);
         } finally {
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTracking.releaseConnection(subsTrackingConnection);
             }
         }
-        return false;
     }
 
     private void exportSubmissionFiles(Connection connection, ExperimentSubmission submission, File exportDirectory)
