@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -36,7 +35,6 @@ import static java.util.Collections.unmodifiableCollection;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExperimentProfile implements Serializable {
 

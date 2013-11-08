@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -33,7 +32,6 @@ import static org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class MultiSets<K, V> implements Serializable {
 

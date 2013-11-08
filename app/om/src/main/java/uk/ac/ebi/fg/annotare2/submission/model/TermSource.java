@@ -16,14 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
-
 import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 public class TermSource implements Serializable {
 
     public static TermSource ARRAY_EXPRESS_TERM_SOURCE = new TermSource("ArrayExpress", "", "http://www.ebi.ac.uk/arrayexpress/");

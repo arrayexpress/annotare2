@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -26,7 +25,6 @@ import java.util.Date;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArrayDesignHeader implements Serializable {
 

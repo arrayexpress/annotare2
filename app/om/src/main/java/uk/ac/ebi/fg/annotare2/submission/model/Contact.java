@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -30,7 +29,6 @@ import static java.util.Collections.unmodifiableList;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Contact implements Serializable {
 

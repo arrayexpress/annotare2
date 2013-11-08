@@ -16,12 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
-
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 public class NumericAttributeValueType extends AttributeValueType {
 
     private OntologyTerm units;

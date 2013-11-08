@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -28,7 +27,6 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Protocol implements Serializable {
 

@@ -16,12 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
-
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 public interface HasProtocolAssignment {
 
     boolean hasProtocol(Protocol protocol);

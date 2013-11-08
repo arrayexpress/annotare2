@@ -16,14 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
-
 import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 public class LabeledExtract implements Serializable, HasProtocolAssignment {
 
     private Assay assay;

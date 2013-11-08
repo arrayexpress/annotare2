@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -27,7 +26,6 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SampleAttribute implements Serializable {
 

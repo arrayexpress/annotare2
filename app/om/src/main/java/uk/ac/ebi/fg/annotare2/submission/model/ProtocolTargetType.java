@@ -16,14 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.google.common.annotations.GwtCompatible;
-
 import java.util.*;
 
 /**
  * @author Olga Melnichuk
  */
-@GwtCompatible
 public enum ProtocolTargetType {
     EXTRACTS("extracts") {
         @Override
