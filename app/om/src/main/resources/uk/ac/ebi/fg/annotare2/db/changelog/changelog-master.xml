@@ -48,4 +48,14 @@
             ALTER TABLE submissions ADD updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP();
         </sql>
     </changeSet>
+    <changeSet id="update2Utf8Charset" author="olkin">
+        <sql>
+            ALTER TABLE users CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE user_roles CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE acl CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE acl_entries CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE submissions CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE data_files CONVERT TO CHARACTER SET utf8;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
