@@ -42,7 +42,7 @@
                 <tbody>
                     <tr>
                         <td class="{style.title}">
-                            Title
+                            Title &#42;
                         </td>
                         <td>
                             <g:TextArea width="90%" visibleLines="2" ui:field="title"/>
@@ -50,10 +50,19 @@
                     </tr>
                     <tr>
                         <td class="{style.title}">
-                            Description
+                            Description &#42;
                         </td>
                         <td>
                             <g:TextArea width="90%" visibleLines="4" ui:field="description"/>
+                            <br/><span style="font-size:0.9em;font-style:italic;color:gray">(at least 50 characters)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="{style.title}">
+                            ArrayExpress Experiment Type &#42;
+                        </td>
+                        <td>
+                            <g:ListBox width="300px" ui:field="aeExperimentType"/>
                         </td>
                     </tr>
                     <tr>

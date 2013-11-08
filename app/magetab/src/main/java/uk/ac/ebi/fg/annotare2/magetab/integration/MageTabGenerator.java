@@ -33,6 +33,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
 import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolTargetType.*;
+import static uk.ac.ebi.fg.annotare2.configmodel.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
@@ -62,6 +63,10 @@ public class MageTabGenerator {
     }
 
     private void generateIdf(IDF idf) {
+        if (!isNullOrEmpty(exp.getAeExperimentType())) {
+            idf.addComment("AEExperimentType", exp.getAeExperimentType());
+        }
+
         idf.investigationTitle = notNull(exp.getTitle());
         idf.experimentDescription = notNull(exp.getDescription());
         idf.publicReleaseDate = notNull(formatDate(exp.getPublicReleaseDate()));
@@ -71,7 +76,7 @@ public class MageTabGenerator {
         for (OntologyTerm term : exp.getExperimentalDesigns()) {
             idf.experimentalDesign.add(notNull(term.getLabel()));
             idf.experimentalDesignTermAccession.add(notNull(term.getAccession()));
-            idf.experimentalDesignTermSourceREF.add(ensureTermSource(TermSource.EFO_TERM_SOURCE).getName());
+            idf.experimentalDesignTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
         }
 
         for (Contact contact : exp.getContacts()) {
@@ -94,7 +99,7 @@ public class MageTabGenerator {
             OntologyTerm status = publication.getStatus();
             idf.publicationStatus.add(notNull(status == null ? null : status.getLabel()));
             idf.publicationStatusTermAccession.add(notNull(status == null ? null : status.getAccession()));
-            idf.publicationStatusTermSourceREF.add(notNull(status == null ? null : ensureTermSource(TermSource.EFO_TERM_SOURCE).getName()));
+            idf.publicationStatusTermSourceREF.add(notNull(status == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
         }
 
         for (Protocol protocol : exp.getProtocols()) {
@@ -102,9 +107,20 @@ public class MageTabGenerator {
             idf.protocolDescription.add(notNull(protocol.getDescription()));
             idf.protocolType.add(notNull(protocol.getType().getLabel()));
             idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
-            idf.protocolTermSourceREF.add(ensureTermSource(TermSource.EFO_TERM_SOURCE).getName());
+            idf.protocolTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
             idf.protocolHardware.add(notNull(protocol.getHardware()));
             idf.protocolSoftware.add(notNull(protocol.getSoftware()));
+        }
+
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (!attribute.getType().isFactorValue()) {
+                continue;
+            }
+            OntologyTerm term = attribute.getTerm();
+            idf.experimentalFactorName.add(notNull(attribute.getName()));
+            idf.experimentalFactorType.add(notNull(term == null ? null : term.getLabel()));
+            idf.experimentalFactorTermAccession.add(notNull(term == null ? null : term.getAccession()));
+            idf.experimentalFactorTermSourceREF.add(notNull(term == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
         }
     }
 
@@ -365,10 +381,30 @@ public class MageTabGenerator {
                 arrayDesignAttribute.termSourceREF = ensureTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
                 assayNode.arrayDesigns.add(arrayDesignAttribute);
             }
+
+            Sample sample = findSample(assay);
+            for (SampleAttribute attribute : exp.getSampleAttributes()) {
+                if (!attribute.getType().isFactorValue()) {
+                    continue;
+                }
+                FactorValueAttribute attr = new FactorValueAttribute();
+                attr.type = attribute.getName();
+                attribute.getValueType().visit(AttributeValueTypeVisitor.visitFactorValue(attr));
+                attr.setAttributeValue(sample.getValue(attribute));
+                assayNode.factorValues.add(attr);
+            }
         }
 
         connect(prevNode, assayNode, ASSAYS, assay);
         return assayNode;
+    }
+
+    private Sample findSample(Assay assay) {
+        Collection<Sample> samples = exp.getSamples(assay.getExtract());
+        if (samples.size() != 1) {
+            throw new IllegalStateException("Too many samples per assya found: " + samples.size());
+        }
+        return samples.iterator().next();
     }
 
     private ScanNode createScanNode(Assay assay, SDRFNode assayNode) {
@@ -516,10 +552,10 @@ public class MageTabGenerator {
     private List<CharacteristicsAttribute> extractCharacteristicsAttributes(Sample sample) {
         List<CharacteristicsAttribute> attributes = new ArrayList<CharacteristicsAttribute>();
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
-            if (attribute.getType().isCharacteristic()) {
+            if (attribute.getType().isCharacteristicOrFactorValue()) {
                 CharacteristicsAttribute attr = new CharacteristicsAttribute();
                 attr.type = attribute.getName();
-                attribute.getValueType().visit(new AttributeValueTypeVisitor(attr));
+                attribute.getValueType().visit(AttributeValueTypeVisitor.visitCharacteristic(attr));
                 attr.setAttributeValue(sample.getValue(attribute));
                 attributes.add(attr);
             }
@@ -539,18 +575,22 @@ public class MageTabGenerator {
     }
 
     private static String notNull(String str) {
-        return str == null || str.trim().isEmpty() ? "" : str;
+        return str == null || str.trim().isEmpty() ? "" : escape(str);
     }
 
     private static String notNull(Collection<String> collection) {
-        return on(",").join(collection);
+        return escape(on(",").join(collection));
+    }
+
+    private static String escape(String str) {
+        return "\"" + str.replaceAll("\"", "\\\\\"") + "\"";
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
 
-        private final CharacteristicsAttribute attribute;
+        private final FactorValueOrCharacteristicAttribute attribute;
 
-        private AttributeValueTypeVisitor(CharacteristicsAttribute attribute) {
+        private AttributeValueTypeVisitor(FactorValueOrCharacteristicAttribute attribute) {
             this.attribute = attribute;
         }
 
@@ -564,7 +604,7 @@ public class MageTabGenerator {
             unitAttribute.termAccessionNumber = valueType.getUnits().getAccession();
             unitAttribute.setAttributeValue(valueType.getUnits().getLabel());
             //TODO unitAttribute.termSourceREF = ??
-            this.attribute.unit = unitAttribute;
+            this.attribute.setUnit(unitAttribute);
         }
 
         @Override
@@ -573,7 +613,42 @@ public class MageTabGenerator {
 
         @Override
         public void visitTermValueType(TermAttributeValueType valueType) {
-            attribute.type = valueType.getBranch().getLabel();
+            attribute.setType(valueType.getBranch().getLabel());
         }
+
+        public static AttributeValueType.Visitor visitCharacteristic(final CharacteristicsAttribute attribute) {
+            return new AttributeValueTypeVisitor(new FactorValueOrCharacteristicAttribute() {
+                @Override
+                public void setUnit(UnitAttribute unitAttribute) {
+                    attribute.unit = unitAttribute;
+                }
+
+                @Override
+                public void setType(String label) {
+                    attribute.type = label;
+                }
+            });
+        }
+
+        public static AttributeValueType.Visitor visitFactorValue(final FactorValueAttribute attribute) {
+            return new AttributeValueTypeVisitor(new FactorValueOrCharacteristicAttribute() {
+                @Override
+                public void setUnit(UnitAttribute unitAttribute) {
+                    attribute.unit = unitAttribute;
+                }
+
+                @Override
+                public void setType(String label) {
+                    attribute.type = label;
+                }
+            });
+        }
+    }
+
+    private abstract static class FactorValueOrCharacteristicAttribute {
+
+        public abstract void setUnit(UnitAttribute unitAttribute);
+
+        public abstract void setType(String label);
     }
 }

@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractLabelsRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtracts;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.LabeledExtractsView;
 
@@ -34,10 +34,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.Label
 public class LabeledExtractsActivity extends AbstractActivity implements LabeledExtractsView.Presenter {
 
     private final LabeledExtractsView view;
-    private final ExperimentData expData;
+    private final ExperimentDataProxy expData;
 
     @Inject
-    public LabeledExtractsActivity(LabeledExtractsView view, ExperimentData expData) {
+    public LabeledExtractsActivity(LabeledExtractsView view, ExperimentDataProxy expData) {
         this.view = view;
         this.expData = expData;
     }

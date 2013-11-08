@@ -38,8 +38,13 @@
         <appender-ref ref="${webapp.log.appender.ref}"/>
     </category>
 
+    <category name="org.hibernate" additivity="false">
+        <priority value="DEBUG"/>
+        <appender-ref ref="${webapp.log.appender.ref}"/>
+    </category>
+
     <root>
-        <level value="INFO"/>
+        <level value="DEBUG"/>
         <appender-ref ref="${webapp.log.appender.ref}"/>
     </root>
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;

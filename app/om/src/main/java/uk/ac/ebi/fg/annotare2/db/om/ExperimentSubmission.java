@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.db.om;
 
+import org.hibernate.annotations.Filter;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
 
@@ -56,10 +57,5 @@ public class ExperimentSubmission extends Submission {
     @Override
     public boolean hasNoData() {
         return isNullOrEmpty(experimentString);
-    }
-
-    @Override
-    public void discardAll() {
-        experimentString = null;
     }
 }

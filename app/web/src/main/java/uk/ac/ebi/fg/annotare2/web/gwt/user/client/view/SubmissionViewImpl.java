@@ -29,15 +29,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
+import static com.google.gwt.user.client.Window.confirm;
+
 /**
  * @author Olga Melnichuk
  */
 public class SubmissionViewImpl extends Composite implements SubmissionView {
 
     interface Binder extends UiBinder<Widget, SubmissionViewImpl> {
+        Binder BINDER = GWT.create(Binder.class);
     }
-
-    private Presenter presenter;
 
     @UiField
     HeadingElement accession;
@@ -57,9 +58,13 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     @UiField
     Button submitButton;
 
+    @UiField
+    Button deleteButton;
+
+    private Presenter presenter;
+
     public SubmissionViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
     public void setPresenter(Presenter presenter) {
@@ -74,13 +79,23 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     }
 
     @UiHandler("editButton")
-    public void onViewEditButtonClick(ClickEvent event) {
-        presenter.onEditButtonClick();
+    void onViewEditButtonClick(ClickEvent event) {
+        if (presenter != null) {
+            presenter.editSubmission();
+        }
     }
 
     @UiHandler("submitButton")
-    public void onSubmitButtonClick(ClickEvent event) {
-        presenter.onSubmitButtonClick();
+    void onSubmitButtonClick(ClickEvent event) {
+        if (presenter != null) {
+            presenter.submit();
+        }
     }
 
+    @UiHandler("deleteButton")
+    void onDeleteButtonClick(ClickEvent event) {
+        if (presenter != null && confirm("Are you sure you want to delete submission: " + getTitle() + "?")) {
+            presenter.deleteSubmission();
+        }
+    }
 }

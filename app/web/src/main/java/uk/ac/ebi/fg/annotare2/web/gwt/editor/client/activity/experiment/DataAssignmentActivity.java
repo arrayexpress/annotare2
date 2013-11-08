@@ -27,8 +27,8 @@ import uk.ac.ebi.fg.annotare2.configmodel.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.DataFiles;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
@@ -44,17 +44,17 @@ import java.util.List;
 public class DataAssignmentActivity extends AbstractActivity implements DataAssignmentView.Presenter {
 
     private final DataAssignmentView view;
-    private final ExperimentData expData;
-    private final DataFiles dataFiles;
+    private final ExperimentDataProxy expData;
+    private final DataFilesProxy dataFilesProxy;
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
 
 
     @Inject
-    public DataAssignmentActivity(DataAssignmentView view, ExperimentData expData, DataFiles dataFiles) {
+    public DataAssignmentActivity(DataAssignmentView view, ExperimentDataProxy expData, DataFilesProxy dataFilesProxy) {
         this.view = view;
         this.expData = expData;
-        this.dataFiles = dataFiles;
+        this.dataFilesProxy = dataFilesProxy;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
     }
 
     private void loadFilesAsync() {
-        dataFiles.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
+        dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Can't load list of data files");

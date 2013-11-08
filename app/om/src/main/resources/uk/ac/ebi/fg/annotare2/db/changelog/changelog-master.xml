@@ -37,4 +37,26 @@
             INSERT INTO user_roles (user, role) VALUES (@curatorId, 'CURATOR');
         </sql>
     </changeSet>
+    <changeSet id="addDeleteFlag2Submissions" author="olkin">
+        <sql>
+            ALTER TABLE submissions ADD deleted TINYINT(1) NOT NULL DEFAULT 0;
+            ALTER TABLE data_files ADD deleted TINYINT(1) NOT NULL DEFAULT 0;
+        </sql>
+    </changeSet>
+    <changeSet id="addUpdateTimestamp2Submissions" author="olkin">
+        <sql>
+            ALTER TABLE submissions ADD updated TIMESTAMP NOT NULL DEFAULT 0;
+            UPDATE submissions SET updated = NOW();
+        </sql>
+    </changeSet>
+    <changeSet id="update2Utf8Charset" author="olkin">
+        <sql>
+            ALTER TABLE users CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE user_roles CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE acl CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE acl_entries CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE submissions CONVERT TO CHARACTER SET utf8;
+            ALTER TABLE data_files CONVERT TO CHARACTER SET utf8;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

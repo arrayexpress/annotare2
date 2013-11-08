@@ -52,6 +52,10 @@ public enum AttributeType {
         return this == CHARACTERISTIC_ATTRIBUTE;
     }
 
+    public boolean isCharacteristicOrFactorValue() {
+        return isCharacteristic() || isFactorValue();
+    }
+
     public boolean isMaterialType() {
         return this == MATERIAL_TYPE_ATTRIBUTE;
     }

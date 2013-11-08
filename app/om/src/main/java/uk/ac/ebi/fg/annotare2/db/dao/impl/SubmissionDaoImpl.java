@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.db.dao.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.inject.Inject;
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
@@ -30,6 +29,7 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static com.google.common.collect.Collections2.filter;
@@ -52,7 +52,16 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
 
     @Override
     public Submission get(long id) throws RecordNotFoundException {
-        return get(id, Submission.class);
+        return get(id, false);
+    }
+
+    @Override
+    public Submission get(long id, boolean allowDeleted) throws RecordNotFoundException {
+        Submission submission = get(id, Submission.class);
+        if (submission.isDeleted() && !allowDeleted) {
+            throw new RecordNotFoundException("Object of class=" + Submission.class + " with id=" + id + " was not found");
+        }
+        return submission;
     }
 
     @Override
@@ -100,6 +109,18 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
         ArrayDesignSubmission submission = new ArrayDesignSubmission(user);
         save(submission);
         return submission;
+    }
+
+    @Override
+    public void softDelete(Submission submission) {
+        submission.setDeleted(true);
+        save(submission);
+    }
+
+    @Override
+    public void save(Submission submission) {
+        submission.setUpdated(new Date());
+        super.save(submission);
     }
 
     @Override

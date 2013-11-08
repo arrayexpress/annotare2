@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
+import uk.ac.ebi.fg.annotare2.db.om.FilterNames;
 
 /**
  * @author Olga Melnichuk
@@ -28,11 +29,19 @@ public class HibernateSessionFactory {
         return session;
     }
 
-    public Session openSession() {
+    public Session openSessionWithFilters(String... filterNames) {
         closeSession();
         Session session = sessionFactory.openSession();
         threadSession.set(session);
+
+        for (String filterName : filterNames) {
+            session.enableFilter(filterName);
+        }
         return session;
+    }
+
+    public Session openSession() {
+        return openSessionWithFilters(FilterNames.NONE_DELETED_SUBMISSIONS_FILTER);
     }
 
     public void closeSession() throws HibernateException {

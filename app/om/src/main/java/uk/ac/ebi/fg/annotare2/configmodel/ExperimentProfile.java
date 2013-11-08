@@ -64,6 +64,9 @@ public class ExperimentProfile implements Serializable {
     @JsonProperty("arrayDesign")
     private String arrayDesign;
 
+    @JsonProperty("aeExperimentType")
+    private String aeExperimentType;
+
     @JsonProperty("experimentalDesigns")
     private List<OntologyTerm> experimentalDesigns;
 
@@ -199,6 +202,14 @@ public class ExperimentProfile implements Serializable {
 
     public void setArrayDesign(String arrayDesign) {
         this.arrayDesign = arrayDesign;
+    }
+
+    public String getAeExperimentType() {
+        return aeExperimentType;
+    }
+
+    public void setAeExperimentType(String aeExperimentType) {
+        this.aeExperimentType = aeExperimentType;
     }
 
     public Collection<OntologyTerm> getExperimentalDesigns() {
@@ -461,6 +472,16 @@ public class ExperimentProfile implements Serializable {
     @JsonIgnore
     public Collection<Sample> getSamples() {
         return unmodifiableCollection(sampleMap.values());
+    }
+
+    public Collection<Sample> getSamples(Extract extract) {
+        List<Sample> samples = new ArrayList<Sample>();
+        for(Sample sample : sample2Extracts.keySet()) {
+            if (sample2Extracts.get(sample).contains(extract)) {
+                samples.add(sample);
+            }
+        }
+        return samples;
     }
 
     @JsonIgnore

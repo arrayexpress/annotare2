@@ -346,17 +346,21 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void removeFile(final long id, final long fileId) throws ResourceNotFoundException, NoPermissionException {
+    public void deleteDataFile(final long id, final long fileId) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
             DataFile dataFile = dataFileManager.get(fileId);
-            String fileName = dataFile.getName();
-            if (dataFileManager.removeFile(submission, dataFile)) {
-                ExperimentProfile expProfile = submission.getExperimentProfile();
-                expProfile.removeFile(fileName);
-                submission.setExperimentProfile(expProfile);
-                save(submission);
+            if (!submission.getFiles().contains(dataFile)) {
+                return;
             }
+
+            String fileName = dataFile.getName();
+            dataFileManager.deleteDataFile(dataFile);
+
+            ExperimentProfile expProfile = submission.getExperimentProfile();
+            expProfile.removeFile(fileName);
+            submission.setExperimentProfile(expProfile);
+            save(submission);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
@@ -364,6 +368,24 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (IOException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
+            throw unexpected(e);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission sb = getSubmission(id, Permission.UPDATE);
+            deleteSubmissionSoftly(sb);
+            for (DataFile df : sb.getFiles()) {
+                dataFileManager.deleteDataFileSoftly(df);
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (IOException e) {
             throw unexpected(e);
         }
     }

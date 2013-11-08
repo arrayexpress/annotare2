@@ -25,8 +25,8 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ArrayDesignData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ArrayDesignDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
@@ -39,13 +39,13 @@ import java.util.List;
 public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsView.Presenter {
 
     private AdfDetailsView view;
-    private final ArrayDesignData adfData;
-    private final OntologyData efoTerms;
+    private final ArrayDesignDataProxy adfData;
+    private final OntologyDataProxy efoTerms;
 
     @Inject
     public AdfDetailsActivity(AdfDetailsView view,
-                              ArrayDesignData adfData,
-                              OntologyData efoTerms) {
+                              ArrayDesignDataProxy adfData,
+                              OntologyDataProxy efoTerms) {
         this.view = view;
         this.adfData = adfData;
         this.efoTerms = efoTerms;

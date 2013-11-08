@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.db.om;
 
 /**
  * @author Olga Melnichuk
  */
-@Deprecated
-public interface HasTemporaryIdentity extends HasIdentity {
+public class FilterNames {
 
-    int getTmpId();
+    public static final String NONE_DELETED_SUBMISSIONS_FILTER = "NoneDeletedSubmissions";
 }

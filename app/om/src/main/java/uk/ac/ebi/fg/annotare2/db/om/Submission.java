@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.db.om;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
 import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
 
 import javax.persistence.*;
@@ -27,6 +29,7 @@ import java.util.Date;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static uk.ac.ebi.fg.annotare2.db.om.FilterNames.NONE_DELETED_SUBMISSIONS_FILTER;
 
 /**
  * @author Olga Melnichuk
@@ -35,6 +38,8 @@ import static com.google.common.collect.Sets.newHashSet;
 @Table(name = "submissions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@FilterDef(name = NONE_DELETED_SUBMISSIONS_FILTER, defaultCondition = "deleted = 0")
+@Filter(name = NONE_DELETED_SUBMISSIONS_FILTER)
 public abstract class Submission implements HasEffectiveAcl {
 
     @Id
@@ -44,6 +49,10 @@ public abstract class Submission implements HasEffectiveAcl {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false)
     private Date created;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated", nullable = false)
+    private Date updated;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -74,12 +83,16 @@ public abstract class Submission implements HasEffectiveAcl {
     @Column(name = "subsTrackingId")
     private Integer subsTrackingId;
 
+    @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean deleted;
+
     protected Submission() {
         this(null);
     }
 
     protected Submission(User createdBy) {
         this.created = new Date();
+        this.updated = new Date();
         this.createdBy = createdBy;
         this.ownedBy = createdBy;
         status = SubmissionStatus.IN_PROGRESS;
@@ -96,6 +109,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public Date getCreated() {
         return created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 
     public SubmissionStatus getStatus() {
@@ -162,7 +183,13 @@ public abstract class Submission implements HasEffectiveAcl {
         return new ByteArrayInputStream((str == null ? "" : str).getBytes(Charsets.UTF_8));
     }
 
-    public abstract boolean hasNoData();
+    public boolean isDeleted() {
+        return deleted;
+    }
 
-    public abstract void discardAll();
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public abstract boolean hasNoData();
 }

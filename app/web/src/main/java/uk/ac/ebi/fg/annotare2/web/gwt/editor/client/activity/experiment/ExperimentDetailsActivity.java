@@ -26,38 +26,44 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExpDetailsView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExperimentDetailsView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsView.Presenter {
+public class ExperimentDetailsActivity extends AbstractActivity implements ExperimentDetailsView.Presenter {
 
-    private final ExpDetailsView view;
+    private final ExperimentDetailsView view;
 
     private final PlaceController placeController;
 
-    private final ExperimentData experimentData;
+    private final ExperimentDataProxy experimentDataProxy;
 
-    private final OntologyData ontologyData;
+    private final OntologyDataProxy ontologyDataProxy;
+
+    private final ApplicationDataProxy applicationDataProxy;
 
     @Inject
-    public ExpDetailsActivity(ExpDetailsView view,
-                              PlaceController placeController,
-                              ExperimentData experimentData,
-                              OntologyData ontologyData) {
+    public ExperimentDetailsActivity(ExperimentDetailsView view,
+                                     PlaceController placeController,
+                                     ExperimentDataProxy experimentDataProxy,
+                                     OntologyDataProxy ontologyDataProxy,
+                                     ApplicationDataProxy applicationDataProxy) {
         this.view = view;
         this.placeController = placeController;
-        this.experimentData = experimentData;
-        this.ontologyData = ontologyData;
+        this.experimentDataProxy = experimentDataProxy;
+        this.ontologyDataProxy = ontologyDataProxy;
+        this.applicationDataProxy = applicationDataProxy;
     }
 
-    public ExpDetailsActivity withPlace(ExpInfoPlace place) {
+    public ExperimentDetailsActivity withPlace(ExpInfoPlace place) {
         return this;
     }
 
@@ -70,7 +76,7 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
 
     @Override
     public void onStop() {
-        experimentData.updateDetails(view.getDetails());
+        experimentDataProxy.updateDetails(view.getDetails());
         super.onStop();
     }
 
@@ -79,28 +85,42 @@ public class ExpDetailsActivity extends AbstractActivity implements ExpDetailsVi
     }
 
     private void loadAsync() {
-        experimentData.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
+        experimentDataProxy.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
-                //TODO
                 Window.alert("Can't load experiment details.");
             }
 
             @Override
             public void onSuccess(ExperimentDetailsDto details) {
-                view.setDetails(details);
+                setDetails(details);
+            }
+        });
+    }
+
+    private void setDetails(final ExperimentDetailsDto details) {
+        applicationDataProxy.getAeExperimentTypesAsync(new AsyncCallback<List<String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Can't load ArrayExpress Experiment Type options");
+                view.setDetails(details, Collections.<String>emptyList());
+            }
+
+            @Override
+            public void onSuccess(List<String> result) {
+                view.setDetails(details, result);
             }
         });
     }
 
     @Override
     public void saveDetails(ExperimentDetailsDto details) {
-        experimentData.updateDetails(details);
+        experimentDataProxy.updateDetails(details);
     }
 
     @Override
     public void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> callback) {
-        ontologyData.getExperimentalDesigns(callback);
+        ontologyDataProxy.getExperimentalDesigns(callback);
     }
 }
 

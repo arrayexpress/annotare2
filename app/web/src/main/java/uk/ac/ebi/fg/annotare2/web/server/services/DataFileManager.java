@@ -65,17 +65,18 @@ public class DataFileManager {
         return fileStore.get(dataFile.getDigest());
     }
 
-    public boolean removeFile(ExperimentSubmission submission, DataFile dataFile) throws IOException {
-        if (!submission.getFiles().contains(dataFile)) {
-            return false;
-        }
+    public void deleteDataFile(DataFile dataFile) throws IOException {
         dataFileDao.delete(dataFile);
-        submission.getFiles().remove(dataFile);
+/*
         List<DataFile> list = dataFileDao.getAllWithDigest(dataFile.getDigest());
         if (list.isEmpty()) {
             fileStore.delete(dataFile.getDigest());
         }
-        return true;
+*/
+    }
+
+    public void deleteDataFileSoftly(DataFile dataFile) throws IOException {
+        dataFileDao.softDelete(dataFile);
     }
 
     public DataFile get(long fileId) throws RecordNotFoundException {

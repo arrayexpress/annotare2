@@ -48,7 +48,9 @@ public interface DataService extends RemoteService {
 
     List<OntologyTerm> getContactRoles();
 
+    List<OntologyTermGroup> getExperimentalDesigns();
+
     ApplicationProperties getApplicationProperties();
 
-    List<OntologyTermGroup> getExperimentalDesigns();
+    List<String> getAeExperimentTypes();
 }

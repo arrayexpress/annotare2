@@ -41,9 +41,15 @@ public interface SubmissionDao extends HasEffectiveAcl {
 
     Submission get(long id) throws RecordNotFoundException;
 
+    Submission get(long id, boolean allowDeleted) throws RecordNotFoundException;
+
     ExperimentSubmission createExperimentSubmission(User user);
 
     ArrayDesignSubmission createArrayDesignSubmission(User user);
 
     Acl getAcl();
+
+    void softDelete(Submission submission);
+
+    void delete(Submission submission);
 }

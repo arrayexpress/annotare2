@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.ae;
 /**
  * @author Olga Melnichuk
  */
-public abstract class AE {
+public abstract class ArrayExpress {
     public static class ArrayDesign {
         private final int id;
         private final String name;

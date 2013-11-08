@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -38,7 +38,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentData {
+public class ExperimentDataProxy {
 
     private final SubmissionServiceAsync submissionService;
 
@@ -48,8 +48,8 @@ public class ExperimentData {
     private EventBus eventBus;
 
     @Inject
-    public ExperimentData(EventBus eventBus,
-                          SubmissionServiceAsync submissionServiceAsync) {
+    public ExperimentDataProxy(EventBus eventBus,
+                               SubmissionServiceAsync submissionServiceAsync) {
         this.submissionService = submissionServiceAsync;
         this.eventBus = eventBus;
 
@@ -111,6 +111,7 @@ public class ExperimentData {
                 exp.getDescription(),
                 exp.getExperimentDate(),
                 exp.getPublicReleaseDate(),
+                exp.getAeExperimentType(),
                 exp.getExperimentalDesigns()
         );
     }

@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.OntologyData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
@@ -41,18 +41,18 @@ import java.util.List;
 public class ContactListActivity extends AbstractActivity implements ContactListView.Presenter {
 
     private final ContactListView view;
-    private final ExperimentData experimentData;
-    private final OntologyData ontologyData;
+    private final ExperimentDataProxy experimentDataProxy;
+    private final OntologyDataProxy ontologyDataProxy;
 
     private HandlerRegistration criticalUpdateHandler;
 
     @Inject
     public ContactListActivity(ContactListView view,
-                               ExperimentData experimentData,
-                               OntologyData ontologyData) {
+                               ExperimentDataProxy experimentDataProxy,
+                               OntologyDataProxy ontologyDataProxy) {
         this.view = view;
-        this.experimentData = experimentData;
-        this.ontologyData = ontologyData;
+        this.experimentDataProxy = experimentDataProxy;
+        this.ontologyDataProxy = ontologyDataProxy;
     }
 
     public ContactListActivity withPlace(ExpInfoPlace place) {
@@ -79,29 +79,29 @@ public class ContactListActivity extends AbstractActivity implements ContactList
 
     @Override
     public void onStop() {
-        experimentData.updateContacts(view.getContacts());
+        experimentDataProxy.updateContacts(view.getContacts());
         criticalUpdateHandler.removeHandler();
         super.onStop();
     }
 
     @Override
     public void updateContact(ContactDto contact) {
-        experimentData.updateContact(contact);
+        experimentDataProxy.updateContact(contact);
     }
 
     @Override
     public void createContact() {
-        experimentData.createContact();
+        experimentDataProxy.createContact();
     }
 
     @Override
     public void removeContacts(List<ContactDto> contacts) {
-        experimentData.removeContacts(contacts);
+        experimentDataProxy.removeContacts(contacts);
     }
 
     @Override
     public void getRoles(final AsyncCallback<List<String>> callback) {
-        ontologyData.getContactRoles(new AsyncCallback<List<OntologyTerm>>(){
+        ontologyDataProxy.getContactRoles(new AsyncCallback<List<OntologyTerm>>(){
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
@@ -119,7 +119,7 @@ public class ContactListActivity extends AbstractActivity implements ContactList
     }
 
     private void loadAsync() {
-        experimentData.getContactsAsync(new AsyncCallback<List<ContactDto>>() {
+        experimentDataProxy.getContactsAsync(new AsyncCallback<List<ContactDto>>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO

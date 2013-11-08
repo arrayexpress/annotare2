@@ -42,9 +42,9 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeF
 /**
  * @author Olga Melnichuk
  */
-public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
+public class ExperimentDetailsViewImpl extends Composite implements ExperimentDetailsView {
 
-    interface Binder extends UiBinder<Widget, ExpDetailsViewImpl> {
+    interface Binder extends UiBinder<Widget, ExperimentDetailsViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -69,12 +69,15 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     @UiField
     Button removeExpDesignsButton;
 
+    @UiField
+    ListBox aeExperimentType;
+
     private Presenter presenter;
 
     private Map<String, OntologyTerm> experimentalDesigns;
 
     @Inject
-    public ExpDetailsViewImpl() {
+    public ExperimentDetailsViewImpl() {
         experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
 
         experimentalDesignList = new ListBox(true);
@@ -94,11 +97,14 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
     }
 
     @Override
-    public void setDetails(ExperimentDetailsDto details) {
+    public void setDetails(ExperimentDetailsDto details, Collection<String> aeExperimentTypes) {
+        setAeExperimentTypeOptions(aeExperimentTypes);
+
         title.setText(details.getTitle());
         description.setText(details.getDescription());
         dateOfExperiment.setValue(details.getExperimentDate());
         dateOfPublicRelease.setValue(details.getPublicReleaseDate());
+        setAeExperimentType(details.getAeExperimentType());
 
         experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
         addExperimentalDesigns(details.getExperimentalDesigns());
@@ -131,6 +137,11 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
     @UiHandler("dateOfPublicRelease")
     void dateOfPublicReleaseChanged(ValueChangeEvent<Date> event) {
+        save();
+    }
+
+    @UiHandler("aeExperimentType")
+    void aeExperimentTypeChanged(ChangeEvent event) {
         save();
     }
 
@@ -189,7 +200,7 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
 
     private List<OntologyTermGroup> filterExperimentalDesigns(List<OntologyTermGroup> designGroups) {
         List<OntologyTermGroup> filtered = new ArrayList<OntologyTermGroup>();
-        for(OntologyTermGroup group : designGroups) {
+        for (OntologyTermGroup group : designGroups) {
             OntologyTermGroup newGroup = group.filter(new Predicate<OntologyTerm>() {
                 @Override
                 public boolean apply(@Nullable OntologyTerm input) {
@@ -203,12 +214,41 @@ public class ExpDetailsViewImpl extends Composite implements ExpDetailsView {
         return filtered;
     }
 
+    private String getAeExperimentType() {
+        int index = aeExperimentType.getSelectedIndex();
+        if (index == 0) {
+            return null;
+        }
+        return aeExperimentType.getValue(index);
+    }
+
+    private void setAeExperimentType(String type) {
+        for (int i = 0; i < aeExperimentType.getItemCount(); i++) {
+            String value = aeExperimentType.getValue(i);
+            if (value.equals(type)) {
+                aeExperimentType.setSelectedIndex(i);
+                return;
+            }
+        }
+
+        aeExperimentType.setSelectedIndex(0);
+    }
+
+    private void setAeExperimentTypeOptions(Collection<String> options) {
+        aeExperimentType.clear();
+        aeExperimentType.addItem("none");
+        for (String option : options) {
+            aeExperimentType.addItem(option);
+        }
+    }
+
     private ExperimentDetailsDto getResult() {
         return new ExperimentDetailsDto(
                 title.getValue(),
                 description.getValue(),
                 dateOfExperiment.getValue(),
                 dateOfPublicRelease.getValue(),
+                getAeExperimentType(),
                 experimentalDesigns.values());
     }
 

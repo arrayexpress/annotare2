@@ -24,10 +24,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionView;
 
@@ -40,14 +39,15 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
 
     private final SubmissionView view;
     private final PlaceController placeController;
-    private final SubmissionServiceAsync rpcService;
+    private final SubmissionServiceAsync submissionService;
     private Long submissionId;
 
     @Inject
-    public SubmissionViewActivity(SubmissionView view, PlaceController placeController, SubmissionServiceAsync rpcService) {
+    public SubmissionViewActivity(SubmissionView view, PlaceController placeController,
+                                  SubmissionServiceAsync submissionService) {
         this.view = view;
         this.placeController = placeController;
-        this.rpcService = rpcService;
+        this.submissionService = submissionService;
     }
 
     public SubmissionViewActivity withPlace(SubmissionViewPlace place) {
@@ -56,7 +56,6 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //view.setPlaceName(token);
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
@@ -67,13 +66,9 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     }
 
     private void loadAsync() {
-        rpcService.getSubmission(submissionId, new AsyncCallbackWrapper<SubmissionDetails>() {
+        submissionService.getSubmission(submissionId, new AsyncCallbackWrapper<SubmissionDetails>() {
             public void onFailure(Throwable caught) {
-                //TODO
-                if (caught instanceof ResourceNotFoundException ||
-                        caught instanceof NoPermissionException) {
-                    Window.alert(caught.getMessage());
-                }
+                Window.alert("Server error: can't load submission details");
             }
 
             public void onSuccess(SubmissionDetails result) {
@@ -82,16 +77,34 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
         }.wrap());
     }
 
-    public void onEditButtonClick() {
+    @Override
+    public void editSubmission() {
         if (submissionId != null) {
             openSubmissionEditor(submissionId);
         }
-        //TODO log or show error otherwise
     }
 
-    public void onSubmitButtonClick() {
+    @Override
+    public void deleteSubmission() {
         if (submissionId != null) {
-            rpcService.submitSubmission(submissionId,  new AsyncCallbackWrapper<Void>() {
+            submissionService.deleteSubmission(submissionId, new AsyncCallbackWrapper<Void>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    Window.alert("Server error: can't delete submission");
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+                        goTo(new SubmissionListPlace());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void submit() {
+        if (submissionId != null) {
+            submissionService.submitSubmission(submissionId, new AsyncCallbackWrapper<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
                 }

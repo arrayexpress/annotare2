@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.db.om;
 
+import org.hibernate.annotations.Filter;
 import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
 
@@ -74,10 +75,5 @@ public class ArrayDesignSubmission extends Submission {
     @Override
     public boolean hasNoData() {
         return isNullOrEmpty(header) || isNullOrEmpty(body);
-    }
-
-    @Override
-    public void discardAll() {
-        throw new UnsupportedOperationException("Can't discard data for ArrayDesign");
     }
 }

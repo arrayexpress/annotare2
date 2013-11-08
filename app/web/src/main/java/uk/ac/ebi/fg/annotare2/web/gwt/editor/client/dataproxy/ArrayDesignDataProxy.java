@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -33,7 +33,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
-public class ArrayDesignData {
+public class ArrayDesignDataProxy {
 
     private final SubmissionServiceAsync submissionService;
 
@@ -42,7 +42,7 @@ public class ArrayDesignData {
     private ArrayDesignDetailsDto details;
 
     @Inject
-    public ArrayDesignData(
+    public ArrayDesignDataProxy(
             EventBus eventBus,
             SubmissionServiceAsync submissionServiceAsync) {
         submissionService = submissionServiceAsync;

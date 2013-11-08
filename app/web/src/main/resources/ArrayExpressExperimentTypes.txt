@@ -1,0 +1,30 @@
+antigen profiling
+ChIP-chip by array
+ChIP-chip by SNP array
+ChIP-chip by tiling array
+ChIP-seq
+CLIP-seq
+comparative genomic hybridization by array
+DNA-seq
+genotyping by array
+genotyping by high throughput sequencing
+metabolomic profiling
+methylation profiling by array
+methylation profiling by high throughput sequencing
+microRNA profiling by array
+proteomic profiling by array
+proteomic profiling by mass spectrometer
+RNAi profiling by array
+tiling path by array
+transcription profiling by array
+transcription profiling by high throughput sequencing
+random RNA-Seq across whole transcriptome
+RNA-seq of coding RNA
+RNA-seq of non coding RNA
+microRNA profiling by high throughput sequencing
+whole chromosome random sequencing
+transcription profiling by MPSS
+transcription profiling by RT-PCR
+transcription profiling by SAGE
+transcription profiling by tiling array
+translation profiling

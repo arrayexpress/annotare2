@@ -29,11 +29,6 @@ public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
         Window.alert("Sorry, you do not have permissions to proceed with this operation");
     }
 
-    @Override
-    public void onFailure(Throwable caught) {
-        Window.alert("Server error; please try again later");
-    }
-
     public AsyncCallback<T> wrap() {
         final AsyncCallbackWrapper<T> wrapper = this;
 

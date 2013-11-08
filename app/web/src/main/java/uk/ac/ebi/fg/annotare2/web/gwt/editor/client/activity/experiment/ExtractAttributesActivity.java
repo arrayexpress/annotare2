@@ -23,7 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data.ExperimentData;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExtractAttributesView;
 
@@ -35,11 +35,11 @@ import java.util.List;
 public class ExtractAttributesActivity extends AbstractActivity implements ExtractAttributesView.Presenter {
 
     private final ExtractAttributesView view;
-    private final ExperimentData expData;
+    private final ExperimentDataProxy expData;
 
     @Inject
     public ExtractAttributesActivity(ExtractAttributesView view,
-                                     ExperimentData expData) {
+                                     ExperimentDataProxy expData) {
         this.view = view;
         this.expData = expData;
     }

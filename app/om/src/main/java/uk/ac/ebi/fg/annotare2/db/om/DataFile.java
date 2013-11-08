@@ -49,6 +49,9 @@ public class DataFile {
     @JoinColumn(name = "ownedBy", nullable = false)
     private Submission ownedBy;
 
+    @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean deleted;
+
     public DataFile() {
         this(null);
     }
@@ -97,6 +100,14 @@ public class DataFile {
 
     public void setOwnedBy(Submission submission) {
         this.ownedBy = submission;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

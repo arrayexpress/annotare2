@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.data;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -36,7 +36,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
-public class DataFiles {
+public class DataFilesProxy {
 
     private final SubmissionServiceAsync submissionServiceAsync;
     private final EventBus eventBus;
@@ -45,8 +45,8 @@ public class DataFiles {
     private final Updater updater;
 
     @Inject
-    public DataFiles(EventBus eventBus,
-                     SubmissionServiceAsync submissionServiceAsync) {
+    public DataFilesProxy(EventBus eventBus,
+                          SubmissionServiceAsync submissionServiceAsync) {
         this.submissionServiceAsync = submissionServiceAsync;
         this.eventBus = eventBus;
 
@@ -136,7 +136,7 @@ public class DataFiles {
     }
 
     public void removeFile(final DataFileRow dataFile) {
-        submissionServiceAsync.removeFile(getSubmissionId(), dataFile.getId(), new AsyncCallbackWrapper<Void>() {
+        submissionServiceAsync.deleteDataFile(getSubmissionId(), dataFile.getId(), new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Server error: can't remove file " + dataFile.getName());

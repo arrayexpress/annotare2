@@ -56,4 +56,10 @@ public class DataFileDaoImpl extends AbstractDaoImpl<DataFile> implements DataFi
                 .add(Restrictions.eq("digest", digest))
                 .list();
     }
+
+    @Override
+    public void softDelete(DataFile dataFile) {
+        dataFile.setDeleted(true);
+        save(dataFile);
+    }
 }
