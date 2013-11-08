@@ -58,6 +58,7 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
 
     @Override
     public void setPublications(final List<PublicationDto> publications, Collection<OntologyTerm> publicationStatuses) {
+        clear();
         for (PublicationDto p : publications) {
             addPublicationView(p, publicationStatuses);
         }
