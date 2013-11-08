@@ -1,7 +1,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.FileType;
+import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 
 import java.util.Collection;
 import java.util.HashMap;

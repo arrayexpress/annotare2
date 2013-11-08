@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
-import uk.ac.ebi.fg.annotare2.db.om.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 
 /**
  * @author Olga Melnichuk

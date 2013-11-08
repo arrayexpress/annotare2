@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.AssignmentItem;
-import uk.ac.ebi.fg.annotare2.configmodel.Protocol;
+import uk.ac.ebi.fg.annotare2.submission.model.AssignmentItem;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

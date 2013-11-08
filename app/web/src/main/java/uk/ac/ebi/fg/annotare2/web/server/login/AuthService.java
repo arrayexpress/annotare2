@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.login;
 
 
-import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
 
 import javax.servlet.http.HttpServletRequest;

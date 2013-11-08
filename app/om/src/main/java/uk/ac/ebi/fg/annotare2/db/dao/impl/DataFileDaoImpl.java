@@ -21,8 +21,8 @@ import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
-import uk.ac.ebi.fg.annotare2.db.om.DataFile;
-import uk.ac.ebi.fg.annotare2.db.om.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
 
 import java.util.List;
 

@@ -18,11 +18,11 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
-import uk.ac.ebi.fg.annotare2.db.om.*;
+import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
+import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;

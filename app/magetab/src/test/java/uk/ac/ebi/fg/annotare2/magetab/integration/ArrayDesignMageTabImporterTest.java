@@ -17,9 +17,9 @@
 package uk.ac.ebi.fg.annotare2.magetab.integration;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.configmodel.JsonCodec;
+import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.JseTextFormatter;

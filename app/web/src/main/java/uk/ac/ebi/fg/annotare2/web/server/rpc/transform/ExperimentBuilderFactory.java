@@ -16,15 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater;
 
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.*;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
 /**

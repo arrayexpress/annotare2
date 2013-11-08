@@ -6,7 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
-import uk.ac.ebi.fg.annotare2.db.om.FilterNames;
+import uk.ac.ebi.fg.annotare2.db.model.FilterNames;
 
 /**
  * @author Olga Melnichuk

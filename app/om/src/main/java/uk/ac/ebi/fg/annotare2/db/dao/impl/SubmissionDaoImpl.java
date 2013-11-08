@@ -22,9 +22,9 @@ import com.google.inject.Inject;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.db.om.*;
-import uk.ac.ebi.fg.annotare2.db.om.enums.AclType;
-import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.db.model.*;
+import uk.ac.ebi.fg.annotare2.db.model.enums.AclType;
+import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 import javax.annotation.Nullable;

@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.db.dao;
 
-import uk.ac.ebi.fg.annotare2.db.om.ArrayPrintingProtocol;
+import uk.ac.ebi.fg.annotare2.db.model.ArrayPrintingProtocol;
 
 import java.util.List;
 

@@ -17,14 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.AttributeType;
-import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.AttributeType;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.configmodel.AttributeType.*;
+import static uk.ac.ebi.fg.annotare2.submission.model.AttributeType.*;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.*;
 
 /**

@@ -27,7 +27,6 @@
         <module>magetab</module>
         <module>magetab-gwt</module>
         <module>om</module>
-        <module>om-gwt</module>
         <module>web</module>
         <module>ae-subs-tracking</module>
     </modules>

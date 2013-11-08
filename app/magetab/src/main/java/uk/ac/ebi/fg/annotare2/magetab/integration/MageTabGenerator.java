@@ -23,7 +23,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
-import uk.ac.ebi.fg.annotare2.configmodel.*;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -32,8 +32,8 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
-import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolTargetType.*;
-import static uk.ac.ebi.fg.annotare2.configmodel.TermSource.EFO_TERM_SOURCE;
+import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType.*;
+import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
