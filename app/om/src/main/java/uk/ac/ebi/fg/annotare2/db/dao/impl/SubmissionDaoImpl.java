@@ -29,6 +29,7 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static com.google.common.collect.Collections2.filter;
@@ -114,6 +115,12 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
     public void softDelete(Submission submission) {
         submission.setDeleted(true);
         save(submission);
+    }
+
+    @Override
+    public void save(Submission submission) {
+        submission.setUpdated(new Date());
+        super.save(submission);
     }
 
     @Override

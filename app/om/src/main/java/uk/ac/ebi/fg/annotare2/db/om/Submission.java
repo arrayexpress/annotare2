@@ -50,6 +50,10 @@ public abstract class Submission implements HasEffectiveAcl {
     @Column(name = "created", nullable = false)
     private Date created;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated", nullable = false)
+    private Date updated;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private SubmissionStatus status;
@@ -104,6 +108,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public Date getCreated() {
         return created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 
     public SubmissionStatus getStatus() {
@@ -170,11 +182,11 @@ public abstract class Submission implements HasEffectiveAcl {
         return new ByteArrayInputStream((str == null ? "" : str).getBytes(Charsets.UTF_8));
     }
 
-    public Boolean isDeleted() {
+    public boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
