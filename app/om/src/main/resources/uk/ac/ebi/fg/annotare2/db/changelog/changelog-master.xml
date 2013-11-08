@@ -45,7 +45,8 @@
     </changeSet>
     <changeSet id="addUpdateTimestamp2Submissions" author="olkin">
         <sql>
-            ALTER TABLE submissions ADD updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP();
+            ALTER TABLE submissions ADD updated TIMESTAMP NOT NULL DEFAULT 0;
+            UPDATE submissions SET updated = NOW();
         </sql>
     </changeSet>
     <changeSet id="update2Utf8Charset" author="olkin">

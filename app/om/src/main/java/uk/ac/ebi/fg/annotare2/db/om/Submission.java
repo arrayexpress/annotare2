@@ -92,6 +92,7 @@ public abstract class Submission implements HasEffectiveAcl {
 
     protected Submission(User createdBy) {
         this.created = new Date();
+        this.updated = new Date();
         this.createdBy = createdBy;
         this.ownedBy = createdBy;
         status = SubmissionStatus.IN_PROGRESS;
