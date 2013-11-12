@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -26,51 +26,27 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import java.io.IOException;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion.VERSION_1_0;
+import static uk.ac.ebi.fg.annotare2.submission.transform.SerializationModule.createSubmissionSerializationModule;
 
 /**
  * @author Olga Melnichuk
  */
 public class JsonCodec {
 
-    public static ExperimentProfile fromJson2Experiment(String str) throws DataSerializationException {
-        if (isNullOrEmpty(str)) {
-            return null;
-        }
+    private static ObjectMapper createMapper(ModelVersion version) throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            ExperimentProfile exp = mapper.readValue(str, ExperimentProfile.class);
-            exp.fixMe();
-            return exp;
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
-    }
-
-    public static ArrayDesignHeader fromJson2ArrayDesign(String str) throws DataSerializationException {
-        if (isNullOrEmpty(str)) {
-            return null;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(str, ArrayDesignHeader.class);
-        } catch (JsonGenerationException e) {
-            throw new DataSerializationException(e);
-        } catch (JsonMappingException e) {
-            throw new DataSerializationException(e);
-        } catch (IOException e) {
-            throw new DataSerializationException(e);
-        }
-    }
-
-    public static String toJsonString(ExperimentProfile exp) throws DataSerializationException {
-        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(createSubmissionSerializationModule(version));
         mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+        return mapper;
+    }
+
+    public static ExperimentProfile readExperiment(String jsonString) throws DataSerializationException {
+        if (isNullOrEmpty(jsonString)) {
+            return null;
+        }
         try {
-            return mapper.writeValueAsString(exp);
+            return createMapper(VERSION_1_0).readValue(jsonString, ExperimentProfile.class);
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
@@ -80,7 +56,36 @@ public class JsonCodec {
         }
     }
 
-    public static String toJsonString(ArrayDesignHeader header) throws DataSerializationException {
+    public static ArrayDesignHeader readArrayDesign(String jsonString) throws DataSerializationException {
+        if (isNullOrEmpty(jsonString)) {
+            return null;
+        }
+        try {
+            return createMapper(VERSION_1_0).readValue(jsonString, ArrayDesignHeader.class);
+        } catch (JsonGenerationException e) {
+            throw new DataSerializationException(e);
+        } catch (JsonMappingException e) {
+            throw new DataSerializationException(e);
+        } catch (IOException e) {
+            throw new DataSerializationException(e);
+        }
+    }
+
+    public static String writeExperiment(ExperimentProfile exp) throws DataSerializationException {
+        //ObjectMapper mapper = new ObjectMapper();
+        //mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+        try {
+            return createMapper(VERSION_1_0).writeValueAsString(exp);
+        } catch (JsonGenerationException e) {
+            throw new DataSerializationException(e);
+        } catch (JsonMappingException e) {
+            throw new DataSerializationException(e);
+        } catch (IOException e) {
+            throw new DataSerializationException(e);
+        }
+    }
+
+    public static String writeArrayDesign(ArrayDesignHeader header) throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         try {

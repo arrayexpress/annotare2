@@ -25,8 +25,8 @@ import javax.persistence.Entity;
 import java.io.InputStream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.fromJson2ArrayDesign;
-import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.toJsonString;
+import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.readArrayDesign;
+import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.writeArrayDesign;
 
 /**
  * @author Olga Melnichuk
@@ -63,12 +63,12 @@ public class ArrayDesignSubmission extends Submission {
     }
 
     public ArrayDesignHeader getHeader() throws DataSerializationException {
-        ArrayDesignHeader adHeader = fromJson2ArrayDesign(header);
+        ArrayDesignHeader adHeader = readArrayDesign(header);
         return adHeader == null ? new ArrayDesignHeader() : adHeader;
     }
 
     public void setHeader(ArrayDesignHeader header) throws DataSerializationException {
-        this.header = toJsonString(header);
+        this.header = writeArrayDesign(header);
     }
 
     @Override

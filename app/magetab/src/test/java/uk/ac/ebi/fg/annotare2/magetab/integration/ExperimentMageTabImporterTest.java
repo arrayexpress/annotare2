@@ -75,7 +75,7 @@ public class ExperimentMageTabImporterTest {
         SDRF sdrf = sdrfParser.parse(getClass().getResourceAsStream(sdrfFile));
 
         ExperimentProfile exp = new ExperimentMageTabImporter(type).importFrom(idf, sdrf);
-        System.out.println(JsonCodec.toJsonString(exp));
+        System.out.println(JsonCodec.writeExperiment(exp));
         return exp;
     }
 }

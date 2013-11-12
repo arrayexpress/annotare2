@@ -18,14 +18,15 @@ package uk.ac.ebi.fg.annotare2.db.model;
 
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.fromJson2Experiment;
-import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.toJsonString;
+import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.readExperiment;
+import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.writeExperiment;
 
 /**
  * @author Olga Melnichuk
@@ -46,11 +47,11 @@ public class ExperimentSubmission extends Submission {
     }
 
     public ExperimentProfile getExperimentProfile() throws DataSerializationException {
-        return fromJson2Experiment(experimentString);
+        return readExperiment(experimentString);
     }
 
     public void setExperimentProfile(ExperimentProfile exp) throws DataSerializationException {
-        this.experimentString = toJsonString(exp);
+        this.experimentString = writeExperiment(exp);
     }
 
     @Override

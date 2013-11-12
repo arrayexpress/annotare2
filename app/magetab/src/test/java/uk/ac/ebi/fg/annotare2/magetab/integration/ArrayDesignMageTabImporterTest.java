@@ -53,7 +53,7 @@ public class ArrayDesignMageTabImporterTest {
             in = getClass().getResourceAsStream(file);
             AdfHeader adHeader = new AdfHeader(new AdfParser().parseHeader(in));
             ArrayDesignHeader header = new ArrayDesignMageTabImporter().importFrom(adHeader);
-            System.out.println(JsonCodec.toJsonString(header));
+            System.out.println(JsonCodec.writeArrayDesign(header));
             return header;
         } finally {
             close(in, true);
