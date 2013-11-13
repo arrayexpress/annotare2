@@ -17,21 +17,14 @@
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonDeserializer;
-import org.codehaus.jackson.type.TypeReference;
-import org.fest.reflect.reference.TypeRef;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 
-import static org.fest.reflect.core.Reflection.constructor;
-import static org.fest.reflect.core.Reflection.field;
+import static uk.ac.ebi.fg.annotare2.submission.transform.ExperimentProfileSerializer10.SERIALIZABLE_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.Utilities.parseJson;
 
 /**
  * @author Olga Melnichuk
@@ -40,36 +33,6 @@ public class ExperimentProfileDeserializer10 extends JsonDeserializer<Experiment
 
     @Override
     public ExperimentProfile deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        ExperimentProfile experimentProfile = constructor().in(ExperimentProfile.class).newInstance();
-
-        while (jp.nextToken() != JsonToken.END_OBJECT) {
-            String fieldname = jp.getCurrentName();
-            jp.nextToken();
-
-            if ("nextId".equals(fieldname)) {
-                field("nextId").ofType(Integer.TYPE).in(experimentProfile).set(jp.getIntValue());
-            } else if("type".equals(fieldname)) {
-                field("type").ofType(ExperimentProfileType.class).in(experimentProfile).set(ExperimentProfileType.valueOf(jp.getText()));
-            } else if ("accession".equals(fieldname)) {
-                field("accession").ofType(String.class).in(experimentProfile).set(jp.getText());
-            } else if ("title".equals(fieldname)) {
-                field("title").ofType(String.class).in(experimentProfile).set(jp.getText());
-            } else if ("description".equals(fieldname)) {
-                field("description").ofType(String.class).in(experimentProfile).set(jp.getText());
-            } else if ("experimentDate".equals(fieldname)) {
-                field("experimentDate").ofType(Date.class).in(experimentProfile).set(jp.readValueAs(Date.class));
-            } else if ("publicReleaseDate".equals(fieldname)) {
-                field("publicReleaseDate").ofType(Date.class).in(experimentProfile).set(jp.readValueAs(Date.class));
-            } else if ("arrayDesign".equals(fieldname)) {
-                field("arrayDesign").ofType(String.class).in(experimentProfile).set(jp.getText());
-            } else if("aeExperimentType".equals(fieldname)) {
-                field("aeExperimentType").ofType(String.class).in(experimentProfile).set(jp.getText());
-            } else if("experimentalDesigns".equals(fieldname)) {
-                field("experimentalDesigns").ofType(new TypeRef<List<OntologyTerm>>() {})
-                        .in(experimentProfile)
-                        .set(jp.<List<OntologyTerm>>readValueAs(new TypeReference<List<OntologyTerm>>() {}));
-            }
-        }
-        return experimentProfile;
+        return parseJson(jp, ExperimentProfile.class, SERIALIZABLE_FIELDS);
     }
 }

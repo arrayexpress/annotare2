@@ -1,38 +1,49 @@
+/*
+ * Copyright 2009-2013 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
-import org.fest.reflect.reference.TypeRef;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
-import static org.fest.reflect.core.Reflection.field;
+import static java.util.Arrays.asList;
+import static uk.ac.ebi.fg.annotare2.submission.transform.Utilities.generateJson;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
 
+    static List<String> SERIALIZABLE_FIELDS = asList("nextId",
+            "type",
+            "title",
+            "description",
+            "experimentDate",
+            "publicReleaseDate",
+            "arrayDesign",
+            "aeExperimentType",
+            "experimentalDesigns");
+
     @Override
     public void serialize(ExperimentProfile experimentProfile, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        jgen.writeStartObject();
-
-        //TODO do not write the field if it's null
-        jgen.writeObjectField("nextId", field("nextId").ofType(Integer.TYPE).in(experimentProfile).get());
-        jgen.writeObjectField("type", field("type").ofType(ExperimentProfileType.class).in(experimentProfile).get());
-        jgen.writeObjectField("title", field("title").ofType(String.class).in(experimentProfile).get());
-        jgen.writeObjectField("description", field("description").ofType(String.class).in(experimentProfile).get());
-        jgen.writeObjectField("experimentDate", field("experimentDate").ofType(Date.class).in(experimentProfile).get());
-        jgen.writeObjectField("publicReleaseDate", field("publicReleaseDate").ofType(Date.class).in(experimentProfile).get());
-        jgen.writeObjectField("experimentalDesigns", field("experimentalDesigns").ofType(new TypeRef<List<OntologyTerm>>() {
-        }).in(experimentProfile).get());
-
-        jgen.writeEndObject();
+        generateJson(jgen, experimentProfile, SERIALIZABLE_FIELDS);
     }
 }
