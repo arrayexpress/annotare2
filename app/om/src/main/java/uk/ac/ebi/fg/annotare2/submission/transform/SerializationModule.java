@@ -18,27 +18,42 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.Module;
+import org.codehaus.jackson.map.module.SimpleDeserializers;
 import org.codehaus.jackson.map.module.SimpleModule;
+import org.codehaus.jackson.map.module.SimpleSerializers;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 
 /**
  * @author Olga Melnichuk
  */
 public class SerializationModule extends SimpleModule {
+    private final ModelVersion version;
 
-    private final SerializationFactory factory;
-
-    public SerializationModule(SerializationFactory factory) {
+    public SerializationModule(ModelVersion version) {
         super(SerializationModule.class.getName(), Version.unknownVersion());
-        this.factory = factory;
+        this.version = version;
     }
 
     @Override
     public void setupModule(SetupContext context) {
-        context.addSerializers(factory.getSerializers());
-        context.addDeserializers(factory.getDeserializers());
+        final SimpleSerializers serializers = new SimpleSerializers();
+        final SimpleDeserializers deserializers = new SimpleDeserializers();
+        switch (version) {
+            case VERSION_1_0:
+                serializers.addSerializer(ExperimentProfile.class, new ExperimentProfileSerializer10());
+                deserializers.addDeserializer(ExperimentProfile.class, new ExperimentProfileDeserializer10());
+                serializers.addSerializer(OntologyTerm.class, new OntologyTermSerializer10());
+                deserializers.addDeserializer(OntologyTerm.class, new OntologyTermDeserializer10());
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        context.addSerializers(serializers);
+        context.addDeserializers(deserializers);
     }
 
     public static Module createSubmissionSerializationModule(ModelVersion version) {
-        return new SerializationModule(SerializationFactory.createFactory(version));
+        return new SerializationModule(version);
     }
 }

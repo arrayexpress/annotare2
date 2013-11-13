@@ -37,7 +37,6 @@ public class JsonCodec {
     private static ObjectMapper createMapper(ModelVersion version) throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(createSubmissionSerializationModule(version));
-        mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         return mapper;
     }
 
