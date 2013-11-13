@@ -111,6 +111,7 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
 
                 @Override
                 public void onSuccess(Void aVoid) {
+                    goTo(new SubmissionListPlace());
                 }
             }.wrap());
         }
