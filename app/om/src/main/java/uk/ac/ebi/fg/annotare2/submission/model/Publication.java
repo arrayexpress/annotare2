@@ -16,42 +16,30 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Publication implements Serializable {
 
-    @JsonProperty("id")
     private int id;
 
-    @JsonProperty("title")
     private String title;
 
-    @JsonProperty("authors")
     private String authors;
 
-    @JsonProperty("pubMedId")
     private String pubMedId;
 
-    @JsonProperty("doi")
     private String doi;
 
-    @JsonProperty("status")
     private OntologyTerm status;
 
     Publication() {
     /* used by GWT serialization */
     }
 
-    @JsonCreator
-    public Publication(@JsonProperty("id") int id) {
+    public Publication(int id) {
         this.id = id;
     }
 

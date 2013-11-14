@@ -20,19 +20,20 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
 import java.io.IOException;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static uk.ac.ebi.fg.annotare2.submission.transform.Utilities.generateJson;
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.generateJson;
 
 /**
  * @author Olga Melnichuk
  */
 public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
 
-    static List<String> SERIALIZABLE_FIELDS = asList("nextId",
+    static List<String> JSON_FIELDS = asList("nextId",
             "type",
             "title",
             "description",
@@ -40,10 +41,26 @@ public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProf
             "publicReleaseDate",
             "arrayDesign",
             "aeExperimentType",
-            "experimentalDesigns");
+            "experimentalDesigns",
+            "contacts",
+            "publications"
+            );
 
     @Override
     public void serialize(ExperimentProfile experimentProfile, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, experimentProfile, SERIALIZABLE_FIELDS);
+        generateJson(jgen, experimentProfile, JSON_FIELDS,
+                new ValueGetter<ExperimentProfile>("contacts") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getContacts();
+                    }
+               },
+                new ValueGetter<ExperimentProfile>("publications") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getPublications();
+                    }
+                }
+        );
     }
 }

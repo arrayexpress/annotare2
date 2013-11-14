@@ -17,8 +17,10 @@
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
 import org.junit.Test;
+import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.Publication;
 
 import java.util.Date;
 
@@ -41,6 +43,23 @@ public class SubmissionSerializationTest {
         profileIn.setExperimentDate(new Date());
         profileIn.setPublicReleaseDate(new Date());
         profileIn.setExperimentalDesigns(asList(new OntologyTerm("term1", "term1"), new OntologyTerm("term2", "term2")));
+
+        Contact c1 = profileIn.createContact();
+        c1.setFirstName("contact1");
+        c1.setRoles(asList("role1", "role2"));
+
+        Contact c2 = profileIn.createContact();
+        c2.setFirstName("contact2");
+        c2.setRoles(asList("role3", "role4"));
+
+        Publication p1 = profileIn.createPublication();
+        p1.setTitle("pub1");
+        p1.setStatus(new OntologyTerm("ready", "ready"));
+
+        Publication p2 = profileIn.createPublication();
+        p2.setTitle("pub2");
+        p2.setStatus(new OntologyTerm("in-review", "in-review"));
+
         String jsonString = JsonCodec.writeExperiment(profileIn);
         System.out.println(jsonString);
         assertNotNull(jsonString);

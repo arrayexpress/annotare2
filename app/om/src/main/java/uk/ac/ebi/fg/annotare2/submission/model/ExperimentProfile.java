@@ -38,44 +38,35 @@ import static java.util.Collections.unmodifiableCollection;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExperimentProfile implements Serializable {
 
-    @JsonProperty("nextId")
     int nextId;
 
-    @JsonProperty("type")
     private ExperimentProfileType type;
 
-    @JsonProperty("accession")
     private String accession;
 
-    @JsonProperty("title")
     private String title;
 
-    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("experimentDate")
     private Date experimentDate;
 
-    @JsonProperty("publicReleaseDate")
     private Date publicReleaseDate;
 
-    @JsonProperty("arrayDesign")
     private String arrayDesign;
 
-    @JsonProperty("aeExperimentType")
     private String aeExperimentType;
 
-    @JsonProperty("experimentalDesigns")
     private List<OntologyTerm> experimentalDesigns;
 
-    @JsonProperty("contactMap")
     private Map<Integer, Contact> contactMap;
 
-    @JsonProperty("publicationMap")
     private Map<Integer, Publication> publicationMap;
 
     @JsonProperty("protocolMap")
     private Map<Integer, Protocol> protocolMap;
+
+    @JsonProperty("protocolOrder")
+    private List<Integer> protocolOrder;
 
     @JsonProperty("sampleMap")
     private Map<Integer, Sample> sampleMap;
@@ -88,9 +79,6 @@ public class ExperimentProfile implements Serializable {
 
     @JsonProperty("sampleAttributeOrder")
     private List<Integer> sampleAttributeOrder;
-
-    @JsonProperty("protocolOrder")
-    private List<Integer> protocolOrder;
 
     @JsonProperty("labels")
     private Set<String> labels;

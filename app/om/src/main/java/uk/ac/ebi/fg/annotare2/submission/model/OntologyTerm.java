@@ -16,31 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class OntologyTerm implements Serializable {
 
-    @JsonProperty("accession")
     private String accession;
 
-    @JsonProperty("label")
     private String label;
 
     OntologyTerm() {
     /* used by GWT serialization only */
     }
 
-    @JsonCreator
-    public OntologyTerm(@JsonProperty("accession") String accession,
-                        @JsonProperty("label") String label) {
+    public OntologyTerm(String accession, String label) {
         this.accession = accession;
         this.label = label;
     }

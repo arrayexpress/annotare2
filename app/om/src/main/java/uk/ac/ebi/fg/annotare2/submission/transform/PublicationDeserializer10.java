@@ -19,20 +19,20 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonDeserializer;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.Publication;
 
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.submission.transform.OntologyTermSerializer10.JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.PublicationSerializer10.JSON_FIELDS;
 import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk
  */
-public class OntologyTermDeserializer10 extends JsonDeserializer<OntologyTerm> {
+public class PublicationDeserializer10 extends JsonDeserializer<Publication> {
 
     @Override
-    public OntologyTerm deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, OntologyTerm.class, JSON_FIELDS);
+    public Publication deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, Publication.class, JSON_FIELDS);
     }
 }

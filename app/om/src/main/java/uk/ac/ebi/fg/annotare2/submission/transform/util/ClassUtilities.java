@@ -14,57 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.submission.transform;
+package uk.ac.ebi.fg.annotare2.submission.transform.util;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Olga Melnichuk
  */
-class Utilities {
+public class ClassUtilities {
 
-    public static <T> T parseJson(JsonParser jp, Class<T> targetClass, Collection<String> fieldNames) throws IOException {
-        Set<String> fieldNameSet = new HashSet<String>(fieldNames);
-
-        T target = newInstance(targetClass);
-        while (jp.nextToken() != JsonToken.END_OBJECT) {
-            String fieldName = jp.getCurrentName();
-            jp.nextToken();
-
-            if (fieldNameSet.contains(fieldName)) {
-                Class<?> fieldType = getFieldType(target, fieldName);
-                setFieldValue(target, fieldName, jp.readValueAs(fieldType));
-            }
-        }
-        return target;
-    }
-
-    public static void generateJson(JsonGenerator jgen, Object target, Collection<String> fieldNames) throws IOException {
-        jgen.writeStartObject();
-        for (String fieldName : fieldNames) {
-            generateField(jgen, fieldName, target);
-        }
-        jgen.writeEndObject();
-    }
-
-    private static void generateField(JsonGenerator jgen, String fieldName, Object target) throws IOException {
-        Object value = getFieldValue(target, fieldName);
-        if (value != null) {
-            jgen.writeObjectField(fieldName, value);
-        }
-    }
-
-    private static Object getFieldValue(Object target, String fieldName) {
+    public static Object getFieldValue(Object target, String fieldName) {
         try {
             return getField(target, fieldName).get(target);
         } catch (NoSuchFieldException e) {
@@ -74,7 +35,7 @@ class Utilities {
         }
     }
 
-    private static void setFieldValue(Object target, String fieldName, Object value) {
+    public static void setFieldValue(Object target, String fieldName, Object value) {
         try {
             getField(target, fieldName).set(target, value);
         } catch (IllegalAccessException e) {
@@ -84,7 +45,7 @@ class Utilities {
         }
     }
 
-    private static Class<?> getFieldType(Object target, String fieldName) {
+    public static Class<?> getFieldType(Object target, String fieldName) {
         try {
             return getField(target, fieldName).getType();
         } catch (NoSuchFieldException e) {
@@ -99,7 +60,7 @@ class Utilities {
         return field;
     }
 
-    private static <T> T newInstance(Class<T> targetClass) {
+    public static <T> T newInstance(Class<T> targetClass) {
         try {
             Constructor<T> constructor = targetClass.getDeclaredConstructor();
             constructor.setAccessible(true);

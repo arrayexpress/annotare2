@@ -16,10 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,45 +25,33 @@ import static java.util.Collections.unmodifiableList;
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Contact implements Serializable {
 
-    @JsonProperty("id")
     private int id;
 
-    @JsonProperty("firstName")
     private String firstName;
 
-    @JsonProperty("lastName")
     private String lastName;
 
-    @JsonProperty("midInitials")
     private String midInitials;
 
-    @JsonProperty("email")
     private String email;
 
-    @JsonProperty("phone")
     private String phone;
 
-    @JsonProperty("fax")
     private String fax;
 
-    @JsonProperty("affiliation")
     private String affiliation;
 
-    @JsonProperty("address")
     private String address;
 
-    @JsonProperty("roles")
     private List<String> roles;
 
     Contact() {
     /* used by GWT serialization */
     }
 
-    @JsonCreator
-    public Contact(@JsonProperty("id") int id) {
+    public Contact(int id) {
         this.id = id;
         this.roles = newArrayList();
     }

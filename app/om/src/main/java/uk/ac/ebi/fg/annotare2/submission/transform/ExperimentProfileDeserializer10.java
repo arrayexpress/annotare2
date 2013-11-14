@@ -19,12 +19,20 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonDeserializer;
+import org.codehaus.jackson.type.TypeReference;
+import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.Publication;
+import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueSetter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import static uk.ac.ebi.fg.annotare2.submission.transform.ExperimentProfileSerializer10.SERIALIZABLE_FIELDS;
-import static uk.ac.ebi.fg.annotare2.submission.transform.Utilities.parseJson;
+import static uk.ac.ebi.fg.annotare2.submission.transform.ExperimentProfileSerializer10.JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.ClassUtilities.setFieldValue;
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk
@@ -33,6 +41,33 @@ public class ExperimentProfileDeserializer10 extends JsonDeserializer<Experiment
 
     @Override
     public ExperimentProfile deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, ExperimentProfile.class, SERIALIZABLE_FIELDS);
+        return parseJson(jp, ExperimentProfile.class, JSON_FIELDS,
+                new ValueSetter<ExperimentProfile>("contacts", new TypeReference<Collection<Contact>>() {
+                }) {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void setValue(ExperimentProfile obj, Object value) {
+                        Collection<Contact> contacts = (Collection<Contact>) value;
+                        Map<Integer, Contact> map = new LinkedHashMap<Integer, Contact>();
+                        for (Contact contact : contacts) {
+                            map.put(contact.getId(), contact);
+                        }
+                        setFieldValue(obj, "contactMap", map);
+                    }
+                },
+                new ValueSetter<ExperimentProfile>("publications", new TypeReference<Collection<Publication>>() {
+                }) {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void setValue(ExperimentProfile obj, Object value) {
+                        Collection<Publication> publications = (Collection<Publication>) value;
+                        Map<Integer, Publication> map = new LinkedHashMap<Integer, Publication>();
+                        for (Publication publication : publications) {
+                            map.put(publication.getId(), publication);
+                        }
+                        setFieldValue(obj, "publicationMap", map);
+                    }
+                }
+        );
     }
 }

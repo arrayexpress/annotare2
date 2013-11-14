@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.Publication;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,15 +30,18 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-public class OntologyTermSerializer10 extends JsonSerializer<OntologyTerm> {
+public class PublicationSerializer10 extends JsonSerializer<Publication> {
 
     static final List<String> JSON_FIELDS = asList(
-            "accession",
-            "label"
-    );
+            "id",
+            "title",
+            "authors",
+            "pubMedId",
+            "doi",
+            "status");
 
     @Override
-    public void serialize(OntologyTerm term, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, term, JSON_FIELDS);
+    public void serialize(Publication publication, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        generateJson(jgen, publication, JSON_FIELDS);
     }
 }
