@@ -16,29 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import uk.ac.ebi.fg.annotare2.submission.model.ProtocolAssignment;
 
 import java.io.IOException;
-import java.util.List;
 
-import static java.util.Arrays.asList;
-import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.generateJson;
+import static uk.ac.ebi.fg.annotare2.submission.transform.ProtocolAssignmentSerializer10.PROTOCOL_ASSIGNMENT_JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk
  */
-class OntologyTermSerializer10 extends JsonSerializer<OntologyTerm> {
-
-    static final List<String> ONTOLOGY_TERM_JSON_FIELDS = asList(
-            "accession",
-            "label"
-    );
+class ProtocolAssignmentDeserializer10 extends JsonDeserializer<ProtocolAssignment> {
 
     @Override
-    public void serialize(OntologyTerm term, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, term, ONTOLOGY_TERM_JSON_FIELDS);
+    public ProtocolAssignment deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, ProtocolAssignment.class, PROTOCOL_ASSIGNMENT_JSON_FIELDS);
     }
 }

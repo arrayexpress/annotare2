@@ -18,8 +18,6 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -28,30 +26,26 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Extract implements Serializable, HasProtocolAssignment {
 
-    @JsonProperty("id")
     private int id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("attributes")
-    private Map<ExtractAttribute, String> values;
+    private Map<ExtractAttribute, String> attributeValues;
 
-    @JsonProperty("protocols")
-    private ProtocolAssignment protocols;
+    private ProtocolAssignment protocolAssignment;
 
     Extract() {
-    /* used by GWT serialization */
+        /* used by GWT serialization */
+        this(0);
     }
 
     @JsonCreator
-    public Extract(@JsonProperty("id") int id) {
+    public Extract(int id) {
         this.id = id;
-        this.values = new HashMap<ExtractAttribute, String>();
-        this.protocols = new ProtocolAssignment();
+        this.attributeValues = new HashMap<ExtractAttribute, String>();
+        this.protocolAssignment = new ProtocolAssignment();
     }
 
     public int getId() {
@@ -67,17 +61,17 @@ public class Extract implements Serializable, HasProtocolAssignment {
     }
 
     public String getAttributeValue(ExtractAttribute attribute) {
-        return values.get(attribute);
+        return attributeValues.get(attribute);
     }
 
     @JsonIgnore
     public Map<ExtractAttribute, String> getAttributeValues() {
-        return new HashMap<ExtractAttribute, String>(values);
+        return new HashMap<ExtractAttribute, String>(attributeValues);
     }
 
     @JsonIgnore
     public void setAttributeValues(Map<ExtractAttribute, String> values) {
-        this.values = new HashMap<ExtractAttribute, String>(values);
+        this.attributeValues = new HashMap<ExtractAttribute, String>(values);
     }
 
     @Override
@@ -99,12 +93,12 @@ public class Extract implements Serializable, HasProtocolAssignment {
 
     @Override
     public boolean hasProtocol(Protocol protocol) {
-        return protocols.contains(protocol);
+        return protocolAssignment.contains(protocol);
     }
 
     @Override
     public void assignProtocol(Protocol protocol, boolean assigned) {
-        protocols.set(protocol, assigned);
+        protocolAssignment.set(protocol, assigned);
     }
 
     @Override

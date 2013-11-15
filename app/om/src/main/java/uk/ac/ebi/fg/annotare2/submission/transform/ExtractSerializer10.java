@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.Contact;
+import uk.ac.ebi.fg.annotare2.submission.model.Extract;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,22 +30,17 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-class ContactSerializer10 extends JsonSerializer<Contact> {
+class ExtractSerializer10 extends JsonSerializer<Extract> {
 
-    static final List<String> CONTACT_JSON_FIELDS = asList(
+    static final List<String> EXTRACT_JSON_FIELDS = asList(
             "id",
-            "firstName",
-            "lastName",
-            "midInitials",
-            "email",
-            "phone",
-            "fax",
-            "affiliation",
-            "address",
-            "roles");
+            "name",
+            "attributeValues",
+            "protocolAssignment"
+    );
 
     @Override
-    public void serialize(Contact contact, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, contact, CONTACT_JSON_FIELDS);
+    public void serialize(Extract extract, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        generateJson(jgen, extract, EXTRACT_JSON_FIELDS);
     }
 }

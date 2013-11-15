@@ -29,7 +29,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.par
 /**
  * @author Olga Melnichuk
  */
-public class ContactDeserializer10 extends JsonDeserializer<Contact> {
+class ContactDeserializer10 extends JsonDeserializer<Contact> {
 
     @Override
     public Contact deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {

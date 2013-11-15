@@ -31,7 +31,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
+class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
 
     static List<String> EXPERIMENT_PROFILE_JSON_FIELDS = asList("nextId",
             "type",
@@ -41,10 +41,15 @@ public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProf
             "publicReleaseDate",
             "arrayDesign",
             "aeExperimentType",
+            "labels",
             "experimentalDesigns",
             "contacts",
             "publications",
-            "protocols"
+            "protocols",
+            "sampleAttributes",
+            "samples",
+            "extracts",
+            "assays"
     );
 
     @Override
@@ -66,6 +71,30 @@ public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProf
                     @Override
                     public Object getValue(ExperimentProfile obj) {
                         return obj.getProtocols();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("sampleAttributes") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getSampleAttributes();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("samples") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getSamples();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("extracts") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getExtracts();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("assays") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getAssays();
                     }
                 }
         );

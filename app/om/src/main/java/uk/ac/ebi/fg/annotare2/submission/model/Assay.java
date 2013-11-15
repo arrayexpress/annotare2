@@ -16,59 +16,37 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Assay implements Serializable, HasProtocolAssignment {
 
-    @JsonProperty("extract")
-    private Integer extractId;
     private Extract extract;
+    private Integer extractId;
 
-    @JsonProperty("label")
     private String label;
 
-    @JsonProperty("assayProtocols")
-    private ProtocolAssignment assayProtocols;
-
-    @JsonProperty("labeledExtractProtocols")
-    private ProtocolAssignment labeledExtractProtocols;
+    private ProtocolAssignment assayProtocolAssignment;
+    private ProtocolAssignment labeledExtractProtocolAssignment;
 
     Assay() {
         /* used by GWT serialization only */
-        this(0, null, "");
-    }
-
-    @JsonCreator
-    Assay(@JsonProperty("extract") int extractId, @JsonProperty("label") String label) {
-        this(extractId, null, label);
+        this(null, "");
     }
 
     public Assay(Extract extract) {
-        this(extract.getId(), extract, null);
+        this(extract, null);
     }
 
     public Assay(Extract extract, String label) {
-        this(extract.getId(), extract, label);
-    }
-
-    private Assay(int extractId, Extract extract, String label) {
-        this.extractId = extractId;
         this.extract = extract;
         this.label = label;
-        assayProtocols = new ProtocolAssignment();
-        labeledExtractProtocols = new ProtocolAssignment();
+        this.assayProtocolAssignment = new ProtocolAssignment();
+        this.labeledExtractProtocolAssignment = new ProtocolAssignment();
     }
 
-    @JsonIgnore
     public Extract getExtract() {
         return extract;
     }
@@ -85,7 +63,6 @@ public class Assay implements Serializable, HasProtocolAssignment {
         return extractId + (label != null && label.length() > 0 ? "_" + label : "");
     }
 
-    @JsonIgnore
     public String getName() {
         return extract.getName() + (label != null && label.length() > 0 ? ":" + label : "");
     }
@@ -110,27 +87,18 @@ public class Assay implements Serializable, HasProtocolAssignment {
         return result;
     }
 
-    void fixMe(ExperimentProfile exp) {
-        extract = exp.getExtract(extractId);
-        if (extract == null) {
-            throw new IllegalStateException("Assay can't exist without extract; (cause: extract with id=" +
-                    extractId + " was not found in experiment profile)");
-        }
-    }
-
-    @JsonIgnore
     public LabeledExtract asLabeledExtract() {
         return new LabeledExtract(this);
     }
 
     @Override
     public boolean hasProtocol(Protocol protocol) {
-        return assayProtocols.contains(protocol);
+        return assayProtocolAssignment.contains(protocol);
     }
 
     @Override
     public void assignProtocol(Protocol protocol, boolean assigned) {
-        assayProtocols.set(protocol, assigned);
+        assayProtocolAssignment.set(protocol, assigned);
     }
 
     @Override
@@ -139,10 +107,19 @@ public class Assay implements Serializable, HasProtocolAssignment {
     }
 
     boolean hasLabeledExtractProtocol(Protocol protocol) {
-        return labeledExtractProtocols.contains(protocol);
+        return labeledExtractProtocolAssignment.contains(protocol);
     }
 
     void assignLabelExtractProtocol(Protocol protocol, boolean assigned) {
-        labeledExtractProtocols.set(protocol, assigned);
+        labeledExtractProtocolAssignment.set(protocol, assigned);
+    }
+
+    void fixMe(ExperimentProfile exp) {
+        extract = exp.getExtract(extractId);
+        if (extract == null) {
+            throw new IllegalStateException("Assay can't exist without extract; (cause: extract with id=" +
+                    extractId + " was not found in experiment profile)");
+        }
+        extractId = null;
     }
 }

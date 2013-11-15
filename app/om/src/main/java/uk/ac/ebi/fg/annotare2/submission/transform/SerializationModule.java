@@ -18,7 +18,6 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.Module;
-
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
@@ -51,6 +50,18 @@ public class SerializationModule extends SimpleModule {
                 deserializers.addDeserializer(Publication.class, new PublicationDeserializer10());
                 serializers.addSerializer(Protocol.class, new ProtocolSerializer10());
                 deserializers.addDeserializer(Protocol.class, new ProtocolDeserializer10());
+                serializers.addSerializer(SampleAttribute.class, new SampleAttributeSerializer10());
+                deserializers.addDeserializer(SampleAttribute.class, new SampleAttributeDeserializer10());
+                serializers.addSerializer(Sample.class, new SampleSerializer10());
+                deserializers.addDeserializer(Sample.class, new SampleDeserializer10());
+                serializers.addSerializer(Extract.class, new ExtractSerializer10());
+                deserializers.addDeserializer(Extract.class, new ExtractDeserializer10());
+                serializers.addSerializer(ProtocolAssignment.class, new ProtocolAssignmentSerializer10());
+                deserializers.addDeserializer(ProtocolAssignment.class, new ProtocolAssignmentDeserializer10());
+                serializers.addSerializer(Assay.class, new AssaySerializer10());
+                deserializers.addDeserializer(Assay.class, new AssayDeserializer10());
+                serializers.addSerializer(FileColumn.class, new FileColumnSerializer10());
+                deserializers.addDeserializer(FileColumn.class, new FileColumnDeserializer10());
                 break;
             default:
                 throw new IllegalStateException();

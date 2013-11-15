@@ -16,29 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
 
 import java.io.IOException;
-import java.util.List;
 
-import static java.util.Arrays.asList;
-import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.generateJson;
+import static uk.ac.ebi.fg.annotare2.submission.transform.SampleAttributeSerializer10.SAMPLE_ATTRIBUTE_JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk
  */
-class OntologyTermSerializer10 extends JsonSerializer<OntologyTerm> {
-
-    static final List<String> ONTOLOGY_TERM_JSON_FIELDS = asList(
-            "accession",
-            "label"
-    );
+class SampleAttributeDeserializer10 extends JsonDeserializer<SampleAttribute> {
 
     @Override
-    public void serialize(OntologyTerm term, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, term, ONTOLOGY_TERM_JSON_FIELDS);
+    public SampleAttribute deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, SampleAttribute.class, SAMPLE_ATTRIBUTE_JSON_FIELDS);
     }
 }

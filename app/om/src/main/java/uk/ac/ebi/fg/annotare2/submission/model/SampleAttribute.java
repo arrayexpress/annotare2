@@ -16,10 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
@@ -29,36 +26,27 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SampleAttribute implements Serializable {
 
-    @JsonProperty("id")
     private int id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("term")
     private OntologyTerm term;
 
-    @JsonProperty("type")
     private AttributeType type;
 
-    @JsonProperty("valueSubType")
     private AttributeValueSubType valueSubType;
 
-    @JsonProperty("units")
     private OntologyTerm units;
 
-    @JsonProperty("ontologyBranch")
     private OntologyTerm ontologyBranch;
 
-    @JsonProperty("editable")
     private boolean isEditable;
 
     SampleAttribute() {
     /* used by GWT serialization */
     }
 
-    @JsonCreator
-    public SampleAttribute(@JsonProperty("id") int id) {
+    public SampleAttribute(int id) {
         this.id = id;
     }
 
@@ -98,18 +86,8 @@ public class SampleAttribute implements Serializable {
         isEditable = editable;
     }
 
-    @JsonIgnore
     public AttributeValueType getValueType() {
         return valueSubType == null ? null : valueSubType.get(this);
-    }
-
-    @JsonIgnore
-    public void setValueType(AttributeValueType valueType) {
-        if (valueType == null) {
-            valueSubType = null;
-            return;
-        }
-        valueType.set(this);
     }
 
     void setValueSubType(AttributeValueSubType valueSubType) {

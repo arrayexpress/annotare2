@@ -16,24 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
+        import com.fasterxml.jackson.core.JsonParser;
+        import com.fasterxml.jackson.databind.DeserializationContext;
+        import com.fasterxml.jackson.databind.JsonDeserializer;
+        import uk.ac.ebi.fg.annotare2.submission.model.Assay;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+        import java.io.IOException;
 
-import java.io.IOException;
-
-import static uk.ac.ebi.fg.annotare2.submission.transform.OntologyTermSerializer10.ONTOLOGY_TERM_JSON_FIELDS;
-import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
+        import static uk.ac.ebi.fg.annotare2.submission.transform.AssaySerializer10.ASSAY_JSON_FIELDS;
+        import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk
  */
-class OntologyTermDeserializer10 extends JsonDeserializer<OntologyTerm> {
+class AssayDeserializer10 extends JsonDeserializer<Assay> {
 
     @Override
-    public OntologyTerm deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, OntologyTerm.class, ONTOLOGY_TERM_JSON_FIELDS);
+    public Assay deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, Assay.class, ASSAY_JSON_FIELDS);
     }
 }

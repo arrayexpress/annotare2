@@ -31,7 +31,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-public class PublicationSerializer10 extends JsonSerializer<Publication> {
+class PublicationSerializer10 extends JsonSerializer<Publication> {
 
     static final List<String> PUBLICATION_JSON_FIELDS = asList(
             "id",

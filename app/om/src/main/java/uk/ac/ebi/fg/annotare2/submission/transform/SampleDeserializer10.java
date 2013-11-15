@@ -16,9 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import uk.ac.ebi.fg.annotare2.submission.model.Sample;
+
+import java.io.IOException;
+
+import static uk.ac.ebi.fg.annotare2.submission.transform.SampleSerializer10.SAMPLE_JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
+
 /**
  * @author Olga Melnichuk
  */
-enum ModelVersion {
-    VERSION_1_0
+class SampleDeserializer10 extends JsonDeserializer<Sample> {
+
+    @Override
+    public Sample deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, Sample.class, SAMPLE_JSON_FIELDS);
+    }
 }

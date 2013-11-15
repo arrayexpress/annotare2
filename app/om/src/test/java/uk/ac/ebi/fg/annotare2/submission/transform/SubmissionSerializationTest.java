@@ -20,6 +20,7 @@ import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNotNull;
@@ -66,6 +67,22 @@ public class SubmissionSerializationTest {
         Protocol prot2 = profileIn.createProtocol(new OntologyTerm("protocol2", "protocol2"), ProtocolTargetType.LABELED_EXTRACTS);
         prot2.setName("Name of Protocol2");
         prot2.setDescription("Description of Protocol2");
+
+        profileIn.addLabel("label1");
+        profileIn.addLabel("label2");
+
+        final SampleAttribute sa1 = profileIn.createSampleAttribute();
+        sa1.setName("Sample Attribute 1");
+        sa1.setTerm(new OntologyTerm("sa1", "sa1"));
+        sa1.setType(AttributeType.CHARACTERISTIC_ATTRIBUTE);
+
+        Sample s1 = profileIn.createSample();
+        s1.setName("Sample 1");
+        s1.setValues(new HashMap<Integer, String>(){{put(sa1.getId(), "value1");}});
+
+        Sample s2 = profileIn.createSample();
+        s2.setName("Sample 2");
+        s2.setValues(new HashMap<Integer, String>(){{put(sa1.getId(), "value2");}});
 
         String jsonString = JsonCodec.writeExperiment(profileIn);
         System.out.println(jsonString);

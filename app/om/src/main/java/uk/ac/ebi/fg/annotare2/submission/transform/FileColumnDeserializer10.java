@@ -16,9 +16,22 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+
+import java.io.IOException;
+
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
+
 /**
  * @author Olga Melnichuk
  */
-enum ModelVersion {
-    VERSION_1_0
+class FileColumnDeserializer10 extends JsonDeserializer<FileColumn>{
+
+    @Override
+    public FileColumn deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, FileColumn.class, FileColumnSerializer10.FILE_COLUMN_JSON_FIELDS);
+    }
 }

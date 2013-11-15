@@ -17,58 +17,30 @@
 package uk.ac.ebi.fg.annotare2.submission.model;
 
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.*;
 
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class FileColumn implements Serializable {
 
-    @JsonProperty("type")
     private FileType type;
 
-    @JsonProperty("assay2FileName")
-    private Map<String, String> assayId2FileName;
-    private Map<Assay, String> assay2FileName;
+    private Map<String, String> assayId2FileNameMap;
+    private Map<Assay, String> assay2FileNameMap;
 
-    @JsonProperty("file2ProtocolAssignmentMap")
-    private Map<String, ProtocolAssignment> file2ProtocolAssignmentMap;
+    private Map<String, ProtocolAssignment> fileName2ProtocolAssignmentMap;
 
     FileColumn() {
         /* used by GWT serialization */
+        this(null);
     }
 
-    @JsonCreator
-    public FileColumn(@JsonProperty("type") FileType type) {
+    public FileColumn(FileType type) {
         this.type = type;
-        assay2FileName = new HashMap<Assay, String>();
-        file2ProtocolAssignmentMap = new HashMap<String, ProtocolAssignment>();
-    }
-
-    @JsonProperty("assay2FileName")
-    Map<String, String> getAssayId2FileName() {
-        if (assayId2FileName != null) {
-            return assayId2FileName;
-        }
-
-        Map<String, String> map = new HashMap<String, String>();
-        for (Assay assay : assay2FileName.keySet()) {
-            String fileName = assay2FileName.get(assay);
-            map.put(assay.getId(), fileName);
-        }
-        return map;
-    }
-
-    @JsonProperty("assay2FileName")
-    void setAssayId2FileName(Map<String, String> assayId2FileName) {
-        this.assayId2FileName = assayId2FileName;
+        assay2FileNameMap = new HashMap<Assay, String>();
+        fileName2ProtocolAssignmentMap = new HashMap<String, ProtocolAssignment>();
     }
 
     public FileType getType() {
@@ -76,72 +48,69 @@ public class FileColumn implements Serializable {
     }
 
     public String getFileName(Assay assay) {
-        return assay2FileName.get(assay);
+        return assay2FileNameMap.get(assay);
     }
 
     public void setFileName(Assay assay, String fileName) {
         if (fileName == null) {
             removeFileName(assay);
         } else {
-            assay2FileName.put(assay, fileName);
+            assay2FileNameMap.put(assay, fileName);
         }
     }
 
     public void removeFileName(Assay assay) {
-        String fileName = assay2FileName.remove(assay);
-        if (!assay2FileName.containsValue(fileName)) {
-            file2ProtocolAssignmentMap.remove(fileName);
+        String fileName = assay2FileNameMap.remove(assay);
+        if (!assay2FileNameMap.containsValue(fileName)) {
+            fileName2ProtocolAssignmentMap.remove(fileName);
         }
     }
 
     public void removeFileName(String fileName) {
-        List<Assay> keys = new ArrayList<Assay>(assay2FileName.keySet());
+        List<Assay> keys = new ArrayList<Assay>(assay2FileNameMap.keySet());
         for (Assay assay : keys) {
-            if (fileName.equals(assay2FileName.get(assay))) {
+            if (fileName.equals(assay2FileNameMap.get(assay))) {
                 removeFileName(assay);
             }
         }
     }
 
-    void fixMe(ExperimentProfile exp) {
-        Map<String, String> assayId2FileName = getAssayId2FileName();
-        for (String assayId : assayId2FileName.keySet()) {
-            Assay assay = exp.getAssay(assayId);
-            assay2FileName.put(assay, assayId2FileName.get(assayId));
-        }
-        this.assayId2FileName = null;
-    }
-
-    @JsonIgnore
     public Collection<FileRef> getFileRefs() {
         Set<FileRef> fileRefs = new HashSet<FileRef>();
-        for (String fileName : assay2FileName.values()) {
+        for (String fileName : assay2FileNameMap.values()) {
             fileRefs.add(getFileRef(fileName));
         }
         return fileRefs;
     }
 
-    @JsonIgnore
     public Collection<Assay> getAssays() {
-        return new ArrayList<Assay>(assay2FileName.keySet());
+        return new ArrayList<Assay>(assay2FileNameMap.keySet());
     }
 
     boolean isProtocolAssigned2File(Protocol protocol, String fileName) {
-        ProtocolAssignment assignment = file2ProtocolAssignmentMap.get(fileName);
+        ProtocolAssignment assignment = fileName2ProtocolAssignmentMap.get(fileName);
         return assignment != null && assignment.contains(protocol);
     }
 
     void assignProtocol2File(Protocol protocol, String fileName, boolean assigned) {
-        ProtocolAssignment assignment = file2ProtocolAssignmentMap.get(fileName);
+        ProtocolAssignment assignment = fileName2ProtocolAssignmentMap.get(fileName);
         if (assignment == null) {
             assignment = new ProtocolAssignment();
-            file2ProtocolAssignmentMap.put(fileName, assignment);
+            fileName2ProtocolAssignmentMap.put(fileName, assignment);
         }
         assignment.set(protocol, assigned);
     }
 
     public FileRef getFileRef(String fileName) {
         return new FileRef(fileName, this);
+    }
+
+    void fixMe(ExperimentProfile exp) {
+        for (String assayId : assayId2FileNameMap.keySet()) {
+            Assay assay = exp.getAssay(assayId);
+            assay2FileNameMap.put(assay, assayId2FileNameMap.get(assayId));
+        }
+        this.assayId2FileNameMap = null;
     }
 }
 

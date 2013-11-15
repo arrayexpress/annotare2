@@ -30,7 +30,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolSerializer10 extends JsonSerializer<Protocol> {
+class ProtocolSerializer10 extends JsonSerializer<Protocol> {
 
     static final List<String> PROTOCOL_JSON_FIELDS = asList(
             "id",

@@ -16,9 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,10 +23,8 @@ import java.util.Set;
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProtocolAssignment implements Serializable {
 
-    @JsonProperty("ids")
     private Set<Integer> protocolIds;
 
     public ProtocolAssignment() {

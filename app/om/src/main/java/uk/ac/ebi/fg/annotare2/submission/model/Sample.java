@@ -29,7 +29,6 @@ import static java.util.Collections.unmodifiableMap;
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Sample implements Serializable {
 
     @JsonProperty("id")

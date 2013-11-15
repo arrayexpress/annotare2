@@ -29,7 +29,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.par
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolDeserializer10 extends JsonDeserializer<Protocol> {
+class ProtocolDeserializer10 extends JsonDeserializer<Protocol> {
 
     @Override
     public Protocol deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {

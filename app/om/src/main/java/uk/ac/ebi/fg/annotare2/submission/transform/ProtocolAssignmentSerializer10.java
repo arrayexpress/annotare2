@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.Contact;
+import uk.ac.ebi.fg.annotare2.submission.model.ProtocolAssignment;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,22 +30,12 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-class ContactSerializer10 extends JsonSerializer<Contact> {
+class ProtocolAssignmentSerializer10 extends JsonSerializer<ProtocolAssignment> {
 
-    static final List<String> CONTACT_JSON_FIELDS = asList(
-            "id",
-            "firstName",
-            "lastName",
-            "midInitials",
-            "email",
-            "phone",
-            "fax",
-            "affiliation",
-            "address",
-            "roles");
+    static final List<String> PROTOCOL_ASSIGNMENT_JSON_FIELDS = asList("protocolIds");
 
     @Override
-    public void serialize(Contact contact, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, contact, CONTACT_JSON_FIELDS);
+    public void serialize(ProtocolAssignment protocolAssignment, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        generateJson(jgen, protocolAssignment, PROTOCOL_ASSIGNMENT_JSON_FIELDS);
     }
 }

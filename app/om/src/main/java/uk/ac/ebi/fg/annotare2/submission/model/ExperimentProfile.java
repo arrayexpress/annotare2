@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.*;
@@ -57,6 +56,8 @@ public class ExperimentProfile implements Serializable {
 
     private String aeExperimentType;
 
+    private Set<String> labels;
+
     private List<OntologyTerm> experimentalDesigns;
 
     private Map<Integer, Contact> contactMap;
@@ -66,30 +67,20 @@ public class ExperimentProfile implements Serializable {
     private Map<Integer, Protocol> protocolMap;
     private List<Integer> protocolOrder;
 
-    @JsonProperty("sampleMap")
-    private Map<Integer, Sample> sampleMap;
-
-    @JsonProperty("extractMap")
-    private Map<Integer, Extract> extractMap;
-
-    @JsonProperty("sampleAttributeMap")
     private Map<Integer, SampleAttribute> sampleAttributeMap;
-
-    @JsonProperty("sampleAttributeOrder")
     private List<Integer> sampleAttributeOrder;
 
-    @JsonProperty("labels")
-    private Set<String> labels;
+    private Map<Integer, Sample> sampleMap;
+
+    private Map<Integer, Extract> extractMap;
+
+    private Map<String, Assay> assayMap;
+
+    private List<FileColumn> fileColumns;
 
     @JsonProperty("sample2Extracts")
     private MultiSets<Integer, Integer> sampleId2ExtractsIds;
     private MultiSets<Sample, Extract> sample2Extracts;
-
-    @JsonProperty("assayMap")
-    private Map<String, Assay> assayMap;
-
-    @JsonProperty("fileColumns")
-    private List<FileColumn> fileColumns;
 
     ExperimentProfile() {
         /* used by GWT serialization */
