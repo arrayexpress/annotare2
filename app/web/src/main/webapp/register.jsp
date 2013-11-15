@@ -1,5 +1,5 @@
 <%--
-  ~ Copyright 2009-2012 European Molecular Biology Laboratory
+  ~ Copyright 2009-2013 European Molecular Biology Laboratory
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<%--
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ page isELIgnored="false" %>
@@ -28,11 +29,13 @@
     String[] values = request.getParameterValues("email");
     pageContext.setAttribute("email", values == null ? "" : values[0]);
 %>
+--%>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Annotare 2.0 - Sign In</title>
+    <title>Annotare 2.0 - New user registration</title>
     <link type="text/css" rel="stylesheet" href="general.css">
     <link type="text/css" rel="stylesheet" href="login.css">
 </head>

@@ -80,7 +80,9 @@ public class AppServletModule extends ServletModule {
         filter("/login",
                 "/logout",
                 "/export",
-                "/user/*",
+                "/register",
+                "/activate",
+                "/change-password",
                 "/UserApp/*",
                 "/EditorApp/*").through(HibernateSessionFilter.class);
 
@@ -96,9 +98,9 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
-        serveRegex("/user/register" + JSESSIONID).with(RegistrationServlet.class);
-        serveRegex("/user/activate" + JSESSIONID).with(ActivationServlet.class);
-        serveRegex("/user/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
+        serveRegex("/register" + JSESSIONID).with(RegistrationServlet.class);
+        serveRegex("/activate" + JSESSIONID).with(ActivationServlet.class);
+        serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
         serve("/export").with(ExportServlet.class);
         serve("/error").with(UncaughtExceptionServlet.class);
 
