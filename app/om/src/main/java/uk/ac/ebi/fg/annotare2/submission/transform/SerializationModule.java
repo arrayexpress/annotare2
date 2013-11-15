@@ -16,15 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.Module;
-import org.codehaus.jackson.map.module.SimpleDeserializers;
-import org.codehaus.jackson.map.module.SimpleModule;
-import org.codehaus.jackson.map.module.SimpleSerializers;
-import uk.ac.ebi.fg.annotare2.submission.model.Contact;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.submission.model.Publication;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.Module;
+
+import com.fasterxml.jackson.databind.module.SimpleDeserializers;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.module.SimpleSerializers;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 
 /**
  * @author Olga Melnichuk
@@ -38,7 +36,7 @@ public class SerializationModule extends SimpleModule {
     }
 
     @Override
-    public void setupModule(SetupContext context) {
+    public void setupModule(Module.SetupContext context) {
         final SimpleSerializers serializers = new SimpleSerializers();
         final SimpleDeserializers deserializers = new SimpleDeserializers();
         switch (version) {
@@ -51,6 +49,8 @@ public class SerializationModule extends SimpleModule {
                 deserializers.addDeserializer(Contact.class, new ContactDeserializer10());
                 serializers.addSerializer(Publication.class, new PublicationSerializer10());
                 deserializers.addDeserializer(Publication.class, new PublicationDeserializer10());
+                serializers.addSerializer(Protocol.class, new ProtocolSerializer10());
+                deserializers.addDeserializer(Protocol.class, new ProtocolDeserializer10());
                 break;
             default:
                 throw new IllegalStateException();

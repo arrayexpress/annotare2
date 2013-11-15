@@ -16,11 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform.util;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +42,6 @@ public class JsonUtilities {
         }
 
         T target = newInstance(targetClass);
-
-       /* while (jp.getCurrentToken() != JsonToken.START_OBJECT) {
-            jp.nextToken();
-        }*/
-
         while (jp.nextToken() != JsonToken.END_OBJECT) {
             String fieldName = jp.getCurrentName();
             jp.nextToken();
@@ -51,7 +49,21 @@ public class JsonUtilities {
             if (fieldNames.contains(fieldName)) {
                 ValueSetter<T> setter = setters.get(fieldName);
                 if (setter == null) {
-                    setFieldValue(target, fieldName, jp.readValueAs(getFieldType(target, fieldName)));
+
+                    Class<?> type = getFieldType(target, fieldName);
+                    final Type genericType = getGenericFieldType(target, fieldName);
+
+                    if (genericType instanceof ParameterizedType) {
+                        Object v = jp.readValueAs(new TypeReference<Object>() {
+                            @Override
+                            public Type getType() {
+                                return genericType;
+                            }
+                        });
+                        setFieldValue(target, fieldName, v);
+                    } else {
+                        setFieldValue(target, fieldName, jp.readValueAs(type));
+                    }
                 } else {
                     setter.setValue(target, jp);
                 }
@@ -69,7 +81,7 @@ public class JsonUtilities {
         jgen.writeStartObject();
         for (String fieldName : fieldNames) {
             ValueGetter<T> getter = getters.get(fieldName);
-            Object value =  (getter != null) ? getter.getValue(target) : getFieldValue(target, fieldName);
+            Object value = (getter != null) ? getter.getValue(target) : getFieldValue(target, fieldName);
             generateField(jgen, fieldName, value);
         }
         jgen.writeEndObject();

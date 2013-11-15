@@ -16,9 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
@@ -33,7 +33,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
  */
 public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
 
-    static List<String> JSON_FIELDS = asList("nextId",
+    static List<String> EXPERIMENT_PROFILE_JSON_FIELDS = asList("nextId",
             "type",
             "title",
             "description",
@@ -43,22 +43,29 @@ public class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProf
             "aeExperimentType",
             "experimentalDesigns",
             "contacts",
-            "publications"
-            );
+            "publications",
+            "protocols"
+    );
 
     @Override
     public void serialize(ExperimentProfile experimentProfile, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, experimentProfile, JSON_FIELDS,
+        generateJson(jgen, experimentProfile, EXPERIMENT_PROFILE_JSON_FIELDS,
                 new ValueGetter<ExperimentProfile>("contacts") {
                     @Override
                     public Object getValue(ExperimentProfile obj) {
                         return obj.getContacts();
                     }
-               },
+                },
                 new ValueGetter<ExperimentProfile>("publications") {
                     @Override
                     public Object getValue(ExperimentProfile obj) {
                         return obj.getPublications();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("protocols") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getProtocols();
                     }
                 }
         );

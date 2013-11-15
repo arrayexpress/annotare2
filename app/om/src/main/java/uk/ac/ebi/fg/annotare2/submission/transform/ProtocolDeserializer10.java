@@ -16,24 +16,23 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.submission.transform.OntologyTermSerializer10.ONTOLOGY_TERM_JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.ProtocolSerializer10.PROTOCOL_JSON_FIELDS;
 import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk
  */
-public class OntologyTermDeserializer10 extends JsonDeserializer<OntologyTerm> {
+public class ProtocolDeserializer10 extends JsonDeserializer<Protocol> {
 
     @Override
-    public OntologyTerm deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, OntologyTerm.class, ONTOLOGY_TERM_JSON_FIELDS);
+    public Protocol deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, Protocol.class, PROTOCOL_JSON_FIELDS);
     }
 }

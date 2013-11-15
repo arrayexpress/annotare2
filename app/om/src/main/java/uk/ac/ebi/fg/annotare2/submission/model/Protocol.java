@@ -16,10 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,45 +23,34 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Protocol implements Serializable {
 
-    @JsonProperty("id")
     private int id;
 
-    @JsonProperty("type")
     private OntologyTerm type;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("hardware")
     private String hardware;
 
-    @JsonProperty("software")
     private String software;
 
-    @JsonProperty("contact")
     private String contact;
 
-    @JsonProperty("parameters")
     private List<String> parameters;
 
-    @JsonProperty("targetType")
     private ProtocolTargetType targetType;
 
-    @JsonProperty("assigned2All")
     private boolean assigned2All;
 
     Protocol() {
-    /* used by GWT serialization only */
+        /* used by GWT serialization only */
+        this(0);
     }
 
-    @JsonCreator
-    public Protocol(@JsonProperty("id") int id) {
+    public Protocol(int id) {
         this.id = id;
         this.parameters = new ArrayList<String>();
         assigned2All = true;
@@ -139,6 +124,14 @@ public class Protocol implements Serializable {
         return parameters;
     }
 
+    public void setAssigned2All(boolean assigned2All) {
+        this.assigned2All = assigned2All;
+    }
+
+    public boolean isAssigned2All() {
+        return assigned2All;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,13 +147,5 @@ public class Protocol implements Serializable {
     @Override
     public int hashCode() {
         return id;
-    }
-
-    public void setAssigned2All(boolean assigned2All) {
-        this.assigned2All = assigned2All;
-    }
-
-    public boolean isAssigned2All() {
-        return assigned2All;
     }
 }

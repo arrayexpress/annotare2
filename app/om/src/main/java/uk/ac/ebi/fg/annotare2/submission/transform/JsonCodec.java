@@ -16,10 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 
@@ -86,7 +85,7 @@ public class JsonCodec {
 
     public static String writeArrayDesign(ArrayDesignHeader header) throws DataSerializationException {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+        //mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         try {
             return mapper.writeValueAsString(header);
         } catch (JsonGenerationException e) {

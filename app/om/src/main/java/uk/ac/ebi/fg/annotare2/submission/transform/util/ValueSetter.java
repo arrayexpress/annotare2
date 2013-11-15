@@ -16,8 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform.util;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.type.TypeReference;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
 

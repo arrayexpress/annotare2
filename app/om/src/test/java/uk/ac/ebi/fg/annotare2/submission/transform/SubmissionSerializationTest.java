@@ -17,15 +17,13 @@
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.submission.model.Contact;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.submission.model.Publication;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 
 import java.util.Date;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNotNull;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ONE_COLOR_MICROARRAY;
 
 /**
@@ -60,11 +58,21 @@ public class SubmissionSerializationTest {
         p2.setTitle("pub2");
         p2.setStatus(new OntologyTerm("in-review", "in-review"));
 
+        Protocol prot1 = profileIn.createProtocol(new OntologyTerm("protocol1", "protocol1"), ProtocolTargetType.EXTRACTS);
+        prot1.setName("Name of Protocol1");
+        prot1.setDescription("Description of Protocol1");
+        prot1.setParameters(asList("param1", "param2"));
+
+        Protocol prot2 = profileIn.createProtocol(new OntologyTerm("protocol2", "protocol2"), ProtocolTargetType.LABELED_EXTRACTS);
+        prot2.setName("Name of Protocol2");
+        prot2.setDescription("Description of Protocol2");
+
         String jsonString = JsonCodec.writeExperiment(profileIn);
         System.out.println(jsonString);
         assertNotNull(jsonString);
 
         ExperimentProfile profileOut = JsonCodec.readExperiment(jsonString);
         assertNotNull(profileOut.getExperimentDate());
+        assertReflectionEquals(profileIn, profileOut);
     }
 }

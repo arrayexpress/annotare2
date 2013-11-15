@@ -16,14 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.submission.transform.ContactSerializer10.JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.ContactSerializer10.CONTACT_JSON_FIELDS;
 import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
@@ -33,6 +33,6 @@ public class ContactDeserializer10 extends JsonDeserializer<Contact> {
 
     @Override
     public Contact deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, Contact.class, JSON_FIELDS);
+        return parseJson(jp, Contact.class, CONTACT_JSON_FIELDS);
     }
 }

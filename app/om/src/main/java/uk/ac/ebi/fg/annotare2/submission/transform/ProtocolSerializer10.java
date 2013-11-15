@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,15 +30,22 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-public class OntologyTermSerializer10 extends JsonSerializer<OntologyTerm> {
+public class ProtocolSerializer10 extends JsonSerializer<Protocol> {
 
-    static final List<String> ONTOLOGY_TERM_JSON_FIELDS = asList(
-            "accession",
-            "label"
-    );
+    static final List<String> PROTOCOL_JSON_FIELDS = asList(
+            "id",
+            "type",
+            "name",
+            "description",
+            "hardware",
+            "software",
+            "contact",
+            "parameters",
+            "targetType",
+            "assigned2All");
 
     @Override
-    public void serialize(OntologyTerm term, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, term, ONTOLOGY_TERM_JSON_FIELDS);
+    public void serialize(Protocol protocol, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        generateJson(jgen, protocol, PROTOCOL_JSON_FIELDS);
     }
 }

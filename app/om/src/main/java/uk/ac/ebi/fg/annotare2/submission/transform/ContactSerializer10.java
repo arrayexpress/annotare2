@@ -16,9 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
  */
 public class ContactSerializer10 extends JsonSerializer<Contact> {
 
-    static final List<String> JSON_FIELDS = asList(
+    static final List<String> CONTACT_JSON_FIELDS = asList(
             "id",
             "firstName",
             "lastName",
@@ -46,6 +46,6 @@ public class ContactSerializer10 extends JsonSerializer<Contact> {
 
     @Override
     public void serialize(Contact contact, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, contact, JSON_FIELDS);
+        generateJson(jgen, contact, CONTACT_JSON_FIELDS);
     }
 }

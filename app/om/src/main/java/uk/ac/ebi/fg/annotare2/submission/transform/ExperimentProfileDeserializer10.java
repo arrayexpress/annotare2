@@ -16,21 +16,20 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.submission.model.Publication;
 import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueSetter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
-import static uk.ac.ebi.fg.annotare2.submission.transform.ExperimentProfileSerializer10.JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.ExperimentProfileSerializer10.EXPERIMENT_PROFILE_JSON_FIELDS;
 import static uk.ac.ebi.fg.annotare2.submission.transform.util.ClassUtilities.setFieldValue;
 import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
@@ -41,7 +40,7 @@ public class ExperimentProfileDeserializer10 extends JsonDeserializer<Experiment
 
     @Override
     public ExperimentProfile deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, ExperimentProfile.class, JSON_FIELDS,
+        return parseJson(jp, ExperimentProfile.class, EXPERIMENT_PROFILE_JSON_FIELDS,
                 new ValueSetter<ExperimentProfile>("contacts", new TypeReference<Collection<Contact>>() {
                 }) {
                     @SuppressWarnings("unchecked")
@@ -66,6 +65,22 @@ public class ExperimentProfileDeserializer10 extends JsonDeserializer<Experiment
                             map.put(publication.getId(), publication);
                         }
                         setFieldValue(obj, "publicationMap", map);
+                    }
+                },
+                new ValueSetter<ExperimentProfile>("protocols", new TypeReference<Collection<Protocol>>() {
+                }) {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void setValue(ExperimentProfile obj, Object value) {
+                        Collection<Protocol> protocols = (Collection<Protocol>) value;
+                        List<Integer> protocolOrder = new ArrayList<Integer>();
+                        Map<Integer, Protocol> map = new HashMap<Integer, Protocol>();
+                        for(Protocol protocol : protocols) {
+                            map.put(protocol.getId(), protocol);
+                            protocolOrder.add(protocol.getId());
+                        }
+                        setFieldValue(obj, "protocolMap", map);
+                        setFieldValue(obj, "protocolOrder", protocolOrder);
                     }
                 }
         );

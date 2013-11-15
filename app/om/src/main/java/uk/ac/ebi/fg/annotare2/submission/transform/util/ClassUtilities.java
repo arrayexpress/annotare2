@@ -16,9 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
 
 /**
  * @author Olga Melnichuk
@@ -48,6 +46,14 @@ public class ClassUtilities {
     public static Class<?> getFieldType(Object target, String fieldName) {
         try {
             return getField(target, fieldName).getType();
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Type getGenericFieldType(Object target, String fieldName) {
+        try {
+            return getField(target, fieldName).getGenericType();
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
