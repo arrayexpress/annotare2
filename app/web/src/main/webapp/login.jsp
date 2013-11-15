@@ -71,13 +71,13 @@
                     <tr class="row">
                         <td></td>
                         <td>
-                            <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="#" onclick="return false;">Forgot your password?</a>
+                            <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="./change-password">Forgot your password?</a>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
-                            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Sign Up</a></div>
+                            <div style="margin-top:10px;">Don't have an account? <a href="./register">Sign Up</a></div>
                         </td>
                     </tr>
                 </table>
