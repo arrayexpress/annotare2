@@ -22,6 +22,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
+import com.sun.org.apache.xml.internal.dtm.ref.dom2dtm.DOM2DTM;
 import gwtupload.server.UploadServlet;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
@@ -79,6 +80,7 @@ public class AppServletModule extends ServletModule {
         filter("/login",
                 "/logout",
                 "/export",
+                "/user/*",
                 "/UserApp/*",
                 "/EditorApp/*").through(HibernateSessionFilter.class);
 
@@ -86,8 +88,7 @@ public class AppServletModule extends ServletModule {
                 "/",
                 "/EditorApp/*",
                 "/edit/*",
-                "/export"
-        ).through(SecurityFilter.class);
+                "/export").through(SecurityFilter.class);
 
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
         serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
@@ -95,6 +96,9 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
+        serveRegex("/user/register" + JSESSIONID).with(RegistrationServlet.class);
+        serveRegex("/user/activate" + JSESSIONID).with(ActivationServlet.class);
+        serveRegex("/user/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
         serve("/export").with(ExportServlet.class);
         serve("/error").with(UncaughtExceptionServlet.class);
 
@@ -107,6 +111,9 @@ public class AppServletModule extends ServletModule {
         bind(WelcomeServlet.class).in(SINGLETON);
         bind(UploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
+        bind(RegistrationServlet.class).in(SINGLETON);
+        bind(ActivationServlet.class).in(SINGLETON);
+        bind(ChangePasswordServlet.class).in(SINGLETON);
         bind(UncaughtExceptionServlet.class).in(SINGLETON);
 
         serveAndBindRpcService(CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class, "UserApp");
