@@ -36,7 +36,9 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 enum ServletNavigation {
     LOGIN("/login", "/login.jsp"),
-    REGISTRATION("/user/register", "/register.jsp"),
+    REGISTRATION("/register", "/register.jsp"),
+    ACTIVATION("/activate", "/activate.jsp"),
+    PASSWORD_CHANGER("/change-password", "change-password.jsp"),
     HOME("/", "/home.jsp"),
     EDITOR("/edit/", "/editor.jsp");
 
