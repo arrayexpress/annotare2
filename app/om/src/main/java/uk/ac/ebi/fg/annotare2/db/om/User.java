@@ -36,11 +36,23 @@ public class User {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "emailVerified", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean emailVerified;
+
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "passwordChangeRequested", nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean passwordChangeRequested;
+
+    @Column(name = "verificationToken", nullable = true)
+    private String verificationToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("role ASC")
@@ -56,6 +68,7 @@ public class User {
     }
 
     public User(String email, String password) {
+        this.name = "user";
         this.email = email;
         this.password = password;
         submissions = newArrayList();
@@ -68,6 +81,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -84,6 +105,30 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public boolean isPasswordChangeRequested() {
+        return passwordChangeRequested;
+    }
+
+    public void setPasswordChangeRequested(boolean passwordChangeRequested) {
+        this.passwordChangeRequested = passwordChangeRequested;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
     }
 
     public boolean isAllowed(HasEffectiveAcl obj, Permission permission) {

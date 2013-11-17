@@ -59,4 +59,15 @@
             ALTER TABLE data_files CONVERT TO CHARACTER SET utf8;
         </sql>
     </changeSet>
+    <changeSet id="addMoreUserAttributes" author="kolais">
+        <sql>
+            ALTER TABLE users
+            ADD COLUMN name VARCHAR(255) NOT NULL AFTER id,
+            ADD COLUMN emailVerified TINYINT(1) NOT NULL DEFAULT 0 AFTER email,
+            ADD COLUMN passwordChangeRequested TINYINT(1) NOT NULL DEFAULT 0 AFTER password,
+            ADD COLUMN verificationToken VARCHAR(255) NULL DEFAULT NULL AFTER passwordChangeRequested;
+
+            UPDATE users SET name = "user", emailVerified = 1, passwordChangeRequested = 0, verificationToken = NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
