@@ -67,7 +67,7 @@
             ADD COLUMN passwordChangeRequested TINYINT(1) NOT NULL DEFAULT 0 AFTER password,
             ADD COLUMN verificationToken VARCHAR(255) NULL DEFAULT NULL AFTER passwordChangeRequested;
 
-            UPDATE users SET name = "user", emailVerified = 1, passwordChangeRequested = 0, verificationToken = NULL;
+            UPDATE users SET name = "Annotare user", emailVerified = 1, passwordChangeRequested = 0, verificationToken = NULL;
         </sql>
     </changeSet>
 </databaseChangeLog>
