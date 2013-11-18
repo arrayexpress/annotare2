@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
  */
 
 import com.google.inject.Inject;
+import org.apache.commons.lang.text.StrSubstitutor;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 
 import javax.mail.Message;
@@ -26,15 +27,35 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Map;
 import java.util.Properties;
 
 public class EmailSender
 {
     private final AnnotareProperties properties;
 
+    public static final String NEW_USER_TEMPLATE = "new-user";
+
     @Inject
     public EmailSender(AnnotareProperties properties) {
         this.properties = properties;
+    }
+
+    public void sendFromTemplate(String template, Map<String, String> parameters)
+            throws MessagingException {
+        StrSubstitutor sub = new StrSubstitutor(parameters);
+        String to = sub.replace(properties.getEmailToAddress(template));
+        String bcc = properties.getEmailBccAddress();
+        String subject = sub.replace(properties.getEmailSubject(template));
+        String body = sub.replace(properties.getEmailTemplate(template));
+        if (null != to) {
+            send(to.split("\\s,\\s"),
+                    null != bcc ? bcc.split("\\s,\\s") : null,
+                    subject,
+                    body,
+                    properties.getEmailFromAddress()
+            );
+        }
     }
 
     public void send(String recipients[], String hiddenRecipients[], String subject, String message, String from)

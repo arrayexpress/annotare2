@@ -33,5 +33,5 @@ public interface UserDao {
 
     void save(User user);
 
-    User create(String email, String password);
+    User create(String name, String email, String password);
 }

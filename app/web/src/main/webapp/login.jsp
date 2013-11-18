@@ -53,7 +53,7 @@
                         <td>${dummyErrors}</td>
                     </tr>
                     <tr class="row right">
-                        <td>Email</td>
+                        <td>Email address</td>
                         <td><input type="text" name="email" value="${email}" style="width:98%"/></td>
                     </tr>
                     <tr class="error">
@@ -77,7 +77,7 @@
                     <tr>
                         <td></td>
                         <td>
-                            <div style="margin-top:10px;">Don't have an account? <a href="./register">Sign Up</a></div>
+                            <div style="margin-top:10px;">Don't have an account? <a href="./sign-up">Sign Up</a></div>
                         </td>
                     </tr>
                 </table>

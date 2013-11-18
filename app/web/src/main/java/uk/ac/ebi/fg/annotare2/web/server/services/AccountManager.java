@@ -20,6 +20,9 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.om.User;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
 
 /**
@@ -28,10 +31,12 @@ import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex
 public class AccountManager {
 
     private UserDao userDao;
+    private SecureRandom random;
 
     @Inject
     public AccountManager(UserDao userDao) {
         this.userDao = userDao;
+        this.random = new SecureRandom();
     }
 
     public boolean isValid(final String email, final String password) {
@@ -40,5 +45,17 @@ public class AccountManager {
 
     public User getByEmail(final String email) {
         return userDao.getUserByEmail(email);
+    }
+
+    public User createUser(final String name, final String email, final String password) {
+        User user = userDao.create(name, email, md5Hex(password));
+        user.setEmailVerified(false);
+        user.setVerificationToken(generateToken());
+        userDao.save(user);
+        return user;
+    }
+
+    private String generateToken() {
+        return new BigInteger(130, random).toString(36).toLowerCase();
     }
 }

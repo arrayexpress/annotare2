@@ -17,6 +17,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ page isELIgnored="false" %>
+--%>
 <%@ page import="uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors" %>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
@@ -26,16 +27,18 @@
         pageContext.setAttribute("passwordErrors", errors.getErrors("password"));
     }
 
-    String[] values = request.getParameterValues("email");
-    pageContext.setAttribute("email", values == null ? "" : values[0]);
-%>
---%>
+    String[] values = request.getParameterValues("name");
+    pageContext.setAttribute("name", values == null ? "" : values[0]);
 
+    values = request.getParameterValues("email");
+    pageContext.setAttribute("email", values == null ? "" : values[0]);
+
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Annotare 2.0 - New user registration</title>
+    <title>Annotare 2.0 - Sign Up</title>
     <link type="text/css" rel="stylesheet" href="general.css">
     <link type="text/css" rel="stylesheet" href="login.css">
 </head>
@@ -49,14 +52,18 @@
                 <table class="form">
                     <tr>
                         <td></td>
-                        <td><h1>Annotare 2.0</h1></td>
+                        <td><h1>Sign Up to Annotare</h1></td>
                     </tr>
                     <tr class="error">
                         <td></td>
                         <td>${dummyErrors}</td>
                     </tr>
                     <tr class="row right">
-                        <td>Email</td>
+                        <td>Full name</td>
+                        <td><input type="text" name="name" value="${name}" style="width:98%"/></td>
+                    </tr>
+                    <tr class="row right">
+                        <td>Email address</td>
                         <td><input type="text" name="email" value="${email}" style="width:98%"/></td>
                     </tr>
                     <tr class="error">
@@ -67,6 +74,10 @@
                         <td>Password</td>
                         <td><input type="password" name="password" style="width:98%"/></td>
                     </tr>
+                    <tr class="row right">
+                        <td>Confirm password</td>
+                        <td><input type="password" name="confirm-password" style="width:98%"/></td>
+                    </tr>
                     <tr class="error">
                         <td></td>
                         <td>${passwordErrors}</td>
@@ -74,13 +85,13 @@
                     <tr class="row">
                         <td></td>
                         <td>
-                            <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="#" onclick="return false;">Forgot your password?</a>
+                            <button name="signup">Sign Up</button>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
-                            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Sign Up</a></div>
+                            <div style="margin-top:10px;">Already registered? <a href="./login">Sign In</a></div>
                         </td>
                     </tr>
                 </table>

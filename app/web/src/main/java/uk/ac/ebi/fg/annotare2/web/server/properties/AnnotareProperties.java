@@ -106,8 +106,12 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         return getProperty("mail.from.address");
     }
 
-    public String getEmailCuratorAddress() {
-        return getProperty("mail.curator.address");
+    public String getEmailBccAddress() {
+        return getProperty("mail.bcc.address");
+    }
+
+    public String getEmailToAddress(String templateName) {
+        return getProperty("mail.to." + templateName.trim());
     }
 
     public String getEmailSubject(String templateName) {

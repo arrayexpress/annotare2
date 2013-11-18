@@ -43,8 +43,8 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     }
 
     @Override
-    public User create(String email, String password) {
-        User user = new User(email, password);
+    public User create(String name, String email, String password) {
+        User user = new User(name, email, password);
         save(user);
         return user;
     }

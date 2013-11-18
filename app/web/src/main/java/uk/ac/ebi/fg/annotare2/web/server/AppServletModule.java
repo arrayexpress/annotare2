@@ -22,7 +22,6 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
-import com.sun.org.apache.xml.internal.dtm.ref.dom2dtm.DOM2DTM;
 import gwtupload.server.UploadServlet;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
@@ -80,7 +79,7 @@ public class AppServletModule extends ServletModule {
         filter("/login",
                 "/logout",
                 "/export",
-                "/register",
+                "/sign-up",
                 "/activate",
                 "/change-password",
                 "/UserApp/*",
@@ -98,7 +97,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
-        serveRegex("/register" + JSESSIONID).with(RegistrationServlet.class);
+        serveRegex("/sign-up" + JSESSIONID).with(SignUpServlet.class);
         serveRegex("/activate" + JSESSIONID).with(ActivationServlet.class);
         serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
         serve("/export").with(ExportServlet.class);
@@ -113,7 +112,7 @@ public class AppServletModule extends ServletModule {
         bind(WelcomeServlet.class).in(SINGLETON);
         bind(UploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
-        bind(RegistrationServlet.class).in(SINGLETON);
+        bind(SignUpServlet.class).in(SINGLETON);
         bind(ActivationServlet.class).in(SINGLETON);
         bind(ChangePasswordServlet.class).in(SINGLETON);
         bind(UncaughtExceptionServlet.class).in(SINGLETON);
@@ -151,6 +150,7 @@ public class AppServletModule extends ServletModule {
         bind(SubsTrackingWatchdog.class).asEagerSingleton();
 
         bind(AuthService.class).to(AuthServiceImpl.class).in(SINGLETON);
+        bind(SignUpService.class).to(SignUpServiceImpl.class).in(SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);
 
         bind(AnnotareProperties.class).asEagerSingleton();

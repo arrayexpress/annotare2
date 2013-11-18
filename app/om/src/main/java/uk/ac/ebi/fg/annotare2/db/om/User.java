@@ -68,7 +68,11 @@ public class User {
     }
 
     public User(String email, String password) {
-        this.name = "Annotare user";
+        this("Annotare user", email, password);
+    }
+
+    public User(String name, String email, String password) {
+        this.name = name;
         this.email = email;
         this.password = password;
         submissions = newArrayList();

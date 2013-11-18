@@ -17,8 +17,10 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
  *
  */
 
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,36 +30,36 @@ import java.io.IOException;
 
 import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.*;
 
-public class RegistrationServlet extends HttpServlet {
+public class SignUpServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
+
+    @Inject
+    private SignUpService signUpService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("Login details submitted; validating..");
-    /*
+        log.debug("Sign-up data submitted; checking..");
         ValidationErrors errors = new ValidationErrors();
         try {
-            errors.append(authService.login(request));
+            errors.append(signUpService.signUp(request));
             if (errors.isEmpty()) {
-                log.debug("Login details are valid; Authorization succeeded");
-                HOME.restoreAndRedirect(request, response);
+                log.debug("Sign-up successful; redirect to login page");
+                LOGIN.redirect(request, response);
                 return;
             }
-            log.debug("Login details are invalid");
-        } catch (LoginException e) {
-            log.debug("Authorization failed");
+            log.debug("Sign-up form had invalid entries");
+        } catch (Exception e) {
+            log.debug("Sign-up failed");
             errors.append(e.getMessage());
         }
 
         request.setAttribute("errors", errors);
-        LOGIN.forward(getServletConfig().getServletContext(), request, response);
-    */
+        SIGNUP.forward(getServletConfig().getServletContext(), request, response);
+
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        REGISTRATION.forward(getServletConfig().getServletContext(), request, response);
-
+        SIGNUP.forward(getServletConfig().getServletContext(), request, response);
     }
 }

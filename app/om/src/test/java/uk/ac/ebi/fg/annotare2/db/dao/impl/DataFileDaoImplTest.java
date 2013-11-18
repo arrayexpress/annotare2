@@ -87,7 +87,7 @@ public class DataFileDaoImplTest extends DaoTestBase {
     }
 
     private Submission createSubmission(String prefix) {
-        User user = userDao.create("email" + prefix, "password");
+        User user = userDao.create("name", "email" + prefix, "password");
         return submissionDao.createExperimentSubmission(user);
     }
 }
