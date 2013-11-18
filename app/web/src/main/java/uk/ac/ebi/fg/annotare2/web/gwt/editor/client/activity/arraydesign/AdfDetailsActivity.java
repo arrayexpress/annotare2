@@ -23,14 +23,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ArrayDesignDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,29 +37,29 @@ import java.util.List;
 public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsView.Presenter {
 
     private AdfDetailsView view;
-    private final ArrayDesignDataProxy adfData;
+    private final ArrayDesignDataProxy adfDataProxy;
     private final OntologyDataProxy efoTerms;
 
     @Inject
     public AdfDetailsActivity(AdfDetailsView view,
-                              ArrayDesignDataProxy adfData,
+                              ArrayDesignDataProxy adfDataProxy,
                               OntologyDataProxy efoTerms) {
         this.view = view;
-        this.adfData = adfData;
+        this.adfDataProxy = adfDataProxy;
         this.efoTerms = efoTerms;
     }
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        // TODO load from database
-        List<PrintingProtocolDto> protocols = new ArrayList<PrintingProtocolDto>();
-        protocols.add(new PrintingProtocolDto(1, "protocol-1", "protocol description-1"));
-        protocols.add(new PrintingProtocolDto(2, "protocol-2", "<em>protocol</em> description-2 looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"));
-        view.setPrintingProtocols(protocols);
-
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         loadAsync();
+    }
+
+    @Override
+    public void onStop() {
+        adfDataProxy.updateDetails(view.getDetails());
+        super.onStop();
     }
 
     public AdfDetailsActivity withPlace(AdHeaderPlace place) {
@@ -75,11 +73,11 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
 
     @Override
     public void updateDetails(ArrayDesignDetailsDto details) {
-        adfData.updateDetails(details);
+        adfDataProxy.updateDetails(details);
     }
 
     private void loadAsync() {
-        adfData.getDetailsAsync(new AsyncCallback<ArrayDesignDetailsDto>() {
+        adfDataProxy.getDetailsAsync(new AsyncCallback<ArrayDesignDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO

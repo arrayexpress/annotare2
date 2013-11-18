@@ -83,7 +83,6 @@
                             Printing Protocol:
                         </td>
                         <td>
-                            <g:ListBox width="250px" ui:field="printingProtocolList"/>
                         </td>
                     </tr>
                     <tr>
