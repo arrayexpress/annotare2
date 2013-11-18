@@ -416,6 +416,7 @@ public class MageTabGenerator {
             if (scanNode != null) {
                 return scanNode;
             }
+            scanNode = createNode(ScanNode.class, assay.getName());
         }
 
         connect(assayNode, scanNode, null, null);
