@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.db.dao;
 
-import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.om.UserRole;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserDao {
+public interface UserRoleDao {
 
-    User getUserByEmailAndPassword(String email, String password);
-
-    User getUserByEmail(String email);
-
-    User getCuratorUser();
-
-    User get(long id) throws RecordNotFoundException;
-
-    void save(User user);
+    void save(UserRole userRole);
 }

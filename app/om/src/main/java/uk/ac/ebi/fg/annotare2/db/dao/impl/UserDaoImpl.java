@@ -21,6 +21,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.db.om.UserRole;
 import uk.ac.ebi.fg.annotare2.db.om.enums.Role;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.db.om.User;
@@ -40,13 +41,6 @@ public class UserDaoImpl extends AbstractDaoImpl<User> implements UserDao {
     @Override
     public User get(long id) throws RecordNotFoundException {
         return get(id, User.class);
-    }
-
-    @Override
-    public User create(String name, String email, String password) {
-        User user = new User(name, email, password);
-        save(user);
-        return user;
     }
 
     @Override

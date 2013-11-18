@@ -18,7 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.db.dao.UserRoleDao;
 import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.om.UserRole;
+import uk.ac.ebi.fg.annotare2.db.om.enums.Role;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -31,11 +34,13 @@ import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex
 public class AccountManager {
 
     private UserDao userDao;
+    private UserRoleDao userRoleDao;
     private SecureRandom random;
 
     @Inject
-    public AccountManager(UserDao userDao) {
+    public AccountManager(UserDao userDao, UserRoleDao userRoleDao) {
         this.userDao = userDao;
+        this.userRoleDao = userRoleDao;
         this.random = new SecureRandom();
     }
 
@@ -48,10 +53,13 @@ public class AccountManager {
     }
 
     public User createUser(final String name, final String email, final String password) {
-        User user = userDao.create(name, email, md5Hex(password));
+        User user = new User(name, email, md5Hex(password));
         user.setEmailVerified(false);
         user.setVerificationToken(generateToken());
         userDao.save(user);
+
+        UserRole userRole = new UserRole(user, Role.AUTHENTICATED);
+        userRoleDao.save(userRole);
         return user;
     }
 

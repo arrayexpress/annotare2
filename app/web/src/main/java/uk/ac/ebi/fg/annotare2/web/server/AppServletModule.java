@@ -28,9 +28,11 @@ import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.db.dao.UserRoleDao;
 import uk.ac.ebi.fg.annotare2.db.dao.impl.DataFileDaoImpl;
 import uk.ac.ebi.fg.annotare2.db.dao.impl.SubmissionDaoImpl;
 import uk.ac.ebi.fg.annotare2.db.dao.impl.UserDaoImpl;
+import uk.ac.ebi.fg.annotare2.db.dao.impl.UserRoleDaoImpl;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
@@ -138,6 +140,7 @@ public class AppServletModule extends ServletModule {
 
         bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
         bind(UserDao.class).to(UserDaoImpl.class).in(SINGLETON);
+        bind(UserRoleDao.class).to(UserRoleDaoImpl.class).in(SINGLETON);
         bind(SubmissionDao.class).to(SubmissionDaoImpl.class).in(SINGLETON);
         bind(DataFileDao.class).to(DataFileDaoImpl.class).in(SINGLETON);
 
