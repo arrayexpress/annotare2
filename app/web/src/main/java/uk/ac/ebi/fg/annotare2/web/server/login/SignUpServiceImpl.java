@@ -77,13 +77,13 @@ public class SignUpServiceImpl implements SignUpService {
 
         public ValidationErrors validate() {
             ValidationErrors errors = new ValidationErrors();
-            for (RequestParam p : asList(email, password)) {
+            for (RequestParam p : asList(name, email, password)) {
                 if (p.isEmpty()) {
-                    errors.append(p.getName(), p.getName() + " is required");
+                    errors.append(p.getName(), "Field \"" + p.getName() + "\" is required");
                 }
             }
             if (!password.getValue().equals(confirmPassword.getValue())) {
-                errors.append(password.getName(), "Passwords do not match");
+                errors.append(confirmPassword.getName(), "Passwords do not match");
             }
             return errors;
         }
