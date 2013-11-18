@@ -20,7 +20,7 @@ import org.apache.commons.fileupload.FileItem;
 
 import javax.servlet.http.HttpSession;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -30,7 +30,7 @@ public class UploadedFiles {
     private static final String GWTUPLOAD_ATTRIBUTE_NAME = "LAST_FILES";
 
     public static FileItem getFirst(HttpSession session) throws FileNotFoundException {
-        ArrayList<FileItem> items = (ArrayList<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
         if (items.isEmpty()) {
             throw new FileNotFoundException("Can't find the uploaded file.");
         }
@@ -38,7 +38,7 @@ public class UploadedFiles {
     }
 
     public static FileItem get(HttpSession session, String fileName) throws FileNotFoundException {
-        ArrayList<FileItem> items = (ArrayList<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
         for (FileItem item : items) {
             if (item.getName().equals(fileName)) {
                 return item;
