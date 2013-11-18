@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.db.dao;
+package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
-import uk.ac.ebi.fg.annotare2.db.om.User;
+import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.db.dao.UserRoleDao;
+import uk.ac.ebi.fg.annotare2.db.om.UserRole;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 /**
  * @author Olga Melnichuk
  */
-public interface UserDao {
+public class UserRoleDaoImpl extends AbstractDaoImpl<UserRole> implements UserRoleDao {
 
-    User getUserByEmailAndPassword(String email, String password);
-
-    User getUserByEmail(String email);
-
-    User getCuratorUser();
-
-    User get(long id) throws RecordNotFoundException;
-
-    void save(User user);
+    @Inject
+    public UserRoleDaoImpl(HibernateSessionFactory sessionFactory) {
+        super(sessionFactory);
+    }
 }
