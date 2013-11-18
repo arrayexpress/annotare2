@@ -44,7 +44,7 @@ public class SignUpServiceImpl implements SignUpService {
         ValidationErrors errors = params.validate();
         if (errors.isEmpty()) {
             if (null != manager.getByEmail(params.getEmail())) {
-                errors.append("Unable to sign-up; user with email " + params.getEmail() + " already exists");
+                errors.append("email", "User with this email already exists");
             } else {
                 User u = manager.createUser(params.getName(), params.getEmail(), params.getPassword());
                 emailer.sendFromTemplate(
