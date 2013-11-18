@@ -17,6 +17,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
  *
  */
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.hibernate.Session;
@@ -84,6 +85,8 @@ public class SubsTrackingWatchdog {
                 Session session = sessionFactory.openSession();
                 try {
                     runTransaction();
+                } catch (Exception x) {
+                    //
                 } finally {
                     session.close();
                 }
@@ -95,7 +98,7 @@ public class SubsTrackingWatchdog {
     }
 
     @Transactional
-    public void runTransaction() {
+    public void runTransaction() throws Exception {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
         );
@@ -106,6 +109,19 @@ public class SubsTrackingWatchdog {
                     if (submitSubmission(submission)) {
                         submission.setStatus(SubmissionStatus.IN_CURATION);
                         submissionManager.save(submission);
+                        try {
+                            emailer.sendFromTemplate(
+                                    EmailSender.INITIAL_SUBMISSION_TEMPLATE,
+                                    ImmutableMap.of(
+                                            "to.name", submission.getCreatedBy().getName(),
+                                            "to.email", submission.getCreatedBy().getEmail(),
+                                            "submission.title", submission.getTitle(),
+                                            "submission.date", submission.getUpdated().toString()
+                                    )
+                            );
+                        } catch (Exception x) {
+                            // we don't care if emailer doesn't work, really
+                        }
                     }
                     break;
 
@@ -114,6 +130,19 @@ public class SubsTrackingWatchdog {
                         submission.setStatus(SubmissionStatus.IN_PROGRESS);
                         submission.setOwnedBy(submission.getCreatedBy());
                         submissionManager.save(submission);
+                        try {
+                            emailer.sendFromTemplate(
+                                    EmailSender.REJECTED_SUBMISSION_TEMPLATE,
+                                    ImmutableMap.of(
+                                            "to.name", submission.getCreatedBy().getName(),
+                                            "to.email", submission.getCreatedBy().getEmail(),
+                                            "submission.title", submission.getTitle(),
+                                            "submission.date", submission.getUpdated().toString()
+                                    )
+                            );
+                        } catch (Exception x) {
+                            // we don't care if emailer doesn't work, really
+                        }
                     }
             }
         }
@@ -156,12 +185,6 @@ public class SubsTrackingWatchdog {
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTracking.sendSubmission(subsTrackingConnection, submission.getSubsTrackingId());
                 subsTrackingConnection.commit();
-                emailer.send(
-                        new String[]{"kolais@ebi.ac.uk"},
-                        null,
-                        properties.getEmailSubject("initial-submission"),
-                        properties.getEmailTemplate("initial-submission"),
-                        properties.getEmailFromAddress());
             }
 
             return true;

@@ -35,6 +35,8 @@ public class EmailSender
     private final AnnotareProperties properties;
 
     public static final String NEW_USER_TEMPLATE = "new-user";
+    public static final String INITIAL_SUBMISSION_TEMPLATE = "initial-submission";
+    public static final String REJECTED_SUBMISSION_TEMPLATE = "rejected-submission";
 
     @Inject
     public EmailSender(AnnotareProperties properties) {
