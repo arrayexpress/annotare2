@@ -43,15 +43,19 @@ public class SignUpServiceImpl implements SignUpService {
         SignUpParams params = new SignUpParams(request);
         ValidationErrors errors = params.validate();
         if (errors.isEmpty()) {
-            User u = manager.createUser(params.getName(), params.getEmail(), params.getPassword());
-            emailer.sendFromTemplate(
-                    EmailSender.NEW_USER_TEMPLATE,
-                    ImmutableMap.of(
-                            "to.name", u.getName(),
-                            "to.email", u.getEmail(),
-                            "verification.token", u.getVerificationToken()
-                    )
-            );
+            if (null != manager.getByEmail(params.getEmail())) {
+                errors.append("Unable to sign-up; user with email " + params.getEmail() + " already exists");
+            } else {
+                User u = manager.createUser(params.getName(), params.getEmail(), params.getPassword());
+                emailer.sendFromTemplate(
+                        EmailSender.NEW_USER_TEMPLATE,
+                        ImmutableMap.of(
+                                "to.name", u.getName(),
+                                "to.email", u.getEmail(),
+                                "verification.token", u.getVerificationToken()
+                        )
+                );
+            }
         }
         return errors;
 
