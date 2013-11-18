@@ -375,11 +375,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
 
             String fileName = dataFile.getName();
-            dataFileManager.deleteDataFile(dataFile);
-
             ExperimentProfile expProfile = submission.getExperimentProfile();
             expProfile.removeFile(fileName);
             submission.setExperimentProfile(expProfile);
+
+            submission.getFiles().remove(dataFile);
+            dataFileManager.deleteDataFile(dataFile);
+
             save(submission);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
