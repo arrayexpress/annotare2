@@ -16,8 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -31,6 +30,8 @@ import com.google.gwt.user.client.ui.RichTextArea;
  */
 public class RichTextAreaExtended extends RichTextArea implements HasValueChangeHandlers<String>, HasValue<String> {
 
+    private boolean hasHandlers;
+
     @Override
     public String getValue() {
         return getHTML();
@@ -38,23 +39,40 @@ public class RichTextAreaExtended extends RichTextArea implements HasValueChange
 
     @Override
     public void setValue(String value) {
-        setHTML(value);
+        setValue(value, true);
     }
 
     @Override
     public void setValue(String value, boolean fireEvents) {
         setHTML(value);
-        fireValueChangeEvent();
+        if (fireEvents) {
+            fireValueChangeEvent();
+        }
     }
 
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-        addKeyDownHandler(new KeyDownHandler() {
-            @Override
-            public void onKeyDown(KeyDownEvent event) {
-                fireValueChangeEvent();
-            }
-        });
+        if (!hasHandlers) {
+             addFocusHandler(new FocusHandler() {
+                 @Override
+                 public void onFocus(FocusEvent event) {
+                     fireValueChangeEvent();
+                 }
+             });
+            addBlurHandler(new BlurHandler() {
+                @Override
+                public void onBlur(BlurEvent event) {
+                    fireValueChangeEvent();
+                }
+            });
+            addKeyDownHandler(new KeyDownHandler() {
+                @Override
+                public void onKeyDown(KeyDownEvent event) {
+                    fireValueChangeEvent();
+                }
+            });
+            hasHandlers = true;
+        }
         return addHandler(handler, ValueChangeEvent.getType());
     }
 

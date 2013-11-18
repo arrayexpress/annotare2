@@ -17,16 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -34,16 +31,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.PrintingProtocolDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextAreaExtended;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextToolbar;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
-import static java.lang.Integer.parseInt;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
 
@@ -72,9 +69,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     DateBox publicReleaseDate;
 
     @UiField
-    ListBox printingProtocolList;
-
-    @UiField
     TextBox protocolName;
 
     @UiField
@@ -88,7 +82,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
 
     private RichTextAreaExtended protocolDescription;
     private boolean inPreviewMode = false;
-    private Map<Integer, PrintingProtocolDto> printingProtocols = new HashMap<Integer, PrintingProtocolDto>();
     private Presenter presenter;
 
     private OntologyTerm organism;
@@ -141,27 +134,17 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
                 showPreview(!inPreviewMode);
             }
         });
-
-        setPrintingProtocols(new ArrayList<PrintingProtocolDto>());
     }
 
     private void showPrintingProtocol(PrintingProtocolDto protocol, boolean fireEvent) {
         boolean editable = !protocol.hasId();
 
         protocolName.setValue(protocol.getName(), fireEvent);
-        protocolDescription.setValue(unescapeHtml(protocol.getDescription()), fireEvent);
+        protocolDescription.setValue(protocol.getDescription(), fireEvent);
 
         protocolName.setEnabled(editable);
         protocolDescription.setEnabled(editable);
         showPreview(false);
-    }
-
-    private String unescapeHtml(String text) {
-        return new HTML(text).getText();
-    }
-
-    private String escapeHtml(String html) {
-        return SafeHtmlUtils.fromString(html).asString();
     }
 
     private void showPreview(boolean on) {
@@ -176,13 +159,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         ppDescrPreview.setVisible(on);
         ppDescrEditorDiv.setVisible(!on);
         inPreviewMode = on;
-    }
-
-    @UiHandler("printingProtocolList")
-    void printingProtocolChanged(ChangeEvent event) {
-        int index = printingProtocolList.getSelectedIndex();
-        int id = parseInt(printingProtocolList.getValue(index));
-        showPrintingProtocol(printingProtocols.get(id), true);
     }
 
     @UiHandler("designName")
@@ -221,33 +197,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     }
 
     @Override
-    public void setPrintingProtocols(List<PrintingProtocolDto> protocols) {
-        printingProtocols = new HashMap<Integer, PrintingProtocolDto>();
-        printingProtocolList.clear();
-        for (PrintingProtocolDto protocol : protocols) {
-            addProtocol(protocol);
-        }
-    }
-
-    private void addProtocol(PrintingProtocolDto protocol) {
-        String name = protocol.hasId() ? protocol.getName() : "Other";
-        printingProtocols.put(protocol.getId(), protocol);
-        printingProtocolList.addItem(name, Integer.toString(protocol.getId()));
-    }
-
-    private void setProtocolSelected(PrintingProtocolDto protocol, boolean fireEvents) {
-        for (int i = 0; i < printingProtocolList.getItemCount(); i++) {
-            if (protocol.getId() == parseInt(printingProtocolList.getValue(i))) {
-                printingProtocolList.setItemSelected(i, true);
-                if (fireEvents) {
-                    DomEvent.fireNativeEvent(Document.get().createChangeEvent(), printingProtocolList);
-                }
-                break;
-            }
-        }
-    }
-
-    @Override
     public void setDetails(ArrayDesignDetailsDto details) {
         if (details == null) {
             return;
@@ -257,11 +206,19 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         description.setValue(details.getDescription());
         publicReleaseDate.setValue(details.getPublicReleaseDate());
         setOrganism(details.getOrganism());
-        addProtocol(details.getOtherPrintingProtocol());
+        showPrintingProtocol(details.getOtherPrintingProtocol(), false);
+    }
 
-        PrintingProtocolDto protocol = printingProtocols.get(details.getPrintingProtocolId());
-        setProtocolSelected(protocol, false);
-        showPrintingProtocol(protocol, false);
+    @Override
+    public ArrayDesignDetailsDto getDetails() {
+        return new ArrayDesignDetailsDto(
+                designName.getValue(),
+                description.getValue(),
+                designVersion.getValue(),
+                organism,
+                publicReleaseDate.getValue(),
+                0,
+                getOtherProtocol());
     }
 
     private void setOrganism(OntologyTerm term) {
@@ -271,38 +228,18 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         }
     }
 
-    private int getSelectedProtocolId() {
-        int index = printingProtocolList.getSelectedIndex();
-        return parseInt(printingProtocolList.getValue(index));
-    }
-
     private PrintingProtocolDto getOtherProtocol() {
-        return printingProtocols.get(0);
-    }
-
-    private ArrayDesignDetailsDto getResult() {
-        return new ArrayDesignDetailsDto(
-                designName.getValue(),
-                description.getValue(),
-                designVersion.getValue(),
-                organism,
-                publicReleaseDate.getValue(),
-                getSelectedProtocolId(),
-                getOtherProtocol());
+       return new PrintingProtocolDto(
+                protocolName.getValue(),
+                protocolDescription.getValue()
+        );
     }
 
     private void savePrintingProtocol() {
-        PrintingProtocolDto selectedProtocol = printingProtocols.get(getSelectedProtocolId());
-        if (!selectedProtocol.hasId()) {
-            printingProtocols.put(selectedProtocol.getId(), new PrintingProtocolDto(
-                    protocolName.getValue(),
-                    protocolDescription.getValue()
-            ));
-        }
         save();
     }
 
     private void save() {
-        presenter.updateDetails(getResult());
+        presenter.updateDetails(getDetails());
     }
 }
