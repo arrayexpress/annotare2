@@ -23,8 +23,10 @@
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
         pageContext.setAttribute("dummyErrors", errors.getErrors());
+        pageContext.setAttribute("nameErrors", errors.getErrors("name"));
         pageContext.setAttribute("emailErrors", errors.getErrors("email"));
         pageContext.setAttribute("passwordErrors", errors.getErrors("password"));
+        pageContext.setAttribute("confirmPasswordErrors", errors.getErrors("confirm-password"));
     }
 
     String[] values = request.getParameterValues("name");
@@ -62,6 +64,10 @@
                         <td>Full name</td>
                         <td><input type="text" name="name" value="${name}" style="width:98%"/></td>
                     </tr>
+                    <tr class="error">
+                        <td></td>
+                        <td>${nameErrors}</td>
+                    </tr>
                     <tr class="row right">
                         <td>Email address</td>
                         <td><input type="text" name="email" value="${email}" style="width:98%"/></td>
@@ -74,13 +80,17 @@
                         <td>Password</td>
                         <td><input type="password" name="password" style="width:98%"/></td>
                     </tr>
+                    <tr class="error">
+                        <td></td>
+                        <td>${passwordErrors}</td>
+                    </tr>
                     <tr class="row right">
                         <td>Confirm password</td>
                         <td><input type="password" name="confirm-password" style="width:98%"/></td>
                     </tr>
                     <tr class="error">
                         <td></td>
-                        <td>${passwordErrors}</td>
+                        <td>${confirmPasswordErrors}</td>
                     </tr>
                     <tr class="row">
                         <td></td>
