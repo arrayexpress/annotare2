@@ -94,7 +94,6 @@ public class SubsTrackingWatchdog {
         scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
     }
 
-    @Transactional
     public void runTransaction() {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
@@ -103,19 +102,30 @@ public class SubsTrackingWatchdog {
         for (Submission submission : submissions) {
             switch (submission.getStatus()) {
                 case SUBMITTED:
-                    if (submitSubmission(submission)) {
-                        submission.setStatus(SubmissionStatus.IN_CURATION);
-                        submissionManager.save(submission);
-                    }
+                    submitSubmissionTransaction(submission);
                     break;
 
                 case IN_CURATION:
-                    if (!isInCuration(submission.getSubsTrackingId())) {
-                        submission.setStatus(SubmissionStatus.IN_PROGRESS);
-                        submission.setOwnedBy(submission.getCreatedBy());
-                        submissionManager.save(submission);
-                    }
+                    reopenSubmissionTransaction(submission);
+                    break;
             }
+        }
+    }
+
+    @Transactional
+    public void submitSubmissionTransaction(Submission submission) {
+        if (submitSubmission(submission)) {
+            submission.setStatus(SubmissionStatus.IN_CURATION);
+            submissionManager.save(submission);
+        }
+    }
+
+    @Transactional
+    public void reopenSubmissionTransaction(Submission submission) {
+        if (!isInCuration(submission.getSubsTrackingId())) {
+            submission.setStatus(SubmissionStatus.IN_PROGRESS);
+            submission.setOwnedBy(submission.getCreatedBy());
+            submissionManager.save(submission);
         }
     }
 
