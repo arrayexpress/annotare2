@@ -282,25 +282,31 @@ public class MageTabGenerator {
     private void connect(SDRFNode source, SDRFNode destination, ProtocolTargetType type, HasProtocolAssignment protocolAssignment) {
         Collection<Protocol> protocols = type == null ? Collections.<Protocol>emptyList() : exp.getProtocols(type);
         if (protocols.isEmpty()) {
-            source.addChildNode(destination);
-            destination.addParentNode(source);
+            connect(source, destination);
             return;
         }
 
         SDRFNode prev = source;
         for (Protocol protocol : protocols) {
             if (protocol.isAssigned2All() || protocolAssignment.hasProtocol(protocol)) {
-                ProtocolApplicationNode protocolNode = new ProtocolApplicationNode();
                 // protocol node name must be unique
-                protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
-                protocolNode.protocol = protocol.getName();
-                protocolNode.addParentNode(prev);
-                prev.addChildNode(protocolNode);
+                String nodeName = prev.getNodeName() + ":" + protocol.getId();
+                ProtocolApplicationNode protocolNode = getNode(ProtocolApplicationNode.class, nodeName);
+                if (protocolNode == null) {
+                    protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
+                    protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
+                    protocolNode.protocol = protocol.getName();
+                }
+                connect(prev, protocolNode);
                 prev = protocolNode;
             }
         }
-        prev.addChildNode(destination);
-        destination.addParentNode(prev);
+        connect(prev, destination);
+    }
+
+    private void connect(SDRFNode source, SDRFNode destination) {
+        source.addChildNode(destination);
+        destination.addParentNode(source);
     }
 
     private SourceNode createSourceNode(Sample sample) {
