@@ -590,7 +590,14 @@ public class MageTabGenerator {
     }
 
     private static String escape(String str) {
-        return "\"" + str.replaceAll("\"", "\\\\\"") + "\"";
+        // Note: It would be superb if limpopo MAGETAB writer/parser can deal with '\n' by itself. Unfortunately
+        // it will never happen. We have two ways to workaround this: wrap all strings into double quotes by ourselves or
+        // replace '\n' with <br/>. First way unfortinately doesn't work well, as MAGETAB Parser not always strips
+        // escaping off (but eventually).
+        /* 1. return "\"" + str.replaceAll("\"", "\\\\\"") + "\""; */
+        /* 2. */
+        str = str.replaceAll("\t", " ");
+        return str.replaceAll("\n", "<br/>");
     }
 
     private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
