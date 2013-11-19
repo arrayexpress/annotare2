@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
@@ -288,7 +289,7 @@ public class MageTabGenerator {
 
         SDRFNode prev = source;
         for (Protocol protocol : protocols) {
-            if (protocol.isAssigned2All() || protocolAssignment.hasProtocol(protocol)) {
+            if (protocol.isAssigned2All() || (protocolAssignment != null && protocolAssignment.hasProtocol(protocol))) {
                 // protocol node name must be unique
                 String nodeName = prev.getNodeName() + ":" + protocol.getId();
                 ProtocolApplicationNode protocolNode = getNode(ProtocolApplicationNode.class, nodeName);
@@ -347,18 +348,22 @@ public class MageTabGenerator {
 
     private LabeledExtractNode createLabeledExtractNode(LabeledExtract labeledExtract, SDRFNode extractNode) {
         LabeledExtractNode labeledExtractNode;
+        String label;
         if (labeledExtract == null) {
             labeledExtractNode = createFakeNode(LabeledExtractNode.class);
+            label = labeledExtractNode.getNodeName();
         } else {
             labeledExtractNode = getNode(LabeledExtractNode.class, labeledExtract.getName());
             if (labeledExtractNode != null) {
                 return labeledExtractNode;
             }
             labeledExtractNode = createNode(LabeledExtractNode.class, labeledExtract.getName());
-            LabelAttribute label = new LabelAttribute();
-            label.setAttributeValue(labeledExtract.getLabel());
-            labeledExtractNode.label = label;
+            label = labeledExtract.getLabel();
         }
+
+        LabelAttribute labelAttribute = new LabelAttribute();
+        labelAttribute.setAttributeValue(label);
+        labeledExtractNode.label = labelAttribute;
 
         connect(extractNode, labeledExtractNode, LABELED_EXTRACTS, labeledExtract);
         return labeledExtractNode;
@@ -374,39 +379,73 @@ public class MageTabGenerator {
                 return assayNode;
             }
             assayNode = createNode(AssayNode.class, assay.getName());
-            TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
-            technologyType.setAttributeValue(
-                    exp.getType().isMicroarray() ? "array assay" : "sequencing assay");
-            assayNode.technologyType = technologyType;
+        }
 
-            String arrayDesign = exp.getArrayDesign();
-            if (!isNullOrEmpty(arrayDesign)) {
-                ArrayDesignAttribute arrayDesignAttribute = new ArrayDesignAttribute();
-                arrayDesignAttribute.setAttributeValue(arrayDesign);
-                arrayDesignAttribute.termAccessionNumber = arrayDesign;
-                arrayDesignAttribute.termSourceREF = ensureTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
-                assayNode.arrayDesigns.add(arrayDesignAttribute);
-            }
+        assayNode.technologyType = createTechnologyTypeAttribute();
 
-            Sample sample = findSample(assay);
-            for (SampleAttribute attribute : exp.getSampleAttributes()) {
-                if (!attribute.getType().isFactorValue()) {
-                    continue;
-                }
-                FactorValueAttribute attr = new FactorValueAttribute();
-                attr.type = attribute.getName();
-                attribute.getValueType().visit(AttributeValueTypeVisitor.visitFactorValue(attr));
-                attr.setAttributeValue(sample.getValue(attribute));
-                assayNode.factorValues.add(attr);
+        ArrayDesignAttribute arrayDesignAttribute = createArrayDesignAttribute();
+        if (arrayDesignAttribute != null) {
+            assayNode.arrayDesigns.add(arrayDesignAttribute);
+        }
+
+        Sample sample = findSample(prevNode);
+        for (SampleAttribute attribute : exp.getSampleAttributes()) {
+            if (!attribute.getType().isFactorValue()) {
+                continue;
             }
+            FactorValueAttribute attr = new FactorValueAttribute();
+            attr.type = attribute.getName();
+            attribute.getValueType().visit(AttributeValueTypeVisitor.visitFactorValue(attr));
+            attr.setAttributeValue(sample.getValue(attribute));
+            assayNode.factorValues.add(attr);
         }
 
         connect(prevNode, assayNode, ASSAYS, assay);
         return assayNode;
     }
 
-    private Sample findSample(Assay assay) {
-        Collection<Sample> samples = exp.getSamples(assay.getExtract());
+    private TechnologyTypeAttribute createTechnologyTypeAttribute() {
+        TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
+        technologyType.setAttributeValue(
+                exp.getType().isMicroarray() ? "array assay" : "sequencing assay");
+        return technologyType;
+    }
+
+    private ArrayDesignAttribute createArrayDesignAttribute() {
+        String arrayDesign = exp.getArrayDesign();
+        if (isNullOrEmpty(arrayDesign)) {
+            return null;
+        }
+        ArrayDesignAttribute arrayDesignAttribute = new ArrayDesignAttribute();
+        arrayDesignAttribute.setAttributeValue(arrayDesign);
+        arrayDesignAttribute.termAccessionNumber = arrayDesign;
+        arrayDesignAttribute.termSourceREF = ensureTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
+        return arrayDesignAttribute;
+    }
+
+    private Sample findSample(SDRFNode node) {
+        List<SourceNode> sourceNodes = new ArrayList<SourceNode>();
+        Queue<Node> nodes = new ArrayDeque<Node>();
+        nodes.add(node);
+        while(!nodes.isEmpty()) {
+            Node next = nodes.poll();
+            for (Node parent : next.getParentNodes()) {
+                if (parent instanceof SourceNode) {
+                    sourceNodes.add((SourceNode)parent);
+                } else {
+                    nodes.addAll(next.getParentNodes());
+                }
+            }
+        }
+
+        List<Sample> samples = new ArrayList<Sample>();
+        for (SourceNode sourceNode : sourceNodes) {
+            Sample sample = exp.getSampleByName(sourceNode.getNodeName());
+            if (sample != null) {
+                samples.add(sample);
+            }
+        }
+
         if (samples.size() != 1) {
             throw new IllegalStateException("Too many samples per assya found: " + samples.size());
         }
