@@ -20,10 +20,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.Extract;
+import uk.ac.ebi.fg.annotare2.submission.model.MultiSets;
+import uk.ac.ebi.fg.annotare2.submission.model.Sample;
 import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.generateJson;
@@ -49,7 +52,8 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
             "sampleAttributes",
             "samples",
             "extracts",
-            "assays"
+            "assays",
+            "sampleId2ExtractsIds"
     );
 
     @Override
@@ -95,6 +99,21 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
                     @Override
                     public Object getValue(ExperimentProfile obj) {
                         return obj.getAssays();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("sampleId2ExtractsIds") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
+                        for (Sample sample : obj.getSamples()) {
+                            Collection<Extract> extracts = obj.getExtracts(sample);
+                            Set<Integer> extractIds = new HashSet<Integer>();
+                            for (Extract extract : extracts) {
+                                 extractIds.add(extract.getId());
+                            }
+                            map.put(sample.getId(), extractIds);
+                        }
+                        return map;
                     }
                 }
         );

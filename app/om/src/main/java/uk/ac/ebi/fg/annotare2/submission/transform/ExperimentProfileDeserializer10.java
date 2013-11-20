@@ -37,7 +37,7 @@ class ExperimentProfileDeserializer10 extends JsonDeserializer<ExperimentProfile
 
     @Override
     public ExperimentProfile deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, ExperimentProfile.class, EXPERIMENT_PROFILE_JSON_FIELDS,
+        ExperimentProfile experimentProfile = parseJson(jp, ExperimentProfile.class, EXPERIMENT_PROFILE_JSON_FIELDS,
                 new ValueSetter<ExperimentProfile>("contacts", new TypeReference<Collection<Contact>>() {
                 }) {
                     @SuppressWarnings("unchecked")
@@ -136,5 +136,8 @@ class ExperimentProfileDeserializer10 extends JsonDeserializer<ExperimentProfile
                     }
                 }
         );
+
+        experimentProfile.fixMe();
+        return experimentProfile;
     }
 }

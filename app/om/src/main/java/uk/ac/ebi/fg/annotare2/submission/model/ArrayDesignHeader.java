@@ -17,43 +17,32 @@
 package uk.ac.ebi.fg.annotare2.submission.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ArrayDesignHeader implements Serializable {
 
     private static PrintingProtocol DEFAULT = new PrintingProtocol(0, "", "");
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("version")
     private String version;
 
-    @JsonProperty("publicReleaseDate")
     private Date publicReleaseDate;
 
-    @JsonProperty("organism")
     private OntologyTerm organism;
 
-    @JsonProperty("printingProtocolId")
     private int printingProtocolId;
 
-    @JsonProperty("printingProtocolBackup")
-    private PrintingProtocol printingProtocolBackup;
+    private PrintingProtocol printingProtocol;
 
     public ArrayDesignHeader() {
-        printingProtocolBackup = DEFAULT;
+        printingProtocol = DEFAULT;
     }
 
     public String getDescription() {
@@ -89,11 +78,11 @@ public class ArrayDesignHeader implements Serializable {
     }
 
     public PrintingProtocol getPrintingProtocolBackup() {
-        return printingProtocolBackup;
+        return printingProtocol;
     }
 
     public void setPrintingProtocolBackup(PrintingProtocol protocol) {
-        this.printingProtocolBackup = protocol == null ? DEFAULT : protocol;
+        this.printingProtocol = protocol == null ? DEFAULT : protocol;
     }
 
     public Date getPublicReleaseDate() {

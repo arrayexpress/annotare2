@@ -18,7 +18,6 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
@@ -78,8 +77,7 @@ public class ExperimentProfile implements Serializable {
 
     private List<FileColumn> fileColumns;
 
-    @JsonProperty("sample2Extracts")
-    private MultiSets<Integer, Integer> sampleId2ExtractsIds;
+    private Map<Integer, Set<Integer>> sampleId2ExtractsIds;
     private MultiSets<Sample, Extract> sample2Extracts;
 
     ExperimentProfile() {
@@ -106,26 +104,6 @@ public class ExperimentProfile implements Serializable {
 
         assayMap = newLinkedHashMap();
         fileColumns = newArrayList();
-    }
-
-    @JsonProperty("sample2Extracts")
-    MultiSets<Integer, Integer> getSampleId2ExtractsIds() {
-        if (sampleId2ExtractsIds != null) {
-            return sampleId2ExtractsIds;
-        }
-        MultiSets<Integer, Integer> map = new MultiSets<Integer, Integer>();
-        for (Sample sample : sample2Extracts.keySet()) {
-            Set<Extract> extracts = sample2Extracts.get(sample);
-            for (Extract extract : extracts) {
-                map.put(sample.getId(), extract.getId());
-            }
-        }
-        return map;
-    }
-
-    @JsonProperty("sample2Extracts")
-    void setSampleId2ExtractsIds(MultiSets<Integer, Integer> sampleId2ExtractsIds) {
-        this.sampleId2ExtractsIds = sampleId2ExtractsIds;
     }
 
     public ExperimentProfileType getType() {
@@ -452,7 +430,7 @@ public class ExperimentProfile implements Serializable {
 
     public Collection<Sample> getSamples(Extract extract) {
         List<Sample> samples = new ArrayList<Sample>();
-        for(Sample sample : sample2Extracts.keySet()) {
+        for (Sample sample : sample2Extracts.keySet()) {
             if (sample2Extracts.get(sample).contains(extract)) {
                 samples.add(sample);
             }
@@ -593,17 +571,18 @@ public class ExperimentProfile implements Serializable {
         return ++nextId;
     }
 
-    //TODO use builder
     public void fixMe() {
         fixSample2Extracts();
         fixAssays();
     }
 
     private void fixSample2Extracts() {
-        MultiSets<Integer, Integer> sample2ExtractsIds = getSampleId2ExtractsIds();
-        for (Integer sampleId : sample2ExtractsIds.keySet()) {
+        if (sampleId2ExtractsIds == null) {
+            return;
+        }
+        for (Integer sampleId : sampleId2ExtractsIds.keySet()) {
             Sample sample = sampleMap.get(sampleId);
-            for (Integer extractId : sample2ExtractsIds.get(sampleId)) {
+            for (Integer extractId : sampleId2ExtractsIds.get(sampleId)) {
                 sample2Extracts.put(sample, extractMap.get(extractId));
             }
         }

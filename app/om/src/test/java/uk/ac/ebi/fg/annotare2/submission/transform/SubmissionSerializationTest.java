@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 
 import java.util.Date;
@@ -32,8 +34,10 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ONE_
  */
 public class SubmissionSerializationTest {
 
+    private static final Logger log = LoggerFactory.getLogger(SubmissionSerializationTest.class);
+
     @Test
-    public void test() throws Exception {
+    public void experimentProfileSerializationTest() throws Exception {
         ExperimentProfile profileIn = new ExperimentProfile(ONE_COLOR_MICROARRAY);
         profileIn.setTitle(null);
         profileIn.setDescription("description");
@@ -84,12 +88,32 @@ public class SubmissionSerializationTest {
         s2.setName("Sample 2");
         s2.setValues(new HashMap<Integer, String>(){{put(sa1.getId(), "value2");}});
 
+        profileIn.createExtract(false, s1);
+        profileIn.createExtract(false, s2);
+
         String jsonString = JsonCodec.writeExperiment(profileIn);
-        System.out.println(jsonString);
+        log.debug("experimentProfile=", jsonString);
         assertNotNull(jsonString);
 
         ExperimentProfile profileOut = JsonCodec.readExperiment(jsonString);
-        assertNotNull(profileOut.getExperimentDate());
         assertReflectionEquals(profileIn, profileOut);
+    }
+
+    @Test
+    public void arrayDesignHeaderSerializationTest() throws DataSerializationException {
+        ArrayDesignHeader adHeaderIn = new ArrayDesignHeader();
+        adHeaderIn.setName("Array Design Name");
+        adHeaderIn.setDescription("Array Design Description");
+        adHeaderIn.setOrganism(new OntologyTerm("mus", "mus"));
+        adHeaderIn.setPublicReleaseDate(new Date());
+        adHeaderIn.setVersion("123");
+        adHeaderIn.setPrintingProtocolBackup(new PrintingProtocol(0, "name", "description"));
+
+        String jsonString = JsonCodec.writeArrayDesign(adHeaderIn);
+        log.debug("arrayDesignHeader=", jsonString);
+        assertNotNull(jsonString);
+
+        ArrayDesignHeader adHeaderOut = JsonCodec.readArrayDesign(jsonString);
+        assertReflectionEquals(adHeaderIn, adHeaderOut);
     }
 }

@@ -70,8 +70,6 @@ public class JsonCodec {
     }
 
     public static String writeExperiment(ExperimentProfile exp) throws DataSerializationException {
-        //ObjectMapper mapper = new ObjectMapper();
-        //mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         try {
             return createMapper(VERSION_1_0).writeValueAsString(exp);
         } catch (JsonGenerationException e) {
@@ -84,10 +82,8 @@ public class JsonCodec {
     }
 
     public static String writeArrayDesign(ArrayDesignHeader header) throws DataSerializationException {
-        ObjectMapper mapper = new ObjectMapper();
-        //mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         try {
-            return mapper.writeValueAsString(header);
+            return createMapper(VERSION_1_0).writeValueAsString(header);
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {

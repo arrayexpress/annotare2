@@ -16,9 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,10 +28,8 @@ import static com.google.common.collect.Sets.newLinkedHashSet;
 /**
  * @author Olga Melnichuk
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class MultiSets<K, V> implements Serializable {
 
-    @JsonProperty("map")
     private Map<K, Set<V>> map;
 
     public MultiSets() {
@@ -62,14 +57,6 @@ public class MultiSets<K, V> implements Serializable {
 
     public boolean isEmpty() {
         return map.isEmpty();
-    }
-
-    public boolean containsKey(K key) {
-        return map.containsKey(key);
-    }
-
-    public boolean containsEntry(K key, V value) {
-        return get(key).contains(value);
     }
 
     public Set<V> get(K key) {

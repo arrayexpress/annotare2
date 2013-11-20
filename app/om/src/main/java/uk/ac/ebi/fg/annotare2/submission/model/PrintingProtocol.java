@@ -17,26 +17,20 @@
 package uk.ac.ebi.fg.annotare2.submission.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class PrintingProtocol implements Serializable {
 
     private static final String SEPARATOR = ":";
 
-    @JsonProperty("id")
     private int id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("description")
     private String description;
 
     PrintingProtocol() {
@@ -44,9 +38,9 @@ public class PrintingProtocol implements Serializable {
     }
 
     @JsonCreator
-    public PrintingProtocol(@JsonProperty("id") int id,
-                            @JsonProperty("name") String name,
-                            @JsonProperty("description") String description) {
+    public PrintingProtocol(int id,
+                            String name,
+                            String description) {
         this.id = id;
         this.description = description;
         this.name = name;
