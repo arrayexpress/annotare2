@@ -51,8 +51,8 @@ public class ArrayExpressArrayDesignList {
             while ((line = reader.readLine()) != null) {
                 ArrayExpress.ArrayDesign ad = createArrayDesign(line);
                 if (ad != null) {
-                    trie.put(ad.getName(), ad);
-                    trie.put(ad.getDesription(), ad);
+                    trie.put(ad.getName().toLowerCase(), ad);
+                    trie.put(ad.getDesription().toLowerCase(), ad);
                 }
             }
             return this;
@@ -75,7 +75,7 @@ public class ArrayExpressArrayDesignList {
     }
 
     public Iterable<ArrayExpress.ArrayDesign> getArrayDesigns(String query) {
-        return trie.getValuesForClosestKeys(query);
+        return trie.getValuesForClosestKeys(query.toLowerCase());
     }
 
     public static ArrayExpressArrayDesignList create() {
