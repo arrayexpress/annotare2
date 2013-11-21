@@ -17,7 +17,6 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
  *
  */
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.hibernate.Session;
@@ -97,12 +96,7 @@ public class SubsTrackingWatchdog {
         scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
     }
 
-<<<<<<< HEAD
-    @Transactional
-    public void runTransaction() throws Exception {
-=======
     public void runTransaction() {
->>>>>>> 74ace80de08ae9e40f0965f8ad148ad0c0daf2b7
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
         );
@@ -110,53 +104,12 @@ public class SubsTrackingWatchdog {
         for (Submission submission : submissions) {
             switch (submission.getStatus()) {
                 case SUBMITTED:
-<<<<<<< HEAD
-                    if (submitSubmission(submission)) {
-                        submission.setStatus(SubmissionStatus.IN_CURATION);
-                        submissionManager.save(submission);
-                        try {
-                            emailer.sendFromTemplate(
-                                    EmailSender.INITIAL_SUBMISSION_TEMPLATE,
-                                    ImmutableMap.of(
-                                            "to.name", submission.getCreatedBy().getName(),
-                                            "to.email", submission.getCreatedBy().getEmail(),
-                                            "submission.title", submission.getTitle(),
-                                            "submission.date", submission.getUpdated().toString()
-                                    )
-                            );
-                        } catch (Exception x) {
-                            // we don't care if emailer doesn't work, really
-                        }
-                    }
-                    break;
-
-                case IN_CURATION:
-                    if (!isInCuration(submission.getSubsTrackingId())) {
-                        submission.setStatus(SubmissionStatus.IN_PROGRESS);
-                        submission.setOwnedBy(submission.getCreatedBy());
-                        submissionManager.save(submission);
-                        try {
-                            emailer.sendFromTemplate(
-                                    EmailSender.REJECTED_SUBMISSION_TEMPLATE,
-                                    ImmutableMap.of(
-                                            "to.name", submission.getCreatedBy().getName(),
-                                            "to.email", submission.getCreatedBy().getEmail(),
-                                            "submission.title", submission.getTitle(),
-                                            "submission.date", submission.getUpdated().toString()
-                                    )
-                            );
-                        } catch (Exception x) {
-                            // we don't care if emailer doesn't work, really
-                        }
-                    }
-=======
                     submitSubmissionTransaction(submission);
                     break;
 
                 case IN_CURATION:
                     reopenSubmissionTransaction(submission);
                     break;
->>>>>>> 74ace80de08ae9e40f0965f8ad148ad0c0daf2b7
             }
         }
     }
