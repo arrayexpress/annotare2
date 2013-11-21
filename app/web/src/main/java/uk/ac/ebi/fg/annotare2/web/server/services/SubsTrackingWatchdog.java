@@ -97,8 +97,12 @@ public class SubsTrackingWatchdog {
         scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
     }
 
+<<<<<<< HEAD
     @Transactional
     public void runTransaction() throws Exception {
+=======
+    public void runTransaction() {
+>>>>>>> 74ace80de08ae9e40f0965f8ad148ad0c0daf2b7
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
         );
@@ -106,6 +110,7 @@ public class SubsTrackingWatchdog {
         for (Submission submission : submissions) {
             switch (submission.getStatus()) {
                 case SUBMITTED:
+<<<<<<< HEAD
                     if (submitSubmission(submission)) {
                         submission.setStatus(SubmissionStatus.IN_CURATION);
                         submissionManager.save(submission);
@@ -144,7 +149,32 @@ public class SubsTrackingWatchdog {
                             // we don't care if emailer doesn't work, really
                         }
                     }
+=======
+                    submitSubmissionTransaction(submission);
+                    break;
+
+                case IN_CURATION:
+                    reopenSubmissionTransaction(submission);
+                    break;
+>>>>>>> 74ace80de08ae9e40f0965f8ad148ad0c0daf2b7
             }
+        }
+    }
+
+    @Transactional
+    public void submitSubmissionTransaction(Submission submission) {
+        if (submitSubmission(submission)) {
+            submission.setStatus(SubmissionStatus.IN_CURATION);
+            submissionManager.save(submission);
+        }
+    }
+
+    @Transactional
+    public void reopenSubmissionTransaction(Submission submission) {
+        if (!isInCuration(submission.getSubsTrackingId())) {
+            submission.setStatus(SubmissionStatus.IN_PROGRESS);
+            submission.setOwnedBy(submission.getCreatedBy());
+            submissionManager.save(submission);
         }
     }
 
