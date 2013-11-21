@@ -476,7 +476,7 @@ public class ExperimentProfile implements Serializable {
 
     public Collection<Sample> getSamples(Extract extract) {
         List<Sample> samples = new ArrayList<Sample>();
-        for(Sample sample : sample2Extracts.keySet()) {
+        for (Sample sample : sample2Extracts.keySet()) {
             if (sample2Extracts.get(sample).contains(extract)) {
                 samples.add(sample);
             }
@@ -641,5 +641,14 @@ public class ExperimentProfile implements Serializable {
         for (FileColumn fileColumn : fileColumns) {
             fileColumn.fixMe(this);
         }
+    }
+
+    public Sample getSampleByName(String name) {
+        for (Sample sample : getSamples()) {
+            if (sample.getName().equals(name)) {
+                return sample;
+            }
+        }
+        return null;
     }
 }

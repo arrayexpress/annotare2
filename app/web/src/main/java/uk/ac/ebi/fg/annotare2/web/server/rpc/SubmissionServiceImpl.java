@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.hash.Hashing.md5;
 import static com.google.common.io.Files.hash;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
@@ -293,8 +294,9 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void uploadDataFile(long id, String fileName) throws ResourceNotFoundException, NoPermissionException {
+    public void uploadDataFile(long id, String fileNameOrPath) throws ResourceNotFoundException, NoPermissionException {
         try {
+            String fileName = getFileNameOnly(fileNameOrPath);
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
             FileItem fileItem = UploadedFiles.get(getSession(), fileName);
             File file = new File(properties.getHttpUploadDir(), fileName);
@@ -311,6 +313,24 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (JMSException e) {
             throw unexpected(e);
         }
+    }
+
+    /**
+     * Extracts file name from a string.
+     *
+     * Different browsers return file name of uploaded file differently: chrome and safary return "C:\fakepath\fileName",
+     * but firefox returns just a fileName.
+     *
+     * @param str file name or path
+     * @return a string containing just a file name
+     */
+    private static String getFileNameOnly(String str) {
+        if (isNullOrEmpty(str)) {
+            return str;
+        }
+        str = str.replaceAll("\\\\", "/");
+        String[] parts = str.split("/");
+        return parts[parts.length - 1];
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
@@ -355,11 +375,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
 
             String fileName = dataFile.getName();
-            dataFileManager.deleteDataFile(dataFile);
-
             ExperimentProfile expProfile = submission.getExperimentProfile();
             expProfile.removeFile(fileName);
             submission.setExperimentProfile(expProfile);
+
+            submission.getFiles().remove(dataFile);
+            dataFileManager.deleteDataFile(dataFile);
+
             save(submission);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
