@@ -21,8 +21,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.LogoutEvent;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.util.Urls.logoutUrl;
 
 
 /**
@@ -50,6 +52,6 @@ public class AppHeader extends Composite implements IsWidget {
 
     @UiHandler("signOutLink")
     void onClickSignOut(ClickEvent e) {
-        fireEvent(new LogoutEvent());
+        Window.Location.assign(logoutUrl());
     }
 }

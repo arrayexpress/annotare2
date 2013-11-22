@@ -17,11 +17,17 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.util.Urls.logoutUrl;
 
 /**
  * @author Olga Melnichuk
@@ -30,6 +36,9 @@ public class EditorTopBarViewImpl extends Composite implements EditorTopBarView 
 
     @UiField
     InlineLabel userNameLabel;
+
+    @UiField
+    Anchor signOutLink;
 
     interface Binder extends UiBinder<Widget, EditorTopBarViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -42,5 +51,10 @@ public class EditorTopBarViewImpl extends Composite implements EditorTopBarView 
     @Override
     public void setUserName(String userName) {
         userNameLabel.setText(userName);
+    }
+
+    @UiHandler("signOutLink")
+    void signOutClicked(ClickEvent event) {
+        Window.Location.assign(logoutUrl());
     }
 }

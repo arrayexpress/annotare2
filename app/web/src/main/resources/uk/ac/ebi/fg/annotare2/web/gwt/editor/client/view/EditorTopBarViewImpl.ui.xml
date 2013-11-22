@@ -63,7 +63,7 @@
                 <td style="text-align: right; padding-right:5px">
                     <g:InlineLabel ui:field="userNameLabel"/>
                     &nbsp;
-                    <a href="#">Sign Out</a>
+                    <g:Anchor ui:field="signOutLink">Sign Out</g:Anchor>
                 </td>
             </tr>
         </table>
