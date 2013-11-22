@@ -61,7 +61,7 @@
                     <a class="{style.annotareLink}" href="#">Help</a>
                 </td>
                 <td style="text-align: right; padding-right:5px">
-                    <span>Demo User</span>
+                    <g:InlineLabel ui:field="userNameLabel"/>
                     &nbsp;
                     <a href="#">Sign Out</a>
                 </td>

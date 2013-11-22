@@ -40,8 +40,4 @@ abstract class AuthBasedRemoteService extends RemoteServiceServlet {
     protected HttpSession getSession() {
         return getThreadLocalRequest().getSession();
     }
-
-    protected void doLogout() {
-        authService.logout(getSession());
-    }
 }

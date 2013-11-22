@@ -39,9 +39,4 @@ public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implem
     public UserDto me() {
         return uiUser(getCurrentUser());
     }
-
-    @Override
-    public void logout() {
-        doLogout();
-    }
 }

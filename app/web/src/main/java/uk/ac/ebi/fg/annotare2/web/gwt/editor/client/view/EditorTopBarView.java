@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorTopMenuBar extends Composite {
+public interface EditorTopBarView extends IsWidget {
 
-    interface Binder extends UiBinder<Widget, EditorTopMenuBar> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
-
-    public EditorTopMenuBar() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
-    }
+    void setUserName(String userName);
 }

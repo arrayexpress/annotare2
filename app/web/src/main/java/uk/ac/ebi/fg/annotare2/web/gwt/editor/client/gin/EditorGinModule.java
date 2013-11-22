@@ -44,6 +44,7 @@ public class EditorGinModule extends AbstractGinModule {
     protected void configure() {
         bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
         bind(PlaceHistoryMapper.class).to(EditorPlaceHistoryMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorTopBarDisplay.class).to(EditorTopBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTitleBarDisplay.class).to(EditorTitleBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorTabBarDisplay.class).to(EditorTabBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLeftMenuDisplay.class).to(EditorLeftNavigationActivityMapper.class).in(Singleton.class);
@@ -53,6 +54,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ActivityMapper.class).annotatedWith(EditorDockBarDisplay.class).to(EditorDockBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorDockBarPanelDisplay.class).to(EditorDockBarPanelActivityMapper.class).in(Singleton.class);
 
+        bind(EditorTopBarView.class).to(EditorTopBarViewImpl.class);
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
         bind(EditorTabBarView.class).to(EditorTabBarViewImpl.class);
         bind(EditorLogBarView.class).to(EditorLogBarViewImpl.class);

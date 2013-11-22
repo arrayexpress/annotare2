@@ -38,6 +38,9 @@ public interface EditorGinjector extends Ginjector {
 
     EditorPlaceFactory getPlaceFactory();
 
+    @EditorTopBarDisplay
+    ActivityMapper getTopBarActivityMapper();
+
     @EditorTitleBarDisplay
     ActivityMapper getTitleBarActivityMapper();
 

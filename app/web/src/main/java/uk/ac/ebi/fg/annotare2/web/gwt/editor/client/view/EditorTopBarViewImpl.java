@@ -14,36 +14,33 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Olga Melnichuk
  */
-public class EditorStartLayout extends Composite {
-    interface Binder extends UiBinder<Widget, EditorStartLayout> {
+public class EditorTopBarViewImpl extends Composite implements EditorTopBarView {
+
+    @UiField
+    InlineLabel userNameLabel;
+
+    interface Binder extends UiBinder<Widget, EditorTopBarViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    @UiField
-    HasOneWidget display;
-
-    @UiField
-    SimpleLayoutPanel topBarDisplay;
-
-    public EditorStartLayout() {
+    public EditorTopBarViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
-    public HasOneWidget getDisplay() {
-        return display;
-    }
-
-    public SimpleLayoutPanel getTopBarDisplay() {
-        return topBarDisplay;
+    @Override
+    public void setUserName(String userName) {
+        userNameLabel.setText(userName);
     }
 }
