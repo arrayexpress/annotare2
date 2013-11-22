@@ -45,8 +45,8 @@ import static com.google.common.io.Closeables.close;
  */
 public class MageTabFormat {
 
-    private static final String DEFAULT_IDF_FILE_NAME = "idf";
-    private static final String DEFAULT_SDRF_FILE_NAME = "sdrf";
+    private static final String DEFAULT_IDF_FILE_NAME = "idf.csv";
+    private static final String DEFAULT_SDRF_FILE_NAME = "sdrf.csv";
 
     private File idfFile;
     private File sdrfFile;
