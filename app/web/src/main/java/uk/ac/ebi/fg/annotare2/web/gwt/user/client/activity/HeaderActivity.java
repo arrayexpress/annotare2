@@ -31,29 +31,27 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.HeaderView;
 /**
  * @author Olga Melnichuk
  */
-public class HeaderActivity extends AbstractActivity implements HeaderView.Presenter {
+public class HeaderActivity extends AbstractActivity {
 
     private final HeaderView view;
     private final PlaceController placeController;
-    private final CurrentUserAccountServiceAsync rpcService;
+    private final CurrentUserAccountServiceAsync userService;
 
     @Inject
     public HeaderActivity(HeaderView view,
                           PlaceController placeController,
-                          CurrentUserAccountServiceAsync rpcService) {
+                          CurrentUserAccountServiceAsync userService) {
         this.view = view;
         this.placeController = placeController;
-        this.rpcService = rpcService;
+        this.userService = userService;
     }
 
     public HeaderActivity withPlace(Place place) {
-        //this.token = place.getPlaceName();
         return this;
     }
 
+    @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        //view.setPlaceName(token);
-        view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         asyncInit(view);
     }
@@ -62,26 +60,16 @@ public class HeaderActivity extends AbstractActivity implements HeaderView.Prese
         placeController.goTo(place);
     }
 
-    public void logout() {
-        rpcService.logout(new AsyncCallbackWrapper<Void>() {
-            public void onSuccess(Void result) {
-                 Window.Location.reload();
-            }
-
-            public void onFailure(Throwable caught) {
-                Window.alert("Error during logout");
-            }
-        }.wrap());
-    }
-
     private void asyncInit(final HeaderView view) {
-        rpcService.me(new AsyncCallbackWrapper<UserDto>() {
-            public void onSuccess(UserDto result) {
-                view.setUserName(result.getEmail());
-            }
-
+        userService.me(new AsyncCallbackWrapper<UserDto>() {
+            @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Error retrieving user");
+            }
+
+            @Override
+            public void onSuccess(UserDto result) {
+                view.setUserName(result.getName());
             }
         }.wrap());
     }

@@ -30,7 +30,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.LogoutEvent;
  */
 public class AppHeader extends Composite implements IsWidget {
 
-    interface Binder extends UiBinder<HTMLPanel, AppHeader> {
+    interface Binder extends UiBinder<Widget, AppHeader> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
@@ -40,8 +41,7 @@ public class AppHeader extends Composite implements IsWidget {
     Anchor signOutLink;
 
     public AppHeader() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
     public void setUserName(String name) {

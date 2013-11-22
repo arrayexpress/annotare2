@@ -20,8 +20,9 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiUser;
 
 /**
  * @author Olga Melnichuk
@@ -36,7 +37,7 @@ public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implem
     @Transactional
     @Override
     public UserDto me() {
-        return UIObjectConverter.uiUser(getCurrentUser());
+        return uiUser(getCurrentUser());
     }
 
     @Override

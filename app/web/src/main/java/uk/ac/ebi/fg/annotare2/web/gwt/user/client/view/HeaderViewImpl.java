@@ -21,7 +21,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.LogoutEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.LogoutEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppHeader;
@@ -31,21 +31,15 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppHeader;
  */
 public class HeaderViewImpl extends Composite implements HeaderView {
 
-    interface Binder extends UiBinder<HTMLPanel, HeaderViewImpl> {
+    interface Binder extends UiBinder<Widget, HeaderViewImpl> {
+        Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
     AppHeader appHeader;
 
-    private Presenter presenter;
-
     public HeaderViewImpl() {
-        Binder uiBinder = GWT.create(Binder.class);
-        initWidget(uiBinder.createAndBindUi(this));
-    }
-
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+        initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
     public void setUserName(String name) {
