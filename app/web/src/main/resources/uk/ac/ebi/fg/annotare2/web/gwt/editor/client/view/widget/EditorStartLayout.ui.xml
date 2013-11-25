@@ -19,65 +19,17 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
-    <ui:style>
-        .annotare {
-            padding-left: 3px;
-            background-color: #f3f7fb;
-        }
-
-        a.logo, a.logo:hover, a.logo:active, a.logo:link {
-            color: #207A7A;
-            font-size: 18px;
-            font-weight: normal;
-            margin: 0;
-            padding: 0 5px 0 0;
-            text-decoration: none;
-        }
-
-        a.annotareLink, a.annotareLink:link {
-            font-size: 14px;
-            padding-left: 5px;
-            padding-right: 5px;
-            padding-top: 4px;
-            padding-bottom: 3px;
-            background-color: #f3f7fb;
-            color: #aaaaaa;
-            text-decoration: none;
-            margin: 0 1px 0 0;
-        }
-
-        a.annotareLink:hover {
-            color: #207A7A;
-            background-color: #ffffff;
-        }
-    </ui:style>
-
     <g:DockLayoutPanel>
         <g:north size="25">
-            <g:HTMLPanel addStyleNames="{style.annotare}">
-                <table width="100%" cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td>
-                            <a class="{style.logo}" href="#">Annotare 2.0</a>
-                            <a class="{style.annotareLink}" href="#">Contact Us</a>
-                            <a class="{style.annotareLink}" href="#">Help</a>
-                        </td>
-                        <td style="text-align: right; padding-right:5px">
-                            <span>Demo User</span>
-                            &nbsp;
-                            <a href="#">Sign Out</a>
-                        </td>
-                    </tr>
-                </table>
-            </g:HTMLPanel>
+            <g:SimpleLayoutPanel ui:field="topBarDisplay" height="100%"/>
         </g:north>
         <g:center>
-            <g:SimpleLayoutPanel  ui:field="display"/>
+            <g:SimpleLayoutPanel ui:field="display"/>
         </g:center>
         <g:south size="20">
-           <g:HTMLPanel>
-               <div class="copy">2012 EMBL-EBI, Functional Genomics Group</div>
-           </g:HTMLPanel>
+            <g:HTMLPanel>
+                <div class="copy">2013 EMBL-EBI, Functional Genomics Group</div>
+            </g:HTMLPanel>
         </g:south>
     </g:DockLayoutPanel>
 </ui:UiBinder>

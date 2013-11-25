@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.idf.UITermSource;
-
-import java.util.ArrayList;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Olga Melnichuk
  */
-@Deprecated
-@RemoteServiceRelativePath(VocabularyService.NAME)
-public interface VocabularyService extends RemoteService {
+public interface EditorTopBarView extends IsWidget {
 
-    public static final String NAME = "vocabularyService";
-
-    ArrayList<UITerm> getExperimentalDesigns();
-
-    ArrayList<UITermSource> getTermSources();
+    void setUserName(String userName);
 }

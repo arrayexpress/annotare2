@@ -71,6 +71,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
         return this;
     }
 
+    @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         this.eventBus = eventBus;
         eventBus.addHandler(AutoSaveEvent.getType(), new AutoSaveEventHandler() {

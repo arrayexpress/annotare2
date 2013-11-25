@@ -129,6 +129,10 @@ public class EditorApp implements EntryPoint {
     private Widget initStartLayout(EventBus eventBus) {
         EditorStartLayout layout = new EditorStartLayout();
 
+        ActivityMapper topBarActivityMapper = injector.getTopBarActivityMapper();
+        ActivityManager topBarActivityManager = new ActivityManager(topBarActivityMapper, eventBus);
+        topBarActivityManager.setDisplay(layout.getTopBarDisplay());
+
         ActivityMapper startActivityMapper = injector.getStartActivityMapper();
         ActivityManager startActivityManager = new ActivityManager(startActivityMapper, eventBus);
         startActivityManager.setDisplay(layout.getDisplay());
@@ -138,6 +142,10 @@ public class EditorApp implements EntryPoint {
 
     private Widget initMainLayout(SubmissionType type, EventBus eventBus) {
         EditorLayout layout = (type == EXPERIMENT) ? new ExperimentLayout(eventBus) : new ArrayDesignLayout();
+
+        ActivityMapper topBarActivityMapper = injector.getTopBarActivityMapper();
+        ActivityManager topBarActivityManager = new ActivityManager(topBarActivityMapper, eventBus);
+        topBarActivityManager.setDisplay(layout.getTopBarDisplay());
 
         ActivityMapper titleBarActivityMapper = injector.getTitleBarActivityMapper();
         ActivityManager titleBarActivityManager = new ActivityManager(titleBarActivityMapper, eventBus);

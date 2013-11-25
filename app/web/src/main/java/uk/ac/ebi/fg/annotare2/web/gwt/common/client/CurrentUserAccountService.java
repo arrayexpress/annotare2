@@ -29,7 +29,4 @@ public interface CurrentUserAccountService extends RemoteService {
     public static final String NAME = "currentUserAccountService";
 
     public UserDto me();
-
-    public void logout();
-
 }

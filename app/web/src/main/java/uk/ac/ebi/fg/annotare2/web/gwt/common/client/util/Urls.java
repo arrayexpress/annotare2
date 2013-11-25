@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.util;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
-@Deprecated
-public interface SdrfServiceAsync {
+/**
+ * @author Olga Melnichuk
+ */
+public class Urls {
 
-    void importData(int submissionId, AsyncCallback<Void> async);
-
-    void loadData(int submissionId, AsyncCallback<Table> async);
+    public static String logoutUrl() {
+        String url = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "logout");
+        if (!GWT.isProdMode()) {
+            url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
+        }
+        return url;
+    }
 }

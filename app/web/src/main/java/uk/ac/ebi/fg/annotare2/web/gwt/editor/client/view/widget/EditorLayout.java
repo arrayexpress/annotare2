@@ -24,6 +24,8 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface EditorLayout extends IsWidget {
 
+    HasOneWidget getTopBarDisplay();
+
     HasOneWidget getTitleBarDisplay();
 
     HasOneWidget getTabBarDisplay();

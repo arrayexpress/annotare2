@@ -14,6 +14,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class ArrayDesignLayout extends Composite implements EditorLayout {
 
     @UiField
+    SimpleLayoutPanel topBarDisplay;
+
+    @UiField
     SimpleLayoutPanel titleBarDisplay;
 
     @UiField
@@ -31,6 +34,11 @@ public class ArrayDesignLayout extends Composite implements EditorLayout {
 
     public ArrayDesignLayout() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+    }
+
+    @Override
+    public HasOneWidget getTopBarDisplay() {
+        return topBarDisplay;
     }
 
     @Override

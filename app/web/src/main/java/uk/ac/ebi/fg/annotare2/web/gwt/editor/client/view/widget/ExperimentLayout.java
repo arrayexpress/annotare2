@@ -36,19 +36,23 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     MinimizableScrollPanel leftMenuDisplay;
 
     @UiField
-    SimpleLayoutPanel tabBarDisplay;
-
-    @UiField
     SplitLayoutPanel splitPanel;
 
     @UiField
+    SimpleLayoutPanel topBarDisplay;
+
+    @UiField
     SimpleLayoutPanel titleBarDisplay;
+
+    @UiField
+    SimpleLayoutPanel tabBarDisplay;
 
     @UiField
     SimplePanel dockBarDisplay;
 
     @UiField
     SimplePanel dockBarPanelDisplay;
+
 
     private double dockSize;
 
@@ -86,13 +90,18 @@ public class ExperimentLayout extends Composite implements EditorLayout {
         double widgetSize = verticalSplitPanel.getWidgetSize(dockPanel);
         double newSize;
         if (widgetSize <= MIN_DOCK_SIZE + 1.0) {
-            double defaultWidth = (verticalSplitPanel.getOffsetWidth() - MIN_DOCK_SIZE)/2;
-            newSize = dockSize < MIN_DOCK_SIZE + 10.0 ?  defaultWidth : dockSize;
+            double defaultWidth = (verticalSplitPanel.getOffsetWidth() - MIN_DOCK_SIZE) / 2;
+            newSize = dockSize < MIN_DOCK_SIZE + 10.0 ? defaultWidth : dockSize;
         } else {
             dockSize = widgetSize;
             newSize = MIN_DOCK_SIZE;
         }
         verticalSplitPanel.setWidgetSize(dockPanel, newSize);
+    }
+
+    @Override
+    public HasOneWidget getTopBarDisplay() {
+        return topBarDisplay;
     }
 
     @Override
