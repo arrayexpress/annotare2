@@ -590,12 +590,12 @@ public class ExperimentProfile implements Serializable {
         return ++nextId;
     }
 
-    public void fixMe() {
-        fixSample2Extracts();
-        fixAssays();
+    public void restoreObjects() {
+        restoreSample2Extracts();
+        restoreAssays();
     }
 
-    private void fixSample2Extracts() {
+    private void restoreSample2Extracts() {
         if (sampleId2ExtractsIds == null) {
             return;
         }
@@ -608,13 +608,13 @@ public class ExperimentProfile implements Serializable {
         this.sampleId2ExtractsIds = null;
     }
 
-    private void fixAssays() {
+    private void restoreAssays() {
         for (Assay assay : assayMap.values()) {
-            assay.fixMe(this);
+            assay.restoreObjects(this);
         }
 
         for (FileColumn fileColumn : fileColumns) {
-            fileColumn.fixMe(this);
+            fileColumn.restoreObjects(this);
         }
     }
 

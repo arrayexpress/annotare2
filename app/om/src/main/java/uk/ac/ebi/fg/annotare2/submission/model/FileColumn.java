@@ -105,7 +105,7 @@ public class FileColumn implements Serializable {
         return new FileRef(fileName, this);
     }
 
-    void fixMe(ExperimentProfile exp) {
+    void restoreObjects(ExperimentProfile exp) {
         for (String assayId : assayId2FileNameMap.keySet()) {
             Assay assay = exp.getAssay(assayId);
             assay2FileNameMap.put(assay, assayId2FileNameMap.get(assayId));

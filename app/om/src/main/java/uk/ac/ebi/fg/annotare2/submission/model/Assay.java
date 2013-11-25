@@ -112,7 +112,7 @@ public class Assay implements Serializable, HasProtocolAssignment {
         labeledExtractProtocolAssignment.set(protocol, assigned);
     }
 
-    void fixMe(ExperimentProfile exp) {
+    void restoreObjects(ExperimentProfile exp) {
         extract = exp.getExtract(extractId);
         if (extract == null) {
             throw new IllegalStateException("Assay can't exist without extract; (cause: extract with id=" +

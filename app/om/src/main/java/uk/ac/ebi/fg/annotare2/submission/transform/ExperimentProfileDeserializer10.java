@@ -150,7 +150,7 @@ class ExperimentProfileDeserializer10 extends JsonDeserializer<ExperimentProfile
                 }
         );
 
-        experimentProfile.fixMe();
+        experimentProfile.restoreObjects();
         return experimentProfile;
     }
 }
