@@ -39,7 +39,7 @@ public class TwoColorMicroarrayUpdater extends BasicExperimentUpdater {
         Extract extract = exp().createExtract(false, sample);
         extract.setName(sample.getName());
 
-        for (String label : exp().getLabels()) {
+        for (String label : exp().getLabelNames()) {
             exp().createLabeledExtract(extract, label);
         }
     }

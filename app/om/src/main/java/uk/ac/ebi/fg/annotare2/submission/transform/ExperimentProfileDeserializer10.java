@@ -134,6 +134,19 @@ class ExperimentProfileDeserializer10 extends JsonDeserializer<ExperimentProfile
                         }
                         setFieldValue(obj, "assayMap", map);
                     }
+                },
+                new ValueSetter<ExperimentProfile>("labels", new TypeReference<Collection<Label>>() {
+                }) {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void setValue(ExperimentProfile obj, Object value) {
+                        Collection<Label> labels = (Collection<Label>) value;
+                        Map<Integer, Label> map = new LinkedHashMap<Integer, Label>();
+                        for (Label label : labels) {
+                            map.put(label.getId(), label);
+                        }
+                        setFieldValue(obj, "labelMap", map);
+                    }
                 }
         );
 

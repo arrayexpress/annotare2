@@ -56,7 +56,7 @@ public class ExperimentProfile implements Serializable {
 
     private String aeExperimentType;
 
-    private Map<Integer, Label> labels;
+    private Map<Integer, Label> labelMap;
 
     private List<OntologyTerm> experimentalDesigns;
 
@@ -99,7 +99,7 @@ public class ExperimentProfile implements Serializable {
         sampleAttributeOrder = newArrayList();
 
         extractMap = newLinkedHashMap();
-        labels = newLinkedHashMap();
+        labelMap = newLinkedHashMap();
 
         sample2Extracts = new MultiSets<Sample, Extract>();
 
@@ -516,8 +516,12 @@ public class ExperimentProfile implements Serializable {
         return fileRefs;
     }
 
-    public Collection<String> getLabels() {
-        return transform(labels.values(), new Function<Label, String>() {
+    public Collection<Label> getLabels() {
+        return unmodifiableCollection(labelMap.values());
+    }
+
+    public Collection<String> getLabelNames() {
+        return transform(labelMap.values(), new Function<Label, String>() {
             @Nullable
             @Override
             public String apply(@Nullable Label input) {
@@ -535,16 +539,16 @@ public class ExperimentProfile implements Serializable {
             return label;
         }
         label = new Label(nextId(), labelName);
-        labels.put(label.getId(), label);
+        labelMap.put(label.getId(), label);
         return label;
     }
 
     public Label getLabel(Integer id) {
-        return labels.get(id);
+        return labelMap.get(id);
     }
 
     public Label getLabel(String labelName) {
-        for (Label label : labels.values()) {
+        for (Label label : labelMap.values()) {
             if (labelName.equals(label.getName())) {
                 return label;
             }
@@ -563,7 +567,7 @@ public class ExperimentProfile implements Serializable {
                 removeAssay(assay);
             }
         }
-        labels.remove(label.getName());
+        labelMap.remove(label.getName());
     }
 
     public void addOrReLabel(String oldName, String newName) {

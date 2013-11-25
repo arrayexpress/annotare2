@@ -44,7 +44,7 @@ public class OneColorMicroarrayUpdater extends BasicExperimentUpdater {
         Extract extract = exp().createExtract(false, sample);
         extract.setName(sample.getName());
 
-        for (String label : exp().getLabels()) {
+        for (String label : exp().getLabelNames()) {
             exp().createLabeledExtract(extract, label);
         }
     }
@@ -56,7 +56,7 @@ public class OneColorMicroarrayUpdater extends BasicExperimentUpdater {
         }
         exp().setArrayDesign(settings.getArrayDesign());
 
-        Collection<String> labels = exp().getLabels();
+        Collection<String> labels = exp().getLabelNames();
         String oldLabel = labels.isEmpty() ? null : labels.iterator().next();
         String newLabel = settings.getLabel();
         newLabel = isNullOrEmpty(newLabel) ? DEFAULT_LABEL : newLabel;

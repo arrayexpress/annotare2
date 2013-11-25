@@ -60,7 +60,7 @@ public class ExperimentSettings implements IsSerializable {
     }
 
     public static ExperimentSettings create(ExperimentProfile exp) {
-        Collection<String> labels = exp.getLabels();
+        Collection<String> labels = exp.getLabelNames();
 
         ExperimentSettings settings = new ExperimentSettings(exp.getType());
         settings.setArrayDesign(exp.getArrayDesign());

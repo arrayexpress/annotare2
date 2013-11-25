@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.Extract;
-import uk.ac.ebi.fg.annotare2.submission.model.MultiSets;
 import uk.ac.ebi.fg.annotare2.submission.model.Sample;
 import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
@@ -115,6 +114,12 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
                             map.put(sample.getId(), extractIds);
                         }
                         return map;
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("labels") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getLabels();
                     }
                 }
         );
