@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.om.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.web.server.JmsResources;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
@@ -34,8 +34,8 @@ import javax.jms.*;
 import java.io.File;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.db.om.enums.DataFileStatus.ERROR;
-import static uk.ac.ebi.fg.annotare2.db.om.enums.DataFileStatus.STORED;
+import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.ERROR;
+import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.STORED;
 
 /**
  * @author Olga Melnichuk

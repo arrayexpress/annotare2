@@ -19,9 +19,9 @@ package uk.ac.ebi.fg.annotare2.db.dao.impl;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.om.DataFile;
-import uk.ac.ebi.fg.annotare2.db.om.Submission;
-import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 
 import java.util.List;
 

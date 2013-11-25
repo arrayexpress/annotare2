@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;

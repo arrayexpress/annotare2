@@ -16,15 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.Extract;
-import uk.ac.ebi.fg.annotare2.configmodel.Sample;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.Extract;
+import uk.ac.ebi.fg.annotare2.submission.model.Sample;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 
 import java.util.Collection;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.ONE_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ONE_COLOR_MICROARRAY;
 
 /**
  * @author Olga Melnichuk

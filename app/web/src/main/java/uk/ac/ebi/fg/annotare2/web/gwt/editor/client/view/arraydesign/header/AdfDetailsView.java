@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 
 import java.util.List;

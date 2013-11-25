@@ -87,11 +87,11 @@
             <version>0.19-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
             <artifactId>annotare2-om-gwt</artifactId>
             <version>0.19-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2.magetab</groupId>

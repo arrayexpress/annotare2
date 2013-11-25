@@ -16,8 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.magetab.integration;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.configmodel.PrintingProtocol;
+import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 
 /**

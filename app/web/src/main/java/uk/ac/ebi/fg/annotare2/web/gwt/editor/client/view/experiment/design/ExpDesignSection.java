@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 
 import java.util.ArrayList;
@@ -24,8 +24,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static java.util.EnumSet.*;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.SEQUENCING;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.TWO_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.SEQUENCING;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_COLOR_MICROARRAY;
 
 /**
  * @author Olga Melnichuk

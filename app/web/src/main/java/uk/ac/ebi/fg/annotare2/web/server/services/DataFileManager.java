@@ -21,14 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.om.DataFile;
-import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.db.om.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
 
 import javax.jms.JMSException;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Olga Melnichuk

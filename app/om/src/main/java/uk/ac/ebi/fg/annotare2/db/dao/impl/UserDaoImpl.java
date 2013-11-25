@@ -17,14 +17,12 @@
 package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
 import com.google.inject.Inject;
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
-import uk.ac.ebi.fg.annotare2.db.om.UserRole;
-import uk.ac.ebi.fg.annotare2.db.om.enums.Role;
+import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
-import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 
 import java.util.List;
 

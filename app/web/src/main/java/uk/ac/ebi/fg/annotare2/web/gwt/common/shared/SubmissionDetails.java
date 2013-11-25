@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.db.om.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 
 import java.util.Date;
 

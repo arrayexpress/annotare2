@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.HTML;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.SEQUENCING;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.SEQUENCING;
 
 
 /**
