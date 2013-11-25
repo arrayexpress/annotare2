@@ -16,8 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
@@ -35,7 +33,6 @@ import static java.util.Collections.unmodifiableCollection;
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ExperimentProfile implements Serializable {
 
     int nextId;
@@ -56,9 +53,9 @@ public class ExperimentProfile implements Serializable {
 
     private String aeExperimentType;
 
-    private Map<Integer, Label> labelMap;
-
     private List<OntologyTerm> experimentalDesigns;
+
+    private Map<Integer, Label> labelMap;
 
     private Map<Integer, Contact> contactMap;
 
@@ -388,7 +385,6 @@ public class ExperimentProfile implements Serializable {
         sampleAttributeOrder = newArrayList(order);
     }
 
-    @JsonIgnore
     public Collection<SampleAttribute> getSampleAttributes() {
         return Lists.transform(sampleAttributeOrder, new Function<Integer, SampleAttribute>() {
             @Nullable
@@ -399,17 +395,15 @@ public class ExperimentProfile implements Serializable {
         });
     }
 
-    @JsonIgnore
     public Collection<Contact> getContacts() {
         return unmodifiableCollection(contactMap.values());
     }
 
-    @JsonIgnore
+
     public Collection<Publication> getPublications() {
         return unmodifiableCollection(publicationMap.values());
     }
 
-    @JsonIgnore
     public Collection<Protocol> getProtocols() {
         List<Protocol> list = newArrayList();
         for (Integer id : protocolOrder) {
@@ -422,32 +416,18 @@ public class ExperimentProfile implements Serializable {
         return usageType.filter(getProtocols());
     }
 
-    @JsonIgnore
     public Collection<Sample> getSamples() {
         return unmodifiableCollection(sampleMap.values());
     }
 
-    public Collection<Sample> getSamples(Extract extract) {
-        List<Sample> samples = new ArrayList<Sample>();
-        for (Sample sample : sample2Extracts.keySet()) {
-            if (sample2Extracts.get(sample).contains(extract)) {
-                samples.add(sample);
-            }
-        }
-        return samples;
-    }
-
-    @JsonIgnore
     public Collection<Extract> getExtracts() {
         return unmodifiableCollection(extractMap.values());
     }
 
-    @JsonIgnore
     public Collection<Extract> getExtracts(Sample sample) {
         return unmodifiableCollection(sample2Extracts.get(sample));
     }
 
-    @JsonIgnore
     public Collection<LabeledExtract> getLabeledExtracts() {
         List<LabeledExtract> labeledExtracts = newArrayList();
         for (Assay assay : assayMap.values()) {
@@ -456,7 +436,6 @@ public class ExperimentProfile implements Serializable {
         return labeledExtracts;
     }
 
-    @JsonIgnore
     public Collection<LabeledExtract> getLabeledExtracts(Extract extract) {
         List<LabeledExtract> labeledExtracts = newArrayList();
         for (Assay assay : assayMap.values()) {
@@ -554,20 +533,6 @@ public class ExperimentProfile implements Serializable {
             }
         }
         return null;
-    }
-
-    public void removeLabel(String labelName) {
-        Label label = getLabel(labelName);
-        if (label == null) {
-            return;
-        }
-        List<Assay> assays = new ArrayList<Assay>(getAssays());
-        for (Assay assay : assays) {
-            if (label.equals(assay.getLabel())) {
-                removeAssay(assay);
-            }
-        }
-        labelMap.remove(label.getName());
     }
 
     public void addOrReLabel(String oldName, String newName) {
