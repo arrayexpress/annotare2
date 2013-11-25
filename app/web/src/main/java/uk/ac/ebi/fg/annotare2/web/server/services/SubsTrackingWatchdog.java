@@ -230,7 +230,7 @@ public class SubsTrackingWatchdog {
             }
             fileName = fileName + "_v" + version;
         }
-        MageTabFormat mageTab = MageTabFormat.exportMageTab(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
+        MageTabFormat mageTab = MageTabFormat.createMageTab(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
 
         if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
             ; // throw something

@@ -51,7 +51,7 @@ public class UIObjectConverter {
     static Function<User, UserDto> USER_TRANSFORM = new Function<User, UserDto>() {
         public UserDto apply(@Nullable User user) {
             checkNotNull(user);
-            return new UserDto(user.getEmail());
+            return new UserDto(user.getName());
         }
     };
 

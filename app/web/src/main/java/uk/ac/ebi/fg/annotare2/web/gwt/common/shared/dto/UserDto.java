@@ -23,16 +23,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class UserDto implements IsSerializable {
 
-    private String email;
+    private String name;
 
-    public UserDto() {
+    UserDto() {
+        /* used by GWT Serialization */
     }
 
-    public UserDto(String email) {
-        this.email = email;
+    public UserDto(String name) {
+        this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getName() {
+        return name;
     }
 }

@@ -45,27 +45,18 @@ import static com.google.common.io.Closeables.close;
  */
 public class MageTabFormat {
 
-    private static final String DEFAULT_IDF_FILE_NAME = "idf";
-    private static final String DEFAULT_SDRF_FILE_NAME = "sdrf";
-
-    private File idfFile;
-    private File sdrfFile;
+    private final File idfFile;
+    private final File sdrfFile;
 
     private IDF idf;
     private SDRF sdrf;
 
-    public MageTabFormat() {
-        File tmp = Files.createTempDir();
-        idfFile = new File(tmp, DEFAULT_IDF_FILE_NAME);
-        sdrfFile = new File(tmp, DEFAULT_SDRF_FILE_NAME);
+    private MageTabFormat(File idfFile, File sdrfFile) {
+        this.idfFile = idfFile;
+        this.sdrfFile = sdrfFile;
     }
 
-    private MageTabFormat(File directory, String idfFileName, String sdrfFileName) {
-        this.idfFile = new File(directory, idfFileName);
-        this.sdrfFile = new File(directory, sdrfFileName);
-    }
-
-    private void init(ExperimentProfile exp) throws IOException, ParseException {
+    private MageTabFormat init(ExperimentProfile exp) throws IOException, ParseException {
         MAGETABInvestigation generated = (new MageTabGenerator(exp)).generate();
 
         /* Generated MAGE-TAB lacks cell locations, which are good to have during validation.
@@ -104,6 +95,7 @@ public class MageTabFormat {
             idf = inv.IDF;
             sdrf = inv.SDRF;
         }
+        return this;
     }
 
     public IDF getIdf() {
@@ -123,16 +115,14 @@ public class MageTabFormat {
     }
 
     public static MageTabFormat createMageTab(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFormat format = new MageTabFormat();
-        format.init(exp);
-        return format;
+        File tmp = Files.createTempDir();
+        tmp.deleteOnExit();
+        return (new MageTabFormat(new File(tmp, "idf.csv"), new File(tmp, "sdrf.csv"))).init(exp);
     }
 
-    public static MageTabFormat exportMageTab(ExperimentProfile exp, File exportDirectory,
-                                        String idfFileName, String sdrfFileName) throws IOException, ParseException {
-        MageTabFormat format = new MageTabFormat(exportDirectory, idfFileName, sdrfFileName);
-        format.init(exp);
-        return format;
+    public static MageTabFormat createMageTab(ExperimentProfile exp, File directory, String idfFileName,
+                                              String sdrfFileName) throws IOException, ParseException {
+        return (new MageTabFormat(new File(directory, idfFileName), new File(directory, sdrfFileName))).init(exp);
     }
 
     /**
@@ -151,18 +141,22 @@ public class MageTabFormat {
 
             field.set(null, newValue);
         } catch (ClassNotFoundException e) {
-            throw new UnexpectedException("MAGE TAB hack doesn't work", e);
+            throw unexpectedException(e);
         } catch (NoSuchMethodException e) {
-            throw new UnexpectedException("MAGE TAB hack doesn't work", e);
+            throw unexpectedException(e);
         } catch (IllegalAccessException e) {
-            throw new UnexpectedException("MAGE TAB hack doesn't work", e);
+            throw unexpectedException(e);
         } catch (InvocationTargetException e) {
-            throw new UnexpectedException("MAGE TAB hack doesn't work", e);
+            throw unexpectedException(e);
         } catch (InstantiationException e) {
-            throw new UnexpectedException("MAGE TAB hack doesn't work", e);
+            throw unexpectedException(e);
         } catch (NoSuchFieldException e) {
-            throw new UnexpectedException("MAGE TAB hack doesn't work", e);
+            throw unexpectedException(e);
         }
+    }
+
+    private static UnexpectedException unexpectedException(Exception e) {
+        return new UnexpectedException("MAGE TAB hack doesn't work", e);
     }
 
     private static NodeFactory newNodeFactoryHack() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {

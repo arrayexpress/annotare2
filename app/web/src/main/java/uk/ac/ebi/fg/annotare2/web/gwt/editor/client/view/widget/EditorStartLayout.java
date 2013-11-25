@@ -32,11 +32,18 @@ public class EditorStartLayout extends Composite {
     @UiField
     HasOneWidget display;
 
+    @UiField
+    SimpleLayoutPanel topBarDisplay;
+
     public EditorStartLayout() {
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
     public HasOneWidget getDisplay() {
         return display;
+    }
+
+    public SimpleLayoutPanel getTopBarDisplay() {
+        return topBarDisplay;
     }
 }

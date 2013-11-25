@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.event;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.util;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
 /**
  * @author Olga Melnichuk
  */
-public class LogoutEvent extends GwtEvent<LogoutEventHandler> {
+public class Urls {
 
-    public static Type<LogoutEventHandler> TYPE = new Type<LogoutEventHandler>();
-
-    @Override
-    public Type<LogoutEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(LogoutEventHandler handler) {
-        handler.onLogout();
+    public static String logoutUrl() {
+        String url = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "logout");
+        if (!GWT.isProdMode()) {
+            url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
+        }
+        return url;
     }
 }

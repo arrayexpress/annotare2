@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import com.google.gwt.user.client.ui.IsWidget;
 
-@Deprecated
-public interface SdrfServiceAsync {
+/**
+ * @author Olga Melnichuk
+ */
+public interface EditorTopBarView extends IsWidget {
 
-    void importData(int submissionId, AsyncCallback<Void> async);
-
-    void loadData(int submissionId, AsyncCallback<Table> async);
+    void setUserName(String userName);
 }

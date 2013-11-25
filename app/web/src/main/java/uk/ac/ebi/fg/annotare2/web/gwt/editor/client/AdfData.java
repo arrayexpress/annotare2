@@ -25,6 +25,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
+ * TODO: merge it with ArrayDesignDataProxy
+ *
  * @author Olga Melnichuk
  */
 public class AdfData {

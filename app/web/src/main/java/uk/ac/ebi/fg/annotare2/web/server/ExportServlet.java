@@ -35,6 +35,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
@@ -74,11 +75,13 @@ public class ExportServlet extends HttpServlet {
     private void exportMageTab(ExperimentSubmission submission, ZipOutputStream zip) throws IOException, ServletException {
         try {
             MageTabFormat mageTab = MageTabFormat.createMageTab(submission.getExperimentProfile());
-            zip.putNextEntry(new ZipEntry("IDF.csv"));
-            copy(new FileInputStream(mageTab.getIdfFile()), zip, false);
+            File idfFile = mageTab.getIdfFile();
+            zip.putNextEntry(new ZipEntry(idfFile.getName()));
+            copy(new FileInputStream(idfFile), zip, false);
 
-            zip.putNextEntry(new ZipEntry("SDRF.csv"));
-            copy(new FileInputStream(mageTab.getSdrfFile()), zip, true);
+            File sdrfFile = mageTab.getSdrfFile();
+            zip.putNextEntry(new ZipEntry(sdrfFile.getName()));
+            copy(new FileInputStream(sdrfFile), zip, true);
         } catch (ParseException e) {
             throw servletException(e);
         } catch (DataSerializationException e) {

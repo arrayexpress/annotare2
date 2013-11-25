@@ -27,7 +27,7 @@
 
     <g:DockLayoutPanel>
         <g:north size="25">
-            <my:EditorTopMenuBar/>
+            <g:SimpleLayoutPanel ui:field="topBarDisplay" height="100%"/>
         </g:north>
         <g:north size="60">
             <g:SimpleLayoutPanel ui:field="titleBarDisplay"/>
