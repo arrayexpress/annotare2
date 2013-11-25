@@ -72,8 +72,8 @@ public class SubmissionSerializationTest {
         prot2.setName("Name of Protocol2");
         prot2.setDescription("Description of Protocol2");
 
-        profileIn.addLabel("label1");
-        profileIn.addLabel("label2");
+        Label label1 = profileIn.addLabel("label1");
+        Label label2 = profileIn.addLabel("label2");
 
         final SampleAttribute sa1 = profileIn.createSampleAttribute();
         sa1.setName("Sample Attribute 1");
@@ -82,17 +82,32 @@ public class SubmissionSerializationTest {
 
         Sample s1 = profileIn.createSample();
         s1.setName("Sample 1");
-        s1.setValues(new HashMap<Integer, String>(){{put(sa1.getId(), "value1");}});
+        s1.setValues(new HashMap<Integer, String>() {{
+            put(sa1.getId(), "value1");
+        }});
 
         Sample s2 = profileIn.createSample();
         s2.setName("Sample 2");
-        s2.setValues(new HashMap<Integer, String>(){{put(sa1.getId(), "value2");}});
+        s2.setValues(new HashMap<Integer, String>() {{
+            put(sa1.getId(), "value2");
+        }});
 
-        profileIn.createExtract(false, s1);
-        profileIn.createExtract(false, s2);
+        Extract ex1 = profileIn.createExtract(false, s1);
+        Extract ex2 = profileIn.createExtract(false, s2);
+
+        LabeledExtract le1= profileIn.createLabeledExtract(ex1, label1.getName());
+        LabeledExtract le2 = profileIn.createLabeledExtract(ex1, label2.getName());
+        LabeledExtract le3 = profileIn.createLabeledExtract(ex2, label1.getName());
+        LabeledExtract le4 = profileIn.createLabeledExtract(ex2, label2.getName());
+
+        FileColumn fileColumn = profileIn.createFileColumn(FileType.RAW_FILE);
+        fileColumn.setFileName(profileIn.getAssay(le1), "file1");
+        fileColumn.setFileName(profileIn.getAssay(le2), "file1");
+        fileColumn.setFileName(profileIn.getAssay(le3), "file1");
+        fileColumn.setFileName(profileIn.getAssay(le4), "file1");
 
         String jsonString = JsonCodec.writeExperiment(profileIn);
-        log.debug("experimentProfile=", jsonString);
+        log.debug("experimentProfile=" + jsonString);
         assertNotNull(jsonString);
 
         ExperimentProfile profileOut = JsonCodec.readExperiment(jsonString);

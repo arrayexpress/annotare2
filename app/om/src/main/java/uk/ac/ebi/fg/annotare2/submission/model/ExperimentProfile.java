@@ -25,10 +25,11 @@ import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.*;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
-import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
 
 /**
@@ -55,7 +56,7 @@ public class ExperimentProfile implements Serializable {
 
     private String aeExperimentType;
 
-    private Set<String> labels;
+    private Map<Integer, Label> labels;
 
     private List<OntologyTerm> experimentalDesigns;
 
@@ -98,7 +99,7 @@ public class ExperimentProfile implements Serializable {
         sampleAttributeOrder = newArrayList();
 
         extractMap = newLinkedHashMap();
-        labels = newLinkedHashSet();
+        labels = newLinkedHashMap();
 
         sample2Extracts = new MultiSets<Sample, Extract>();
 
@@ -228,10 +229,8 @@ public class ExperimentProfile implements Serializable {
         return new LabeledExtract(createAssay(extract, label));
     }
 
-    private Assay createAssay(Extract extract, String label) {
-        if (label != null && label.length() > 0) {
-            addLabel(label);
-        }
+    private Assay createAssay(Extract extract, String labelName) {
+        Label label = addLabel(labelName);
         Assay assay = new Assay(extract, label);
         assayMap.put(assay.getId(), assay);
         return assay;
@@ -346,23 +345,23 @@ public class ExperimentProfile implements Serializable {
         sample2Extracts.put(sample, extract);
     }
 
-    public Contact getContact(int id) {
+    public Contact getContact(Integer id) {
         return contactMap.get(id);
     }
 
-    public Publication getPublication(int id) {
+    public Publication getPublication(Integer id) {
         return publicationMap.get(id);
     }
 
-    public Protocol getProtocol(int id) {
+    public Protocol getProtocol(Integer id) {
         return protocolMap.get(id);
     }
 
-    public Sample getSample(int id) {
+    public Sample getSample(Integer id) {
         return sampleMap.get(id);
     }
 
-    public Extract getExtract(int id) {
+    public Extract getExtract(Integer id) {
         return extractMap.get(id);
     }
 
@@ -468,33 +467,35 @@ public class ExperimentProfile implements Serializable {
         return labeledExtracts;
     }
 
-    @JsonIgnore
     public LabeledExtract getLabeledExtract(String id) {
         Assay assay = getAssay(id);
         return assay == null ? null : assay.asLabeledExtract();
     }
 
-    @JsonIgnore
     public Collection<Assay> getAssays() {
         return unmodifiableCollection(assayMap.values());
     }
 
-    @JsonIgnore
     public Assay getAssay(String assayId) {
         return assayMap.get(assayId);
     }
 
-    @JsonIgnore
+    public Assay getAssay(Extract extract, Label label) {
+        return getAssay(Assay.generateAssayId(extract, label));
+    }
+
+    public Assay getAssay(LabeledExtract labeledExtract) {
+        return getAssay(labeledExtract.getExtract(), labeledExtract.getLabel());
+    }
+
     public Collection<FileColumn> getFileColumns() {
         return unmodifiableCollection(fileColumns);
     }
 
-    @JsonIgnore
     public FileColumn getFileColumn(int index) {
         return fileColumns.get(index);
     }
 
-    @JsonIgnore
     Collection<FileRef> getRawFileRefs() {
         Set<FileRef> fileRefs = new HashSet<FileRef>();
         for (FileColumn fileColumn : fileColumns) {
@@ -505,7 +506,6 @@ public class ExperimentProfile implements Serializable {
         return fileRefs;
     }
 
-    @JsonIgnore
     Collection<FileRef> getProcessedFileRefs() {
         Set<FileRef> fileRefs = new HashSet<FileRef>();
         for (FileColumn fileColumn : fileColumns) {
@@ -517,17 +517,43 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Collection<String> getLabels() {
-        return unmodifiableCollection(labels);
+        return transform(labels.values(), new Function<Label, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable Label input) {
+                return input.getName();
+            }
+        });
     }
 
-    public void addLabel(String label) {
-        if (label == null) {
-            return;
+    public Label addLabel(String labelName) {
+        if (isNullOrEmpty(labelName)) {
+            return null;
         }
-        labels.add(label);
+        Label label = getLabel(labelName);
+        if (label != null) {
+            return label;
+        }
+        label = new Label(nextId(), labelName);
+        labels.put(label.getId(), label);
+        return label;
     }
 
-    public void removeLabel(String label) {
+    public Label getLabel(Integer id) {
+        return labels.get(id);
+    }
+
+    public Label getLabel(String labelName) {
+        for (Label label : labels.values()) {
+            if (labelName.equals(label.getName())) {
+                return label;
+            }
+        }
+        return null;
+    }
+
+    public void removeLabel(String labelName) {
+        Label label = getLabel(labelName);
         if (label == null) {
             return;
         }
@@ -537,30 +563,19 @@ public class ExperimentProfile implements Serializable {
                 removeAssay(assay);
             }
         }
-        labels.remove(label);
+        labels.remove(label.getName());
     }
 
-    public void addOrReLabel(String oldLabel, String newLabel) {
+    public void addOrReLabel(String oldName, String newName) {
+        Label oldLabel = getLabel(oldName);
         if (oldLabel == null) {
-            addLabel(newLabel);
+            addLabel(newName);
             return;
         }
-        if (oldLabel.equals(newLabel)) {
+        if (oldName.equals(newName)) {
             return;
         }
-        addLabel(newLabel);
-        for (Assay assay : getAssays()) {
-            if (oldLabel.equals(assay.getLabel())) {
-                reLabelAssay(assay, newLabel);
-            }
-        }
-        removeLabel(oldLabel);
-    }
-
-    private void reLabelAssay(Assay assay, String newLabel) {
-        assayMap.remove(assay.getId());
-        assay.setLabel(newLabel);
-        assayMap.put(assay.getId(), assay);
+        oldLabel.setName(newName);
     }
 
     public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol) {

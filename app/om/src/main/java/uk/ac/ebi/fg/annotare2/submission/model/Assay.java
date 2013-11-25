@@ -26,45 +26,46 @@ public class Assay implements Serializable, HasProtocolAssignment {
     private Extract extract;
     private Integer extractId;
 
-    private String label;
+    private Label label;
+    private Integer labelId;
 
     private ProtocolAssignment assayProtocolAssignment;
     private ProtocolAssignment labeledExtractProtocolAssignment;
 
+    private String id;
+
     Assay() {
         /* used by GWT serialization only */
-        this(null, "");
+        this(null, null);
     }
 
     public Assay(Extract extract) {
         this(extract, null);
     }
 
-    public Assay(Extract extract, String label) {
+    public Assay(Extract extract, Label label) {
         this.extract = extract;
         this.label = label;
         this.assayProtocolAssignment = new ProtocolAssignment();
         this.labeledExtractProtocolAssignment = new ProtocolAssignment();
+
+        this.id = generateAssayId(extract, label);
     }
 
     public Extract getExtract() {
         return extract;
     }
 
-    public String getLabel() {
+    public Label getLabel() {
         return label;
     }
 
-    void setLabel(String label) {
-        this.label = label;
-    }
-
     public String getId() {
-        return extractId + (label != null && label.length() > 0 ? "_" + label : "");
+        return id;
     }
 
     public String getName() {
-        return extract.getName() + (label != null && label.length() > 0 ? ":" + label : "");
+        return extract.getName() + (label != null && !label.isEmpty() ? ":" + label.getName() : "");
     }
 
     @Override
@@ -74,17 +75,14 @@ public class Assay implements Serializable, HasProtocolAssignment {
 
         Assay assay = (Assay) o;
 
-        if (!extractId.equals(assay.extractId)) return false;
-        if (label != null ? !label.equals(assay.label) : assay.label != null) return false;
+        if (id != null ? !id.equals(assay.id) : assay.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = extractId.hashCode();
-        result = 31 * result + (label != null ? label.hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     public LabeledExtract asLabeledExtract() {
@@ -121,5 +119,13 @@ public class Assay implements Serializable, HasProtocolAssignment {
                     extractId + " was not found in experiment profile)");
         }
         extractId = null;
+
+        label = exp.getLabel(labelId);
+        labelId = null;
+    }
+
+    static String generateAssayId(Extract extract, Label label) {
+        return extract == null ? null :
+                (extract.getId() + (label != null ? "_" + label.getId() : ""));
     }
 }

@@ -66,6 +66,8 @@ public class SerializationModule extends SimpleModule {
                 deserializers.addDeserializer(ArrayDesignHeader.class, new ArrayDesignHeaderDeserializer10());
                 serializers.addSerializer(PrintingProtocol.class, new PrintingProtocolSerializer10());
                 deserializers.addDeserializer(PrintingProtocol.class, new PrintingProtocolDeserializer10());
+                serializers.addSerializer(Label.class, new LabelSerializer10());
+                deserializers.addDeserializer(Label.class, new LabelDeserializer10());
                 break;
             default:
                 throw new IllegalStateException();

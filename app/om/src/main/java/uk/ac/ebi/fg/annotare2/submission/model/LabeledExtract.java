@@ -37,7 +37,7 @@ public class LabeledExtract implements Serializable, HasProtocolAssignment {
         return assay.getId();
     }
 
-    public String getLabel() {
+    public Label getLabel() {
         return assay.getLabel();
     }
 

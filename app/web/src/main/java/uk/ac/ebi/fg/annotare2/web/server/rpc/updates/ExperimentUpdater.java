@@ -202,7 +202,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             if (!newLabels.contains(labeledExtract.getLabel())) {
                 exp.removeLabeledExtract(labeledExtract);
             } else {
-                existedLabels.add(labeledExtract.getLabel());
+                existedLabels.add(labeledExtract.getLabel().getName());
             }
         }
 

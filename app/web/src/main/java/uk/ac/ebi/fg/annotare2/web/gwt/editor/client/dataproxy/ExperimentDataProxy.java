@@ -198,7 +198,7 @@ public class ExperimentDataProxy {
             Integer extractId = extract.getId();
             ExtractLabelsRow row = new ExtractLabelsRow(extractId, extract.getName());
             for (uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
-                row.addLabel(labeledExtract.getLabel());
+                row.addLabel(labeledExtract.getLabel().getName());
             }
             rows.add(row);
         }

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import uk.ac.ebi.fg.annotare2.submission.model.Assay;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,12 +36,25 @@ class AssaySerializer10 extends JsonSerializer<Assay> {
 
     static final List<String> ASSAY_JSON_FIELDS = asList(
             "extractId",
-            "label",
+            "labelId",
             "assayProtocolAssignment",
-            "labeledExtractProtocolAssignment");
+            "labeledExtractProtocolAssignment",
+            "id");
 
     @Override
     public void serialize(Assay assay, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, assay, ASSAY_JSON_FIELDS);
+        generateJson(jgen, assay, ASSAY_JSON_FIELDS,
+                new ValueGetter<Assay>("extractId") {
+                    @Override
+                    public Object getValue(Assay obj) {
+                        return obj.getExtract().getId();
+                    }
+                },
+                new ValueGetter<Assay>("labelId") {
+                    @Override
+                    public Object getValue(Assay obj) {
+                        return obj.getLabel() == null ? null : obj.getLabel().getId();
+                    }
+                });
     }
 }
