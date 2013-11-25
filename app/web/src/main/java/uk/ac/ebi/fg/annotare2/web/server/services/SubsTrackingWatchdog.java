@@ -97,7 +97,6 @@ public class SubsTrackingWatchdog {
         scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
     }
 
-    @Transactional
     public void runTransaction() throws Exception {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
