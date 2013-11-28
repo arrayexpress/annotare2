@@ -45,4 +45,6 @@ public interface DataServiceAsync {
     void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> async);
 
     void getAeExperimentTypes(AsyncCallback<List<String>> async);
+
+    void getMaterialTypes(AsyncCallback<List<String>> async);
 }

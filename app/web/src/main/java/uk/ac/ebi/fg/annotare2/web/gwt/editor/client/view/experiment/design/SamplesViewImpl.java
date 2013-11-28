@@ -165,16 +165,28 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void addMaterialTypeColumn() {
-        //TODO move to property
-        List<String> materialTypes = new ArrayList<String>();
-        materialTypes.add("");
-        materialTypes.add("whole organism");
-        materialTypes.add("organism part");
-        materialTypes.add("RNA");
-        materialTypes.add("DNA");
-        materialTypes.add("cell");
+        if (presenter == null) {
+            return;
+        }
+        presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                addMaterialTypeColumn(new ArrayList<String>());
+            }
 
-        Column<SampleRow, String> column = new Column<SampleRow, String>(new SelectionCell(materialTypes)) {
+            @Override
+            public void onSuccess(List<String> result) {
+                addMaterialTypeColumn(result);
+            }
+        });
+    }
+
+    private void addMaterialTypeColumn(List<String> materialTypes) {
+        List<String> options = new ArrayList<String>();
+        options.add("");
+        options.addAll(materialTypes);
+
+        Column<SampleRow, String> column = new Column<SampleRow, String>(new SelectionCell(options)) {
             @Override
             public String getValue(SampleRow row) {
                 String materialType = row.getMaterialType();

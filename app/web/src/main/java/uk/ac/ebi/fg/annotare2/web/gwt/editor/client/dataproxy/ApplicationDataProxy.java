@@ -34,6 +34,7 @@ public class ApplicationDataProxy {
 
     private ApplicationProperties properties;
     private List<String> aeExperimentTypes;
+    private List<String> materialTypes;
 
     @Inject
     public ApplicationDataProxy(DataServiceAsync dataService) {
@@ -77,6 +78,26 @@ public class ApplicationDataProxy {
                 aeExperimentTypes = new ArrayList<String>(result);
                 callback.onSuccess(result);
             }
-        });
+        }.wrap());
+    }
+
+    public void getMaterialTypesAsync(final AsyncCallback<List<String>> callback) {
+        if (materialTypes != null && !materialTypes.isEmpty()) {
+            callback.onSuccess(new ArrayList<String>(materialTypes));
+            return;
+        }
+
+        dataService.getMaterialTypes(new AsyncCallbackWrapper<List<String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(List<String> result) {
+                materialTypes = new ArrayList<String>(result);
+                callback.onSuccess(result);
+            }
+        }.wrap());
     }
 }
