@@ -16,23 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.login;
 
-
-import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 /**
  * @author Olga Melnichuk
  */
-public interface AuthService {
+public class AccountServiceException extends Exception {
 
-    boolean isLoggedIn(HttpServletRequest request);
-
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
-
-    void logout(HttpSession session);
-
-    User getCurrentUser(HttpSession session);
+    public AccountServiceException(String expAcc) {
+        super(expAcc);
+    }
 }

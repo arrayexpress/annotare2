@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.login.AccountService;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,14 +27,14 @@ import javax.servlet.http.HttpSession;
  */
 abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
-    private final AuthService authService;
+    private final AccountService accountService;
 
-    public AuthBasedRemoteService(AuthService authService) {
-        this.authService = authService;
+    public AuthBasedRemoteService(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     protected User getCurrentUser() {
-        return authService.getCurrentUser(getSession());
+        return accountService.getCurrentUser(getSession());
     }
 
     protected HttpSession getSession() {

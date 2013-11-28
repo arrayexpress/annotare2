@@ -29,26 +29,30 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.login.SessionInformation.*;
 
 public class SignUpServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(SignUpServlet.class);
 
     @Inject
-    private SignUpService signUpService;
+    private AccountService accountService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("Sign-up data submitted; checking..");
         ValidationErrors errors = new ValidationErrors();
         try {
-            errors.append(signUpService.signUp(request));
+            errors.append(accountService.signUp(request));
             if (errors.isEmpty()) {
                 log.debug("Sign-up successful; redirect to login page");
+                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+                INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have been successfully registered; please sign in now");
                 LOGIN.redirect(request, response);
                 return;
+            } else {
+                log.debug("Sign-up form had invalid entries");
             }
-            log.debug("Sign-up form had invalid entries");
-        } catch (Exception e) {
+        } catch (AccountServiceException e) {
             log.debug("Sign-up failed");
             errors.append(e.getMessage());
         }

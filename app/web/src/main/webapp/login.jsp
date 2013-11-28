@@ -25,8 +25,11 @@
         pageContext.setAttribute("passwordErrors", errors.getErrors("password"));
     }
 
-    String[] values = request.getParameterValues("email");
-    pageContext.setAttribute("email", values == null ? "" : values[0]);
+    String email = request.getParameter("email");
+    if (null == email) {
+        email = (String)session.getAttribute("email");
+    }
+    pageContext.setAttribute("email", email == null ? "" : email);
 %>
 <!DOCTYPE html>
 <html>
@@ -48,13 +51,27 @@
                         <td></td>
                         <td><h1>Annotare 2.0</h1></td>
                     </tr>
+                    <tr class="info">
+                        <td></td>
+                        <td><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></td>
+
+                    </tr>
                     <tr class="error">
                         <td></td>
                         <td>${dummyErrors}</td>
                     </tr>
                     <tr class="row right">
                         <td>Email address</td>
-                        <td><input type="text" name="email" value="${email}" style="width:98%"/></td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${email != ''}">
+                                    <input type="text" name="email" value="${email}" style="width:98%"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="text" name="email" style="width:98%" autofocus="autofocus"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                     </tr>
                     <tr class="error">
                         <td></td>
@@ -62,7 +79,16 @@
                     </tr>
                     <tr class="row right">
                         <td>Password</td>
-                        <td><input type="password" name="password" style="width:98%"/></td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${email != ''}">
+                                    <input type="password" name="password" style="width:98%" autofocus="autofocus"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="password" name="password" style="width:98%"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                     </tr>
                     <tr class="error">
                         <td></td>

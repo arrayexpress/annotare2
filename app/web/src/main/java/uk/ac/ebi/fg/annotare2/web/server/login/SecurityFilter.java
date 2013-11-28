@@ -37,7 +37,7 @@ public class SecurityFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(SecurityFilter.class);
 
     @Inject
-    private AuthService authService;
+    private AccountService accountService;
 
     @Inject
     private AllRpcServicePaths rpcServicePaths;
@@ -53,7 +53,7 @@ public class SecurityFilter implements Filter {
 
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
-            if (!authService.isLoggedIn(request)) {
+            if (!accountService.isLoggedIn(request)) {
                 forceLogin(request, (HttpServletResponse) servletResponse);
                 return;
             }

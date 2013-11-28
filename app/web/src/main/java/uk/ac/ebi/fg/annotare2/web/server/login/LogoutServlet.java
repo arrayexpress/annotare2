@@ -32,11 +32,11 @@ import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.LOGIN;
 public class LogoutServlet  extends HttpServlet {
 
     @Inject
-    private AuthService authService;
+    private AccountService accountService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        authService.logout(request.getSession());
+        accountService.logout(request.getSession());
         LOGIN.redirect(request, response);
     }
 

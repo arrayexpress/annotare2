@@ -34,7 +34,6 @@
 
     values = request.getParameterValues("email");
     pageContext.setAttribute("email", values == null ? "" : values[0]);
-
 %>
 <!DOCTYPE html>
 <html>

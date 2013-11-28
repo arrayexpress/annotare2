@@ -17,10 +17,9 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
  *
  */
 
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
 
-import javax.servlet.http.HttpServletRequest;
-
-public interface SignUpService {
-    public ValidationErrors signUp(HttpServletRequest request) throws Exception;
+public class SessionInformation {
+    public static final SessionAttribute EMAIL_SESSION_ATTRIBUTE = new SessionAttribute("email");
+    public static final SessionAttribute INFO_SESSION_ATTRIBUTE = new SessionAttribute("info");
 }

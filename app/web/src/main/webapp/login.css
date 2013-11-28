@@ -38,6 +38,12 @@
     text-align: left;
 }
 
+.info {
+    font-size: small;
+    color: darkgreen;
+    text-align: left;
+}
+
 .form {
     border-collapse: collapse;
     color: #000;

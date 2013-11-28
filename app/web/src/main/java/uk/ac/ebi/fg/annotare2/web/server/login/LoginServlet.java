@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.login.SessionInformation.*;
 
 /**
  * @author Olga Melnichuk
@@ -36,22 +37,26 @@ public class LoginServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
 
+
+
     @Inject
-    private AuthService authService;
+    private AccountService accountService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("Login details submitted; validating..");
         ValidationErrors errors = new ValidationErrors();
         try {
-            errors.append(authService.login(request));
+            errors.append(accountService.login(request));
+            EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+
             if (errors.isEmpty()) {
                 log.debug("Login details are valid; Authorization succeeded");
                 HOME.restoreAndRedirect(request, response);
                 return;
             }
             log.debug("Login details are invalid");
-        } catch (LoginException e) {
+        } catch (AccountServiceException e) {
             log.debug("Authorization failed");
             errors.append(e.getMessage());
         }

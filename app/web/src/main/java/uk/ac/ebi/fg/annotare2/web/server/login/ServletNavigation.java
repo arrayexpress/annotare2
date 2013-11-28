@@ -78,6 +78,12 @@ enum ServletNavigation {
         sendRedirect(contextBasedUrl(redirectTo, request), response);
     }
 
+    public void redirect(HttpServletRequest request, HttpServletResponse response, String queryString) throws IOException {
+        String redirectUrl = redirectTo + ( isNullOrEmpty(queryString) ? "" : "?" + queryString );
+        log.debug("Redirecting to {}", redirectUrl);
+        sendRedirect(contextBasedUrl(redirectUrl, request), response);
+    }
+
     public void forward(ServletContext context, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("Forwarding to {}", forwardTo);
         context.getRequestDispatcher(preserveCodeSrvParam(forwardTo, request)).forward(request, response);

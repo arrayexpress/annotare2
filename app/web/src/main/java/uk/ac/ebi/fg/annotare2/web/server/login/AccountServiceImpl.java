@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.login;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,10 @@ import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -35,17 +38,19 @@ import static java.util.Arrays.asList;
 /**
  * @author Olga Melnichuk
  */
-public class AuthServiceImpl implements AuthService {
+public class AccountServiceImpl implements AccountService {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private static final SessionAttribute USER_EMAIL_ATTRIBUTE = new SessionAttribute("email");
 
     private AccountManager accountManager;
+    private EmailSender emailer;
 
     @Inject
-    public AuthServiceImpl(AccountManager accountManager) {
+    public AccountServiceImpl(AccountManager accountManager, EmailSender emailer) {
         this.accountManager = accountManager;
+        this.emailer = emailer;
     }
 
     public boolean isLoggedIn(HttpServletRequest request) {
@@ -53,13 +58,40 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional
-    public ValidationErrors login(HttpServletRequest request) throws LoginException {
+    public ValidationErrors signUp(HttpServletRequest request) throws AccountServiceException {
+        SignUpParams params = new SignUpParams(request);
+        ValidationErrors errors = params.validate();
+        if (errors.isEmpty()) {
+            if (null != accountManager.getByEmail(params.getEmail())) {
+                errors.append("email", "User with this email already exists");
+            } else {
+                User u = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
+                try {
+                    emailer.sendFromTemplate(
+                            EmailSender.NEW_USER_TEMPLATE,
+                            ImmutableMap.of(
+                                    "to.name", u.getName(),
+                                    "to.email", u.getEmail(),
+                                    "verification.token", u.getVerificationToken()
+                            )
+                    );
+                } catch (MessagingException x) {
+                    //
+                }
+            }
+        }
+        return errors;
+    }
+
+
+    @Transactional
+    public ValidationErrors login(HttpServletRequest request) throws AccountServiceException {
         LoginParams params = new LoginParams(request);
         ValidationErrors errors = params.validate();
         if (errors.isEmpty()) {
             if (!accountManager.isValid(params.getEmail(), params.getPassword())) {
                 log.debug("User '{}' entered invalid params", params.getEmail());
-                throw new LoginException("Sorry, the email or password you entered is not valid.");
+                throw new AccountServiceException("Sorry, the email or password you entered is not valid.");
             }
             log.debug("User '{}' logged in", params.getEmail());
             USER_EMAIL_ATTRIBUTE.set(request.getSession(), params.getEmail());
@@ -100,6 +132,50 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
             return errors;
+        }
+
+        public String getEmail() {
+            return email.getValue();
+        }
+
+        public String getPassword() {
+            return password.getValue();
+        }
+    }
+
+    static class SignUpParams {
+        public static final String NAME_PARAM = "name";
+        public static final String EMAIL_PARAM = "email";
+        public static final String PASSWORD_PARAM = "password";
+        public static final String CONFIRM_PASSWORD_PARAM = "confirm-password";
+
+        private final RequestParam name;
+        private final RequestParam email;
+        private final RequestParam password;
+        private final RequestParam confirmPassword;
+
+        private SignUpParams(HttpServletRequest request) {
+            name = RequestParam.from(request, NAME_PARAM);
+            email = RequestParam.from(request, EMAIL_PARAM);
+            password = RequestParam.from(request, PASSWORD_PARAM);
+            confirmPassword = RequestParam.from(request, CONFIRM_PASSWORD_PARAM);
+        }
+
+        public ValidationErrors validate() {
+            ValidationErrors errors = new ValidationErrors();
+            for (RequestParam p : asList(name, email, password)) {
+                if (p.isEmpty()) {
+                    errors.append(p.getName(), "Please specify a value, " + p.getName() + " is required");
+                }
+            }
+            if (!password.getValue().equals(confirmPassword.getValue())) {
+                errors.append(confirmPassword.getName(), "Passwords do not match");
+            }
+            return errors;
+        }
+
+        public String getName() {
+            return name.getValue();
         }
 
         public String getEmail() {
