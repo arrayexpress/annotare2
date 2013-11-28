@@ -149,6 +149,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     public void updateSample(SampleRow row) {
         uk.ac.ebi.fg.annotare2.submission.model.Sample sample = exp.getSample(row.getId());
         sample.setName(row.getName());
+        sample.setMaterialType(row.getMaterialType());
         sample.setValues(row.getValues());
     }
 

@@ -33,25 +33,28 @@ public class SampleRow implements IsSerializable, HasName, HasIdentity {
 
     private String name;
 
+    private String materialType;
+
     private Map<Integer, String> values;
 
     SampleRow() {
         /* used by GWT serialization only */
     }
 
-    public SampleRow(int id, String name) {
-        this(id, name, new HashMap<Integer, String>());
+    public SampleRow(int id, String name, String materialType) {
+        this(id, name, materialType, new HashMap<Integer, String>());
     }
 
-    public SampleRow(int id, String name, Map<Integer, String> values) {
+    public SampleRow(int id, String name, String materialType, Map<Integer, String> values) {
         this.id = id;
         this.name = name;
+        this.materialType = materialType;
         this.values = new HashMap<Integer, String>();
         this.values.putAll(values);
     }
 
     public SampleRow copy() {
-        return new SampleRow(id, name, values);
+        return new SampleRow(id, name, materialType, values);
     }
 
     @Override
@@ -69,6 +72,14 @@ public class SampleRow implements IsSerializable, HasName, HasIdentity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMaterialType() {
+        return materialType;
+    }
+
+    public void setMaterialType(String materialType) {
+        this.materialType = materialType;
     }
 
     public String getValue(SampleColumn column) {

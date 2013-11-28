@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -101,6 +102,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     private void setColumns(List<SampleColumn> columns) {
         this.columns = new ArrayList<SampleColumn>(columns);
         addNameColumn();
+        addMaterialTypeColumn();
         for (SampleColumn column : columns) {
             addColumn(column);
         }
@@ -160,6 +162,45 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         };
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
+    }
+
+    private void addMaterialTypeColumn() {
+        //TODO move to property
+        List<String> materialTypes = new ArrayList<String>();
+        materialTypes.add("");
+        materialTypes.add("whole organism");
+        materialTypes.add("organism part");
+        materialTypes.add("RNA");
+        materialTypes.add("DNA");
+        materialTypes.add("cell");
+
+        Column<SampleRow, String> column = new Column<SampleRow, String>(new SelectionCell(materialTypes)) {
+            @Override
+            public String getValue(SampleRow row) {
+                String materialType = row.getMaterialType();
+                return materialType == null ? "" : materialType;
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
+            @Override
+            public void update(int index, SampleRow row, String value) {
+                row.setMaterialType(value.isEmpty() ? null : value);
+                updateRow(row);
+            }
+        });
+        column.setSortable(true);
+        Comparator<SampleRow> comparator = new Comparator<SampleRow>() {
+            @Override
+            public int compare(SampleRow o1, SampleRow o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+                String v1 = o1.getMaterialType();
+                String v2 = o2.getMaterialType();
+                return v1.compareTo(v2);
+            }
+        };
+        gridView.addPermanentColumn("Material Type", column, comparator, 150, Style.Unit.PX);
     }
 
     private boolean isNameValid(String name, int rowIndex) {

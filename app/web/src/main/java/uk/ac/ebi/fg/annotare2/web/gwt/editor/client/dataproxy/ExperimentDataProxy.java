@@ -161,6 +161,7 @@ public class ExperimentDataProxy {
             rows.add(new SampleRow(
                     sample.getId(),
                     sample.getName(),
+                    sample.getMaterialType(),
                     sample.getValues()
             ));
         }
