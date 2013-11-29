@@ -179,7 +179,7 @@ public class ExperimentDataProxy {
                     attr.getTerm(),
                     attr.getType(),
                     visitor.getValueType(),
-                    attr.isEditable()
+                    attr.isTemplateBased()
             ));
         }
         return columns;

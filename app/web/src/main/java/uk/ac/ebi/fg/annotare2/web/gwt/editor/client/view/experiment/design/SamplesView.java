@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public interface SamplesView extends IsWidget {
 
     public interface Presenter {
 
-        ColumnValueTypeEfoTerms getEfoTerms();
+        SampleAttributeEfoSuggest getEfoTerms();
 
         void updateColumns(List<SampleColumn> newColumns);
 

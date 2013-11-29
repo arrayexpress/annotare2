@@ -55,7 +55,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private final ColumnValueType.Visitor visitor;
 
-    public ColumnValueTypeEditor(final ColumnValueTypeEfoTerms efoTerms) {
+    public ColumnValueTypeEditor(final SampleAttributeEfoSuggest efoTerms) {
         visitor = new ColumnValueType.Visitor() {
             @Override
             public void visitTextValueType(TextValueType valueType) {

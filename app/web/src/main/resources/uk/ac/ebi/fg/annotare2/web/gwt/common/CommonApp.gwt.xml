@@ -14,6 +14,10 @@
   ~ limitations under the License.
   -->
 <module>
+
+    <inherits name="com.google.common.base.Base"/>
+    <inherits name="com.google.common.collect.Collect"/>
+
     <inherits name="uk.ac.ebi.fg.annotare2.ExperimentProfile"/>
 
     <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab"/>

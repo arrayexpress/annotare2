@@ -78,7 +78,7 @@ public class SubmissionSerializationTest {
         final SampleAttribute sa1 = profileIn.createSampleAttribute();
         sa1.setName("Sample Attribute 1");
         sa1.setTerm(new OntologyTerm("sa1", "sa1"));
-        sa1.setType(AttributeType.CHARACTERISTIC_ATTRIBUTE);
+        sa1.setType(SampleAttributeType.CHARACTERISTIC);
 
         Sample s1 = profileIn.createSample();
         s1.setName("Sample 1");

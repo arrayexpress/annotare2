@@ -17,17 +17,17 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.logical.shared.*;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.submission.model.AttributeType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.ColumnValueType;
+import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
@@ -44,75 +44,71 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
     }
 
     @UiField
-    TextBox nameBox;
+    ListBox typeBox;
 
     @UiField
-    CheckBox factorValueCheckbox;
+    TextBox nameBox;
 
     @UiField(provided = true)
-    ColumnValueTypeEditor valueTypeEditor;
+    SuggestBox termBox;
 
     @UiField(provided = true)
-    SuggestBox nameTermBox;
+    SuggestBox unitsBox;
 
-    private SampleColumn.Editor columnEditor;
+    private final SampleColumn column;
 
-    public SampleColumnEditor(SampleColumn column, final ColumnValueTypeEfoTerms efoSuggestService) {
-        valueTypeEditor = new ColumnValueTypeEditor(efoSuggestService);
-        nameTermBox = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
+    public SampleColumnEditor(SampleColumn column, final SampleAttributeEfoSuggest efoSuggestService) {
+        this.column = column;
+
+        termBox = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
             public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoSuggestService.getTerms(query, limit, callback);
             }
         }));
 
+        unitsBox = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
+            @Override
+            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+                efoSuggestService.getUnits(query, limit, callback);
+            }
+        }));
+
         initWidget(Binder.BINDER.createAndBindUi(this));
 
+        SampleAttributeTemplate template = column.getTemplate();
+
+        termBox.setEnabled(template.getTermRange().isAny());
+
+        unitsBox.setEnabled(template.getUnitRange().isAny());
+
         nameBox.setValue(column.getName());
-        nameBox.setEnabled(column.isEditable());
+        nameBox.setEnabled(template.getNameRange().isAny());
 
-        nameTermBox.setValue(column.getTerm() == null ? "" : column.getTerm().getLabel());
-        nameTermBox.setEnabled(column.isEditable());
-        nameTermBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
-            @Override
-            public void onSelection(SelectionEvent<SuggestOracle.Suggestion> event) {
-                EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) event.getSelectedItem();
-                columnEditor.setTerm(suggestion.getTerm());
-                notifyColumnChanged();
-            }
-        });
+        termBox.setValue(column.getTerm() == null ? "" : column.getTerm().getLabel());
+        termBox.setEnabled(template.getTermRange().isAny());
 
-        valueTypeEditor.setValue(column.getValueType());
-        valueTypeEditor.setEnabled(column.isEditable());
-        valueTypeEditor.addValueChangeHandler(new ValueChangeHandler<ColumnValueType>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<ColumnValueType> event) {
-                columnEditor.setValueType(event.getValue());
-                notifyColumnChanged();
-            }
-        });
-
-        AttributeType type = column.getType();
-        factorValueCheckbox.setValue(type.isFactorValue());
-        factorValueCheckbox.setVisible(type.isFactorValue() || type.isCharacteristic());
-
-        this.columnEditor = column.editor();
+        for (SampleAttributeType type : template.getTypes()) {
+            typeBox.addItem(type.getName(), type.name());
+        }
+        //TODO
+        //setType(column.getType());
+        typeBox.setEnabled(template.getTypes().size() > 1);
     }
+
+/*
+//TODO
 
     @UiHandler("nameBox")
     void nameValueChanged(ChangeEvent event) {
-        if (!columnEditor.isEditable()) {
-            return;
-        }
-        columnEditor.setName(nameBox.getValue());
+        column.setName(nameBox.getValue());
         notifyColumnChanged();
     }
-
     @UiHandler("factorValueCheckbox")
     void factorValueCheckboxChanged(ValueChangeEvent<Boolean> event) {
-        AttributeType type = columnEditor.getType();
+        SampleAttributeType type = columnEditor.getType();
         if (type.isFactorValue() || type.isCharacteristic()) {
-            columnEditor.setType(event.getValue() ? AttributeType.FACTOR_VALUE_ATTRIBUTE : AttributeType.CHARACTERISTIC_ATTRIBUTE);
+            columnEditor.setType(event.getValue() ? SampleAttributeType.CHARACTERISTIC_AND_FACTOR_VALUE : SampleAttributeType.CHARACTERISTIC);
             notifyColumnChanged();
         }
     }
@@ -128,7 +124,7 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
     private void notifyColumnChanged() {
         ValueChangeEvent.fire(this, columnEditor.copy());
-    }
+    }*/
 
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<SampleColumn> handler) {

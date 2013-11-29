@@ -129,7 +129,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             attr.setName(column.getName());
             attr.setTerm(column.getTerm());
             attr.setType(column.getType());
-            attr.setEditable(column.isEditable());
+            attr.setTemplateBased(column.isTemplateBased());
 
             ColumnValueTypeVisitor visitor = new ColumnValueTypeVisitor();
             column.getValueType().visit(visitor);

@@ -24,7 +24,7 @@ class SampleAttributeSerializer10 extends JsonSerializer<SampleAttribute> {
             "valueSubType",
             "units",
             "ontologyBranch",
-            "isEditable");
+            "isTemplateBased");
 
     @Override
     public void serialize(SampleAttribute sampleAttribute, JsonGenerator jgen, SerializerProvider provider) throws IOException {

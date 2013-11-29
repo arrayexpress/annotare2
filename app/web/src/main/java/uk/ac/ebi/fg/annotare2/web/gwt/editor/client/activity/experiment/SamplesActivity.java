@@ -34,7 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProx
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ColumnValueTypeEfoTerms;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SampleAttributeEfoSuggest;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     private final ExperimentDataProxy expDataProxy;
     private final ApplicationDataProxy appDataProxy;
 
-    private final ColumnValueTypeEfoTerms efoTerms;
+    private final SampleAttributeEfoSuggest efoTerms;
 
     private HandlerRegistration criticalUpdateHandler;
 
@@ -91,7 +91,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public ColumnValueTypeEfoTerms getEfoTerms() {
+    public SampleAttributeEfoSuggest getEfoTerms() {
         return efoTerms;
     }
 
@@ -136,8 +136,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         });
     }
 
-    private ColumnValueTypeEfoTerms wrapEfoTerms(final OntologyDataProxy efoTerms) {
-        return new ColumnValueTypeEfoTerms() {
+    private SampleAttributeEfoSuggest wrapEfoTerms(final OntologyDataProxy efoTerms) {
+        return new SampleAttributeEfoSuggest() {
             @Override
             public void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoTerms.getUnits(query, limit, callback);

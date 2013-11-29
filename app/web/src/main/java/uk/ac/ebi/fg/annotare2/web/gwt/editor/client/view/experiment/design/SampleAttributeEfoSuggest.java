@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public interface ColumnValueTypeEfoTerms {
+public interface SampleAttributeEfoSuggest {
 
     void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
 

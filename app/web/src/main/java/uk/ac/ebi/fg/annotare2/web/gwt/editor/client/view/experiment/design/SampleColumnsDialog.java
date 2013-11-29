@@ -30,12 +30,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.USER_DEFIED_ATTRIBUTE;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.valueOf;
 
 /**
  * @author Olga Melnichuk
@@ -79,12 +82,10 @@ public class SampleColumnsDialog extends DialogBox {
 
     private int nextId;
 
-    private final ColumnValueTypeEfoTerms efoSuggestService;
-
-    private final List<SampleColumn> templateColumns = new ArrayList<SampleColumn>();
+    private final SampleAttributeEfoSuggest efoSuggest;
 
     public SampleColumnsDialog(List<SampleColumn> columns,
-                               ColumnValueTypeEfoTerms efoSuggestService,
+                               SampleAttributeEfoSuggest efoSuggest,
                                DialogCallback<List<SampleColumn>> callback) {
         setModal(true);
         setGlassEnabled(true);
@@ -93,23 +94,10 @@ public class SampleColumnsDialog extends DialogBox {
         setWidget(Binder.BINDER.createAndBindUi(this));
         center();
 
-        this.efoSuggestService = efoSuggestService;
+        this.efoSuggest = efoSuggest;
         this.callback = callback;
         setColumns(columns);
-
-        efoSuggestService.getSystemEfoTerms(new AsyncCallback<SystemEfoTermMap>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO proper logging
-                Window.alert(caught.getMessage());
-            }
-
-            @Override
-            public void onSuccess(SystemEfoTermMap result) {
-                templateColumns.addAll(SampleColumn.getTemplateColumns(result));
-                updateTemplateColumns();
-            }
-        });
+        updateTemplates();
     }
 
     @UiHandler("columnList")
@@ -122,7 +110,7 @@ public class SampleColumnsDialog extends DialogBox {
             return;
         }
 
-        SampleColumnEditor editor = new SampleColumnEditor(column, efoSuggestService);
+        SampleColumnEditor editor = new SampleColumnEditor(column, efoSuggest);
         editor.addValueChangeHandler(new ValueChangeHandler<SampleColumn>() {
             @Override
             public void onValueChange(ValueChangeEvent<SampleColumn> event) {
@@ -135,7 +123,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("addButton")
     void addButtonClicked(ClickEvent event) {
-        SampleColumn template = getSelectedColumnTemplate();
+        SampleAttributeTemplate template = getSelectedTemplate();
         if (template != null) {
             templateColumnList.removeItem(templateColumnList.getSelectedIndex());
             addColumn(template);
@@ -149,7 +137,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        addColumn(SampleColumn.create(0, "", null));
+        addColumn(USER_DEFIED_ATTRIBUTE);
     }
 
     @UiHandler("okButton")
@@ -188,29 +176,53 @@ public class SampleColumnsDialog extends DialogBox {
         move(index, index + 1);
     }
 
-    private void move(int from, int to) {
-        String text = columnList.getItemText(from);
-        String value = columnList.getValue(from);
-        columnList.removeItem(from);
-        columnList.insertItem(text, value, to);
+    private void updateTemplates() {
+        templateColumnList.clear();
+        Set<SampleAttributeTemplate> used = getUsedTemplates();
 
-        setItemSelected(columnList, to);
-    }
-
-    private SampleColumn getSelectedColumnTemplate() {
-        int index = templateColumnList.getSelectedIndex();
-        return index < 0 ? null :
-                templateColumns.get(
-                        parseInt(templateColumnList.getValue(index)));
-    }
-
-    private void addColumn(SampleColumn template) {
-        if (!getColumnNames().contains(template.getName())) {
-            SampleColumn column = SampleColumn.create(0, template);
-            if (column != null) {
-                setColumn(column, true);
+        for (SampleAttributeTemplate template : SampleAttributeTemplate.getAll()) {
+            if (!used.contains(template)) {
+                templateColumnList.addItem(template.getName(), template.name());
             }
         }
+    }
+
+    private Set<SampleAttributeTemplate> getUsedTemplates() {
+        Set<SampleAttributeTemplate> templates = new HashSet<SampleAttributeTemplate>();
+        for (SampleColumn column : columnMap.values()) {
+            templates.add(column.getTemplate());
+        }
+        return templates;
+    }
+
+    private Set<String> getUserColumnNames() {
+        Set<String> names = new HashSet<String>();
+        for (SampleColumn column : columnMap.values()) {
+            names.add(column.getName());
+        }
+        return names;
+    }
+
+    private void addColumn(final SampleAttributeTemplate template) {
+        efoSuggest.getSystemEfoTerms(new AsyncCallback<SystemEfoTermMap>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                Window.alert("Can't load system efo terms to create a column");
+            }
+
+            @Override
+            public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
+                addColumn(template, systemEfoTermMap);
+            }
+        });
+    }
+
+    private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context) {
+        SampleColumn column = SampleColumn.create(template, context);
+        if (column == null || getUserColumnNames().contains(column.getName())) {
+            return;
+        }
+        setColumn(column, true);
     }
 
     private void updateColumn(int index, SampleColumn value) {
@@ -228,7 +240,7 @@ public class SampleColumnsDialog extends DialogBox {
         int columnId = parseInt(columnList.getValue(index));
         columnList.removeItem(index);
         columnMap.remove(columnId);
-        updateTemplateColumns();
+        updateTemplates();
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
     }
 
@@ -243,14 +255,6 @@ public class SampleColumnsDialog extends DialogBox {
         return (column.getType().isFactorValue() ? "[FV] " : "") + column.getName();
     }
 
-    private Set<String> getColumnNames() {
-        Set<String> names = new HashSet<String>();
-        for (SampleColumn column : columnMap.values()) {
-            names.add(column.getName());
-        }
-        return names;
-    }
-
     private void setColumns(List<SampleColumn> columns) {
         columnList.clear();
         for (SampleColumn column : columns) {
@@ -259,9 +263,9 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void setColumn(SampleColumn column, boolean select) {
-        int id = columnId();
-        columnMap.put(id, column);
-        columnList.addItem(getColumnTitle(column), Integer.toString(id));
+        int index = columnIndex();
+        columnMap.put(index, column);
+        columnList.addItem(getColumnTitle(column), Integer.toString(index));
         if (select) {
             setItemSelected(columnList, columnList.getItemCount() - 1);
         }
@@ -279,21 +283,23 @@ public class SampleColumnsDialog extends DialogBox {
         return columnMap.get(parseInt(id));
     }
 
-    private void updateTemplateColumns() {
-        templateColumnList.clear();
-        Set<String> used = getColumnNames();
+    private void move(int from, int to) {
+        String text = columnList.getItemText(from);
+        String value = columnList.getValue(from);
+        columnList.removeItem(from);
+        columnList.insertItem(text, value, to);
 
-        int index = 0;
-        for (SampleColumn column : templateColumns) {
-            if (!used.contains(column.getName())) {
-                templateColumnList.addItem(column.getName(), Integer.toString(index));
-            }
-            index++;
-        }
+        setItemSelected(columnList, to);
+    }
+
+    private SampleAttributeTemplate getSelectedTemplate() {
+        int index = templateColumnList.getSelectedIndex();
+        return index < 0 ? null :
+                valueOf(templateColumnList.getValue(index));
     }
 
     private void checkNamesUnique(List<String> errors) {
-        if (getColumnNames().size() != columnMap.size()) {
+        if (getUserColumnNames().size() != columnMap.size()) {
             errors.add("Attribute names must be unique");
         }
     }
@@ -313,7 +319,7 @@ public class SampleColumnsDialog extends DialogBox {
         return validate().isEmpty();
     }
 
-    private int columnId() {
+    private int columnIndex() {
         return ++nextId;
     }
 

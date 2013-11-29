@@ -261,12 +261,12 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         });
         column.setSortable(true);
-        gridView.addColumn(sampleColumn.getPrettyName(), column, null, 150, Style.Unit.PX);
+        gridView.addColumn(sampleColumn.getTitle(), column, null, 150, Style.Unit.PX);
     }
 
     private Cell<String> createCellEditor(SampleColumn sampleColumn) {
         final List<Cell<String>> editor = new ArrayList<Cell<String>>();
-        final ColumnValueTypeEfoTerms efoSuggestService = presenter.getEfoTerms();
+        final SampleAttributeEfoSuggest efoSuggestService = presenter.getEfoTerms();
 
         sampleColumn.getValueType().visit(new ColumnValueType.Visitor() {
             @Override

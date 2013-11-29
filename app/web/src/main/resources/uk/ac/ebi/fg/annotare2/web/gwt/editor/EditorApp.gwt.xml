@@ -41,10 +41,6 @@
 
     <inherits name="com.google.gwt.inject.Inject"/>
 
-    <!-- guava -->
-    <inherits name="com.google.common.base.Base"/>
-    <inherits name="com.google.common.collect.Collect"/>
-
     <!-- MageTab -->
     <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab" />
 
