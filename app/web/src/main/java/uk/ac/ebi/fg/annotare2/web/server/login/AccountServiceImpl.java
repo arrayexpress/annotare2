@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.om.User;
 import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.FormParams;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
@@ -32,8 +33,6 @@ import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -83,6 +82,31 @@ public class AccountServiceImpl implements AccountService {
         return errors;
     }
 
+    @Transactional
+    public ValidationErrors changePassword(HttpServletRequest request) throws AccountServiceException {
+        SignUpParams params = new SignUpParams(request);
+        ValidationErrors errors = params.validate();
+        if (errors.isEmpty()) {
+            if (null != accountManager.getByEmail(params.getEmail())) {
+                errors.append("email", "User with this email already exists");
+            } else {
+                User u = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
+                try {
+                    emailer.sendFromTemplate(
+                            EmailSender.NEW_USER_TEMPLATE,
+                            ImmutableMap.of(
+                                    "to.name", u.getName(),
+                                    "to.email", u.getEmail(),
+                                    "verification.token", u.getVerificationToken()
+                            )
+                    );
+                } catch (MessagingException x) {
+                    //
+                }
+            }
+        }
+        return errors;
+    }
 
     @Transactional
     public ValidationErrors login(HttpServletRequest request) throws AccountServiceException {
@@ -112,78 +136,63 @@ public class AccountServiceImpl implements AccountService {
         return user;
     }
 
-    static class LoginParams {
-        public static final String EMAIL_PARAM = "email";
-        public static final String PASSWORD_PARAM = "password";
-
-        private final RequestParam email;
-        private final RequestParam password;
+    static class LoginParams extends FormParams {
 
         private LoginParams(HttpServletRequest request) {
-            email = RequestParam.from(request, EMAIL_PARAM);
-            password = RequestParam.from(request, PASSWORD_PARAM);
+            addParam(RequestParam.from(request, EMAIL_PARAM), true);
+            addParam(RequestParam.from(request, PASSWORD_PARAM), true);
         }
 
         public ValidationErrors validate() {
-            ValidationErrors errors = new ValidationErrors();
-            for (RequestParam p : asList(email, password)) {
-                if (p.isEmpty()) {
-                    errors.append(p.getName(), "Please specify a value, " + p.getName() + " is required");
-                }
-            }
-            return errors;
+            return validateMandatory();
         }
 
         public String getEmail() {
-            return email.getValue();
+            return getParamValue(EMAIL_PARAM);
         }
 
         public String getPassword() {
-            return password.getValue();
+            return getParamValue(PASSWORD_PARAM);
         }
     }
 
-    static class SignUpParams {
-        public static final String NAME_PARAM = "name";
-        public static final String EMAIL_PARAM = "email";
-        public static final String PASSWORD_PARAM = "password";
-        public static final String CONFIRM_PASSWORD_PARAM = "confirm-password";
-
-        private final RequestParam name;
-        private final RequestParam email;
-        private final RequestParam password;
-        private final RequestParam confirmPassword;
+    static class SignUpParams extends FormParams {
 
         private SignUpParams(HttpServletRequest request) {
-            name = RequestParam.from(request, NAME_PARAM);
-            email = RequestParam.from(request, EMAIL_PARAM);
-            password = RequestParam.from(request, PASSWORD_PARAM);
-            confirmPassword = RequestParam.from(request, CONFIRM_PASSWORD_PARAM);
+            addParam(RequestParam.from(request, NAME_PARAM), true);
+            addParam(RequestParam.from(request, EMAIL_PARAM), true);
+            addParam(RequestParam.from(request, PASSWORD_PARAM), true);
+            addParam(RequestParam.from(request, CONFIRM_PASSWORD_PARAM), false);
         }
 
         public ValidationErrors validate() {
-            ValidationErrors errors = new ValidationErrors();
-            for (RequestParam p : asList(name, email, password)) {
-                if (p.isEmpty()) {
-                    errors.append(p.getName(), "Please specify a value, " + p.getName() + " is required");
-                }
+            ValidationErrors errors = validateMandatory();
+
+            if (!isEmailGoodEnough()) {
+                errors.append(EMAIL_PARAM, "Email is not valid; should at least contain @ sign");
             }
-            if (!password.getValue().equals(confirmPassword.getValue())) {
-                errors.append(confirmPassword.getName(), "Passwords do not match");
+
+            if (!isPasswordGoodEnough()) {
+                errors.append(PASSWORD_PARAM, "Password is too weak; should be at least 4 characters long containing at least one digit");
             }
+
+            if (!hasPasswordConfirmed()) {
+                errors.append(CONFIRM_PASSWORD_PARAM, "Passwords do not match");
+            }
+
             return errors;
         }
 
         public String getName() {
-            return name.getValue();
+            return getParamValue(NAME_PARAM);
         }
 
         public String getEmail() {
-            return email.getValue();
+            return getParamValue(EMAIL_PARAM);
         }
 
         public String getPassword() {
-            return password.getValue();
+            return getParamValue(PASSWORD_PARAM);
         }
     }
 }

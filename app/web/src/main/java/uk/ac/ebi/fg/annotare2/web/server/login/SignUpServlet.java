@@ -50,10 +50,10 @@ public class SignUpServlet extends HttpServlet {
                 LOGIN.redirect(request, response);
                 return;
             } else {
-                log.debug("Sign-up form had invalid entries");
+                log.debug("Sign-up form failed validation");
             }
         } catch (AccountServiceException e) {
-            log.debug("Sign-up failed");
+            log.debug("Sign-up failed", e);
             errors.append(e.getMessage());
         }
 

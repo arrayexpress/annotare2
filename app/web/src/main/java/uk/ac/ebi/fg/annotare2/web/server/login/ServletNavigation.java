@@ -38,7 +38,7 @@ enum ServletNavigation {
     LOGIN("/login", "/login.jsp"),
     SIGNUP("/sign-up", "/sign-up.jsp"),
     ACTIVATION("/activate", "/activate.jsp"),
-    PASSWORD_CHANGER("/change-password", "change-password.jsp"),
+    CHANGE_PASSWORD("/change-password", "/change-password.jsp"),
     HOME("/", "/home.jsp"),
     EDITOR("/edit/", "/editor.jsp");
 

@@ -28,11 +28,13 @@ import javax.servlet.http.HttpSession;
  */
 public interface AccountService {
 
-    ValidationErrors signUp(HttpServletRequest request) throws AccountServiceException;
-
     boolean isLoggedIn(HttpServletRequest request);
 
     ValidationErrors login(HttpServletRequest request) throws AccountServiceException;
+
+    ValidationErrors signUp(HttpServletRequest request) throws AccountServiceException;
+
+    ValidationErrors changePassword(HttpServletRequest request) throws AccountServiceException;
 
     void logout(HttpSession session);
 

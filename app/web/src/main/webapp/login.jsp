@@ -54,7 +54,6 @@
                     <tr class="info">
                         <td></td>
                         <td><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></td>
-
                     </tr>
                     <tr class="error">
                         <td></td>
