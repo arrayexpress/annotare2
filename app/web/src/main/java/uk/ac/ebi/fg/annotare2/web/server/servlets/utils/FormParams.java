@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.web.server.login.utils;
+package uk.ac.ebi.fg.annotare2.web.server.servlets.utils;
 
 /*
  * Copyright 2009-2013 European Molecular Biology Laboratory
@@ -67,7 +67,7 @@ public abstract class FormParams {
     }
 
     protected boolean isPasswordGoodEnough() {
-        return nullToEmpty(getParamValue(PASSWORD_PARAM)).matches("^(?=.*\\d).{4,}$");
+        return nullToEmpty(getParamValue(PASSWORD_PARAM)).matches("^(?=.*\\d)(?=.*[a-zA-Z])\\S{4,}$");
     }
 
     protected boolean hasPasswordConfirmed() {

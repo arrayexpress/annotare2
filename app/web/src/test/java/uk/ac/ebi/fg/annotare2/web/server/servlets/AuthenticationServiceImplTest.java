@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
+import uk.ac.ebi.fg.annotare2.web.server.services.*;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -75,22 +75,22 @@ public class AuthenticationServiceImplTest {
         HttpServletRequest request = mockRequest("user", null);
         ValidationErrors errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AccountServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.PASSWORD_PARAM).isEmpty());
 
         request = mockRequest("user", "");
         errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AccountServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.PASSWORD_PARAM).isEmpty());
 
         request = mockRequest(null, "password");
         errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AccountServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.EMAIL_PARAM).isEmpty());
 
         request = mockRequest("", "password");
         errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AccountServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.EMAIL_PARAM).isEmpty());
     }
 
     private AccountManager mockAccManager(String user, String password, boolean exists) {
@@ -108,15 +108,15 @@ public class AuthenticationServiceImplTest {
     private HttpServletRequest mockRequest(String name, String password) {
         HttpSession session = createMock(HttpSession.class);
         session.setAttribute(isA(String.class), isA(Object.class));
-        expectLastCall().times(2);
+        expectLastCall().anyTimes();
 
         HttpServletRequest request = createMock(HttpServletRequest.class);
         expect(request
-                .getParameterValues(AccountServiceImpl.LoginParams.EMAIL_PARAM))
+                .getParameterValues(FormParams.EMAIL_PARAM))
                 .andReturn(name == null ? null : new String[]{name}).anyTimes();
 
         expect(request
-                .getParameterValues(AccountServiceImpl.LoginParams.PASSWORD_PARAM))
+                .getParameterValues(FormParams.PASSWORD_PARAM))
                 .andReturn(password == null ? null : new String[]{password}).anyTimes();
 
         expect(request.getSession()).andReturn(session).anyTimes();

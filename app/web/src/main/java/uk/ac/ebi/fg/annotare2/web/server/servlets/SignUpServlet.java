@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 /*
  * Copyright 2009-2013 European Molecular Biology Laboratory
@@ -20,7 +20,9 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountServiceException;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,8 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.*;
-import static uk.ac.ebi.fg.annotare2.web.server.login.SessionInformation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.*;
 
 public class SignUpServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(SignUpServlet.class);

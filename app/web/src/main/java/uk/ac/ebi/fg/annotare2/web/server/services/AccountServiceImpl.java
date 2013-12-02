@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
@@ -22,11 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.om.User;
 import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.FormParams;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.RequestParam;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.RequestParam;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.mail.MessagingException;
@@ -34,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static com.google.common.base.Strings.nullToEmpty;
-import static uk.ac.ebi.fg.annotare2.web.server.login.SessionInformation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.*;
 
 /**
  * @author Olga Melnichuk
@@ -44,12 +42,12 @@ public class AccountServiceImpl implements AccountService {
     private static final Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private AccountManager accountManager;
-    private EmailSender emailer;
+    private EmailSender mailer;
 
     @Inject
-    public AccountServiceImpl(AccountManager accountManager, EmailSender emailer) {
+    public AccountServiceImpl(AccountManager accountManager, EmailSender mailer) {
         this.accountManager = accountManager;
-        this.emailer = emailer;
+        this.mailer = mailer;
     }
 
     public boolean isLoggedIn(HttpServletRequest request) {
@@ -66,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
             } else {
                 User u = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
                 try {
-                    emailer.sendFromTemplate(
+                    mailer.sendFromTemplate(
                             EmailSender.NEW_USER_TEMPLATE,
                             ImmutableMap.of(
                                     "to.name", u.getName(),
@@ -75,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
                             )
                     );
                 } catch (MessagingException x) {
-                    log.error("There was a problem sending an email", x);
+                    log.error("There was a problem sending email", x);
                 }
             }
         }
@@ -92,10 +90,10 @@ public class AccountServiceImpl implements AccountService {
                 errors.append(FormParams.EMAIL_PARAM, "User with this email does not exist");
 
             } else {
-                if ("".equals(nullToEmpty(params.getToken()))) {
+                if (null == params.getToken()) {
                     u = accountManager.requestChangePassword(u.getEmail());
                     try {
-                        emailer.sendFromTemplate(
+                        mailer.sendFromTemplate(
                                 EmailSender.CHANGE_PASSWORD_REQUEST_TEMPLATE,
                                 ImmutableMap.of(
                                         "to.name", u.getName(),
@@ -104,27 +102,26 @@ public class AccountServiceImpl implements AccountService {
                                 )
                         );
                     } catch (MessagingException x) {
-                        log.error("There was a problem sending an email", x);
+                        log.error("There was a problem sending email", x);
                     }
                 } else {
                     if (!u.isPasswordChangeRequested()) {
-                        errors.append("Change password request is invalid; please try a new one");
+                        throw new AccountServiceException("Change password request is invalid; please try again");
                     } else if (!u.getVerificationToken().equals(params.getToken())) {
                         errors.append("Incorrect code; please try again or request a new one");
-                    } else {
+                    } else if (null != params.getPassword()) {
                         accountManager.processChangePassword(u.getEmail(), params.getPassword());
-
-                    }
-                    try {
-                        emailer.sendFromTemplate(
-                                EmailSender.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
-                                ImmutableMap.of(
-                                        "to.name", u.getName(),
-                                        "to.email", u.getEmail()
-                                )
-                        );
-                    } catch (MessagingException x) {
-                        log.error("There was a problem sending an email", x);
+                        try {
+                            mailer.sendFromTemplate(
+                                    EmailSender.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
+                                    ImmutableMap.of(
+                                            "to.name", u.getName(),
+                                            "to.email", u.getEmail()
+                                    )
+                            );
+                        } catch (MessagingException x) {
+                            log.error("There was a problem sending an email", x);
+                        }
                     }
                 }
             }
@@ -236,17 +233,19 @@ public class AccountServiceImpl implements AccountService {
         public ValidationErrors validate() {
             ValidationErrors errors = validateMandatory();
 
-            if ("".equals(nullToEmpty(getToken()))) {
+            if (null == getToken()) {
                 if (!isEmailGoodEnough()) {
                     errors.append(EMAIL_PARAM, "Email is not valid; should at least contain @ sign");
                 }
             } else {
-                if (!isPasswordGoodEnough()) {
-                    errors.append(PASSWORD_PARAM, "Password is too weak; should be at least 4 characters long containing at least one digit");
-                }
+                if (null != getPassword()) {
+                    if (!isPasswordGoodEnough()) {
+                        errors.append(PASSWORD_PARAM, "Password is too weak; should be at least 4 characters long containing at least one digit");
+                    }
 
-                if (!hasPasswordConfirmed()) {
-                    errors.append(CONFIRM_PASSWORD_PARAM, "Passwords do not match");
+                    if (!hasPasswordConfirmed()) {
+                        errors.append(CONFIRM_PASSWORD_PARAM, "Passwords do not match");
+                    }
                 }
             }
 

@@ -16,7 +16,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ page isELIgnored="false" %>
-<%@ page import="uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors" %>
+<%@ page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors" %>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
@@ -32,7 +32,6 @@
         email = (String)session.getAttribute("email");
     }
     pageContext.setAttribute("email", email == null ? "" : email);
-    pageContext.setAttribute("phase", request.getAttribute("phase"));
 %>
 
 <!DOCTYPE html>
@@ -94,7 +93,7 @@
                                 <td>Password</td>
                                 <td>
                                     <input type="hidden" name="email" value="${email}"/>
-                                    <input type="hidden" name="token" value="${token}"/>
+                                    <input type="hidden" name="token" value="${param.token}"/>
                                     <input type="password" name="password" style="width:98%" autofocus="autofocus"/>
                                 </td>
                             </tr>
@@ -117,7 +116,7 @@
                         <td></td>
                         <td>
                             <button name="changePassword">Send</button>
-                            <input type="hidden" name="phase" value="${phase}"/>
+                            <input type="hidden" name="phase" value="${requestScope.phase}"/>
                         </td>
                     </tr>
                 </table>

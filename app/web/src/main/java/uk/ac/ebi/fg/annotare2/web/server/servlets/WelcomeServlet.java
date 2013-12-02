@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,15 +22,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.EDITOR;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.HOME;
 
 /**
+ * Everything that considered to be welcome file (index.html, index.jsp, etc.) is redirected to the application home.
+ *
  * @author Olga Melnichuk
  */
-public class EditorServlet extends HttpServlet {
+public class WelcomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EDITOR.forward(getServletConfig().getServletContext(), request, response);
+        HOME.redirect(request, response);
     }
 }

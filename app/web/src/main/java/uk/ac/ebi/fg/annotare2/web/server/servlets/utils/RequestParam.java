@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login.utils;
+package uk.ac.ebi.fg.annotare2.web.server.servlets.utils;
 
 import javax.servlet.http.HttpServletRequest;
 

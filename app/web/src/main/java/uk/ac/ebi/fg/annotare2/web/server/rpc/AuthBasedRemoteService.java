@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 
 import javax.servlet.http.HttpSession;
 

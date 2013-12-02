@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 /*
  * Copyright 2009-2013 European Molecular Biology Laboratory
@@ -17,7 +17,10 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
  *
  */
 
-import javax.servlet.http.HttpServlet;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.SessionAttribute;
 
-public class ActivationServlet extends HttpServlet {
+public class SessionInformation {
+    public static final SessionAttribute EMAIL_SESSION_ATTRIBUTE = new SessionAttribute("email");
+    public static final SessionAttribute LOGGED_IN_SESSION_ATTRIBUTE = new SessionAttribute("loggedin");
+    public static final SessionAttribute INFO_SESSION_ATTRIBUTE = new SessionAttribute("info");
 }
