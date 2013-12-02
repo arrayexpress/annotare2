@@ -23,6 +23,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.GwtEvent;
@@ -112,6 +113,7 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
         private final PopupPanel popup;
         private final SuggestionList suggestionList;
         private final SuggestOracle oracle;
+        private final Label label;
 
         private final HandlerManager handlerManager = new HandlerManager(this);
 
@@ -120,9 +122,18 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
 
             suggestionList = new SuggestionList();
 
+            label = new Label("no suggestions found");
+            label.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
+            label.getElement().getStyle().setColor("#888");
+            label.setVisible(false);
+
+            VerticalPanel content = new VerticalPanel();
+            content.add(suggestionList);
+            content.add(label);
+
             popup = new PopupPanel(true, false);
             popup.setPreviewingAllNativeEvents(true);
-            popup.add(suggestionList);
+            popup.add(content);
        }
 
         @Override
@@ -159,6 +170,7 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
                     }
                 }));
             }
+            label.setVisible(suggestions.isEmpty());
         }
 
         private void onSelect(SuggestOracle.Suggestion suggestion) {
@@ -270,7 +282,8 @@ public class SuggestBoxCell extends AbstractEditableCell<String, SuggestBoxCell.
             @Override
             public void onClose(CloseEvent<PopupPanel> event) {
                 if (event.isAutoClosed()) {
-                    cancel();
+                    setSelectionAndClose(null);
+                    //cancel(); // allow only suggested values
                 }
                 popupClosed();
             }
