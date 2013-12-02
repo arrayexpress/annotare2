@@ -47,4 +47,15 @@ public enum SampleAttributeType {
                 this == CHARACTERISTIC;
     }
 
+    public boolean isMaterialType() {
+        return this == MATERIAL_TYPE;
+    }
+
+    public boolean isProvider() {
+        return this == PROVIDER;
+    }
+
+    public boolean isDescription() {
+        return  this == DESCRIPTION;
+    }
 }

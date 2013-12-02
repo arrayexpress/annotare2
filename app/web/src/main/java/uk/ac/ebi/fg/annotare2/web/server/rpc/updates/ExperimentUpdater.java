@@ -124,16 +124,12 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             if (column.getId() > 0) {
                 attr = exp.getSampleAttribute(column.getId());
             } else {
-                attr = exp.createSampleAttribute();
+                attr = exp.createSampleAttribute(column.getTemplate().name());
             }
             attr.setName(column.getName());
-            attr.setTerm(column.getTerm());
             attr.setType(column.getType());
-            attr.setTemplateBased(column.isTemplateBased());
-
-            ColumnValueTypeVisitor visitor = new ColumnValueTypeVisitor();
-            column.getValueType().visit(visitor);
-            visitor.getValueType().set(attr);
+            attr.setTerm(column.getTerm());
+            attr.setUnits(column.getUnits());
             used.add(attr.getId());
         }
         List<uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute> attributes = newArrayList(exp.getSampleAttributes());
@@ -149,7 +145,6 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     public void updateSample(SampleRow row) {
         uk.ac.ebi.fg.annotare2.submission.model.Sample sample = exp.getSample(row.getId());
         sample.setName(row.getName());
-        sample.setMaterialType(row.getMaterialType());
         sample.setValues(row.getValues());
     }
 

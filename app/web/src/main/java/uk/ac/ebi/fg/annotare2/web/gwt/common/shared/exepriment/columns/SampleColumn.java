@@ -32,8 +32,6 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttr
  */
 public class SampleColumn implements IsSerializable {
 
-    private static final String DEFAULT_NAME = "NEW ATTRIBUTE";
-
     private SampleAttribute attr;
 
     private SampleAttributeTemplate template;
@@ -56,7 +54,7 @@ public class SampleColumn implements IsSerializable {
     }
 
     public void setName(String name) {
-        attr.setName(name == null || name.trim().isEmpty() ? DEFAULT_NAME : name);
+        attr.setName(name);
     }
 
     public String getTitle() {
@@ -91,8 +89,13 @@ public class SampleColumn implements IsSerializable {
         return template;
     }
 
+    public SampleColumn copy() {
+        return new SampleColumn(attr);
+    }
+
     public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context) {
         SampleAttribute attr = new SampleAttribute(0, template.name());
+        attr.setType(template.getTypes().iterator().next());
         ValueRange<String> nameRange = template.getNameRange();
         if (nameRange.isSingleton()) {
             attr.setName(nameRange.get());

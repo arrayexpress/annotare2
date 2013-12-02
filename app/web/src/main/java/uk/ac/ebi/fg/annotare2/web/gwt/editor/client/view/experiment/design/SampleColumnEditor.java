@@ -17,12 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
@@ -32,6 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleCol
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,35 +42,37 @@ import java.util.List;
  */
 public class SampleColumnEditor extends Composite implements HasValueChangeHandlers<SampleColumn> {
 
+    private static final String INVALID_TEXT_BOX_STYLE = "app-Invalid-TextBox";
+
     interface Binder extends UiBinder<Widget, SampleColumnEditor> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
     @UiField
-    ListBox typeBox;
+    ListBox typeList;
 
     @UiField
-    TextBox nameBox;
+    TextBox nameText;
 
     @UiField(provided = true)
-    SuggestBox termBox;
+    SuggestBox termSuggest;
 
     @UiField(provided = true)
-    SuggestBox unitsBox;
+    SuggestBox unitsSuggest;
 
     private final SampleColumn column;
 
     public SampleColumnEditor(SampleColumn column, final SampleAttributeEfoSuggest efoSuggestService) {
-        this.column = column;
+        this.column = column.copy();
 
-        termBox = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
+        termSuggest = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
             public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoSuggestService.getTerms(query, limit, callback);
             }
         }));
 
-        unitsBox = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
+        unitsSuggest = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
             public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoSuggestService.getUnits(query, limit, callback);
@@ -78,53 +83,107 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
         SampleAttributeTemplate template = column.getTemplate();
 
-        termBox.setEnabled(template.getTermRange().isAny());
+        termSuggest.setEnabled(template.getTermRange().isAny());
 
-        unitsBox.setEnabled(template.getUnitRange().isAny());
+        unitsSuggest.setEnabled(template.getUnitRange().isAny());
 
-        nameBox.setValue(column.getName());
-        nameBox.setEnabled(template.getNameRange().isAny());
+        nameText.setValue(column.getName());
+        nameText.setEnabled(template.getNameRange().isAny());
 
-        termBox.setValue(column.getTerm() == null ? "" : column.getTerm().getLabel());
-        termBox.setEnabled(template.getTermRange().isAny());
+        termSuggest.setValue(column.getTerm() == null ? "" : column.getTerm().getLabel());
+        termSuggest.setEnabled(template.getTermRange().isAny());
 
         for (SampleAttributeType type : template.getTypes()) {
-            typeBox.addItem(type.getName(), type.name());
+            typeList.addItem(type.getName(), type.name());
         }
-        //TODO
-        //setType(column.getType());
-        typeBox.setEnabled(template.getTypes().size() > 1);
+        setType(column.getType());
+        typeList.setEnabled(template.getTypes().size() > 1);
     }
 
-/*
-//TODO
+    private void setType(SampleAttributeType type) {
+        for (int i = 0; i < typeList.getItemCount(); i++) {
+            if (type.name().equals(typeList.getValue(i))) {
+                typeList.setItemSelected(i, true);
+            }
+        }
+    }
 
-    @UiHandler("nameBox")
-    void nameValueChanged(ChangeEvent event) {
-        column.setName(nameBox.getValue());
+    private SampleAttributeType getType() {
+        int index = typeList.getSelectedIndex();
+        return SampleAttributeType.valueOf(typeList.getValue(index));
+    }
+
+    @UiHandler("nameText")
+    void nameChanged(ChangeEvent event) {
+        column.setName(nameText.getValue());
         notifyColumnChanged();
     }
-    @UiHandler("factorValueCheckbox")
-    void factorValueCheckboxChanged(ValueChangeEvent<Boolean> event) {
-        SampleAttributeType type = columnEditor.getType();
-        if (type.isFactorValue() || type.isCharacteristic()) {
-            columnEditor.setType(event.getValue() ? SampleAttributeType.CHARACTERISTIC_AND_FACTOR_VALUE : SampleAttributeType.CHARACTERISTIC);
-            notifyColumnChanged();
-        }
+
+    @UiHandler("typeList")
+    void typeChanged(ChangeEvent event) {
+        column.setType(getType());
+        notifyColumnChanged();
     }
 
-    @UiHandler("valueTypeEditor")
-    void valueTypeChanged(ValueChangeEvent<ColumnValueType> event) {
-        if (!columnEditor.isEditable()) {
+    @UiHandler("termSuggest")
+    void termValueChanged(ValueChangeEvent<String> event) {
+        validateEfoTerm(termSuggest, new AsyncCallback<OntologyTerm>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //not called
+            }
+
+            @Override
+            public void onSuccess(OntologyTerm term) {
+                column.setTerm(term);
+                notifyColumnChanged();
+            }
+        });
+    }
+
+    @UiHandler("unitsSuggest")
+    void unitsValueChanged(ValueChangeEvent<String> event) {
+        validateEfoTerm(unitsSuggest, new AsyncCallback<OntologyTerm>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                //not called
+            }
+
+            @Override
+            public void onSuccess(OntologyTerm term) {
+                column.setUnits(term);
+                notifyColumnChanged();
+            }
+        });
+    }
+
+    private void validateEfoTerm(final SuggestBox suggestBox, final AsyncCallback<OntologyTerm> asyncCallback) {
+        suggestBox.removeStyleName(INVALID_TEXT_BOX_STYLE);
+        String value = suggestBox.getValue();
+        value = value.trim();
+        if (value.isEmpty()) {
+            asyncCallback.onSuccess(null);
             return;
         }
-        columnEditor.setValueType(event.getValue());
-        notifyColumnChanged();
+        suggestBox.getSuggestOracle().requestSuggestions(new SuggestOracle.Request(value, 2), new SuggestOracle.Callback() {
+            @Override
+            public void onSuggestionsReady(SuggestOracle.Request request, SuggestOracle.Response response) {
+                Collection<? extends SuggestOracle.Suggestion> suggestions = response.getSuggestions();
+                if (suggestions.isEmpty()) {
+                    suggestBox.addStyleName(INVALID_TEXT_BOX_STYLE);
+                    asyncCallback.onSuccess(null);
+                } else {
+                    EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) suggestions.iterator().next();
+                    suggestBox.setValue(suggestion.getTerm().getLabel(), false);
+                    asyncCallback.onSuccess(suggestion.getTerm());
+                }
+            }
+        });
     }
 
     private void notifyColumnChanged() {
-        ValueChangeEvent.fire(this, columnEditor.copy());
-    }*/
+        ValueChangeEvent.fire(this, column);
+    }
 
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<SampleColumn> handler) {

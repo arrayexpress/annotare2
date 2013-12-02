@@ -33,9 +33,9 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
+import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
-import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
  * @author Olga Melnichuk
@@ -118,10 +118,13 @@ public class MageTabGenerator {
                 continue;
             }
             OntologyTerm term = attribute.getTerm();
-            idf.experimentalFactorName.add(notNull(attribute.getName()));
-            idf.experimentalFactorType.add(notNull(term == null ? null : term.getLabel()));
-            idf.experimentalFactorTermAccession.add(notNull(term == null ? null : term.getAccession()));
-            idf.experimentalFactorTermSourceREF.add(notNull(term == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
+            String factorName = term == null ? notNull(attribute.getName()).toLowerCase() : term.getLabel();
+            idf.experimentalFactorName.add(notNull(factorName));
+            if (term != null) {
+                idf.experimentalFactorType.add(notNull(term.getLabel()));
+                idf.experimentalFactorTermAccession.add(notNull(term.getAccession()));
+                idf.experimentalFactorTermSourceREF.add(notNull(ensureTermSource(EFO_TERM_SOURCE).getName()));
+            }
         }
     }
 
@@ -320,7 +323,6 @@ public class MageTabGenerator {
         sourceNode.materialType = extractMaterialTypeAttribute(sample);
         sourceNode.provider = extractProviderAttribute(sample);
         sourceNode.description = extractDescriptionAttribute(sample);
-        addComments(sourceNode, sample);
         return sourceNode;
     }
 
@@ -394,9 +396,13 @@ public class MageTabGenerator {
                 continue;
             }
             FactorValueAttribute attr = new FactorValueAttribute();
-            attr.type = attribute.getName();
-            attribute.getValueType().visit(AttributeValueTypeVisitor.visitFactorValue(attr));
+            OntologyTerm term = attribute.getTerm();
+            attr.type = term == null ? attribute.getName().toLowerCase() : term.getLabel();
+            attr.unit = createUnitAttribute(attribute.getUnits());
             attr.setAttributeValue(sample.getValue(attribute));
+            //TODO if attr value is an EFO Term then fill in accession and source REF
+            //attr.termAccessionNumber = term.getAccession();
+            //attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
             assayNode.factorValues.add(attr);
         }
 
@@ -598,26 +604,35 @@ public class MageTabGenerator {
     private List<CharacteristicsAttribute> extractCharacteristicsAttributes(Sample sample) {
         List<CharacteristicsAttribute> attributes = new ArrayList<CharacteristicsAttribute>();
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
-            if (attribute.getType().isCharacteristicOrFactorValue()) {
+            if (attribute.getType().isCharacteristic()) {
                 CharacteristicsAttribute attr = new CharacteristicsAttribute();
-                attr.type = attribute.getName();
-                attribute.getValueType().visit(AttributeValueTypeVisitor.visitCharacteristic(attr));
+                OntologyTerm term = attribute.getTerm();
+                if (term != null) {
+                    attr.type = term.getLabel();
+                } else {
+                    attr.type = attribute.getName().toLowerCase();
+                }
+                attr.unit = createUnitAttribute(attribute.getUnits());
                 attr.setAttributeValue(sample.getValue(attribute));
+                //TODO if value is an EFO term fill in accession and term source
+                //attr.termAccessionNumber = term.getAccession();
+                //attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
                 attributes.add(attr);
             }
         }
         return attributes;
     }
 
-    private void addComments(SourceNode node, Sample sample) {
-        for (SampleAttribute attribute : exp.getSampleAttributes()) {
-            if (attribute.getType().isComment()) {
-                String value = sample.getValue(attribute);
-                if (!isNullOrEmpty(value)) {
-                    node.comments.put(attribute.getName(), value);
-                }
-            }
+    private UnitAttribute createUnitAttribute(OntologyTerm units) {
+        if (units == null) {
+            return null;
         }
+        UnitAttribute attr = new UnitAttribute();
+        attr.type = units.getLabel();
+        attr.termAccessionNumber = units.getAccession();
+        attr.setAttributeValue(units.getLabel());
+        attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
+        return attr;
     }
 
     private static String notNull(String str) {

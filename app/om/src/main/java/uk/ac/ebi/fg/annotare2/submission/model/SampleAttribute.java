@@ -23,6 +23,8 @@ import java.io.Serializable;
  */
 public class SampleAttribute implements Serializable {
 
+    private static final String DEFAULT_NAME = "NEW ATTRIBUTE";
+
     private int id;
 
     private String name;
@@ -42,6 +44,7 @@ public class SampleAttribute implements Serializable {
     public SampleAttribute(int id, String template) {
         this.id = id;
         this.template = template;
+        setName(null);
     }
 
     public int getId() {
@@ -53,7 +56,7 @@ public class SampleAttribute implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name =name == null || name.trim().isEmpty() ? DEFAULT_NAME : name;
     }
 
     public OntologyTerm getTerm() {

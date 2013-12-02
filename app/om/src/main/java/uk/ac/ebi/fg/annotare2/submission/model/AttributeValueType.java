@@ -21,6 +21,7 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public abstract class AttributeValueType implements Serializable {
 
     private AttributeValueSubType valueSubType;
@@ -34,7 +35,7 @@ public abstract class AttributeValueType implements Serializable {
     }
 
     public void set(SampleAttribute attribute) {
-        attribute.setValueSubType(valueSubType);
+       // attribute.setValueSubType(valueSubType);
     }
 
     public abstract void visit(Visitor visitor);

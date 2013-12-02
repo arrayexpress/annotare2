@@ -24,25 +24,25 @@
             <tr>
                 <td width="80px">Type:</td>
                 <td>
-                    <g:ListBox ui:field="typeBox"/>
+                    <g:ListBox ui:field="typeList"/>
                 </td>
             </tr>
             <tr>
                 <td>Name:</td>
                 <td>
-                    <g:TextBox ui:field="nameBox" width="100%"/>
+                    <g:TextBox ui:field="nameText" width="100%"/>
                 </td>
             </tr>
             <tr>
-                <td>Term:</td>
+                <td>EFO Term:</td>
                 <td>
-                    <g:SuggestBox ui:field="termBox" width="100%"/>
+                    <g:SuggestBox ui:field="termSuggest" width="100%"/>
                 </td>
             </tr>
             <tr>
-                <td>Units:</td>
+                <td>Measurement Units:</td>
                 <td>
-                    <g:SuggestBox ui:field="unitsBox" width="100%"/>
+                    <g:SuggestBox ui:field="unitsSuggest" width="100%"/>
                 </td>
             </tr>
         </table>

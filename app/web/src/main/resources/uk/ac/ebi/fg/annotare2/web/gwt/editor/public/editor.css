@@ -595,6 +595,7 @@ table.GWTUpld {
 }
 
 /* MageTab preview */
+
 .app-MageTabEmptyCell {
     background-color: #FEEFB3;
 }
@@ -613,6 +614,12 @@ table.GWTUpld {
 }
 
 .app-SelectableLabel.selected {
-    background-color:  #3a6aad;
+    background-color: #3a6aad;
     color: #fff;
+}
+
+/* Invalid styles */
+
+.app-Invalid-TextBox {
+    border: 1px solid red !important;
 }

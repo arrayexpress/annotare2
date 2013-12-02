@@ -102,7 +102,6 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     private void setColumns(List<SampleColumn> columns) {
         this.columns = new ArrayList<SampleColumn>(columns);
         addNameColumn();
-        addMaterialTypeColumn();
         for (SampleColumn column : columns) {
             addColumn(column);
         }
@@ -164,7 +163,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
-    private void addMaterialTypeColumn() {
+   /* private void addMaterialTypeColumn() {
         if (presenter == null) {
             return;
         }
@@ -179,9 +178,9 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                 addMaterialTypeColumn(result);
             }
         });
-    }
+    }*/
 
-    private void addMaterialTypeColumn(List<String> materialTypes) {
+  /*  private void addMaterialTypeColumn(List<String> materialTypes) {
         List<String> options = new ArrayList<String>();
         options.add("");
         options.addAll(materialTypes);
@@ -213,7 +212,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         };
         gridView.addPermanentColumn("Material Type", column, comparator, 150, Style.Unit.PX);
-    }
+    }*/
 
     private boolean isNameValid(String name, int rowIndex) {
         if (name == null || name.trim().isEmpty()) {
@@ -265,36 +264,21 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private Cell<String> createCellEditor(SampleColumn sampleColumn) {
-        final List<Cell<String>> editor = new ArrayList<Cell<String>>();
         final SampleAttributeEfoSuggest efoSuggestService = presenter.getEfoTerms();
+        final OntologyTerm term = sampleColumn.getTerm();
+        if (term != null) {
+            return new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
+                @Override
+                public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+                    efoSuggestService.getTerms(query, term, limit, callback);
+                }
+            }));
+        }
 
-        sampleColumn.getValueType().visit(new ColumnValueType.Visitor() {
-            @Override
-            public void visitTextValueType(TextValueType valueType) {
-                editor.add(new EditTextCell());
-            }
-
-            @Override
-            public void visitTermValueType(final OntologyTermValueType valueType) {
-                editor.add(new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
-                    @Override
-                    public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
-                        OntologyTerm term = valueType.getEfoTerm();
-                        if (term == null) {
-                            efoSuggestService.getTerms(query, limit, callback);
-                        } else {
-                            efoSuggestService.getTerms(query, term, limit, callback);
-                        }
-                    }
-                })));
-            }
-
-            @Override
-            public void visitNumericValueType(NumericValueType valueType) {
-                editor.add(new EditTextCell());
-                // TODO allow only numeric values
-            }
-        });
-        return editor.iterator().next();
+        if (sampleColumn.getUnits() != null) {
+            // TODO allow only numeric values
+            return new EditTextCell();
+        }
+        return new EditTextCell();
     }
 }

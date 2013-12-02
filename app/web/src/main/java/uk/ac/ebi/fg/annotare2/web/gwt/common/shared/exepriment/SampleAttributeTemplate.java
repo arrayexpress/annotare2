@@ -58,7 +58,7 @@ public enum SampleAttributeTemplate {
     SPECIMEN_ORIGIN(SPECIMEN_WITH_KNOWN_STORAGE_STATE),
     GROWTH_CONDITION_ORIGIN(GROWTH_CONDITION),
 
-    DOSE_ORIGIN(DOSE, of(FACTOR_VALUE)),
+    DOSE_ORIGIN(DOSE, ValueRange.<SystemEfoTerm>any(), of(FACTOR_VALUE)),
     IMMUNOPRECIPITATE_ORIGIN(IMMUNOPRECIPITATE, of(FACTOR_VALUE)),
     TREATMENT_ATTRIBUTE("Treatment", of(FACTOR_VALUE)),
     COMPOUND_ATTRIBUTE("Compound", of(FACTOR_VALUE)),
@@ -73,7 +73,11 @@ public enum SampleAttributeTemplate {
     private final boolean isMandatory;
 
     private SampleAttributeTemplate(SystemEfoTerm term, EnumSet<SampleAttributeType> typeRange) {
-        this(term, ValueRange.<SystemEfoTerm>none(), typeRange, false);
+        this(term, ValueRange.<SystemEfoTerm>none(), typeRange);
+    }
+
+    private SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange, EnumSet<SampleAttributeType> typeRange) {
+        this(term, unitRange, typeRange, false);
     }
 
     private SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange) {
