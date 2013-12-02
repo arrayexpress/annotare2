@@ -29,12 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.google.common.base.Strings.nullToEmpty;
 import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.CHANGE_PASSWORD;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.LOGIN;
-import static uk.ac.ebi.fg.annotare2.web.server.login.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
 import static uk.ac.ebi.fg.annotare2.web.server.login.SessionInformation.INFO_SESSION_ATTRIBUTE;
 
 public class ChangePasswordServlet extends HttpServlet {

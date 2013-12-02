@@ -82,7 +82,7 @@
                                 <td>${tokenErrors}</td>
                             </tr>
                             <tr class="row right">
-                                <td>Token</td>
+                                <td>Code</td>
                                 <td>
                                     <input type="hidden" name="email" value="${email}"/>
                                     <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
