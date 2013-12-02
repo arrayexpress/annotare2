@@ -63,6 +63,37 @@ public class AccountManager {
         return user;
     }
 
+    public User activateUser(final String email) {
+        User user = getByEmail(email);
+        if (null != user) {
+            user.setEmailVerified(true);
+            user.setVerificationToken(null);
+            userDao.save(user);
+        }
+        return user;
+    }
+
+    public User requestChangePassword(final String email) {
+        User user = getByEmail(email);
+        if (null != user) {
+            user.setPasswordChangeRequested(true);
+            user.setVerificationToken(generateToken());
+            userDao.save(user);
+        }
+        return user;
+    }
+
+    public User processChangePassword(final String email, final String password) {
+        User user = getByEmail(email);
+        if (null != user) {
+            user.setPasswordChangeRequested(false);
+            user.setPassword(md5Hex(password));
+            user.setVerificationToken(null);
+            userDao.save(user);
+        }
+        return user;
+    }
+
     private String generateToken() {
         return new BigInteger(130, random).toString(36).toLowerCase();
     }

@@ -20,6 +20,7 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.server.login.utils.FormParams;
 import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.google.common.base.Strings.nullToEmpty;
 import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.CHANGE_PASSWORD;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -45,29 +47,40 @@ public class ChangePasswordServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("Change password request received; processing");
         ValidationErrors errors = new ValidationErrors();
-
-        try {
-            errors.append(accountService.changePassword(request));
-            if (errors.isEmpty()) {
-                if (!isNullOrEmpty(request.getParameter("token"))) {
-                    log.debug("Password successfully changed; redirect to login page");
-                    INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have successfully changed password; please sign in now");
-                    LOGIN.redirect(request, response);
-                    return;
+        if (null == request.getParameter(FormParams.EMAIL_PARAM)) {
+            request.setAttribute("phase", "email");
+        } else {
+            try {
+                errors.append(accountService.changePassword(request));
+                if (errors.isEmpty()) {
+                    if (null == request.getParameter("token")) {
+                        log.debug("Change request email has been sent; show information");
+                        INFO_SESSION_ATTRIBUTE.set(request.getSession(), "Email sent to the specified address; please check your mailbox");
+                        request.setAttribute("phase", "token");
+                    } else if (null == request.getParameter("password")) {
+                        log.debug("Token validated; enable password inputs");
+                        request.setAttribute("phase", "password");
+                    } else {
+                        INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have successfully changed password; please sign in now");
+                        LOGIN.redirect(request, response);
+                        return;
+                    }
+                } else {
+                    request.setAttribute("phase", request.getParameter("phase"));
                 }
+            } catch (AccountServiceException e) {
+                log.debug("Change password request failed", e);
+                errors.append(e.getMessage());
             }
-        } catch (AccountServiceException e) {
-            log.debug("Change password request failed", e);
-            errors.append(e.getMessage());
-        }
 
-        request.setAttribute("errors", errors);
+            request.setAttribute("errors", errors);
+        }
         CHANGE_PASSWORD.forward(getServletConfig().getServletContext(), request, response);
 
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CHANGE_PASSWORD.forward(getServletConfig().getServletContext(), request, response);
+        doPost(request, response);
     }
 }

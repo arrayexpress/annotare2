@@ -21,5 +21,6 @@ import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
 
 public class SessionInformation {
     public static final SessionAttribute EMAIL_SESSION_ATTRIBUTE = new SessionAttribute("email");
+    public static final SessionAttribute LOGGED_IN_SESSION_ATTRIBUTE = new SessionAttribute("loggedin");
     public static final SessionAttribute INFO_SESSION_ATTRIBUTE = new SessionAttribute("info");
 }

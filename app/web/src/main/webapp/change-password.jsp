@@ -16,14 +16,23 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ page isELIgnored="false" %>
+<%@ page import="uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors" %>
 <%
-    pageContext.setAttribute("errors", request.getAttribute("errors"));
+    ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
+    if (errors != null) {
+        pageContext.setAttribute("dummyErrors", errors.getErrors());
+        pageContext.setAttribute("emailErrors", errors.getErrors("email"));
+        pageContext.setAttribute("tokenErrors", errors.getErrors("token"));
+        pageContext.setAttribute("passwordErrors", errors.getErrors("password"));
+        pageContext.setAttribute("confirmPasswordErrors", errors.getErrors("confirm-password"));
+    }
 
     String email = request.getParameter("email");
     if (null == email) {
         email = (String)session.getAttribute("email");
     }
     pageContext.setAttribute("email", email == null ? "" : email);
+    pageContext.setAttribute("phase", request.getAttribute("phase"));
 %>
 
 <!DOCTYPE html>
@@ -52,32 +61,63 @@
                     </tr>
                     <tr class="error">
                         <td></td>
-                        <td>${errors}</td>
+                        <td>${dummyErrors}</td>
                     </tr>
-                    <tr class="row right">
-                        <td>Email</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${email != ''}">
-                                    <input type="text" name="email" value="${email}" style="width:98%"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <input type="text" name="email" style="width:98%" autofocus="autofocus"/>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                    </tr>
+                    <c:choose>
+                        <c:when test="${phase == 'email'}">
+                            <tr class="error">
+                                <td></td>
+                                <td>${emailErrors}</td>
+                            </tr>
+                            <tr class="row right">
+                                <td>Email</td>
+                                <td>
+                                    <input type="text" name="email" value="${email}" style="width:98%" autofocus="autofocus"/>
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:when test="${phase == 'token'}">
+                            <tr class="error">
+                                <td></td>
+                                <td>${tokenErrors}</td>
+                            </tr>
+                            <tr class="row right">
+                                <td>Token</td>
+                                <td>
+                                    <input type="hidden" name="email" value="${email}"/>
+                                    <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <tr class="row right">
+                                <td>Password</td>
+                                <td>
+                                    <input type="hidden" name="email" value="${email}"/>
+                                    <input type="hidden" name="token" value="${token}"/>
+                                    <input type="password" name="password" style="width:98%" autofocus="autofocus"/>
+                                </td>
+                            </tr>
+                            <tr class="error">
+                                <td></td>
+                                <td>${passwordErrors}</td>
+                            </tr>
+                            <tr class="row right">
+                                <td>Confirm password</td>
+                                <td><input type="password" name="confirm-password" style="width:98%"/></td>
+                            </tr>
+                            <tr class="error">
+                                <td></td>
+                                <td>${confirmPasswordErrors}</td>
+                            </tr>
+                        </c:otherwise>
+                    </c:choose>
+
                     <tr class="row">
                         <td></td>
                         <td>
-                            <c:choose>
-                                <c:when test="${email != ''}">
-                                    <button name="changePassword" autofocus="autofocus">Send</button>
-                                </c:when>
-                                <c:otherwise>
-                                    <button name="changePassword">Send</button>
-                                </c:otherwise>
-                            </c:choose>
+                            <button name="changePassword">Send</button>
+                            <input type="hidden" name="phase" value="${phase}"/>
                         </td>
                     </tr>
                 </table>

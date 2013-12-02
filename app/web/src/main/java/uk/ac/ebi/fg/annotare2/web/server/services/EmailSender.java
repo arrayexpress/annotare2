@@ -35,6 +35,8 @@ public class EmailSender
     private final AnnotareProperties properties;
 
     public static final String NEW_USER_TEMPLATE = "new-user";
+    public static final String CHANGE_PASSWORD_REQUEST_TEMPLATE = "change-password-request";
+    public static final String CHANGE_PASSWORD_CONFIRMATION_TEMPLATE = "change-password-confirmation";
     public static final String INITIAL_SUBMISSION_TEMPLATE = "initial-submission";
     public static final String REJECTED_SUBMISSION_TEMPLATE = "rejected-submission";
 

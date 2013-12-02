@@ -22,11 +22,11 @@ import java.util.*;
 import static com.google.common.base.Strings.nullToEmpty;
 
 public abstract class FormParams {
-    protected static final String NAME_PARAM = "name";
-    protected static final String EMAIL_PARAM = "email";
-    protected static final String PASSWORD_PARAM = "password";
-    protected static final String CONFIRM_PASSWORD_PARAM = "confirm-password";
-    protected static final String TOKEN_PARAM = "token";
+    public static final String NAME_PARAM = "name";
+    public static final String EMAIL_PARAM = "email";
+    public static final String PASSWORD_PARAM = "password";
+    public static final String CONFIRM_PASSWORD_PARAM = "confirm-password";
+    public static final String TOKEN_PARAM = "token";
 
     private Map<String,RequestParam> paramMap = new HashMap<String, RequestParam>();
     private Set<RequestParam> mandatoryParamSet = new HashSet<RequestParam>();
@@ -71,6 +71,6 @@ public abstract class FormParams {
     }
 
     protected boolean hasPasswordConfirmed() {
-        return getParamValue(PASSWORD_PARAM).equals(getParamValue(CONFIRM_PASSWORD_PARAM));
+        return nullToEmpty(getParamValue(PASSWORD_PARAM)).equals(getParamValue(CONFIRM_PASSWORD_PARAM));
     }
 }

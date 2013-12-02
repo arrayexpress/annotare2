@@ -108,7 +108,7 @@ public class AuthenticationServiceImplTest {
     private HttpServletRequest mockRequest(String name, String password) {
         HttpSession session = createMock(HttpSession.class);
         session.setAttribute(isA(String.class), isA(Object.class));
-        expectLastCall();
+        expectLastCall().times(2);
 
         HttpServletRequest request = createMock(HttpServletRequest.class);
         expect(request
