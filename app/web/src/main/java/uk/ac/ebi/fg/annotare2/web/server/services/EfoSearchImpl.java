@@ -118,6 +118,23 @@ public class EfoSearchImpl implements EfoSearch {
     }
 
     @Override
+    public EfoTerm searchByLabel(String label) {
+        try {
+            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+            Query query = parser.parse(
+                    LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
+            );
+            List<EfoTerm> result = runQuery(query, 1);
+            return result.isEmpty() ? null : result.get(0);
+        } catch (ParseException e) {
+            logError(e);
+        } catch (IOException e) {
+            logError(e);
+        }
+        return null;
+    }
+
+    @Override
     public EfoTerm searchByLabel(String label, String branchAccession) {
         try {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());

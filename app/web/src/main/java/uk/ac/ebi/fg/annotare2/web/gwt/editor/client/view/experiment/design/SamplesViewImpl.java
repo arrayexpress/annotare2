@@ -19,17 +19,17 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
 import java.util.*;
@@ -39,10 +39,13 @@ import java.util.*;
  */
 public class SamplesViewImpl extends Composite implements SamplesView {
 
+    private static final int COLUMN_WIDTH = 200;
+
     private final GridView<SampleRow> gridView;
     private ValidationMessage errorMessage;
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
+    private AsyncOptionProvider materialTypes;
 
     private Presenter presenter;
 
@@ -85,6 +88,33 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
+
+        materialTypes = new AsyncOptionProvider() {
+            private List<String> options = new ArrayList<String>();
+
+            @Override
+            public void updateOptions() {
+                if (presenter == null || !options.isEmpty()) {
+                    return;
+                }
+                presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Can't load material type options");
+                    }
+
+                    @Override
+                    public void onSuccess(List<String> result) {
+                        if (!result.isEmpty()) {
+                            options.add("");
+                            options.addAll(result);
+                            updateOptions(options);
+                            //gridView.redraw();
+                        }
+                    }
+                });
+            }
+        };
     }
 
     @Override
@@ -97,6 +127,8 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         gridView.clearAllColumns();
         gridView.setRows(rows);
         setColumns(columns);
+
+        materialTypes.updateOptions();
     }
 
     private void setColumns(List<SampleColumn> columns) {
@@ -163,57 +195,6 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
-   /* private void addMaterialTypeColumn() {
-        if (presenter == null) {
-            return;
-        }
-        presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                addMaterialTypeColumn(new ArrayList<String>());
-            }
-
-            @Override
-            public void onSuccess(List<String> result) {
-                addMaterialTypeColumn(result);
-            }
-        });
-    }*/
-
-  /*  private void addMaterialTypeColumn(List<String> materialTypes) {
-        List<String> options = new ArrayList<String>();
-        options.add("");
-        options.addAll(materialTypes);
-
-        Column<SampleRow, String> column = new Column<SampleRow, String>(new SelectionCell(options)) {
-            @Override
-            public String getValue(SampleRow row) {
-                String materialType = row.getMaterialType();
-                return materialType == null ? "" : materialType;
-            }
-        };
-        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
-            @Override
-            public void update(int index, SampleRow row, String value) {
-                row.setMaterialType(value.isEmpty() ? null : value);
-                updateRow(row);
-            }
-        });
-        column.setSortable(true);
-        Comparator<SampleRow> comparator = new Comparator<SampleRow>() {
-            @Override
-            public int compare(SampleRow o1, SampleRow o2) {
-                if (o1 == o2) {
-                    return 0;
-                }
-                String v1 = o1.getMaterialType();
-                String v2 = o2.getMaterialType();
-                return v1.compareTo(v2);
-            }
-        };
-        gridView.addPermanentColumn("Material Type", column, comparator, 150, Style.Unit.PX);
-    }*/
-
     private boolean isNameValid(String name, int rowIndex) {
         if (name == null || name.trim().isEmpty()) {
             showErrorMessage("Sample name can't be empty");
@@ -244,8 +225,18 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void addColumn(final SampleColumn sampleColumn) {
+        if (sampleColumn.getType().isMaterialType()) {
+            addMaterialTypeColumn(sampleColumn);
+        } else if (sampleColumn.getTerm() != null) {
+            addEfoSuggestColumn(sampleColumn);
+        } else {
+            addTextColumn(sampleColumn);
+        }
+    }
+
+    private void addTextColumn(final SampleColumn sampleColumn) {
         Column<SampleRow, String> column = new Column<SampleRow, String>(
-                createCellEditor(sampleColumn)
+                new EditTextCell()
         ) {
             @Override
             public String getValue(SampleRow row) {
@@ -260,25 +251,55 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             }
         });
         column.setSortable(true);
-        gridView.addColumn(sampleColumn.getTitle(), column, null, 150, Style.Unit.PX);
+        gridView.addColumn(sampleColumn.getTitle(), column, null, COLUMN_WIDTH, Style.Unit.PX);
     }
 
-    private Cell<String> createCellEditor(SampleColumn sampleColumn) {
+    private void addEfoSuggestColumn(final SampleColumn sampleColumn) {
         final SampleAttributeEfoSuggest efoSuggestService = presenter.getEfoTerms();
         final OntologyTerm term = sampleColumn.getTerm();
-        if (term != null) {
-            return new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
-                @Override
-                public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
-                    efoSuggestService.getTerms(query, term, limit, callback);
-                }
-            }));
-        }
 
-        if (sampleColumn.getUnits() != null) {
-            // TODO allow only numeric values
-            return new EditTextCell();
-        }
-        return new EditTextCell();
+        Cell<String> efoSuggestCell = new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
+            @Override
+            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+                efoSuggestService.getTerms(query, term, limit, callback);
+            }
+        }));
+
+        Column<SampleRow, String> column = new Column<SampleRow, String>(
+                efoSuggestCell
+        ) {
+            @Override
+            public String getValue(SampleRow row) {
+                return row.getValue(sampleColumn);
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
+            @Override
+            public void update(int index, SampleRow row, String value) {
+                row.setValue(value, sampleColumn);
+                updateRow(row);
+            }
+        });
+        column.setSortable(true);
+        gridView.addColumn(sampleColumn.getTitle(), column, null, COLUMN_WIDTH, Style.Unit.PX);
     }
+
+    private void addMaterialTypeColumn(final SampleColumn sampleColumn) {
+        Column<SampleRow, String> column = new Column<SampleRow, String>(new EditSelectionCell(materialTypes)) {
+            @Override
+            public String getValue(SampleRow row) {
+                return row.getValue(sampleColumn);
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
+            @Override
+            public void update(int index, SampleRow row, String value) {
+                row.setValue(value, sampleColumn);
+                updateRow(row);
+            }
+        });
+        column.setSortable(true);
+        gridView.addPermanentColumn("Material Type", column, null, COLUMN_WIDTH, Style.Unit.PX);
+    }
+
 }

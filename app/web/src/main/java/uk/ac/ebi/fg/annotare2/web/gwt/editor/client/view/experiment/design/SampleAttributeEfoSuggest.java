@@ -33,5 +33,7 @@ public interface SampleAttributeEfoSuggest {
 
     void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback);
 
+    void getTermByLabel(String label, AsyncCallback<OntologyTerm> callback);
+
     void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> asyncCallback);
 }

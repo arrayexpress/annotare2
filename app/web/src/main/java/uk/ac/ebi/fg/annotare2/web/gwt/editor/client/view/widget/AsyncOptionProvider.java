@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
-
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EfoSearch {
+public abstract class AsyncOptionProvider {
 
-    Collection<EfoTerm> searchByPrefix(String prefix, int limit);
+    private final List<OptionDisplay> displays = new ArrayList<OptionDisplay>();
 
-    Collection<EfoTerm> searchByPrefix(String prefix, String branchAccession, int limit);
+    public void addOptionDisplay(OptionDisplay display) {
+        displays.add(display);
+    }
 
-    Collection<EfoTerm> getSubTerms(EfoTerm efoTerm, int limit);
+    protected void updateOptions(List<String> options) {
+        for(OptionDisplay display : displays) {
+            display.updateOptions(options);
+        }
+    }
 
-    EfoTerm searchByLabel(String label);
+    public abstract void updateOptions();
 
-    EfoTerm searchByLabel(String label, String branchAccession);
-
-    EfoTerm searchByAccession(String accession, String branchAccession);
-
-    EfoTerm searchByAccession(String accession);
+    public interface OptionDisplay {
+        void updateOptions(List<String> options);
+    }
 }

@@ -25,6 +25,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
@@ -61,9 +62,11 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
     SuggestBox unitsSuggest;
 
     private final SampleColumn column;
+    private final SampleAttributeEfoSuggest efoSuggestService;
 
     public SampleColumnEditor(SampleColumn column, final SampleAttributeEfoSuggest efoSuggestService) {
         this.column = column.copy();
+        this.efoSuggestService = efoSuggestService;
 
         termSuggest = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
@@ -83,15 +86,14 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
         SampleAttributeTemplate template = column.getTemplate();
 
-        termSuggest.setEnabled(template.getTermRange().isAny());
-
-        unitsSuggest.setEnabled(template.getUnitRange().isAny());
-
         nameText.setValue(column.getName());
         nameText.setEnabled(template.getNameRange().isAny());
 
         termSuggest.setValue(column.getTerm() == null ? "" : column.getTerm().getLabel());
         termSuggest.setEnabled(template.getTermRange().isAny());
+
+        unitsSuggest.setValue(column.getUnits() == null ? "" : column.getUnits().getLabel());
+        unitsSuggest.setEnabled(template.getUnitRange().isAny());
 
         for (SampleAttributeType type : template.getTypes()) {
             typeList.addItem(type.getName(), type.name());
@@ -165,17 +167,20 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
             asyncCallback.onSuccess(null);
             return;
         }
-        suggestBox.getSuggestOracle().requestSuggestions(new SuggestOracle.Request(value, 2), new SuggestOracle.Callback() {
+        efoSuggestService.getTermByLabel(value, new AsyncCallback<OntologyTerm>() {
             @Override
-            public void onSuggestionsReady(SuggestOracle.Request request, SuggestOracle.Response response) {
-                Collection<? extends SuggestOracle.Suggestion> suggestions = response.getSuggestions();
-                if (suggestions.isEmpty()) {
+            public void onFailure(Throwable caught) {
+                Window.alert("EFO Service is currently unavailable; please try later");
+            }
+
+            @Override
+            public void onSuccess(OntologyTerm term) {
+                if (term == null) {
                     suggestBox.addStyleName(INVALID_TEXT_BOX_STYLE);
                     asyncCallback.onSuccess(null);
                 } else {
-                    EfoSuggestOracle.EfoTermSuggestion suggestion = (EfoSuggestOracle.EfoTermSuggestion) suggestions.iterator().next();
-                    suggestBox.setValue(suggestion.getTerm().getLabel(), false);
-                    asyncCallback.onSuccess(suggestion.getTerm());
+                    suggestBox.setValue(term.getLabel(), false);
+                    asyncCallback.onSuccess(term);
                 }
             }
         });

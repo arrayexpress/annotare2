@@ -93,6 +93,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
+    public OntologyTerm getEfoTermByLabel(String label) {
+        return uiEfoTerm(efoService.findTermByLabel(label));
+    }
+
+    @Override
     public SystemEfoTermMap getSystemEfoTerms() {
         SystemEfoTermMap map = new SystemEfoTermMap();
         for (SystemEfoTerm systemTerm : SystemEfoTerm.values()) {

@@ -89,7 +89,6 @@ public class GridView<R extends HasIdentity> extends Composite {
         MyDataGridResources resources = GWT.create(MyDataGridResources.class);
         dataGrid = new MyDataGrid<R>(PAGE_SIZE, resources);
         dataGrid.setEmptyTableWidget(new Label("No data"));
-        dataGrid.addStyleName("app-DataGrid");
 
         selectionModel =
                 new MultiSelectionModel<R>(new ProvidesKey<R>() {

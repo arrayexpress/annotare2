@@ -157,6 +157,11 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
             public void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> callback) {
                 efoTerms.getSystemEfoTerms(callback);
             }
+
+            @Override
+            public void getTermByLabel(String label, AsyncCallback<OntologyTerm> callback) {
+                efoTerms.getEfoTermByLabel(label, callback);
+            }
         };
     }
 }
