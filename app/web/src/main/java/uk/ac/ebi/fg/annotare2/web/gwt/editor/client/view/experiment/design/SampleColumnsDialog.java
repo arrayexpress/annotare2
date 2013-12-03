@@ -182,7 +182,7 @@ public class SampleColumnsDialog extends DialogBox {
 
         for (SampleAttributeTemplate template : SampleAttributeTemplate.getAll()) {
             if (!used.contains(template)) {
-                templateColumnList.addItem(template.getName(), template.name());
+                templateColumnList.addItem(template.getName() + (template.isFactorValueOnly() ? " (Factor Value)" : ""), template.name());
             }
         }
     }
@@ -252,7 +252,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private String getColumnTitle(SampleColumn column) {
-        return (column.getType().isFactorValue() ? "[FV] " : "") + column.getName();
+        return column.getName() + (column.getType().isFactorValue() ? " (Factor Value)" : "");
     }
 
     private void setColumns(List<SampleColumn> columns) {

@@ -37,9 +37,12 @@ public enum SampleAttributeType {
         return name;
     }
 
+    public boolean isFactorValueOnly() {
+        return this == FACTOR_VALUE;
+    }
+
     public boolean isFactorValue() {
-        return this == CHARACTERISTIC_AND_FACTOR_VALUE ||
-                this == FACTOR_VALUE;
+        return this == CHARACTERISTIC_AND_FACTOR_VALUE || isFactorValueOnly();
     }
 
     public boolean isCharacteristic() {
@@ -56,6 +59,6 @@ public enum SampleAttributeType {
     }
 
     public boolean isDescription() {
-        return  this == DESCRIPTION;
+        return this == DESCRIPTION;
     }
 }

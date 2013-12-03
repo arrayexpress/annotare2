@@ -167,4 +167,8 @@ public enum SampleAttributeTemplate {
         allTemplates.remove(USER_DEFIED_ATTRIBUTE);
         return allTemplates;
     }
+
+    public boolean isFactorValueOnly() {
+        return getTypes().size() == 1 && getTypes().iterator().next().isFactorValue();
+    }
 }
