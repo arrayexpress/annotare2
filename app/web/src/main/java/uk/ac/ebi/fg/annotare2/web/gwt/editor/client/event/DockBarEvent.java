@@ -25,6 +25,8 @@ public class DockBarEvent extends GwtEvent<DockBarEventHandler> {
 
     private static Type<DockBarEventHandler> TYPE = new Type<DockBarEventHandler>();
 
+    private boolean ensureOpen = false;
+
     private DockBarEvent() {
     }
 
@@ -39,10 +41,23 @@ public class DockBarEvent extends GwtEvent<DockBarEventHandler> {
 
     @Override
     protected void dispatch(DockBarEventHandler handler) {
-         handler.onFileUploadToggle();
+        if (ensureOpen) {
+            handler.onOpenDockBar();
+            return;
+        }
+        handler.onToggleDockBar();
     }
 
-    public static DockBarEvent toggleFileUpload() {
+    public static DockBarEvent toggleDockBarEvent() {
         return new DockBarEvent();
+    }
+
+    public static DockBarEvent openDockBarEvent() {
+        return new DockBarEvent().ensureOpen();
+    }
+
+    private DockBarEvent ensureOpen() {
+        ensureOpen = true;
+        return this;
     }
 }

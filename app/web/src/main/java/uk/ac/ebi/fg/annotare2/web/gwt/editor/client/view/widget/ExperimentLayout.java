@@ -66,8 +66,13 @@ public class ExperimentLayout extends Composite implements EditorLayout {
 
         eventBus.addHandler(DockBarEvent.getType(), new DockBarEventHandler() {
             @Override
-            public void onFileUploadToggle() {
+            public void onToggleDockBar() {
                 toggleDockPanel();
+            }
+
+            @Override
+            public void onOpenDockBar() {
+                openDockPanel();
             }
         });
         eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
@@ -87,12 +92,20 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     }
 
     private void toggleDockPanel() {
+        toggleDockPanel(false);
+    }
+
+    private void openDockPanel() {
+        toggleDockPanel(true);
+    }
+
+    private void toggleDockPanel(boolean keepOpen) {
         double widgetSize = verticalSplitPanel.getWidgetSize(dockPanel);
-        double newSize;
+        double newSize = widgetSize;
         if (widgetSize <= MIN_DOCK_SIZE + 1.0) {
             double defaultWidth = (verticalSplitPanel.getOffsetWidth() - MIN_DOCK_SIZE) / 2;
             newSize = dockSize < MIN_DOCK_SIZE + 10.0 ? defaultWidth : dockSize;
-        } else {
+        } else if (!keepOpen) {
             dockSize = widgetSize;
             newSize = MIN_DOCK_SIZE;
         }
