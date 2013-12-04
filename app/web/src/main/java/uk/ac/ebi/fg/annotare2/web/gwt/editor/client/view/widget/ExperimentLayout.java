@@ -16,7 +16,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEven
  */
 public class ExperimentLayout extends Composite implements EditorLayout {
 
-    private static final int DEFAULT_OPEN_LOGBAR_SIZE = 250;
+    private static final int DEFAULT_LOG_PANEL_SIZE = 250;
 
     private static final int MIN_DOCK_SIZE = 21;
 
@@ -53,7 +53,6 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     @UiField
     SimplePanel dockBarPanelDisplay;
 
-
     private double dockSize;
 
     interface Binder extends UiBinder<Widget, ExperimentLayout> {
@@ -78,12 +77,12 @@ public class ExperimentLayout extends Composite implements EditorLayout {
         eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
             @Override
             public void validationFinished(ValidationResult result) {
-                expandLogBar(DEFAULT_OPEN_LOGBAR_SIZE);
+                openLogPanel(DEFAULT_LOG_PANEL_SIZE);
             }
         });
     }
 
-    private void expandLogBar(double size) {
+    private void openLogPanel(double size) {
         Widget w = splitPanel.getWidget(0);
         double widgetSize = splitPanel.getWidgetSize(w);
         if (widgetSize < size) {
