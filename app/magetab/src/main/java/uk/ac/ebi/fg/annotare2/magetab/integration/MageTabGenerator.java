@@ -17,6 +17,8 @@
 package uk.ac.ebi.fg.annotare2.magetab.integration;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -175,8 +177,36 @@ public class MageTabGenerator {
         } else {
             assayLayer = generateAssayAndScanNodes(extractLayer);
         }
-
         generateDataFileNodes(assayLayer);
+        //TODO postGenerationHacks(sdrf);
+    }
+
+    private void postGenerationHacks(SDRF sdrf) {
+        if (exp.getType().isTwoColorMicroarray()) {
+            changeAssayNamesToFileNames(sdrf);
+        }
+    }
+
+    private void changeAssayNamesToFileNames(SDRF sdrf) {
+        Collection<AssayNode> nodes = sdrf.getNodes(AssayNode.class);
+        Multimap<String, AssayNode> assayNodesPerFileName = ArrayListMultimap.create();
+        for (AssayNode node : nodes) {
+            String fileName = findFileName(node);
+            assayNodesPerFileName.put(fileName, node);
+        }
+
+        for (String fileName : assayNodesPerFileName.keySet()) {
+            Collection<AssayNode> assayNodes = assayNodesPerFileName.get(fileName);
+            if (assayNodes.size() == 1) {
+                AssayNode firstNode = assayNodes.iterator().next();
+                firstNode.setNodeName(fileName);
+            }
+        }
+    }
+
+    private String findFileName(AssayNode node) {
+        //TODO
+        return null;
     }
 
     private Map<Integer, SDRFNode> generateSourceNodes() {

@@ -35,6 +35,10 @@ public enum ExperimentProfileType {
     }
 
     public boolean isMicroarray() {
-        return this == ONE_COLOR_MICROARRAY || this == TWO_COLOR_MICROARRAY;
+        return this == ONE_COLOR_MICROARRAY || isTwoColorMicroarray();
+    }
+
+    public boolean isTwoColorMicroarray() {
+        return this == TWO_COLOR_MICROARRAY;
     }
 }
