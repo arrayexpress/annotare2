@@ -154,7 +154,7 @@ public class AccountServiceImpl implements AccountService {
         if (errors.isEmpty()) {
             if (!accountManager.isValid(params.getEmail(), params.getPassword())) {
                 log.debug("User '{}' entered invalid params", params.getEmail());
-                throw new AccountServiceException("Sorry, the email or password you entered is not valid.");
+                throw new AccountServiceException("Sorry, the email or password you entered is not valid");
             }
             if (!accountManager.isEmailVerified(params.getEmail())) {
                 if (null != params.getToken()) {
@@ -165,7 +165,7 @@ public class AccountServiceImpl implements AccountService {
                     }
                 } else {
                     log.debug("User '{}' needs email verification", params.getEmail());
-                    errors.append(FormParams.TOKEN_PARAM, "Sorry, the email verification has not completed yet");
+                    errors.append(FormParams.TOKEN_PARAM, "Please enter the email verification code");
                 }
             }
             log.debug("User '{}' logged in", params.getEmail());

@@ -94,11 +94,11 @@
                         <td></td>
                         <td>${passwordErrors}</td>
                     </tr>
-                    <c:if test="${tokenErrors != ''}">
+                    <c:if test="${tokenErrors != null}">
                         <tr class="row right">
                             <td>Code</td>
                             <td>
-                                <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
+                                <input type="text" name="token" style="width:98%" />
                             </td>
                         </tr>
                         <tr class="error">
