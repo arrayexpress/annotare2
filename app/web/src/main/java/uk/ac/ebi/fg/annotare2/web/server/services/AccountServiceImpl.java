@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.db.om.User;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.RequestParam;
@@ -31,7 +31,6 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static com.google.common.base.Strings.nullToEmpty;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.*;
 
 /**
