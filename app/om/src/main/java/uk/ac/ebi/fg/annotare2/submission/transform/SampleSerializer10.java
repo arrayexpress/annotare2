@@ -35,7 +35,6 @@ class SampleSerializer10 extends JsonSerializer<Sample> {
     static final List<String> SAMPLE_JSON_FIELDS = asList(
             "id",
             "name",
-            "materialType",
             "values");
 
     @Override

@@ -31,8 +31,6 @@ public class Sample implements Serializable {
 
     private String name;
 
-    private String materialType;
-
     private Map<Integer, String> values;
 
     Sample() {
@@ -55,14 +53,6 @@ public class Sample implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getMaterialType() {
-        return materialType;
-    }
-
-    public void setMaterialType(String materialType) {
-        this.materialType = materialType;
     }
 
     public Map<Integer, String> getValues() {
