@@ -26,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSugge
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.ONE_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ONE_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**

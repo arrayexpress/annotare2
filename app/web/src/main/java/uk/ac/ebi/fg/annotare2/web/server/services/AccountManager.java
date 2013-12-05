@@ -19,9 +19,9 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserRoleDao;
-import uk.ac.ebi.fg.annotare2.db.om.User;
-import uk.ac.ebi.fg.annotare2.db.om.UserRole;
-import uk.ac.ebi.fg.annotare2.db.om.enums.Role;
+import uk.ac.ebi.fg.annotare2.db.model.User;
+import uk.ac.ebi.fg.annotare2.db.model.UserRole;
+import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

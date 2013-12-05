@@ -26,7 +26,7 @@ import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.NodeFactory;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.magetab.integration.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.UnexpectedException;
 

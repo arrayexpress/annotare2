@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 
 import java.util.ArrayList;
 import java.util.HashMap;

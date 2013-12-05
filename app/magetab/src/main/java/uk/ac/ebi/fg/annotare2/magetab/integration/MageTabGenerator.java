@@ -24,7 +24,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
-import uk.ac.ebi.fg.annotare2.configmodel.*;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -33,8 +33,8 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
-import static uk.ac.ebi.fg.annotare2.configmodel.ProtocolTargetType.*;
-import static uk.ac.ebi.fg.annotare2.configmodel.TermSource.EFO_TERM_SOURCE;
+import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType.*;
+import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.magetab.integration.MageTabUtils.formatDate;
 
 /**
@@ -358,7 +358,7 @@ public class MageTabGenerator {
                 return labeledExtractNode;
             }
             labeledExtractNode = createNode(LabeledExtractNode.class, labeledExtract.getName());
-            label = labeledExtract.getLabel();
+            label = labeledExtract.getLabel().getName();
         }
 
         LabelAttribute labelAttribute = new LabelAttribute();
@@ -427,11 +427,11 @@ public class MageTabGenerator {
         List<SourceNode> sourceNodes = new ArrayList<SourceNode>();
         Queue<Node> nodes = new ArrayDeque<Node>();
         nodes.add(node);
-        while(!nodes.isEmpty()) {
+        while (!nodes.isEmpty()) {
             Node next = nodes.poll();
             for (Node parent : next.getParentNodes()) {
                 if (parent instanceof SourceNode) {
-                    sourceNodes.add((SourceNode)parent);
+                    sourceNodes.add((SourceNode) parent);
                 } else {
                     nodes.addAll(next.getParentNodes());
                 }
@@ -491,8 +491,8 @@ public class MageTabGenerator {
         return getAssay(labeledExtract.getExtract(), labeledExtract.getLabel());
     }
 
-    private Assay getAssay(Extract extract, String label) {
-        return exp.getAssay(new Assay(extract, label).getId());
+    private Assay getAssay(Extract extract, Label label) {
+        return exp.getAssay(extract, label);
     }
 
     private void createFileNodes(Assay assay, SDRFNode assayNode) {

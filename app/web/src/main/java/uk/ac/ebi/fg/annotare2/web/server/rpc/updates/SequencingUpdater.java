@@ -16,9 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.Extract;
-import uk.ac.ebi.fg.annotare2.configmodel.Sample;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.Extract;
+import uk.ac.ebi.fg.annotare2.submission.model.Sample;
 
 /**
  * @author Olga Melnichuk

@@ -18,9 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.db.om.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;

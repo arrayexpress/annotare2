@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.UserRoleDao;
-import uk.ac.ebi.fg.annotare2.db.om.UserRole;
+import uk.ac.ebi.fg.annotare2.db.model.UserRole;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 /**

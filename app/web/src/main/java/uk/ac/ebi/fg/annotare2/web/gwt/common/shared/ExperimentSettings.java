@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 
 import java.util.Collection;
 
@@ -60,7 +60,7 @@ public class ExperimentSettings implements IsSerializable {
     }
 
     public static ExperimentSettings create(ExperimentProfile exp) {
-        Collection<String> labels = exp.getLabels();
+        Collection<String> labels = exp.getLabelNames();
 
         ExperimentSettings settings = new ExperimentSettings(exp.getType());
         settings.setArrayDesign(exp.getArrayDesign());

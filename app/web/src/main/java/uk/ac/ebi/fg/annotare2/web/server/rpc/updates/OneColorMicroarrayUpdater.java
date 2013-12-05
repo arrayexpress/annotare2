@@ -16,15 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
-import uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.configmodel.Extract;
-import uk.ac.ebi.fg.annotare2.configmodel.Sample;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.Extract;
+import uk.ac.ebi.fg.annotare2.submission.model.Sample;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 
 import java.util.Collection;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.configmodel.ExperimentProfileType.ONE_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ONE_COLOR_MICROARRAY;
 
 /**
  * @author Olga Melnichuk
@@ -44,7 +44,7 @@ public class OneColorMicroarrayUpdater extends BasicExperimentUpdater {
         Extract extract = exp().createExtract(false, sample);
         extract.setName(sample.getName());
 
-        for (String label : exp().getLabels()) {
+        for (String label : exp().getLabelNames()) {
             exp().createLabeledExtract(extract, label);
         }
     }
@@ -56,7 +56,7 @@ public class OneColorMicroarrayUpdater extends BasicExperimentUpdater {
         }
         exp().setArrayDesign(settings.getArrayDesign());
 
-        Collection<String> labels = exp().getLabels();
+        Collection<String> labels = exp().getLabelNames();
         String oldLabel = labels.isEmpty() ? null : labels.iterator().next();
         String newLabel = settings.getLabel();
         newLabel = isNullOrEmpty(newLabel) ? DEFAULT_LABEL : newLabel;

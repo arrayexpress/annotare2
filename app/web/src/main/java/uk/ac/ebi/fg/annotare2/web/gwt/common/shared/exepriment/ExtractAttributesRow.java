@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.configmodel.ExtractAttribute;
+import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
 import java.util.HashMap;

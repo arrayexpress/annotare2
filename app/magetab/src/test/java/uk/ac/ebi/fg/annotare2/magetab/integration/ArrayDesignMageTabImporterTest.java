@@ -17,9 +17,9 @@
 package uk.ac.ebi.fg.annotare2.magetab.integration;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.configmodel.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.configmodel.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.configmodel.JsonCodec;
+import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
 import uk.ac.ebi.fg.annotare2.magetab.rowbased.format.JseTextFormatter;
@@ -53,7 +53,7 @@ public class ArrayDesignMageTabImporterTest {
             in = getClass().getResourceAsStream(file);
             AdfHeader adHeader = new AdfHeader(new AdfParser().parseHeader(in));
             ArrayDesignHeader header = new ArrayDesignMageTabImporter().importFrom(adHeader);
-            System.out.println(JsonCodec.toJsonString(header));
+            System.out.println(JsonCodec.writeArrayDesign(header));
             return header;
         } finally {
             close(in, true);

@@ -16,8 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.db.dao;
 
-import uk.ac.ebi.fg.annotare2.db.om.DataFile;
-import uk.ac.ebi.fg.annotare2.db.om.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
 
 import java.util.List;
 

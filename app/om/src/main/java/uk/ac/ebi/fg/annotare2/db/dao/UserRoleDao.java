@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.db.dao;
 
-import uk.ac.ebi.fg.annotare2.db.om.UserRole;
+import uk.ac.ebi.fg.annotare2.db.model.UserRole;
 
 /**
  * @author Olga Melnichuk

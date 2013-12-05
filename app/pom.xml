@@ -20,14 +20,13 @@
     <groupId>uk.ac.ebi.fg.annotare2</groupId>
     <artifactId>annotare2</artifactId>
     <packaging>pom</packaging>
-    <version>0.19-SNAPSHOT</version>
+    <version>0.20-SNAPSHOT</version>
     <name>Annotare 2.0</name>
 
     <modules>
         <module>magetab</module>
         <module>magetab-gwt</module>
         <module>om</module>
-        <module>om-gwt</module>
         <module>web</module>
         <module>ae-subs-tracking</module>
     </modules>

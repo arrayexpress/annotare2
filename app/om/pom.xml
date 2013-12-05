@@ -20,13 +20,13 @@
     <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
     <artifactId>annotare2-om</artifactId>
     <packaging>jar</packaging>
-    <version>0.19-SNAPSHOT</version>
+    <version>0.20-SNAPSHOT</version>
     <name>Object Model</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.19-SNAPSHOT</version>
+        <version>0.20-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -46,7 +46,18 @@
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
             </testResource>
+            <testResource>
+                <directory>src/test/java</directory>
+            </testResource>
         </testResources>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <inherited>true</inherited>
@@ -83,7 +94,8 @@
                     <execution>
                         <phase>process-test-resources</phase>
                         <configuration>
-                            <changeLogFile>src/main/resources/uk/ac/ebi/fg/annotare2/db/changelog/changelog-master.xml</changeLogFile>
+                            <changeLogFile>src/main/resources/uk/ac/ebi/fg/annotare2/db/changelog/changelog-master.xml
+                            </changeLogFile>
                             <driver>${annotare.test.db.driver}</driver>
                             <url>${annotare.test.db.url}</url>
                             <username>${annotare.test.db.user}</username>
@@ -101,10 +113,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.12</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.2.2</version>
+            </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava-gwt</artifactId>
@@ -148,7 +165,12 @@
             <version>1.8.3</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <version>3.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
 

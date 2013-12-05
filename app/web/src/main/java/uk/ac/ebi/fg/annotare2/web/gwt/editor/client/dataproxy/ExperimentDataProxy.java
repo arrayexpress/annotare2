@@ -20,7 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.configmodel.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
@@ -44,7 +43,7 @@ public class ExperimentDataProxy {
 
     private final UpdateQueue<ExperimentUpdateCommand> updateQueue;
 
-    private ExperimentProfile exp;
+    private uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp;
     private EventBus eventBus;
 
     @Inject
@@ -58,7 +57,7 @@ public class ExperimentDataProxy {
                         new UpdateQueue.Transport<ExperimentUpdateCommand>() {
                             @Override
                             public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<UpdateQueue.Result> callback) {
-                                submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<ExperimentProfile>() {
+                                submissionService.updateExperiment(getSubmissionId(), commands, new AsyncCallbackWrapper<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
                                     @Override
                                     public void onFailure(Throwable caught) {
                                         callback.onFailure(caught);
@@ -70,7 +69,7 @@ public class ExperimentDataProxy {
                                     }
 
                                     @Override
-                                    public void onSuccess(ExperimentProfile result) {
+                                    public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                                         exp = result;
                                         callback.onSuccess(UpdateQueue.Result.SUCCESS);
                                         notifyExperimentUpdated();
@@ -86,26 +85,26 @@ public class ExperimentDataProxy {
         eventBus.fireEvent(new ExperimentUpdateEvent());
     }
 
-    private void getExperiment(final AsyncCallback<ExperimentProfile> callback) {
+    private void getExperiment(final AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile> callback) {
         if (exp != null) {
             callback.onSuccess(exp);
             return;
         }
-        submissionService.loadExperiment(getSubmissionId(), new AsyncCallbackWrapper<ExperimentProfile>() {
+        submissionService.loadExperiment(getSubmissionId(), new AsyncCallbackWrapper<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 exp = result;
                 callback.onSuccess(exp);
             }
         }.wrap());
     }
 
-    private ExperimentDetailsDto getExperimentDetails(ExperimentProfile exp) {
+    private ExperimentDetailsDto getExperimentDetails(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         return new ExperimentDetailsDto(
                 exp.getTitle(),
                 exp.getDescription(),
@@ -116,9 +115,9 @@ public class ExperimentDataProxy {
         );
     }
 
-    private List<ContactDto> getContacts(ExperimentProfile exp) {
+    private List<ContactDto> getContacts(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<ContactDto> contacts = new ArrayList<ContactDto>();
-        for (Contact contact : exp.getContacts()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Contact contact : exp.getContacts()) {
             contacts.add(new ContactDto(
                     contact.getId(),
                     contact.getFirstName(),
@@ -135,9 +134,9 @@ public class ExperimentDataProxy {
         return contacts;
     }
 
-    private List<PublicationDto> getPublications(ExperimentProfile exp) {
+    private List<PublicationDto> getPublications(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<PublicationDto> publications = new ArrayList<PublicationDto>();
-        for (Publication publication : exp.getPublications()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Publication publication : exp.getPublications()) {
             publications.add(new PublicationDto(
                     publication.getId(),
                     publication.getTitle(),
@@ -150,15 +149,15 @@ public class ExperimentDataProxy {
         return publications;
     }
 
-    private SampleRowsAndColumns getSampleRowsAndColumns(ExperimentProfile exp) {
+    private SampleRowsAndColumns getSampleRowsAndColumns(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         return new SampleRowsAndColumns(
                 getSampleRows(exp),
                 getSampleColumns(exp));
     }
 
-    private List<SampleRow> getSampleRows(ExperimentProfile exp) {
+    private List<SampleRow> getSampleRows(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<SampleRow> rows = new ArrayList<SampleRow>();
-        for (Sample sample : exp.getSamples()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Sample sample : exp.getSamples()) {
             rows.add(new SampleRow(
                     sample.getId(),
                     sample.getName(),
@@ -168,9 +167,9 @@ public class ExperimentDataProxy {
         return rows;
     }
 
-    private List<SampleColumn> getSampleColumns(ExperimentProfile exp) {
+    private List<SampleColumn> getSampleColumns(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<SampleColumn> columns = new ArrayList<SampleColumn>();
-        for (SampleAttribute attr : exp.getSampleAttributes()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute attr : exp.getSampleAttributes()) {
             AttributeValueTypeVisitor visitor = new AttributeValueTypeVisitor();
             attr.getValueType().visit(visitor);
             columns.add(SampleColumn.create(
@@ -185,42 +184,42 @@ public class ExperimentDataProxy {
         return columns;
     }
 
-    private List<ExtractAttributesRow> getExtractAttributeRows(ExperimentProfile exp) {
+    private List<ExtractAttributesRow> getExtractAttributeRows(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<ExtractAttributesRow> rows = new ArrayList<ExtractAttributesRow>();
-        for (Extract extract : exp.getExtracts()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Extract extract : exp.getExtracts()) {
             rows.add(new ExtractAttributesRow(extract.getId(), extract.getName(), extract.getAttributeValues()));
         }
         return rows;
     }
 
-    private List<ExtractLabelsRow> getExtractLabelsRows(ExperimentProfile exp) {
+    private List<ExtractLabelsRow> getExtractLabelsRows(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<ExtractLabelsRow> rows = new ArrayList<ExtractLabelsRow>();
-        for (Extract extract : exp.getExtracts()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Extract extract : exp.getExtracts()) {
             Integer extractId = extract.getId();
             ExtractLabelsRow row = new ExtractLabelsRow(extractId, extract.getName());
-            for (LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
-                row.addLabel(labeledExtract.getLabel());
+            for (uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
+                row.addLabel(labeledExtract.getLabel().getName());
             }
             rows.add(row);
         }
         return rows;
     }
 
-    private List<DataAssignmentRow> getDataAssignmentRows(ExperimentProfile exp) {
+    private List<DataAssignmentRow> getDataAssignmentRows(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<DataAssignmentRow> rows = new ArrayList<DataAssignmentRow>();
-        for (Assay assay : exp.getAssays()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Assay assay : exp.getAssays()) {
             DataAssignmentRow row = new DataAssignmentRow(assay.getId(), assay.getName());
             rows.add(row);
         }
         return rows;
     }
 
-    private List<DataAssignmentColumn> getDataAssignmentColumns(ExperimentProfile exp) {
+    private List<DataAssignmentColumn> getDataAssignmentColumns(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<DataAssignmentColumn> columns = new ArrayList<DataAssignmentColumn>();
         int index = 0;
-        for (FileColumn fileColumn : exp.getFileColumns()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.FileColumn fileColumn : exp.getFileColumns()) {
             DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
-            for (Assay assay : exp.getAssays()) {
+            for (uk.ac.ebi.fg.annotare2.submission.model.Assay assay : exp.getAssays()) {
                 String fileName = fileColumn.getFileName(assay);
                 if (fileName != null) {
                     column.setFileName(assay.getId(), fileName);
@@ -232,9 +231,9 @@ public class ExperimentDataProxy {
         return columns;
     }
 
-    private List<ProtocolRow> getProtocolRows(ExperimentProfile exp) {
+    private List<ProtocolRow> getProtocolRows(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
         List<ProtocolRow> rows = new ArrayList<ProtocolRow>();
-        for (Protocol protocol : exp.getProtocols()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Protocol protocol : exp.getProtocols()) {
             ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType());
             row.setDescription(protocol.getDescription());
             row.setSoftware(protocol.getSoftware());
@@ -246,119 +245,119 @@ public class ExperimentDataProxy {
         return rows;
     }
 
-    private ProtocolAssignmentProfile getProtocolAssignmentProfile(int protocolId, ExperimentProfile exp) {
-        Protocol protocol = exp.getProtocol(protocolId);
-        Map<AssignmentItem, Boolean> protocolAssignments = exp.getProtocolAssignments(protocol);
+    private ProtocolAssignmentProfile getProtocolAssignmentProfile(int protocolId, uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
+        uk.ac.ebi.fg.annotare2.submission.model.Protocol protocol = exp.getProtocol(protocolId);
+        Map<uk.ac.ebi.fg.annotare2.submission.model.AssignmentItem, Boolean> protocolAssignments = exp.getProtocolAssignments(protocol);
         return new ProtocolAssignmentProfile(protocol, protocolAssignments);
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(ExperimentSettings.create(result));
             }
         });
     }
 
     public void getDetailsAsync(final AsyncCallback<ExperimentDetailsDto> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(getExperimentDetails(result));
             }
         });
     }
 
     public void getContactsAsync(final AsyncCallback<List<ContactDto>> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(getContacts(result));
             }
         });
     }
 
     public void getPublicationsAsync(final AsyncCallback<List<PublicationDto>> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(getPublications(result));
             }
         });
     }
 
     public void getSamplesAsync(final AsyncCallback<SampleRowsAndColumns> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(getSampleRowsAndColumns(result));
             }
         });
     }
 
     public void getExtractAttributeRowsAsync(final AsyncCallback<List<ExtractAttributesRow>> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(getExtractAttributeRows(result));
             }
         });
     }
 
     public void getLabeledExtractsAsync(final AsyncCallback<LabeledExtracts> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(new LabeledExtracts(getExtractLabelsRows(result)));
             }
         });
     }
 
     public void getDataAssignmentColumnsAndRowsAsync(final AsyncCallback<DataAssignmentColumnsAndRows> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(
                         new DataAssignmentColumnsAndRows(getDataAssignmentColumns(result), getDataAssignmentRows(result))
                 );
@@ -367,42 +366,42 @@ public class ExperimentDataProxy {
     }
 
     public void getProtocolRowsAsync(final AsyncCallback<List<ProtocolRow>> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(getProtocolRows(result));
             }
         });
     }
 
-    public void getExperimentProfileTypeAsync(final AsyncCallback<ExperimentProfileType> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+    public void getExperimentProfileTypeAsync(final AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType> callback) {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(result.getType());
             }
         });
     }
 
     public void getProtocolAssignmentProfileAsync(final int protocolId, final AsyncCallback<ProtocolAssignmentProfile> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
+        getExperiment(new AsyncCallback<uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile result) {
+            public void onSuccess(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile result) {
                 callback.onSuccess(getProtocolAssignmentProfile(protocolId, result));
             }
         });
@@ -492,7 +491,7 @@ public class ExperimentDataProxy {
         updateQueue.add(new RemoveProtocolsCommand(rows));
     }
 
-    public void createDataAssignmentColumn(FileType type) {
+    public void createDataAssignmentColumn(uk.ac.ebi.fg.annotare2.submission.model.FileType type) {
         updateQueue.add(new CreateDataAssignmentColumnCommand(type));
     }
 
@@ -512,22 +511,22 @@ public class ExperimentDataProxy {
         updateQueue.add(new UpdateExperimentSettingsCommand(settings));
     }
 
-    private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
+    private static class AttributeValueTypeVisitor implements uk.ac.ebi.fg.annotare2.submission.model.AttributeValueType.Visitor {
 
         private ColumnValueType valueType;
 
         @Override
-        public void visitNumericValueType(NumericAttributeValueType valueType) {
+        public void visitNumericValueType(uk.ac.ebi.fg.annotare2.submission.model.NumericAttributeValueType valueType) {
             this.valueType = new NumericValueType(valueType.getUnits());
         }
 
         @Override
-        public void visitTextValueType(TextAttributeValueType valueType) {
+        public void visitTextValueType(uk.ac.ebi.fg.annotare2.submission.model.TextAttributeValueType valueType) {
             this.valueType = new TextValueType();
         }
 
         @Override
-        public void visitTermValueType(TermAttributeValueType valueType) {
+        public void visitTermValueType(uk.ac.ebi.fg.annotare2.submission.model.TermAttributeValueType valueType) {
             this.valueType = new OntologyTermValueType(valueType.getBranch());
         }
 

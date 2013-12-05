@@ -22,13 +22,13 @@ import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.configmodel.ExtractAttribute;
+import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
 
 import java.util.Comparator;
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.configmodel.ExtractAttribute.*;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute.*;
 
 /**
  * @author Olga Melnichuk
