@@ -64,28 +64,27 @@
                     </tr>
                     <c:choose>
                         <c:when test="${phase == 'email'}">
-                            <tr class="error">
-                                <td></td>
-                                <td>${emailErrors}</td>
-                            </tr>
                             <tr class="row right">
                                 <td>Email</td>
                                 <td>
                                     <input type="text" name="email" value="${email}" style="width:98%" autofocus="autofocus"/>
                                 </td>
                             </tr>
-                        </c:when>
-                        <c:when test="${phase == 'token'}">
                             <tr class="error">
                                 <td></td>
-                                <td>${tokenErrors}</td>
-                            </tr>
+                                <td>${emailErrors}</td>
+                            </tr>                        </c:when>
+                        <c:when test="${phase == 'token'}">
                             <tr class="row right">
                                 <td>Code</td>
                                 <td>
                                     <input type="hidden" name="email" value="${email}"/>
                                     <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
                                 </td>
+                            </tr>
+                            <tr class="error">
+                                <td></td>
+                                <td>${tokenErrors}</td>
                             </tr>
                         </c:when>
                         <c:otherwise>

@@ -23,6 +23,7 @@
         pageContext.setAttribute("dummyErrors", errors.getErrors());
         pageContext.setAttribute("emailErrors", errors.getErrors("email"));
         pageContext.setAttribute("passwordErrors", errors.getErrors("password"));
+        pageContext.setAttribute("tokenErrors", errors.getErrors("token"));
     }
 
     String email = request.getParameter("email");
@@ -93,6 +94,18 @@
                         <td></td>
                         <td>${passwordErrors}</td>
                     </tr>
+                    <c:if test="${tokenErrors != ''}">
+                        <tr class="row right">
+                            <td>Code</td>
+                            <td>
+                                <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
+                            </td>
+                        </tr>
+                        <tr class="error">
+                            <td></td>
+                            <td>${tokenErrors}</td>
+                        </tr>
+                    </c:if>
                     <tr class="row">
                         <td></td>
                         <td>

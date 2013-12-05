@@ -48,8 +48,8 @@ public class SignUpServlet extends HttpServlet {
             if (errors.isEmpty()) {
                 log.debug("Sign-up successful; redirect to login page");
                 EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
-                INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have been successfully registered; please sign in now");
-                LOGIN.redirect(request, response);
+                INFO_SESSION_ATTRIBUTE.set(request.getSession(), "Registration successful; email verification code has been sent to you, please enter it now");
+                VERIFY_EMAIL.redirect(request, response);
                 return;
             } else {
                 log.debug("Sign-up form failed validation");

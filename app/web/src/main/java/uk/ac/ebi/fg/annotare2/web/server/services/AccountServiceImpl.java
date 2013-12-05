@@ -58,7 +58,7 @@ public class AccountServiceImpl implements AccountService {
         SignUpParams params = new SignUpParams(request);
         ValidationErrors errors = params.validate();
         if (errors.isEmpty()) {
-            if (null != accountManager.getByEmail(params.getEmail())) {
+            if (accountManager.doesExist(params.getEmail())) {
                 errors.append(FormParams.EMAIL_PARAM, "User with this email already exists");
             } else {
                 User u = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
@@ -84,13 +84,11 @@ public class AccountServiceImpl implements AccountService {
         ChangePasswordParams params = new ChangePasswordParams(request);
         ValidationErrors errors = params.validate();
         if (errors.isEmpty()) {
-            User u = accountManager.getByEmail(params.getEmail());
-            if (null == u) {
+            if (!accountManager.doesExist(params.getEmail())) {
                 errors.append(FormParams.EMAIL_PARAM, "User with this email does not exist");
-
             } else {
                 if (null == params.getToken()) {
-                    u = accountManager.requestChangePassword(u.getEmail());
+                    User u = accountManager.requestChangePassword(params.getEmail());
                     try {
                         mailer.sendFromTemplate(
                                 EmailSender.CHANGE_PASSWORD_REQUEST_TEMPLATE,
@@ -104,12 +102,12 @@ public class AccountServiceImpl implements AccountService {
                         log.error("There was a problem sending email", x);
                     }
                 } else {
-                    if (!u.isPasswordChangeRequested()) {
+                    if (!accountManager.isPasswordChangeRequested(params.getEmail())) {
                         throw new AccountServiceException("Change password request is invalid; please try again");
-                    } else if (!u.getVerificationToken().equals(params.getToken())) {
-                        errors.append("Incorrect code; please try again or request a new one");
+                    } else if (!accountManager.isVerificationTokenValid(params.getEmail(), params.getToken())) {
+                        errors.append(FormParams.TOKEN_PARAM, "Incorrect code; please try again or request a new one");
                     } else if (null != params.getPassword()) {
-                        accountManager.processChangePassword(u.getEmail(), params.getPassword());
+                        User u = accountManager.processChangePassword(params.getEmail(), params.getPassword());
                         try {
                             mailer.sendFromTemplate(
                                     EmailSender.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
@@ -129,6 +127,27 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Transactional
+    public ValidationErrors verifyEmail(HttpServletRequest request) throws AccountServiceException {
+        VerifyEmailParams params = new VerifyEmailParams(request);
+        ValidationErrors errors = params.validate();
+        if (errors.isEmpty()) {
+            if (!accountManager.doesExist(params.getEmail())) {
+                errors.append(FormParams.EMAIL_PARAM, "User with this email does not exist");
+            } else {
+                if (!accountManager.isEmailVerified(params.getEmail())) {
+                    if (!accountManager.isVerificationTokenValid(params.getEmail(), params.getToken())) {
+                        errors.append(FormParams.TOKEN_PARAM, "Incorrect code; please try again or request a new one");
+                    } else {
+                        accountManager.setEmailVerified(params.getEmail());
+                    }
+                }
+
+            }
+        }
+        return errors;
+    }
+
+    @Transactional
     public ValidationErrors login(HttpServletRequest request) throws AccountServiceException {
         LoginParams params = new LoginParams(request);
         ValidationErrors errors = params.validate();
@@ -136,6 +155,18 @@ public class AccountServiceImpl implements AccountService {
             if (!accountManager.isValid(params.getEmail(), params.getPassword())) {
                 log.debug("User '{}' entered invalid params", params.getEmail());
                 throw new AccountServiceException("Sorry, the email or password you entered is not valid.");
+            }
+            if (!accountManager.isEmailVerified(params.getEmail())) {
+                if (null != params.getToken()) {
+                    if (!accountManager.isVerificationTokenValid(params.getEmail(), params.getToken())) {
+                        errors.append(FormParams.TOKEN_PARAM, "Incorrect code; please try again or request a new one");
+                    } else {
+                        accountManager.setEmailVerified(params.getEmail());
+                    }
+                } else {
+                    log.debug("User '{}' needs email verification", params.getEmail());
+                    errors.append(FormParams.TOKEN_PARAM, "Sorry, the email verification has not completed yet");
+                }
             }
             log.debug("User '{}' logged in", params.getEmail());
             EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), params.getEmail());
@@ -165,6 +196,7 @@ public class AccountServiceImpl implements AccountService {
         private LoginParams(HttpServletRequest request) {
             addParam(RequestParam.from(request, EMAIL_PARAM), true);
             addParam(RequestParam.from(request, PASSWORD_PARAM), true);
+            addParam(RequestParam.from(request, TOKEN_PARAM), false);
         }
 
         public ValidationErrors validate() {
@@ -177,6 +209,10 @@ public class AccountServiceImpl implements AccountService {
 
         public String getPassword() {
             return getParamValue(PASSWORD_PARAM);
+        }
+
+        public String getToken() {
+            return getParamValue(TOKEN_PARAM);
         }
     }
 
@@ -251,16 +287,36 @@ public class AccountServiceImpl implements AccountService {
             return errors;
         }
 
+        public String getEmail() {
+            return getParamValue(EMAIL_PARAM);
+        }
+
         public String getToken() {
             return getParamValue(TOKEN_PARAM);
+        }
+
+        public String getPassword() {
+            return getParamValue(PASSWORD_PARAM);
+        }
+    }
+
+    static class VerifyEmailParams extends FormParams {
+
+        private VerifyEmailParams(HttpServletRequest request) {
+            addParam(RequestParam.from(request, EMAIL_PARAM), true);
+            addParam(RequestParam.from(request, TOKEN_PARAM), true);
+        }
+
+        public ValidationErrors validate() {
+            return validateMandatory();
         }
 
         public String getEmail() {
             return getParamValue(EMAIL_PARAM);
         }
 
-        public String getPassword() {
-            return getParamValue(PASSWORD_PARAM);
+        public String getToken() {
+            return getParamValue(TOKEN_PARAM);
         }
     }
 }

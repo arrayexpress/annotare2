@@ -32,52 +32,39 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.CHANGE_PASSWORD;
-
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.VERIFY_EMAIL;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.INFO_SESSION_ATTRIBUTE;
 
-public class ChangePasswordServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(ChangePasswordServlet.class);
+public class VerifyEmailServlet extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(VerifyEmailServlet.class);
 
     @Inject
     private AccountService accountService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("Change password request received; processing");
-
-        String phase = "email";
         ValidationErrors errors = new ValidationErrors();
+        if (null != request.getParameter("email")) {
+            log.debug("Email verification request received; processing");
 
-        if (null != request.getParameter(FormParams.EMAIL_PARAM)) {
             try {
-                errors.append(accountService.changePassword(request));
+                errors.append(accountService.verifyEmail(request));
+                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
                 if (errors.isEmpty()) {
-                    if (null == request.getParameter("token")) {
-                        log.debug("Change request email has been sent; show information");
-                        INFO_SESSION_ATTRIBUTE.set(request.getSession(), "Email sent to the specified address; please check your mailbox");
-                        phase = "token";
-                    } else if (null == request.getParameter("password")) {
-                        log.debug("Token validated; enable password inputs");
-                        phase = "password";
-                    } else {
-                        EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
-                        INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have successfully changed password; please sign in now");
-                        LOGIN.redirect(request, response);
-                        return;
-                    }
-                } else {
-                    phase = request.getParameter("phase");
+                    log.debug("Email verification successful; redirecting to log in");
+                    INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have successfully verified your email address; please sign in now");
+                    LOGIN.redirect(request, response);
+                    return;
                 }
             } catch (AccountServiceException e) {
-                log.debug("Change password request failed", e);
+                log.debug("Email verification request failed", e);
                 errors.append(e.getMessage());
             }
+            request.setAttribute("errors", errors);
         }
-        request.setAttribute("errors", errors);
-        request.setAttribute("phase", phase);
-        CHANGE_PASSWORD.forward(getServletConfig().getServletContext(), request, response);
+        VERIFY_EMAIL.forward(getServletConfig().getServletContext(), request, response);
     }
 
     @Override

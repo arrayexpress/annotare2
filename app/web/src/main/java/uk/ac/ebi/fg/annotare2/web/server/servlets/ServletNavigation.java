@@ -37,7 +37,7 @@ import static com.google.common.base.Strings.nullToEmpty;
 enum ServletNavigation {
     LOGIN("/login", "/login.jsp"),
     SIGNUP("/sign-up", "/sign-up.jsp"),
-    ACTIVATION("/activate", "/activate.jsp"),
+    VERIFY_EMAIL("/verify-email", "/verify-email.jsp"),
     CHANGE_PASSWORD("/change-password", "/change-password.jsp"),
     HOME("/", "/home.jsp"),
     EDITOR("/edit/", "/editor.jsp");
@@ -76,12 +76,6 @@ enum ServletNavigation {
     public void redirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug("Redirecting to {}", redirectTo);
         sendRedirect(contextBasedUrl(redirectTo, request), response);
-    }
-
-    public void redirect(HttpServletRequest request, HttpServletResponse response, String queryString) throws IOException {
-        String redirectUrl = redirectTo + ( isNullOrEmpty(queryString) ? "" : "?" + queryString );
-        log.debug("Redirecting to {}", redirectUrl);
-        sendRedirect(contextBasedUrl(redirectUrl, request), response);
     }
 
     public void forward(ServletContext context, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

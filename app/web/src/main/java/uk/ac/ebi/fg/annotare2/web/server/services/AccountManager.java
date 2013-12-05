@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
+import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * @author Olga Melnichuk
@@ -44,9 +45,32 @@ public class AccountManager {
         this.random = new SecureRandom();
     }
 
-    public boolean isValid(final String email, final String password) {
-        return userDao.getUserByEmailAndPassword(email, md5Hex(password)) != null;
+    public boolean doesExist(final String email) {
+        return null != userDao.getUserByEmail(email);
     }
+
+    public boolean isValid(final String email, final String password) {
+        return null != userDao.getUserByEmailAndPassword(email, md5Hex(password));
+    }
+
+    public boolean isEmailVerified(final String email) {
+        User user = getByEmail(email);
+
+        return null != user && user.isEmailVerified();
+    }
+
+    public boolean isPasswordChangeRequested(final String email) {
+        User user = getByEmail(email);
+
+        return null != user && user.isPasswordChangeRequested();
+    }
+
+    public boolean isVerificationTokenValid(final String email, final String token) {
+        User user = getByEmail(email);
+
+        return null != user && nullToEmpty(user.getVerificationToken()).equals(token);
+    }
+
 
     public User getByEmail(final String email) {
         return userDao.getUserByEmail(email);
@@ -63,7 +87,7 @@ public class AccountManager {
         return user;
     }
 
-    public User activateUser(final String email) {
+    public User setEmailVerified(final String email) {
         User user = getByEmail(email);
         if (null != user) {
             user.setEmailVerified(true);

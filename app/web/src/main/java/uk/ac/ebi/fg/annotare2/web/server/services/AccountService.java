@@ -36,6 +36,8 @@ public interface AccountService {
 
     ValidationErrors changePassword(HttpServletRequest request) throws AccountServiceException;
 
+    ValidationErrors verifyEmail(HttpServletRequest request) throws AccountServiceException;
+
     void logout(HttpSession session);
 
     User getCurrentUser(HttpSession session);

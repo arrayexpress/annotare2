@@ -96,6 +96,7 @@ public class AuthenticationServiceImplTest {
     private AccountManager mockAccManager(String user, String password, boolean exists) {
         AccountManager accMan = createMock(AccountManager.class);
         expect(accMan.isValid(user, password)).andReturn(exists).once();
+        expect(accMan.isEmailVerified(user)).andReturn(true).once();
         replay(accMan);
         return accMan;
     }
@@ -118,6 +119,10 @@ public class AuthenticationServiceImplTest {
         expect(request
                 .getParameterValues(FormParams.PASSWORD_PARAM))
                 .andReturn(password == null ? null : new String[]{password}).anyTimes();
+
+        expect(request
+                .getParameterValues(FormParams.TOKEN_PARAM))
+                .andReturn(null).anyTimes();
 
         expect(request.getSession()).andReturn(session).anyTimes();
 

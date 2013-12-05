@@ -82,7 +82,7 @@ public class AppServletModule extends ServletModule {
                 "/logout",
                 "/export",
                 "/sign-up",
-                "/activate",
+                "/verify-email",
                 "/change-password",
                 "/UserApp/*",
                 "/EditorApp/*").through(HibernateSessionFilter.class);
@@ -100,7 +100,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/index.*)").with(WelcomeServlet.class);
         serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
         serveRegex("/sign-up" + JSESSIONID).with(SignUpServlet.class);
-        serveRegex("/activate" + JSESSIONID).with(ActivationServlet.class);
+        serveRegex("/verify-email" + JSESSIONID).with(VerifyEmailServlet.class);
         serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
         serve("/export").with(ExportServlet.class);
         serve("/error").with(UncaughtExceptionServlet.class);
@@ -115,7 +115,7 @@ public class AppServletModule extends ServletModule {
         bind(UploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
         bind(SignUpServlet.class).in(SINGLETON);
-        bind(ActivationServlet.class).in(SINGLETON);
+        bind(VerifyEmailServlet.class).in(SINGLETON);
         bind(ChangePasswordServlet.class).in(SINGLETON);
         bind(UncaughtExceptionServlet.class).in(SINGLETON);
 
