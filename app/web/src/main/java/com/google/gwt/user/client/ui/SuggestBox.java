@@ -1185,7 +1185,7 @@ public class SuggestBox extends Composite implements HasText, HasFocus,
     private void setNewSelection(Suggestion curSuggestion) {
         assert curSuggestion != null : "suggestion cannot be null";
         currentText = curSuggestion.getReplacementString();
-        setText(currentText);
+        setValue(currentText, true);
         display.hideSuggestions();
         fireSuggestionEvent(curSuggestion);
     }
