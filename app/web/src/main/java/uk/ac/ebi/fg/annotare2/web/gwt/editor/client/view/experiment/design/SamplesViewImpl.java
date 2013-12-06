@@ -227,6 +227,8 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     private void addColumn(final SampleColumn sampleColumn) {
         if (sampleColumn.getType().isMaterialType()) {
             addMaterialTypeColumn(sampleColumn);
+        } else if (sampleColumn.getUnits() != null) {
+            addTextColumn(sampleColumn);
         } else if (sampleColumn.getTerm() != null) {
             addEfoSuggestColumn(sampleColumn);
         } else {
