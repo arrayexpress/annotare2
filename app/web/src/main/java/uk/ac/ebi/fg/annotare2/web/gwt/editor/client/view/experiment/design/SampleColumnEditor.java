@@ -18,9 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -35,7 +33,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleCol
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
