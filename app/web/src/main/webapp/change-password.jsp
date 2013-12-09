@@ -67,13 +67,22 @@
                             <tr class="row right">
                                 <td>Email</td>
                                 <td>
-                                    <input type="text" name="email" value="${email}" style="width:98%" autofocus="autofocus"/>
+                                    <c:choose>
+                                        <c:when test="${email == ''}">
+                                            <input type="text" name="email" style="width:98%" autofocus="autofocus"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="text" name="email" value="${email}" style="width:98%"/>
+                                        </c:otherwise>
+                                    </c:choose>
+
                                 </td>
                             </tr>
                             <tr class="error">
                                 <td></td>
                                 <td>${emailErrors}</td>
-                            </tr>                        </c:when>
+                            </tr>
+                        </c:when>
                         <c:when test="${phase == 'token'}">
                             <tr class="row right">
                                 <td>Code</td>
@@ -114,7 +123,15 @@
                     <tr class="row">
                         <td></td>
                         <td>
-                            <button name="changePassword">Send</button>
+                            <c:choose>
+                                <c:when test="${phase == 'email' && email != ''}">
+                                    <button name="changePassword" autofocus="autofocus">Send</button>
+                                </c:when>
+                                <c:otherwise>
+                                    <button name="changePassword">Send</button>
+                                </c:otherwise>
+                            </c:choose>
+
                             <input type="hidden" name="phase" value="${requestScope.phase}"/>
                         </td>
                     </tr>

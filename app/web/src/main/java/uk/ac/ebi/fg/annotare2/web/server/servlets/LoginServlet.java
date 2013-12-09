@@ -29,8 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.*;
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.HOME;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
 
 /**
  * @author Olga Melnichuk
@@ -49,9 +50,8 @@ public class LoginServlet extends HttpServlet {
         log.debug("Login details submitted; validating..");
         ValidationErrors errors = new ValidationErrors();
         try {
-            errors.append(accountService.login(request));
             EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
-
+            errors.append(accountService.login(request));
             if (errors.isEmpty()) {
                 log.debug("Login details are valid; Authorization succeeded");
                 HOME.restoreAndRedirect(request, response);

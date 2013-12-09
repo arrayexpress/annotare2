@@ -94,7 +94,7 @@
                         <td></td>
                         <td>${passwordErrors}</td>
                     </tr>
-                    <c:if test="${tokenErrors != null}">
+                    <c:if test="${tokenErrors != null && tokenErrors != ''}">
                         <tr class="row right">
                             <td>Code</td>
                             <td>
