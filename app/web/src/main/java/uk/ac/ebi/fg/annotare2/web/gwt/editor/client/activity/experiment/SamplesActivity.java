@@ -28,12 +28,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ColumnValueTypeEfoTerms;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SampleAttributeEfoSuggest;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
 import java.util.List;
@@ -44,18 +45,21 @@ import java.util.List;
 public class SamplesActivity extends AbstractActivity implements SamplesView.Presenter {
 
     private final SamplesView view;
-    private final ExperimentDataProxy expData;
+    private final ExperimentDataProxy expDataProxy;
+    private final ApplicationDataProxy appDataProxy;
 
-    private final ColumnValueTypeEfoTerms efoTerms;
+    private final SampleAttributeEfoSuggest efoTerms;
 
     private HandlerRegistration criticalUpdateHandler;
 
     @Inject
     public SamplesActivity(SamplesView view,
-                           ExperimentDataProxy expData,
+                           ExperimentDataProxy expDataProxy,
+                           ApplicationDataProxy appDataProxy,
                            OntologyDataProxy efoTerms) {
         this.view = view;
-        this.expData = expData;
+        this.expDataProxy = expDataProxy;
+        this.appDataProxy = appDataProxy;
         this.efoTerms = wrapEfoTerms(efoTerms);
     }
 
@@ -87,32 +91,37 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public ColumnValueTypeEfoTerms getEfoTerms() {
+    public SampleAttributeEfoSuggest getEfoTerms() {
         return efoTerms;
     }
 
     @Override
     public void updateColumns(List<SampleColumn> newColumns) {
-        expData.updateSampleColumns(newColumns);
+        expDataProxy.updateSampleColumns(newColumns);
     }
 
     @Override
     public void updateRow(SampleRow row) {
-        expData.updateSampleRow(row);
+        expDataProxy.updateSampleRow(row);
     }
 
     @Override
     public void createSample() {
-        expData.createSample();
+        expDataProxy.createSample();
     }
 
     @Override
     public void removeSamples(List<SampleRow> rows) {
-        expData.removeSamples(rows);
+        expDataProxy.removeSamples(rows);
+    }
+
+    @Override
+    public void getMaterialTypesAsync(AsyncCallback<List<String>> callback) {
+        appDataProxy.getMaterialTypesAsync(callback);
     }
 
     private void loadAsync() {
-        expData.getSamplesAsync(new AsyncCallback<SampleRowsAndColumns>() {
+        expDataProxy.getSamplesAsync(new AsyncCallback<SampleRowsAndColumns>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -127,8 +136,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
         });
     }
 
-    private ColumnValueTypeEfoTerms wrapEfoTerms(final OntologyDataProxy efoTerms) {
-        return new ColumnValueTypeEfoTerms() {
+    private SampleAttributeEfoSuggest wrapEfoTerms(final OntologyDataProxy efoTerms) {
+        return new SampleAttributeEfoSuggest() {
             @Override
             public void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoTerms.getUnits(query, limit, callback);
@@ -147,6 +156,11 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
             @Override
             public void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> callback) {
                 efoTerms.getSystemEfoTerms(callback);
+            }
+
+            @Override
+            public void getTermByLabel(String label, AsyncCallback<OntologyTerm> callback) {
+                efoTerms.getEfoTermByLabel(label, callback);
             }
         };
     }

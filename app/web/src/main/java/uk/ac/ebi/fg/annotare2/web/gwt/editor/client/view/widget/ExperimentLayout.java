@@ -16,7 +16,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEven
  */
 public class ExperimentLayout extends Composite implements EditorLayout {
 
-    private static final int DEFAULT_OPEN_LOGBAR_SIZE = 250;
+    private static final int DEFAULT_LOG_PANEL_SIZE = 250;
 
     private static final int MIN_DOCK_SIZE = 21;
 
@@ -53,7 +53,6 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     @UiField
     SimplePanel dockBarPanelDisplay;
 
-
     private double dockSize;
 
     interface Binder extends UiBinder<Widget, ExperimentLayout> {
@@ -66,19 +65,24 @@ public class ExperimentLayout extends Composite implements EditorLayout {
 
         eventBus.addHandler(DockBarEvent.getType(), new DockBarEventHandler() {
             @Override
-            public void onFileUploadToggle() {
+            public void onToggleDockBar() {
                 toggleDockPanel();
+            }
+
+            @Override
+            public void onOpenDockBar() {
+                openDockPanel();
             }
         });
         eventBus.addHandler(ValidationFinishedEvent.TYPE, new ValidationFinishedEventHandler() {
             @Override
             public void validationFinished(ValidationResult result) {
-                expandLogBar(DEFAULT_OPEN_LOGBAR_SIZE);
+                openLogPanel(DEFAULT_LOG_PANEL_SIZE);
             }
         });
     }
 
-    private void expandLogBar(double size) {
+    private void openLogPanel(double size) {
         Widget w = splitPanel.getWidget(0);
         double widgetSize = splitPanel.getWidgetSize(w);
         if (widgetSize < size) {
@@ -87,12 +91,20 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     }
 
     private void toggleDockPanel() {
+        toggleDockPanel(false);
+    }
+
+    private void openDockPanel() {
+        toggleDockPanel(true);
+    }
+
+    private void toggleDockPanel(boolean keepOpen) {
         double widgetSize = verticalSplitPanel.getWidgetSize(dockPanel);
-        double newSize;
+        double newSize = widgetSize;
         if (widgetSize <= MIN_DOCK_SIZE + 1.0) {
             double defaultWidth = (verticalSplitPanel.getOffsetWidth() - MIN_DOCK_SIZE) / 2;
             newSize = dockSize < MIN_DOCK_SIZE + 10.0 ? defaultWidth : dockSize;
-        } else {
+        } else if (!keepOpen) {
             dockSize = widgetSize;
             newSize = MIN_DOCK_SIZE;
         }

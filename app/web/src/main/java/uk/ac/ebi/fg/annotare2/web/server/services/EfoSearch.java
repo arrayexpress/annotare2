@@ -31,6 +31,8 @@ public interface EfoSearch {
 
     Collection<EfoTerm> getSubTerms(EfoTerm efoTerm, int limit);
 
+    EfoTerm searchByLabel(String label);
+
     EfoTerm searchByLabel(String label, String branchAccession);
 
     EfoTerm searchByAccession(String accession, String branchAccession);

@@ -39,6 +39,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnValueType> {
 
     interface Binder extends UiBinder<Widget, ColumnValueTypeEditor> {
@@ -55,7 +56,7 @@ public class ColumnValueTypeEditor extends Composite implements HasValue<ColumnV
 
     private final ColumnValueType.Visitor visitor;
 
-    public ColumnValueTypeEditor(final ColumnValueTypeEfoTerms efoTerms) {
+    public ColumnValueTypeEditor(final SampleAttributeEfoSuggest efoTerms) {
         visitor = new ColumnValueType.Visitor() {
             @Override
             public void visitTextValueType(TextValueType valueType) {

@@ -23,5 +23,8 @@ import com.google.gwt.event.shared.EventHandler;
  */
 public interface DockBarEventHandler extends EventHandler {
 
-    void onFileUploadToggle();
+    void onToggleDockBar();
+    
+    void onOpenDockBar();
+   
 }

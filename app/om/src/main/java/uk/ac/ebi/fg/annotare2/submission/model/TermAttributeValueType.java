@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public class TermAttributeValueType extends AttributeValueType {
 
     private OntologyTerm branch;
@@ -35,7 +36,7 @@ public class TermAttributeValueType extends AttributeValueType {
     @Override
     public void set(SampleAttribute attribute) {
         super.set(attribute);
-        attribute.setOntologyBranch(branch);
+        //attribute.setOntologyBranch(branch);
     }
 
     @Override

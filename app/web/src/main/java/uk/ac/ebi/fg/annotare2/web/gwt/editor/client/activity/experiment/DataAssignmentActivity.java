@@ -29,14 +29,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentCol
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataAssignmentView;
 
 import java.util.List;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent.openDockBarEvent;
 
 /**
  * @author Olga Melnichuk
@@ -79,6 +78,8 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
                 loadFilesAsync();
             }
         });
+
+        eventBus.fireEvent(openDockBarEvent());
     }
 
     @Override

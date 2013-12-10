@@ -105,6 +105,10 @@ public class OntologyDataProxy {
         getTerms(query, root, limit, callback);
     }
 
+    public void getEfoTermByLabel(String label, AsyncCallback<OntologyTerm> callback) {
+        dataService.getEfoTermByLabel(label, callback);
+    }
+
     private void getTerms(final TermSuggest term, final String query, final int limit, final AsyncCallback<List<OntologyTerm>> callback) {
         getSystemEfoTerms(new AsyncCallback<SystemEfoTermMap>() {
             @Override

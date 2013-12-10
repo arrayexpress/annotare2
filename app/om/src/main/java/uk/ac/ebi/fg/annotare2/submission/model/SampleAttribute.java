@@ -16,38 +16,35 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.Serializable;
 
 /**
  * @author Olga Melnichuk
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class SampleAttribute implements Serializable {
+
+    private static final String DEFAULT_NAME = "NEW ATTRIBUTE";
 
     private int id;
 
     private String name;
 
+    private SampleAttributeType type;
+
     private OntologyTerm term;
-
-    private AttributeType type;
-
-    private AttributeValueSubType valueSubType;
 
     private OntologyTerm units;
 
-    private OntologyTerm ontologyBranch;
-
-    private boolean isEditable;
+    private String template;
 
     SampleAttribute() {
     /* used by GWT serialization */
     }
 
-    public SampleAttribute(int id) {
+    public SampleAttribute(int id, String template) {
         this.id = id;
+        this.template = template;
+        setName(null);
     }
 
     public int getId() {
@@ -59,7 +56,7 @@ public class SampleAttribute implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name =name == null || name.trim().isEmpty() ? DEFAULT_NAME : name;
     }
 
     public OntologyTerm getTerm() {
@@ -70,43 +67,32 @@ public class SampleAttribute implements Serializable {
         this.term = term;
     }
 
-    public AttributeType getType() {
+    public SampleAttributeType getType() {
         return type;
     }
 
-    public void setType(AttributeType type) {
+    public void setType(SampleAttributeType type) {
         this.type = type;
     }
 
-    public boolean isEditable() {
-        return isEditable;
-    }
-
-    public void setEditable(boolean editable) {
-        isEditable = editable;
-    }
-
-    public AttributeValueType getValueType() {
-        return valueSubType == null ? null : valueSubType.get(this);
-    }
-
-    void setValueSubType(AttributeValueSubType valueSubType) {
-        this.valueSubType = valueSubType;
-    }
-
-    OntologyTerm getOntologyBranch() {
-        return ontologyBranch;
-    }
-
-    void setOntologyBranch(OntologyTerm ontologyBranch) {
-        this.ontologyBranch = ontologyBranch;
-    }
-
-    OntologyTerm getUnits() {
+    public OntologyTerm getUnits() {
         return units;
     }
 
-    void setUnits(OntologyTerm units) {
+    public void setUnits(OntologyTerm units) {
         this.units = units;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public SampleAttribute copy() {
+        SampleAttribute attr = new SampleAttribute(id, template);
+        attr.name  = name;
+        attr.type = type;
+        attr.term = term;
+        attr.units = units;
+        return attr;
     }
 }

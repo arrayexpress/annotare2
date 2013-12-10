@@ -14,24 +14,31 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface ColumnValueTypeEfoTerms {
+public abstract class AsyncOptionProvider {
 
-    void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
+    private final List<OptionDisplay> displays = new ArrayList<OptionDisplay>();
 
-    void getTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
+    public void addOptionDisplay(OptionDisplay display) {
+        displays.add(display);
+    }
 
-    void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback);
+    protected void updateOptions(List<String> options) {
+        for(OptionDisplay display : displays) {
+            display.updateOptions(options);
+        }
+    }
 
-    void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> asyncCallback);
+    public abstract void updateOptions();
+
+    public interface OptionDisplay {
+        void updateOptions(List<String> options);
+    }
 }

@@ -44,6 +44,8 @@ public interface DataService extends RemoteService {
 
     List<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit);
 
+    OntologyTerm getEfoTermByLabel(String label);
+
     List<ProtocolType> getProtocolTypes(ExperimentProfileType type);
 
     List<OntologyTerm> getContactRoles();
@@ -53,4 +55,6 @@ public interface DataService extends RemoteService {
     ApplicationProperties getApplicationProperties();
 
     List<String> getAeExperimentTypes();
+
+    List<String> getMaterialTypes();
 }

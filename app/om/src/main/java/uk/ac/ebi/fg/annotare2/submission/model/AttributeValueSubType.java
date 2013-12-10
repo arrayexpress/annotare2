@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 /**
  * @author Olga Melnichuk
  */
+@Deprecated
 public enum AttributeValueSubType {
     TEXT {
         @Override
@@ -35,7 +36,8 @@ public enum AttributeValueSubType {
     TERM {
         @Override
         public AttributeValueType get(SampleAttribute attribute) {
-            return new TermAttributeValueType(attribute.getOntologyBranch());
+            return null;
+            //return new TermAttributeValueType(attribute.getOntologyBranch());
         }
     };
 

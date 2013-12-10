@@ -16,10 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 import java.util.Map;
 
@@ -31,21 +27,18 @@ import static java.util.Collections.unmodifiableMap;
  */
 public class Sample implements Serializable {
 
-    @JsonProperty("id")
     private int id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("values")
     private Map<Integer, String> values;
 
     Sample() {
     /* used by GWT serialization */
+        this(0);
     }
 
-    @JsonCreator
-    public Sample(@JsonProperty("id") int id) {
+    public Sample(int id) {
         this.id = id;
         values = newHashMap();
     }

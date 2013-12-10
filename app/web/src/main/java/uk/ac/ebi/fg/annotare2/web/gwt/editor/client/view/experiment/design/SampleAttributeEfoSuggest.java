@@ -17,33 +17,23 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 
 import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SamplesView extends IsWidget {
+public interface SampleAttributeEfoSuggest {
 
-    void setData(List<SampleRow> rows, List<SampleColumn> columns);
+    void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
 
-    void setPresenter(Presenter presenter);
+    void getTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
 
-    public interface Presenter {
+    void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback);
 
-        SampleAttributeEfoSuggest getEfoTerms();
+    void getTermByLabel(String label, AsyncCallback<OntologyTerm> callback);
 
-        void updateColumns(List<SampleColumn> newColumns);
-
-        void updateRow(SampleRow row);
-
-        void createSample();
-
-        void removeSamples(List<SampleRow> rows);
-
-        void getMaterialTypesAsync(AsyncCallback<List<String>> callback);
-    }
+    void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> asyncCallback);
 }

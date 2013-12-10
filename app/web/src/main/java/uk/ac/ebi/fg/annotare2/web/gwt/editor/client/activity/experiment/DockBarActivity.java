@@ -25,6 +25,8 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DockBarView;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent.toggleDockBarEvent;
+
 /**
  * @author Olga Melnichuk
  */
@@ -42,8 +44,8 @@ public class DockBarActivity extends AbstractActivity {
         panel.setWidget(view);
         view.setPresenter(new DockBarView.Presenter() {
             @Override
-            public void fileUploadClick() {
-                eventBus.fireEvent(DockBarEvent.toggleFileUpload());
+            public void fireDockBarToggleEvent() {
+                eventBus.fireEvent(toggleDockBarEvent());
             }
         });
     }

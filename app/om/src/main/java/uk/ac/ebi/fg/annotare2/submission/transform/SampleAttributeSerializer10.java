@@ -19,12 +19,10 @@ class SampleAttributeSerializer10 extends JsonSerializer<SampleAttribute> {
     static final List<String> SAMPLE_ATTRIBUTE_JSON_FIELDS = asList(
             "id",
             "name",
-            "term",
             "type",
-            "valueSubType",
+            "term",
             "units",
-            "ontologyBranch",
-            "isEditable");
+            "template");
 
     @Override
     public void serialize(SampleAttribute sampleAttribute, JsonGenerator jgen, SerializerProvider provider) throws IOException {

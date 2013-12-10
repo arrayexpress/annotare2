@@ -26,7 +26,6 @@ public enum SystemEfoTerm {
     UNIT("Unit", "unit"),
     PUBLICATION_STATUS("Publication Status", "publication_status"),
 
-    MATERIAL_TYPE("Material Type", "material_type"),
     ORGANISM("Organism", "organism"),
     ORGANISM_PART("Organism Part", "organism_part"),
     STRAIN("Strain", "strain"),
@@ -41,18 +40,20 @@ public enum SystemEfoTerm {
     INDIVIDUAL("Individual", "individual"),
     SEX("Sex", "sex"),
     SPECIMEN_WITH_KNOWN_STORAGE_STATE("Specimen With Known Storage State", "specimen_with_known_storage_state"),
-    GROWTH_CONDITION("Growth Condition", "growth_condition");
+    GROWTH_CONDITION("Growth Condition", "growth_condition"),
+    DOSE("Dose", "dose"),
+    IMMUNOPRECIPITATE("Immunoprecipitate", "immunoprecipitate");
 
-    private final String friendlyName;
+    private final String name;
     private final String propertyName;
 
-    private SystemEfoTerm(String friendlyName, String propertyName) {
-        this.friendlyName = friendlyName;
+    private SystemEfoTerm(String name, String propertyName) {
+        this.name = name;
         this.propertyName = propertyName;
     }
 
-    public String getFriendlyName() {
-        return friendlyName;
+    public String getName() {
+        return name;
     }
 
     public String getPropertyName() {

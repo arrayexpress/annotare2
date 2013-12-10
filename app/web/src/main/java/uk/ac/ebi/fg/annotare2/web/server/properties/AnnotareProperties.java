@@ -61,6 +61,10 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         tempDir = new File(System.getProperty("java.io.tmpdir"));
     }
 
+    public List<String> getMaterialTypes() {
+        return getListProperty("materialTypes");
+    }
+
     public File getEfoIndexDir() {
         return getDirProperty("efo.index.dir");
     }

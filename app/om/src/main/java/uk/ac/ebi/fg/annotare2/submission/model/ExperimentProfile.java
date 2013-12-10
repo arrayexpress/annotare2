@@ -366,8 +366,8 @@ public class ExperimentProfile implements Serializable {
         return sampleAttributeMap.get(id);
     }
 
-    public SampleAttribute createSampleAttribute() {
-        SampleAttribute attr = new SampleAttribute(nextId());
+    public SampleAttribute createSampleAttribute(String template) {
+        SampleAttribute attr = new SampleAttribute(nextId(), template);
         sampleAttributeMap.put(attr.getId(), attr);
         sampleAttributeOrder.add(attr.getId());
         return attr;
