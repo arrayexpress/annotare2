@@ -169,12 +169,11 @@ public class MageTabGenerator {
 
         Map<Integer, SDRFNode> extractLayer = generateExtractNodes(sourceLayer);
         Map<String, SDRFNode> assayLayer;
-        if (exp.getType().isTwoColorMicroarray()) {
+        if (exp.getType().isMicroarray()) {
             Map<String, SDRFNode> labeledExtractLayer = generateLabeledExtractNodes(extractLayer);
-            assayLayer = generateAssayNodes2(labeledExtractLayer);
-        } else if (exp.getType().isMicroarray()) {
-            Map<String, SDRFNode> labeledExtractLayer = generateLabeledExtractNodes(extractLayer);
-            assayLayer = generateAssayNodes1(labeledExtractLayer);
+            assayLayer = exp.getType().isTwoColorMicroarray() ?
+                    generateMultiChannelAssayNodes(labeledExtractLayer, sdrf) :
+                    generateSingleChannelAssayNodes(labeledExtractLayer);
         } else {
             assayLayer = generateAssayAndScanNodes(extractLayer);
         }
@@ -233,7 +232,7 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private Map<String, SDRFNode> generateAssayNodes1(Map<String, SDRFNode> labeledExtractLayer) {
+    private Map<String, SDRFNode> generateSingleChannelAssayNodes(Map<String, SDRFNode> labeledExtractLayer) {
         if (labeledExtractLayer.isEmpty()) {
             return emptyMap();
         }
@@ -253,7 +252,7 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private Map<String, SDRFNode> generateAssayNodes2(Map<String, SDRFNode> labeledExtractLayer) {
+    private Map<String, SDRFNode> generateMultiChannelAssayNodes(Map<String, SDRFNode> labeledExtractLayer, SDRF sdrf) {
         if (labeledExtractLayer.isEmpty()) {
             return emptyMap();
         }
@@ -270,20 +269,22 @@ public class MageTabGenerator {
         for (String labeledExtractId : labeledExtractLayer.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
+
+            int channel = sdrf.getChannelNumber(labeledExtract.getLabel().getName());
             Assay assay = labeledExtract == null ? null : getAssay(labeledExtract);
             if (assay != null) {
                 String fileName = fileColumn.getFileName(assay);
                 AssayNode assayNode = assayNodes.get(fileName);
                 if (assayNode == null) {
-                    assayNode = createAssayNode(assay, fileName, labeledExtractNode);
+                    assayNode = createAssayNode(assay, fileName, channel, labeledExtractNode);
                     layer.put(assay.getId(), assayNode);
                     assayNodes.put(fileName, assayNode);
                 } else {
-                    addFactorValues(assayNode, labeledExtractNode);
+                    addFactorValues(assayNode, labeledExtractNode, channel);
                     connect(labeledExtractNode, assayNode, ASSAYS, assay);
                 }
             } else {
-                layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode));
+                layer.put("" + (fakeId--), createAssayNode(null, "", channel, labeledExtractNode));
             }
         }
         return layer;
@@ -416,6 +417,10 @@ public class MageTabGenerator {
     }
 
     private AssayNode createAssayNode(Assay assay, String assayName, SDRFNode prevNode) {
+        return createAssayNode(assay, assayName, 1, prevNode);
+    }
+
+    private AssayNode createAssayNode(Assay assay, String assayName, int channel, SDRFNode prevNode) {
         AssayNode assayNode;
         if (assay == null) {
             assayNode = createFakeNode(AssayNode.class);
@@ -434,13 +439,16 @@ public class MageTabGenerator {
             assayNode.arrayDesigns.add(arrayDesignAttribute);
         }
 
-        addFactorValues(assayNode, prevNode);
+        addFactorValues(assayNode, prevNode, channel);
         connect(prevNode, assayNode, ASSAYS, assay);
         return assayNode;
     }
 
-    private void addFactorValues(AssayNode assayNode, SDRFNode prevNode) {
+    private void addFactorValues(AssayNode assayNode, SDRFNode prevNode, int channel) {
         Collection<Sample> samples = findSamples(prevNode);
+        if (samples.size() > 1) {
+            throw new IllegalStateException("Too many samples");
+        }
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
             if (!attribute.getType().isFactorValue()) {
                 continue;
@@ -450,6 +458,7 @@ public class MageTabGenerator {
                 OntologyTerm term = attribute.getTerm();
                 attr.type = term == null ? attribute.getName().toLowerCase() : term.getLabel();
                 attr.unit = createUnitAttribute(attribute.getUnits());
+                attr.scannerChannel = channel;
                 attr.setAttributeValue(sample.getValue(attribute));
                 //TODO if attr value is an EFO Term then fill in accession and source REF
                 //attr.termAccessionNumber = term.getAccession();
