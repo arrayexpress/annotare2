@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.SessionAttribute;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.SessionAttribute;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -37,8 +37,8 @@ import static com.google.common.base.Strings.nullToEmpty;
 enum ServletNavigation {
     LOGIN("/login", "/login.jsp"),
     SIGNUP("/sign-up", "/sign-up.jsp"),
-    ACTIVATION("/activate", "/activate.jsp"),
-    PASSWORD_CHANGER("/change-password", "change-password.jsp"),
+    VERIFY_EMAIL("/verify-email", "/verify-email.jsp"),
+    CHANGE_PASSWORD("/change-password", "/change-password.jsp"),
     HOME("/", "/home.jsp"),
     EDITOR("/edit/", "/editor.jsp");
 

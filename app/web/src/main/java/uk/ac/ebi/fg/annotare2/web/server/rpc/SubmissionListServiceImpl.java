@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
-import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
@@ -38,8 +38,8 @@ public class SubmissionListServiceImpl extends AuthBasedRemoteService implements
     private final SubmissionManager submissionManager;
 
     @Inject
-    public SubmissionListServiceImpl(AuthService authService, SubmissionManager submissionManager) {
-        super(authService);
+    public SubmissionListServiceImpl(AccountService accountService, SubmissionManager submissionManager) {
+        super(accountService);
         this.submissionManager = submissionManager;
     }
 

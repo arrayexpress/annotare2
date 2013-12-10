@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import org.junit.Test;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.services.*;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,13 +38,14 @@ public class AuthenticationServiceImplTest {
         final String password = "existed_password";
 
         AccountManager accMan = mockAccManager(name, password, true);
+        EmailSender emailer = mockEmailer();
         HttpServletRequest request = mockRequest(name, password);
 
         try {
-            AuthService authService = new AuthServiceImpl(accMan);
-            ValidationErrors errors = authService.login(request);
+            AccountService accountService = new AccountServiceImpl(accMan, emailer);
+            ValidationErrors errors = accountService.login(request);
             assertTrue(errors.isEmpty());
-        } catch (LoginException e) {
+        } catch (AccountServiceException e) {
             fail("Existed user should be logged in");
         }
     }
@@ -54,62 +56,73 @@ public class AuthenticationServiceImplTest {
         final String password = "non_existed_password";
 
         AccountManager accMan = mockAccManager(name, password, false);
+        EmailSender emailer = mockEmailer();
         HttpServletRequest request = mockRequest(name, password);
 
         try {
-            AuthService authService = new AuthServiceImpl(accMan);
-            authService.login(request);
+            AccountService accountService = new AccountServiceImpl(accMan, emailer);
+            accountService.login(request);
             fail("Non-existed user should not be logged in");
-        } catch (LoginException e) {
+        } catch (AccountServiceException e) {
             //ok
         }
     }
 
     @Test
-    public void testInvalidLogin() throws LoginException {
-        AuthService authService = new AuthServiceImpl(null);
+    public void testInvalidLogin() throws AccountServiceException {
+        AccountService accountService = new AccountServiceImpl(null, null);
 
         HttpServletRequest request = mockRequest("user", null);
-        ValidationErrors errors = authService.login(request);
+        ValidationErrors errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.PASSWORD_PARAM).isEmpty());
 
         request = mockRequest("user", "");
-        errors = authService.login(request);
+        errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.PASSWORD_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.PASSWORD_PARAM).isEmpty());
 
         request = mockRequest(null, "password");
-        errors = authService.login(request);
+        errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.EMAIL_PARAM).isEmpty());
 
         request = mockRequest("", "password");
-        errors = authService.login(request);
+        errors = accountService.login(request);
         assertFalse(errors.isEmpty());
-        assertFalse(errors.getErrors(AuthServiceImpl.LoginParams.EMAIL_PARAM).isEmpty());
+        assertFalse(errors.getErrors(FormParams.EMAIL_PARAM).isEmpty());
     }
 
     private AccountManager mockAccManager(String user, String password, boolean exists) {
         AccountManager accMan = createMock(AccountManager.class);
         expect(accMan.isValid(user, password)).andReturn(exists).once();
+        expect(accMan.isEmailVerified(user)).andReturn(true).once();
         replay(accMan);
         return accMan;
+    }
+
+    private EmailSender mockEmailer() {
+        EmailSender emailer = createMock(EmailSender.class);
+        return emailer;
     }
 
     private HttpServletRequest mockRequest(String name, String password) {
         HttpSession session = createMock(HttpSession.class);
         session.setAttribute(isA(String.class), isA(Object.class));
-        expectLastCall();
+        expectLastCall().anyTimes();
 
         HttpServletRequest request = createMock(HttpServletRequest.class);
         expect(request
-                .getParameterValues(AuthServiceImpl.LoginParams.EMAIL_PARAM))
+                .getParameterValues(FormParams.EMAIL_PARAM))
                 .andReturn(name == null ? null : new String[]{name}).anyTimes();
 
         expect(request
-                .getParameterValues(AuthServiceImpl.LoginParams.PASSWORD_PARAM))
+                .getParameterValues(FormParams.PASSWORD_PARAM))
                 .andReturn(password == null ? null : new String[]{password}).anyTimes();
+
+        expect(request
+                .getParameterValues(FormParams.TOKEN_PARAM))
+                .andReturn(null).anyTimes();
 
         expect(request.getSession()).andReturn(session).anyTimes();
 

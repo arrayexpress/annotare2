@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountServiceException;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,7 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.HOME;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
 
 /**
  * @author Olga Melnichuk
@@ -36,22 +40,25 @@ public class LoginServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
 
+
+
     @Inject
-    private AuthService authService;
+    private AccountService accountService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("Login details submitted; validating..");
         ValidationErrors errors = new ValidationErrors();
         try {
-            errors.append(authService.login(request));
+            EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+            errors.append(accountService.login(request));
             if (errors.isEmpty()) {
                 log.debug("Login details are valid; Authorization succeeded");
                 HOME.restoreAndRedirect(request, response);
                 return;
             }
             log.debug("Login details are invalid");
-        } catch (LoginException e) {
+        } catch (AccountServiceException e) {
             log.debug("Authorization failed");
             errors.append(e.getMessage());
         }

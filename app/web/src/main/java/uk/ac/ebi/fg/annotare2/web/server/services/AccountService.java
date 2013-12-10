@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.services;
 
 
 import uk.ac.ebi.fg.annotare2.db.model.User;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,11 +26,17 @@ import javax.servlet.http.HttpSession;
 /**
  * @author Olga Melnichuk
  */
-public interface AuthService {
+public interface AccountService {
 
     boolean isLoggedIn(HttpServletRequest request);
 
-    ValidationErrors login(HttpServletRequest request) throws LoginException;
+    ValidationErrors login(HttpServletRequest request) throws AccountServiceException;
+
+    ValidationErrors signUp(HttpServletRequest request) throws AccountServiceException;
+
+    ValidationErrors changePassword(HttpServletRequest request) throws AccountServiceException;
+
+    ValidationErrors verifyEmail(HttpServletRequest request) throws AccountServiceException;
 
     void logout(HttpSession session);
 

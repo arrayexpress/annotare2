@@ -18,7 +18,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ page isELIgnored="false" %>
 --%>
-<%@ page import="uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors" %>
+<%@ page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors" %>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
@@ -34,7 +34,6 @@
 
     values = request.getParameterValues("email");
     pageContext.setAttribute("email", values == null ? "" : values[0]);
-
 %>
 <!DOCTYPE html>
 <html>

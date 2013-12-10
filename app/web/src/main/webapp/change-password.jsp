@@ -13,29 +13,32 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%--
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ page isELIgnored="false" %>
-<%@ page import="uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors" %>
+<%@ page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors" %>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
         pageContext.setAttribute("dummyErrors", errors.getErrors());
         pageContext.setAttribute("emailErrors", errors.getErrors("email"));
+        pageContext.setAttribute("tokenErrors", errors.getErrors("token"));
         pageContext.setAttribute("passwordErrors", errors.getErrors("password"));
+        pageContext.setAttribute("confirmPasswordErrors", errors.getErrors("confirm-password"));
     }
 
-    String[] values = request.getParameterValues("email");
-    pageContext.setAttribute("email", values == null ? "" : values[0]);
+    String email = request.getParameter("email");
+    if (null == email) {
+        email = (String)session.getAttribute("email");
+    }
+    pageContext.setAttribute("email", email == null ? "" : email);
 %>
---%>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Annotare 2.0 - New user registration</title>
+    <title>Annotare 2.0 - Change password request</title>
     <link type="text/css" rel="stylesheet" href="general.css">
     <link type="text/css" rel="stylesheet" href="login.css">
 </head>
@@ -49,38 +52,87 @@
                 <table class="form">
                     <tr>
                         <td></td>
-                        <td><h1>Annotare 2.0</h1></td>
+                        <td><h1>Change password request</h1></td>
+                    </tr>
+                    <tr class="info">
+                        <td></td>
+                        <td><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></td>
                     </tr>
                     <tr class="error">
                         <td></td>
                         <td>${dummyErrors}</td>
                     </tr>
-                    <tr class="row right">
-                        <td>Email</td>
-                        <td><input type="text" name="email" value="${email}" style="width:98%"/></td>
-                    </tr>
-                    <tr class="error">
-                        <td></td>
-                        <td>${emailErrors}</td>
-                    </tr>
-                    <tr class="row right">
-                        <td>Password</td>
-                        <td><input type="password" name="password" style="width:98%"/></td>
-                    </tr>
-                    <tr class="error">
-                        <td></td>
-                        <td>${passwordErrors}</td>
-                    </tr>
+                    <c:choose>
+                        <c:when test="${phase == 'email'}">
+                            <tr class="row right">
+                                <td>Email</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${email == ''}">
+                                            <input type="text" name="email" style="width:98%" autofocus="autofocus"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="text" name="email" value="${email}" style="width:98%"/>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                </td>
+                            </tr>
+                            <tr class="error">
+                                <td></td>
+                                <td>${emailErrors}</td>
+                            </tr>
+                        </c:when>
+                        <c:when test="${phase == 'token'}">
+                            <tr class="row right">
+                                <td>Code</td>
+                                <td>
+                                    <input type="hidden" name="email" value="${email}"/>
+                                    <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
+                                </td>
+                            </tr>
+                            <tr class="error">
+                                <td></td>
+                                <td>${tokenErrors}</td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <tr class="row right">
+                                <td>Password</td>
+                                <td>
+                                    <input type="hidden" name="email" value="${email}"/>
+                                    <input type="hidden" name="token" value="${param.token}"/>
+                                    <input type="password" name="password" style="width:98%" autofocus="autofocus"/>
+                                </td>
+                            </tr>
+                            <tr class="error">
+                                <td></td>
+                                <td>${passwordErrors}</td>
+                            </tr>
+                            <tr class="row right">
+                                <td>Confirm password</td>
+                                <td><input type="password" name="confirm-password" style="width:98%"/></td>
+                            </tr>
+                            <tr class="error">
+                                <td></td>
+                                <td>${confirmPasswordErrors}</td>
+                            </tr>
+                        </c:otherwise>
+                    </c:choose>
+
                     <tr class="row">
                         <td></td>
                         <td>
-                            <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="#" onclick="return false;">Forgot your password?</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <div style="margin-top:10px;">Don't have an account? <a href="#" onclick="return false;">Sign Up</a></div>
+                            <c:choose>
+                                <c:when test="${phase == 'email' && email != ''}">
+                                    <button name="changePassword" autofocus="autofocus">Send</button>
+                                </c:when>
+                                <c:otherwise>
+                                    <button name="changePassword">Send</button>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <input type="hidden" name="phase" value="${requestScope.phase}"/>
                         </td>
                     </tr>
                 </table>

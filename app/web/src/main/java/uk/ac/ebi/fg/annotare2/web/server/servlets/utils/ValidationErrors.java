@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login.utils;
+package uk.ac.ebi.fg.annotare2.web.server.servlets.utils;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -53,7 +53,7 @@ public class ValidationErrors implements Serializable {
 
     public String getErrors(String name) {
         Collection<String> err = errors.get(name);
-        return err == null ? "" : on(",").join(err);
+        return err == null ? "" : on(". ").join(err);
     }
 
 }

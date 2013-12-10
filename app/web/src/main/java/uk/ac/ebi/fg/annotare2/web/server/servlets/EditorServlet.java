@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.EDITOR;
 
 /**
  * @author Olga Melnichuk
  */
-public class LoginException extends Exception {
+public class EditorServlet extends HttpServlet {
 
-    public LoginException(String expAcc) {
-        super(expAcc);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EDITOR.forward(getServletConfig().getServletContext(), request, response);
     }
 }

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.AllRpcServicePaths;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.LOGIN;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
 
 /**
  * @author Olga Melnichuk
@@ -37,7 +38,7 @@ public class SecurityFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(SecurityFilter.class);
 
     @Inject
-    private AuthService authService;
+    private AccountService accountService;
 
     @Inject
     private AllRpcServicePaths rpcServicePaths;
@@ -53,7 +54,7 @@ public class SecurityFilter implements Filter {
 
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
-            if (!authService.isLoggedIn(request)) {
+            if (!accountService.isLoggedIn(request)) {
                 forceLogin(request, (HttpServletResponse) servletResponse);
                 return;
             }

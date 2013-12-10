@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.web.server.login;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 /*
  * Copyright 2009-2013 European Molecular Biology Laboratory
@@ -20,7 +20,9 @@ package uk.ac.ebi.fg.annotare2.web.server.login;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.login.utils.ValidationErrors;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountServiceException;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,28 +30,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.login.ServletNavigation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.*;
 
 public class SignUpServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(SignUpServlet.class);
 
     @Inject
-    private SignUpService signUpService;
+    private AccountService accountService;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("Sign-up data submitted; checking..");
         ValidationErrors errors = new ValidationErrors();
         try {
-            errors.append(signUpService.signUp(request));
+            errors.append(accountService.signUp(request));
             if (errors.isEmpty()) {
                 log.debug("Sign-up successful; redirect to login page");
-                LOGIN.redirect(request, response);
+                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+                INFO_SESSION_ATTRIBUTE.set(request.getSession(), "Registration successful; email verification code has been sent to you, please enter it now");
+                VERIFY_EMAIL.redirect(request, response);
                 return;
+            } else {
+                log.debug("Sign-up form failed validation");
             }
-            log.debug("Sign-up form had invalid entries");
-        } catch (Exception e) {
-            log.debug("Sign-up failed");
+        } catch (AccountServiceException e) {
+            log.debug("Sign-up failed", e);
             errors.append(e.getMessage());
         }
 

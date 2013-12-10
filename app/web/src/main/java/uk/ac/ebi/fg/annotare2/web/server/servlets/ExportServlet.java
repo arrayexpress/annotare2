@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server;
+package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import com.google.inject.Inject;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
-import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
@@ -52,7 +52,7 @@ public class ExportServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(ExportServlet.class);
 
     @Inject
-    private AuthService authService;
+    private AccountService accountService;
 
     @Inject
     private SubmissionManager submissionManager;
@@ -91,7 +91,7 @@ public class ExportServlet extends HttpServlet {
 
     private ExperimentSubmission getSubmission(HttpServletRequest request) throws ServletException {
         try {
-            User currentUser = authService.getCurrentUser(request.getSession());
+            User currentUser = accountService.getCurrentUser(request.getSession());
             return submissionManager.getExperimentSubmission(currentUser, getSubmissionId(request), Permission.VIEW);
         } catch (RecordNotFoundException e) {
             throw servletException(e);

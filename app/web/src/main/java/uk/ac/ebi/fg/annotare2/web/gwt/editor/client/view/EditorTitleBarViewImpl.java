@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog;
@@ -126,18 +127,52 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         presenter.validateSubmission(new ValidationHandler() {
 
             @Override
-            public void onValidationFinished() {
-                dialog.hide();
-                //TODO show success/error/failure message ?
+            public void onFailure() {
+                dialog.showValidationFailureMessage();
             }
 
+            @Override
+            public void onSuccess(ValidationResult result) {
+                if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
+                    dialog.showValidationFailureMessage();
+                } else {
+                    dialog.hide();
+                }
+            }
         });
     }
 
     @UiHandler("submitButton")
     public void onSubmitButtonClick(ClickEvent event) {
-        //final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
-        presenter.submitSubmission();
+        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
+        presenter.validateSubmission(new ValidationHandler() {
+
+            @Override
+            public void onFailure() {
+                dialog.showValidationFailureMessage();
+            }
+
+            @Override
+            public void onSuccess(ValidationResult result) {
+                if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
+                    dialog.showValidationFailureMessage();
+                } else {
+                    dialog.showSubmissionInProgressMessage();
+                    presenter.submitSubmission(new SubmissionHandler() {
+
+                        @Override
+                        public void onFailure() {
+                            dialog.showSubmissionFailureMessage();
+                        }
+
+                        @Override
+                        public void onSuccess() {
+                            dialog.showSubmissionSuccessMessage();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @UiHandler("importLink")

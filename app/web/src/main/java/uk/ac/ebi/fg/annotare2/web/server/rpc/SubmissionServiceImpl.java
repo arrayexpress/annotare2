@@ -46,7 +46,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
@@ -81,12 +81,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final UserDao userDao;
 
     @Inject
-    public SubmissionServiceImpl(AuthService authService,
+    public SubmissionServiceImpl(AccountService accountService,
                                  SubmissionManager submissionManager,
                                  DataFileManager dataFileManager,
                                  AnnotareProperties properties,
                                  UserDao userDao) {
-        super(authService, submissionManager);
+        super(accountService, submissionManager);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.userDao = userDao;

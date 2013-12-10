@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
 
 /**
@@ -44,7 +45,7 @@ public interface EditorTitleBarView extends IsWidget {
 
         void validateSubmission(ValidationHandler handler);
 
-        void submitSubmission();
+        void submitSubmission(SubmissionHandler handler);
 
         void importFile(AsyncCallback<Void> callback);
 
@@ -53,6 +54,15 @@ public interface EditorTitleBarView extends IsWidget {
 
     public interface ValidationHandler {
 
-        void onValidationFinished();
+        void onSuccess(ValidationResult result);
+
+        void onFailure();
+    }
+
+    public interface SubmissionHandler {
+
+        void onSuccess();
+
+        void onFailure();
     }
 }

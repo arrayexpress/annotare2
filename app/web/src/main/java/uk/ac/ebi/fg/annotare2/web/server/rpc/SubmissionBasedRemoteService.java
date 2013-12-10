@@ -26,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
-import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
@@ -39,9 +39,9 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
 
     private final SubmissionManager submissionManager;
 
-    protected SubmissionBasedRemoteService(AuthService authService,
+    protected SubmissionBasedRemoteService(AccountService accountService,
                                            SubmissionManager submissionManager) {
-        super(authService);
+        super(accountService);
         this.submissionManager = submissionManager;
     }
 

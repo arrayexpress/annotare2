@@ -35,7 +35,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
-import uk.ac.ebi.fg.annotare2.web.server.login.AuthService;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
@@ -51,8 +51,8 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
     private static final Logger log = LoggerFactory.getLogger(AdfServiceImpl.class);
 
     @Inject
-    public AdfServiceImpl(AuthService authService, SubmissionManager submissionManager) {
-        super(authService, submissionManager);
+    public AdfServiceImpl(AccountService accountService, SubmissionManager submissionManager) {
+        super(accountService, submissionManager);
     }
 
     @Transactional

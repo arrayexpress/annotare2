@@ -38,7 +38,13 @@
     text-align: left;
 }
 
-.form {
+.info {
+    font-size: small;
+    color: darkgreen;
+    text-align: left;
+}
+
+table {
     border-collapse: collapse;
     color: #000;
     width: 100%;
@@ -48,6 +54,10 @@
 
 .form td {
     padding: 0 3px;
+}
+
+.form tr td:first-child {
+    white-space: nowrap;
 }
 
 .form tr.row td {

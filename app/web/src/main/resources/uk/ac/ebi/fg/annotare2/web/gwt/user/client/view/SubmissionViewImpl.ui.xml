@@ -106,6 +106,7 @@
             <div style="padding-top:10px; padding-bottom:10px">
                 <div ui:field="title"></div>
             </div>
+            <!--
             <div class="{style.submit}">
                 <g:TextArea width="99%" visibleLines="2"></g:TextArea>
                 <div style="margin-bottom:5px;">
@@ -115,6 +116,7 @@
                     it before submit.
                 </div>
             </div>
+            -->
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>
