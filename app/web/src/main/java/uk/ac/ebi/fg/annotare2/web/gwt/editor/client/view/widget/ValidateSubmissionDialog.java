@@ -45,7 +45,7 @@ public class ValidateSubmissionDialog extends DialogBox {
         // panel styling and behaviour
         VerticalPanel panel = new VerticalPanel();
         panel.setSpacing(10);
-        panel.setWidth("450px");
+        panel.setWidth("400px");
         panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         panel.add(label);
         panel.add(ok);
@@ -79,10 +79,10 @@ public class ValidateSubmissionDialog extends DialogBox {
     public void showSubmissionSuccessMessage() {
         setTitleAndMessage(
                 "Submission successful",
-                "The experiment has been successfully submitted to ArrayExpress using Annotare. " +
-                "The curation team will review your submission and will email you with any questions. " +
-                "Once all the required information is provided we will send you an accession number. " +
-                "In the meantime, please contact <a href=\"mailto:arrayexpress@ebi.ac.uk\">arrayexpress@ebi.ac.uk</a> with any questions. " +
-                 "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html\">http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html</a>");
+                "<p>The experiment has been successfully submitted to ArrayExpress using Annotare.</p>" +
+                "<p>Our curation team will review your submission and will email you with any questions. " +
+                "Once all the required information is provided we will send you an accession number.</p>" +
+                "<p>In the meantime, please contact <a href=\"mailto:arrayexpress@ebi.ac.uk\">arrayexpress@ebi.ac.uk</a> with any questions. " +
+                 "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html</a></p>");
     }
 }
