@@ -21,16 +21,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
-import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
@@ -47,6 +49,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class SubsTrackingWatchdog {
+
+    private static final Logger log = LoggerFactory.getLogger(SubsTrackingWatchdog.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
@@ -56,6 +60,11 @@ public class SubsTrackingWatchdog {
     private final AnnotareProperties properties;
     private final EmailSender emailer;
 
+    private enum SubmissionOutcome {
+        INITIAL_SUBMISSION_OK,
+        REPEAT_SUBMISSION_OK,
+        SUBMISSION_FAILED
+    }
 
     @Inject
     public SubsTrackingWatchdog(HibernateSessionFactory sessionFactory,
@@ -86,7 +95,7 @@ public class SubsTrackingWatchdog {
                 try {
                     runTransaction();
                 } catch (Exception x) {
-                    //
+                    log.error("Submission watchdog process caught an exception:", x);
                 } finally {
                     session.close();
                 }
@@ -116,7 +125,8 @@ public class SubsTrackingWatchdog {
 
     @Transactional
     public void submitTransaction(Submission submission) {
-        if (submitSubmission(submission)) {
+        SubmissionOutcome outcome = submitSubmission(submission);
+        if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
             try {
@@ -129,8 +139,23 @@ public class SubsTrackingWatchdog {
                                 "submission.date", submission.getUpdated().toString()
                         )
                 );
+
+                if (properties.getAeSubsTrackingEnabled()) {
+                    String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
+                            EmailSender.INITIAL_SUBMISSION_OTRS_TEMPLATE : EmailSender.REPEAT_SUBMISSION_OTRS_TEMPLATE;
+
+                    emailer.sendFromTemplate(
+                            otrsTemplate,
+                            ImmutableMap.of(
+                                    "to.name", submission.getCreatedBy().getName(),
+                                    "to.email", submission.getCreatedBy().getEmail(),
+                                    "submission.title", submission.getTitle(),
+                                    "submission.date", submission.getUpdated().toString()
+                            )
+                    );
+                }
             } catch (Exception x) {
-                // we don't care if emailer doesn't work, really
+                log.error("Email process threw an exception:", x);
             }
         }
     }
@@ -144,21 +169,27 @@ public class SubsTrackingWatchdog {
             try {
                 emailer.sendFromTemplate(
                         EmailSender.REJECTED_SUBMISSION_TEMPLATE,
-                        ImmutableMap.of(
-                                "to.name", submission.getCreatedBy().getName(),
-                                "to.email", submission.getCreatedBy().getEmail(),
-                                "submission.title", submission.getTitle(),
-                                "submission.date", submission.getUpdated().toString()
-                        )
+                        new ImmutableMap.Builder<String,String>().
+                                put("to.name", submission.getCreatedBy().getName()).
+                                put("to.email", submission.getCreatedBy().getEmail()).
+                                put("submission.title", submission.getTitle()).
+                                put("submission.date", submission.getUpdated().toString()).
+                                put("submission.tracking.user", properties.getAeSubsTrackingUser()).
+                                put("submission.tracking.experiment.type",  properties.getAeSubsTrackingExperimentType()).
+                                put("submission.tracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
+                                build()
                 );
             } catch (Exception x) {
-                // we don't care if emailer doesn't work, really
+                log.error("Email process threw an exception:", x);
             }
         }
     }
 
-    private boolean submitSubmission(Submission submission) {
+    private SubmissionOutcome submitSubmission(Submission submission) {
+
+        SubmissionOutcome result = SubmissionOutcome.SUBMISSION_FAILED;
         Connection subsTrackingConnection = null;
+
         try {
             File exportDir;
 
@@ -170,8 +201,10 @@ public class SubsTrackingWatchdog {
                 if (null == subsTrackingId) {
                     subsTrackingId = subsTracking.addSubmission(subsTrackingConnection, submission);
                     submission.setSubsTrackingId(subsTrackingId);
+                    result = SubmissionOutcome.INITIAL_SUBMISSION_OK;
                 } else {
                     subsTracking.updateSubmission(subsTrackingConnection, submission);
+                    result = SubmissionOutcome.REPEAT_SUBMISSION_OK;
                 }
 
                 exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
@@ -196,12 +229,12 @@ public class SubsTrackingWatchdog {
                 subsTrackingConnection.commit();
             }
 
-            return true;
+            return result;
         } catch (Throwable x) {
             try {
                 subsTrackingConnection.rollback();
             } catch (SQLException xx) {
-                //
+                log.error("SQLException:", x);
             }
             throw new RuntimeException(x);
         } finally {
