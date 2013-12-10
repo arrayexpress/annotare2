@@ -55,8 +55,8 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     @UiField
     Button editButton;
 
-    @UiField
-    Button submitButton;
+    //@UiField
+    //Button submitButton;
 
     @UiField
     Button deleteButton;
@@ -85,12 +85,12 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
         }
     }
 
-    @UiHandler("submitButton")
-    void onSubmitButtonClick(ClickEvent event) {
-        if (presenter != null) {
-            presenter.submit();
-        }
-    }
+    //@UiHandler("submitButton")
+    //void onSubmitButtonClick(ClickEvent event) {
+    //    if (presenter != null) {
+    //        presenter.submit();
+    //    }
+    //}
 
     @UiHandler("deleteButton")
     void onDeleteButtonClick(ClickEvent event) {

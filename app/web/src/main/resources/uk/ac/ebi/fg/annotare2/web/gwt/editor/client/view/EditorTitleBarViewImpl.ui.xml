@@ -138,7 +138,7 @@
                                     </g:Button>
                                 </td>
                                 <td>
-                                    <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton">Submit</g:Button>
+                                    <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton">Submit to ArrayExpress</g:Button>
                                 </td>
                             </tr>
                         </table>

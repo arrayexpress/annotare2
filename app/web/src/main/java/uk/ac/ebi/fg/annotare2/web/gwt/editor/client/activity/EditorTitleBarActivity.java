@@ -133,28 +133,30 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
         validationService.validate(getSubmissionId(), new AsyncCallbackWrapper<ValidationResult>() {
             @Override
             public void onFailure(Throwable throwable) {
-                handler.onValidationFinished();
+                handler.onFailure();
                 publishValidationResult(new ValidationResult(throwable));
                 //TODO log exception here
             }
 
             @Override
             public void onSuccess(ValidationResult result) {
-                handler.onValidationFinished();
+                handler.onSuccess(result);
                 publishValidationResult(result);
             }
         }.wrap());
     }
 
     @Override
-    public void submitSubmission() {
+    public void submitSubmission(final EditorTitleBarView.SubmissionHandler handler) {
         submissionService.submitSubmission(getSubmissionId(), new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable throwable) {
+                handler.onFailure();
             }
 
             @Override
             public void onSuccess(Void aVoid) {
+                handler.onSuccess();
             }
         }.wrap());
     }

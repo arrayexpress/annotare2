@@ -16,21 +16,73 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
+
 
 /**
  * @author Olga Melnichuk
  */
 public class ValidateSubmissionDialog extends DialogBox {
 
+    private HTML label = new HTML();
+
     public ValidateSubmissionDialog() {
         setGlassEnabled(true);
 
-        setText("Validating...");
+        // label styling
+        label.setHorizontalAlignment(HasAutoHorizontalAlignment.ALIGN_LEFT);
 
-        setWidget(new Label("Please wait while submission is validating..."));
+        // button styling & behaviour
+        Button ok = new Button("OK");
+        ok.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                ValidateSubmissionDialog.this.hide();
+            }
+        });
 
+        // panel styling and behaviour
+        VerticalPanel panel = new VerticalPanel();
+        panel.setSpacing(10);
+        panel.setWidth("450px");
+        panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        panel.add(label);
+        panel.add(ok);
+
+        setWidget(panel);
+        showValidationInProgressMessage();
+    }
+
+    private void setTitleAndMessage(String title, String message) {
+        setText(title);
+        label.setHTML(message);
         center();
+    }
+
+    public void showValidationInProgressMessage() {
+        setTitleAndMessage("Validating...", "Please wait as the submission is being validated");
+    }
+
+    public void showValidationFailureMessage() {
+        setTitleAndMessage("Validation failed", "Validation has failed. Please see the validation log for more information");
+    }
+
+    public void showSubmissionInProgressMessage() {
+        setTitleAndMessage("Submitting...", "Please wait as the submission is being processed");
+    }
+
+    public void showSubmissionFailureMessage() {
+        setTitleAndMessage("Submission failed", "There was a problem submitting experiment to ArrayExpress. Please try again or contact us at arrayexpress@ebi.ac.uk");
+    }
+
+    public void showSubmissionSuccessMessage() {
+        setTitleAndMessage(
+                "Submission successful",
+                "The experiment has been successfully submitted to ArrayExpress using Annotare. " +
+                "The curation team will review your submission and will email you with any questions. " +
+                "Once all the required information is provided we will send you an accession number. " +
+                "In the meantime, please contact <a href=\"mailto:arrayexpress@ebi.ac.uk\">arrayexpress@ebi.ac.uk</a> with any questions. " +
+                 "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html\">http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html</a>");
     }
 }
