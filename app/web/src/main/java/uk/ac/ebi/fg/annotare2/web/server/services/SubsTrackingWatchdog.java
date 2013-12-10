@@ -146,12 +146,15 @@ public class SubsTrackingWatchdog {
 
                     emailer.sendFromTemplate(
                             otrsTemplate,
-                            ImmutableMap.of(
-                                    "to.name", submission.getCreatedBy().getName(),
-                                    "to.email", submission.getCreatedBy().getEmail(),
-                                    "submission.title", submission.getTitle(),
-                                    "submission.date", submission.getUpdated().toString()
-                            )
+                            new ImmutableMap.Builder<String,String>().
+                                    put("to.name", submission.getCreatedBy().getName()).
+                                    put("to.email", submission.getCreatedBy().getEmail()).
+                                    put("submission.title", submission.getTitle()).
+                                    put("submission.date", submission.getUpdated().toString()).
+                                    put("subsTracking.user", properties.getAeSubsTrackingUser()).
+                                    put("subsTracking.experiment.type",  properties.getAeSubsTrackingExperimentType()).
+                                    put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
+                                    build()
                     );
                 }
             } catch (Exception x) {
@@ -169,15 +172,12 @@ public class SubsTrackingWatchdog {
             try {
                 emailer.sendFromTemplate(
                         EmailSender.REJECTED_SUBMISSION_TEMPLATE,
-                        new ImmutableMap.Builder<String,String>().
-                                put("to.name", submission.getCreatedBy().getName()).
-                                put("to.email", submission.getCreatedBy().getEmail()).
-                                put("submission.title", submission.getTitle()).
-                                put("submission.date", submission.getUpdated().toString()).
-                                put("submission.tracking.user", properties.getAeSubsTrackingUser()).
-                                put("submission.tracking.experiment.type",  properties.getAeSubsTrackingExperimentType()).
-                                put("submission.tracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
-                                build()
+                        ImmutableMap.of(
+                                "to.name", submission.getCreatedBy().getName(),
+                                "to.email", submission.getCreatedBy().getEmail(),
+                                "submission.title", submission.getTitle(),
+                                "submission.date", submission.getUpdated().toString()
+                        )
                 );
             } catch (Exception x) {
                 log.error("Email process threw an exception:", x);
