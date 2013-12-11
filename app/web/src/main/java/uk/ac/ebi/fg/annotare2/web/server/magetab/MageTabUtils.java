@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
+package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SheetModeView extends IsWidget {
+public class MageTabUtils {
 
-    void setTable(Table table, boolean headers);
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+    public static String formatDate(Date date) {
+        return date == null ? "" : DATE_FORMAT.format(date);
+    }
 }

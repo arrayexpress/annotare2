@@ -33,8 +33,8 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.File;
@@ -262,7 +262,7 @@ public class SubsTrackingWatchdog {
             }
             fileName = fileName + "_v" + version;
         }
-        MageTabFormat mageTab = MageTabFormat.createMageTab(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
 
         if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
             ; // throw something

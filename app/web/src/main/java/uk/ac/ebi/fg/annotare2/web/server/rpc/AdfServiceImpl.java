@@ -26,11 +26,11 @@ import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfHeader;
-import uk.ac.ebi.fg.annotare2.magetab.rowbased.AdfParser;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
-import uk.ac.ebi.fg.annotare2.magetab.table.TsvGenerator;
-import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.adf.AdfHeader;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.adf.AdfParser;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvGenerator;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
@@ -105,11 +105,11 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
         }
 
         AdfHeader header = new AdfHeader(table);
-        adHeader.setName(header.getArrayDesignName().getValue());
-        adHeader.setDescription(header.getDescription(false).getValue());
-        adHeader.setVersion(header.getVersion().getValue());
+        adHeader.setName(header.getArrayDesignName());
+        adHeader.setDescription(header.getDescription());
+        adHeader.setVersion(header.getVersion());
         adHeader.setPrintingProtocolBackup(new PrintingProtocol(0, "", ""));
-        //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false).getValue());
+        //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false));
         return adHeader;
     }
 }

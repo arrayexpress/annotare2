@@ -20,8 +20,6 @@
 
     <inherits name="uk.ac.ebi.fg.annotare2.ExperimentProfile"/>
 
-    <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab"/>
-
     <inherits name="com.google.gwt.user.User"/>
 
     <source path="client"/>

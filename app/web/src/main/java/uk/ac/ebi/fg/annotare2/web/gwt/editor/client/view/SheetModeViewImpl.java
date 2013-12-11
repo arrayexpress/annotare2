@@ -27,8 +27,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
-import uk.ac.ebi.fg.annotare2.magetab.table.Row;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Row;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.LoadingIndicator;
 
 import java.util.ArrayList;

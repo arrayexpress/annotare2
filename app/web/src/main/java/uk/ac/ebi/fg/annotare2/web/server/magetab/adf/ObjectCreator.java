@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2013 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+package uk.ac.ebi.fg.annotare2.web.server.magetab.adf;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SheetModeView extends IsWidget {
+interface ObjectCreator<T> {
 
-    void setTable(Table table, boolean headers);
-
+    T create(Map<RowTag, String> map);
 }

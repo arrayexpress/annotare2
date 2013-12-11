@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+package uk.ac.ebi.fg.annotare2.web.server.magetab.adf;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SheetModeView extends IsWidget {
+interface RowTag {
 
-    void setTable(Table table, boolean headers);
-
+    String getName();
 }

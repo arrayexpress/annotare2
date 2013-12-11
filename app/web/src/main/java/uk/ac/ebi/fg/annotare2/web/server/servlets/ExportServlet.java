@@ -25,8 +25,8 @@ import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
@@ -74,7 +74,7 @@ public class ExportServlet extends HttpServlet {
 
     private void exportMageTab(ExperimentSubmission submission, ZipOutputStream zip) throws IOException, ServletException {
         try {
-            MageTabFormat mageTab = MageTabFormat.createMageTab(submission.getExperimentProfile());
+            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(submission.getExperimentProfile());
             File idfFile = mageTab.getIdfFile();
             zip.putNextEntry(new ZipEntry(idfFile.getName()));
             copy(new FileInputStream(idfFile), zip, false);

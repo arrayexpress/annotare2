@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 

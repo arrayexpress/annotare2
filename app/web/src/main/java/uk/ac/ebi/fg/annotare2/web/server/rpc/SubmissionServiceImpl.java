@@ -33,8 +33,8 @@ import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.magetab.table.Table;
-import uk.ac.ebi.fg.annotare2.magetab.table.TsvParser;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
@@ -46,6 +46,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
@@ -64,7 +65,6 @@ import java.util.Set;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.hash.Hashing.md5;
 import static com.google.common.io.Files.hash;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
@@ -161,13 +161,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private Table asIdfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFormat mageTab = createMageTab(exp);
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp);
         return new TsvParser().parse(new FileInputStream(mageTab.getIdfFile()));
         //TODO: delete temporary file ?
     }
 
     private Table asSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFormat mageTab = createMageTab(exp);
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp);
         return new TsvParser().parse(new FileInputStream(mageTab.getSdrfFile()));
         //TODO: delete temporary file ?
     }

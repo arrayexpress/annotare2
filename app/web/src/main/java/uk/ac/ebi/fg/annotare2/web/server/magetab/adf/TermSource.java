@@ -14,16 +14,34 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+package uk.ac.ebi.fg.annotare2.web.server.magetab.adf;
 
 /**
  * @author Olga Melnichuk
  */
-public interface SheetModeView extends IsWidget {
+class TermSource {
 
-    void setTable(Table table, boolean headers);
+    private String name;
 
+    private String version;
+
+    private String file;
+
+    TermSource(String name, String version, String file) {
+        this.name = name;
+        this.version = version;
+        this.file = file;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getFile() {
+        return file;
+    }
 }
