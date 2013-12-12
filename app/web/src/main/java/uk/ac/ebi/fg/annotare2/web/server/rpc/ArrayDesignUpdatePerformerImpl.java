@@ -54,15 +54,14 @@ public class ArrayDesignUpdatePerformerImpl implements ArrayDesignUpdatePerforme
     @Override
     public void updateDetails(ArrayDesignDetailsDto details) {
         OntologyTerm organism = details.getOrganism();
-        PrintingProtocolDto otherProtocol = details.getOtherPrintingProtocol();
+        PrintingProtocolDto otherProtocol = details.getPrintingProtocol();
 
         header.setName(details.getArrayDesignName());
         header.setDescription(details.getDescription());
         header.setVersion(details.getVersion());
         header.setPublicReleaseDate(details.getPublicReleaseDate());
         header.setOrganism(organism == null ? null : new OntologyTerm(organism.getAccession(), organism.getLabel()));
-        header.setPrintingProtocolId(details.getPrintingProtocolId());
-        header.setPrintingProtocolBackup(
+        header.setPrintingProtocol(
                 otherProtocol == null ? null :
                         new PrintingProtocol(otherProtocol.getId(), otherProtocol.getName(), otherProtocol.getDescription()));
         result.setUpdatedDetails(details);

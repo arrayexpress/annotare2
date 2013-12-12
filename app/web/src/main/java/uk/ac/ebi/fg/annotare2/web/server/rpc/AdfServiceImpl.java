@@ -108,7 +108,7 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
         adHeader.setName(header.getArrayDesignName());
         adHeader.setDescription(header.getDescription());
         adHeader.setVersion(header.getVersion());
-        adHeader.setPrintingProtocolBackup(new PrintingProtocol(0, "", ""));
+        adHeader.setPrintingProtocol(PrintingProtocol.parse(header.getPrintingProtocol()));
         //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false));
         return adHeader;
     }

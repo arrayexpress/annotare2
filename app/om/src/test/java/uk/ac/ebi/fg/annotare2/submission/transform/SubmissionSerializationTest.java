@@ -122,7 +122,7 @@ public class SubmissionSerializationTest {
         adHeaderIn.setOrganism(new OntologyTerm("mus", "mus"));
         adHeaderIn.setPublicReleaseDate(new Date());
         adHeaderIn.setVersion("123");
-        adHeaderIn.setPrintingProtocolBackup(new PrintingProtocol(0, "name", "description"));
+        adHeaderIn.setPrintingProtocol(new PrintingProtocol(0, "name", "description"));
 
         String jsonString = JsonCodec.writeArrayDesign(adHeaderIn);
         log.debug("arrayDesignHeader=", jsonString);

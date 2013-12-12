@@ -206,7 +206,7 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
         description.setValue(details.getDescription());
         publicReleaseDate.setValue(details.getPublicReleaseDate());
         setOrganism(details.getOrganism());
-        showPrintingProtocol(details.getOtherPrintingProtocol(), false);
+        showPrintingProtocol(details.getPrintingProtocol(), false);
     }
 
     @Override
@@ -217,7 +217,6 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
                 designVersion.getValue(),
                 organism,
                 publicReleaseDate.getValue(),
-                0,
                 getOtherProtocol());
     }
 
