@@ -34,11 +34,10 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptyMap;
-import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 
 /**
  * @author Olga Melnichuk
