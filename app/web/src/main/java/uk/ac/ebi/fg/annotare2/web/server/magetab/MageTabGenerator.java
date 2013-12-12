@@ -32,6 +32,8 @@ import java.util.*;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
+import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Collections.addAll;
 import static java.util.Collections.emptyMap;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType.*;
@@ -41,6 +43,8 @@ import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE
  * @author Olga Melnichuk
  */
 public class MageTabGenerator {
+
+    public static final String UNASSIGNED_VALUE_PREFIX = "__UNASSIGNED__@";
 
     private final ExperimentProfile exp;
 
@@ -141,7 +145,7 @@ public class MageTabGenerator {
     }
 
     private <T extends SDRFNode> T createFakeNode(Class<T> clazz) {
-        return createNode(clazz, "__UNASSIGNED__@" + (counter++));
+        return createNode(clazz, UNASSIGNED_VALUE_PREFIX + (counter++));
     }
 
     private <T extends SDRFNode> T createNode(Class<T> clazz, String name) {
@@ -272,8 +276,8 @@ public class MageTabGenerator {
 
             int channel = sdrf.getChannelNumber(labeledExtract.getLabel().getName());
             Assay assay = labeledExtract == null ? null : getAssay(labeledExtract);
-            if (assay != null) {
-                String fileName = fileColumn.getFileName(assay);
+            String fileName = assay == null ? null : fileColumn.getFileName(assay);
+            if (fileName != null) {
                 AssayNode assayNode = assayNodes.get(fileName);
                 if (assayNode == null) {
                     assayNode = createAssayNode(assay, fileName, channel, labeledExtractNode);
@@ -284,7 +288,7 @@ public class MageTabGenerator {
                     connect(labeledExtractNode, assayNode, ASSAYS, assay);
                 }
             } else {
-                layer.put("" + (fakeId--), createAssayNode(null, "", channel, labeledExtractNode));
+                layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode));
             }
         }
         return layer;
@@ -423,13 +427,13 @@ public class MageTabGenerator {
     private AssayNode createAssayNode(Assay assay, String assayName, int channel, SDRFNode prevNode) {
         AssayNode assayNode;
         if (assay == null) {
-            assayNode = createFakeNode(AssayNode.class);
+            assayNode = createFakeNode(FixedAssayNode.class);
         } else {
-            assayNode = getNode(AssayNode.class, assayName);
+            assayNode = getNode(FixedAssayNode.class, assayName);
             if (assayNode != null) {
                 return assayNode;
             }
-            assayNode = createNode(AssayNode.class, assayName);
+            assayNode = createNode(FixedAssayNode.class, assayName);
         }
 
         assayNode.technologyType = createTechnologyTypeAttribute();
@@ -708,69 +712,66 @@ public class MageTabGenerator {
         return str.replaceAll("\n", "<br/>");
     }
 
-    private static class AttributeValueTypeVisitor implements AttributeValueType.Visitor {
-
-        private final FactorValueOrCharacteristicAttribute attribute;
-
-        private AttributeValueTypeVisitor(FactorValueOrCharacteristicAttribute attribute) {
-            this.attribute = attribute;
-        }
-
+    //workaround: if assay has a factor value from a single sample but with channel differ than 1, just show this value
+    public static class FixedAssayNode extends AssayNode {
         @Override
-        public void visitNumericValueType(NumericAttributeValueType valueType) {
-            if (valueType.getUnits() == null) {
-                return;
+        public String[] headers() {
+            List<String> headersList = new ArrayList<String>();
+            headersList.add("Assay Name");
+            if (technologyType != null) {
+                Collections.addAll(headersList, technologyType.headers());
             }
-            UnitAttribute unitAttribute = new UnitAttribute();
-            unitAttribute.type = valueType.getUnits().getLabel();
-            unitAttribute.termAccessionNumber = valueType.getUnits().getAccession();
-            unitAttribute.setAttributeValue(valueType.getUnits().getLabel());
-            //TODO unitAttribute.termSourceREF = ??
-            this.attribute.setUnit(unitAttribute);
+            for (ArrayDesignAttribute ad : arrayDesigns) {
+                Collections.addAll(headersList, ad.headers());
+            }
+            for (String commentType : comments.keySet()) {
+                headersList.add("Comment[" + commentType + "]");
+            }
+
+            Set<String> fvTypes = newHashSet();
+            List<FactorValueAttribute> fvas = new ArrayList<FactorValueAttribute>();
+            fvas.addAll(factorValues);
+            for (FactorValueAttribute fv : fvas) {
+                String type = fv.type;
+                if (!fvTypes.contains(type)) {
+                    addAll(headersList, fv.headers());
+                    fvTypes.add(type);
+                }
+            }
+            String[] result = new String[headersList.size()];
+            return headersList.toArray(result);
         }
 
         @Override
-        public void visitTextValueType(TextAttributeValueType valueType) {
+        public String[] values(int channel) {
+            List<String> valuesList = new ArrayList<String>();
+            valuesList.add(getNodeName());
+            if (technologyType != null) {
+                Collections.addAll(valuesList, technologyType.values());
+            }
+            for (ArrayDesignAttribute ad : arrayDesigns) {
+                Collections.addAll(valuesList, ad.values());
+            }
+            for (String commentType : comments.keySet()) {
+                valuesList.add(comments.get(commentType));
+            }
+
+            boolean hasSingleChannel = hasSingleChannel();
+            for (FactorValueAttribute fv : factorValues) {
+                if (hasSingleChannel || fv.scannerChannel == channel) {
+                    addAll(valuesList, fv.values());
+                }
+            }
+            String[] result = new String[valuesList.size()];
+            return valuesList.toArray(result);
         }
 
-        @Override
-        public void visitTermValueType(TermAttributeValueType valueType) {
-            attribute.setType(valueType.getBranch().getLabel());
+        private boolean hasSingleChannel() {
+            Set<Integer> channels = newHashSet();
+            for (FactorValueAttribute fv : factorValues) {
+                channels.add(fv.scannerChannel);
+            }
+            return channels.size() == 1;
         }
-
-        public static AttributeValueType.Visitor visitCharacteristic(final CharacteristicsAttribute attribute) {
-            return new AttributeValueTypeVisitor(new FactorValueOrCharacteristicAttribute() {
-                @Override
-                public void setUnit(UnitAttribute unitAttribute) {
-                    attribute.unit = unitAttribute;
-                }
-
-                @Override
-                public void setType(String label) {
-                    attribute.type = label;
-                }
-            });
-        }
-
-        public static AttributeValueType.Visitor visitFactorValue(final FactorValueAttribute attribute) {
-            return new AttributeValueTypeVisitor(new FactorValueOrCharacteristicAttribute() {
-                @Override
-                public void setUnit(UnitAttribute unitAttribute) {
-                    attribute.unit = unitAttribute;
-                }
-
-                @Override
-                public void setType(String label) {
-                    attribute.type = label;
-                }
-            });
-        }
-    }
-
-    private abstract static class FactorValueOrCharacteristicAttribute {
-
-        public abstract void setUnit(UnitAttribute unitAttribute);
-
-        public abstract void setType(String label);
     }
 }

@@ -74,7 +74,7 @@ public class ExportServlet extends HttpServlet {
 
     private void exportMageTab(ExperimentSubmission submission, ZipOutputStream zip) throws IOException, ServletException {
         try {
-            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(submission.getExperimentProfile());
+            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(submission.getExperimentProfile(), true);
             File idfFile = mageTab.getIdfFile();
             zip.putNextEntry(new ZipEntry(idfFile.getName()));
             copy(new FileInputStream(idfFile), zip, false);

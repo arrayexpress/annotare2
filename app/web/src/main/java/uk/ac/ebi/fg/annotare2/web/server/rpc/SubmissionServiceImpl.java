@@ -161,13 +161,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private Table asIdfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp);
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, false);
         return new TsvParser().parse(new FileInputStream(mageTab.getIdfFile()));
         //TODO: delete temporary file ?
     }
 
     private Table asSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp);
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, false);
         return new TsvParser().parse(new FileInputStream(mageTab.getSdrfFile()));
         //TODO: delete temporary file ?
     }

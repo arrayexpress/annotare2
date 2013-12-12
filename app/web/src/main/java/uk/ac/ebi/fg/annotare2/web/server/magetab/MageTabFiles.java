@@ -16,7 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -38,11 +41,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import static com.google.common.io.Closeables.close;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.UNASSIGNED_VALUE_PREFIX;
 
 /**
  * @author Olga Melnichuk
  */
 public class MageTabFiles {
+
+    private static final Logger log = LoggerFactory.getLogger(MageTabFiles.class);
 
     private final File idfFile;
     private final File sdrfFile;
@@ -50,9 +56,16 @@ public class MageTabFiles {
     private IDF idf;
     private SDRF sdrf;
 
+    private boolean sanitize;
+
     private MageTabFiles(File idfFile, File sdrfFile) {
+        this(idfFile, sdrfFile, true);
+    }
+
+    private MageTabFiles(File idfFile, File sdrfFile, boolean sanitize) {
         this.idfFile = idfFile;
         this.sdrfFile = sdrfFile;
+        this.sanitize = sanitize;
     }
 
     private MageTabFiles init(ExperimentProfile exp) throws IOException, ParseException {
@@ -93,6 +106,10 @@ public class MageTabFiles {
             MAGETABInvestigation inv = parser.parse(idfFile);
             idf = inv.IDF;
             sdrf = inv.SDRF;
+
+            if (sanitize) {
+                sanitize(sdrfFile);
+            }
         }
         return this;
     }
@@ -113,15 +130,30 @@ public class MageTabFiles {
         return sdrfFile;
     }
 
-    public static MageTabFiles createMageTabFiles(ExperimentProfile exp) throws IOException, ParseException {
+    public static MageTabFiles createMageTabFiles(ExperimentProfile exp, boolean sanitize) throws IOException, ParseException {
         File tmp = Files.createTempDir();
         tmp.deleteOnExit();
-        return (new MageTabFiles(new File(tmp, "idf.csv"), new File(tmp, "sdrf.csv"))).init(exp);
+        return (new MageTabFiles(new File(tmp, "idf.csv"), new File(tmp, "sdrf.csv"), sanitize)).init(exp);
     }
 
     public static MageTabFiles createMageTabFiles(ExperimentProfile exp, File directory, String idfFileName,
                                                   String sdrfFileName) throws IOException, ParseException {
         return (new MageTabFiles(new File(directory, idfFileName), new File(directory, sdrfFileName))).init(exp);
+    }
+
+    /**
+     * Substitutes all fake values (which were required to build MAGE-TAB graph) to an empty string.
+     *
+     * @param file file to be sanitized
+     */
+    private static void sanitize(File file) {
+        try {
+            String str = Files.toString(file, Charsets.UTF_8);
+            str = str.replaceAll(UNASSIGNED_VALUE_PREFIX + "\\d+", "");
+            Files.write(str, file, Charsets.UTF_8);
+        } catch (IOException e) {
+            log.error("Can't sanitize MAGE-TAB file" + file.getAbsolutePath(), e);
+        }
     }
 
     /**
