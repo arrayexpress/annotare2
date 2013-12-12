@@ -41,7 +41,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import static com.google.common.io.Closeables.close;
-import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.UNASSIGNED_VALUE_PREFIX;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllAssayNameValues;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllUnassignedValues;
 
 /**
  * @author Olga Melnichuk
@@ -107,9 +108,7 @@ public class MageTabFiles {
             idf = inv.IDF;
             sdrf = inv.SDRF;
 
-            if (sanitize) {
-                sanitize(sdrfFile);
-            }
+            sanitize(sdrfFile, sanitize);
         }
         return this;
     }
@@ -142,14 +141,18 @@ public class MageTabFiles {
     }
 
     /**
-     * Substitutes all fake values (which were required to build MAGE-TAB graph) to an empty string.
+     * Substitutes fake values (which were required to build MAGE-TAB graph) to a required values.
      *
      * @param file file to be sanitized
      */
-    private static void sanitize(File file) {
+    private static void sanitize(File file, boolean everything) {
         try {
             String str = Files.toString(file, Charsets.UTF_8);
-            str = str.replaceAll(UNASSIGNED_VALUE_PREFIX + "\\d+", "");
+            str = replaceAllAssayNameValues(str);
+
+            if (everything) {
+                str = replaceAllUnassignedValues(str);
+            }
             Files.write(str, file, Charsets.UTF_8);
         } catch (IOException e) {
             log.error("Can't sanitize MAGE-TAB file" + file.getAbsolutePath(), e);

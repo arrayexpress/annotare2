@@ -28,12 +28,13 @@ import uk.ac.ebi.fg.annotare2.submission.model.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.addAll;
 import static java.util.Collections.emptyMap;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType.*;
@@ -44,13 +45,66 @@ import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE
  */
 public class MageTabGenerator {
 
-    public static final String UNASSIGNED_VALUE_PREFIX = "__UNASSIGNED__@";
+    public static String replaceAllAssayNameValues(String str) {
+        return AssayNameValue.replaceAll(str);
+    }
+
+    public static String replaceAllUnassignedValues(String str) {
+        return UnassignedValue.replaceAll(str);
+    }
+
+    public static class UnassignedValue {
+        private static final String TEMPLATE = "__UNASSIGNED__@{ID}";
+        private static final String PATTERN = TEMPLATE.replace("{ID}", "\\d+");
+
+        private int id = 1;
+
+        public String next() {
+            return TEMPLATE.replace("{ID}", Integer.toString(id++));
+        }
+
+        public static String replaceAll(String string) {
+            return string.replaceAll(PATTERN, "");
+        }
+    }
+
+    public static class AssayNameValue {
+        private static final String TEMPLATE = "__ASSAY_NAME__({FILE_NAME})__@{ID}";
+        private static final Pattern PATTERN = Pattern.compile(
+                TEMPLATE.replace("({FILE_NAME})", "\\((.*)\\)")
+                        .replace("{ID}", "\\d+")
+        );
+
+        private int id = 1;
+
+        public String next(String fileName) {
+            return TEMPLATE.replace("{ID}", Integer.toString(id++))
+                    .replace("{FILE_NAME}", fileName);
+        }
+
+        public static String replaceAll(String string) {
+            StringBuilder sb = new StringBuilder();
+
+            Matcher matcher = PATTERN.matcher(string);
+            int end = 0;
+            while(matcher.find()) {
+                String fileName = matcher.group(1);
+                sb.append(string.substring(end, matcher.start()))
+                        .append(fileName);
+                end = matcher.end();
+            }
+            sb.append(string.substring(end, string.length() - 1));
+            return sb.toString();
+        }
+    }
 
     private final ExperimentProfile exp;
 
     private final Map<String, SDRFNode> nodeCache = new HashMap<String, SDRFNode>();
     private final Set<TermSource> usedTermSources = new HashSet<TermSource>();
-    private int counter;
+
+    private UnassignedValue unassignedValue;
+    private AssayNameValue assayNameValue;
 
     public MageTabGenerator(ExperimentProfile exp) {
         this.exp = exp;
@@ -58,7 +112,9 @@ public class MageTabGenerator {
 
     public MAGETABInvestigation generate() throws ParseException {
         nodeCache.clear();
-        counter = 1;
+
+        unassignedValue = new UnassignedValue();
+        assayNameValue = new AssayNameValue();
 
         MAGETABInvestigation inv = new MAGETABInvestigation();
         generateIdf(inv.IDF);
@@ -145,7 +201,7 @@ public class MageTabGenerator {
     }
 
     private <T extends SDRFNode> T createFakeNode(Class<T> clazz) {
-        return createNode(clazz, UNASSIGNED_VALUE_PREFIX + (counter++));
+        return createNode(clazz, unassignedValue.next());
     }
 
     private <T extends SDRFNode> T createNode(Class<T> clazz, String name) {
@@ -176,7 +232,7 @@ public class MageTabGenerator {
         if (exp.getType().isMicroarray()) {
             Map<String, SDRFNode> labeledExtractLayer = generateLabeledExtractNodes(extractLayer);
             assayLayer = exp.getType().isTwoColorMicroarray() ?
-                    generateMultiChannelAssayNodes(labeledExtractLayer, sdrf) :
+                    generateMultiChannelAssayNodes(labeledExtractLayer) :
                     generateSingleChannelAssayNodes(labeledExtractLayer);
         } else {
             assayLayer = generateAssayAndScanNodes(extractLayer);
@@ -256,7 +312,7 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private Map<String, SDRFNode> generateMultiChannelAssayNodes(Map<String, SDRFNode> labeledExtractLayer, SDRF sdrf) {
+    private Map<String, SDRFNode> generateMultiChannelAssayNodes(Map<String, SDRFNode> labeledExtractLayer) {
         if (labeledExtractLayer.isEmpty()) {
             return emptyMap();
         }
@@ -267,26 +323,15 @@ public class MageTabGenerator {
         }
 
         Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
-        Map<String, AssayNode> assayNodes = new HashMap<String, AssayNode>();
-
         int fakeId = -1;
         for (String labeledExtractId : labeledExtractLayer.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
 
-            int channel = sdrf.getChannelNumber(labeledExtract.getLabel().getName());
             Assay assay = labeledExtract == null ? null : getAssay(labeledExtract);
             String fileName = assay == null ? null : fileColumn.getFileName(assay);
             if (fileName != null) {
-                AssayNode assayNode = assayNodes.get(fileName);
-                if (assayNode == null) {
-                    assayNode = createAssayNode(assay, fileName, channel, labeledExtractNode);
-                    layer.put(assay.getId(), assayNode);
-                    assayNodes.put(fileName, assayNode);
-                } else {
-                    addFactorValues(assayNode, labeledExtractNode, channel);
-                    connect(labeledExtractNode, assayNode, ASSAYS, assay);
-                }
+                layer.put(assay.getId(), createAssayNode(assay, assayNameValue.next(fileName), labeledExtractNode));
             } else {
                 layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode));
             }
@@ -427,13 +472,13 @@ public class MageTabGenerator {
     private AssayNode createAssayNode(Assay assay, String assayName, int channel, SDRFNode prevNode) {
         AssayNode assayNode;
         if (assay == null) {
-            assayNode = createFakeNode(FixedAssayNode.class);
+            assayNode = createFakeNode(AssayNode.class);
         } else {
-            assayNode = getNode(FixedAssayNode.class, assayName);
+            assayNode = getNode(AssayNode.class, assayName);
             if (assayNode != null) {
                 return assayNode;
             }
-            assayNode = createNode(FixedAssayNode.class, assayName);
+            assayNode = createNode(AssayNode.class, assayName);
         }
 
         assayNode.technologyType = createTechnologyTypeAttribute();
@@ -443,12 +488,12 @@ public class MageTabGenerator {
             assayNode.arrayDesigns.add(arrayDesignAttribute);
         }
 
-        addFactorValues(assayNode, prevNode, channel);
+        addFactorValues(assayNode, prevNode);
         connect(prevNode, assayNode, ASSAYS, assay);
         return assayNode;
     }
 
-    private void addFactorValues(AssayNode assayNode, SDRFNode prevNode, int channel) {
+    private void addFactorValues(AssayNode assayNode, SDRFNode prevNode) {
         Collection<Sample> samples = findSamples(prevNode);
         if (samples.size() > 1) {
             throw new IllegalStateException("Too many samples");
@@ -462,7 +507,6 @@ public class MageTabGenerator {
                 OntologyTerm term = attribute.getTerm();
                 attr.type = term == null ? attribute.getName().toLowerCase() : term.getLabel();
                 attr.unit = createUnitAttribute(attribute.getUnits());
-                attr.scannerChannel = channel;
                 attr.setAttributeValue(sample.getValue(attribute));
                 //TODO if attr value is an EFO Term then fill in accession and source REF
                 //attr.termAccessionNumber = term.getAccession();
@@ -710,68 +754,5 @@ public class MageTabGenerator {
         /* 2. */
         str = str.replaceAll("\t", " ");
         return str.replaceAll("\n", "<br/>");
-    }
-
-    //workaround: if assay has a factor value from a single sample but with channel differ than 1, just show this value
-    public static class FixedAssayNode extends AssayNode {
-        @Override
-        public String[] headers() {
-            List<String> headersList = new ArrayList<String>();
-            headersList.add("Assay Name");
-            if (technologyType != null) {
-                Collections.addAll(headersList, technologyType.headers());
-            }
-            for (ArrayDesignAttribute ad : arrayDesigns) {
-                Collections.addAll(headersList, ad.headers());
-            }
-            for (String commentType : comments.keySet()) {
-                headersList.add("Comment[" + commentType + "]");
-            }
-
-            Set<String> fvTypes = newHashSet();
-            List<FactorValueAttribute> fvas = new ArrayList<FactorValueAttribute>();
-            fvas.addAll(factorValues);
-            for (FactorValueAttribute fv : fvas) {
-                String type = fv.type;
-                if (!fvTypes.contains(type)) {
-                    addAll(headersList, fv.headers());
-                    fvTypes.add(type);
-                }
-            }
-            String[] result = new String[headersList.size()];
-            return headersList.toArray(result);
-        }
-
-        @Override
-        public String[] values(int channel) {
-            List<String> valuesList = new ArrayList<String>();
-            valuesList.add(getNodeName());
-            if (technologyType != null) {
-                Collections.addAll(valuesList, technologyType.values());
-            }
-            for (ArrayDesignAttribute ad : arrayDesigns) {
-                Collections.addAll(valuesList, ad.values());
-            }
-            for (String commentType : comments.keySet()) {
-                valuesList.add(comments.get(commentType));
-            }
-
-            boolean hasSingleChannel = hasSingleChannel();
-            for (FactorValueAttribute fv : factorValues) {
-                if (hasSingleChannel || fv.scannerChannel == channel) {
-                    addAll(valuesList, fv.values());
-                }
-            }
-            String[] result = new String[valuesList.size()];
-            return valuesList.toArray(result);
-        }
-
-        private boolean hasSingleChannel() {
-            Set<Integer> channels = newHashSet();
-            for (FactorValueAttribute fv : factorValues) {
-                channels.add(fv.scannerChannel);
-            }
-            return channels.size() == 1;
-        }
     }
 }
