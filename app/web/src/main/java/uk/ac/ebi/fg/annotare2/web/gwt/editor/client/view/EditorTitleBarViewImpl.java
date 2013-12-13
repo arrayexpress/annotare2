@@ -122,7 +122,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @UiHandler("validateButton")
-    public void onValidateButtonClick(ClickEvent event) {
+    void onValidateButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
         presenter.validateSubmission(new ValidationHandler() {
 
@@ -143,7 +143,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @UiHandler("submitButton")
-    public void onSubmitButtonClick(ClickEvent event) {
+    void onSubmitButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
         presenter.validateSubmission(new ValidationHandler() {
 
@@ -176,7 +176,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @UiHandler("importLink")
-    public void onImportLinkClick(ClickEvent event) {
+    void onImportLinkClick(ClickEvent event) {
         if (Window.confirm(CONFIRMATION_MESSAGE)) {
             ImportFileDialog importFileDialog = new ImportFileDialog("Array Design Import");
             importFileDialog.addImportEventHandler(new ImportEventHandler() {
@@ -190,7 +190,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @UiHandler("exportLink")
-    public void onExportLinkClick(ClickEvent event) {
+    void onExportLinkClick(ClickEvent event) {
         if (presenter != null) {
             Window.open(presenter.getSubmissionExportUrl(), "export", "");
         }
