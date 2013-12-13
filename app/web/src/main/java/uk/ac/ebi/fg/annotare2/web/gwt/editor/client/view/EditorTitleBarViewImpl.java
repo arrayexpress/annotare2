@@ -32,12 +32,14 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
+import static com.google.gwt.user.client.Window.confirm;
+
 /**
  * @author Olga Melnichuk
  */
 public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
 
-    public static final String CONFIRMATION_MESSAGE = "Please note that the all data of the submission will be lost. Do you want to continue?";
+    private static final String CONFIRMATION_MESSAGE = "Please note that the all data of the submission will be lost. Do you want to continue?";
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
     }
@@ -177,7 +179,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("importLink")
     void onImportLinkClick(ClickEvent event) {
-        if (Window.confirm(CONFIRMATION_MESSAGE)) {
+        if (confirm(CONFIRMATION_MESSAGE)) {
             ImportFileDialog importFileDialog = new ImportFileDialog("Array Design Import");
             importFileDialog.addImportEventHandler(new ImportEventHandler() {
                 @Override
