@@ -82,17 +82,12 @@ public class MageTabGenerator {
         }
 
         public static String replaceAll(String string) {
-            StringBuilder sb = new StringBuilder();
-
             Matcher matcher = PATTERN.matcher(string);
-            int end = 0;
+            StringBuffer sb = new StringBuffer();
             while(matcher.find()) {
-                String fileName = matcher.group(1);
-                sb.append(string.substring(end, matcher.start()))
-                        .append(fileName);
-                end = matcher.end();
+                matcher.appendReplacement(sb, matcher.group(1));
             }
-            sb.append(string.substring(end, string.length() - 1));
+            matcher.appendTail(sb);
             return sb.toString();
         }
     }
