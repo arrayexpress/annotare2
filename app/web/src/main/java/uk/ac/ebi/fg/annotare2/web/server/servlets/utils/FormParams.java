@@ -27,6 +27,7 @@ public abstract class FormParams {
     public static final String PASSWORD_PARAM = "password";
     public static final String CONFIRM_PASSWORD_PARAM = "confirm-password";
     public static final String TOKEN_PARAM = "token";
+    public static final String RESEND_PARAM = "resend";
 
     private Map<String,RequestParam> paramMap = new HashMap<String, RequestParam>();
     private Set<RequestParam> mandatoryParamSet = new HashSet<RequestParam>();

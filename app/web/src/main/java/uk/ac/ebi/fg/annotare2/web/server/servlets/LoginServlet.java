@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountServiceException;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
@@ -29,9 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.HOME;
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.*;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.INFO_SESSION_ATTRIBUTE;
 
 /**
  * @author Olga Melnichuk
@@ -50,11 +51,16 @@ public class LoginServlet extends HttpServlet {
         log.debug("Login details submitted; validating..");
         ValidationErrors errors = new ValidationErrors();
         try {
-            EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+            EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter(FormParams.EMAIL_PARAM));
             errors.append(accountService.login(request));
             if (errors.isEmpty()) {
                 log.debug("Login details are valid; Authorization succeeded");
                 HOME.restoreAndRedirect(request, response);
+                return;
+            } else if (!errors.getErrors(FormParams.TOKEN_PARAM).isEmpty()) {
+                log.debug("Email needs to be activated; redirecting");
+                INFO_SESSION_ATTRIBUTE.set(request.getSession(), "The email verification code has been sent to you, please enter it now");
+                VERIFY_EMAIL.redirect(request, response);
                 return;
             }
             log.debug("Login details are invalid");

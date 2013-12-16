@@ -75,7 +75,7 @@
                     <tr class="row">
                         <td></td>
                         <td>
-                            <button name="signIn">Verify</button>&nbsp;&nbsp;<a href="#" onclick="return false;">Resend the code?</a>
+                            <button name="signIn">Verify</button>&nbsp;&nbsp;<a href="?resend">Resend the code?</a>
                         </td>
                     </tr>
                 </table>

@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountServiceException;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
 
 import javax.servlet.ServletException;
@@ -30,8 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.*;
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.SIGNUP;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.VERIFY_EMAIL;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.INFO_SESSION_ATTRIBUTE;
 
 public class SignUpServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(SignUpServlet.class);
@@ -47,7 +50,7 @@ public class SignUpServlet extends HttpServlet {
             errors.append(accountService.signUp(request));
             if (errors.isEmpty()) {
                 log.debug("Sign-up successful; redirect to login page");
-                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter(FormParams.EMAIL_PARAM));
                 INFO_SESSION_ATTRIBUTE.set(request.getSession(), "Registration successful; email verification code has been sent to you, please enter it now");
                 VERIFY_EMAIL.redirect(request, response);
                 return;

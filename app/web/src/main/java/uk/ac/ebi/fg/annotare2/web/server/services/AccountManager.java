@@ -26,8 +26,8 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
 import static com.google.common.base.Strings.nullToEmpty;
+import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
 
 /**
  * @author Olga Melnichuk
@@ -78,12 +78,21 @@ public class AccountManager {
 
     public User createUser(final String name, final String email, final String password) {
         User user = new User(name, email, md5Hex(password));
-        user.setEmailVerified(false);
-        user.setVerificationToken(generateToken());
         userDao.save(user);
 
         UserRole userRole = new UserRole(user, Role.AUTHENTICATED);
         userRoleDao.save(userRole);
+
+        return requestVerifyEmail(email);
+    }
+
+    public User requestVerifyEmail(final String email) {
+        User user = getByEmail(email);
+        if (null != user) {
+            user.setEmailVerified(false);
+            user.setVerificationToken(generateToken());
+            userDao.save(user);
+        }
         return user;
     }
 

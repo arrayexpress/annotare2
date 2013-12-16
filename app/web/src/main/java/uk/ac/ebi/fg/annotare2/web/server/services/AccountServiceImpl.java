@@ -31,7 +31,8 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.*;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
+import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.LOGGED_IN_SESSION_ATTRIBUTE;
 
 /**
  * @author Olga Melnichuk
@@ -143,6 +144,30 @@ public class AccountServiceImpl implements AccountService {
                 }
 
             }
+        }
+        return errors;
+    }
+
+    @Transactional
+    public ValidationErrors resendVerifyEmail(String email) throws AccountServiceException {
+        ValidationErrors errors = new ValidationErrors();
+        User u = accountManager.requestVerifyEmail(email);
+        if (null == u) {
+            errors.append(FormParams.EMAIL_PARAM, "User with this email does not exist");
+        } else {
+            try {
+                mailer.sendFromTemplate(
+                        EmailSender.VERIFY_EMAIL_TEMPLATE,
+                        ImmutableMap.of(
+                                "to.name", u.getName(),
+                                "to.email", u.getEmail(),
+                                "verification.token", u.getVerificationToken()
+                        )
+                );
+            } catch (MessagingException x) {
+                log.error("There was a problem sending email", x);
+            }
+
         }
         return errors;
     }

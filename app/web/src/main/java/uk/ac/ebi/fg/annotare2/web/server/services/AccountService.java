@@ -38,6 +38,8 @@ public interface AccountService {
 
     ValidationErrors verifyEmail(HttpServletRequest request) throws AccountServiceException;
 
+    ValidationErrors resendVerifyEmail(String email) throws AccountServiceException;
+
     void logout(HttpSession session);
 
     User getCurrentUser(HttpSession session);

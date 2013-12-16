@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.CHANGE_PASSWORD;
-
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.INFO_SESSION_ATTRIBUTE;
@@ -54,15 +53,15 @@ public class ChangePasswordServlet extends HttpServlet {
             try {
                 errors.append(accountService.changePassword(request));
                 if (errors.isEmpty()) {
-                    if (null == request.getParameter("token")) {
+                    if (null == request.getParameter(FormParams.TOKEN_PARAM)) {
                         log.debug("Change request email has been sent; show information");
                         INFO_SESSION_ATTRIBUTE.set(request.getSession(), "Email sent to the specified address; please check your mailbox");
                         phase = "token";
-                    } else if (null == request.getParameter("password")) {
+                    } else if (null == request.getParameter(FormParams.PASSWORD_PARAM)) {
                         log.debug("Token validated; enable password inputs");
                         phase = "password";
                     } else {
-                        EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+                        EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter(FormParams.EMAIL_PARAM));
                         INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have successfully changed password; please sign in now");
                         LOGIN.redirect(request, response);
                         return;

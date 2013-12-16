@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.CHANGE_PASSWORD;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.LOGIN;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.ServletNavigation.VERIFY_EMAIL;
 import static uk.ac.ebi.fg.annotare2.web.server.servlets.SessionInformation.EMAIL_SESSION_ATTRIBUTE;
@@ -46,12 +45,12 @@ public class VerifyEmailServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ValidationErrors errors = new ValidationErrors();
-        if (null != request.getParameter("email")) {
+        if (null != request.getParameter(FormParams.EMAIL_PARAM)) {
             log.debug("Email verification request received; processing");
 
             try {
                 errors.append(accountService.verifyEmail(request));
-                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter("email"));
+                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), request.getParameter(FormParams.EMAIL_PARAM));
                 if (errors.isEmpty()) {
                     log.debug("Email verification successful; redirecting to log in");
                     INFO_SESSION_ATTRIBUTE.set(request.getSession(), "You have successfully verified your email address; please sign in now");
@@ -63,7 +62,19 @@ public class VerifyEmailServlet extends HttpServlet {
                 errors.append(e.getMessage());
             }
             request.setAttribute("errors", errors);
+        } else if (null != request.getParameter(FormParams.RESEND_PARAM)) {
+            try {
+                errors.append(accountService.resendVerifyEmail((String) EMAIL_SESSION_ATTRIBUTE.get(request.getSession())));
+                if (errors.isEmpty()) {
+                    INFO_SESSION_ATTRIBUTE.set(request.getSession(), "Email verification code has been re-sent to you, please enter it now");
+                }
+            } catch (AccountServiceException e) {
+                log.debug("Email verification request failed", e);
+                errors.append(e.getMessage());
+            }
         }
+
+        request.setAttribute("errors", errors);
         VERIFY_EMAIL.forward(getServletConfig().getServletContext(), request, response);
     }
 
