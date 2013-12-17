@@ -29,6 +29,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableSet;
 
 /**
  * @author Olga Melnichuk
@@ -71,12 +72,21 @@ public class ExperimentProfile implements Serializable {
 
     private Map<Integer, Extract> extractMap;
 
-    private Map<String, Assay> assayMap;
+    private Map<String, LabeledExtract> labeledExtractMap;
 
     private List<FileColumn> fileColumns;
 
     private Map<Integer, Set<Integer>> sampleId2ExtractsIds;
     private MultiSets<Sample, Extract> sample2Extracts;
+
+    private Map<Integer, Set<Integer>> protocolId2SampleIds;
+    private MultiSets<Protocol, Sample> protocol2Samples;
+
+    private Map<Integer, Set<Integer>> protocolId2ExtractIds;
+    private MultiSets<Protocol, Extract> protocol2Extracts;
+
+    private Map<Integer, Set<String>> protocolId2LabeledExtractIds;
+    private MultiSets<Protocol, LabeledExtract> protocol2LabeledExtracts;
 
     ExperimentProfile() {
         /* used by GWT serialization */
@@ -100,8 +110,12 @@ public class ExperimentProfile implements Serializable {
 
         sample2Extracts = new MultiSets<Sample, Extract>();
 
-        assayMap = newLinkedHashMap();
+        labeledExtractMap = newLinkedHashMap();
         fileColumns = newArrayList();
+
+        protocol2Samples = new MultiSets<Protocol, Sample>();
+        protocol2Extracts = new MultiSets<Protocol, Extract>();
+        protocol2LabeledExtracts = new MultiSets<Protocol, LabeledExtract>();
     }
 
     public ExperimentProfileType getType() {
@@ -192,10 +206,10 @@ public class ExperimentProfile implements Serializable {
         return publicationMap.remove(id);
     }
 
-    public Protocol createProtocol(OntologyTerm term, ProtocolTargetType usageType) {
+    public Protocol createProtocol(OntologyTerm term, ProtocolSubjectType usageType) {
         Protocol protocol = new Protocol(nextId());
         protocol.setType(term);
-        protocol.setTargetType(usageType);
+        protocol.setSubjectType(usageType);
         protocolMap.put(protocol.getId(), protocol);
         protocolOrder.add(protocol.getId());
         return protocol;
@@ -207,7 +221,7 @@ public class ExperimentProfile implements Serializable {
         return sample;
     }
 
-    public Extract createExtract(boolean createAssay, Sample... samples) {
+    public Extract createExtract(Sample... samples) {
         if (samples.length == 0) {
             throw new IllegalArgumentException("Can't create empty extract");
         }
@@ -216,21 +230,14 @@ public class ExperimentProfile implements Serializable {
         for (Sample sample : samples) {
             link(sample, extract);
         }
-        if (createAssay) {
-            createAssay(extract, null);
-        }
         return extract;
     }
 
-    public LabeledExtract createLabeledExtract(Extract extract, String label) {
-        return new LabeledExtract(createAssay(extract, label));
-    }
-
-    private Assay createAssay(Extract extract, String labelName) {
+    public LabeledExtract createLabeledExtract(Extract extract, String labelName) {
         Label label = addLabel(labelName);
-        Assay assay = new Assay(extract, label);
-        assayMap.put(assay.getId(), assay);
-        return assay;
+        LabeledExtract labeledExtract = new LabeledExtract(extract, label);
+        labeledExtractMap.put(labeledExtract.getId(), labeledExtract);
+        return labeledExtract;
     }
 
     public FileColumn createFileColumn(FileType fileType) {
@@ -266,31 +273,27 @@ public class ExperimentProfile implements Serializable {
             Set<Extract> extracts = sample2Extracts.get(sample);
             extracts.remove(extract);
         }
-        removeAssays(extract);
+        removeLabeledExtracts(extract);
         extractMap.remove(extract.getId());
     }
 
     public void removeLabeledExtract(LabeledExtract labeledExtract) {
-        removeAssay(new Assay(labeledExtract.getExtract(), labeledExtract.getLabel()));
+        removeFileMappings(labeledExtract);
+        labeledExtractMap.remove(labeledExtract.getId());
     }
 
-    private void removeAssays(Extract extract) {
-        List<Assay> assays = new ArrayList<Assay>(assayMap.values());
-        for (Assay assay : assays) {
-            if (assay.getExtract().equals(extract)) {
-                removeAssay(assay);
+    private void removeLabeledExtracts(Extract extract) {
+        List<LabeledExtract> labeledExtracts = new ArrayList<LabeledExtract>(labeledExtractMap.values());
+        for (LabeledExtract labeledExtract : labeledExtracts) {
+            if (labeledExtract.getExtract().equals(extract)) {
+                removeLabeledExtract(labeledExtract);
             }
         }
     }
 
-    private void removeAssay(Assay assay) {
-        removeFileMappings(assay);
-        assayMap.remove(assay.getId());
-    }
-
-    private void removeFileMappings(Assay assay) {
+    private void removeFileMappings(LabeledExtract labeledExtract) {
         for (FileColumn fileColumn : fileColumns) {
-            fileColumn.removeFileName(assay);
+            fileColumn.removeFileName(labeledExtract);
         }
     }
 
@@ -308,9 +311,14 @@ public class ExperimentProfile implements Serializable {
         if (protocol == null) {
             return;
         }
-        protocol.getTargetType().removeProtocolAssignments(protocol, this);
+        removeProtocolAssignments(protocol);
         protocolMap.remove(protocol.getId());
-        protocolOrder.remove(Integer.valueOf(protocol.getId()));
+    }
+
+    private void removeProtocolAssignments(Protocol protocol) {
+        protocol2Samples.remove(protocol);
+        protocol2Extracts.remove(protocol);
+        protocol2LabeledExtracts.remove(protocol);
     }
 
     public void moveProtocolUp(Protocol protocol) {
@@ -405,15 +413,11 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Collection<Protocol> getProtocols() {
-        List<Protocol> list = newArrayList();
-        for (Integer id : protocolOrder) {
-            list.add(protocolMap.get(id));
-        }
-        return list;
+        return unmodifiableCollection(protocolMap.values());
     }
 
-    public Collection<Protocol> getProtocols(ProtocolTargetType usageType) {
-        return usageType.filter(getProtocols());
+    public Collection<Protocol> getProtocols(ProtocolSubjectType type) {
+        return type.filter(getProtocols());
     }
 
     public Collection<Sample> getSamples() {
@@ -429,42 +433,22 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Collection<LabeledExtract> getLabeledExtracts() {
-        List<LabeledExtract> labeledExtracts = newArrayList();
-        for (Assay assay : assayMap.values()) {
-            labeledExtracts.add(assay.asLabeledExtract());
-        }
-        return labeledExtracts;
+        return unmodifiableCollection(labeledExtractMap.values());
     }
 
     public Collection<LabeledExtract> getLabeledExtracts(Extract extract) {
         List<LabeledExtract> labeledExtracts = newArrayList();
-        for (Assay assay : assayMap.values()) {
-            if (assay.getExtract().equals(extract)) {
-                labeledExtracts.add(assay.asLabeledExtract());
+        for (LabeledExtract labeledExtract : labeledExtractMap.values()) {
+            if (labeledExtract.getExtract().equals(extract)) {
+                labeledExtracts.add(labeledExtract);
             }
         }
         return labeledExtracts;
     }
 
     public LabeledExtract getLabeledExtract(String id) {
-        Assay assay = getAssay(id);
-        return assay == null ? null : assay.asLabeledExtract();
-    }
-
-    public Collection<Assay> getAssays() {
-        return unmodifiableCollection(assayMap.values());
-    }
-
-    public Assay getAssay(String assayId) {
-        return assayMap.get(assayId);
-    }
-
-    public Assay getAssay(Extract extract, Label label) {
-        return getAssay(Assay.generateAssayId(extract, label));
-    }
-
-    public Assay getAssay(LabeledExtract labeledExtract) {
-        return getAssay(labeledExtract.getExtract(), labeledExtract.getLabel());
+        LabeledExtract labeledExtract = labeledExtractMap.get(id);
+        return labeledExtract == null ? null : labeledExtract;
     }
 
     public Collection<FileColumn> getFileColumns() {
@@ -475,24 +459,16 @@ public class ExperimentProfile implements Serializable {
         return fileColumns.get(index);
     }
 
-    Collection<FileRef> getRawFileRefs() {
-        Set<FileRef> fileRefs = new HashSet<FileRef>();
-        for (FileColumn fileColumn : fileColumns) {
-            if (fileColumn.getType().isRaw()) {
-                fileRefs.addAll(fileColumn.getFileRefs());
-            }
-        }
-        return fileRefs;
+    public Set<Sample> getSamples(Protocol protocol) {
+        return unmodifiableSet(protocol2Samples.get(protocol));
     }
 
-    Collection<FileRef> getProcessedFileRefs() {
-        Set<FileRef> fileRefs = new HashSet<FileRef>();
-        for (FileColumn fileColumn : fileColumns) {
-            if (fileColumn.getType().isProcessed()) {
-                fileRefs.addAll(fileColumn.getFileRefs());
-            }
-        }
-        return fileRefs;
+    public Set<Extract> getExtracts(Protocol protocol) {
+        return unmodifiableSet(protocol2Extracts.get(protocol));
+    }
+
+    public Set<LabeledExtract> getLabeledExtracts(Protocol protocol) {
+        return unmodifiableSet(protocol2LabeledExtracts.get(protocol));
     }
 
     public Collection<Label> getLabels() {
@@ -547,17 +523,13 @@ public class ExperimentProfile implements Serializable {
         oldLabel.setName(newName);
     }
 
-    public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol) {
-        return protocol.getTargetType().getProtocolAssignments(protocol, this);
-    }
-
     private int nextId() {
         return ++nextId;
     }
 
     public void restoreObjects() {
         restoreSample2Extracts();
-        restoreAssays();
+        restoreLabeledExtracts();
     }
 
     private void restoreSample2Extracts() {
@@ -573,9 +545,9 @@ public class ExperimentProfile implements Serializable {
         this.sampleId2ExtractsIds = null;
     }
 
-    private void restoreAssays() {
-        for (Assay assay : assayMap.values()) {
-            assay.restoreObjects(this);
+    private void restoreLabeledExtracts() {
+        for (LabeledExtract labeledExtract : labeledExtractMap.values()) {
+            labeledExtract.restoreObjects(this);
         }
 
         for (FileColumn fileColumn : fileColumns) {

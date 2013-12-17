@@ -269,14 +269,14 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void updateDataAssignmentColumn(DataAssignmentColumn column) {
         uk.ac.ebi.fg.annotare2.submission.model.FileColumn fileColumn = exp.getFileColumn(column.getIndex());
-        Set<String> assayIds = new HashSet<String>(column.getAssayIds());
+        Set<String> assayIds = new HashSet<String>(column.getLabeledExtractIds());
         for (String assayId : assayIds) {
             uk.ac.ebi.fg.annotare2.submission.model.Assay assay = exp.getAssay(assayId);
             if (assay != null) {
                 fileColumn.setFileName(assay, column.getFileName(assayId));
             }
         }
-        for (uk.ac.ebi.fg.annotare2.submission.model.Assay assay : fileColumn.getAssays()) {
+        for (uk.ac.ebi.fg.annotare2.submission.model.Assay assay : fileColumn.getLabeledExtracts()) {
             if (!assayIds.contains(assay.getId())) {
                 fileColumn.setFileName(assay, null);
             }
@@ -287,7 +287,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
         uk.ac.ebi.fg.annotare2.submission.model.Protocol protocol = exp.getProtocol(updates.getProtocolId());
         if (protocol != null) {
-            protocol.getTargetType().setProtocolAssignments(protocol, exp, updates.getAssignments());
+            protocol.getSubjectType().setProtocolAssignments(protocol, exp, updates.getAssignments());
         }
     }
 
@@ -314,30 +314,6 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     protected uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp() {
         return exp;
-    }
-
-    private static class ColumnValueTypeVisitor implements ColumnValueType.Visitor {
-
-        private uk.ac.ebi.fg.annotare2.submission.model.AttributeValueType valueType;
-
-        @Override
-        public void visitTermValueType(OntologyTermValueType valueType) {
-            this.valueType = new uk.ac.ebi.fg.annotare2.submission.model.TermAttributeValueType(valueType.getEfoTerm());
-        }
-
-        @Override
-        public void visitTextValueType(TextValueType valueType) {
-            this.valueType = new uk.ac.ebi.fg.annotare2.submission.model.TextAttributeValueType();
-        }
-
-        @Override
-        public void visitNumericValueType(NumericValueType valueType) {
-            this.valueType = new uk.ac.ebi.fg.annotare2.submission.model.NumericAttributeValueType(valueType.getUnits());
-        }
-
-        public uk.ac.ebi.fg.annotare2.submission.model.AttributeValueType getValueType() {
-            return valueType;
-        }
     }
 
     private static class CompositeName {

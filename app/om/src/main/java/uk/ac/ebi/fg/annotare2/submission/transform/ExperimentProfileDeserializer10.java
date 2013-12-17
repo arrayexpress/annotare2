@@ -122,17 +122,17 @@ class ExperimentProfileDeserializer10 extends JsonDeserializer<ExperimentProfile
                         setFieldValue(obj, "extractMap", map);
                     }
                 },
-                new ValueSetter<ExperimentProfile>("assays", new TypeReference<Collection<Assay>>() {
+                new ValueSetter<ExperimentProfile>("labeledExtracts", new TypeReference<Collection<LabeledExtract>>() {
                 }) {
                     @SuppressWarnings("unchecked")
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
-                        Collection<Assay> assays = (Collection<Assay>) value;
-                        Map<String, Assay> map = new LinkedHashMap<String, Assay>();
-                        for (Assay assay : assays) {
-                            map.put(assay.getId(), assay);
+                        Collection<LabeledExtract> labeledExtracts = (Collection<LabeledExtract>) value;
+                        Map<String, LabeledExtract> map = new LinkedHashMap<String, LabeledExtract>();
+                        for (LabeledExtract labeledExtract : labeledExtracts) {
+                            map.put(labeledExtract.getId(), labeledExtract);
                         }
-                        setFieldValue(obj, "assayMap", map);
+                        setFieldValue(obj, "labeledExtractMap", map);
                     }
                 },
                 new ValueSetter<ExperimentProfile>("labels", new TypeReference<Collection<Label>>() {

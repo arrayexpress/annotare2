@@ -35,7 +35,8 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
-import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType.*;
+import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType.EXTRACT;
+import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType.LABELED_EXTRACT;
 import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 
@@ -296,11 +297,10 @@ public class MageTabGenerator {
         for (String labeledExtractId : labeledExtractLayer.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
-            Assay assay = labeledExtract == null ? null : getAssay(labeledExtract);
-            if (assay == null) {
+            if (labeledExtract == null) {
                 layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode));
             } else {
-                layer.put(assay.getId(), createAssayNode(assay, assay.getName(), labeledExtractNode));
+                layer.put(labeledExtract.getId(), createAssayNode(labeledExtract, labeledExtract.getName(), labeledExtractNode));
             }
         }
         return layer;
@@ -322,10 +322,9 @@ public class MageTabGenerator {
             LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
 
-            Assay assay = labeledExtract == null ? null : getAssay(labeledExtract);
-            String fileName = assay == null ? null : fileColumn.getFileName(assay);
+            String fileName = labeledExtract == null ? null : fileColumn.getFileName(labeledExtract);
             if (fileName != null) {
-                layer.put(assay.getId(), createAssayNode(assay, assayNameValue.next(fileName), labeledExtractNode));
+                layer.put(labeledExtract.getId(), createAssayNode(labeledExtract, assayNameValue.next(fileName), labeledExtractNode));
             } else {
                 layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode));
             }
@@ -348,13 +347,12 @@ public class MageTabGenerator {
         for (Integer extractId : extractLayer.keySet()) {
             Extract extract = exp.getExtract(extractId);
             SDRFNode extractNode = extractLayer.get(extractId);
-            Assay assay = getAssay(extract);
-            if (assay == null) {
+            if (extract == null) {
                 SDRFNode assayNode = createAssayNode(null, "", extractNode);
                 layer.put("" + (fakeId--), createScanNode(null, assayNode));
             } else {
-                SDRFNode assayNode = createAssayNode(assay, assay.getName(), extractNode);
-                layer.put(assay.getId(), createScanNode(assay, assayNode));
+                SDRFNode assayNode = createAssayNode(new LabeledExtract(extract), extract.getName(), extractNode);
+                layer.put(extract.getId(), createScanNode(extract, assayNode));
             }
         }
         return layer;
@@ -364,14 +362,14 @@ public class MageTabGenerator {
         if (assayLayer.isEmpty() || exp.getFileColumns().isEmpty()) {
             return;
         }
-        for (String assayId : assayLayer.keySet()) {
-            Assay assay = exp.getAssay(assayId);
-            SDRFNode assayNode = assayLayer.get(assayId);
-            createFileNodes(assay, assayNode);
+        for (String labeledExtractId : assayLayer.keySet()) {
+            LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
+            SDRFNode assayNode = assayLayer.get(labeledExtractId);
+            createFileNodes(labeledExtract, assayNode);
         }
     }
 
-    private void connect(SDRFNode source, SDRFNode destination, ProtocolTargetType type, HasProtocolAssignment protocolAssignment) {
+    private void connect(SDRFNode source, SDRFNode destination, ProtocolSubjectType type) {
         Collection<Protocol> protocols = type == null ? Collections.<Protocol>emptyList() : exp.getProtocols(type);
         if (protocols.isEmpty()) {
             connect(source, destination);
@@ -432,7 +430,7 @@ public class MageTabGenerator {
             }
         }
 
-        connect(parentNode, extractNode, EXTRACTS, extract);
+        connect(parentNode, extractNode, EXTRACT, extract);
         return extractNode;
     }
 
@@ -455,17 +453,13 @@ public class MageTabGenerator {
         labelAttribute.setAttributeValue(label);
         labeledExtractNode.label = labelAttribute;
 
-        connect(extractNode, labeledExtractNode, LABELED_EXTRACTS, labeledExtract);
+        connect(extractNode, labeledExtractNode, EXTRACT, extract);
         return labeledExtractNode;
     }
 
-    private AssayNode createAssayNode(Assay assay, String assayName, SDRFNode prevNode) {
-        return createAssayNode(assay, assayName, 1, prevNode);
-    }
-
-    private AssayNode createAssayNode(Assay assay, String assayName, int channel, SDRFNode prevNode) {
+    private AssayNode createAssayNode(LabeledExtract labeledExtract, String assayName, SDRFNode prevNode) {
         AssayNode assayNode;
-        if (assay == null) {
+        if (labeledExtract == null) {
             assayNode = createFakeNode(AssayNode.class);
         } else {
             assayNode = getNode(AssayNode.class, assayName);
@@ -483,7 +477,7 @@ public class MageTabGenerator {
         }
 
         addFactorValues(assayNode, prevNode);
-        connect(prevNode, assayNode, ASSAYS, assay);
+        connect(prevNode, assayNode, LABELED_EXTRACT, assay);
         return assayNode;
     }
 
@@ -554,16 +548,16 @@ public class MageTabGenerator {
         return samples;
     }
 
-    private ScanNode createScanNode(Assay assay, SDRFNode assayNode) {
+    private ScanNode createScanNode(LabeledExtract labeledExtract, SDRFNode assayNode) {
         ScanNode scanNode;
-        if (assay == null) {
+        if (labeledExtract == null) {
             scanNode = createFakeNode(ScanNode.class);
         } else {
-            scanNode = getNode(ScanNode.class, assay.getName());
+            scanNode = getNode(ScanNode.class, labeledExtract.getName());
             if (scanNode != null) {
                 return scanNode;
             }
-            scanNode = createNode(ScanNode.class, assay.getName());
+            scanNode = createNode(ScanNode.class, labeledExtract.getName());
         }
 
         connect(assayNode, scanNode, null, null);
@@ -585,26 +579,14 @@ public class MageTabGenerator {
         }
     }
 
-    private Assay getAssay(Extract extract) {
-        return getAssay(extract, null);
-    }
-
-    private Assay getAssay(LabeledExtract labeledExtract) {
-        return getAssay(labeledExtract.getExtract(), labeledExtract.getLabel());
-    }
-
-    private Assay getAssay(Extract extract, Label label) {
-        return exp.getAssay(extract, label);
-    }
-
-    private void createFileNodes(Assay assay, SDRFNode assayNode) {
+    private void createFileNodes(LabeledExtract labeledExtract, SDRFNode assayNode) {
         Collection<FileColumn> fileColumns = getSortedFileColumns();
 
         List<SDRFNode> prev = new ArrayList<SDRFNode>();
         List<SDRFNode> next = new ArrayList<SDRFNode>();
         for (FileColumn fileColumn : fileColumns) {
             FileType type = fileColumn.getType();
-            String fileName = fileColumn.getFileName(assay);
+            String fileName = fileColumn.getFileName(labeledExtract);
             SDRFNode current;
             switch (type) {
                 case RAW_FILE:
@@ -624,7 +606,7 @@ public class MageTabGenerator {
             }
             if (type.isRaw()) {
                 // always connect raw data files to assays
-                connect(assayNode, current, RAW_FILES, fileColumn.getFileRef(fileName));
+                connect(assayNode, current, ASSAY, fileColumn.getFileRef(fileName));
                 prev.add(current);
             } else {
                 if (prev.isEmpty()) {
@@ -632,7 +614,7 @@ public class MageTabGenerator {
                     prev.add(assayNode);
                 }
                 for (SDRFNode prevNode : prev) {
-                    connect(prevNode, current, PROCESSED_AND_MATRIX_FILES, fileColumn.getFileRef(fileName));
+                    connect(prevNode, current, FILE, fileColumn.getFileRef(fileName));
                 }
                 next.add(current);
                 prev = next;

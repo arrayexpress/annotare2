@@ -19,20 +19,20 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
         import com.fasterxml.jackson.core.JsonParser;
         import com.fasterxml.jackson.databind.DeserializationContext;
         import com.fasterxml.jackson.databind.JsonDeserializer;
-        import uk.ac.ebi.fg.annotare2.submission.model.Assay;
+        import uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract;
 
         import java.io.IOException;
 
-        import static uk.ac.ebi.fg.annotare2.submission.transform.AssaySerializer10.ASSAY_JSON_FIELDS;
+        import static uk.ac.ebi.fg.annotare2.submission.transform.LabeledExtractSerializer10.LABELED_EXTRACT_JSON_FIELDS;
         import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk
  */
-class AssayDeserializer10 extends JsonDeserializer<Assay> {
+class LabeledExtractDeserializer10 extends JsonDeserializer<LabeledExtract> {
 
     @Override
-    public Assay deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, Assay.class, ASSAY_JSON_FIELDS);
+    public LabeledExtract deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, LabeledExtract.class, LABELED_EXTRACT_JSON_FIELDS);
     }
 }

@@ -16,46 +16,24 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public enum ProtocolTargetType {
-    EXTRACTS("extracts") {
-        @Override
-        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
-            return exp.getExtracts();
-        }
-    },
-    LABELED_EXTRACTS("labeled extracts") {
-        @Override
-        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
-            return exp.getLabeledExtracts();
-        }
-    },
-    ASSAYS("assays") {
-        @Override
-        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
-            return exp.getAssays();
-        }
-    },
-    RAW_FILES("raw files") {
-        @Override
-        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
-            return exp.getRawFileRefs();
-        }
-    },
-    PROCESSED_AND_MATRIX_FILES("processed files") {
-        @Override
-        Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp) {
-            return exp.getProcessedFileRefs();
-        }
-    };
+public enum ProtocolSubjectType {
+    SAMPLE("sample"),
+    EXTRACT("extract"),
+    LABELED_EXTRACT("labeled extract"),
+    ASSAY("assay"),
+    RAW_FILE("raw file"),
+    PROCESSED_FILE("processed file");
 
     private final String title;
 
-    ProtocolTargetType(String title) {
+    ProtocolSubjectType(String title) {
         this.title = title;
     }
 
@@ -66,13 +44,13 @@ public enum ProtocolTargetType {
     public Collection<Protocol> filter(Collection<Protocol> protocols) {
         List<Protocol> filtered = new ArrayList<Protocol>();
         for (Protocol protocol : protocols) {
-            if (protocol.getTargetType() == this) {
+            if (protocol.getSubjectType() == this) {
                 filtered.add(protocol);
             }
         }
         return filtered;
     }
-
+/*
     abstract Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp);
 
     public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
@@ -106,4 +84,5 @@ public enum ProtocolTargetType {
         }
         protocol.setAssigned2All(true);
     }
+*/
 }

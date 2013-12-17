@@ -41,8 +41,7 @@ class ProtocolSerializer10 extends JsonSerializer<Protocol> {
             "software",
             "contact",
             "parameters",
-            "targetType",
-            "assigned2All");
+            "subjectType");
 
     @Override
     public void serialize(Protocol protocol, JsonGenerator jgen, SerializerProvider provider) throws IOException {

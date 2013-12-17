@@ -29,10 +29,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -199,8 +198,8 @@ public class ExperimentDataProxy {
 
     private List<DataAssignmentRow> getDataAssignmentRows(ExperimentProfile exp) {
         List<DataAssignmentRow> rows = new ArrayList<DataAssignmentRow>();
-        for (Assay assay : exp.getAssays()) {
-            DataAssignmentRow row = new DataAssignmentRow(assay.getId(), assay.getName());
+        for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+            DataAssignmentRow row = new DataAssignmentRow(labeledExtract.getId(), labeledExtract.getName());
             rows.add(row);
         }
         return rows;
@@ -211,10 +210,10 @@ public class ExperimentDataProxy {
         int index = 0;
         for (FileColumn fileColumn : exp.getFileColumns()) {
             DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
-            for (Assay assay : exp.getAssays()) {
-                String fileName = fileColumn.getFileName(assay);
+            for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+                String fileName = fileColumn.getFileName(labeledExtract);
                 if (fileName != null) {
-                    column.setFileName(assay.getId(), fileName);
+                    column.setFileName(labeledExtract.getId(), fileName);
                 }
             }
             columns.add(column);
@@ -239,8 +238,7 @@ public class ExperimentDataProxy {
 
     private ProtocolAssignmentProfile getProtocolAssignmentProfile(int protocolId, ExperimentProfile exp) {
         Protocol protocol = exp.getProtocol(protocolId);
-        Map<AssignmentItem, Boolean> protocolAssignments = exp.getProtocolAssignments(protocol);
-        return new ProtocolAssignmentProfile(protocol, protocolAssignments);
+        return createProtocolAssignment(exp, protocol).getProfile();
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {

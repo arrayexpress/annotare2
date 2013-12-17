@@ -19,7 +19,8 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.ProtocolAssignment;
+import uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract;
+import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,12 +31,27 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 /**
  * @author Olga Melnichuk
  */
-class ProtocolAssignmentSerializer10 extends JsonSerializer<ProtocolAssignment> {
+class LabeledExtractSerializer10 extends JsonSerializer<LabeledExtract> {
 
-    static final List<String> PROTOCOL_ASSIGNMENT_JSON_FIELDS = asList("protocolIds");
+    static final List<String> LABELED_EXTRACT_JSON_FIELDS = asList(
+            "extractId",
+            "labelId",
+            "id");
 
     @Override
-    public void serialize(ProtocolAssignment protocolAssignment, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-        generateJson(jgen, protocolAssignment, PROTOCOL_ASSIGNMENT_JSON_FIELDS);
+    public void serialize(LabeledExtract assay, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        generateJson(jgen, assay, LABELED_EXTRACT_JSON_FIELDS,
+                new ValueGetter<LabeledExtract>("extractId") {
+                    @Override
+                    public Object getValue(LabeledExtract obj) {
+                        return obj.getExtract().getId();
+                    }
+                },
+                new ValueGetter<LabeledExtract>("labelId") {
+                    @Override
+                    public Object getValue(LabeledExtract obj) {
+                        return obj.getLabel() == null ? null : obj.getLabel().getId();
+                    }
+                });
     }
 }

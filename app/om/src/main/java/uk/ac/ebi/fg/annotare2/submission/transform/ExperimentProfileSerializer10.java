@@ -51,7 +51,7 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
             "sampleAttributes",
             "samples",
             "extracts",
-            "assays",
+            "labeledExtracts",
             "sampleId2ExtractsIds",
             "fileColumns"
     );
@@ -95,10 +95,10 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
                         return obj.getExtracts();
                     }
                 },
-                new ValueGetter<ExperimentProfile>("assays") {
+                new ValueGetter<ExperimentProfile>("labeledExtracts") {
                     @Override
                     public Object getValue(ExperimentProfile obj) {
-                        return obj.getAssays();
+                        return obj.getLabeledExtracts();
                     }
                 },
                 new ValueGetter<ExperimentProfile>("sampleId2ExtractsIds") {

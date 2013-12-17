@@ -169,7 +169,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                     @Override
                     public void onSuccess(ProtocolAssignmentProfile result) {
                         if (result.getNames().isEmpty()) {
-                            Window.alert("You do not have any " + result.getTarget() + " to assign protocols to.");
+                            Window.alert("You do not have any " + result.getProtocolSubjectType() + " to assign protocols to.");
                             return;
                         }
                         new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {

@@ -59,6 +59,9 @@ public class ProtocolAssignmentDialog extends DialogBox {
     @UiField
     Label errorMessage;
 
+    @UiField
+    InlineLabel protocolSubject;
+
     private DialogCallback<ProtocolAssignmentProfileUpdates> callback;
     private final int protocolId;
     private Map<String, Boolean> assignments;
@@ -75,9 +78,11 @@ public class ProtocolAssignmentDialog extends DialogBox {
 
         setModal(true);
         setGlassEnabled(true);
-        setText("Assign " + profile.getProtocolName() + " to " + profile.getTarget() + "...");
+        setText("Assign " + profile.getProtocolName() + " to " + profile.getProtocolSubjectType() + "...");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
+
+        protocolSubject.setText(profile.getProtocolSubjectType());
 
         center();
         updateListBoxes();

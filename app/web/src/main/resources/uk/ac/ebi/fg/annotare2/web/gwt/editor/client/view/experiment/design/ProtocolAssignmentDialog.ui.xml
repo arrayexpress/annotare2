@@ -32,7 +32,9 @@
                     <g:center>
                         <g:DockLayoutPanel>
                             <g:north size="20">
-                                <g:Label>Assigned:</g:Label>
+                                <g:HTMLPanel>
+                                    Apply protocol to the following <g:InlineLabel ui:field="protocolSubject"/>(s):
+                                </g:HTMLPanel>
                             </g:north>
                             <g:center>
                                 <g:ListBox ui:field="assignedListBox" width="100%" visibleItemCount="5"/>
@@ -60,7 +62,7 @@
                             <g:center>
                                 <g:DockLayoutPanel>
                                     <g:north size="20">
-                                        <g:Label>Available:</g:Label>
+                                        <g:Label>but not to:</g:Label>
                                     </g:north>
                                     <g:center>
                                         <g:ListBox ui:field="availableListBox" width="100%" visibleItemCount="5"/>

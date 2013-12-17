@@ -24,8 +24,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.submission.model.ProtocolTargetType;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -97,8 +97,8 @@ public class ProtocolTypes {
         @JsonProperty("usage")
         private final Usage usage;
 
-        @JsonProperty("target")
-        private final ProtocolTargetType targetType;
+        @JsonProperty("appliesTo")
+        private final ProtocolSubjectType protocolSubjectType;
 
         @JsonProperty("definition")
         private final String definition;
@@ -106,12 +106,12 @@ public class ProtocolTypes {
         public Config(@JsonProperty("label") String label,
                       @JsonProperty("id") String id,
                       @JsonProperty("usage") Usage usage,
-                      @JsonProperty("target") ProtocolTargetType usageType,
+                      @JsonProperty("appliesTo") ProtocolSubjectType protocolSubjectType,
                       @JsonProperty("definition") String definition) {
             this.label = label;
             this.id = id;
             this.usage = usage;
-            this.targetType = usageType;
+            this.protocolSubjectType = protocolSubjectType;
             this.definition = definition;
         }
 
@@ -123,8 +123,8 @@ public class ProtocolTypes {
             return definition;
         }
 
-        public ProtocolTargetType getTargetType() {
-            return targetType;
+        public ProtocolSubjectType getProtocolSubjectType() {
+            return protocolSubjectType;
         }
 
         private boolean isUsedIn(ExperimentProfileType expType) {

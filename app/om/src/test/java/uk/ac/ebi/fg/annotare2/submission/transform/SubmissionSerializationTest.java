@@ -63,12 +63,12 @@ public class SubmissionSerializationTest {
         p2.setTitle("pub2");
         p2.setStatus(new OntologyTerm("in-review", "in-review"));
 
-        Protocol prot1 = profileIn.createProtocol(new OntologyTerm("protocol1", "protocol1"), ProtocolTargetType.EXTRACTS);
+        Protocol prot1 = profileIn.createProtocol(new OntologyTerm("protocol1", "protocol1"), ProtocolSubjectType.EXTRACT);
         prot1.setName("Name of Protocol1");
         prot1.setDescription("Description of Protocol1");
         prot1.setParameters(asList("param1", "param2"));
 
-        Protocol prot2 = profileIn.createProtocol(new OntologyTerm("protocol2", "protocol2"), ProtocolTargetType.LABELED_EXTRACTS);
+        Protocol prot2 = profileIn.createProtocol(new OntologyTerm("protocol2", "protocol2"), ProtocolSubjectType.LABELED_EXTRACT);
         prot2.setName("Name of Protocol2");
         prot2.setDescription("Description of Protocol2");
 
@@ -92,8 +92,8 @@ public class SubmissionSerializationTest {
             put(sa1.getId(), "value2");
         }});
 
-        Extract ex1 = profileIn.createExtract(false, s1);
-        Extract ex2 = profileIn.createExtract(false, s2);
+        Extract ex1 = profileIn.createExtract(s1);
+        Extract ex2 = profileIn.createExtract(s2);
 
         LabeledExtract le1= profileIn.createLabeledExtract(ex1, label1.getName());
         LabeledExtract le2 = profileIn.createLabeledExtract(ex1, label2.getName());
@@ -101,10 +101,10 @@ public class SubmissionSerializationTest {
         LabeledExtract le4 = profileIn.createLabeledExtract(ex2, label2.getName());
 
         FileColumn fileColumn = profileIn.createFileColumn(FileType.RAW_FILE);
-        fileColumn.setFileName(profileIn.getAssay(le1), "file1");
-        fileColumn.setFileName(profileIn.getAssay(le2), "file1");
-        fileColumn.setFileName(profileIn.getAssay(le3), "file1");
-        fileColumn.setFileName(profileIn.getAssay(le4), "file1");
+        fileColumn.setFileName(le1, "file1");
+        fileColumn.setFileName(le2, "file1");
+        fileColumn.setFileName(le3, "file1");
+        fileColumn.setFileName(le4, "file1");
 
         String jsonString = JsonCodec.writeExperiment(profileIn);
         log.debug("experimentProfile=" + jsonString);
