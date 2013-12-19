@@ -225,7 +225,8 @@ public class ExperimentDataProxy {
     private List<ProtocolRow> getProtocolRows(ExperimentProfile exp) {
         List<ProtocolRow> rows = new ArrayList<ProtocolRow>();
         for (Protocol protocol : exp.getProtocols()) {
-            ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType());
+            ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType(),
+                    protocol.getSubjectType().isSampleExtractOrLabeledExtract());
             row.setDescription(protocol.getDescription());
             row.setSoftware(protocol.getSoftware());
             row.setHardware(protocol.getHardware());

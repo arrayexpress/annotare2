@@ -50,39 +50,8 @@ public enum ProtocolSubjectType {
         }
         return filtered;
     }
-/*
-    abstract Collection<? extends HasProtocolAssignment> getAssignmentItems(ExperimentProfile exp);
 
-    public Map<AssignmentItem, Boolean> getProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-        Map<AssignmentItem, Boolean> assigned = new LinkedHashMap<AssignmentItem, Boolean>();
-        for (HasProtocolAssignment item : getAssignmentItems(exp)) {
-            assigned.put(item.getProtocolAssignmentItem(), item.hasProtocol(protocol) || protocol.isAssigned2All());
-        }
-        return assigned;
+    public boolean isSampleExtractOrLabeledExtract() {
+        return this == SAMPLE || this == EXTRACT || this == LABELED_EXTRACT;
     }
-
-    public void setProtocolAssignments(Protocol protocol, ExperimentProfile exp, Set<String> assignments) {
-        Collection<? extends HasProtocolAssignment> items = getAssignmentItems(exp);
-        boolean assign2All = assignments.size() == items.size();
-        if (assign2All) {
-            assign2All(protocol, items);
-            return;
-        }
-        for (HasProtocolAssignment item : items) {
-            item.assignProtocol(protocol, assignments.contains(item.getProtocolAssignmentItem().getId()));
-        }
-        protocol.setAssigned2All(false);
-    }
-
-    public void removeProtocolAssignments(Protocol protocol, ExperimentProfile exp) {
-        assign2All(protocol, getAssignmentItems(exp));
-    }
-
-    private void assign2All(Protocol protocol, Collection<? extends HasProtocolAssignment> items) {
-        for (HasProtocolAssignment item : items) {
-            item.assignProtocol(protocol, false);
-        }
-        protocol.setAssigned2All(true);
-    }
-*/
 }

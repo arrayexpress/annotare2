@@ -36,15 +36,17 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
     private String hardware;
     private String software;
     private String contact;
+    private boolean isAssignable;
 
     ProtocolRow() {
         /* used by GWT serialization */
     }
 
-    public ProtocolRow(int id, String name, OntologyTerm protocolType) {
+    public ProtocolRow(int id, String name, OntologyTerm protocolType, boolean isAssignable) {
         this.id = id;
         this.name = name;
         this.protocolType = protocolType;
+        this.isAssignable = isAssignable;
     }
 
     @Override
@@ -110,5 +112,9 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public boolean isAssignable() {
+        return isAssignable;
     }
 }

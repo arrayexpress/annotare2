@@ -23,6 +23,8 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -151,10 +153,19 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     }
 
     private void addAssignmentColumn() {
-        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell()) {
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell() {
+            @Override
+            public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
+                if (data != null) {
+                    sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">");
+                    sb.append(data);
+                    sb.appendHtmlConstant("</button>");
+                }
+            }
+        }) {
             @Override
             public String getValue(ProtocolRow object) {
-                return "Assign...";
+                return object.isAssignable() ? "Assign..." : null;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
@@ -169,7 +180,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                     @Override
                     public void onSuccess(ProtocolAssignmentProfile result) {
                         if (result.getNames().isEmpty()) {
-                            Window.alert("You do not have any " + result.getProtocolSubjectType() + " to assign protocols to.");
+                            Window.alert("You do not have any '" + result.getProtocolSubjectType() + "' entries to assign protocols to.");
                             return;
                         }
                         new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
