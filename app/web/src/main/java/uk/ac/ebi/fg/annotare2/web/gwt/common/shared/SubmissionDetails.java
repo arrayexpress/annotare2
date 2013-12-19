@@ -38,7 +38,7 @@ public class SubmissionDetails implements IsSerializable {
 
     private SubmissionType type;
 
-    private boolean hasData;
+    private boolean isEmpty;
 
     public SubmissionDetails() {
     }
@@ -49,14 +49,14 @@ public class SubmissionDetails implements IsSerializable {
                              Date created,
                              SubmissionStatus status,
                              SubmissionType type,
-                             boolean hasData) {
+                             boolean isEmpty) {
         this.id = id;
         this.accession = new Accession(accession);
         this.title = title;
         this.created = created;
         this.status = status;
         this.type = type;
-        this.hasData = hasData;
+        this.isEmpty = isEmpty;
     }
 
     public long getId() {
@@ -83,7 +83,7 @@ public class SubmissionDetails implements IsSerializable {
         return type;
     }
 
-    public boolean hasNoData() {
-        return hasData;
+    public boolean isEmpty() {
+        return isEmpty;
     }
 }

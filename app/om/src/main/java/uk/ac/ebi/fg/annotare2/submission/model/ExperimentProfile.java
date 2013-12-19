@@ -28,6 +28,8 @@ import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
+import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableSet;
 
@@ -76,7 +78,7 @@ public class ExperimentProfile implements Serializable {
 
     private List<FileColumn> fileColumns;
 
-    private Map<Integer, Set<Integer>> sampleId2ExtractsIds;
+    private Map<Integer, Set<Integer>> sampleId2ExtractIds;
     private MultiSets<Sample, Extract> sample2Extracts;
 
     private Map<Integer, Set<Integer>> protocolId2SampleIds;
@@ -313,6 +315,7 @@ public class ExperimentProfile implements Serializable {
         }
         removeProtocolAssignments(protocol);
         protocolMap.remove(protocol.getId());
+        protocolOrder.remove(Integer.valueOf(protocol.getId()));
     }
 
     private void removeProtocolAssignments(Protocol protocol) {
@@ -413,10 +416,14 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Collection<Protocol> getProtocols() {
-        return unmodifiableCollection(protocolMap.values());
+        List<Protocol> list = newArrayList();
+        for (Integer id : protocolOrder) {
+            list.add(protocolMap.get(id));
+        }
+        return list;
     }
 
-    public Collection<Protocol> getProtocols(ProtocolSubjectType type) {
+    public Collection<Protocol> getProtocolsByType(ProtocolSubjectType type) {
         return type.filter(getProtocols());
     }
 
@@ -469,6 +476,84 @@ public class ExperimentProfile implements Serializable {
 
     public Set<LabeledExtract> getLabeledExtracts(Protocol protocol) {
         return unmodifiableSet(protocol2LabeledExtracts.get(protocol));
+    }
+
+    public Set<Protocol> getProtocols(Sample sample) {
+        if (sample == null) {
+            return getProtocols(ProtocolSubjectType.SAMPLE);
+        }
+        Collection<Protocol> sampleProtocols = getProtocolsByType(ProtocolSubjectType.SAMPLE);
+        Set<Protocol> protocols = newLinkedHashSet();
+        for (Protocol p : sampleProtocols) {
+            Set<Sample> samples = protocol2Samples.get(p);
+            if (samples.isEmpty() || samples.contains(sample)) {
+                protocols.add(p);
+            }
+        }
+        return protocols;
+    }
+
+    public Set<Protocol> getProtocols(Extract extract) {
+        if (extract == null) {
+            return getProtocols(ProtocolSubjectType.EXTRACT);
+        }
+        Collection<Protocol> extractProtocols = getProtocolsByType(ProtocolSubjectType.EXTRACT);
+        Set<Protocol> protocols = newLinkedHashSet();
+        for (Protocol p : extractProtocols) {
+            Set<Extract> extracts = protocol2Extracts.get(p);
+            if (extracts.isEmpty() || extracts.contains(extract)) {
+                protocols.add(p);
+            }
+        }
+        return protocols;
+    }
+
+    public Set<Protocol> getProtocols(LabeledExtract labeledExtract) {
+        if (labeledExtract == null) {
+            return getProtocols(ProtocolSubjectType.LABELED_EXTRACT);
+        }
+        Collection<Protocol> labelExtractProtocols = getProtocolsByType(ProtocolSubjectType.LABELED_EXTRACT);
+        Set<Protocol> protocols = newLinkedHashSet();
+        for (Protocol p : labelExtractProtocols) {
+            Set<LabeledExtract> labelExtracts = protocol2LabeledExtracts.get(p);
+            if (labelExtracts.isEmpty() || labelExtracts.contains(labeledExtract)) {
+                protocols.add(p);
+            }
+        }
+        return protocols;
+    }
+
+    public Set<Protocol> getProtocols(ProtocolSubjectType type) {
+        Collection<Protocol> protocolsByType = getProtocolsByType(type);
+        Set<Protocol> protocols = newHashSet();
+        for (Protocol p : protocolsByType) {
+            if (!protocol2Samples.containsKey(p)) {
+                protocols.add(p);
+            }
+        }
+        return protocols;
+    }
+
+
+    public void assignProtocol2Samples(Protocol protocol, Collection<Sample> samples) {
+        Set<Sample> set = new HashSet<Sample>();
+        set.addAll(samples);
+        protocol2Samples.remove(protocol);
+        protocol2Samples.putAll(protocol, set);
+    }
+
+    public void assignProtocol2Extracts(Protocol protocol, Collection<Extract> extracts) {
+        Set<Extract> set = new HashSet<Extract>();
+        set.addAll(extracts);
+        protocol2Extracts.remove(protocol);
+        protocol2Extracts.putAll(protocol, set);
+    }
+
+    public void assignProtocol2LabeledExtracts(Protocol protocol, Collection<LabeledExtract> labeledExtracts) {
+        Set<LabeledExtract> set = new HashSet<LabeledExtract>();
+        set.addAll(labeledExtracts);
+        protocol2LabeledExtracts.remove(protocol);
+        protocol2LabeledExtracts.putAll(protocol, set);
     }
 
     public Collection<Label> getLabels() {
@@ -530,19 +615,61 @@ public class ExperimentProfile implements Serializable {
     public void restoreObjects() {
         restoreSample2Extracts();
         restoreLabeledExtracts();
+        restoreProtocol2Samples();
+        restoreProtocol2Extracts();
+        restoreProtocol2LabeledExtracts();
     }
 
     private void restoreSample2Extracts() {
-        if (sampleId2ExtractsIds == null) {
+        if (sampleId2ExtractIds == null) {
             return;
         }
-        for (Integer sampleId : sampleId2ExtractsIds.keySet()) {
+        for (Integer sampleId : sampleId2ExtractIds.keySet()) {
             Sample sample = sampleMap.get(sampleId);
-            for (Integer extractId : sampleId2ExtractsIds.get(sampleId)) {
+            for (Integer extractId : sampleId2ExtractIds.get(sampleId)) {
                 sample2Extracts.put(sample, extractMap.get(extractId));
             }
         }
-        this.sampleId2ExtractsIds = null;
+        sampleId2ExtractIds = null;
+    }
+
+    private void restoreProtocol2Samples() {
+        if (protocolId2SampleIds == null) {
+            return;
+        }
+        for (Integer protocolId : protocolId2SampleIds.keySet()) {
+            Protocol protocol = protocolMap.get(protocolId);
+            for (Integer sampleId : protocolId2SampleIds.get(protocolId)) {
+                protocol2Samples.put(protocol, sampleMap.get(sampleId));
+            }
+        }
+        protocolId2SampleIds = null;
+    }
+
+    private void restoreProtocol2Extracts() {
+        if (protocolId2ExtractIds == null) {
+            return;
+        }
+        for (Integer protocolId : protocolId2ExtractIds.keySet()) {
+            Protocol protocol = protocolMap.get(protocolId);
+            for (Integer extractId : protocolId2ExtractIds.get(protocolId)) {
+                protocol2Extracts.put(protocol, extractMap.get(extractId));
+            }
+        }
+        protocolId2ExtractIds = null;
+    }
+
+    private void restoreProtocol2LabeledExtracts() {
+        if (protocolId2LabeledExtractIds == null) {
+            return;
+        }
+        for (Integer protocolId : protocolId2LabeledExtractIds.keySet()) {
+            Protocol protocol = protocolMap.get(protocolId);
+            for (String labeledExtractId : protocolId2LabeledExtractIds.get(protocolId)) {
+                protocol2LabeledExtracts.put(protocol, labeledExtractMap.get(labeledExtractId));
+            }
+        }
+        protocolId2LabeledExtractIds = null;
     }
 
     private void restoreLabeledExtracts() {

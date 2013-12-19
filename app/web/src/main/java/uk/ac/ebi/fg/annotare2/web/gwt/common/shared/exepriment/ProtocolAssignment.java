@@ -18,9 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * @author Olga Melnichuk
@@ -33,13 +33,25 @@ public abstract class ProtocolAssignment {
         }
 
         @Override
-        public ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol){
+        public ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
             Set<Sample> assigned = exp.getSamples(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
-            for(Sample sample : exp.getSamples()) {
+            for (Sample sample : exp.getSamples()) {
                 assignments.put(new Item(sample.getId(), sample.getName()), assigned.contains(sample));
             }
             return new ProtocolAssignmentProfile(protocol, assignments);
+        }
+
+        @Override
+        protected void update(ExperimentProfile exp, Protocol protocol, Set<String> assignments) {
+            List<Sample> samples = new ArrayList<Sample>();
+            for (String id : assignments) {
+                Sample sample = exp.getSample(parseInt(id));
+                if (sample != null) {
+                    samples.add(sample);
+                }
+            }
+            exp.assignProtocol2Samples(protocol, samples);
         }
     }
 
@@ -52,10 +64,22 @@ public abstract class ProtocolAssignment {
         protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
             Set<Extract> assigned = exp.getExtracts(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
-            for(Extract extract : exp.getExtracts()) {
+            for (Extract extract : exp.getExtracts()) {
                 assignments.put(new Item(extract.getId(), extract.getName()), assigned.contains(extract));
             }
             return new ProtocolAssignmentProfile(protocol, assignments);
+        }
+
+        @Override
+        protected void update(ExperimentProfile exp, Protocol protocol, Set<String> assignments) {
+            List<Extract> extracts = new ArrayList<Extract>();
+            for (String id : assignments) {
+                Extract extract = exp.getExtract(parseInt(id));
+                if (extract != null) {
+                    extracts.add(extract);
+                }
+            }
+            exp.assignProtocol2Extracts(protocol, extracts);
         }
     }
 
@@ -68,10 +92,22 @@ public abstract class ProtocolAssignment {
         protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
             Set<LabeledExtract> assigned = exp.getLabeledExtracts(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
-            for(LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+            for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
                 assignments.put(new Item(labeledExtract.getId(), labeledExtract.getName()), assigned.contains(labeledExtract));
             }
             return new ProtocolAssignmentProfile(protocol, assignments);
+        }
+
+        @Override
+        protected void update(ExperimentProfile exp, Protocol protocol, Set<String> assignments) {
+            List<LabeledExtract> labeledExtracts = new ArrayList<LabeledExtract>();
+            for (String id : assignments) {
+                LabeledExtract labeledExtract = exp.getLabeledExtract(id);
+                if (labeledExtract != null) {
+                    labeledExtracts.add(labeledExtract);
+                }
+            }
+            exp.assignProtocol2LabeledExtracts(protocol, labeledExtracts);
         }
     }
 
@@ -124,13 +160,19 @@ public abstract class ProtocolAssignment {
 
     protected abstract ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol);
 
+    protected abstract void update(ExperimentProfile exp, Protocol protocol, Set<String> assignments);
+
     public ProtocolAssignmentProfile getProfile() {
         return getProfile(exp, protocol);
     }
 
+    public void update(Set<String> assignments) {
+        update(exp, protocol, assignments);
+    }
+
     public static ProtocolAssignment createProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
         ProtocolSubjectType subjectType = protocol.getSubjectType();
-        switch(subjectType) {
+        switch (subjectType) {
             case SAMPLE:
                 return new SampleProtocolAssignment(exp, protocol);
             case EXTRACT:
@@ -138,12 +180,17 @@ public abstract class ProtocolAssignment {
             case LABELED_EXTRACT:
                 return new LabeledExtractProtocolAssignment(exp, protocol);
             default:
-               return new ProtocolAssignment(exp, protocol) {
-                   @Override
-                   protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
-                       return ProtocolAssignmentProfile.EMPTY;
-                   }
-               };
+                return new ProtocolAssignment(exp, protocol) {
+                    @Override
+                    protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
+                        return ProtocolAssignmentProfile.EMPTY;
+                    }
+
+                    @Override
+                    protected void update(ExperimentProfile exp, Protocol protocol, Set<String> assignments) {
+                        // do nothing
+                    }
+                };
         }
     }
 }

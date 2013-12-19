@@ -97,8 +97,8 @@ public class ProtocolTypes {
         @JsonProperty("usage")
         private final Usage usage;
 
-        @JsonProperty("appliesTo")
-        private final ProtocolSubjectType protocolSubjectType;
+        @JsonProperty("subject")
+        private final ProtocolSubjectType subjectType;
 
         @JsonProperty("definition")
         private final String definition;
@@ -106,13 +106,13 @@ public class ProtocolTypes {
         public Config(@JsonProperty("label") String label,
                       @JsonProperty("id") String id,
                       @JsonProperty("usage") Usage usage,
-                      @JsonProperty("appliesTo") ProtocolSubjectType protocolSubjectType,
+                      @JsonProperty("subject") ProtocolSubjectType subjectType,
                       @JsonProperty("definition") String definition) {
-            this.label = label;
-            this.id = id;
-            this.usage = usage;
-            this.protocolSubjectType = protocolSubjectType;
-            this.definition = definition;
+            this.label = checkNotNull(label);
+            this.id = checkNotNull(id);
+            this.usage = checkNotNull(usage);
+            this.subjectType = checkNotNull(subjectType);
+            this.definition = checkNotNull(definition);
         }
 
         public String getId() {
@@ -123,12 +123,19 @@ public class ProtocolTypes {
             return definition;
         }
 
-        public ProtocolSubjectType getProtocolSubjectType() {
-            return protocolSubjectType;
+        public ProtocolSubjectType getSubjectType() {
+            return subjectType;
         }
 
         private boolean isUsedIn(ExperimentProfileType expType) {
             return usage.isOkay(expType);
+        }
+
+        private static <T> T checkNotNull(T t) {
+            if (t == null) {
+                throw new NullPointerException("t == null");
+            }
+            return t;
         }
     }
 

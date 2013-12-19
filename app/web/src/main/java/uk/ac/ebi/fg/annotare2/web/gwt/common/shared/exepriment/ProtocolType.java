@@ -29,15 +29,15 @@ public class ProtocolType implements IsSerializable {
 
     private String definition;
 
-    private ProtocolSubjectType usageType;
+    private ProtocolSubjectType subjectType;
 
-    public ProtocolType() {
+    ProtocolType() {
     }
 
-    public ProtocolType(OntologyTerm term, String definition, ProtocolSubjectType usageType) {
+    public ProtocolType(OntologyTerm term, String definition, ProtocolSubjectType subjectType) {
         this.term = term;
         this.definition = definition;
-        this.usageType = usageType;
+        this.subjectType = subjectType;
     }
 
     public OntologyTerm getTerm() {
@@ -48,7 +48,7 @@ public class ProtocolType implements IsSerializable {
         return definition;
     }
 
-    public ProtocolSubjectType getUsageType() {
-        return usageType;
+    public ProtocolSubjectType getSubjectType() {
+        return subjectType;
     }
 }

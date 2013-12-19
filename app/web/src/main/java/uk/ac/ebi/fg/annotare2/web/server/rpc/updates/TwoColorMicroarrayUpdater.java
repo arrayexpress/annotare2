@@ -36,7 +36,7 @@ public class TwoColorMicroarrayUpdater extends BasicExperimentUpdater {
     public void createSample() {
         Sample sample = createAndReturnSample();
 
-        Extract extract = exp().createExtract(false, sample);
+        Extract extract = exp().createExtract(sample);
         extract.setName(sample.getName());
 
         for (String label : exp().getLabelNames()) {

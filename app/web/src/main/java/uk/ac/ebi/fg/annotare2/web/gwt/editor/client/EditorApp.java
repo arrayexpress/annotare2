@@ -97,7 +97,7 @@ public class EditorApp implements EntryPoint {
         EventBus eventBus = injector.getEventBus();
 
         SubmissionType type = details.getType();
-        Widget layout = (type == EXPERIMENT && details.hasNoData()) ?
+        Widget layout = (type == EXPERIMENT && details.isEmpty()) ?
                 initStartLayout(eventBus) :
                 initMainLayout(type, eventBus);
 

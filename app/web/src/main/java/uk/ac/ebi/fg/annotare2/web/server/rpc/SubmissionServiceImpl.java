@@ -97,7 +97,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     public SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = getSubmission(id, Permission.VIEW);
-            return uiSubmissionDetails(sb);
+            SubmissionDetails sd = uiSubmissionDetails(sb);
+            return sd;
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {

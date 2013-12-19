@@ -39,12 +39,12 @@
     </category>
 
     <category name="org.hibernate" additivity="false">
-        <priority value="DEBUG"/>
+        <priority value="INFO"/>
         <appender-ref ref="${webapp.log.appender.ref}"/>
     </category>
 
     <root>
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="${webapp.log.appender.ref}"/>
     </root>
 

@@ -98,4 +98,15 @@ public class ProtocolAssignmentProfile implements IsSerializable {
     public String getProtocolSubjectType() {
         return target;
     }
+
+    public boolean isDefault() {
+        boolean isDefault = true;
+        for(Boolean assigned : assignments.values()) {
+            isDefault = isDefault && !assigned;
+            if (!isDefault) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
