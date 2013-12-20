@@ -23,7 +23,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -93,14 +92,14 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             private List<String> options = new ArrayList<String>();
 
             @Override
-            public void updateOptions() {
+            public void update(final Callback callback) {
                 if (presenter == null || !options.isEmpty()) {
                     return;
                 }
                 presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        Window.alert("Can't load material type options");
+                        callback.setOptions(Collections.<String>emptyList());
                     }
 
                     @Override
@@ -108,8 +107,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                         if (!result.isEmpty()) {
                             options.add("");
                             options.addAll(result);
-                            updateOptions(options);
-                            //gridView.redraw();
+                            callback.setOptions(options);
                         }
                     }
                 });
@@ -128,7 +126,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         gridView.setRows(rows);
         setColumns(columns);
 
-        materialTypes.updateOptions();
+        materialTypes.update();
     }
 
     private void setColumns(List<SampleColumn> columns) {

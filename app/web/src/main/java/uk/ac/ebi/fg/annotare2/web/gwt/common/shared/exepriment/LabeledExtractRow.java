@@ -19,25 +19,23 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
-import java.util.*;
-
 /**
  * @author Olga Melnichuk
  */
-public class ExtractLabelsRow implements HasIdentity, IsSerializable {
+public class LabeledExtractRow implements HasIdentity, IsSerializable {
 
     private int id;
     private String name;
-    private Set<String> labels;
+    private String label;
 
-    ExtractLabelsRow() {
+    LabeledExtractRow() {
     /* used by GWT serialization */
     }
 
-    public ExtractLabelsRow(int extractId, String extractName) {
+    public LabeledExtractRow(int extractId, String extractName, String label) {
         this.id = extractId;
         this.name = extractName;
-        this.labels = new LinkedHashSet<String>();
+        this.label = label;
     }
 
     @Override
@@ -53,21 +51,15 @@ public class ExtractLabelsRow implements HasIdentity, IsSerializable {
         return name;
     }
 
-    public Set<String> getLabels() {
-        return labels;
+    public String getLabel() {
+        return label;
     }
 
-    public void setLabels(Collection<String> labels) {
-        this.labels = new LinkedHashSet<String>(labels);
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public boolean addLabel(String label) {
-        return labels.add(label);
-    }
-
-    public ExtractLabelsRow copy() {
-        ExtractLabelsRow copy = new ExtractLabelsRow(id, name);
-        copy.setLabels(labels);
-        return copy;
+    public LabeledExtractRow copy() {
+        return new LabeledExtractRow(id, name, label);
     }
 }

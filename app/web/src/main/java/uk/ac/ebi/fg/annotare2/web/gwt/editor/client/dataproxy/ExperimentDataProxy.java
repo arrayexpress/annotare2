@@ -183,15 +183,13 @@ public class ExperimentDataProxy {
         return rows;
     }
 
-    private List<ExtractLabelsRow> getExtractLabelsRows(ExperimentProfile exp) {
-        List<ExtractLabelsRow> rows = new ArrayList<ExtractLabelsRow>();
-        for (Extract extract : exp.getExtracts()) {
-            Integer extractId = extract.getId();
-            ExtractLabelsRow row = new ExtractLabelsRow(extractId, extract.getName());
-            for (LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
-                row.addLabel(labeledExtract.getLabel().getName());
-            }
-            rows.add(row);
+    private List<LabeledExtractRow> getLabeledExtractRows(ExperimentProfile exp) {
+        List<LabeledExtractRow> rows = new ArrayList<LabeledExtractRow>();
+        for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+            rows.add(new LabeledExtractRow(
+                    labeledExtract.getExtract().getId(),
+                    labeledExtract.getExtract().getName(),
+                    labeledExtract.getLabel().getName()));
         }
         return rows;
     }
@@ -326,7 +324,7 @@ public class ExperimentDataProxy {
         });
     }
 
-    public void getLabeledExtractsAsync(final AsyncCallback<LabeledExtracts> callback) {
+    public void getLabeledExtractsAsync(final AsyncCallback<List<LabeledExtractRow>> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -335,7 +333,7 @@ public class ExperimentDataProxy {
 
             @Override
             public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(new LabeledExtracts(getExtractLabelsRows(result)));
+                callback.onSuccess(getLabeledExtractRows(result));
             }
         });
     }
@@ -394,6 +392,20 @@ public class ExperimentDataProxy {
             @Override
             public void onSuccess(ExperimentProfile result) {
                 callback.onSuccess(getProtocolAssignmentProfile(protocolId, result));
+            }
+        });
+    }
+
+    public void getLabelsAsync(final AsyncCallback<List<String>> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(new ArrayList<String>(result.getLabelNames()));
             }
         });
     }
@@ -458,7 +470,7 @@ public class ExperimentDataProxy {
         updateQueue.add(new UpdateExtractAttributesRowCommand(row));
     }
 
-    public void updateExtractLabelsRow(ExtractLabelsRow row) {
+    public void updateExtractLabelsRow(LabeledExtractRow row) {
         updateQueue.add(new UpdateExtractLabelsRowCommand(row));
     }
 

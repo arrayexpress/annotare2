@@ -188,26 +188,23 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
-    public void updateExtractLabels(ExtractLabelsRow row) {
+    public void updateExtractLabels(LabeledExtractRow row) {
         Extract extract = exp.getExtract(row.getId());
         if (extract == null) {
             return;
         }
         Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
-        Set<String> newLabels = new HashSet<String>(row.getLabels());
-        Set<String> existedLabels = new HashSet<String>();
-        for (LabeledExtract labeledExtract : labeledExtracts) {
-            if (!newLabels.contains(labeledExtract.getLabel().getName())) {
-                exp.removeLabeledExtract(labeledExtract);
-            } else {
-                existedLabels.add(labeledExtract.getLabel().getName());
-            }
+        if (labeledExtracts.size() > 1) {
+            // unsupported case
+            return;
         }
 
-        newLabels.removeAll(existedLabels);
-        for (String label : newLabels) {
-            exp.createLabeledExtract(extract, label);
+        LabeledExtract existed = labeledExtracts.isEmpty() ? null : labeledExtracts.iterator().next();
+        if (existed != null) {
+            exp.removeLabeledExtract(existed);
         }
+
+        exp.createLabeledExtract(extract, row.getLabel());
     }
 
     @Override
