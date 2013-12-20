@@ -73,10 +73,6 @@ public class FileColumn implements Serializable {
         return new ArrayList<LabeledExtract>(le2FileNameMap.keySet());
     }
 
-    public FileRef getFileRef(String fileName) {
-        return new FileRef(fileName);
-    }
-
     void restoreObjects(ExperimentProfile exp) {
         for (String leId : leId2FileNameMap.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(leId);
