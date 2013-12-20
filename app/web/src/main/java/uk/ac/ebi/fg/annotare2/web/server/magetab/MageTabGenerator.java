@@ -577,6 +577,7 @@ public class MageTabGenerator {
 
         List<SDRFNode> prev = new ArrayList<SDRFNode>();
         List<SDRFNode> next = new ArrayList<SDRFNode>();
+        FileType prevType = null;
         for (FileColumn fileColumn : fileColumns) {
             FileType type = fileColumn.getType();
             String fileName = fileColumn.getFileName(labeledExtract);
@@ -597,7 +598,7 @@ public class MageTabGenerator {
                 default:
                     throw new IllegalStateException("Unsupported file type: " + type);
             }
-            if (type.isRaw()) {
+            if (type.isRaw() && (prevType == null || prevType == type)) {
                 // always connect raw data files to assays
                 connect(assayNode, current, exp.getProtocolsByType(ProtocolSubjectType.ASSAY));
                 prev.add(current);
@@ -612,6 +613,7 @@ public class MageTabGenerator {
                 next.add(current);
                 prev = next;
             }
+            prevType = type;
         }
     }
 
