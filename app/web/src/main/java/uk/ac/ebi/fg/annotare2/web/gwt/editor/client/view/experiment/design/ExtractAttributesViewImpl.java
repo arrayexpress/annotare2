@@ -96,15 +96,15 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
         Column<ExtractAttributesRow, String> column = new Column<ExtractAttributesRow, String>(new SelectionCell(attr.getOptions())) {
             @Override
             public String getValue(ExtractAttributesRow row) {
-                String v = row.getValue(attr);
-                return v == null ? "" : v;
+                String value = row.getValue(attr);
+                return value == null ? "" : attr.getOption(value);
             }
         };
         column.setCellStyleNames("app-SelectionCell");
         column.setFieldUpdater(new FieldUpdater<ExtractAttributesRow, String>() {
             @Override
             public void update(int index, ExtractAttributesRow row, String value) {
-                row.setValue(value, attr);
+                row.setValue(attr.getValue(value), attr);
                 updateRow(row);
             }
         });
