@@ -35,7 +35,7 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
     private List<String> parameters = new ArrayList<String>();
     private String hardware;
     private String software;
-    private String contact;
+    private String performer;
     private boolean isAssignable;
 
     ProtocolRow() {
@@ -106,12 +106,12 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
         this.software = software;
     }
 
-    public String getContact() {
-        return contact;
+    public String getPerformer() {
+        return performer;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setPerformer(String performer) {
+        this.performer = performer;
     }
 
     public boolean isAssignable() {

@@ -37,7 +37,7 @@ public class Protocol implements Serializable {
 
     private String software;
 
-    private String contact;
+    private String performer;
 
     private List<String> parameters;
 
@@ -105,12 +105,12 @@ public class Protocol implements Serializable {
         this.software = software;
     }
 
-    public String getContact() {
-        return contact;
+    public String getPerformer() {
+        return performer;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setPerformer(String performer) {
+        this.performer = performer;
     }
 
     public void setParameters(List<String> parameters) {
@@ -136,5 +136,9 @@ public class Protocol implements Serializable {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public boolean hasPerformer() {
+        return this.performer != null;
     }
 }

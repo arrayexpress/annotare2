@@ -228,7 +228,7 @@ public class ExperimentDataProxy {
             row.setDescription(protocol.getDescription());
             row.setSoftware(protocol.getSoftware());
             row.setHardware(protocol.getHardware());
-            row.setContact(protocol.getContact());
+            row.setPerformer(protocol.getPerformer());
             row.setParameters(protocol.getParameters());
             rows.add(row);
         }

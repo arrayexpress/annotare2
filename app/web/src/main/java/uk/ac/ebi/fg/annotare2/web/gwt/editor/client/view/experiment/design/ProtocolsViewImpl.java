@@ -113,7 +113,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         addParametersColumn();
         addHardwareColumn();
         addSoftwareColumn();
-        addContactColumn();
+        addPerformerColumn();
     }
 
     private void addNameColumn() {
@@ -342,18 +342,18 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         gridView.addPermanentColumn("Software", column, comparator, 150, Style.Unit.PX);
     }
 
-    private void addContactColumn() {
+    private void addPerformerColumn() {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
             public String getValue(ProtocolRow row) {
-                String v = row.getContact();
+                String v = row.getPerformer();
                 return v == null ? "" : v;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
             @Override
             public void update(int index, ProtocolRow row, String value) {
-                row.setContact(value);
+                row.setPerformer(value);
                 updateRow(row);
             }
         });
@@ -364,12 +364,12 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                 if (o1 == o2) {
                     return 0;
                 }
-                String v1 = o1.getContact();
-                String v2 = o2.getContact();
+                String v1 = o1.getPerformer();
+                String v2 = o2.getPerformer();
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Contact", column, comparator, 150, Style.Unit.PX);
+        gridView.addPermanentColumn("Performer", column, comparator, 150, Style.Unit.PX);
     }
 
     private void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {

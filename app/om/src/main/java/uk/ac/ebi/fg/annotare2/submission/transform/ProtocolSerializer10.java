@@ -39,7 +39,7 @@ class ProtocolSerializer10 extends JsonSerializer<Protocol> {
             "description",
             "hardware",
             "software",
-            "contact",
+            "performer",
             "parameters",
             "subjectType");
 

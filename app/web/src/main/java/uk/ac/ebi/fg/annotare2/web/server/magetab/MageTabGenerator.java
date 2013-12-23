@@ -381,6 +381,11 @@ public class MageTabGenerator {
                 protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
                 protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
                 protocolNode.protocol = protocol.getName();
+                if (protocol.hasPerformer()) {
+                    PerformerAttribute attr = new PerformerAttribute();
+                    attr.setAttributeValue(protocol.getPerformer());
+                    protocolNode.performer = attr;
+                }
             }
             connect(prev, protocolNode);
             prev = protocolNode;
