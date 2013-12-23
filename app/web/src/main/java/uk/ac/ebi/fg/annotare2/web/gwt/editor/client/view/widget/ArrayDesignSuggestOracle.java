@@ -56,7 +56,7 @@ public class ArrayDesignSuggestOracle extends SuggestOracle {
 
         @Override
         public String getDisplayString() {
-            return ad.getName() + " : " + ad.getDescription();
+            return ad.getDescription() + " : " + ad.getName();
         }
 
         @Override
