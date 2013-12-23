@@ -170,9 +170,8 @@ public class MageTabGenerator {
             if (!attribute.getType().isFactorValue()) {
                 continue;
             }
+            idf.experimentalFactorName.add(notNull(getName(attribute)));
             OntologyTerm term = attribute.getTerm();
-            String factorName = term == null ? notNull(attribute.getName()).toLowerCase() : term.getLabel();
-            idf.experimentalFactorName.add(notNull(factorName));
             if (term != null) {
                 idf.experimentalFactorType.add(notNull(term.getLabel()));
                 idf.experimentalFactorTermAccession.add(notNull(term.getAccession()));
@@ -490,8 +489,7 @@ public class MageTabGenerator {
             }
             for (Sample sample : samples) {
                 FactorValueAttribute attr = new FactorValueAttribute();
-                OntologyTerm term = attribute.getTerm();
-                attr.type = term == null ? attribute.getName().toLowerCase() : term.getLabel();
+                attr.type = getName(attribute);
                 attr.unit = createUnitAttribute(attribute.getUnits());
                 attr.setAttributeValue(sample.getValue(attribute));
                 //TODO if attr value is an EFO Term then fill in accession and source REF
@@ -684,12 +682,7 @@ public class MageTabGenerator {
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
             if (attribute.getType().isCharacteristic()) {
                 CharacteristicsAttribute attr = new CharacteristicsAttribute();
-                OntologyTerm term = attribute.getTerm();
-                if (term != null) {
-                    attr.type = term.getLabel();
-                } else {
-                    attr.type = attribute.getName().toLowerCase();
-                }
+                attr.type = getName(attribute);
                 attr.unit = createUnitAttribute(attribute.getUnits());
                 attr.setAttributeValue(sample.getValue(attribute));
                 //TODO if value is an EFO term fill in accession and term source
@@ -711,6 +704,13 @@ public class MageTabGenerator {
         attr.setAttributeValue(units.getLabel());
         attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
         return attr;
+    }
+
+    private String getName(SampleAttribute attr) {
+        OntologyTerm term = attr.getTerm();
+        return term != null ? term.getLabel() :
+                attr.getName() != null ? attr.getName().toLowerCase() :
+                        null;
     }
 
     private static String notNull(String str) {
