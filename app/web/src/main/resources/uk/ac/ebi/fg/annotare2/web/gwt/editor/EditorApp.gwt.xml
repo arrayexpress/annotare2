@@ -41,9 +41,6 @@
 
     <inherits name="com.google.gwt.inject.Inject"/>
 
-    <!-- MageTab -->
-    <inherits name="uk.ac.ebi.fg.annotare2.magetab.Magetab" />
-
     <!-- Annotare -->
 
     <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp"/>

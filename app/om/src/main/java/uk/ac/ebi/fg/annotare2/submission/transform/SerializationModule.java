@@ -56,10 +56,8 @@ public class SerializationModule extends SimpleModule {
                 deserializers.addDeserializer(Sample.class, new SampleDeserializer10());
                 serializers.addSerializer(Extract.class, new ExtractSerializer10());
                 deserializers.addDeserializer(Extract.class, new ExtractDeserializer10());
-                serializers.addSerializer(ProtocolAssignment.class, new ProtocolAssignmentSerializer10());
-                deserializers.addDeserializer(ProtocolAssignment.class, new ProtocolAssignmentDeserializer10());
-                serializers.addSerializer(Assay.class, new AssaySerializer10());
-                deserializers.addDeserializer(Assay.class, new AssayDeserializer10());
+                serializers.addSerializer(LabeledExtract.class, new LabeledExtractSerializer10());
+                deserializers.addDeserializer(LabeledExtract.class, new LabeledExtractDeserializer10());
                 serializers.addSerializer(FileColumn.class, new FileColumnSerializer10());
                 deserializers.addDeserializer(FileColumn.class, new FileColumnDeserializer10());
                 serializers.addSerializer(ArrayDesignHeader.class, new ArrayDesignHeaderSerializer10());

@@ -24,8 +24,6 @@
     <name>Annotare 2.0</name>
 
     <modules>
-        <module>magetab</module>
-        <module>magetab-gwt</module>
         <module>om</module>
         <module>web</module>
         <module>ae-subs-tracking</module>
@@ -138,7 +136,7 @@
             <dependency>
                 <groupId>uk.ac.ebi.fg.annotare2</groupId>
                 <artifactId>magetabcheck</artifactId>
-                <version>1.9</version>
+                <version>1.10</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>

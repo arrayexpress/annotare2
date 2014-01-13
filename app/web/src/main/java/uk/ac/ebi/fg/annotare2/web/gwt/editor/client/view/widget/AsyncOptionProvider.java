@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,15 +31,24 @@ public abstract class AsyncOptionProvider {
         displays.add(display);
     }
 
-    protected void updateOptions(List<String> options) {
-        for(OptionDisplay display : displays) {
-            display.updateOptions(options);
-        }
+    public void update() {
+        update(new Callback() {
+            @Override
+            public void setOptions(Collection<String> options) {
+                for (OptionDisplay display : displays) {
+                    display.updateOptions(options);
+                }
+            }
+        });
     }
 
-    public abstract void updateOptions();
+    public abstract void update(Callback callback);
 
     public interface OptionDisplay {
-        void updateOptions(List<String> options);
+        void updateOptions(Collection<String> options);
+    }
+
+    public interface Callback {
+        void setOptions(Collection<String> options);
     }
 }

@@ -71,4 +71,8 @@ public class MultiSets<K, V> implements Serializable {
     public Set<V> remove(K key) {
         return map.remove(key);
     }
+
+    public boolean containsKey(K key) {
+        return map.containsKey(key);
+    }
 }

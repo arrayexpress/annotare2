@@ -25,7 +25,7 @@ public class TermSource implements Serializable {
 
     public static TermSource ARRAY_EXPRESS_TERM_SOURCE = new TermSource("ArrayExpress", "", "http://www.ebi.ac.uk/arrayexpress/");
 
-    public static TermSource EFO_TERM_SOURCE = new TermSource("EFO", "", "http://www.ebi.ac.uk/efo/efo.owl");
+    public static TermSource EFO_TERM_SOURCE = new TermSource("EFO", "", "http://www.ebi.ac.uk/efo/");
 
     private String name;
 

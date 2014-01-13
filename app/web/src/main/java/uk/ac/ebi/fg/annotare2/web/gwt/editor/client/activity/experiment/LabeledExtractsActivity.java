@@ -22,11 +22,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractLabelsRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtracts;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.LabeledExtractsView;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -54,12 +56,17 @@ public class LabeledExtractsActivity extends AbstractActivity implements Labeled
     }
 
     @Override
-    public void updateRow(ExtractLabelsRow row) {
+    public void updateRow(LabeledExtractRow row) {
         expData.updateExtractLabelsRow(row);
     }
 
+    @Override
+    public void loadLabels(AsyncCallback<List<String>> callback) {
+        expData.getLabelsAsync(callback);
+    }
+
     private void loadAsync() {
-        expData.getLabeledExtractsAsync(new AsyncCallback<LabeledExtracts>() {
+        expData.getLabeledExtractsAsync(new AsyncCallback<List<LabeledExtractRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
@@ -67,8 +74,8 @@ public class LabeledExtractsActivity extends AbstractActivity implements Labeled
             }
 
             @Override
-            public void onSuccess(LabeledExtracts result) {
-                view.setData(result.getRows(), result.getLabels());
+            public void onSuccess(List<LabeledExtractRow> result) {
+                view.setData(result);
             }
         });
     }

@@ -16,8 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -100,11 +99,18 @@ public enum ExtractAttribute {
             "unspecified (Library enrichment, screening, or selection is not specified)");
 
     private final String title;
+    private final List<String> values;
     private final List<String> options;
 
     private ExtractAttribute(String title, String... options) {
         this.title = title;
         this.options = asList(options);
+        this.values = new ArrayList<String>();
+        for (String option : options) {
+            int index = option.indexOf(" (");
+            String value = index < 0 ? option : option.substring(0, index);
+            this.values.add(value);
+        }
     }
 
     public String getTitle() {
@@ -113,5 +119,13 @@ public enum ExtractAttribute {
 
     public List<String> getOptions() {
         return new ArrayList<String>(options);
+    }
+
+    public String getValue(String option) {
+        return values.get(options.indexOf(option));
+    }
+
+    public String getOption(String value) {
+        return options.get(values.indexOf(value));
     }
 }

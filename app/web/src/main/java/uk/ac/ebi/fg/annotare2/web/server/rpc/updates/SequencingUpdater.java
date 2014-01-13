@@ -33,7 +33,9 @@ public class SequencingUpdater extends BasicExperimentUpdater {
     public void createSample() {
         Sample sample  = createAndReturnSample();
 
-        Extract extract = exp().createExtract(true, sample);
+        Extract extract = exp().createExtract(sample);
         extract.setName(sample.getName());
+
+        exp().createLabeledExtract(extract, null);
     }
 }

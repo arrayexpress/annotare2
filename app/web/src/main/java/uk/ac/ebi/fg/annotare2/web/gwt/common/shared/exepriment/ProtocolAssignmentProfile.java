@@ -17,16 +17,44 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import uk.ac.ebi.fg.annotare2.submission.model.AssignmentItem;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static java.util.Collections.emptyMap;
+
 /**
  * @author Olga Melnichuk
  */
 public class ProtocolAssignmentProfile implements IsSerializable {
+
+    public static final ProtocolAssignmentProfile EMPTY = new ProtocolAssignmentProfile() {
+        @Override
+        public String getProtocolName() {
+            return "unknown";
+        }
+
+        @Override
+        public int getProtocolId() {
+            return 0;
+        }
+
+        @Override
+        public Map<String, Boolean> getAssignments() {
+            return emptyMap();
+        }
+
+        @Override
+        public Map<String, String> getNames() {
+            return emptyMap();
+        }
+
+        @Override
+        public String getProtocolSubjectType() {
+            return "unknown";
+        }
+    };
 
     private int protocolId;
     private String protocolName;
@@ -39,13 +67,13 @@ public class ProtocolAssignmentProfile implements IsSerializable {
         /* used by GWT serialization */
     }
 
-    public ProtocolAssignmentProfile(Protocol protocol, Map<AssignmentItem, Boolean> protocolAssignments) {
+    public ProtocolAssignmentProfile(Protocol protocol, Map<ProtocolAssignment.Item, Boolean> protocolAssignments) {
         protocolId = protocol.getId();
         protocolName = protocol.getName();
-        target = protocol.getTargetType().getTitle();
+        target = protocol.getSubjectType().getTitle();
         names = new LinkedHashMap<String, String>();
         assignments = new LinkedHashMap<String, Boolean>();
-        for (AssignmentItem item : protocolAssignments.keySet()) {
+        for (ProtocolAssignment.Item item : protocolAssignments.keySet()) {
             names.put(item.getId(), item.getName());
             assignments.put(item.getId(), protocolAssignments.get(item));
         }
@@ -67,7 +95,18 @@ public class ProtocolAssignmentProfile implements IsSerializable {
         return names;
     }
 
-    public String getTarget() {
+    public String getProtocolSubjectType() {
         return target;
+    }
+
+    public boolean isDefault() {
+        boolean isDefault = true;
+        for(Boolean assigned : assignments.values()) {
+            isDefault = isDefault && !assigned;
+            if (!isDefault) {
+                return false;
+            }
+        }
+        return true;
     }
 }

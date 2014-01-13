@@ -16,7 +16,7 @@ public class DataAssignmentColumn implements IsSerializable {
 
     private FileType type;
 
-    private Map<String, String> assayId2FileName;
+    private Map<String, String> labeledExtractId2FileName;
 
     DataAssignmentColumn() {
         /* used by GWT serialization */
@@ -25,7 +25,7 @@ public class DataAssignmentColumn implements IsSerializable {
     public DataAssignmentColumn(int index, FileType type) {
         this.index = index;
         this.type = type;
-        this.assayId2FileName = new HashMap<String, String>();
+        this.labeledExtractId2FileName = new HashMap<String, String>();
     }
 
     public int getIndex() {
@@ -37,31 +37,31 @@ public class DataAssignmentColumn implements IsSerializable {
     }
 
     public String getFileName(DataAssignmentRow row) {
-        return getFileName(row.getAssayId());
+        return getFileName(row.getLabeledExtractId());
     }
 
-    public String getFileName(String assayId) {
-        return assayId2FileName.get(assayId);
+    public String getFileName(String labeledExtractId) {
+        return labeledExtractId2FileName.get(labeledExtractId);
     }
 
     public void setFileName(DataAssignmentRow row, String fileName) {
-        setFileName(row.getAssayId(), fileName);
+        setFileName(row.getLabeledExtractId(), fileName);
     }
 
     public void setFileName(String assayId, String fileName) {
         if (fileName == null) {
-            assayId2FileName.remove(assayId);
+            labeledExtractId2FileName.remove(assayId);
         } else {
-            assayId2FileName.put(assayId, fileName);
+            labeledExtractId2FileName.put(assayId, fileName);
         }
     }
 
     public Collection<String> getFileNames() {
-        return assayId2FileName.values();
+        return labeledExtractId2FileName.values();
     }
 
-    public Collection<String> getAssayIds() {
-        return assayId2FileName.keySet();
+    public Collection<String> getLabeledExtractIds() {
+        return labeledExtractId2FileName.keySet();
     }
 
     @Override

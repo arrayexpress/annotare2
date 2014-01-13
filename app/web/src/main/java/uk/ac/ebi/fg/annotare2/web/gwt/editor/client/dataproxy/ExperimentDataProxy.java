@@ -29,10 +29,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -184,23 +183,21 @@ public class ExperimentDataProxy {
         return rows;
     }
 
-    private List<ExtractLabelsRow> getExtractLabelsRows(ExperimentProfile exp) {
-        List<ExtractLabelsRow> rows = new ArrayList<ExtractLabelsRow>();
-        for (Extract extract : exp.getExtracts()) {
-            Integer extractId = extract.getId();
-            ExtractLabelsRow row = new ExtractLabelsRow(extractId, extract.getName());
-            for (LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
-                row.addLabel(labeledExtract.getLabel().getName());
-            }
-            rows.add(row);
+    private List<LabeledExtractRow> getLabeledExtractRows(ExperimentProfile exp) {
+        List<LabeledExtractRow> rows = new ArrayList<LabeledExtractRow>();
+        for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+            rows.add(new LabeledExtractRow(
+                    labeledExtract.getExtract().getId(),
+                    labeledExtract.getExtract().getName(),
+                    labeledExtract.getLabel().getName()));
         }
         return rows;
     }
 
     private List<DataAssignmentRow> getDataAssignmentRows(ExperimentProfile exp) {
         List<DataAssignmentRow> rows = new ArrayList<DataAssignmentRow>();
-        for (Assay assay : exp.getAssays()) {
-            DataAssignmentRow row = new DataAssignmentRow(assay.getId(), assay.getName());
+        for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+            DataAssignmentRow row = new DataAssignmentRow(labeledExtract.getId(), labeledExtract.getName());
             rows.add(row);
         }
         return rows;
@@ -211,10 +208,10 @@ public class ExperimentDataProxy {
         int index = 0;
         for (FileColumn fileColumn : exp.getFileColumns()) {
             DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
-            for (Assay assay : exp.getAssays()) {
-                String fileName = fileColumn.getFileName(assay);
+            for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
+                String fileName = fileColumn.getFileName(labeledExtract);
                 if (fileName != null) {
-                    column.setFileName(assay.getId(), fileName);
+                    column.setFileName(labeledExtract.getId(), fileName);
                 }
             }
             columns.add(column);
@@ -226,11 +223,12 @@ public class ExperimentDataProxy {
     private List<ProtocolRow> getProtocolRows(ExperimentProfile exp) {
         List<ProtocolRow> rows = new ArrayList<ProtocolRow>();
         for (Protocol protocol : exp.getProtocols()) {
-            ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType());
+            ProtocolRow row = new ProtocolRow(protocol.getId(), protocol.getName(), protocol.getType(),
+                    protocol.getSubjectType().isSampleExtractOrLabeledExtract());
             row.setDescription(protocol.getDescription());
             row.setSoftware(protocol.getSoftware());
             row.setHardware(protocol.getHardware());
-            row.setContact(protocol.getContact());
+            row.setPerformer(protocol.getPerformer());
             row.setParameters(protocol.getParameters());
             rows.add(row);
         }
@@ -239,8 +237,7 @@ public class ExperimentDataProxy {
 
     private ProtocolAssignmentProfile getProtocolAssignmentProfile(int protocolId, ExperimentProfile exp) {
         Protocol protocol = exp.getProtocol(protocolId);
-        Map<AssignmentItem, Boolean> protocolAssignments = exp.getProtocolAssignments(protocol);
-        return new ProtocolAssignmentProfile(protocol, protocolAssignments);
+        return createProtocolAssignment(exp, protocol).getProfile();
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
@@ -327,7 +324,7 @@ public class ExperimentDataProxy {
         });
     }
 
-    public void getLabeledExtractsAsync(final AsyncCallback<LabeledExtracts> callback) {
+    public void getLabeledExtractsAsync(final AsyncCallback<List<LabeledExtractRow>> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -336,7 +333,7 @@ public class ExperimentDataProxy {
 
             @Override
             public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(new LabeledExtracts(getExtractLabelsRows(result)));
+                callback.onSuccess(getLabeledExtractRows(result));
             }
         });
     }
@@ -395,6 +392,20 @@ public class ExperimentDataProxy {
             @Override
             public void onSuccess(ExperimentProfile result) {
                 callback.onSuccess(getProtocolAssignmentProfile(protocolId, result));
+            }
+        });
+    }
+
+    public void getLabelsAsync(final AsyncCallback<List<String>> callback) {
+        getExperiment(new AsyncCallback<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile result) {
+                callback.onSuccess(new ArrayList<String>(result.getLabelNames()));
             }
         });
     }
@@ -459,7 +470,7 @@ public class ExperimentDataProxy {
         updateQueue.add(new UpdateExtractAttributesRowCommand(row));
     }
 
-    public void updateExtractLabelsRow(ExtractLabelsRow row) {
+    public void updateExtractLabelsRow(LabeledExtractRow row) {
         updateQueue.add(new UpdateExtractLabelsRowCommand(row));
     }
 

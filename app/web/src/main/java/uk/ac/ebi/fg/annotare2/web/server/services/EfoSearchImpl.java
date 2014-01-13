@@ -140,7 +140,11 @@ public class EfoSearchImpl implements EfoSearch {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
             Query query = parser.parse(
                     LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
-                            + " AND " + ASCENDANT_FIELD.matchesPhrase(branchAccession)
+                            + " AND ("
+                            + ASCENDANT_FIELD.matchesPhrase(branchAccession)
+                            + " OR "
+                            + ACCESSION_FIELD_LOWERCASE.matchesPhrase(branchAccession.toLowerCase())
+                            + ")"
             );
             List<EfoTerm> result = runQuery(query, 1);
             return result.isEmpty() ? null : result.get(0);
@@ -154,6 +158,9 @@ public class EfoSearchImpl implements EfoSearch {
 
     @Override
     public EfoTerm searchByAccession(String accession, String branchAccession) {
+        if (accession.equals(branchAccession)) {
+            return searchByAccession(accession);
+        }
         try {
             QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
             Query query = parser.parse(

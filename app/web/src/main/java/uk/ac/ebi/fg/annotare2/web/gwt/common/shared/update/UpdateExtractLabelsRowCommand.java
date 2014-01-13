@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractLabelsRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractRow;
 
 /**
  * @author Olga Melnichuk
@@ -24,13 +24,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractLabelsRow;
 public class UpdateExtractLabelsRowCommand implements ExperimentUpdateCommand {
 
 
-    private ExtractLabelsRow row;
+    private LabeledExtractRow row;
 
     UpdateExtractLabelsRowCommand() {
         /* used by GWT serialization */
     }
 
-    public UpdateExtractLabelsRowCommand(ExtractLabelsRow row) {
+    public UpdateExtractLabelsRowCommand(LabeledExtractRow row) {
         this.row = row;
     }
 

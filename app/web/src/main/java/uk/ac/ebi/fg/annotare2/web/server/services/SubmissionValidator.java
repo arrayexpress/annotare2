@@ -26,13 +26,12 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
-import uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 
 import java.io.IOException;
 import java.util.Collection;
 
 import static com.google.common.collect.Ordering.natural;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.MageTabFormat.createMageTab;
 
 /**
  * @author Olga Melnichuk
@@ -52,7 +51,7 @@ public class SubmissionValidator {
         ExperimentProfile exp = submission.getExperimentProfile();
         ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
-        MageTabFormat mageTab = createMageTab(exp);
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, true);
 
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
         return natural().sortedCopy(results);

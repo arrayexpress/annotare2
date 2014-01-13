@@ -150,8 +150,7 @@ public class UIObjectConverter {
                 header.getVersion(),
                 header.getOrganism(),
                 header.getPublicReleaseDate(),
-                header.getPrintingProtocolId(),
-                uiPrintingProtocol(header.getPrintingProtocolBackup())
+                uiPrintingProtocol(header.getPrintingProtocol())
         );
     }
 

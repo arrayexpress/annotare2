@@ -31,8 +31,7 @@ public class ArrayDesignDetailsDto implements IsSerializable {
     private String version;
     private OntologyTerm organism;
     private Date releaseDate;
-    private int printingProtocolId;
-    private PrintingProtocolDto otherPrintingProtocol;
+    private PrintingProtocolDto printingProtocol;
 
 
     ArrayDesignDetailsDto() {
@@ -40,14 +39,13 @@ public class ArrayDesignDetailsDto implements IsSerializable {
     }
 
     public ArrayDesignDetailsDto(String name, String description, String version, OntologyTerm organism, Date releaseDate,
-                                 int printingProtocolId, PrintingProtocolDto otherPrintingProtocol) {
+                                 PrintingProtocolDto printingProtocol) {
         this.name = name;
         this.description = description;
         this.version = version;
         this.organism = organism;
         this.releaseDate = releaseDate;
-        this.printingProtocolId = printingProtocolId;
-        this.otherPrintingProtocol = otherPrintingProtocol;
+        this.printingProtocol = printingProtocol;
     }
 
     public String getArrayDesignName() {
@@ -70,11 +68,7 @@ public class ArrayDesignDetailsDto implements IsSerializable {
         return organism;
     }
 
-    public int getPrintingProtocolId() {
-        return printingProtocolId;
-    }
-
-    public PrintingProtocolDto getOtherPrintingProtocol() {
-        return otherPrintingProtocol;
+    public PrintingProtocolDto getPrintingProtocol() {
+        return printingProtocol;
     }
 }

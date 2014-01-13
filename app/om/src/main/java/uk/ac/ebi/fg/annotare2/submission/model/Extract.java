@@ -26,15 +26,13 @@ import java.util.Map;
 /**
  * @author Olga Melnichuk
  */
-public class Extract implements Serializable, HasProtocolAssignment {
+public class Extract implements Serializable {
 
     private int id;
 
     private String name;
 
     private Map<ExtractAttribute, String> attributeValues;
-
-    private ProtocolAssignment protocolAssignment;
 
     Extract() {
         /* used by GWT serialization */
@@ -45,7 +43,6 @@ public class Extract implements Serializable, HasProtocolAssignment {
     public Extract(int id) {
         this.id = id;
         this.attributeValues = new HashMap<ExtractAttribute, String>();
-        this.protocolAssignment = new ProtocolAssignment();
     }
 
     public int getId() {
@@ -89,20 +86,5 @@ public class Extract implements Serializable, HasProtocolAssignment {
     @Override
     public int hashCode() {
         return id;
-    }
-
-    @Override
-    public boolean hasProtocol(Protocol protocol) {
-        return protocolAssignment.contains(protocol);
-    }
-
-    @Override
-    public void assignProtocol(Protocol protocol, boolean assigned) {
-        protocolAssignment.set(protocol, assigned);
-    }
-
-    @Override
-    public AssignmentItem getProtocolAssignmentItem() {
-        return new AssignmentItem(Integer.toString(id), getName());
     }
 }

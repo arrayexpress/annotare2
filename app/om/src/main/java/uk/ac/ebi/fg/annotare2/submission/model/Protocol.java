@@ -37,13 +37,11 @@ public class Protocol implements Serializable {
 
     private String software;
 
-    private String contact;
+    private String performer;
 
     private List<String> parameters;
 
-    private ProtocolTargetType targetType;
-
-    private boolean assigned2All;
+    private ProtocolSubjectType subjectType;
 
     Protocol() {
         /* used by GWT serialization only */
@@ -53,7 +51,6 @@ public class Protocol implements Serializable {
     public Protocol(int id) {
         this.id = id;
         this.parameters = new ArrayList<String>();
-        assigned2All = true;
     }
 
     public int getId() {
@@ -76,12 +73,12 @@ public class Protocol implements Serializable {
         this.type = type;
     }
 
-    public ProtocolTargetType getTargetType() {
-        return targetType;
+    public ProtocolSubjectType getSubjectType() {
+        return subjectType;
     }
 
-    public void setTargetType(ProtocolTargetType targetType) {
-        this.targetType = targetType;
+    public void setSubjectType(ProtocolSubjectType subjectType) {
+        this.subjectType = subjectType;
     }
 
     public String getDescription() {
@@ -108,12 +105,12 @@ public class Protocol implements Serializable {
         this.software = software;
     }
 
-    public String getContact() {
-        return contact;
+    public String getPerformer() {
+        return performer;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setPerformer(String performer) {
+        this.performer = performer;
     }
 
     public void setParameters(List<String> parameters) {
@@ -122,14 +119,6 @@ public class Protocol implements Serializable {
 
     public List<String> getParameters() {
         return parameters;
-    }
-
-    public void setAssigned2All(boolean assigned2All) {
-        this.assigned2All = assigned2All;
-    }
-
-    public boolean isAssigned2All() {
-        return assigned2All;
     }
 
     @Override
@@ -147,5 +136,9 @@ public class Protocol implements Serializable {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public boolean hasPerformer() {
+        return this.performer != null;
     }
 }

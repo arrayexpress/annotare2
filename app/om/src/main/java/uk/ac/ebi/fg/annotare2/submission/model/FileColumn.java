@@ -27,10 +27,8 @@ public class FileColumn implements Serializable {
 
     private FileType type;
 
-    private Map<String, String> assayId2FileNameMap;
-    private Map<Assay, String> assay2FileNameMap;
-
-    private Map<String, ProtocolAssignment> fileName2ProtocolAssignmentMap;
+    private Map<String, String> leId2FileNameMap;
+    private Map<LabeledExtract, String> le2FileNameMap;
 
     FileColumn() {
         /* used by GWT serialization */
@@ -39,78 +37,48 @@ public class FileColumn implements Serializable {
 
     public FileColumn(FileType type) {
         this.type = type;
-        assay2FileNameMap = new HashMap<Assay, String>();
-        fileName2ProtocolAssignmentMap = new HashMap<String, ProtocolAssignment>();
+        le2FileNameMap = new HashMap<LabeledExtract, String>();
     }
 
     public FileType getType() {
         return type;
     }
 
-    public String getFileName(Assay assay) {
-        return assay2FileNameMap.get(assay);
+    public String getFileName(LabeledExtract labeledExtract) {
+        return le2FileNameMap.get(labeledExtract);
     }
 
-    public void setFileName(Assay assay, String fileName) {
+    public void setFileName(LabeledExtract labeledExtract, String fileName) {
         if (fileName == null) {
-            removeFileName(assay);
+            removeFileName(labeledExtract);
         } else {
-            assay2FileNameMap.put(assay, fileName);
+            le2FileNameMap.put(labeledExtract, fileName);
         }
     }
 
-    public void removeFileName(Assay assay) {
-        String fileName = assay2FileNameMap.remove(assay);
-        if (!assay2FileNameMap.containsValue(fileName)) {
-            fileName2ProtocolAssignmentMap.remove(fileName);
-        }
+    public void removeFileName(LabeledExtract labeledExtract) {
+       le2FileNameMap.remove(labeledExtract);
     }
 
     public void removeFileName(String fileName) {
-        List<Assay> keys = new ArrayList<Assay>(assay2FileNameMap.keySet());
-        for (Assay assay : keys) {
-            if (fileName.equals(assay2FileNameMap.get(assay))) {
-                removeFileName(assay);
+        List<LabeledExtract> keys = new ArrayList<LabeledExtract>(le2FileNameMap.keySet());
+        for (LabeledExtract labeledExtract : keys) {
+            if (fileName.equals(le2FileNameMap.get(labeledExtract))) {
+                removeFileName(labeledExtract);
             }
         }
     }
 
-    public Collection<FileRef> getFileRefs() {
-        Set<FileRef> fileRefs = new HashSet<FileRef>();
-        for (String fileName : assay2FileNameMap.values()) {
-            fileRefs.add(getFileRef(fileName));
-        }
-        return fileRefs;
-    }
-
-    public Collection<Assay> getAssays() {
-        return new ArrayList<Assay>(assay2FileNameMap.keySet());
-    }
-
-    boolean isProtocolAssigned2File(Protocol protocol, String fileName) {
-        ProtocolAssignment assignment = fileName2ProtocolAssignmentMap.get(fileName);
-        return assignment != null && assignment.contains(protocol);
-    }
-
-    void assignProtocol2File(Protocol protocol, String fileName, boolean assigned) {
-        ProtocolAssignment assignment = fileName2ProtocolAssignmentMap.get(fileName);
-        if (assignment == null) {
-            assignment = new ProtocolAssignment();
-            fileName2ProtocolAssignmentMap.put(fileName, assignment);
-        }
-        assignment.set(protocol, assigned);
-    }
-
-    public FileRef getFileRef(String fileName) {
-        return new FileRef(fileName, this);
+    public Collection<LabeledExtract> getLabeledExtracts() {
+        return new ArrayList<LabeledExtract>(le2FileNameMap.keySet());
     }
 
     void restoreObjects(ExperimentProfile exp) {
-        for (String assayId : assayId2FileNameMap.keySet()) {
-            Assay assay = exp.getAssay(assayId);
-            assay2FileNameMap.put(assay, assayId2FileNameMap.get(assayId));
+        for (String leId : leId2FileNameMap.keySet()) {
+            LabeledExtract labeledExtract = exp.getLabeledExtract(leId);
+            le2FileNameMap.put(labeledExtract, leId2FileNameMap.get(leId));
         }
-        this.assayId2FileNameMap = null;
+        this.leId2FileNameMap = null;
     }
 }
 

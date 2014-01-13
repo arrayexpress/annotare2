@@ -37,8 +37,6 @@ public class ArrayDesignHeader implements Serializable {
 
     private OntologyTerm organism;
 
-    private int printingProtocolId;
-
     private PrintingProtocol printingProtocol;
 
     public ArrayDesignHeader() {
@@ -69,19 +67,11 @@ public class ArrayDesignHeader implements Serializable {
         this.organism = organism;
     }
 
-    public int getPrintingProtocolId() {
-        return printingProtocolId;
-    }
-
-    public void setPrintingProtocolId(int id) {
-        this.printingProtocolId = id;
-    }
-
-    public PrintingProtocol getPrintingProtocolBackup() {
+    public PrintingProtocol getPrintingProtocol() {
         return printingProtocol;
     }
 
-    public void setPrintingProtocolBackup(PrintingProtocol protocol) {
+    public void setPrintingProtocol(PrintingProtocol protocol) {
         this.printingProtocol = protocol == null ? DEFAULT : protocol;
     }
 

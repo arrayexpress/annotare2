@@ -32,7 +32,6 @@ import liquibase.resource.ResourceAccessor;
 import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.magetab.init.Magetab;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 
 import javax.naming.Context;
@@ -74,8 +73,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
         lookupPropertiesInContext();
 
-        //todo: not used any more, need to be moved out
-        Magetab.init();
         super.contextInitialized(servletContextEvent);
     }
 

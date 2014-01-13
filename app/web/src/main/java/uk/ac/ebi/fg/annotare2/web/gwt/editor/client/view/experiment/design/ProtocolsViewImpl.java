@@ -23,6 +23,8 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -111,7 +113,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         addParametersColumn();
         addHardwareColumn();
         addSoftwareColumn();
-        addContactColumn();
+        addPerformerColumn();
     }
 
     private void addNameColumn() {
@@ -151,10 +153,19 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     }
 
     private void addAssignmentColumn() {
-        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell()) {
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell() {
+            @Override
+            public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
+                if (data != null) {
+                    sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">");
+                    sb.append(data);
+                    sb.appendHtmlConstant("</button>");
+                }
+            }
+        }) {
             @Override
             public String getValue(ProtocolRow object) {
-                return "Assign...";
+                return object.isAssignable() ? "Assign..." : null;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
@@ -169,7 +180,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                     @Override
                     public void onSuccess(ProtocolAssignmentProfile result) {
                         if (result.getNames().isEmpty()) {
-                            Window.alert("You do not have any " + result.getTarget() + " to assign protocols to.");
+                            Window.alert("You do not have any '" + result.getProtocolSubjectType() + "' entries to assign protocols to.");
                             return;
                         }
                         new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
@@ -331,18 +342,18 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         gridView.addPermanentColumn("Software", column, comparator, 150, Style.Unit.PX);
     }
 
-    private void addContactColumn() {
+    private void addPerformerColumn() {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
             public String getValue(ProtocolRow row) {
-                String v = row.getContact();
+                String v = row.getPerformer();
                 return v == null ? "" : v;
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
             @Override
             public void update(int index, ProtocolRow row, String value) {
-                row.setContact(value);
+                row.setPerformer(value);
                 updateRow(row);
             }
         });
@@ -353,12 +364,12 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                 if (o1 == o2) {
                     return 0;
                 }
-                String v1 = o1.getContact();
-                String v2 = o2.getContact();
+                String v1 = o1.getPerformer();
+                String v2 = o2.getPerformer();
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Contact", column, comparator, 150, Style.Unit.PX);
+        gridView.addPermanentColumn("Performer", column, comparator, 150, Style.Unit.PX);
     }
 
     private void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {

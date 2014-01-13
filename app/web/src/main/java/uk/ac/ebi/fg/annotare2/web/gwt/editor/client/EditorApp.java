@@ -28,17 +28,11 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.magetab.init.GwtMagetab;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
@@ -69,8 +63,6 @@ public class EditorApp implements EntryPoint {
                 e.printStackTrace();
             }
         });
-
-        GwtMagetab.init();
 
         SubmissionServiceAsync submissionService = injector.getSubmissionService();
         final int subId = getSubmissionId();
@@ -105,7 +97,7 @@ public class EditorApp implements EntryPoint {
         EventBus eventBus = injector.getEventBus();
 
         SubmissionType type = details.getType();
-        Widget layout = (type == EXPERIMENT && details.hasNoData()) ?
+        Widget layout = (type == EXPERIMENT && details.isEmpty()) ?
                 initStartLayout(eventBus) :
                 initMainLayout(type, eventBus);
 

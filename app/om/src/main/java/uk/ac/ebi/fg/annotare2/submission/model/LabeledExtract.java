@@ -21,47 +21,79 @@ import java.io.Serializable;
 /**
  * @author Olga Melnichuk
  */
-public class LabeledExtract implements Serializable, HasProtocolAssignment {
+public class LabeledExtract implements Serializable {
 
-    private Assay assay;
+    private Extract extract;
+    private Integer extractId;
+
+    private Label label;
+    private Integer labelId;
+
+    private String id;
 
     LabeledExtract() {
-        /*used by GWT serialization */
+        /* used by GWT serialization only */
+        this(null, null);
     }
 
-    public LabeledExtract(Assay assay) {
-        this.assay = assay;
+    public LabeledExtract(Extract extract) {
+        this(extract, null);
     }
 
-    public String getId() {
-        return assay.getId();
-    }
-
-    public Label getLabel() {
-        return assay.getLabel();
+    public LabeledExtract(Extract extract, Label label) {
+        this.extract = extract;
+        this.label = label;
+        this.id = generateId(extract, label);
     }
 
     public Extract getExtract() {
-        return assay.getExtract();
+        return extract;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
-        return assay.getName();
+        return extract.getName() + (label != null && !label.isEmpty() ? ":" + label.getName() : "");
     }
 
     @Override
-    public boolean hasProtocol(Protocol protocol) {
-        return assay.hasLabeledExtractProtocol(protocol);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LabeledExtract that = (LabeledExtract) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
     }
 
     @Override
-    public void assignProtocol(Protocol protocol, boolean assigned) {
-        assay.assignLabelExtractProtocol(protocol, assigned);
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 
-    @Override
-    public AssignmentItem getProtocolAssignmentItem() {
-        return new AssignmentItem(getId(), getName());
+    void restoreObjects(ExperimentProfile exp) {
+        extract = exp.getExtract(extractId);
+        if (extract == null) {
+            throw new IllegalStateException("Assay can't exist without extract; (cause: extract with id=" +
+                    extractId + " was not found in experiment profile)");
+        }
+        extractId = null;
+
+        label = exp.getLabel(labelId);
+        labelId = null;
+    }
+
+    static String generateId(Extract extract, Label label) {
+        return extract == null ? null :
+                (extract.getId() + (label != null ? "_" + label.getId() : ""));
     }
 }
 

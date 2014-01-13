@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
@@ -33,20 +34,21 @@ import java.util.Set;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSet;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
 
 /**
  * @author Olga Melnichuk
  */
 public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
-    private final uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp;
+    private final ExperimentProfile exp;
 
-    protected ExperimentUpdater(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
+    protected ExperimentUpdater(ExperimentProfile exp) {
         this.exp = exp;
     }
 
-    public static ExperimentUpdater experimentUpdater(uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp) {
-        uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType type = exp.getType();
+    public static ExperimentUpdater experimentUpdater(ExperimentProfile exp) {
+        ExperimentProfileType type = exp.getType();
         switch (type) {
             case ONE_COLOR_MICROARRAY:
                 return new OneColorMicroarrayUpdater(exp);
@@ -75,7 +77,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void updateContact(ContactDto dto) {
-        uk.ac.ebi.fg.annotare2.submission.model.Contact contact = exp.getContact(dto.getId());
+        Contact contact = exp.getContact(dto.getId());
         contact.setFirstName(dto.getFirstName());
         contact.setLastName(dto.getLastName());
         contact.setMidInitials(dto.getMidInitials());
@@ -101,7 +103,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void updatePublication(PublicationDto dto) {
-        uk.ac.ebi.fg.annotare2.submission.model.Publication publication = exp.getPublication(dto.getId());
+        Publication publication = exp.getPublication(dto.getId());
         publication.setTitle(dto.getTitle());
         publication.setAuthors(dto.getAuthors());
         publication.setPubMedId(dto.getPubMedId());
@@ -120,7 +122,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     public void updateSampleAttributes(List<SampleColumn> columns) {
         Set<Integer> used = newLinkedHashSet();
         for (SampleColumn column : columns) {
-            uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute attr;
+            SampleAttribute attr;
             if (column.getId() > 0) {
                 attr = exp.getSampleAttribute(column.getId());
             } else {
@@ -132,8 +134,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             attr.setUnits(column.getUnits());
             used.add(attr.getId());
         }
-        List<uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute> attributes = newArrayList(exp.getSampleAttributes());
-        for (uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute attr : attributes) {
+        List<SampleAttribute> attributes = newArrayList(exp.getSampleAttributes());
+        for (SampleAttribute attr : attributes) {
             if (!used.contains(attr.getId())) {
                 exp.removeSampleAttribute(attr.getId());
             }
@@ -143,7 +145,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void updateSample(SampleRow row) {
-        uk.ac.ebi.fg.annotare2.submission.model.Sample sample = exp.getSample(row.getId());
+        Sample sample = exp.getSample(row.getId());
         sample.setName(row.getName());
         sample.setValues(row.getValues());
     }
@@ -153,19 +155,19 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         createAndReturnSample();
     }
 
-    protected final uk.ac.ebi.fg.annotare2.submission.model.Sample createAndReturnSample() {
+    protected final Sample createAndReturnSample() {
         Collection<String> existedNames = Collections2.transform(
                 exp.getSamples(),
-                new Function<uk.ac.ebi.fg.annotare2.submission.model.Sample, String>() {
+                new Function<Sample, String>() {
                     @Nullable
                     @Override
-                    public String apply(@Nullable uk.ac.ebi.fg.annotare2.submission.model.Sample input) {
+                    public String apply(@Nullable Sample input) {
                         return input.getName();
                     }
                 }
         );
 
-        uk.ac.ebi.fg.annotare2.submission.model.Sample sample = exp.createSample();
+        Sample sample = exp.createSample();
         sample.setName(newName("Sample", existedNames));
         return sample;
     }
@@ -179,49 +181,46 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void updateExtractAttributes(ExtractAttributesRow row) {
-        uk.ac.ebi.fg.annotare2.submission.model.Extract extract = exp.getExtract(row.getId());
+        Extract extract = exp.getExtract(row.getId());
         if (extract != null) {
             extract.setAttributeValues(row.getValues());
         }
     }
 
     @Override
-    public void updateExtractLabels(ExtractLabelsRow row) {
-        uk.ac.ebi.fg.annotare2.submission.model.Extract extract = exp.getExtract(row.getId());
+    public void updateExtractLabels(LabeledExtractRow row) {
+        Extract extract = exp.getExtract(row.getId());
         if (extract == null) {
             return;
         }
-        Collection<uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
-        Set<String> newLabels = new HashSet<String>(row.getLabels());
-        Set<String> existedLabels = new HashSet<String>();
-        for (uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract labeledExtract : labeledExtracts) {
-            if (!newLabels.contains(labeledExtract.getLabel())) {
-                exp.removeLabeledExtract(labeledExtract);
-            } else {
-                existedLabels.add(labeledExtract.getLabel().getName());
-            }
+        Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
+        if (labeledExtracts.size() > 1) {
+            // unsupported case
+            return;
         }
 
-        newLabels.removeAll(existedLabels);
-        for (String label : newLabels) {
-            exp.createLabeledExtract(extract, label);
+        LabeledExtract existed = labeledExtracts.isEmpty() ? null : labeledExtracts.iterator().next();
+        if (existed != null) {
+            exp.removeLabeledExtract(existed);
         }
+
+        exp.createLabeledExtract(extract, row.getLabel());
     }
 
     @Override
     public void createProtocol(ProtocolType protocolType) {
         Collection<String> existedNames = Collections2.transform(
                 exp.getProtocols(),
-                new Function<uk.ac.ebi.fg.annotare2.submission.model.Protocol, String>() {
+                new Function<Protocol, String>() {
                     @Nullable
                     @Override
-                    public String apply(@Nullable uk.ac.ebi.fg.annotare2.submission.model.Protocol input) {
+                    public String apply(@Nullable Protocol input) {
                         return input.getName();
                     }
                 }
         );
 
-        uk.ac.ebi.fg.annotare2.submission.model.Protocol protocol = exp.createProtocol(protocolType.getTerm(), protocolType.getUsageType());
+        Protocol protocol = exp.createProtocol(protocolType.getTerm(), protocolType.getSubjectType());
         protocol.setName(newName("Protocol", existedNames));
     }
 
@@ -235,13 +234,13 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void updateProtocol(ProtocolRow row) {
-        uk.ac.ebi.fg.annotare2.submission.model.Protocol protocol = exp.getProtocol(row.getId());
+        Protocol protocol = exp.getProtocol(row.getId());
         if (protocol != null) {
             protocol.setName(row.getName());
             protocol.setDescription(row.getDescription());
             protocol.setHardware(row.getHardware());
             protocol.setSoftware(row.getSoftware());
-            protocol.setContact(row.getContact());
+            protocol.setPerformer(row.getPerformer());
             protocol.setParameters(row.getParameters());
         }
     }
@@ -249,13 +248,13 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void removeProtocols(List<ProtocolRow> rows) {
         for (ProtocolRow row : rows) {
-            uk.ac.ebi.fg.annotare2.submission.model.Protocol protocol = exp.getProtocol(row.getId());
+            Protocol protocol = exp.getProtocol(row.getId());
             exp.removeProtocol(protocol);
         }
     }
 
     @Override
-    public void createDataAssignmentColumn(uk.ac.ebi.fg.annotare2.submission.model.FileType fileType) {
+    public void createDataAssignmentColumn(FileType fileType) {
         exp.createFileColumn(fileType);
     }
 
@@ -268,27 +267,25 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void updateDataAssignmentColumn(DataAssignmentColumn column) {
-        uk.ac.ebi.fg.annotare2.submission.model.FileColumn fileColumn = exp.getFileColumn(column.getIndex());
-        Set<String> assayIds = new HashSet<String>(column.getAssayIds());
-        for (String assayId : assayIds) {
-            uk.ac.ebi.fg.annotare2.submission.model.Assay assay = exp.getAssay(assayId);
-            if (assay != null) {
-                fileColumn.setFileName(assay, column.getFileName(assayId));
+        FileColumn fileColumn = exp.getFileColumn(column.getIndex());
+        Set<String> labelExtractIds = new HashSet<String>(column.getLabeledExtractIds());
+        for (String labelExtractId : labelExtractIds) {
+            LabeledExtract labeledExtract = exp.getLabeledExtract(labelExtractId);
+            if (labeledExtract != null) {
+                fileColumn.setFileName(labeledExtract, column.getFileName(labelExtractId));
             }
         }
-        for (uk.ac.ebi.fg.annotare2.submission.model.Assay assay : fileColumn.getAssays()) {
-            if (!assayIds.contains(assay.getId())) {
-                fileColumn.setFileName(assay, null);
+        for (LabeledExtract labeledExtract : fileColumn.getLabeledExtracts()) {
+            if (!labelExtractIds.contains(labeledExtract.getId())) {
+                fileColumn.setFileName(labeledExtract, null);
             }
         }
     }
 
     @Override
     public void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {
-        uk.ac.ebi.fg.annotare2.submission.model.Protocol protocol = exp.getProtocol(updates.getProtocolId());
-        if (protocol != null) {
-            protocol.getTargetType().setProtocolAssignments(protocol, exp, updates.getAssignments());
-        }
+        Protocol protocol = exp.getProtocol(updates.getProtocolId());
+        createProtocolAssignment(exp, protocol).update(updates.getAssignments());
     }
 
     @Override
@@ -312,32 +309,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         }
     }
 
-    protected uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile exp() {
+    protected ExperimentProfile exp() {
         return exp;
-    }
-
-    private static class ColumnValueTypeVisitor implements ColumnValueType.Visitor {
-
-        private uk.ac.ebi.fg.annotare2.submission.model.AttributeValueType valueType;
-
-        @Override
-        public void visitTermValueType(OntologyTermValueType valueType) {
-            this.valueType = new uk.ac.ebi.fg.annotare2.submission.model.TermAttributeValueType(valueType.getEfoTerm());
-        }
-
-        @Override
-        public void visitTextValueType(TextValueType valueType) {
-            this.valueType = new uk.ac.ebi.fg.annotare2.submission.model.TextAttributeValueType();
-        }
-
-        @Override
-        public void visitNumericValueType(NumericValueType valueType) {
-            this.valueType = new uk.ac.ebi.fg.annotare2.submission.model.NumericAttributeValueType(valueType.getUnits());
-        }
-
-        public uk.ac.ebi.fg.annotare2.submission.model.AttributeValueType getValueType() {
-            return valueType;
-        }
     }
 
     private static class CompositeName {

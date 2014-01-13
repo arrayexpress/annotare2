@@ -17,8 +17,10 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -59,6 +61,9 @@ public class ProtocolAssignmentDialog extends DialogBox {
     @UiField
     Label errorMessage;
 
+    @UiField
+    InlineLabel protocolSubject;
+
     private DialogCallback<ProtocolAssignmentProfileUpdates> callback;
     private final int protocolId;
     private Map<String, Boolean> assignments;
@@ -70,16 +75,60 @@ public class ProtocolAssignmentDialog extends DialogBox {
         this.assignments = new LinkedHashMap<String, Boolean>(profile.getAssignments());
         this.names = new LinkedHashMap<String, String>(profile.getNames());
 
-        assignedListBox = new ListBox(true);
-        availableListBox = new ListBox(true);
-
         setModal(true);
         setGlassEnabled(true);
-        setText("Assign " + profile.getProtocolName() + " to " + profile.getTarget() + "...");
+        setText("Assign " + profile.getProtocolName() + " to " + profile.getProtocolSubjectType() + "s...");
 
-        setWidget(Binder.BINDER.createAndBindUi(this));
+        createDialog1(profile);
+    }
 
+    private void createDialog1(final ProtocolAssignmentProfile profile) {
+        if (!profile.isDefault()) {
+            createDialog2(profile);
+            return;
+        }
+
+        Button changeButton = new Button("Change");
+        changeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                createDialog2(profile);
+            }
+        });
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+        HorizontalPanel buttonPanel = new HorizontalPanel();
+        buttonPanel.setSpacing(5);
+        buttonPanel.add(cancelButton);
+        buttonPanel.add(changeButton);
+
+        HorizontalPanel hPanel = new HorizontalPanel();
+        hPanel.setWidth("100%");
+        hPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        hPanel.add(buttonPanel);
+        hPanel.getElement().getStyle().setMarginTop(5, Style.Unit.PX);
+
+        VerticalPanel panel = new VerticalPanel();
+        panel.setWidth("100%");
+        panel.add(new Label("Protocol '" + profile.getProtocolName() +
+                "' is assigned to all " + profile.getProtocolSubjectType() +
+                "s by default. Do you want to change this behavior?"));
+        panel.add(hPanel);
+        setWidget(panel);
         center();
+    }
+
+    private void createDialog2(ProtocolAssignmentProfile profile) {
+        assignedListBox = new ListBox(true);
+        availableListBox = new ListBox(true);
+        setWidget(Binder.BINDER.createAndBindUi(this));
+        center();
+        protocolSubject.setText(profile.getProtocolSubjectType());
         updateListBoxes();
     }
 

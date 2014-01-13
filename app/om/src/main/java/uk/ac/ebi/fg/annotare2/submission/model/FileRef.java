@@ -19,29 +19,12 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 /**
  * @author Olga Melnichuk
  */
-class FileRef implements HasProtocolAssignment {
+class FileRef {
 
     private String fileName;
-    private FileColumn fileColumn;
 
-    public FileRef(String fileName, FileColumn fileColumn) {
+    public FileRef(String fileName) {
         this.fileName = fileName;
-        this.fileColumn = fileColumn;
-    }
-
-    @Override
-    public boolean hasProtocol(Protocol protocol) {
-        return fileColumn.isProtocolAssigned2File(protocol, fileName);
-    }
-
-    @Override
-    public void assignProtocol(Protocol protocol, boolean assigned) {
-        fileColumn.assignProtocol2File(protocol, fileName, assigned);
-    }
-
-    @Override
-    public AssignmentItem getProtocolAssignmentItem() {
-        return new AssignmentItem(fileName, fileName);
     }
 
     @Override

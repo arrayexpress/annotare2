@@ -19,9 +19,7 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.Extract;
-import uk.ac.ebi.fg.annotare2.submission.model.Sample;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
 import java.io.IOException;
@@ -51,9 +49,12 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
             "sampleAttributes",
             "samples",
             "extracts",
-            "assays",
-            "sampleId2ExtractsIds",
-            "fileColumns"
+            "labeledExtracts",
+            "sampleId2ExtractIds",
+            "fileColumns",
+            "protocolId2SampleIds",
+            "protocolId2ExtractIds",
+            "protocolId2LabeledExtractIds"
     );
 
     @Override
@@ -95,13 +96,13 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
                         return obj.getExtracts();
                     }
                 },
-                new ValueGetter<ExperimentProfile>("assays") {
+                new ValueGetter<ExperimentProfile>("labeledExtracts") {
                     @Override
                     public Object getValue(ExperimentProfile obj) {
-                        return obj.getAssays();
+                        return obj.getLabeledExtracts();
                     }
                 },
-                new ValueGetter<ExperimentProfile>("sampleId2ExtractsIds") {
+                new ValueGetter<ExperimentProfile>("sampleId2ExtractIds") {
                     @Override
                     public Object getValue(ExperimentProfile obj) {
                         Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
@@ -120,6 +121,51 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
                     @Override
                     public Object getValue(ExperimentProfile obj) {
                         return obj.getLabels();
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("protocolId2SampleIds") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
+                        for (Protocol protocol : obj.getProtocols()) {
+                            Collection<Sample> samples = obj.getSamples(protocol);
+                            Set<Integer> sampleIds = new HashSet<Integer>();
+                            for (Sample sample : samples) {
+                                sampleIds.add(sample.getId());
+                            }
+                            map.put(protocol.getId(), sampleIds);
+                        }
+                        return map;
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("protocolId2ExtractIds") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        Map<Integer, Set<Integer>> map = new HashMap<Integer, Set<Integer>>();
+                        for (Protocol protocol : obj.getProtocols()) {
+                            Collection<Extract> extracts = obj.getExtracts(protocol);
+                            Set<Integer> extractIds = new HashSet<Integer>();
+                            for (Extract extract : extracts) {
+                                extractIds.add(extract.getId());
+                            }
+                            map.put(protocol.getId(), extractIds);
+                        }
+                        return map;
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("protocolId2LabeledExtractIds") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
+                        for (Protocol protocol : obj.getProtocols()) {
+                            Collection<LabeledExtract> labeledExtracts = obj.getLabeledExtracts(protocol);
+                            Set<String> labeledExtractIds = new HashSet<String>();
+                            for (LabeledExtract labeledExtract : labeledExtracts) {
+                                labeledExtractIds.add(labeledExtract.getId());
+                            }
+                            map.put(protocol.getId(), labeledExtractIds);
+                        }
+                        return map;
                     }
                 }
         );

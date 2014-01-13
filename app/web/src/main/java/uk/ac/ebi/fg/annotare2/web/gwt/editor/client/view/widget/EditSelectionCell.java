@@ -31,6 +31,7 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -134,7 +135,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     }
 
     @Override
-    public void updateOptions(List<String> newOptions) {
+    public void updateOptions(Collection<String> newOptions) {
         indexForOption.clear();
         options.clear();
 

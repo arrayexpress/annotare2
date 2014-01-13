@@ -19,8 +19,8 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import uk.ac.ebi.fg.annotare2.submission.model.Assay;
 import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.LabeledExtract;
 import uk.ac.ebi.fg.annotare2.submission.transform.util.ValueGetter;
 
 import java.io.IOException;
@@ -38,20 +38,19 @@ class FileColumnSerializer10 extends JsonSerializer<FileColumn> {
 
     static final List<String> FILE_COLUMN_JSON_FIELDS = asList(
             "type",
-            "assayId2FileNameMap",
-            "fileName2ProtocolAssignmentMap"
+            "leId2FileNameMap"
     );
 
     @Override
     public void serialize(FileColumn fileColumn, JsonGenerator jgen, SerializerProvider provider) throws IOException {
         generateJson(jgen, fileColumn, FILE_COLUMN_JSON_FIELDS,
-                new ValueGetter<FileColumn>("assayId2FileNameMap") {
+                new ValueGetter<FileColumn>("leId2FileNameMap") {
                     @Override
                     public Object getValue(FileColumn obj) {
                         Map<String, String> map = new HashMap<String, String>();
-                        for (Assay assay : obj.getAssays()) {
-                            String fileName = obj.getFileName(assay);
-                            map.put(assay.getId(), fileName);
+                        for (LabeledExtract labeledExtract : obj.getLabeledExtracts()) {
+                            String fileName = obj.getFileName(labeledExtract);
+                            map.put(labeledExtract.getId(), fileName);
                         }
                         return map;
                     }

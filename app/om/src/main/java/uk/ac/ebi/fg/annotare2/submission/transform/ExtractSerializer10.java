@@ -35,8 +35,7 @@ class ExtractSerializer10 extends JsonSerializer<Extract> {
     static final List<String> EXTRACT_JSON_FIELDS = asList(
             "id",
             "name",
-            "attributeValues",
-            "protocolAssignment"
+            "attributeValues"
     );
 
     @Override
