@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * @author Olga Melnichuk
  */
@@ -150,6 +152,6 @@ public class Protocol implements Serializable {
     }
 
     public boolean hasPerformer() {
-        return this.performer != null;
+        return isNullOrEmpty(this.performer);
     }
 }
