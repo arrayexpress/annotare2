@@ -21,7 +21,7 @@ import com.google.common.collect.Collections2;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
 
@@ -188,23 +188,26 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
-    public void updateExtractLabels(LabeledExtractRow row) {
+    public void updateExtractLabels(LabeledExtractsRow row) {
         Extract extract = exp.getExtract(row.getId());
         if (extract == null) {
             return;
         }
         Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
-        if (labeledExtracts.size() > 1) {
-            // unsupported case
-            return;
+        Set<String> newLabels = new HashSet<String>(row.getLabels());
+        Set<String> existedLabels = new HashSet<String>();
+        for (LabeledExtract labeledExtract : labeledExtracts) {
+            if (!newLabels.contains(labeledExtract.getLabel().getName())) {
+                exp.removeLabeledExtract(labeledExtract);
+            } else {
+                existedLabels.add(labeledExtract.getLabel().getName());
+            }
         }
 
-        LabeledExtract existed = labeledExtracts.isEmpty() ? null : labeledExtracts.iterator().next();
-        if (existed != null) {
-            exp.removeLabeledExtract(existed);
+        newLabels.removeAll(existedLabels);
+        for (String label : newLabels) {
+            exp.createLabeledExtract(extract, label);
         }
-
-        exp.createLabeledExtract(extract, row.getLabel());
     }
 
     @Override

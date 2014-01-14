@@ -52,7 +52,7 @@ public interface ExperimentUpdatePerformer {
 
     void updateExtractAttributes(ExtractAttributesRow row);
 
-    void updateExtractLabels(LabeledExtractRow row);
+    void updateExtractLabels(LabeledExtractsRow row);
 
     void createProtocol(ProtocolType protocolType);
 

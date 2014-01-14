@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +19,27 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * @author Olga Melnichuk
  */
-public class LabeledExtractRow implements HasIdentity, IsSerializable {
+public class LabeledExtractsRow implements HasIdentity, IsSerializable {
 
     private int id;
     private String name;
-    private String label;
+    private Set<String> labels;
 
-    LabeledExtractRow() {
+    LabeledExtractsRow() {
     /* used by GWT serialization */
     }
 
-    public LabeledExtractRow(int extractId, String extractName, String label) {
+    public LabeledExtractsRow(int extractId, String extractName) {
         this.id = extractId;
         this.name = extractName;
-        this.label = label;
+        this.labels = new LinkedHashSet<String>();
     }
 
     @Override
@@ -51,15 +55,21 @@ public class LabeledExtractRow implements HasIdentity, IsSerializable {
         return name;
     }
 
-    public String getLabel() {
-        return label;
+    public Set<String> getLabels() {
+        return labels;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setLabels(Collection<String> labels) {
+        this.labels = new LinkedHashSet<String>(labels);
     }
 
-    public LabeledExtractRow copy() {
-        return new LabeledExtractRow(id, name, label);
+    public boolean addLabel(String label) {
+        return labels.add(label);
+    }
+
+    public LabeledExtractsRow copy() {
+        LabeledExtractsRow copy = new LabeledExtractsRow(id, name);
+        copy.setLabels(labels);
+        return copy;
     }
 }

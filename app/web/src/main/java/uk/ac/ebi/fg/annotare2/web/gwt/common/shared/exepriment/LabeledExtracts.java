@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractsRow;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
  */
-public class UpdateExtractLabelsRowCommand implements ExperimentUpdateCommand {
+public class LabeledExtracts implements IsSerializable {
 
+    private  List<LabeledExtractsRow> rows;
 
-    private LabeledExtractsRow row;
-
-    UpdateExtractLabelsRowCommand() {
+    public LabeledExtracts() {
         /* used by GWT serialization */
     }
 
-    public UpdateExtractLabelsRowCommand(LabeledExtractsRow row) {
-        this.row = row;
+    public LabeledExtracts(List<LabeledExtractsRow> rows) {
+        this.rows = rows;
     }
 
-    @Override
-    public void execute(ExperimentUpdatePerformer performer) {
-        performer.updateExtractLabels(row);
+    public List<String> getLabels() {
+        return new ArrayList<String>();
     }
 
-    @Override
-    public boolean isCritical() {
-        return false;
+    public List<LabeledExtractsRow> getRows() {
+        return new ArrayList<LabeledExtractsRow>(rows);
     }
 }

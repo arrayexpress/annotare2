@@ -21,8 +21,6 @@ import uk.ac.ebi.fg.annotare2.submission.model.Extract;
 import uk.ac.ebi.fg.annotare2.submission.model.Sample;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 
-import java.util.Collection;
-
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_COLOR_MICROARRAY;
 
 /**
@@ -41,9 +39,7 @@ public class TwoColorMicroarrayUpdater extends BasicExperimentUpdater {
         Extract extract = exp().createExtract(sample);
         extract.setName(sample.getName());
 
-        Collection<String> labelNames = exp().getLabelNames();
-        String label = labelNames.isEmpty() ? null : labelNames.iterator().next();
-        if (label != null) {
+        for (String label : exp().getLabelNames()) {
             exp().createLabeledExtract(extract, label);
         }
     }

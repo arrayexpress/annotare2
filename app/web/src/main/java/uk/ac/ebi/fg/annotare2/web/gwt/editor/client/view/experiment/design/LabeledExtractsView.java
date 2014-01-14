@@ -16,9 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractsRow;
 
 import java.util.List;
 
@@ -27,14 +26,12 @@ import java.util.List;
  */
 public interface LabeledExtractsView extends IsWidget {
 
-    void setData(List<LabeledExtractRow> rows);
+    void setData(List<LabeledExtractsRow> rows, List<String> labels);
 
     void setPresenter(Presenter presenter);
 
     public interface Presenter {
 
-        void updateRow(LabeledExtractRow row);
-
-        void loadLabels(AsyncCallback<List<String>> callback);
+        void updateRow(LabeledExtractsRow row);
     }
 }

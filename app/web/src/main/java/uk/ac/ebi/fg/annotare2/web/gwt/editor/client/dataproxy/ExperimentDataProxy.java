@@ -25,11 +25,12 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -183,13 +184,15 @@ public class ExperimentDataProxy {
         return rows;
     }
 
-    private List<LabeledExtractRow> getLabeledExtractRows(ExperimentProfile exp) {
-        List<LabeledExtractRow> rows = new ArrayList<LabeledExtractRow>();
-        for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-            rows.add(new LabeledExtractRow(
-                    labeledExtract.getExtract().getId(),
-                    labeledExtract.getExtract().getName(),
-                    labeledExtract.getLabel().getName()));
+    private List<LabeledExtractsRow> getLabeledExtractRows(ExperimentProfile exp) {
+        List<LabeledExtractsRow> rows = new ArrayList<LabeledExtractsRow>();
+        for (Extract extract : exp.getExtracts()) {
+            Integer extractId = extract.getId();
+            LabeledExtractsRow row = new LabeledExtractsRow(extractId, extract.getName());
+            for (LabeledExtract labeledExtract : exp.getLabeledExtracts(extract)) {
+                row.addLabel(labeledExtract.getLabel().getName());
+            }
+            rows.add(row);
         }
         return rows;
     }
@@ -324,7 +327,7 @@ public class ExperimentDataProxy {
         });
     }
 
-    public void getLabeledExtractsAsync(final AsyncCallback<List<LabeledExtractRow>> callback) {
+    public void getLabeledExtractsAsync(final AsyncCallback<LabeledExtracts> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -333,7 +336,7 @@ public class ExperimentDataProxy {
 
             @Override
             public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(getLabeledExtractRows(result));
+                callback.onSuccess(new LabeledExtracts(getLabeledExtractRows(result)));
             }
         });
     }
@@ -396,6 +399,7 @@ public class ExperimentDataProxy {
         });
     }
 
+    /*
     public void getLabelsAsync(final AsyncCallback<List<String>> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
@@ -409,6 +413,7 @@ public class ExperimentDataProxy {
             }
         });
     }
+    */
 
     public void createContact() {
         updateQueue.add(new CreateContactCommand());
@@ -470,7 +475,7 @@ public class ExperimentDataProxy {
         updateQueue.add(new UpdateExtractAttributesRowCommand(row));
     }
 
-    public void updateExtractLabelsRow(LabeledExtractRow row) {
+    public void updateExtractLabelsRow(LabeledExtractsRow row) {
         updateQueue.add(new UpdateExtractLabelsRowCommand(row));
     }
 
