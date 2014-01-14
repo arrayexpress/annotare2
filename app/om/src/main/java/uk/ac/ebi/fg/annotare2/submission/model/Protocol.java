@@ -152,6 +152,6 @@ public class Protocol implements Serializable {
     }
 
     public boolean hasPerformer() {
-        return isNullOrEmpty(this.performer);
+        return !isNullOrEmpty(this.performer);
     }
 }
