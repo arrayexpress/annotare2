@@ -93,24 +93,28 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
             @Override
             public void update(final Callback callback) {
-                if (presenter == null || !options.isEmpty()) {
-                    return;
-                }
-                presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        callback.setOptions(Collections.<String>emptyList());
-                    }
+                if (presenter != null) {
+                    if (options.isEmpty()) {
+                        presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                callback.setOptions(Collections.<String>emptyList());
+                            }
 
-                    @Override
-                    public void onSuccess(List<String> result) {
-                        if (!result.isEmpty()) {
-                            options.add("");
-                            options.addAll(result);
-                            callback.setOptions(options);
-                        }
+                            @Override
+                            public void onSuccess(List<String> result) {
+                                if (!result.isEmpty()) {
+                                    options.clear();
+                                    options.add("");
+                                    options.addAll(result);
+                                    callback.setOptions(options);
+                                }
+                            }
+                        });
+                    } else {
+                        callback.setOptions(options);
                     }
-                });
+                }
             }
         };
     }
@@ -301,5 +305,4 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         column.setSortable(true);
         gridView.addPermanentColumn("Material Type", column, null, COLUMN_WIDTH, Style.Unit.PX);
     }
-
 }

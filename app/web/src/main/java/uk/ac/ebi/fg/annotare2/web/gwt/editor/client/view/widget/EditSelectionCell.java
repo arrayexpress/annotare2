@@ -132,6 +132,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
         }
         this.renderer = renderer;
         optionProvider.addOptionDisplay(this);
+        optionProvider.update();
     }
 
     @Override
