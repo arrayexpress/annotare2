@@ -43,6 +43,8 @@ public class Protocol implements Serializable {
 
     private ProtocolSubjectType subjectType;
 
+    private boolean isAssigned;
+
     Protocol() {
         /* used by GWT serialization only */
         this(0);
@@ -51,6 +53,7 @@ public class Protocol implements Serializable {
     public Protocol(int id) {
         this.id = id;
         this.parameters = new ArrayList<String>();
+        this.isAssigned = true;
     }
 
     public int getId() {
@@ -119,6 +122,14 @@ public class Protocol implements Serializable {
 
     public List<String> getParameters() {
         return parameters;
+    }
+
+    public void setAssigned(boolean isAssigned) {
+        this.isAssigned = isAssigned;
+    }
+
+    public boolean isAssigned() {
+        return isAssigned;
     }
 
     @Override

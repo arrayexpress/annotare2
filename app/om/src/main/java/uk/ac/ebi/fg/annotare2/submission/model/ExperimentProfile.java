@@ -486,9 +486,9 @@ public class ExperimentProfile implements Serializable {
         Set<Protocol> protocols = newLinkedHashSet();
         for (Protocol p : sampleProtocols) {
             Set<Sample> samples = protocol2Samples.get(p);
-            if (samples.isEmpty() || samples.contains(sample)) {
-                protocols.add(p);
-            }
+            p.setAssigned(samples.isEmpty() || samples.contains(sample));
+            protocols.add(p);
+
         }
         return protocols;
     }
@@ -501,9 +501,9 @@ public class ExperimentProfile implements Serializable {
         Set<Protocol> protocols = newLinkedHashSet();
         for (Protocol p : extractProtocols) {
             Set<Extract> extracts = protocol2Extracts.get(p);
-            if (extracts.isEmpty() || extracts.contains(extract)) {
-                protocols.add(p);
-            }
+            p.setAssigned(extracts.isEmpty() || extracts.contains(extract));
+            protocols.add(p);
+
         }
         return protocols;
     }
@@ -516,9 +516,8 @@ public class ExperimentProfile implements Serializable {
         Set<Protocol> protocols = newLinkedHashSet();
         for (Protocol p : labelExtractProtocols) {
             Set<LabeledExtract> labelExtracts = protocol2LabeledExtracts.get(p);
-            if (labelExtracts.isEmpty() || labelExtracts.contains(labeledExtract)) {
-                protocols.add(p);
-            }
+            p.setAssigned(labelExtracts.isEmpty() || labelExtracts.contains(labeledExtract));
+            protocols.add(p);
         }
         return protocols;
     }
@@ -527,9 +526,8 @@ public class ExperimentProfile implements Serializable {
         Collection<Protocol> protocolsByType = getProtocolsByType(type);
         Set<Protocol> protocols = newHashSet();
         for (Protocol p : protocolsByType) {
-            if (!protocol2Samples.containsKey(p)) {
-                protocols.add(p);
-            }
+            p.setAssigned(!protocol2Samples.containsKey(p));
+            protocols.add(p);
         }
         return protocols;
     }

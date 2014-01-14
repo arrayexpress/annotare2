@@ -157,13 +157,15 @@ public class MageTabGenerator {
         }
 
         for (Protocol protocol : exp.getProtocols()) {
-            idf.protocolName.add(notNull(protocol.getName()));
-            idf.protocolDescription.add(notNull(protocol.getDescription()));
-            idf.protocolType.add(notNull(protocol.getType().getLabel()));
-            idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
-            idf.protocolTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
-            idf.protocolHardware.add(notNull(protocol.getHardware()));
-            idf.protocolSoftware.add(notNull(protocol.getSoftware()));
+            if (protocol.isAssigned()) {
+                idf.protocolName.add(notNull(protocol.getName()));
+                idf.protocolDescription.add(notNull(protocol.getDescription()));
+                idf.protocolType.add(notNull(protocol.getType().getLabel()));
+                idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
+                idf.protocolTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
+                idf.protocolHardware.add(notNull(protocol.getHardware()));
+                idf.protocolSoftware.add(notNull(protocol.getSoftware()));
+            }
         }
 
         for (SampleAttribute attribute : exp.getSampleAttributes()) {
@@ -374,16 +376,20 @@ public class MageTabGenerator {
         SDRFNode prev = source;
         for (Protocol protocol : protocols) {
             // protocol node name must be unique
-            String nodeName = prev.getNodeName() + ":" + protocol.getId();
+            String nodeName = prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
             ProtocolApplicationNode protocolNode = getNode(ProtocolApplicationNode.class, nodeName);
             if (protocolNode == null) {
-                protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
-                protocolNode.setNodeName(prev.getNodeName() + ":" + protocol.getId());
-                protocolNode.protocol = protocol.getName();
-                if (protocol.hasPerformer()) {
-                    PerformerAttribute attr = new PerformerAttribute();
-                    attr.setAttributeValue(protocol.getPerformer());
-                    protocolNode.performer = attr;
+                if (protocol.isAssigned()) {
+                    protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
+                    protocolNode.setNodeName(nodeName);
+                    protocolNode.protocol = protocol.getName();
+                    if (protocol.hasPerformer()) {
+                        PerformerAttribute attr = new PerformerAttribute();
+                        attr.setAttributeValue(protocol.getPerformer());
+                        protocolNode.performer = attr;
+                    }
+                } else {
+                    protocolNode = createFakeNode(ProtocolApplicationNode.class);
                 }
             }
             connect(prev, protocolNode);
