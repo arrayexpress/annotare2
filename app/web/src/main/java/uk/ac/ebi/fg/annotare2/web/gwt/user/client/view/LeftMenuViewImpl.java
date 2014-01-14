@@ -70,12 +70,16 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
                         presenter.onSubmissionCreateClick(EXPERIMENT);
                     }
                 });
-        createButton.addMenuButtonItem(ARRAY_DESIGN.getTitle() + " Submission")
+
+        /*** disabled in first release ***
+        createButton
+                .addMenuButtonItem(ARRAY_DESIGN.getTitle() + " Submission")
                 .addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
                         presenter.onSubmissionCreateClick(ARRAY_DESIGN);
                     }
                 });
+         ***/
 
         filters.put(SubmissionListFilter.COMPLETED_SUBMISSIONS, completed);
         filters.put(SubmissionListFilter.INCOMPLETE_SUBMISSIONS, incomplete);
