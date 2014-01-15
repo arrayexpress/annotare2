@@ -23,8 +23,8 @@ import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
+import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -32,16 +32,15 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -93,7 +92,7 @@ public class SubsTrackingWatchdog {
             public void run() {
                 Session session = sessionFactory.openSession();
                 try {
-                    runTransaction();
+                    periodicRun();
                 } catch (Exception x) {
                     log.error("Submission watchdog process caught an exception:", x);
                 } finally {
@@ -106,7 +105,7 @@ public class SubsTrackingWatchdog {
         scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
     }
 
-    public void runTransaction() throws Exception {
+    public void periodicRun() throws Exception {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
         );
@@ -114,17 +113,17 @@ public class SubsTrackingWatchdog {
         for (Submission submission : submissions) {
             switch (submission.getStatus()) {
                 case SUBMITTED:
-                    submitTransaction(submission);
+                    processSubmitted(submission);
                     break;
 
                 case IN_CURATION:
-                    reopenTransaction(submission);
+                    processInCuration(submission);
             }
         }
     }
 
     @Transactional
-    public void submitTransaction(Submission submission) {
+    public void processSubmitted(Submission submission) throws SubsTrackingException {
         SubmissionOutcome outcome = submitSubmission(submission);
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             submission.setStatus(SubmissionStatus.IN_CURATION);
@@ -164,28 +163,38 @@ public class SubsTrackingWatchdog {
     }
 
     @Transactional
-    public void reopenTransaction(Submission submission) {
-        if (!isInCuration(submission.getSubsTrackingId())) {
-            submission.setStatus(SubmissionStatus.IN_PROGRESS);
-            submission.setOwnedBy(submission.getCreatedBy());
-            submissionManager.save(submission);
-            try {
-                emailer.sendFromTemplate(
-                        EmailSender.REJECTED_SUBMISSION_TEMPLATE,
-                        ImmutableMap.of(
-                                "to.name", submission.getCreatedBy().getName(),
-                                "to.email", submission.getCreatedBy().getEmail(),
-                                "submission.title", submission.getTitle(),
-                                "submission.date", submission.getUpdated().toString()
-                        )
-                );
-            } catch (Exception x) {
-                log.error("Email process threw an exception:", x);
+    public void processInCuration(Submission submission) throws SubsTrackingException {
+        Integer subsTrackingId = submission.getSubsTrackingId();
+        if (null != subsTrackingId) {
+
+            String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
+            if (!Objects.equals(submission.getAccession(), subsTrackingAccession)) {
+                submission.setAccession(subsTrackingAccession);
+                submissionManager.save(submission);
+            }
+
+            if (!isInCuration(submission.getSubsTrackingId())) {
+                submission.setStatus(SubmissionStatus.IN_PROGRESS);
+                submission.setOwnedBy(submission.getCreatedBy());
+                submissionManager.save(submission);
+                try {
+                    emailer.sendFromTemplate(
+                            EmailSender.REJECTED_SUBMISSION_TEMPLATE,
+                            ImmutableMap.of(
+                                    "to.name", submission.getCreatedBy().getName(),
+                                    "to.email", submission.getCreatedBy().getEmail(),
+                                    "submission.title", submission.getTitle(),
+                                    "submission.date", submission.getUpdated().toString()
+                            )
+                    );
+                } catch (Exception x) {
+                    log.error("Email process threw an exception:", x);
+                }
             }
         }
     }
 
-    private SubmissionOutcome submitSubmission(Submission submission) {
+    private SubmissionOutcome submitSubmission(Submission submission) throws SubsTrackingException {
 
         SubmissionOutcome result = SubmissionOutcome.SUBMISSION_FAILED;
         Connection subsTrackingConnection = null;
@@ -195,6 +204,10 @@ public class SubsTrackingWatchdog {
 
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTrackingConnection = subsTracking.getConnection();
+                if (null == subsTrackingConnection) {
+                    throw new SubsTrackingException(SubsTrackingException.UNABLE_TO_OBTAIN_CONNECTION);
+                }
+
                 subsTrackingConnection.setAutoCommit(false);
 
                 Integer subsTrackingId = submission.getSubsTrackingId();
@@ -224,6 +237,7 @@ public class SubsTrackingWatchdog {
             if (submission instanceof ExperimentSubmission) {
                 exportSubmissionFiles(subsTrackingConnection, (ExperimentSubmission)submission, exportDir);
             }
+
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTracking.sendSubmission(subsTrackingConnection, submission.getSubsTrackingId());
                 subsTrackingConnection.commit();
@@ -232,11 +246,13 @@ public class SubsTrackingWatchdog {
             return result;
         } catch (Throwable x) {
             try {
-                subsTrackingConnection.rollback();
+                if (null != subsTrackingConnection) {
+                    subsTrackingConnection.rollback();
+                }
             } catch (SQLException xx) {
                 log.error("SQLException:", x);
             }
-            throw new RuntimeException(x);
+            throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
         } finally {
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTracking.releaseConnection(subsTrackingConnection);
@@ -245,62 +261,66 @@ public class SubsTrackingWatchdog {
     }
 
     private void exportSubmissionFiles(Connection connection, ExperimentSubmission submission, File exportDirectory)
-            throws DataSerializationException, ParseException, IOException {
-        ExperimentProfile exp = submission.getExperimentProfile();
-        Integer subsTrackingId = submission.getSubsTrackingId();
-        String fileName = submission.getAccession();
-        if (null == fileName) {
-            fileName = "submission" + submission.getId() + "_annotare";
-        }
-        if (properties.getAeSubsTrackingEnabled()) {
-            int version = 1;
-            while (subsTracking.hasMageTabFileAdded(
-                    connection,
-                    subsTrackingId,
-                    fileName + "_v" + version + ".idf.txt")) {
-                version++;
+            throws SubsTrackingException {
+        try {
+            ExperimentProfile exp = submission.getExperimentProfile();
+            Integer subsTrackingId = submission.getSubsTrackingId();
+            String fileName = submission.getAccession();
+            if (null == fileName) {
+                fileName = "submission" + submission.getId() + "_annotare";
             }
-            fileName = fileName + "_v" + version;
-        }
-        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
+            if (properties.getAeSubsTrackingEnabled()) {
+                int version = 1;
+                while (subsTracking.hasMageTabFileAdded(
+                        connection,
+                        subsTrackingId,
+                        fileName + "_v" + version + ".idf.txt")) {
+                    version++;
+                }
+                fileName = fileName + "_v" + version;
+            }
+            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
 
-        if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
-            ; // throw something
-        }
-        mageTab.getIdfFile().setWritable(true, false);
+            if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
+                ; // throw something
+            }
+            mageTab.getIdfFile().setWritable(true, false);
 
-        if (properties.getAeSubsTrackingEnabled()) {
-            subsTracking.deleteFiles(connection, subsTrackingId);
-            subsTracking.addMageTabFile(connection, subsTrackingId, mageTab.getIdfFile().getName());
-        }
+            if (properties.getAeSubsTrackingEnabled()) {
+                subsTracking.deleteFiles(connection, subsTrackingId);
+                subsTracking.addMageTabFile(connection, subsTrackingId, mageTab.getIdfFile().getName());
+            }
 
-        exportDirectory = new File(exportDirectory, "unpacked");
-        if (!exportDirectory.exists()) {
-            exportDirectory.mkdir();
-            exportDirectory.setWritable(true, false);
-        }
+            exportDirectory = new File(exportDirectory, "unpacked");
+            if (!exportDirectory.exists()) {
+                exportDirectory.mkdir();
+                exportDirectory.setWritable(true, false);
+            }
 
-        // move sdrf file
-        File exportedSdrfFile = new File(exportDirectory, mageTab.getSdrfFile().getName());
-        Files.move(mageTab.getSdrfFile(), exportedSdrfFile);
-        exportedSdrfFile.setWritable(true, false);
+            // move sdrf file
+            File exportedSdrfFile = new File(exportDirectory, mageTab.getSdrfFile().getName());
+            Files.move(mageTab.getSdrfFile(), exportedSdrfFile);
+            exportedSdrfFile.setWritable(true, false);
 
-        // copy data files
-        Set<DataFile> dataFiles = submission.getFiles();
-        if (dataFiles.size() > 0) {
+            // copy data files
+            Set<DataFile> dataFiles = submission.getFiles();
+            if (dataFiles.size() > 0) {
 
-            for (DataFile dataFile : dataFiles) {
-                File f = new File(exportDirectory, dataFile.getName());
-                Files.copy(dataFileManager.getFile(dataFile), f);
-                f.setWritable(true, false);
-                if (properties.getAeSubsTrackingEnabled()) {
-                    subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
+                for (DataFile dataFile : dataFiles) {
+                    File f = new File(exportDirectory, dataFile.getName());
+                    Files.copy(dataFileManager.getFile(dataFile), f);
+                    f.setWritable(true, false);
+                    if (properties.getAeSubsTrackingEnabled()) {
+                        subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
+                    }
                 }
             }
+        } catch (Exception x) {
+            throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
         }
     }
 
-    private boolean isInCuration(Integer subsTrackingId) {
+    private boolean isInCuration(Integer subsTrackingId) throws SubsTrackingException {
         Connection dbConnection = subsTracking.getConnection();
         try {
             return subsTracking.isInCuration(dbConnection, subsTrackingId);
@@ -308,4 +328,14 @@ public class SubsTrackingWatchdog {
             subsTracking.releaseConnection(dbConnection);
         }
     }
+
+    private String getSubsTrackingAccession(Integer subsTrackingId) throws SubsTrackingException {
+        Connection dbConnection = subsTracking.getConnection();
+        try {
+            return subsTracking.getAccession(dbConnection, subsTrackingId);
+        } finally {
+            subsTracking.releaseConnection(dbConnection);
+        }
+    }
+
 }
