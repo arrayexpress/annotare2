@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -40,7 +41,6 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -168,7 +168,7 @@ public class SubsTrackingWatchdog {
         if (null != subsTrackingId) {
 
             String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
-            if (!Objects.equals(submission.getAccession(), subsTrackingAccession)) {
+            if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
                 submission.setAccession(subsTrackingAccession);
                 submissionManager.save(submission);
                 try {
