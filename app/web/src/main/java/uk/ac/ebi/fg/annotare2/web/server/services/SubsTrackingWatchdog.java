@@ -171,6 +171,20 @@ public class SubsTrackingWatchdog {
             if (!Objects.equals(submission.getAccession(), subsTrackingAccession)) {
                 submission.setAccession(subsTrackingAccession);
                 submissionManager.save(submission);
+                try {
+                    emailer.sendFromTemplate(
+                            EmailSender.ACCESSION_UPDATE_TEMPLATE,
+                            ImmutableMap.of(
+                                    "to.name", submission.getCreatedBy().getName(),
+                                    "to.email", submission.getCreatedBy().getEmail(),
+                                    "submission.title", submission.getTitle(),
+                                    "submission.accession", submission.getAccession(),
+                                    "submission.date", submission.getUpdated().toString()
+                            )
+                    );
+                } catch (Exception x) {
+                    log.error("Email process threw an exception:", x);
+                }
             }
 
             if (!isInCuration(submission.getSubsTrackingId())) {
