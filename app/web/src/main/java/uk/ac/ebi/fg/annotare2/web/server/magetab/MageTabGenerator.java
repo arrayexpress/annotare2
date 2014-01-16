@@ -429,7 +429,7 @@ public class MageTabGenerator {
             for (ExtractAttribute attr : ExtractAttribute.values()) {
                 String value = extract.getAttributeValue(attr);
                 if (!isNullOrEmpty(value)) {
-                    extractNode.comments.put(getSdrfFriendlyName(attr), value);
+                    extractNode.comments.put(getSdrfFriendlyName(attr), Arrays.asList(value));
                 }
             }
         }
@@ -520,7 +520,8 @@ public class MageTabGenerator {
         }
         ArrayDesignAttribute arrayDesignAttribute = new ArrayDesignAttribute();
         arrayDesignAttribute.setAttributeValue(arrayDesign);
-        arrayDesignAttribute.termAccessionNumber = arrayDesign;
+        // TODO: Removed until Limpopo is fixed
+        //arrayDesignAttribute.termAccessionNumber = arrayDesign;
         arrayDesignAttribute.termSourceREF = ensureTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
         return arrayDesignAttribute;
     }
@@ -706,9 +707,14 @@ public class MageTabGenerator {
         }
         UnitAttribute attr = new UnitAttribute();
         attr.type = units.getLabel();
-        attr.termAccessionNumber = units.getAccession();
         attr.setAttributeValue(units.getLabel());
-        attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
+//      TODO: commented even as this is how it's supposed to be but until limpopo is fixed we have to
+//      swap values so they get correctly written in the SDRF
+//      attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
+//      attr.termAccessionNumber = units.getAccession();
+        attr.termAccessionNumber = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
+        attr.termSourceREF = units.getAccession();
+
         return attr;
     }
 
