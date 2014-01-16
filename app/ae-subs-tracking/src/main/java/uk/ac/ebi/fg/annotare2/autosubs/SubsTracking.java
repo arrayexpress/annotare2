@@ -28,9 +28,9 @@ import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.DataFilesRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord;
-import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -39,8 +39,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 
 public class SubsTracking {
     private final SubsTrackingProperties properties;
@@ -123,7 +123,7 @@ public class SubsTracking {
                     throw new SubsTrackingException(SubsTrackingException.IN_CURATION_ON_RESUBMISSION_EXCEPTION);
                 }
 
-                Integer numSubmissions = r.getNumSubmissions();
+                Integer numSubmissions = null == r.getNumSubmissions() ? 1 : r.getNumSubmissions();
 
                 getContext(connection).update(EXPERIMENTS)
                         .set(EXPERIMENTS.DATE_LAST_EDITED, updateDate)
