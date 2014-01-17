@@ -520,8 +520,6 @@ public class MageTabGenerator {
         }
         ArrayDesignAttribute arrayDesignAttribute = new ArrayDesignAttribute();
         arrayDesignAttribute.setAttributeValue(arrayDesign);
-        // TODO: Removed until Limpopo is fixed
-        //arrayDesignAttribute.termAccessionNumber = arrayDesign;
         arrayDesignAttribute.termSourceREF = ensureTermSource(TermSource.ARRAY_EXPRESS_TERM_SOURCE).getName();
         return arrayDesignAttribute;
     }
@@ -708,12 +706,8 @@ public class MageTabGenerator {
         UnitAttribute attr = new UnitAttribute();
         attr.type = units.getLabel();
         attr.setAttributeValue(units.getLabel());
-//      TODO: commented even as this is how it's supposed to be but until limpopo is fixed we have to
-//      swap values so they get correctly written in the SDRF
-//      attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
-//      attr.termAccessionNumber = units.getAccession();
-        attr.termAccessionNumber = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
-        attr.termSourceREF = units.getAccession();
+        attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
+        attr.termAccessionNumber = units.getAccession();
 
         return attr;
     }
