@@ -16,15 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
-import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
@@ -33,8 +30,9 @@ import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
+import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
@@ -43,28 +41,31 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetai
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
-import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
+import uk.ac.ebi.fg.annotare2.web.server.services.*;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.jms.JMSException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.hash.Hashing.md5;
-import static com.google.common.io.Files.hash;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
@@ -297,61 +298,54 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     @Override
     public void uploadDataFile(long id, String fileNameOrPath) throws ResourceNotFoundException, NoPermissionException {
         try {
-            String fileName = getFileNameOnly(fileNameOrPath);
+            String fileName = FilenameUtils.getName(fileNameOrPath);
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            FileItem fileItem = UploadedFiles.get(getSession(), fileName);
-            File file = new File(properties.getHttpUploadDir(), fileName);
-            Streams.copy(fileItem.getInputStream(), new FileOutputStream(file), true);
-            saveFile(file, submission);
-        } catch (FileNotFoundException e) {
-            throw unexpected(e);
-        } catch (IOException e) {
-            throw unexpected(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (JMSException e) {
+            File uploadedFile = new File(properties.getHttpUploadDir(), fileName);
+            UploadedFiles.get(getSession(), fileName).write(uploadedFile);
+            saveFile(new LocalFileSource(uploadedFile), submission);
+        } catch (Exception e) {
             throw unexpected(e);
         }
-    }
-
-    /**
-     * Extracts file name from a string.
-     *
-     * Different browsers return file name of uploaded file differently: chrome and safary return "C:\fakepath\fileName",
-     * but firefox returns just a fileName.
-     *
-     * @param str file name or path
-     * @return a string containing just a file name
-     */
-    private static String getFileNameOnly(String str) {
-        if (isNullOrEmpty(str)) {
-            return str;
-        }
-        str = str.replaceAll("\\\\", "/");
-        String[] parts = str.split("/");
-        return parts[parts.length - 1];
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public Map<Integer, String> registryFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
+    public Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            File ftpRoot = properties.getFilePickUpDir();
+
+            String ftpRoot = properties.getFilePickUpDir();
+            if (ftpRoot.startsWith("/")) {
+                ftpRoot = "file://" + ftpRoot;
+            }
+            if (!ftpRoot.endsWith("/")) {
+                ftpRoot = ftpRoot + "/";
+            }
+
             Map<Integer, String> errors = new HashMap<Integer, String>();
             int index = 0;
             for (FtpFileInfo info : details) {
-                File file = new File(ftpRoot, info.getFileName());
-                if (fileExists(file, info.getMd5())) {
-                    saveFile(file, submission);
+                URI fileUri = new URI(ftpRoot + info.getFileName());
+                DataFileSource fileSource;
+                if ("file".equals(fileUri.getScheme())) {
+                    fileSource = new LocalFileSource(new File(fileUri.getPath()));
+                } else {
+                    fileSource = new RemoteFileSource(fileUri);
+                }
+                if (fileSource.exists()) {
+                    if (Objects.equal(fileSource.getDigest(), info.getMd5())) {
+                        saveFile(fileSource, submission);
+                    } else {
+                        errors.put(index, "MD5 of received file does not match the submitted value");
+                    }
                 } else {
                     errors.put(index, "File not found");
                 }
                 index++;
             }
             return errors;
+        } catch (URISyntaxException e) {
+            throw unexpected(e);
         } catch (FileNotFoundException e) {
             throw unexpected(e);
         } catch (IOException e) {
@@ -413,8 +407,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private void saveFile(final File file, final ExperimentSubmission submission) throws JMSException {
-        String fileName = file.getName();
+    private void saveFile(final DataFileSource source, final ExperimentSubmission submission) throws JMSException {
+        String fileName = source.getName();
         Set<DataFile> files = submission.getFiles();
         for (DataFile dataFile : files) {
             if (fileName.equals(dataFile.getName())) {
@@ -423,11 +417,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
         }
 
-        dataFileManager.upload(file, submission);
+        dataFileManager.store(source, submission);
         save(submission);
     }
 
+    /**
     private static boolean fileExists(File file, String md5) throws IOException {
         return file.exists() && md5.equals(hash(file, md5()).toString());
     }
+     */
 }

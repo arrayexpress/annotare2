@@ -120,8 +120,8 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void registryFtpFilesAsync(List<FtpFileInfo> details, final AsyncCallback<Map<Integer, String>> callback) {
-        submissionServiceAsync.registryFtpFiles(getSubmissionId(), details, new AsyncCallbackWrapper<Map<Integer, String>>() {
+    public void registerFtpFilesAsync(List<FtpFileInfo> details, final AsyncCallback<Map<Integer, String>> callback) {
+        submissionServiceAsync.registerFtpFiles(getSubmissionId(), details, new AsyncCallbackWrapper<Map<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);

@@ -17,12 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
 
 import javax.jms.JMSException;
 import java.io.File;
@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 public class DataFileManager {
 
-    private static final Logger log = LoggerFactory.getLogger(DataFileManager.class);
+    //private static final Logger log = LoggerFactory.getLogger(DataFileManager.class);
 
     private final DataFileDao dataFileDao;
     private final DataFileStore fileStore;
@@ -50,13 +50,13 @@ public class DataFileManager {
     /**
      * Creates {@link DataFile} record in the database and schedules a task to copy the file into a file store.
      *
-     * @param file       file to be copied
+     * @param source     file to be copied
      * @param submission submission to add file to
      */
-    public void upload(File file, Submission submission) throws JMSException {
-        DataFile dataFile = dataFileDao.create(file.getName(), submission);
+    public void store(DataFileSource source, Submission submission) throws JMSException {
+        DataFile dataFile = dataFileDao.create(source.getName(), submission);
         submission.getFiles().add(dataFile);
-        messageQueue.offer(file, dataFile);
+        messageQueue.offer(source, dataFile);
     }
 
     public File getFile(DataFile dataFile) throws IOException {

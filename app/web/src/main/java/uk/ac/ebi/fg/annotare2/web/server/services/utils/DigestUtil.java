@@ -35,7 +35,7 @@ public class DigestUtil {
     public static String md5Hex(String str) {
         try {
             byte[] md5 = MessageDigest.getInstance("MD5").digest(str.getBytes(Charsets.UTF_8));
-            return  toHexString(md5);
+            return toHexString(md5);
         } catch (NoSuchAlgorithmException e) {
             throw logUnexpected("md5Hex error", e);
         }

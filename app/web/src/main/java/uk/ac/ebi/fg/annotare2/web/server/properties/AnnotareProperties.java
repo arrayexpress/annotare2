@@ -73,8 +73,8 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         return getDirProperty("httpupload.temp.dir");
     }
 
-    public File getFilePickUpDir() {
-        return getDirProperty("pickup.dir");
+    public String getFilePickUpDir() {
+        return getProperty("pickup.dir");
     }
 
     @Override

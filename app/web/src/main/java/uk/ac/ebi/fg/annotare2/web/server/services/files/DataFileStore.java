@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services;
+package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
-import com.google.common.hash.Hashing;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.io.Closeables.close;
-import static java.lang.System.currentTimeMillis;
 
 /**
  * @author Olga Melnichuk
@@ -41,7 +33,7 @@ public class DataFileStore {
 
     private static final Logger log = LoggerFactory.getLogger(DataFileStore.class);
 
-    private static final int BUFFER = 8192;
+    //private static final int BUFFER = 8192;
 
     private final File root;
 
@@ -50,8 +42,8 @@ public class DataFileStore {
         root = properties.getDataStoreDir();
     }
 
-    public String store(File source) throws IOException {
-        String md5 = (Files.hash(source, Hashing.md5())).toString();
+    public String store(DataFileSource source) throws IOException {
+        String md5 = source.getDigest(); // Files.hash(source, Hashing.md5())).toString();
         File destination = new File(dir(md5, true), md5);
 
         if (destination.exists()) {
@@ -59,8 +51,27 @@ public class DataFileStore {
             return md5;
         }
 
-        copy(source, destination);
+        source.copyTo(destination);
         return md5;
+    }
+
+    public File get(String digest) throws IOException {
+        if (isNullOrEmpty(digest)) {
+            return null;
+        }
+        return new File(dir(digest), digest);
+    }
+
+    public void delete(String digest) throws IOException {
+        File file = get(digest);
+        if (null == file) {
+            return;
+        }
+
+        if (!file.delete()) {
+            throw new IOException("Can't remove file: " + file);
+        }
+        log.debug("File removed: " + file);
     }
 
     private File dir(String hash) {
@@ -78,6 +89,7 @@ public class DataFileStore {
         return dir;
     }
 
+    /**
     private void copy(File source, File dest) throws IOException {
         log.debug("Copying file {} to {} ...", source, dest);
         long start = currentTimeMillis();
@@ -106,23 +118,5 @@ public class DataFileStore {
         long duration = currentTimeMillis() - start;
         log.debug("copying {} finished in {} sec", source.getName() + " -> " + dest.getName(), (duration / 1000.0));
     }
-
-    public File get(String digest) throws IOException {
-        if (isNullOrEmpty(digest)) {
-            return null;
-        }
-        return new File(dir(digest), digest);
-    }
-
-    public void delete(String digest) throws IOException {
-        File file = get(digest);
-        if (null == file) {
-            return;
-        }
-
-        if (!file.delete()) {
-            throw new IOException("Can't remove file: " + file);
-        }
-        log.debug("File removed: " + file);
-    }
+    */
 }

@@ -113,7 +113,7 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
 
     @Override
     public void onFtpRegistrationFormSubmit(List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> callback) {
-        dataFilesProxy.registryFtpFilesAsync(details, callback);
+        dataFilesProxy.registerFtpFilesAsync(details, callback);
     }
 
     @Override

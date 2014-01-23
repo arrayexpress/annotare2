@@ -27,12 +27,16 @@ import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.web.server.JmsResources;
 import uk.ac.ebi.fg.annotare2.web.server.TransactionWrapException;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionCallback;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionSupport;
 
 import javax.jms.*;
-import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.ERROR;
 import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.STORED;
@@ -44,7 +48,6 @@ public class FileCopyMessageQueue {
 
     private static final Logger log = LoggerFactory.getLogger(FileCopyMessageQueue.class);
 
-    private final FileCopyConsumer consumer;
     private final FileCopyProducer producer;
 
     @Inject
@@ -52,13 +55,13 @@ public class FileCopyMessageQueue {
                                 TransactionSupport transactionSupport) {
 
         producer = new FileCopyProducer();
-        consumer = new FileCopyConsumer(fileStore, fileDao, sessionFactory, transactionSupport);
+        FileCopyConsumer consumer = new FileCopyConsumer(fileStore, fileDao, sessionFactory, transactionSupport);
 
         producer.start(jmsResources.getConnectionFactory(), jmsResources.getFileCopyQueue());
         consumer.start(jmsResources.getConnectionFactory(), jmsResources.getFileCopyQueue());
     }
 
-    public void offer(File source, DataFile destination) throws JMSException {
+    public void offer(DataFileSource source, DataFile destination) throws JMSException {
         producer.send(new FileCopyMessage(source, destination));
     }
 
@@ -84,10 +87,11 @@ public class FileCopyMessageQueue {
                 producer = session.createProducer(queue);
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
-                TextMessage textMessage = session.createTextMessage(message.asString());
+                ObjectMessage objectMessage = session.createObjectMessage(message);
+                //TextMessage textMessage = session.createTextMessage(message.asString());
 
-                log.debug("Sent message: '{}' : {}", textMessage.getText(), Thread.currentThread().getName());
-                producer.send(textMessage);
+                log.debug("Sent message: '{}' : {}", objectMessage, Thread.currentThread().getName());
+                producer.send(objectMessage);
             } finally {
                 if (producer != null) {
                     try {
@@ -152,6 +156,7 @@ public class FileCopyMessageQueue {
             }
         }
 
+        /** TODO: make sure it is called somehow
         public void stop() {
             log.info("Stopping JMS queue listener");
             try {
@@ -162,14 +167,17 @@ public class FileCopyMessageQueue {
                 // ignore
             }
         }
+        */
 
         @Override
         public void onMessage(Message message) {
-            if (message instanceof TextMessage) {
-                TextMessage textMessage = (TextMessage) message;
+            if (message instanceof ObjectMessage) {
+                //TextMessage textMessage = (TextMessage) message;
+                ObjectMessage objectMessage = (ObjectMessage) message;
                 try {
-                    log.debug("Received message: {}, {}", textMessage.getText(), Thread.currentThread().getName());
-                    FileCopyMessage messageObject = FileCopyMessage.fromString(textMessage.getText());
+                    log.debug("Received message: {}, {}", objectMessage, Thread.currentThread().getName());
+                    //FileCopyMessage messageObject = FileCopyMessage.fromString(textMessage.getText());
+                    FileCopyMessage messageObject = (FileCopyMessage)objectMessage.getObject();
                     log.debug("Restored message object: {}", messageObject);
 
                     copyFileInTransaction(messageObject, true);
@@ -214,15 +222,15 @@ public class FileCopyMessageQueue {
         private void copyFile(FileCopyMessage message, boolean removeSource) throws RecordNotFoundException {
             DataFile dataFile = fileDao.get(message.getDestinationId());
 
-            File source = message.getSource();
+            DataFileSource source = message.getSource();
             try {
-                if (source.exists() && !source.isDirectory()) {
+                if (source.exists()) {
                     String digest = fileStore.store(source);
                     dataFile.setDigest(digest);
                     dataFile.setStatus(STORED);
                     fileDao.save(dataFile);
                     if (removeSource) {
-                        removeFile(source);
+                        source.delete();
                     }
                     return;
                 } else {
@@ -235,6 +243,7 @@ public class FileCopyMessageQueue {
             fileDao.save(dataFile);
         }
 
+        /**
         private void removeFile(File file) {
             try {
                 if (!file.exists() || file.delete()) {
@@ -245,33 +254,45 @@ public class FileCopyMessageQueue {
             }
             log.warn("Can't delete file: " + file);
         }
+        */
     }
 
-    private static class FileCopyMessage {
+    private static class FileCopyMessage implements Serializable {
 
-        private static String DELIM = ",";
+        private static final long serialVersionUID = 7526471155622776147L;
+
+        //private static String DELIM = ",";
         private long destinationId;
-        private File sourcePath;
+        private DataFileSource source;
 
-        public FileCopyMessage(File source, DataFile destination) {
+        public FileCopyMessage(DataFileSource source, DataFile destination) {
             this(source, destination.getId());
         }
 
-        private FileCopyMessage(File sourcePath, long destinationId) {
+        private FileCopyMessage(DataFileSource source, long destinationId) {
             this.destinationId = destinationId;
-            this.sourcePath = sourcePath;
+            this.source = source;
         }
 
         public long getDestinationId() {
             return destinationId;
         }
 
-        public File getSource() {
-            return sourcePath;
+        public DataFileSource getSource() {
+            return source;
         }
 
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            out.defaultWriteObject();
+        }
+
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+            in.defaultReadObject();
+        }
+
+        /**
         public String asString() {
-            return destinationId + DELIM + sourcePath;
+            return destinationId + DELIM + source.toString();
         }
 
         public static FileCopyMessage fromString(String str) {
@@ -280,7 +301,7 @@ public class FileCopyMessageQueue {
                 try {
                     int destId = Integer.parseInt(str.substring(0, index));
                     String sourcePath = str.substring(index + 1);
-                    return new FileCopyMessage(new File(sourcePath), destId);
+                    return new FileCopyMessage(source, destId);
                 } catch (NumberFormatException e) {
                     // ignore
                 }
@@ -288,12 +309,13 @@ public class FileCopyMessageQueue {
             log.error("Wrong message format: ", str);
             return null;
         }
+        */
 
         @Override
         public String toString() {
             return getClass().getName() + "@{" +
                     "destinationId=" + destinationId +
-                    ", sourcePath='" + sourcePath + '\'' +
+                    ", source='" + source.toString() + '\'' +
                     '}';
         }
     }
