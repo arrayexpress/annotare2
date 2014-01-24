@@ -22,7 +22,7 @@
         <table width="100%" style="height:100%;" cellpadding="0" cellspacing="0">
             <tr>
                 <td>
-                    <h1 class="logo">Annotare 2.0</h1>
+                    <h1 class="logo">Annotare 2.0 <span style="color:red">beta</span></h1>
                     <div class="logotext">
                         <a href="http://www.ebi.ac.uk/arrayexpress">ArrayExpress</a> experiment submission tool
                     </div>

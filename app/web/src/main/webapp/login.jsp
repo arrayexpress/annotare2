@@ -50,7 +50,7 @@
                 <table class="form">
                     <tr>
                         <td></td>
-                        <td><h1>Annotare 2.0</h1></td>
+                        <td><h1>Annotare 2.0 <span style="color:red">beta</span></h1></td>
                     </tr>
                     <tr class="info">
                         <td></td>
@@ -111,7 +111,7 @@
         </div>
     </div>
 </div>
-<div class="at-bottom copy">2013 EMBL-EBI, Functional Genomics Group</div>
+<div class="at-bottom copy">2013-2014 EMBL-EBI, Functional Genomics Group</div>
 </body>
 </html>
 

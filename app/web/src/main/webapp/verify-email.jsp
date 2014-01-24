@@ -83,7 +83,7 @@
         </div>
     </div>
 </div>
-<div class="at-bottom copy">2013 EMBL-EBI, Functional Genomics Group</div>
+<div class="at-bottom copy">2013-2014 EMBL-EBI, Functional Genomics Group</div>
 </body>
 </html>
 
