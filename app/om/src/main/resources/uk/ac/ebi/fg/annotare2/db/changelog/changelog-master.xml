@@ -6,68 +6,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1" author="olkin">
-        <sqlFile path="schema-1.0.sql" relativeToChangelogFile="true"/>
+    <changeSet id="schema-1.1" author="kolais">
+        <sqlFile path="schema-1.1.sql" relativeToChangelogFile="true"/>
     </changeSet>
-    <changeSet id="2" author="olkin">
-        <sqlFile path="bootstrap-1.0.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-    <changeSet id="3" author="kolais">
-        <addColumn tableName="submissions">
-            <column name="subsTrackingId" type="INT"/>
-        </addColumn>
-    </changeSet>
-    <changeSet id="4" author="kolais">
-
-        <sql>
-            ALTER TABLE submissions ADD ownedBy BIGINT;
-            UPDATE submissions SET ownedBy = createdBy;
-            ALTER TABLE submissions MODIFY ownedBy BIGINT NOT NULL;
-            ALTER TABLE submissions ADD CONSTRAINT FOREIGN KEY (ownedBy) REFERENCES users (id);
-
-            ALTER TABLE acl_entries CHANGE role role ENUM('CREATOR','OWNER','AUTHENTICATED','CURATOR','ADMIN') NOT NULL;
-
-            SELECT id FROM acl WHERE aclType = 'SUBMISSION' INTO @subAclId;
-            INSERT INTO acl_entries (acl, role, permission) VALUES (@subAclId, 'CREATOR', 'VIEW');
-
-            INSERT INTO users (email, password) VALUES ('curator@ebi.ac.uk', 'b06bb1bec903b5f87a7a482cd8385267');
-            SET @curatorId = LAST_INSERT_ID();
-
-            INSERT INTO user_roles (user, role) VALUES (@curatorId, 'AUTHENTICATED');
-            INSERT INTO user_roles (user, role) VALUES (@curatorId, 'CURATOR');
-        </sql>
-    </changeSet>
-    <changeSet id="addDeleteFlag2Submissions" author="olkin">
-        <sql>
-            ALTER TABLE submissions ADD deleted TINYINT(1) NOT NULL DEFAULT 0;
-            ALTER TABLE data_files ADD deleted TINYINT(1) NOT NULL DEFAULT 0;
-        </sql>
-    </changeSet>
-    <changeSet id="addUpdateTimestamp2Submissions" author="olkin">
-        <sql>
-            ALTER TABLE submissions ADD updated TIMESTAMP NOT NULL DEFAULT 0;
-            UPDATE submissions SET updated = NOW();
-        </sql>
-    </changeSet>
-    <changeSet id="update2Utf8Charset" author="olkin">
-        <sql>
-            ALTER TABLE users CONVERT TO CHARACTER SET utf8;
-            ALTER TABLE user_roles CONVERT TO CHARACTER SET utf8;
-            ALTER TABLE acl CONVERT TO CHARACTER SET utf8;
-            ALTER TABLE acl_entries CONVERT TO CHARACTER SET utf8;
-            ALTER TABLE submissions CONVERT TO CHARACTER SET utf8;
-            ALTER TABLE data_files CONVERT TO CHARACTER SET utf8;
-        </sql>
-    </changeSet>
-    <changeSet id="addMoreUserAttributes" author="kolais">
-        <sql>
-            ALTER TABLE users
-            ADD COLUMN name VARCHAR(255) NOT NULL AFTER id,
-            ADD COLUMN emailVerified TINYINT(1) NOT NULL DEFAULT 0 AFTER email,
-            ADD COLUMN passwordChangeRequested TINYINT(1) NOT NULL DEFAULT 0 AFTER password,
-            ADD COLUMN verificationToken VARCHAR(255) NULL DEFAULT NULL AFTER passwordChangeRequested;
-
-            UPDATE users SET name = "Annotare user", emailVerified = 1, passwordChangeRequested = 0, verificationToken = NULL;
-        </sql>
+    <changeSet id="bootstrap-1.1" author="kolais">
+        <sqlFile path="bootstrap-1.1.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>
