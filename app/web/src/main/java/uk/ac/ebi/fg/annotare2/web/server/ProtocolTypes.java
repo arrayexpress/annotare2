@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType;
 
 import javax.annotation.Nullable;
 import java.io.IOException;

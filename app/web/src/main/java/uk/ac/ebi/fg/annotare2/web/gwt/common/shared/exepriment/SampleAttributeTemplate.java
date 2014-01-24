@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 
 import static java.util.Collections.unmodifiableSet;
-import static java.util.EnumSet.allOf;
-import static java.util.EnumSet.of;
-import static java.util.EnumSet.range;
+import static java.util.EnumSet.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType.*;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.*;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.util.ValueRange.one;

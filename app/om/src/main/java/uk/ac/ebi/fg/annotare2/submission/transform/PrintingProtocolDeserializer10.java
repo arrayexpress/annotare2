@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-        import com.fasterxml.jackson.core.JsonParser;
-        import com.fasterxml.jackson.databind.DeserializationContext;
-        import com.fasterxml.jackson.databind.JsonDeserializer;
-        import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
 
-        import java.io.IOException;
+import java.io.IOException;
 
-        import static uk.ac.ebi.fg.annotare2.submission.transform.PrintingProtocolSerializer10.PRINTING_PROTOCOL_JSON_FIELDS;
-        import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
+import static uk.ac.ebi.fg.annotare2.submission.transform.PrintingProtocolSerializer10.PRINTING_PROTOCOL_JSON_FIELDS;
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
 
 /**
  * @author Olga Melnichuk

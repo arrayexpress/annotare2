@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 /**
  * @author Olga Melnichuk

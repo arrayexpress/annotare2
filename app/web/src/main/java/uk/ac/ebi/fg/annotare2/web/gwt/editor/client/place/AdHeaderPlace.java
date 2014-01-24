@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
-import com.google.gwt.user.client.Window;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReader;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenReaderException;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfSection;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.ArrayDesignTab;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.EnumUtils;
 
 /**
  * @author Olga Melnichuk

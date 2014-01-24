@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2013 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper.callbackWrap;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.ORGANISM;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.UNIT;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.PUBLICATION_STATUS;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.*;
 
 /**
  * @author Olga Melnichuk
