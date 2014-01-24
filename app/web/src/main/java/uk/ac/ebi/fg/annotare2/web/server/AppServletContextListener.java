@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.inject.internal.util.$Lists.newArrayList;
 import static com.google.inject.util.Modules.override;
-import static org.reflections.util.ClasspathHelper.*;
+import static org.reflections.util.ClasspathHelper.forPackage;
 
 /**
  * @author Olga Melnichuk

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.resources.ImageResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.annotations.ContentDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.annotations.HeaderDisplay;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.annotations.LeftMenuDisplay;
@@ -32,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.ContentActivityMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.HeaderActivityMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.LeftMenuActivityMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceHistoryMapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.resources.ImageResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.*;
 
 /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012 European Molecular Biology Laboratory
+ * Copyright 2009-2014 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,13 +38,13 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
-import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
+import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
 
