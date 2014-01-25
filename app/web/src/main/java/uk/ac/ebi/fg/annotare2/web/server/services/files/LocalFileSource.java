@@ -52,7 +52,9 @@ public class LocalFileSource implements DataFileSource, Serializable {
 
     public void delete() throws IOException {
         if (null != file) {
-            file.delete();
+            if (!file.delete()) {
+                throw new IOException("Unable to delete file " + file.getAbsolutePath());
+            }
         }
     }
 
