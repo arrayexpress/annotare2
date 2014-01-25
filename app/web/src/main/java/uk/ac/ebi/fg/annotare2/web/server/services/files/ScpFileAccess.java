@@ -17,7 +17,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
  *
  */
 
-import uk.ac.ebi.fg.annotare2.web.server.services.ae.CommandExecutor;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.LinuxShellCommandExecutor;
 
 import java.io.*;
 import java.net.URI;
@@ -28,14 +28,14 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
 
     public boolean isAccessible(URI file) throws IOException {
         if (null != file && "scp".equals(file.getScheme())) {
-            return new CommandExecutor().execute("ssh " + file.getHost() + " test -f " + file.getPath());
+            return new LinuxShellCommandExecutor().execute("ssh " + file.getHost() + " test -f " + file.getPath());
         }
         return false;
     }
 
     public String getDigest(URI file) throws IOException {
         if (null != file && "scp".equals(file.getScheme())) {
-            CommandExecutor executor = new CommandExecutor();
+            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (executor.execute("ssh " + file.getHost() + " md5sum " + file.getPath())) {
                 return executor.getOutput().replaceFirst("([^\\s]+)[\\d\\D]*", "$1");
             } else {
@@ -47,7 +47,7 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
 
     public void copyTo(URI file, File destination) throws IOException {
         if (null != file && "scp".equals(file.getScheme())) {
-            CommandExecutor executor = new CommandExecutor();
+            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute("scp " + file.getHost() + ":" + file.getPath() + " " + destination.getPath()))) {
                 throw new IOException(executor.getErrors());
             }
@@ -56,7 +56,7 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
 
     public void delete(URI file) throws IOException {
         if (null != file && "scp".equals(file.getScheme())) {
-            CommandExecutor executor = new CommandExecutor();
+            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute("ssh " + file.getHost() + " rm " + file.getPath()))) {
                 throw new IOException(executor.getErrors());
             }

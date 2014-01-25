@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare2.web.server.services.ae;
+package uk.ac.ebi.fg.annotare2.web.server.services.utils;
 
 /*
  * Copyright 2009-2014 European Molecular Biology Laboratory
@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CommandExecutor {
+public class LinuxShellCommandExecutor {
 
     private final static String EOL = System.getProperty("line.separator");
 
     private String output;
     private String errors;
 
-    public CommandExecutor() {
+    public LinuxShellCommandExecutor() {
         output = "";
         errors = "";
     }
