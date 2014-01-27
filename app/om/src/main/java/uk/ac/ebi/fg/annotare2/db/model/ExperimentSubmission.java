@@ -46,11 +46,11 @@ public class ExperimentSubmission extends Submission {
     }
 
     public ExperimentProfile getExperimentProfile() throws DataSerializationException {
-        return readExperiment(experimentString);
+        return readExperiment(experimentString, getVersion());
     }
 
     public void setExperimentProfile(ExperimentProfile exp) throws DataSerializationException {
-        this.experimentString = writeExperiment(exp);
+        this.experimentString = writeExperiment(exp, getVersion());
     }
 
     @Override

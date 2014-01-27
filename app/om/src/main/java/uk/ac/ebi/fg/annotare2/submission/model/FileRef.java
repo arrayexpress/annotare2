@@ -16,15 +16,34 @@
 
 package uk.ac.ebi.fg.annotare2.submission.model;
 
+import java.io.Serializable;
+
 /**
  * @author Olga Melnichuk
  */
-class FileRef {
+public class FileRef implements Serializable {
 
-    private String fileName;
+    private static final long serialVersionUID = -6698786096836245227L;
 
-    public FileRef(String fileName) {
-        this.fileName = fileName;
+    private String name;
+    private String hash;
+
+
+    @SuppressWarnings("unused")
+    public FileRef() {
+    }
+
+    public FileRef(String name, String hash) {
+        this.name = name;
+        this.hash = hash;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getHash() {
+        return hash;
     }
 
     @Override
@@ -34,13 +53,11 @@ class FileRef {
 
         FileRef fileRef = (FileRef) o;
 
-        if (!fileName.equals(fileRef.fileName)) return false;
-
-        return true;
+        return name.equals(fileRef.name) && name.equals(fileRef.hash);
     }
 
     @Override
     public int hashCode() {
-        return fileName.hashCode();
+        return name.hashCode();
     }
 }

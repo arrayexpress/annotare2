@@ -101,16 +101,17 @@ public class SubmissionSerializationTest {
         LabeledExtract le4 = profileIn.createLabeledExtract(ex2, label2.getName());
 
         FileColumn fileColumn = profileIn.createFileColumn(FileType.RAW_FILE);
-        fileColumn.setFileName(le1, "file1");
-        fileColumn.setFileName(le2, "file1");
-        fileColumn.setFileName(le3, "file1");
-        fileColumn.setFileName(le4, "file1");
+        FileRef file1 = new FileRef("file1", "fd5da6029de61ee323965727111ae8b5");
+        fileColumn.setFileRef(le1.getId(), file1);
+        fileColumn.setFileRef(le2.getId(), file1);
+        fileColumn.setFileRef(le3.getId(), file1);
+        fileColumn.setFileRef(le4.getId(), file1);
 
-        String jsonString = JsonCodec.writeExperiment(profileIn);
+        String jsonString = JsonCodec.writeExperiment(profileIn, ModelVersion.CURRENT_VERSION);
         log.debug("experimentProfile=" + jsonString);
         assertNotNull(jsonString);
 
-        ExperimentProfile profileOut = JsonCodec.readExperiment(jsonString);
+        ExperimentProfile profileOut = JsonCodec.readExperiment(jsonString, ModelVersion.CURRENT_VERSION);
         assertReflectionEquals(profileIn, profileOut);
     }
 
@@ -124,11 +125,11 @@ public class SubmissionSerializationTest {
         adHeaderIn.setVersion("123");
         adHeaderIn.setPrintingProtocol(new PrintingProtocol(0, "name", "description"));
 
-        String jsonString = JsonCodec.writeArrayDesign(adHeaderIn);
+        String jsonString = JsonCodec.writeArrayDesign(adHeaderIn, ModelVersion.CURRENT_VERSION);
         log.debug("arrayDesignHeader=", jsonString);
         assertNotNull(jsonString);
 
-        ArrayDesignHeader adHeaderOut = JsonCodec.readArrayDesign(jsonString);
+        ArrayDesignHeader adHeaderOut = JsonCodec.readArrayDesign(jsonString, ModelVersion.CURRENT_VERSION);
         assertReflectionEquals(adHeaderIn, adHeaderOut);
     }
 }

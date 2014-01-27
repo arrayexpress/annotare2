@@ -16,12 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.submission.transform;
 
-/**
- * @author Olga Melnichuk
- */
-public enum ModelVersion {
-    VERSION_1_0,
-    VERSION_1_1;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
 
-    public final static ModelVersion CURRENT_VERSION = VERSION_1_1;
+import java.io.IOException;
+
+import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.parseJson;
+
+class FileColumnDeserializer11 extends JsonDeserializer<FileColumn>{
+
+    @Override
+    public FileColumn deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        return parseJson(jp, FileColumn.class, FileColumnSerializer11.FILE_COLUMN_JSON_FIELDS);
+    }
 }

@@ -18,7 +18,10 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -27,9 +30,9 @@ public class FileColumn implements Serializable {
 
     private FileType type;
 
-    private Map<String, String> leId2FileNameMap;
-    private Map<LabeledExtract, String> le2FileNameMap;
+    private Map<String, FileRef> leId2FileRefMap;
 
+    @SuppressWarnings("unused")
     FileColumn() {
         /* used by GWT serialization */
         this(null);
@@ -37,48 +40,41 @@ public class FileColumn implements Serializable {
 
     public FileColumn(FileType type) {
         this.type = type;
-        le2FileNameMap = new HashMap<LabeledExtract, String>();
+        leId2FileRefMap = new HashMap<String, FileRef>();
     }
 
     public FileType getType() {
         return type;
     }
 
-    public String getFileName(LabeledExtract labeledExtract) {
-        return le2FileNameMap.get(labeledExtract);
+    public FileRef getFileRef(String labeledExtractId) {
+        return leId2FileRefMap.get(labeledExtractId);
     }
 
-    public void setFileName(LabeledExtract labeledExtract, String fileName) {
-        if (fileName == null) {
-            removeFileName(labeledExtract);
+    public void setFileRef(String labeledExtractId, FileRef fileRef) {
+        if (fileRef == null) {
+            removeFileByLabeledExtractId(labeledExtractId);
         } else {
-            le2FileNameMap.put(labeledExtract, fileName);
+            leId2FileRefMap.put(labeledExtractId, fileRef);
         }
     }
 
-    public void removeFileName(LabeledExtract labeledExtract) {
-       le2FileNameMap.remove(labeledExtract);
+    public void removeFileByLabeledExtractId(String labeledExtractId) {
+        leId2FileRefMap.remove(labeledExtractId);
     }
 
-    public void removeFileName(String fileName) {
-        List<LabeledExtract> keys = new ArrayList<LabeledExtract>(le2FileNameMap.keySet());
-        for (LabeledExtract labeledExtract : keys) {
-            if (fileName.equals(le2FileNameMap.get(labeledExtract))) {
-                removeFileName(labeledExtract);
+
+    public void removeFileByName(String fileName) {
+        Collection<String> leIds = getLabeledExtractIds();
+        for (String leId : leIds) {
+            if (fileName.equals(leId2FileRefMap.get(leId).getName())) {
+                removeFileByLabeledExtractId(leId);
             }
         }
     }
 
-    public Collection<LabeledExtract> getLabeledExtracts() {
-        return new ArrayList<LabeledExtract>(le2FileNameMap.keySet());
-    }
-
-    void restoreObjects(ExperimentProfile exp) {
-        for (String leId : leId2FileNameMap.keySet()) {
-            LabeledExtract labeledExtract = exp.getLabeledExtract(leId);
-            le2FileNameMap.put(labeledExtract, leId2FileNameMap.get(leId));
-        }
-        this.leId2FileNameMap = null;
+    public Collection<String> getLabeledExtractIds() {
+        return new ArrayList<String>(leId2FileRefMap.keySet());
     }
 }
 

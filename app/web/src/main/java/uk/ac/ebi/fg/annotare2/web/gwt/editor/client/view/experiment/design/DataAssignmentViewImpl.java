@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
@@ -41,6 +42,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     public static final String NONE = "none";
     private final GridView<DataAssignmentRow> gridView;
     private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
+    private Map<String, String> fileHashes = new HashMap<String, String>();
     private DataAssignment dataAssignment = new DataAssignment();
     private Presenter presenter;
 
@@ -93,8 +95,18 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     @Override
     public void setDataFiles(List<DataFileRow> dataFiles) {
+        updateFileHashes(dataFiles);
         dataAssignment.init(dataFiles);
         gridView.redraw();
+    }
+
+    private void updateFileHashes(List<DataFileRow> dataFiles) {
+        fileHashes.clear();
+        for (DataFileRow row : dataFiles) {
+            if (row.getStatus().isOk()) {
+                fileHashes.put(row.getName(), row.getMd5());
+            }
+        }
     }
 
     private void setColumns(List<DataAssignmentColumn> columns) {
@@ -160,15 +172,15 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                         })) {
             @Override
             public String getValue(DataAssignmentRow row) {
-                String fileName = dataColumn.getFileName(row);
-                return fileName == null ? NONE : fileName;
+                FileRef file = dataColumn.getFileRef(row);
+                return null == file ? NONE : file.getName();
             }
         };
         column.setCellStyleNames("app-SelectionCell");
         column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
             @Override
             public void update(int index, DataAssignmentRow row, String value) {
-                dataColumn.setFileName(row, NONE.equals(value) ? null : value);
+                dataColumn.setFileRef(row, NONE.equals(value) ? null : new FileRef(value, fileHashes.get(value)));
                 dataAssignment.update(dataColumn);
                 updateColumn(dataColumn);
             }
@@ -259,9 +271,9 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             column2Files.clear();
             for (DataAssignmentColumn column : columns) {
                 for (DataAssignmentRow row : rows) {
-                    String fileId = column.getFileName(row);
-                    if (fileId != null) {
-                        add(fileId, column);
+                    FileRef file = column.getFileRef(row);
+                    if (null != file && null != file.getName()) {
+                        add(file.getName(), column);
                     }
                 }
             }
@@ -311,8 +323,8 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
         public void update(DataAssignmentColumn column) {
             remove(column);
-            for (String fileName : column.getFileNames()) {
-                add(fileName, column);
+            for (FileRef file : column.getFileRefs()) {
+                add(file.getName(), column);
             }
         }
     }

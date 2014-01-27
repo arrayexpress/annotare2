@@ -90,6 +90,7 @@ public class ExperimentProfile implements Serializable {
     private Map<Integer, Set<String>> protocolId2LabeledExtractIds;
     private MultiSets<Protocol, LabeledExtract> protocol2LabeledExtracts;
 
+    @SuppressWarnings("unused")
     ExperimentProfile() {
         /* used by GWT serialization */
         this(null);
@@ -279,23 +280,23 @@ public class ExperimentProfile implements Serializable {
         extractMap.remove(extract.getId());
     }
 
-    public void removeLabeledExtract(LabeledExtract labeledExtract) {
-        removeFileMappings(labeledExtract);
-        labeledExtractMap.remove(labeledExtract.getId());
+    public void removeLabeledExtract(String labeledExtractId) {
+        removeFileMappings(labeledExtractId);
+        labeledExtractMap.remove(labeledExtractId);
     }
 
     private void removeLabeledExtracts(Extract extract) {
         List<LabeledExtract> labeledExtracts = new ArrayList<LabeledExtract>(labeledExtractMap.values());
         for (LabeledExtract labeledExtract : labeledExtracts) {
             if (labeledExtract.getExtract().equals(extract)) {
-                removeLabeledExtract(labeledExtract);
+                removeLabeledExtract(labeledExtract.getId());
             }
         }
     }
 
-    private void removeFileMappings(LabeledExtract labeledExtract) {
+    private void removeFileMappings(String labeledExtractId) {
         for (FileColumn fileColumn : fileColumns) {
-            fileColumn.removeFileName(labeledExtract);
+            fileColumn.removeFileByLabeledExtractId(labeledExtractId);
         }
     }
 
@@ -305,7 +306,7 @@ public class ExperimentProfile implements Serializable {
 
     public void removeFile(String fileName) {
         for (FileColumn fileColumn : fileColumns) {
-            fileColumn.removeFileName(fileName);
+            fileColumn.removeFileByName(fileName);
         }
     }
 
@@ -673,10 +674,6 @@ public class ExperimentProfile implements Serializable {
     private void restoreLabeledExtracts() {
         for (LabeledExtract labeledExtract : labeledExtractMap.values()) {
             labeledExtract.restoreObjects(this);
-        }
-
-        for (FileColumn fileColumn : fileColumns) {
-            fileColumn.restoreObjects(this);
         }
     }
 

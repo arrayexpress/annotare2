@@ -41,4 +41,8 @@ public enum ExperimentProfileType {
     public boolean isTwoColorMicroarray() {
         return this == TWO_COLOR_MICROARRAY;
     }
+
+    public boolean isSequencing() {
+        return SEQUENCING == this;
+    }
 }

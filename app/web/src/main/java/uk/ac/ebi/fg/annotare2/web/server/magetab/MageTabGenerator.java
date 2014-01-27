@@ -324,9 +324,9 @@ public class MageTabGenerator {
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
             Collection<Protocol> protocols = exp.getProtocols(labeledExtract);
 
-            String fileName = labeledExtract == null ? null : fileColumn.getFileName(labeledExtract);
-            if (fileName != null) {
-                layer.put(labeledExtract.getId(), createAssayNode(labeledExtract, assayNameValue.next(fileName), labeledExtractNode, protocols));
+            FileRef file = (labeledExtract == null) ? null : fileColumn.getFileRef(labeledExtract.getId());
+            if (null != file) {
+                layer.put(labeledExtract.getId(), createAssayNode(labeledExtract, assayNameValue.next(file.getName()), labeledExtractNode, protocols));
             } else {
                 layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode, protocols));
             }
@@ -588,7 +588,8 @@ public class MageTabGenerator {
         FileType prevType = null;
         for (FileColumn fileColumn : fileColumns) {
             FileType type = fileColumn.getType();
-            String fileName = fileColumn.getFileName(labeledExtract);
+            FileRef file = fileColumn.getFileRef(labeledExtract.getId());
+            String fileName = (null != file) ? file.getName() : null;
             SDRFNode current;
             switch (type) {
                 case RAW_FILE:
@@ -605,6 +606,9 @@ public class MageTabGenerator {
                     break;
                 default:
                     throw new IllegalStateException("Unsupported file type: " + type);
+            }
+            if (FileType.RAW_FILE == type && exp.getType().isSequencing()) {
+                ((ArrayDataNode)current).comments.put("MD5", Arrays.asList((null != file) ? file.getHash() : null));
             }
             if (type.isRaw() && (prevType == null || prevType == type)) {
                 // always connect raw data files to assays

@@ -90,7 +90,7 @@ public class SubsTracking {
                                 .set(EXPERIMENTS.NAME, submission.getTitle())
                                 .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, ((ExperimentSubmission) submission).getExperimentProfile().getDescription())
                                 .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
-                                .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isMicroarray() ? 0 : 1)
+                                .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() ? 1 : 0)
                                 .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
                                 .returning(EXPERIMENTS.ID)
                                 .fetchOne();

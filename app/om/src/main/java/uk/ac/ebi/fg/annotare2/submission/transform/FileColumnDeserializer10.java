@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.FileColumn10;
 
 import java.io.IOException;
 
@@ -32,6 +33,6 @@ class FileColumnDeserializer10 extends JsonDeserializer<FileColumn>{
 
     @Override
     public FileColumn deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return parseJson(jp, FileColumn.class, FileColumnSerializer10.FILE_COLUMN_JSON_FIELDS);
+        return parseJson(jp, FileColumn10.class, FileColumnSerializer10.FILE_COLUMN_JSON_FIELDS).toFileColumn();
     }
 }

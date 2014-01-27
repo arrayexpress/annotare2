@@ -12,4 +12,11 @@
     <changeSet id="bootstrap-1.1" author="kolais">
         <sqlFile path="bootstrap-1.1.sql" relativeToChangelogFile="true"/>
     </changeSet>
+    <changeSet id="addModelVersionToSubmissions" author="kolais">
+        <sql>
+            ALTER TABLE submissions ADD version ENUM('VERSION_1_0','VERSION_1_1') AFTER id;
+            UPDATE submissions SET version = 'VERSION_1_0';
+            ALTER TABLE submissions MODIFY version ENUM('VERSION_1_0','VERSION_1_1') NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

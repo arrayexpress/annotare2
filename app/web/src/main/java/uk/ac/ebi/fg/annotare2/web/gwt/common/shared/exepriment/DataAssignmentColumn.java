@@ -1,6 +1,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 
 import java.util.Collection;
@@ -16,8 +17,9 @@ public class DataAssignmentColumn implements IsSerializable {
 
     private FileType type;
 
-    private Map<String, String> labeledExtractId2FileName;
+    private Map<String, FileRef> labeledExtractId2FileRef;
 
+    @SuppressWarnings("unused")
     DataAssignmentColumn() {
         /* used by GWT serialization */
     }
@@ -25,7 +27,7 @@ public class DataAssignmentColumn implements IsSerializable {
     public DataAssignmentColumn(int index, FileType type) {
         this.index = index;
         this.type = type;
-        this.labeledExtractId2FileName = new HashMap<String, String>();
+        this.labeledExtractId2FileRef = new HashMap<String, FileRef>();
     }
 
     public int getIndex() {
@@ -36,32 +38,33 @@ public class DataAssignmentColumn implements IsSerializable {
         return type;
     }
 
-    public String getFileName(DataAssignmentRow row) {
-        return getFileName(row.getLabeledExtractId());
+    public FileRef getFileRef(DataAssignmentRow row) {
+        return getFileRef(row.getLabeledExtractId());
     }
 
-    public String getFileName(String labeledExtractId) {
-        return labeledExtractId2FileName.get(labeledExtractId);
+    public FileRef getFileRef(String labeledExtractId) {
+        return labeledExtractId2FileRef.get(labeledExtractId);
     }
 
-    public void setFileName(DataAssignmentRow row, String fileName) {
-        setFileName(row.getLabeledExtractId(), fileName);
+    public void setFileRef(DataAssignmentRow row, FileRef fileRef) {
+        setFileRef(row.getLabeledExtractId(), fileRef);
     }
 
-    public void setFileName(String assayId, String fileName) {
-        if (fileName == null) {
-            labeledExtractId2FileName.remove(assayId);
+    public void setFileRef(String assayId, FileRef fileRef) {
+        if (null == fileRef) {
+            labeledExtractId2FileRef.remove(assayId);
         } else {
-            labeledExtractId2FileName.put(assayId, fileName);
+            labeledExtractId2FileRef.put(assayId, fileRef);
         }
     }
 
-    public Collection<String> getFileNames() {
-        return labeledExtractId2FileName.values();
+
+    public Collection<FileRef> getFileRefs() {
+        return labeledExtractId2FileRef.values();
     }
 
     public Collection<String> getLabeledExtractIds() {
-        return labeledExtractId2FileName.keySet();
+        return labeledExtractId2FileRef.keySet();
     }
 
     @Override
@@ -71,9 +74,7 @@ public class DataAssignmentColumn implements IsSerializable {
 
         DataAssignmentColumn column = (DataAssignmentColumn) o;
 
-        if (index != column.index) return false;
-
-        return true;
+        return (index == column.index);
     }
 
     @Override

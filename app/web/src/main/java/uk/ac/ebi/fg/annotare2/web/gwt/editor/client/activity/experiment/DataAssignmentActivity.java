@@ -100,7 +100,7 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
         expData.getDataAssignmentColumnsAndRowsAsync(new AsyncCallback<DataAssignmentColumnsAndRows>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Can't data assignment rows");
+                Window.alert("Unable to load data assignment rows");
             }
 
             @Override
@@ -114,7 +114,7 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
         dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Can't load list of data files");
+                Window.alert("Unable to load list of data files");
             }
 
             @Override

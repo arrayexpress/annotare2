@@ -198,7 +198,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         Set<String> existedLabels = new HashSet<String>();
         for (LabeledExtract labeledExtract : labeledExtracts) {
             if (!newLabels.contains(labeledExtract.getLabel().getName())) {
-                exp.removeLabeledExtract(labeledExtract);
+                exp.removeLabeledExtract(labeledExtract.getId());
             } else {
                 existedLabels.add(labeledExtract.getLabel().getName());
             }
@@ -271,16 +271,13 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void updateDataAssignmentColumn(DataAssignmentColumn column) {
         FileColumn fileColumn = exp.getFileColumn(column.getIndex());
-        Set<String> labelExtractIds = new HashSet<String>(column.getLabeledExtractIds());
-        for (String labelExtractId : labelExtractIds) {
-            LabeledExtract labeledExtract = exp.getLabeledExtract(labelExtractId);
-            if (labeledExtract != null) {
-                fileColumn.setFileName(labeledExtract, column.getFileName(labelExtractId));
-            }
+        Set<String> labeledExtractIds = new HashSet<String>(column.getLabeledExtractIds());
+        for (String labeledExtractId : labeledExtractIds) {
+            fileColumn.setFileRef(labeledExtractId, column.getFileRef(labeledExtractId));
         }
-        for (LabeledExtract labeledExtract : fileColumn.getLabeledExtracts()) {
-            if (!labelExtractIds.contains(labeledExtract.getId())) {
-                fileColumn.setFileName(labeledExtract, null);
+        for (String labeledExtractId : fileColumn.getLabeledExtractIds()) {
+            if (!labeledExtractIds.contains(labeledExtractId)) {
+                fileColumn.setFileRef(labeledExtractId, null);
             }
         }
     }

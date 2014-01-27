@@ -63,12 +63,12 @@ public class ArrayDesignSubmission extends Submission {
     }
 
     public ArrayDesignHeader getHeader() throws DataSerializationException {
-        ArrayDesignHeader adHeader = readArrayDesign(header);
+        ArrayDesignHeader adHeader = readArrayDesign(header, getVersion());
         return adHeader == null ? new ArrayDesignHeader() : adHeader;
     }
 
     public void setHeader(ArrayDesignHeader header) throws DataSerializationException {
-        this.header = writeArrayDesign(header);
+        this.header = writeArrayDesign(header, getVersion());
     }
 
     @Override

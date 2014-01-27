@@ -212,9 +212,9 @@ public class ExperimentDataProxy {
         for (FileColumn fileColumn : exp.getFileColumns()) {
             DataAssignmentColumn column = new DataAssignmentColumn(index, fileColumn.getType());
             for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-                String fileName = fileColumn.getFileName(labeledExtract);
-                if (fileName != null) {
-                    column.setFileName(labeledExtract.getId(), fileName);
+                FileRef file = fileColumn.getFileRef(labeledExtract.getId());
+                if (null != file) {
+                    column.setFileRef(labeledExtract.getId(), file);
                 }
             }
             columns.add(column);

@@ -21,6 +21,7 @@ import com.google.common.base.Optional;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
 
 import javax.persistence.*;
 import java.io.ByteArrayInputStream;
@@ -45,6 +46,10 @@ public abstract class Submission implements HasEffectiveAcl {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "version", nullable = false)
+    private ModelVersion version;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false)
@@ -91,12 +96,13 @@ public abstract class Submission implements HasEffectiveAcl {
     }
 
     protected Submission(User createdBy) {
+        this.version = ModelVersion.CURRENT_VERSION;
         this.created = new Date();
         this.updated = new Date();
         this.createdBy = createdBy;
         this.ownedBy = createdBy;
-        status = SubmissionStatus.IN_PROGRESS;
-        files = newHashSet();
+        this.status = SubmissionStatus.IN_PROGRESS;
+        this.files = newHashSet();
     }
 
     public void setId(Long id) {
@@ -105,6 +111,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public Long getId() {
         return id;
+    }
+
+    public void setVersion(ModelVersion version) {
+        this.version = version;
+    }
+
+    public ModelVersion getVersion() {
+        return version;
     }
 
     public Date getCreated() {

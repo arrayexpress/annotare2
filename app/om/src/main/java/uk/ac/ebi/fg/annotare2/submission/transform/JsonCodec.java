@@ -25,7 +25,6 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import java.io.IOException;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion.VERSION_1_0;
 import static uk.ac.ebi.fg.annotare2.submission.transform.SerializationModule.createSubmissionSerializationModule;
 
 /**
@@ -39,12 +38,12 @@ public class JsonCodec {
         return mapper;
     }
 
-    public static ExperimentProfile readExperiment(String jsonString) throws DataSerializationException {
+    public static ExperimentProfile readExperiment(String jsonString, ModelVersion version) throws DataSerializationException {
         if (isNullOrEmpty(jsonString)) {
             return null;
         }
         try {
-            return createMapper(VERSION_1_0).readValue(jsonString, ExperimentProfile.class);
+            return createMapper(version).readValue(jsonString, ExperimentProfile.class);
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
@@ -54,12 +53,12 @@ public class JsonCodec {
         }
     }
 
-    public static ArrayDesignHeader readArrayDesign(String jsonString) throws DataSerializationException {
+    public static ArrayDesignHeader readArrayDesign(String jsonString, ModelVersion version) throws DataSerializationException {
         if (isNullOrEmpty(jsonString)) {
             return null;
         }
         try {
-            return createMapper(VERSION_1_0).readValue(jsonString, ArrayDesignHeader.class);
+            return createMapper(version).readValue(jsonString, ArrayDesignHeader.class);
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
@@ -69,9 +68,9 @@ public class JsonCodec {
         }
     }
 
-    public static String writeExperiment(ExperimentProfile exp) throws DataSerializationException {
+    public static String writeExperiment(ExperimentProfile exp, ModelVersion version) throws DataSerializationException {
         try {
-            return createMapper(VERSION_1_0).writeValueAsString(exp);
+            return createMapper(version).writeValueAsString(exp);
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
@@ -81,9 +80,9 @@ public class JsonCodec {
         }
     }
 
-    public static String writeArrayDesign(ArrayDesignHeader header) throws DataSerializationException {
+    public static String writeArrayDesign(ArrayDesignHeader header, ModelVersion version) throws DataSerializationException {
         try {
-            return createMapper(VERSION_1_0).writeValueAsString(header);
+            return createMapper(version).writeValueAsString(header);
         } catch (JsonGenerationException e) {
             throw new DataSerializationException(e);
         } catch (JsonMappingException e) {
