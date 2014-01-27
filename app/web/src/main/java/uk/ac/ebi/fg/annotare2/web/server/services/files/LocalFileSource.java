@@ -28,31 +28,32 @@ public class LocalFileSource implements DataFileSource, Serializable {
 
     private final File file;
 
-    public LocalFileSource(File file) {
+    public LocalFileSource(File file) throws IllegalArgumentException {
+        if (null == file) {
+            throw new IllegalArgumentException("File argument cannot be null");
+        }
         this.file = file;
     }
 
     public boolean exists() throws IOException {
-        return null != file && file.exists();
+        return file.exists();
     }
 
     public String getName() {
-        return null != file ? file.getName() : null;
+        return file.getName();
     }
 
     public String getDigest() throws IOException {
-        return null != file ? Files.hash(file, Hashing.md5()).toString() : null;
+        return Files.hash(file, Hashing.md5()).toString();
     }
 
     public void copyTo(File destination) throws IOException {
-        if (null != file) {
-            Files.copy(file, destination);
-        }
+        Files.copy(file, destination);
     }
 
     public void delete() throws IOException {
-        if (null != file) {
-            file.delete();
+        if (!file.delete()) {
+            throw new IOException("Unable to delete file " + file.getAbsolutePath());
         }
     }
 
