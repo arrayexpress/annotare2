@@ -1,5 +1,3 @@
-package uk.ac.ebi.fg.annotare2.autosubs;
-
 /*
  * Copyright 2009-2014 European Molecular Biology Laboratory
  *
@@ -16,6 +14,8 @@ package uk.ac.ebi.fg.annotare2.autosubs;
  * limitations under the License.
  *
  */
+
+package uk.ac.ebi.fg.annotare2.autosubs;
 
 public class SubsTrackingException extends Exception {
     public static final String INVALID_ID_EXCEPTION = "Invalid Submission Tracking db record id (NULL)";
