@@ -1,5 +1,3 @@
-package uk.ac.ebi.fg.annotare2.web.server.servlets.utils;
-
 /*
  * Copyright 2009-2014 European Molecular Biology Laboratory
  *
@@ -16,6 +14,8 @@ package uk.ac.ebi.fg.annotare2.web.server.servlets.utils;
  * limitations under the License.
  *
  */
+
+package uk.ac.ebi.fg.annotare2.web.server.servlets.utils;
 
 import java.util.*;
 
