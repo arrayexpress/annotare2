@@ -52,13 +52,13 @@ public class MageTabGenerator {
     }
 
     public static class UnassignedValue {
-        private static final String TEMPLATE = "__UNASSIGNED__@{ID}";
-        private static final String PATTERN = TEMPLATE.replace("{ID}", "\\d+");
+        private static final String TEMPLATE = "__UNASSIGNED__@[ID]";
+        private static final String PATTERN = TEMPLATE.replace("[ID]", "\\d+");
 
         private int id = 1;
 
         public String next() {
-            return TEMPLATE.replace("{ID}", Integer.toString(id++));
+            return TEMPLATE.replace("[ID]", Integer.toString(id++));
         }
 
         public static String replaceAll(String string) {
@@ -67,17 +67,17 @@ public class MageTabGenerator {
     }
 
     public static class AssayNameValue {
-        private static final String TEMPLATE = "__ASSAY_NAME__({FILE_NAME})__@{ID}";
+        private static final String TEMPLATE = "__ASSAY_NAME__([FILE_NAME])__@[ID]";
         private static final Pattern PATTERN = Pattern.compile(
-                TEMPLATE.replace("({FILE_NAME})", "\\((.*)\\)")
-                        .replace("{ID}", "\\d+")
+                TEMPLATE.replace("([FILE_NAME])", "\\((.*)\\)")
+                        .replace("[ID]", "\\d+")
         );
 
         private int id = 1;
 
         public String next(String fileName) {
-            return TEMPLATE.replace("{ID}", Integer.toString(id++))
-                    .replace("{FILE_NAME}", fileName);
+            return TEMPLATE.replace("[ID]", Integer.toString(id++))
+                    .replace("[FILE_NAME]", fileName);
         }
 
         public static String replaceAll(String string) {
@@ -211,6 +211,7 @@ public class MageTabGenerator {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends SDRFNode> T getNode(Class<T> clazz, String name) {
         return (T) nodeCache.get(nodeId(clazz, name));
     }
@@ -650,7 +651,7 @@ public class MageTabGenerator {
             @Nullable
             @Override
             public Integer apply(@Nullable FileColumn input) {
-                return input.getType().ordinal();
+                return (null != input && null != input.getType()) ? input.getType().ordinal() : null;
             }
         }).immutableSortedCopy(exp.getFileColumns());
     }

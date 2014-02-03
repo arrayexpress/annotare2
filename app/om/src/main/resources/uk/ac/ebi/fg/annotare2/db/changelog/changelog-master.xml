@@ -19,4 +19,9 @@
             ALTER TABLE submissions MODIFY version ENUM('VERSION_1_0','VERSION_1_1') NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addLinkedStatusToDataFiles" author="kolais">
+        <sql>
+            ALTER TABLE data_files MODIFY status ENUM('TO_BE_STORED', 'STORED', 'ASSOCIATED', 'ERROR') NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

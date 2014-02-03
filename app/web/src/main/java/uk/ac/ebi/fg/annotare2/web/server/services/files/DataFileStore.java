@@ -43,11 +43,11 @@ public class DataFileStore {
     }
 
     public String store(DataFileSource source) throws IOException {
-        String md5 = source.getDigest(); // Files.hash(source, Hashing.md5())).toString();
+        String md5 = source.getDigest();
         File destination = new File(dir(md5, true), md5);
 
         if (destination.exists()) {
-            log.debug("file already in the repository; don't want to copy");
+            log.debug("file already in the repository and will not be overwritten");
             return md5;
         }
 
@@ -69,9 +69,9 @@ public class DataFileStore {
         }
 
         if (!file.delete()) {
-            throw new IOException("Can't remove file: " + file);
+            throw new IOException("Unable to remove file " + file);
         }
-        log.debug("File removed: " + file);
+        log.debug("File {} removed", file.getName());
     }
 
     private File dir(String hash) {
@@ -82,41 +82,10 @@ public class DataFileStore {
         File dir = dir(hash);
         if (mkdirs) {
             if (!dir.exists() && !dir.mkdirs()) {
-                log.error("can't create subdirectories: {}", dir);
-                throw new IOException("Can't create directories for: " + dir);
+                log.error("Unable to create directory {}", dir);
+                throw new IOException("Unable to create directory " + dir);
             }
         }
         return dir;
     }
-
-    /**
-    private void copy(File source, File dest) throws IOException {
-        log.debug("Copying file {} to {} ...", source, dest);
-        long start = currentTimeMillis();
-
-        FileChannel in = null;
-        FileChannel out = null;
-
-        try {
-            in = new FileInputStream(source).getChannel();
-            out = new FileOutputStream(dest).getChannel();
-
-            ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER);
-            while (in.read(buffer) != -1) {
-                buffer.flip();
-
-                while (buffer.hasRemaining()) {
-                    out.write(buffer);
-                }
-
-                buffer.clear();
-            }
-        } finally {
-            close(in, true);
-            close(out, true);
-        }
-        long duration = currentTimeMillis() - start;
-        log.debug("copying {} finished in {} sec", source.getName() + " -> " + dest.getName(), (duration / 1000.0));
-    }
-    */
 }

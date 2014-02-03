@@ -44,6 +44,8 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyConsumer;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
@@ -131,6 +133,7 @@ public class AppServletModule extends ServletModule {
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
         bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
 
+        bind(FileCopyConsumer.class).in(SINGLETON);
         bind(FileCopyMessageQueue.class).asEagerSingleton();
 
         bind(SubmissionListServiceImpl.class).in(SINGLETON);

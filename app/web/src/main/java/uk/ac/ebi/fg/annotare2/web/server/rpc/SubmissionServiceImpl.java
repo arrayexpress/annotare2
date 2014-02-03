@@ -356,6 +356,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noSuchRecord(e);
         } catch (JMSException e) {
             throw unexpected(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
         }
     }
 
@@ -407,7 +409,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private void saveFile(final DataFileSource source, final ExperimentSubmission submission) throws JMSException {
+    private void saveFile(final DataFileSource source, final ExperimentSubmission submission)
+            throws JMSException, DataSerializationException, IOException {
         String fileName = source.getName();
         Set<DataFile> files = submission.getFiles();
         for (DataFile dataFile : files) {

@@ -53,12 +53,12 @@ public class DataFile {
     private boolean deleted;
 
     public DataFile() {
-        this(null);
+        this(null, true);
     }
 
-    public DataFile(String name) {
+    public DataFile(String name, boolean shouldBeStored) {
         created = new Date();
-        status = DataFileStatus.TO_BE_STORED;
+        status = shouldBeStored ? DataFileStatus.TO_BE_STORED : DataFileStatus.ASSOCIATED;
         this.name = name;
     }
 

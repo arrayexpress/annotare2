@@ -20,9 +20,13 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 
 import javax.jms.JMSException;
 import java.io.File;
@@ -53,10 +57,18 @@ public class DataFileManager {
      * @param source     file to be copied
      * @param submission submission to add file to
      */
-    public void store(DataFileSource source, Submission submission) throws JMSException {
-        DataFile dataFile = dataFileDao.create(source.getName(), submission);
+    public void store(DataFileSource source, Submission submission)
+            throws JMSException, DataSerializationException, IOException {
+        boolean shouldStore = !(source instanceof RemoteFileSource
+                && (submission instanceof ExperimentSubmission
+                        && ((ExperimentSubmission)submission).getExperimentProfile().getType().isSequencing()));
+
+        DataFile dataFile = dataFileDao.create(source.getName(), shouldStore, submission);
+        dataFile.setDigest(source.getDigest());
         submission.getFiles().add(dataFile);
-        messageQueue.offer(source, dataFile);
+        if (shouldStore) {
+            messageQueue.offer(source, dataFile);
+        }
     }
 
     public File getFile(DataFile dataFile) throws IOException {
@@ -65,12 +77,6 @@ public class DataFileManager {
 
     public void deleteDataFile(DataFile dataFile) throws IOException {
         dataFileDao.delete(dataFile);
-/*
-        List<DataFile> list = dataFileDao.getAllWithDigest(dataFile.getDigest());
-        if (list.isEmpty()) {
-            fileStore.delete(dataFile.getDigest());
-        }
-*/
     }
 
     public void deleteDataFileSoftly(DataFile dataFile) throws IOException {

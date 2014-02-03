@@ -33,6 +33,7 @@ import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -62,6 +63,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
     private Set<URL> libPaths = newHashSet();
     private List<Service> servicesToStop = newArrayList();
     private BrokerService brokerService;
+    private Injector injector;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -78,7 +80,9 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        stopActiveMQBroker();
+        stopFileCopyMessagingQuere();
+
+        stopActiveMqBroker();
 
         stopServices();
 
@@ -87,7 +91,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     protected Injector getInjector() {
-        Injector injector = Guice.createInjector(Stage.DEVELOPMENT,
+        injector = Guice.createInjector(Stage.DEVELOPMENT,
                 override(new CheckerModule()).with(new AppServletModule(libPaths)));
 
         startServices(injector);
@@ -194,17 +198,25 @@ public class AppServletContextListener extends GuiceServletContextListener {
             brokerService.setUseJmx(false);
             brokerService.start();
         } catch (Exception e) {
-            log.error("Can't start jms broker", e);
+            log.error("Unable to start JMS broker", e);
         }
     }
 
-    private void stopActiveMQBroker() {
+    private void stopActiveMqBroker() {
         try {
             log.info("Stopping local JMS broker...");
             brokerService.stop();
         } catch (Exception e) {
-            log.error("Can't stop jms broker", e);
+            log.error("Unable to stop JMS broker", e);
         }
     }
 
+    private void stopFileCopyMessagingQuere() {
+        try {
+            log.info("Stopping file copy messaging queue...");
+            injector.getInstance(FileCopyMessageQueue.class).shutdown();
+        } catch (Exception e) {
+            log.error("Unable to stop file copy messaging queue", e);
+        }
+    }
 }

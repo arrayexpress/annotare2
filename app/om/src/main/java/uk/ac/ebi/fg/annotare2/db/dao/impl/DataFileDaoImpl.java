@@ -42,8 +42,8 @@ public class DataFileDaoImpl extends AbstractDaoImpl<DataFile> implements DataFi
     }
 
     @Override
-    public DataFile create(String fileName, Submission submission) {
-        DataFile dataFile = new DataFile(fileName);
+    public DataFile create(String fileName, boolean shouldBeStored, Submission submission) {
+        DataFile dataFile = new DataFile(fileName, shouldBeStored);
         dataFile.setOwnedBy(submission);
         save(dataFile);
         return dataFile;

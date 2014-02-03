@@ -46,7 +46,7 @@ public class DataFileDaoImplTest extends DaoTestBase {
     @Test
     public void createDataFileTest() {
         final String name = "create_test";
-        DataFile dataFile = dataFileDao.create(name, createSubmission(""));
+        DataFile dataFile = dataFileDao.create(name, true, createSubmission(""));
         flush();
 
         assertNotNull(dataFile);
@@ -58,7 +58,7 @@ public class DataFileDaoImplTest extends DaoTestBase {
 
     @Test
     public void deleteDataFileTest() throws RecordNotFoundException {
-        DataFile dataFile = dataFileDao.create("delete_test", createSubmission(""));
+        DataFile dataFile = dataFileDao.create("delete_test", true, createSubmission(""));
         flush();
         Long id = dataFile.getId();
 
@@ -76,7 +76,7 @@ public class DataFileDaoImplTest extends DaoTestBase {
         final String digest = "12345";
         final int n = 3;
         for (int i = 0; i < n; i++) {
-            DataFile dataFile1 = dataFileDao.create("test", createSubmission("" + i));
+            DataFile dataFile1 = dataFileDao.create("test", true, createSubmission("" + i));
             dataFile1.setDigest(digest);
             dataFileDao.save(dataFile1);
         }
