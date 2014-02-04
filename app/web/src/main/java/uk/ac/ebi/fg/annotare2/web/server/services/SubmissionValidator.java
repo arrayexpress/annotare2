@@ -18,18 +18,20 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Set;
 
 import static com.google.common.collect.Ordering.natural;
 
@@ -39,10 +41,12 @@ import static com.google.common.collect.Ordering.natural;
 public class SubmissionValidator {
 
     private final MageTabChecker checker;
+    private final DataFileManager dataFileManager;
 
     @Inject
-    public SubmissionValidator(MageTabChecker checker) {
+    public SubmissionValidator(MageTabChecker checker, DataFileManager dataFileManager) {
         this.checker = checker;
+        this.dataFileManager = dataFileManager;
     }
 
     public Collection<CheckResult> validate(ExperimentSubmission submission) throws IOException,
@@ -54,6 +58,23 @@ public class SubmissionValidator {
         MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, true);
 
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
+
+        Set<DataFile> dataFiles = submission.getFiles();
+        if (dataFiles.size() > 0) {
+            for (DataFile dataFile : dataFiles) {
+                DataFileSource source = dataFileManager.getFile(dataFile);
+                if (null == source || !source.exists()) {
+                    results.add(
+                            CheckResult.checkFailed(
+                                    "File " + source.getName() + " is not accessible"
+                                            + ((source instanceof RemoteFileSource) ? " on FTP" : "")
+                                    , CheckModality.ERROR
+                                    , CheckPosition.undefinedPosition()
+                            )
+                    );
+                }
+            }
+        }
         return natural().sortedCopy(results);
     }
 }
