@@ -19,8 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
@@ -28,10 +26,10 @@ import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -51,6 +49,7 @@ import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.jms.JMSException;
@@ -60,10 +59,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
@@ -74,7 +70,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.ex
  */
 public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
 
-    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
+    //private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
@@ -97,8 +93,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     public SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = getSubmission(id, Permission.VIEW);
-            SubmissionDetails sd = uiSubmissionDetails(sb);
-            return sd;
+            return uiSubmissionDetails(sb);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
@@ -223,7 +218,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void setupExperiment(final long id, final ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException {
+    public void setupExperiment(final long id, final ExperimentSetupSettings settings)
+            throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission =
                     getExperimentSubmission(id, Permission.UPDATE);
@@ -240,9 +236,11 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void submitSubmission(final long id) throws ResourceNotFoundException, NoPermissionException {
+    public void submitSubmission(final long id)
+            throws ResourceNotFoundException, NoPermissionException {
         try {
-            Submission submission = getSubmission(id, Permission.UPDATE);
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
+            storeAssociatedFiles(submission);
             submission.setStatus(SubmissionStatus.SUBMITTED);
             submission.setOwnedBy(userDao.getCuratorUser());
             save(submission);
@@ -250,6 +248,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        } catch (URISyntaxException e) {
+            throw unexpected(e);
+        } catch (JMSException e) {
+            throw unexpected(e);
+        } catch (IOException e) {
+            throw unexpected(e);
         }
     }
 
@@ -415,7 +421,38 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
         }
 
-        dataFileManager.store(source, submission);
+        boolean shouldStore = !(source instanceof RemoteFileSource &&
+                submission.getExperimentProfile().getType().isSequencing());
+
+        dataFileManager.store(source, submission, shouldStore);
         save(submission);
+    }
+
+    private void storeAssociatedFiles(ExperimentSubmission submission)
+            throws DataSerializationException, JMSException, URISyntaxException, IOException {
+        ExperimentProfile exp = submission.getExperimentProfile();
+
+        Set<String> excludedDigests = new HashSet<String>();
+        if (exp.getType().isSequencing()) {
+            for (FileColumn column : exp.getFileColumns()) {
+                if (FileType.RAW_FILE == column.getType()) {
+                    for (String id : column.getLabeledExtractIds()) {
+                        FileRef file = column.getFileRef(id);
+                        if (null != file) {
+                            excludedDigests.add(file.getHash());
+                        }
+                    }
+                }
+            }
+        }
+        Set<DataFile> files = submission.getFiles();
+        for (DataFile file : files) {
+            if (null != file && DataFileStatus.ASSOCIATED == file.getStatus()) {
+                if (!excludedDigests.contains(file.getDigest())) {
+                    dataFileManager.store(file);
+                }
+            }
+        }
+
     }
 }

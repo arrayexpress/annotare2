@@ -30,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
@@ -322,10 +323,12 @@ public class SubsTrackingWatchdog {
             if (dataFiles.size() > 0) {
 
                 for (DataFile dataFile : dataFiles) {
-                    File f = new File(exportDirectory, dataFile.getName());
-                    DataFileSource source = dataFileManager.getFile(dataFile);
-                    source.copyTo(f);
-                    f.setWritable(true, false);
+                    if (DataFileStatus.STORED == dataFile.getStatus()) {
+                        File f = new File(exportDirectory, dataFile.getName());
+                        DataFileSource source = dataFileManager.getFileSource(dataFile);
+                        source.copyTo(f);
+                        f.setWritable(true, false);
+                    }
                     if (properties.getAeSubsTrackingEnabled()) {
                         subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
                     }

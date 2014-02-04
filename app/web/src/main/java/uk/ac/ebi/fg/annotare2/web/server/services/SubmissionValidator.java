@@ -62,7 +62,7 @@ public class SubmissionValidator {
         Set<DataFile> dataFiles = submission.getFiles();
         if (dataFiles.size() > 0) {
             for (DataFile dataFile : dataFiles) {
-                DataFileSource source = dataFileManager.getFile(dataFile);
+                DataFileSource source = dataFileManager.getFileSource(dataFile);
                 if (null == source || !source.exists()) {
                     results.add(
                             CheckResult.checkFailed(

@@ -20,11 +20,13 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
-import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.*;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
 
 import javax.jms.JMSException;
 import java.io.IOException;
@@ -56,12 +58,8 @@ public class DataFileManager {
      * @param source     file to be copied
      * @param submission submission to add file to
      */
-    public void store(DataFileSource source, Submission submission)
+    public void store(DataFileSource source, Submission submission, boolean shouldStore)
             throws JMSException, DataSerializationException, IOException {
-        boolean shouldStore = !(source instanceof RemoteFileSource
-                && (submission instanceof ExperimentSubmission
-                        && ((ExperimentSubmission)submission).getExperimentProfile().getType().isSequencing()));
-
         DataFile dataFile = dataFileDao.create(source.getName(), shouldStore, submission);
         dataFile.setSourceUri(source.getUri().toString());
         dataFile.setDigest(source.getDigest());
@@ -71,7 +69,14 @@ public class DataFileManager {
         }
     }
 
-    public DataFileSource getFile(DataFile dataFile) throws IOException {
+    public void store(DataFile dataFile)
+            throws JMSException, URISyntaxException, IOException {
+        DataFileSource fileSource = getFileSource(dataFile);
+        messageQueue.offer(fileSource, dataFile);
+    }
+
+
+    public DataFileSource getFileSource(DataFile dataFile) throws IOException {
         if (DataFileStatus.STORED == dataFile.getStatus()) {
             return new LocalFileSource(fileStore.get(dataFile.getDigest()));
         } else if (DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
