@@ -66,7 +66,7 @@ public class SubmissionValidator {
                 if (null == source || !source.exists()) {
                     results.add(
                             CheckResult.checkFailed(
-                                    "File " + source.getName() + " is not accessible"
+                                    "File " + dataFile.getName() + " is not accessible"
                                             + ((source instanceof RemoteFileSource) ? " on FTP" : "")
                                     , CheckModality.ERROR
                                     , CheckPosition.undefinedPosition()
