@@ -24,4 +24,9 @@
             ALTER TABLE data_files MODIFY status ENUM('TO_BE_STORED', 'STORED', 'ASSOCIATED', 'ERROR') NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addSourceLocationToDataFiles" author="kolais">
+        <sql>
+            ALTER TABLE data_files ADD sourceURI VARCHAR(500) AFTER status;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

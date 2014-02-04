@@ -45,6 +45,10 @@ public class DataFile {
     @Column(name = "status", nullable = false)
     private DataFileStatus status;
 
+    @Column(name = "sourceUri")
+    private String sourceUri;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ownedBy", nullable = false)
     private Submission ownedBy;
@@ -92,6 +96,14 @@ public class DataFile {
 
     public void setStatus(DataFileStatus status) {
         this.status = status;
+    }
+
+    public String getSourceUri() {
+        return sourceUri;
+    }
+
+    public void setSourceUri(String sourceUri) {
+        this.sourceUri = sourceUri;
     }
 
     public Submission getOwnedBy() {

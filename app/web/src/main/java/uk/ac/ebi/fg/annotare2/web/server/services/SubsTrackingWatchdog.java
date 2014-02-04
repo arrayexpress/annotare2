@@ -35,6 +35,7 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.File;
@@ -322,7 +323,8 @@ public class SubsTrackingWatchdog {
 
                 for (DataFile dataFile : dataFiles) {
                     File f = new File(exportDirectory, dataFile.getName());
-                    Files.copy(dataFileManager.getFile(dataFile), f);
+                    DataFileSource source = dataFileManager.getFile(dataFile);
+                    source.copyTo(f);
                     f.setWritable(true, false);
                     if (properties.getAeSubsTrackingEnabled()) {
                         subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());

@@ -51,7 +51,6 @@ import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.jms.JMSException;
@@ -326,12 +325,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             int index = 0;
             for (FtpFileInfo info : details) {
                 URI fileUri = new URI(ftpRoot + info.getFileName());
-                DataFileSource fileSource;
-                if ("file".equals(fileUri.getScheme())) {
-                    fileSource = new LocalFileSource(new File(fileUri.getPath()));
-                } else {
-                    fileSource = new RemoteFileSource(fileUri);
-                }
+                DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
+
                 if (fileSource.exists()) {
                     if (Objects.equal(fileSource.getDigest(), info.getMd5())) {
                         saveFile(fileSource, submission);

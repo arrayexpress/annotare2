@@ -22,7 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.net.URI;
 
-public class RemoteFileSource implements DataFileSource, Serializable {
+public class RemoteFileSource extends DataFileSource implements Serializable {
 
     private static final long serialVersionUID = 7526471155622776167L;
 
@@ -44,6 +44,10 @@ public class RemoteFileSource implements DataFileSource, Serializable {
 
     public String getName() {
         return FilenameUtils.getName(uri.getPath());
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
     public String getDigest() throws IOException {

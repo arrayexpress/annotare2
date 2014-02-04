@@ -22,15 +22,14 @@ import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.*;
 
 import javax.jms.JMSException;
-import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @author Olga Melnichuk
@@ -64,6 +63,7 @@ public class DataFileManager {
                         && ((ExperimentSubmission)submission).getExperimentProfile().getType().isSequencing()));
 
         DataFile dataFile = dataFileDao.create(source.getName(), shouldStore, submission);
+        dataFile.setSourceUri(source.getUri().toString());
         dataFile.setDigest(source.getDigest());
         submission.getFiles().add(dataFile);
         if (shouldStore) {
@@ -71,8 +71,20 @@ public class DataFileManager {
         }
     }
 
-    public File getFile(DataFile dataFile) throws IOException {
-        return fileStore.get(dataFile.getDigest());
+    public DataFileSource getFile(DataFile dataFile) throws IOException {
+        if (DataFileStatus.STORED == dataFile.getStatus()) {
+            return new LocalFileSource(fileStore.get(dataFile.getDigest()));
+        } else if (DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
+            try {
+                return DataFileSource.createFromUri(new URI(dataFile.getSourceUri()));
+            } catch (URISyntaxException e) {
+                return null;
+            }
+
+        } else {
+            throw new IOException("Unable to get data data file " + dataFile.getName() + ": invalid status " + dataFile.getStatus().getTitle());
+        }
+
     }
 
     public void deleteDataFile(DataFile dataFile) throws IOException {

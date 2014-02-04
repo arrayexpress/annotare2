@@ -19,16 +19,32 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
-public interface DataFileSource {
+import static com.google.common.base.Strings.isNullOrEmpty;
 
-    public boolean exists() throws IOException;
+public abstract class DataFileSource {
 
-    public String getName();
+    public abstract boolean exists() throws IOException;
 
-    public String getDigest() throws IOException;
+    public abstract String getName();
 
-    public void copyTo(File destination) throws IOException;
+    public abstract URI getUri();
 
-    public void delete() throws IOException;
+    public abstract String getDigest() throws IOException;
+
+    public abstract void copyTo(File destination) throws IOException;
+
+    public abstract void delete() throws IOException;
+
+    public static DataFileSource createFromUri(URI uri) throws IOException {
+        if (null == uri) {
+            return null;
+        }
+        if (isNullOrEmpty(uri.getScheme()) || "file".equals(uri.getScheme())) {
+            return new LocalFileSource(new File(uri.getPath()));
+        } else {
+            return new RemoteFileSource(uri);
+        }
+    }
 }

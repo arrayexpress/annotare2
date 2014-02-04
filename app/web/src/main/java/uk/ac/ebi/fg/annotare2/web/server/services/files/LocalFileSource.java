@@ -21,8 +21,10 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-public class LocalFileSource implements DataFileSource, Serializable {
+public class LocalFileSource extends DataFileSource implements Serializable {
 
     private static final long serialVersionUID = 7526471155622776156L;
 
@@ -43,6 +45,13 @@ public class LocalFileSource implements DataFileSource, Serializable {
         return file.getName();
     }
 
+    public URI getUri() {
+        try {
+            return new URI("file", "", file.getPath(), "");
+        } catch (URISyntaxException e) {
+            return null;
+        }
+    }
     public String getDigest() throws IOException {
         return Files.hash(file, Hashing.md5()).toString();
     }
