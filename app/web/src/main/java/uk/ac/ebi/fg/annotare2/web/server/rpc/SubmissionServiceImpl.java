@@ -423,10 +423,4 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         dataFileManager.store(source, submission);
         save(submission);
     }
-
-    /**
-    private static boolean fileExists(File file, String md5) throws IOException {
-        return file.exists() && md5.equals(hash(file, md5()).toString());
-    }
-     */
 }

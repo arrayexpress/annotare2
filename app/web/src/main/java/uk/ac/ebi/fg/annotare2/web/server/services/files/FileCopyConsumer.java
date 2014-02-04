@@ -134,8 +134,6 @@ public class FileCopyConsumer implements MessageListener {
         DataFileSource source = message.getSource();
         try {
             if (source.exists()) {
-                String digest = fileStore.store(source);
-                dataFile.setDigest(digest);
                 dataFile.setStatus(STORED);
                 fileDao.save(dataFile);
                 if (removeSource) {
