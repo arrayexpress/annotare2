@@ -43,13 +43,13 @@ public class DataFileManager {
     private final DataFileDao dataFileDao;
     private final DataFileStore fileStore;
 
-    private final FileCopyMessageQueue messageQueue;
+    private final FileCopyMessageQueue fileCopy;
 
     @Inject
     public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao, FileCopyMessageQueue messageQueue) {
         this.dataFileDao = dataFileDao;
         this.fileStore = fileStore;
-        this.messageQueue = messageQueue;
+        this.fileCopy = messageQueue;
     }
 
     /**
@@ -58,21 +58,23 @@ public class DataFileManager {
      * @param source     file to be copied
      * @param submission submission to add file to
      */
-    public void store(DataFileSource source, Submission submission, boolean shouldStore)
+    public void addFile(DataFileSource source, Submission submission, boolean shouldStore)
             throws JMSException, DataSerializationException, IOException {
         DataFile dataFile = dataFileDao.create(source.getName(), shouldStore, submission);
         dataFile.setSourceUri(source.getUri().toString());
         dataFile.setDigest(source.getDigest());
         submission.getFiles().add(dataFile);
         if (shouldStore) {
-            messageQueue.offer(source, dataFile);
+            fileCopy.schedule(source, dataFile, true);
         }
     }
 
-    public void store(DataFile dataFile)
+    public void storeAssociated(DataFile dataFile)
             throws JMSException, URISyntaxException, IOException {
-        DataFileSource fileSource = getFileSource(dataFile);
-        messageQueue.offer(fileSource, dataFile);
+        if (null != dataFile && DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
+            DataFileSource fileSource = getFileSource(dataFile);
+            fileCopy.schedule(fileSource, dataFile, false);
+        }
     }
 
 

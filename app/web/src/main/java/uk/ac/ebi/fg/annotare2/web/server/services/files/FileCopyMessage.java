@@ -31,22 +31,28 @@ public class FileCopyMessage implements Serializable {
 
     private long destinationId;
     private DataFileSource source;
+    private boolean shouldRemoveSource;
 
-    public FileCopyMessage(DataFileSource source, DataFile destination) {
-        this(source, destination.getId());
+    public FileCopyMessage(DataFileSource source, DataFile destination, boolean shouldRemoveSource) {
+        this(source, destination.getId(), shouldRemoveSource);
     }
 
-    private FileCopyMessage(DataFileSource source, long destinationId) {
+    private FileCopyMessage(DataFileSource source, long destinationId, boolean shouldRemoveSource) {
         this.destinationId = destinationId;
         this.source = source;
+        this.shouldRemoveSource = shouldRemoveSource;
+    }
+
+    public DataFileSource getSource() {
+        return source;
     }
 
     public long getDestinationId() {
         return destinationId;
     }
 
-    public DataFileSource getSource() {
-        return source;
+    public boolean shouldRemoveSource() {
+        return shouldRemoveSource;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -62,6 +68,7 @@ public class FileCopyMessage implements Serializable {
         return getClass().getName() + "@{" +
                 "destinationId=" + destinationId +
                 ", source='" + source.toString() + '\'' +
+                ", shouldRemove=" + shouldRemoveSource +
                 '}';
     }
 }

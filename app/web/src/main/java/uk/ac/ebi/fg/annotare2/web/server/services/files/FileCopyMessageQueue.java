@@ -47,8 +47,9 @@ public class FileCopyMessageQueue {
         consumer.start(jmsResources.getConnectionFactory(), jmsResources.getFileCopyQueue());
     }
 
-    public void offer(DataFileSource source, DataFile destination) throws JMSException {
-        producer.send(new FileCopyMessage(source, destination));
+    public void schedule(DataFileSource source, DataFile destination, boolean shouldRemoveSource)
+            throws JMSException {
+        producer.send(new FileCopyMessage(source, destination, shouldRemoveSource));
     }
 
     public void shutdown() {

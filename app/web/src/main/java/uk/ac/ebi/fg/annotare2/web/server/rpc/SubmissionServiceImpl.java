@@ -424,7 +424,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         boolean shouldStore = !(source instanceof RemoteFileSource &&
                 submission.getExperimentProfile().getType().isSequencing());
 
-        dataFileManager.store(source, submission, shouldStore);
+        dataFileManager.addFile(source, submission, shouldStore);
         save(submission);
     }
 
@@ -449,7 +449,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         for (DataFile file : files) {
             if (null != file && DataFileStatus.ASSOCIATED == file.getStatus()) {
                 if (!excludedDigests.contains(file.getDigest())) {
-                    dataFileManager.store(file);
+                    dataFileManager.storeAssociated(file);
                 }
             }
         }

@@ -114,7 +114,7 @@ public class FileCopyConsumer implements MessageListener {
                 log.debug("Restored message object: {}", messageObject);
 
                 sessionFactory.openSession();
-                copyFile(messageObject, true);
+                copyFile(messageObject);
                 message.acknowledge();
             } catch (JMSException e) {
                 log.error("Caught JMS exception", e);
@@ -135,7 +135,7 @@ public class FileCopyConsumer implements MessageListener {
         }
     }
     @Transactional
-    public void copyFile(FileCopyMessage message, boolean removeSource) throws RecordNotFoundException {
+    public void copyFile(FileCopyMessage message) throws RecordNotFoundException {
         DataFile dataFile = fileDao.get(message.getDestinationId());
 
         DataFileSource source = message.getSource();
@@ -143,7 +143,7 @@ public class FileCopyConsumer implements MessageListener {
             if (source.exists()) {
                 dataFile.setStatus(STORED);
                 fileDao.save(dataFile);
-                if (removeSource) {
+                if (message.shouldRemoveSource()) {
                     source.delete();
                 }
                 return;
