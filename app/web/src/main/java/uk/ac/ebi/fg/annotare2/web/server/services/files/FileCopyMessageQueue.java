@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import com.google.inject.Inject;
 import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQSession;
+import org.apache.activemq.ScheduledMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
@@ -56,13 +58,11 @@ public class FileCopyMessageQueue {
 
     private static class FileCopyProducer {
 
-        //private ConnectionFactory connectionFactory;
         private Queue queue;
         private ActiveMQConnection connection;
 
         public void start(ConnectionFactory connectionFactory, Queue queue) {
             try {
-                //this.connectionFactory = connectionFactory;
                 this.queue = queue;
                 this.connection = (ActiveMQConnection)connectionFactory.createConnection();
                 this.connection.setUseAsyncSend(true);
@@ -82,16 +82,16 @@ public class FileCopyMessageQueue {
         }
 
         private void send(FileCopyMessage message) throws JMSException {
-            //Connection connection = connectionFactory.createConnection();
             Session session = null;
             MessageProducer producer = null;
             try {
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
 
                 producer = session.createProducer(queue);
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
                 ObjectMessage objectMessage = session.createObjectMessage(message);
+                objectMessage.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 1000);
 
                 log.debug("Sent message: '{}' : {}", objectMessage, Thread.currentThread().getName());
                 producer.send(objectMessage);

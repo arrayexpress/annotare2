@@ -23,7 +23,7 @@ import com.google.common.annotations.GwtCompatible;
  */
 @GwtCompatible
 public enum DataFileStatus {
-    TO_BE_STORED("To be stored..."),
+    TO_BE_STORED("processing..."),
     STORED("stored"),
     ASSOCIATED("associated"),
     ERROR("error");

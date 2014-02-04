@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import com.google.inject.Inject;
 import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.RedeliveryPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,6 @@ public class FileCopyConsumer implements MessageListener {
 
     private static final Logger log = LoggerFactory.getLogger(FileCopyConsumer.class);
 
-    private final DataFileStore fileStore;
     private final DataFileDao fileDao;
     private final HibernateSessionFactory sessionFactory;
 
@@ -47,9 +47,7 @@ public class FileCopyConsumer implements MessageListener {
     private MessageConsumer consumer;
 
     @Inject
-    public FileCopyConsumer(DataFileStore fileStore, DataFileDao fileDao,
-                            HibernateSessionFactory sessionFactory) {
-        this.fileStore = fileStore;
+    public FileCopyConsumer(DataFileDao fileDao, HibernateSessionFactory sessionFactory) {
         this.fileDao = fileDao;
         this.sessionFactory = sessionFactory;
 
@@ -63,7 +61,7 @@ public class FileCopyConsumer implements MessageListener {
 
         try {
             RedeliveryPolicy queuePolicy = new RedeliveryPolicy();
-            queuePolicy.setInitialRedeliveryDelay(0);
+            queuePolicy.setInitialRedeliveryDelay(100);
             queuePolicy.setRedeliveryDelay(1000);
             queuePolicy.setUseExponentialBackOff(false);
             queuePolicy.setMaximumRedeliveries(4);
@@ -72,7 +70,7 @@ public class FileCopyConsumer implements MessageListener {
             connection.setRedeliveryPolicy(queuePolicy);
             connection.start();
 
-            session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+            session = connection.createSession(false, ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE);
             consumer = session.createConsumer(queue);
             consumer.setMessageListener(this);
         } catch (JMSException e) {
@@ -117,16 +115,25 @@ public class FileCopyConsumer implements MessageListener {
 
                 sessionFactory.openSession();
                 copyFile(messageObject, true);
+                message.acknowledge();
             } catch (JMSException e) {
                 log.error("Caught JMS exception", e);
             } catch (RecordNotFoundException e) {
-                log.error("Caught 'record not found' exception", e);
+                log.error("Data file record is not in the database yet, will retry once again in few moments");
+                requestRedevlivery();       // sometimes the datafile is not yet in the database when message is received
             } finally {
                 sessionFactory.closeSession();
             }
         }
     }
 
+    private void requestRedevlivery() {
+        try {
+            session.recover();
+        } catch (JMSException e) {
+            log.error("Caught JMS exception", e);
+        }
+    }
     @Transactional
     public void copyFile(FileCopyMessage message, boolean removeSource) throws RecordNotFoundException {
         DataFile dataFile = fileDao.get(message.getDestinationId());

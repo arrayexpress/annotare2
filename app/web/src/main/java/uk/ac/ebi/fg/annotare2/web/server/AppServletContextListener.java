@@ -196,6 +196,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
             brokerService = new BrokerService();
             brokerService.setBrokerName("localhost");
             brokerService.setUseJmx(false);
+            brokerService.setSchedulerSupport(true);
             brokerService.start();
         } catch (Exception e) {
             log.error("Unable to start JMS broker", e);
