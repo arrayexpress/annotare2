@@ -46,6 +46,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyConsumer;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
+import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
@@ -160,6 +161,8 @@ public class AppServletModule extends ServletModule {
         bind(SubsTrackingProperties.class).to(AnnotareProperties.class);
         bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
         bind(AnnotareEfoService.class).in(SINGLETON);
+
+        bind(SubmissionMigrator.class).asEagerSingleton();
 
         TransactionalMethodInterceptor txMethodInterceptor = new TransactionalMethodInterceptor();
         requestInjection(txMethodInterceptor);

@@ -356,5 +356,4 @@ public class SubsTrackingWatchdog {
             subsTracking.releaseConnection(dbConnection);
         }
     }
-
 }

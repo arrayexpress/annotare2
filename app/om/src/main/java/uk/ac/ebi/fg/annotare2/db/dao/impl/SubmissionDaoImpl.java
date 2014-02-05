@@ -26,6 +26,7 @@ import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.AclType;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -95,6 +96,15 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
                 return input != null && asList(statuses).contains(input.getStatus());
             }
         });
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<Submission> getSubmissionsByVersion(final ModelVersion... versions) {
+        return getCurrentSession()
+                .createCriteria(Submission.class)
+                .add(Restrictions.in("version", versions))
+                .list();
     }
 
     @Override

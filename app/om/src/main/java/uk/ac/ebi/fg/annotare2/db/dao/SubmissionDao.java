@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.db.dao;
 
 import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +33,8 @@ public interface SubmissionDao extends HasEffectiveAcl {
     ArrayDesignSubmission getArrayDesignSubmission(long id) throws RecordNotFoundException;
 
     List<Submission> getSubmissions(User user);
+
+    public Collection<Submission> getSubmissionsByVersion(final ModelVersion... versions);
 
     Collection<Submission> getSubmissionsByStatus(SubmissionStatus... statuses);
 
