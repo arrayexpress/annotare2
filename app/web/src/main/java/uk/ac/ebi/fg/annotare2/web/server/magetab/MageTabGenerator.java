@@ -230,7 +230,7 @@ public class MageTabGenerator {
                     generateMultiChannelAssayNodes(labeledExtractLayer) :
                     generateSingleChannelAssayNodes(labeledExtractLayer);
         } else {
-            assayLayer = generateAssayAndScanNodes(extractLayer);
+            assayLayer = generateSeqAssayNodes(extractLayer);
         }
         generateDataFileNodes(assayLayer);
     }
@@ -340,7 +340,7 @@ public class MageTabGenerator {
         return columns.isEmpty() ? null : columns.iterator().next();
     }
 
-    private Map<String, SDRFNode> generateAssayAndScanNodes(Map<Integer, SDRFNode> extractLayer) {
+    private Map<String, SDRFNode> generateSeqAssayNodes(Map<Integer, SDRFNode> extractLayer) {
         if (extractLayer.isEmpty()) {
             return emptyMap();
         }
@@ -351,12 +351,14 @@ public class MageTabGenerator {
             Extract extract = exp.getExtract(extractId);
             SDRFNode extractNode = extractLayer.get(extractId);
             Collection<Protocol> protocols = exp.getProtocols(extract);
-            if (extract == null) {
-                SDRFNode assayNode = createAssayNode(null, "", extractNode, protocols);
-                layer.put("" + (fakeId--), createScanNode(null, assayNode));
+            if (null == extract) {
+                layer.put("" + (fakeId--), createAssayNode(null, "", extractNode, protocols));
             } else {
-                SDRFNode assayNode = createAssayNode(new LabeledExtract(extract), extract.getName(), extractNode, protocols);
-                layer.put("" + extract.getId(), createScanNode(extract, assayNode));
+
+                layer.put(
+                        "" + extract.getId(),
+                        createAssayNode(new LabeledExtract(extract), extract.getName(), extractNode, protocols)
+                );
             }
         }
         return layer;
