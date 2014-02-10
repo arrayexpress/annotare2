@@ -17,6 +17,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
  *
  */
 
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQSession;
@@ -39,6 +40,7 @@ public class FileCopyConsumer implements MessageListener {
 
     private static final Logger log = LoggerFactory.getLogger(FileCopyConsumer.class);
 
+    private final DataFileStore fileStore;
     private final DataFileDao fileDao;
     private final HibernateSessionFactory sessionFactory;
 
@@ -47,7 +49,8 @@ public class FileCopyConsumer implements MessageListener {
     private MessageConsumer consumer;
 
     @Inject
-    public FileCopyConsumer(DataFileDao fileDao, HibernateSessionFactory sessionFactory) {
+    public FileCopyConsumer(DataFileStore fileStore, DataFileDao fileDao, HibernateSessionFactory sessionFactory) {
+        this.fileStore = fileStore;
         this.fileDao = fileDao;
         this.sessionFactory = sessionFactory;
 
@@ -141,11 +144,16 @@ public class FileCopyConsumer implements MessageListener {
         DataFileSource source = message.getSource();
         try {
             if (source.exists()) {
+                String digest = fileStore.store(source);
+                if (!Objects.equal(digest, source.getDigest())) {
+                    throw new IOException("MD5 is different between the source and the stored file");
+                }
                 dataFile.setStatus(STORED);
-                fileDao.save(dataFile);
                 if (message.shouldRemoveSource()) {
                     source.delete();
+                    dataFile.setSourceUri(null);
                 }
+                fileDao.save(dataFile);
                 return;
             } else {
                 log.error("Unable to find source file {}", source.getName());
