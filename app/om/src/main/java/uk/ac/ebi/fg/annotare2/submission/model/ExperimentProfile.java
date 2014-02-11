@@ -463,6 +463,17 @@ public class ExperimentProfile implements Serializable {
         return unmodifiableCollection(fileColumns);
     }
 
+    public Collection<FileColumn> getFileColumns(FileType... types) {
+        Set<FileType> selectedTypes = new HashSet<FileType>(Arrays.asList(types));
+        List<FileColumn> selectedColumns = new ArrayList<FileColumn>();
+        for (FileColumn column : fileColumns) {
+            if (selectedTypes.contains(column.getType())) {
+                selectedColumns.add(column);
+            }
+        }
+        return unmodifiableCollection(selectedColumns);
+    }
+
     public FileColumn getFileColumn(int index) {
         return fileColumns.get(index);
     }

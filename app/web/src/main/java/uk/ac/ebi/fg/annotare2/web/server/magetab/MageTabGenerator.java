@@ -226,9 +226,7 @@ public class MageTabGenerator {
         Map<String, SDRFNode> assayLayer;
         if (exp.getType().isMicroarray()) {
             Map<String, SDRFNode> labeledExtractLayer = generateLabeledExtractNodes(extractLayer);
-            assayLayer = exp.getType().isTwoColorMicroarray() ?
-                    generateMultiChannelAssayNodes(labeledExtractLayer) :
-                    generateSingleChannelAssayNodes(labeledExtractLayer);
+            assayLayer = generateMicroarrayAssayNodes(labeledExtractLayer);
         } else {
             assayLayer = generateSeqAssayNodes(extractLayer);
         }
@@ -288,33 +286,13 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private Map<String, SDRFNode> generateSingleChannelAssayNodes(Map<String, SDRFNode> labeledExtractLayer) {
+    private Map<String, SDRFNode> generateMicroarrayAssayNodes(Map<String, SDRFNode> labeledExtractLayer) {
         if (labeledExtractLayer.isEmpty()) {
             return emptyMap();
         }
 
-        Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
-        int fakeId = -1;
-        for (String labeledExtractId : labeledExtractLayer.keySet()) {
-            LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
-            SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
-            Collection<Protocol> protocols = exp.getProtocols(labeledExtract);
-            if (labeledExtract == null) {
-                layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode, protocols));
-            } else {
-                layer.put(labeledExtract.getId(), createAssayNode(labeledExtract, labeledExtract.getName(), labeledExtractNode, protocols));
-            }
-        }
-        return layer;
-    }
-
-    private Map<String, SDRFNode> generateMultiChannelAssayNodes(Map<String, SDRFNode> labeledExtractLayer) {
-        if (labeledExtractLayer.isEmpty()) {
-            return emptyMap();
-        }
-
-        FileColumn fileColumn = getFirstFileColumn();
-        if (fileColumn == null || !fileColumn.getType().isRaw()) {
+        FileColumn fileColumn = getFirstRawFileColumn();
+        if (null == fileColumn) {
             return emptyMap();
         }
 
@@ -335,8 +313,10 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private FileColumn getFirstFileColumn() {
-        Collection<FileColumn> columns = exp.getFileColumns();
+    private FileColumn getFirstRawFileColumn() {
+        Collection<FileColumn> columns = sortFileColumns(
+                exp.getFileColumns(FileType.RAW_FILE, FileType.RAW_MATRIX_FILE)
+        );
         return columns.isEmpty() ? null : columns.iterator().next();
     }
 
@@ -584,7 +564,7 @@ public class MageTabGenerator {
     }
 
     private void createFileNodes(LabeledExtract labeledExtract, SDRFNode assayNode) {
-        Collection<FileColumn> fileColumns = getSortedFileColumns();
+        Collection<FileColumn> fileColumns = sortFileColumns(exp.getFileColumns());
 
         List<SDRFNode> prev = new ArrayList<SDRFNode>();
         List<SDRFNode> next = new ArrayList<SDRFNode>();
@@ -648,14 +628,14 @@ public class MageTabGenerator {
         return termSource;
     }
 
-    private Collection<FileColumn> getSortedFileColumns() {
+    private Collection<FileColumn> sortFileColumns(Collection<FileColumn> columns) {
         return natural().onResultOf(new Function<FileColumn, Integer>() {
             @Nullable
             @Override
             public Integer apply(@Nullable FileColumn input) {
                 return (null != input && null != input.getType()) ? input.getType().ordinal() : null;
             }
-        }).immutableSortedCopy(exp.getFileColumns());
+        }).immutableSortedCopy(columns);
     }
 
     private MaterialTypeAttribute extractMaterialTypeAttribute(Sample sample) {
