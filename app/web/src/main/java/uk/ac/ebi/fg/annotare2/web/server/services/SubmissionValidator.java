@@ -59,8 +59,8 @@ public class SubmissionValidator {
 
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
 
-        Set<DataFile> dataFiles = submission.getFiles();
-        if (dataFiles.size() > 0) {
+        Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
+        if (null != dataFiles && dataFiles.size() > 0) {
             for (DataFile dataFile : dataFiles) {
                 DataFileSource source = dataFileManager.getFileSource(dataFile);
                 if (null == source || !source.exists()) {

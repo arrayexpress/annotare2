@@ -38,6 +38,8 @@ import static java.util.Collections.unmodifiableSet;
  */
 public class ExperimentProfile implements Serializable {
 
+    private static final long serialVersionUID = 7357226309547876375L;
+
     int nextId;
 
     private ExperimentProfileType type;
@@ -460,7 +462,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Collection<FileColumn> getFileColumns() {
-        return unmodifiableCollection(fileColumns);
+        return getFileColumns(FileType.values());
     }
 
     public Collection<FileColumn> getFileColumns(FileType... types) {
@@ -575,7 +577,7 @@ public class ExperimentProfile implements Serializable {
             @Nullable
             @Override
             public String apply(@Nullable Label input) {
-                return input.getName();
+                return (null != input) ? input.getName() : null;
             }
         });
     }

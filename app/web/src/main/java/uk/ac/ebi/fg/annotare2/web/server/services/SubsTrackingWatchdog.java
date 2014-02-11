@@ -319,7 +319,7 @@ public class SubsTrackingWatchdog {
             exportedSdrfFile.setWritable(true, false);
 
             // copy data files
-            Set<DataFile> dataFiles = submission.getFiles();
+            Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
             if (dataFiles.size() > 0) {
 
                 for (DataFile dataFile : dataFiles) {

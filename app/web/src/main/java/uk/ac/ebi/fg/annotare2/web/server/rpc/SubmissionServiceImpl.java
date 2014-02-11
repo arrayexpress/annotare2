@@ -29,7 +29,9 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.submission.model.*;
+import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -59,7 +61,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
@@ -69,6 +74,8 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.ex
  * @author Olga Melnichuk
  */
 public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
+
+    private static final long serialVersionUID = 6482329782917056447L;
 
     //private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
@@ -430,29 +437,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private void storeAssociatedFiles(ExperimentSubmission submission)
             throws DataSerializationException, JMSException, URISyntaxException, IOException {
-        ExperimentProfile exp = submission.getExperimentProfile();
 
-        Set<String> excludedDigests = new HashSet<String>();
-        if (exp.getType().isSequencing()) {
-            for (FileColumn column : exp.getFileColumns()) {
-                if (FileType.RAW_FILE == column.getType()) {
-                    for (String id : column.getLabeledExtractIds()) {
-                        FileRef file = column.getFileRef(id);
-                        if (null != file) {
-                            excludedDigests.add(file.getHash());
-                        }
-                    }
-                }
-            }
-        }
-        Set<DataFile> files = submission.getFiles();
+        Set<DataFile> files = dataFileManager.getAssignedFiles(
+                submission,
+                FileType.RAW_MATRIX_FILE,
+                FileType.PROCESSED_FILE,
+                FileType.PROCESSED_MATRIX_FILE
+        );
+
         for (DataFile file : files) {
             if (null != file && DataFileStatus.ASSOCIATED == file.getStatus()) {
-                if (!excludedDigests.contains(file.getDigest())) {
-                    dataFileManager.storeAssociated(file);
-                }
+                dataFileManager.storeAssociatedFile(file);
             }
         }
-
     }
 }

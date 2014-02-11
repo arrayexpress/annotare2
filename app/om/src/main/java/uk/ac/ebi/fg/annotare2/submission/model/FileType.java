@@ -39,10 +39,12 @@ public enum FileType {
         return title;
     }
 
+    @SuppressWarnings("unused")
     public boolean isRaw() {
         return this == RAW_FILE || this == RAW_MATRIX_FILE;
     }
 
+    @SuppressWarnings("unused")
     public boolean isProcessed() {
         return this == PROCESSED_FILE || this == PROCESSED_MATRIX_FILE;
     }

@@ -18,8 +18,8 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +27,8 @@ import java.util.Map;
  * @author Olga Melnichuk
  */
 public class FileColumn implements Serializable {
+
+    private static final long serialVersionUID = 2462330722506905893L;
 
     private FileType type;
 
@@ -74,7 +76,11 @@ public class FileColumn implements Serializable {
     }
 
     public Collection<String> getLabeledExtractIds() {
-        return new ArrayList<String>(leId2FileRefMap.keySet());
+        return Collections.unmodifiableCollection(leId2FileRefMap.keySet());
+    }
+
+    public Collection<FileRef> getFileRefs() {
+        return Collections.unmodifiableCollection(leId2FileRefMap.values());
     }
 }
 

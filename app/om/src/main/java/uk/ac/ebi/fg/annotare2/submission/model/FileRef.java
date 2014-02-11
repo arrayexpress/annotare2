@@ -53,11 +53,11 @@ public class FileRef implements Serializable {
 
         FileRef fileRef = (FileRef) o;
 
-        return name.equals(fileRef.name) && name.equals(fileRef.hash);
+        return name.equals(fileRef.name) && hash.equals(fileRef.hash);
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return 31 * name.hashCode() + hash.hashCode();
     }
 }

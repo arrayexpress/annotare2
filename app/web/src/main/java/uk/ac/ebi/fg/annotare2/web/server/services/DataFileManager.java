@@ -20,8 +20,13 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
+import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
@@ -32,6 +37,8 @@ import javax.jms.JMSException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -69,7 +76,7 @@ public class DataFileManager {
         }
     }
 
-    public void storeAssociated(DataFile dataFile)
+    public void storeAssociatedFile(DataFile dataFile)
             throws JMSException, URISyntaxException, IOException {
         if (null != dataFile && DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
             DataFileSource fileSource = getFileSource(dataFile);
@@ -77,7 +84,29 @@ public class DataFileManager {
         }
     }
 
+    public Set<DataFile> getAssignedFiles(Submission submission) throws DataSerializationException {
+        return getAssignedFiles(submission, FileType.values());
+    }
 
+    public Set<DataFile> getAssignedFiles(Submission submission, FileType... fileTypes)
+            throws DataSerializationException {
+        Set<DataFile> result = new HashSet<DataFile>();
+
+        if (submission instanceof ExperimentSubmission) {
+            ExperimentProfile exp = ((ExperimentSubmission)submission).getExperimentProfile();
+            Set<FileRef> assignedFiles = new HashSet<FileRef>();
+            for (FileColumn col : exp.getFileColumns(fileTypes)) {
+                assignedFiles.addAll(col.getFileRefs());
+            }
+            for (DataFile file : submission.getFiles()) {
+                if (assignedFiles.contains(new FileRef(file.getName(), file.getDigest()))) {
+                    result.add(file);
+                }
+            }
+        }
+        return result;
+    }
+    
     public DataFileSource getFileSource(DataFile dataFile) throws IOException {
         if (DataFileStatus.STORED == dataFile.getStatus()) {
             return new LocalFileSource(fileStore.get(dataFile.getDigest()));
