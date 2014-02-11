@@ -591,7 +591,7 @@ public class MageTabGenerator {
         FileType prevType = null;
         for (FileColumn fileColumn : fileColumns) {
             FileType type = fileColumn.getType();
-            FileRef file = fileColumn.getFileRef(labeledExtract.getId());
+            FileRef file = (null != labeledExtract) ? fileColumn.getFileRef(labeledExtract.getId()) : null;
             String fileName = (null != file) ? file.getName() : null;
             SDRFNode current;
             switch (type) {
