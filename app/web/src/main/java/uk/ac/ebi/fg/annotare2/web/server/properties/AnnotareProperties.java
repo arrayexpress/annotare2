@@ -65,6 +65,11 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         return getListProperty("materialTypes");
     }
 
+    public List<String> getSequencingHardware() {
+        return getListProperty("sequencingHardware");
+    }
+
+
     public File getEfoIndexDir() {
         return getDirProperty("efo.index.dir");
     }

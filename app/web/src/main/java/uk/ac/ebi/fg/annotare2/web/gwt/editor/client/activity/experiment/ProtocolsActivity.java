@@ -28,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmen
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
@@ -46,13 +47,15 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     private final ProtocolsView view;
     private final OntologyDataProxy ontologyDataProxy;
     private final ExperimentDataProxy expData;
+    private final ApplicationDataProxy appData;
     private HandlerRegistration criticalUpdateHandler;
 
     @Inject
-    public ProtocolsActivity(ProtocolsView view, OntologyDataProxy ontologyDataProxy, ExperimentDataProxy expData) {
+    public ProtocolsActivity(ProtocolsView view, OntologyDataProxy ontologyDataProxy, ExperimentDataProxy expData, ApplicationDataProxy appData) {
         this.view = view;
         this.ontologyDataProxy = ontologyDataProxy;
         this.expData = expData;
+        this.appData = appData;
     }
 
     @Override
@@ -132,17 +135,35 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
         expData.getProtocolAssignmentProfileAsync(protocolId, callback);
     }
 
+    @Override
+    public void getSequencingHardwareAsync(AsyncCallback<List<String>> callback) {
+        appData.getSequencingHardwareAsync(callback);
+    }
+
     private void loadAsync() {
-        expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
+        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error; Can't fetch the protocol list");
+                Window.alert("Server error; Can't get experiment type");
             }
 
             @Override
-            public void onSuccess(List<ProtocolRow> result) {
-                view.setData(result);
+            public void onSuccess(final ExperimentProfileType expType) {
+                expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Server error; Can't fetch the protocol list");
+                    }
+
+                    @Override
+                    public void onSuccess(List<ProtocolRow> result) {
+                        view.setData(expType, result);
+                    }
+                });
             }
         });
+
+
+
     }
 }

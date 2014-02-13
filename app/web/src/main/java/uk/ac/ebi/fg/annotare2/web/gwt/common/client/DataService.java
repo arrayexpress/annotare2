@@ -57,4 +57,6 @@ public interface DataService extends RemoteService {
     List<String> getAeExperimentTypes();
 
     List<String> getMaterialTypes();
+
+    List<String> getSequencingHardware();
 }

@@ -30,13 +30,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidationMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
 import java.util.*;
 
@@ -47,6 +46,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private GridView<ProtocolRow> gridView;
     private ValidationMessage errorMessage;
+    private AsyncOptionProvider sequencingHardware;
 
     private Presenter presenter;
 
@@ -91,6 +91,36 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
+
+        sequencingHardware = new AsyncOptionProvider() {
+            private List<String> options = new ArrayList<String>();
+
+            @Override
+            public void update(final Callback callback) {
+                if (presenter != null) {
+                    if (options.isEmpty()) {
+                        presenter.getSequencingHardwareAsync(new AsyncCallback<List<String>>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                callback.setOptions(Collections.<String>emptyList());
+                            }
+
+                            @Override
+                            public void onSuccess(List<String> result) {
+                                if (!result.isEmpty()) {
+                                    options.clear();
+                                    options.add("");
+                                    options.addAll(result);
+                                    callback.setOptions(options);
+                                }
+                            }
+                        });
+                    } else {
+                        callback.setOptions(options);
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -99,19 +129,23 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     }
 
     @Override
-    public void setData(List<ProtocolRow> rows) {
+    public void setData(ExperimentProfileType expType,  List<ProtocolRow> rows) {
         gridView.clearAllColumns();
         gridView.setRows(rows);
-        setColumns();
+        setColumns(expType);
     }
 
-    private void setColumns() {
+    private void setColumns(ExperimentProfileType expType) {
         addNameColumn();
         addAssignmentColumn();
         addTypeColumn();
         addDescriptionColumn();
         addParametersColumn();
-        addHardwareColumn();
+        if (ExperimentProfileType.SEQUENCING == expType) {
+            addSequencingHardwareColumn();
+        } else {
+            addHardwareColumn();
+        }
         addSoftwareColumn();
         addPerformerColumn();
     }
@@ -284,6 +318,36 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private void addHardwareColumn() {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
+            @Override
+            public String getValue(ProtocolRow row) {
+                String v = row.getHardware();
+                return v == null ? "" : v;
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
+            @Override
+            public void update(int index, ProtocolRow row, String value) {
+                row.setHardware(value);
+                updateRow(row);
+            }
+        });
+        column.setSortable(true);
+        Comparator<ProtocolRow> comparator = new Comparator<ProtocolRow>() {
+            @Override
+            public int compare(ProtocolRow o1, ProtocolRow o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+                String v1 = o1.getHardware();
+                String v2 = o2.getHardware();
+                return v1.compareTo(v2);
+            }
+        };
+        gridView.addPermanentColumn("Hardware", column, comparator, 150, Style.Unit.PX);
+    }
+
+    private void addSequencingHardwareColumn() {
+        Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditSelectionCell(sequencingHardware)) {
             @Override
             public String getValue(ProtocolRow row) {
                 String v = row.getHardware();

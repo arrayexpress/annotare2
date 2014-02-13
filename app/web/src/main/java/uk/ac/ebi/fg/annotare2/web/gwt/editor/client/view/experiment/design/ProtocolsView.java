@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 public interface ProtocolsView extends IsWidget {
 
-    void setData(List<ProtocolRow> rows);
+    void setData(ExperimentProfileType expType, List<ProtocolRow> rows);
 
     void setPresenter(Presenter presenter);
 
@@ -50,5 +51,7 @@ public interface ProtocolsView extends IsWidget {
         void moveProtocolDown(ProtocolRow row);
 
         void moveProtocolUp(ProtocolRow row);
+
+        void getSequencingHardwareAsync(AsyncCallback<List<String>> callback);
     }
 }

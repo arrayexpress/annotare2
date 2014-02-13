@@ -168,6 +168,11 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     }
 
     @Override
+    public List<String> getSequencingHardware() {
+        return new ArrayList<String>(properties.getSequencingHardware());
+    }
+
+    @Override
     public List<OntologyTermGroup> getExperimentalDesigns() {
         EfoTerm term = efoService.findTermByAccession(properties.getEfoTermAccession(SystemEfoTerm.STUDY_DESIGN));
         if (term == null) {

@@ -49,4 +49,6 @@ public interface DataServiceAsync {
     void getAeExperimentTypes(AsyncCallback<List<String>> async);
 
     void getMaterialTypes(AsyncCallback<List<String>> async);
+
+    void getSequencingHardware(AsyncCallback<List<String>> async);
 }
