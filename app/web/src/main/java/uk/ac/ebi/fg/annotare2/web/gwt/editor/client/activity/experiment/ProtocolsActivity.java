@@ -141,29 +141,16 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     private void loadAsync() {
-        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
+        expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error; Can't get experiment type");
+                Window.alert("Server error; Can't fetch the protocol list");
             }
 
             @Override
-            public void onSuccess(final ExperimentProfileType expType) {
-                expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        Window.alert("Server error; Can't fetch the protocol list");
-                    }
-
-                    @Override
-                    public void onSuccess(List<ProtocolRow> result) {
-                        view.setData(expType, result);
-                    }
-                });
+            public void onSuccess(List<ProtocolRow> result) {
+                view.setData(result);
             }
         });
-
-
-
     }
 }

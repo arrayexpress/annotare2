@@ -30,12 +30,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidationMessage;
 
 import java.util.*;
 
@@ -46,7 +47,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private GridView<ProtocolRow> gridView;
     private ValidationMessage errorMessage;
-    private AsyncOptionProvider sequencingHardware;
+    //private AsyncOptionProvider sequencingHardware;
 
     private Presenter presenter;
 
@@ -91,7 +92,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
-
+        /** disabled for now
         sequencingHardware = new AsyncOptionProvider() {
             private List<String> options = new ArrayList<String>();
 
@@ -121,6 +122,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                 }
             }
         };
+         */
     }
 
     @Override
@@ -129,23 +131,19 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     }
 
     @Override
-    public void setData(ExperimentProfileType expType,  List<ProtocolRow> rows) {
+    public void setData(List<ProtocolRow> rows) {
         gridView.clearAllColumns();
         gridView.setRows(rows);
-        setColumns(expType);
+        setColumns();
     }
 
-    private void setColumns(ExperimentProfileType expType) {
+    private void setColumns() {
         addNameColumn();
         addAssignmentColumn();
         addTypeColumn();
         addDescriptionColumn();
         addParametersColumn();
-        if (ExperimentProfileType.SEQUENCING == expType) {
-            addSequencingHardwareColumn();
-        } else {
-            addHardwareColumn();
-        }
+        addHardwareColumn();
         addSoftwareColumn();
         addPerformerColumn();
     }
@@ -345,7 +343,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         };
         gridView.addPermanentColumn("Hardware", column, comparator, 150, Style.Unit.PX);
     }
-
+    /**
     private void addSequencingHardwareColumn() {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditSelectionCell(sequencingHardware)) {
             @Override
@@ -375,7 +373,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         };
         gridView.addPermanentColumn("Hardware", column, comparator, 150, Style.Unit.PX);
     }
-
+     */
     private void addSoftwareColumn() {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new EditTextCell()) {
             @Override
