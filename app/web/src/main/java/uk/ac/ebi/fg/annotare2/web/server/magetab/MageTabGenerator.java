@@ -178,6 +178,10 @@ public class MageTabGenerator {
                 idf.experimentalFactorType.add(notNull(term.getLabel()));
                 idf.experimentalFactorTermAccession.add(notNull(term.getAccession()));
                 idf.experimentalFactorTermSourceREF.add(notNull(ensureTermSource(EFO_TERM_SOURCE).getName()));
+            } else {
+                idf.experimentalFactorType.add("");
+                idf.experimentalFactorTermAccession.add("");
+                idf.experimentalFactorTermSourceREF.add("");
             }
         }
     }
