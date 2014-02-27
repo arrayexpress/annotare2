@@ -17,8 +17,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.apache.commons.lang.text.StrSubstitutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 
 import javax.mail.Message;
@@ -27,15 +30,23 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Properties;
 
 public class EmailSender
 {
+    private static final Logger log = LoggerFactory.getLogger(EmailSender.class);
+
     private final AnnotareProperties properties;
 
     public static final String NEW_USER_TEMPLATE = "new-user";
     public static final String VERIFY_EMAIL_TEMPLATE = "verify-email";
+    public static final String WELCOME_TEMPLATE = "welcome";
     public static final String CHANGE_PASSWORD_REQUEST_TEMPLATE = "change-password-request";
     public static final String CHANGE_PASSWORD_CONFIRMATION_TEMPLATE = "change-password-confirmation";
     public static final String INITIAL_SUBMISSION_TEMPLATE = "initial-submission";
@@ -43,12 +54,37 @@ public class EmailSender
     public static final String REPEAT_SUBMISSION_OTRS_TEMPLATE = "repeat-submission-otrs";
     public static final String REJECTED_SUBMISSION_TEMPLATE = "rejected-submission";
     public static final String ACCESSION_UPDATE_TEMPLATE = "accession-update-submission";
+    public static final String EXCEPTION_REPORT_TEMPLATE = "exception-report";
 
     @Inject
     public EmailSender(AnnotareProperties properties) {
         this.properties = properties;
     }
 
+    public void sendException(String note, Throwable x) {
+        try {
+        Thread currentThread = Thread.currentThread();
+        String hostName = "unknown";
+        try {
+            InetAddress localMachine = InetAddress.getLocalHost();
+            hostName = localMachine.getHostName();
+        } catch (UnknownHostException xx) {
+            log.error("Unable to obtain a hostname", xx);
+        }
+        sendFromTemplate(
+                EXCEPTION_REPORT_TEMPLATE,
+                ImmutableMap.of(
+                        "application.host", hostName,
+                        "application.thread", currentThread.getName(),
+                        "exception.note", note,
+                        "exception.message", x.getMessage(),
+                        "exception.stack", getStackTrace(x)
+                )
+        );
+        } catch (Throwable xxx) {
+            log.error("[SEVERE] Unable to send exception report, error:", xxx);
+        }
+    }
     public void sendFromTemplate(String template, Map<String, String> parameters)
             throws MessagingException {
         StrSubstitutor sub = new StrSubstitutor(parameters);
@@ -66,7 +102,7 @@ public class EmailSender
         }
     }
 
-    public void send(String recipients[], String hiddenRecipients[], String subject, String message, String from)
+    private void send(String recipients[], String hiddenRecipients[], String subject, String message, String from)
             throws MessagingException {
 
         //Set the host SMTP address and port
@@ -105,5 +141,12 @@ public class EmailSender
         msg.setSubject(subject);
         msg.setText(message, "UTF-8");
         Transport.send(msg);
+    }
+
+    private String getStackTrace(Throwable x) {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        x.printStackTrace(printWriter);
+        return result.toString();
     }
 }

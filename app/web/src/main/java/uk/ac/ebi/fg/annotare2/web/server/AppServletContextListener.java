@@ -32,6 +32,7 @@ import liquibase.resource.ResourceAccessor;
 import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
 
@@ -67,6 +68,8 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        SLF4JBridgeHandler.install();
+
         updateDb(servletContextEvent);
 
         startActiveMqBroker();
@@ -85,6 +88,8 @@ public class AppServletContextListener extends GuiceServletContextListener {
         stopActiveMqBroker();
 
         stopServices();
+
+        SLF4JBridgeHandler.uninstall();
 
         super.contextDestroyed(servletContextEvent);
     }

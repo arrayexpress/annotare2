@@ -139,7 +139,18 @@ public class AccountServiceImpl implements AccountService {
                     if (!accountManager.isVerificationTokenValid(params.getEmail(), params.getToken())) {
                         errors.append(FormParams.TOKEN_PARAM, "Incorrect code; please try again or request a new one");
                     } else {
-                        accountManager.setEmailVerified(params.getEmail());
+                        User u = accountManager.setEmailVerified(params.getEmail());
+                        try {
+                            mailer.sendFromTemplate(
+                                    EmailSender.WELCOME_TEMPLATE,
+                                    ImmutableMap.of(
+                                            "to.name", u.getName(),
+                                            "to.email", u.getEmail()
+                                    )
+                            );
+                        } catch (MessagingException x) {
+                            log.error("There was a problem sending an email", x);
+                        }
                     }
                 }
 

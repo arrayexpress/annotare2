@@ -95,8 +95,9 @@ public class SubsTrackingWatchdog {
                 Session session = sessionFactory.openSession();
                 try {
                     periodicRun();
-                } catch (Exception x) {
+                } catch (Throwable x) {
                     log.error("Submission watchdog process caught an exception:", x);
+                    emailer.sendException("Error in submission watchdog process:", x);
                 } finally {
                     session.close();
                 }
@@ -124,7 +125,7 @@ public class SubsTrackingWatchdog {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processSubmitted(Submission submission) throws SubsTrackingException {
         SubmissionOutcome outcome = submitSubmission(submission);
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
@@ -164,7 +165,7 @@ public class SubsTrackingWatchdog {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processInCuration(Submission submission) throws SubsTrackingException {
         Integer subsTrackingId = submission.getSubsTrackingId();
         if (null != subsTrackingId) {
@@ -298,7 +299,7 @@ public class SubsTrackingWatchdog {
             MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
 
             if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
-                ; // throw something
+                throw new Exception("Unable to locate generated MAGE-TAB files");
             }
             mageTab.getIdfFile().setWritable(true, false);
 

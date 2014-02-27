@@ -38,7 +38,7 @@
         </g:Dock>
         <g:Dock direction="SOUTH">
             <g:HTML>
-                <div class="copy"> 2012 EMBL-EBI, Functional Genomics Group </div>
+                <div class="copy">2014 EMBL-EBI, Functional Genomics Group</div>
             </g:HTML>
         </g:Dock>
     </g:DockPanel>
