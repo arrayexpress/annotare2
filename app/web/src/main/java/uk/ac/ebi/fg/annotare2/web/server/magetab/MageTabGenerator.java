@@ -142,7 +142,7 @@ public class MageTabGenerator {
             idf.personFax.add(notNull(contact.getFax()));
             idf.personAddress.add(notNull(contact.getAddress()));
             idf.personAffiliation.add(notNull(contact.getAffiliation()));
-            idf.personRoles.add(notNull(contact.getRoles()));
+            idf.personRoles.add(joinCollection(contact.getRoles(), ";"));
         }
 
         for (Publication publication : exp.getPublications()) {
@@ -714,8 +714,8 @@ public class MageTabGenerator {
         return str == null || str.trim().isEmpty() ? "" : escape(str);
     }
 
-    private static String notNull(Collection<String> collection) {
-        return escape(on(",").join(collection));
+    private static String joinCollection(Collection<String> collection, String separator) {
+        return escape(on(separator).join(collection));
     }
 
     private static String escape(String str) {
