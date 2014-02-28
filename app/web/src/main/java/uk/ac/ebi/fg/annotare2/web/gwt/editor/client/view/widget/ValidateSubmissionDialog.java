@@ -65,7 +65,7 @@ public class ValidateSubmissionDialog extends DialogBox {
     }
 
     public void showValidationFailureMessage() {
-        setTitleAndMessage("Validation failed", "Validation has failed. Please see the validation log for more information");
+        setTitleAndMessage("Validation failed", "Validation has failed. Please see the validation log for more information. Errors must be fixed before submission");
     }
 
     public void showSubmissionInProgressMessage() {
@@ -73,7 +73,7 @@ public class ValidateSubmissionDialog extends DialogBox {
     }
 
     public void showSubmissionFailureMessage() {
-        setTitleAndMessage("Submission failed", "There was a problem submitting experiment to ArrayExpress. Please try again or contact us at arrayexpress@ebi.ac.uk");
+        setTitleAndMessage("Submission failed", "There was a problem submitting experiment to ArrayExpress. Please try again or contact us at annotare@ebi.ac.uk");
     }
 
     public void showSubmissionSuccessMessage() {
@@ -82,7 +82,7 @@ public class ValidateSubmissionDialog extends DialogBox {
                 "<p>The experiment has been successfully submitted to ArrayExpress using Annotare.</p>" +
                 "<p>Our curation team will review your submission and will email you with any questions. " +
                 "Once all the required information is provided we will send you an accession number.</p>" +
-                "<p>In the meantime, please contact <a href=\"mailto:arrayexpress@ebi.ac.uk\">arrayexpress@ebi.ac.uk</a> with any questions. " +
-                 "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/magetab/help/after_submission.html</a></p>");
+                "<p>In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
+                 "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html</a></p>");
     }
 }
