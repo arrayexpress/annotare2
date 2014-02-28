@@ -88,8 +88,9 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                                  SubmissionManager submissionManager,
                                  DataFileManager dataFileManager,
                                  AnnotareProperties properties,
-                                 UserDao userDao) {
-        super(accountService, submissionManager);
+                                 UserDao userDao,
+                                 EmailSender emailSender) {
+        super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.userDao = userDao;

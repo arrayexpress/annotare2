@@ -18,7 +18,6 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpress;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
@@ -48,7 +48,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.
 /**
  * @author Olga Melnichuk
  */
-public class DataServiceImpl extends RemoteServiceServlet implements DataService {
+public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implements DataService {
 
     private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
 
@@ -63,7 +63,9 @@ public class DataServiceImpl extends RemoteServiceServlet implements DataService
     public DataServiceImpl(ArrayExpressArrayDesignList arrayDesignList,
                            ArrayExpressExperimentTypeList experimentTypeList,
                            AnnotareEfoService efoService,
-                           AnnotareProperties properties) {
+                           AnnotareProperties properties,
+                           EmailSender emailSender) {
+        super(emailSender);
         this.arrayDesignList = arrayDesignList;
         this.experimentTypeList = experimentTypeList;
         this.efoService = efoService;

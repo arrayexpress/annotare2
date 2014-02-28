@@ -16,20 +16,21 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 
 import javax.servlet.http.HttpSession;
 
 /**
  * @author Olga Melnichuk
  */
-abstract class AuthBasedRemoteService extends RemoteServiceServlet {
+abstract class AuthBasedRemoteService extends ErrorReportingRemoteServiceServlet {
 
     private final AccountService accountService;
 
-    public AuthBasedRemoteService(AccountService accountService) {
+    public AuthBasedRemoteService(AccountService accountService, EmailSender emailSender) {
+        super(emailSender);
         this.accountService = accountService;
     }
 

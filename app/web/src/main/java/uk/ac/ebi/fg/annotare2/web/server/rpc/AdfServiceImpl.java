@@ -35,10 +35,7 @@ import uk.ac.ebi.fg.annotare2.web.server.magetab.adf.AdfHeader;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.adf.AdfParser;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.UploadedFiles;
+import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.IOException;
@@ -51,8 +48,8 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
     private static final Logger log = LoggerFactory.getLogger(AdfServiceImpl.class);
 
     @Inject
-    public AdfServiceImpl(AccountService accountService, SubmissionManager submissionManager) {
-        super(accountService, submissionManager);
+    public AdfServiceImpl(AccountService accountService, SubmissionManager submissionManager, EmailSender emailSender) {
+        super(accountService, submissionManager, emailSender);
     }
 
     @Transactional

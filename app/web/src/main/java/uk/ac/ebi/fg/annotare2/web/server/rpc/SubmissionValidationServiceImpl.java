@@ -30,10 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionValidator;
+import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.IOException;
@@ -54,8 +51,9 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
     @Inject
     public SubmissionValidationServiceImpl(AccountService accountService,
                                            SubmissionManager submissionManager,
-                                           SubmissionValidator validator) {
-        super(accountService, submissionManager);
+                                           SubmissionValidator validator,
+                                           EmailSender emailSender) {
+        super(accountService, submissionManager, emailSender);
         this.validator = validator;
     }
 
