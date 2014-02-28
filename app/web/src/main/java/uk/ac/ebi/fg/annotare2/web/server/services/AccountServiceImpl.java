@@ -205,6 +205,18 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
             log.debug("User '{}' logged in", params.getEmail());
+            try {
+                User u = accountManager.getByEmail(params.getEmail());
+                mailer.sendFromTemplate(
+                        EmailSender.WELCOME_TEMPLATE,
+                        ImmutableMap.of(
+                                "to.name", u.getName(),
+                                "to.email", u.getEmail()
+                        )
+                );
+            } catch (MessagingException x) {
+                log.error("There was a problem sending an email", x);
+            }
             EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), params.getEmail());
             LOGGED_IN_SESSION_ATTRIBUTE.set(request.getSession(), true);
         }
