@@ -17,7 +17,7 @@
             maxActive="100" maxIdle="30" maxWait="10000"
             validationQuery="SELECT 1"
             testOnBorrow="true"
-            url="${dbUrl}"
+            url="${dbUrl}?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"
             driverClassName="${dbDriver}"
             username="${dbUser}"
             password="${dbPassword}"/>
@@ -27,7 +27,7 @@
             name="jdbc/subsTrackingDataSource"
             type="javax.sql.DataSource"
             maxActive="100" maxIdle="30" maxWait="10000"
-            url="${st_dbUrl}"
+            url="${st_dbUrl}?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"
             driverClassName="${st_dbDriver}"
             username="${st_dbUser}"
             password="${st_dbPassword}"/>

@@ -18,6 +18,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.LinuxShellCommandExecutor;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 
 import java.io.*;
 import java.net.URI;
@@ -27,16 +28,19 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
     private static final long serialVersionUID = 752647115562277616L;
 
     public boolean isAccessible(URI file) throws IOException {
-        if (null != file && "scp".equals(file.getScheme())) {
-            return new LinuxShellCommandExecutor().execute("ssh " + file.getHost() + " test -f " + file.getPath());
-        }
-        return false;
+        return (null != file &&
+                "scp".equals(file.getScheme())) &&
+                new LinuxShellCommandExecutor().execute(
+                    "ssh " + file.getHost() + " test -f " + escapeFilePath(URIEncoderDecoder.decode(file.getPath()))
+                        );
     }
 
     public String getDigest(URI file) throws IOException {
         if (null != file && "scp".equals(file.getScheme())) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (executor.execute("ssh " + file.getHost() + " md5sum " + file.getPath())) {
+            if (executor.execute(
+                    "ssh " + file.getHost() + " md5sum " + escapeFilePath(URIEncoderDecoder.decode(file.getPath()))
+                    )) {
                 return executor.getOutput().replaceFirst("([^\\s]+)[\\d\\D]*", "$1");
             } else {
                 throw new IOException(executor.getErrors());
@@ -48,7 +52,9 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
     public void copyTo(URI file, File destination) throws IOException {
         if (null != file && "scp".equals(file.getScheme())) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (!(executor.execute("scp " + file.getHost() + ":" + file.getPath() + " " + destination.getPath()))) {
+            if (!(executor.execute(
+                    "scp " + file.getHost() + ":" + escapeFilePath(URIEncoderDecoder.decode(file.getPath())) + " " + destination.getPath()
+                    ))) {
                 throw new IOException(executor.getErrors());
             }
         }
@@ -57,7 +63,9 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
     public void delete(URI file) throws IOException {
         if (null != file && "scp".equals(file.getScheme())) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (!(executor.execute("ssh " + file.getHost() + " rm " + file.getPath()))) {
+            if (!(executor.execute(
+                    "ssh " + file.getHost() + " rm " + escapeFilePath(URIEncoderDecoder.decode(file.getPath()))
+                    ))) {
                 throw new IOException(executor.getErrors());
             }
         }
@@ -69,5 +77,9 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
+    }
+
+    private String escapeFilePath(String path) {
+        return null != path ? "\"'" + path.replaceAll("[']", "\'").replaceAll("[\"]", "\\\\\"") + "'\"" : null;
     }
 }

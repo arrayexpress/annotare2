@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class LinuxShellCommandExecutor {
@@ -45,6 +46,11 @@ public class LinuxShellCommandExecutor {
 
         try {
             ProcessBuilder pb = new ProcessBuilder(commandParams);
+            Map<String, String> env = pb.environment();
+            env.put("LC_ALL", "en_US.UTF-8");
+            env.put("LANG", "en_US.UTF-8");
+            env.put("LANGUAGE", "en_US.UTF-8");
+
             Process process = pb.start();
 
             InputStream stdOut = process.getInputStream();
@@ -52,8 +58,8 @@ public class LinuxShellCommandExecutor {
 
             int returnCode = process.waitFor();
 
-            output = streamToString(stdOut, "US-ASCII");
-            errors = streamToString(stdErr, "US-ASCII");
+            output = streamToString(stdOut, "UTF-8");
+            errors = streamToString(stdErr, "UTF-8");
 
             return 0 == returnCode;
         } catch (InterruptedException x) {
@@ -69,8 +75,7 @@ public class LinuxShellCommandExecutor {
         return errors;
     }
 
-    private String streamToString( InputStream is, String encoding ) throws IOException
-    {
+    private String streamToString(InputStream is, String encoding) throws IOException {
         if (is != null) {
             StringBuilder sb = new StringBuilder();
             String line;
