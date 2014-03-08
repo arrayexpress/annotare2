@@ -52,6 +52,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.jms.JMSException;
@@ -338,7 +339,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             Map<Integer, String> errors = new HashMap<Integer, String>();
             int index = 0;
             for (FtpFileInfo info : details) {
-                URI fileUri = new URI(ftpRoot + info.getFileName());
+                URI fileUri = new URI(ftpRoot + URIEncoderDecoder.encode(info.getFileName()));
                 DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 
                 if (fileSource.exists()) {
