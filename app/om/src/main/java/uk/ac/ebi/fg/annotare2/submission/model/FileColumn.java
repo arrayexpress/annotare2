@@ -18,10 +18,7 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -54,7 +51,7 @@ public class FileColumn implements Serializable {
     }
 
     public void setFileRef(String labeledExtractId, FileRef fileRef) {
-        if (fileRef == null) {
+        if (null == fileRef) {
             removeFileByLabeledExtractId(labeledExtractId);
         } else {
             leId2FileRefMap.put(labeledExtractId, fileRef);
@@ -65,14 +62,18 @@ public class FileColumn implements Serializable {
         leId2FileRefMap.remove(labeledExtractId);
     }
 
-
     public void removeFileByName(String fileName) {
-        Collection<String> leIds = getLabeledExtractIds();
-        for (String leId : leIds) {
-            if (fileName.equals(leId2FileRefMap.get(leId).getName())) {
-                removeFileByLabeledExtractId(leId);
+        Iterator<Map.Entry<String,FileRef>> iterator = leId2FileRefMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String,FileRef> file = iterator.next();
+            if (file.getValue().getName().equals(fileName)){
+                iterator.remove();
             }
         }
+    }
+
+    public void removeAll() {
+        leId2FileRefMap.clear();
     }
 
     public Collection<String> getLabeledExtractIds() {
