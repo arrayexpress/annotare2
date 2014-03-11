@@ -121,50 +121,50 @@ public class MageTabGenerator {
             idf.addComment("AEExperimentType", exp.getAeExperimentType());
         }
 
-        idf.investigationTitle = notNull(exp.getTitle());
-        idf.experimentDescription = notNull(exp.getDescription());
-        idf.publicReleaseDate = notNull(formatDate(exp.getPublicReleaseDate()));
-        idf.dateOfExperiment = notNull(formatDate(exp.getExperimentDate()));
-        idf.accession = notNull(exp.getAccession());
+        idf.investigationTitle = nullOrAllWhitespaceToEmpty(exp.getTitle());
+        idf.experimentDescription = nullOrAllWhitespaceToEmpty(exp.getDescription());
+        idf.publicReleaseDate = nullOrAllWhitespaceToEmpty(formatDate(exp.getPublicReleaseDate()));
+        idf.dateOfExperiment = nullOrAllWhitespaceToEmpty(formatDate(exp.getExperimentDate()));
+        idf.accession = nullOrAllWhitespaceToEmpty(exp.getAccession());
 
         for (OntologyTerm term : exp.getExperimentalDesigns()) {
-            idf.experimentalDesign.add(notNull(term.getLabel()));
-            idf.experimentalDesignTermAccession.add(notNull(term.getAccession()));
+            idf.experimentalDesign.add(nullOrAllWhitespaceToEmpty(term.getLabel()));
+            idf.experimentalDesignTermAccession.add(nullOrAllWhitespaceToEmpty(term.getAccession()));
             idf.experimentalDesignTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
         }
 
         for (Contact contact : exp.getContacts()) {
-            idf.personFirstName.add(notNull(contact.getFirstName()));
-            idf.personLastName.add(notNull(contact.getLastName()));
-            idf.personMidInitials.add(notNull(contact.getMidInitials()));
-            idf.personEmail.add(notNull(contact.getEmail()));
-            idf.personPhone.add(notNull(contact.getPhone()));
-            idf.personFax.add(notNull(contact.getFax()));
-            idf.personAddress.add(notNull(contact.getAddress()));
-            idf.personAffiliation.add(notNull(contact.getAffiliation()));
+            idf.personFirstName.add(nullOrAllWhitespaceToEmpty(contact.getFirstName()));
+            idf.personLastName.add(nullOrAllWhitespaceToEmpty(contact.getLastName()));
+            idf.personMidInitials.add(nullOrAllWhitespaceToEmpty(contact.getMidInitials()));
+            idf.personEmail.add(nullOrAllWhitespaceToEmpty(contact.getEmail()));
+            idf.personPhone.add(nullOrAllWhitespaceToEmpty(contact.getPhone()));
+            idf.personFax.add(nullOrAllWhitespaceToEmpty(contact.getFax()));
+            idf.personAddress.add(nullOrAllWhitespaceToEmpty(contact.getAddress()));
+            idf.personAffiliation.add(nullOrAllWhitespaceToEmpty(contact.getAffiliation()));
             idf.personRoles.add(joinCollection(contact.getRoles(), ";"));
         }
 
         for (Publication publication : exp.getPublications()) {
-            idf.publicationTitle.add(notNull(publication.getTitle()));
-            idf.publicationAuthorList.add(notNull(publication.getAuthors()));
-            idf.pubMedId.add(notNull(publication.getPubMedId()));
-            idf.publicationDOI.add(notNull(publication.getDoi()));
+            idf.publicationTitle.add(nullOrAllWhitespaceToEmpty(publication.getTitle()));
+            idf.publicationAuthorList.add(nullOrAllWhitespaceToEmpty(publication.getAuthors()));
+            idf.pubMedId.add(nullOrAllWhitespaceToEmpty(publication.getPubMedId()));
+            idf.publicationDOI.add(nullOrAllWhitespaceToEmpty(publication.getDoi()));
             OntologyTerm status = publication.getStatus();
-            idf.publicationStatus.add(notNull(status == null ? null : status.getLabel()));
-            idf.publicationStatusTermAccession.add(notNull(status == null ? null : status.getAccession()));
-            idf.publicationStatusTermSourceREF.add(notNull(status == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
+            idf.publicationStatus.add(nullOrAllWhitespaceToEmpty(status == null ? null : status.getLabel()));
+            idf.publicationStatusTermAccession.add(nullOrAllWhitespaceToEmpty(status == null ? null : status.getAccession()));
+            idf.publicationStatusTermSourceREF.add(nullOrAllWhitespaceToEmpty(status == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
         }
 
         for (Protocol protocol : exp.getProtocols()) {
             if (protocol.isAssigned()) {
-                idf.protocolName.add(notNull(protocol.getName()));
-                idf.protocolDescription.add(notNull(protocol.getDescription()));
-                idf.protocolType.add(notNull(protocol.getType().getLabel()));
-                idf.protocolTermAccession.add(notNull(protocol.getType().getAccession()));
+                idf.protocolName.add(nullOrAllWhitespaceToEmpty(protocol.getName()));
+                idf.protocolDescription.add(nullOrAllWhitespaceToEmpty(protocol.getDescription()));
+                idf.protocolType.add(nullOrAllWhitespaceToEmpty(protocol.getType().getLabel()));
+                idf.protocolTermAccession.add(nullOrAllWhitespaceToEmpty(protocol.getType().getAccession()));
                 idf.protocolTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
-                idf.protocolHardware.add(notNull(protocol.getHardware()));
-                idf.protocolSoftware.add(notNull(protocol.getSoftware()));
+                idf.protocolHardware.add(nullOrAllWhitespaceToEmpty(protocol.getHardware()));
+                idf.protocolSoftware.add(nullOrAllWhitespaceToEmpty(protocol.getSoftware()));
             }
         }
 
@@ -172,14 +172,14 @@ public class MageTabGenerator {
             if (!attribute.getType().isFactorValue()) {
                 continue;
             }
-            idf.experimentalFactorName.add(notNull(getName(attribute)));
+            idf.experimentalFactorName.add(nullOrAllWhitespaceToEmpty(getName(attribute)));
             OntologyTerm term = attribute.getTerm();
             if (term != null) {
-                idf.experimentalFactorType.add(notNull(term.getLabel()));
-                idf.experimentalFactorTermAccession.add(notNull(term.getAccession()));
-                idf.experimentalFactorTermSourceREF.add(notNull(ensureTermSource(EFO_TERM_SOURCE).getName()));
+                idf.experimentalFactorType.add(nullOrAllWhitespaceToEmpty(term.getLabel()));
+                idf.experimentalFactorTermAccession.add(nullOrAllWhitespaceToEmpty(term.getAccession()));
+                idf.experimentalFactorTermSourceREF.add(nullOrAllWhitespaceToEmpty(ensureTermSource(EFO_TERM_SOURCE).getName()));
             } else {
-                idf.experimentalFactorType.add(notNull(getName(attribute)));
+                idf.experimentalFactorType.add(nullOrAllWhitespaceToEmpty(getName(attribute)));
                 idf.experimentalFactorTermAccession.add("");
                 idf.experimentalFactorTermSourceREF.add("");
             }
@@ -188,9 +188,9 @@ public class MageTabGenerator {
 
     private void addTermSources(IDF idf) {
         for (TermSource termSource : usedTermSources) {
-            idf.termSourceName.add(notNull(termSource.getName()));
-            idf.termSourceVersion.add(notNull(termSource.getVersion()));
-            idf.termSourceFile.add(notNull(termSource.getUrl()));
+            idf.termSourceName.add(nullOrAllWhitespaceToEmpty(termSource.getName()));
+            idf.termSourceVersion.add(nullOrAllWhitespaceToEmpty(termSource.getVersion()));
+            idf.termSourceFile.add(nullOrAllWhitespaceToEmpty(termSource.getUrl()));
         }
     }
 
@@ -710,22 +710,11 @@ public class MageTabGenerator {
                         null;
     }
 
-    private static String notNull(String str) {
-        return str == null || str.trim().isEmpty() ? "" : escape(str);
+    private static String nullOrAllWhitespaceToEmpty(String str) {
+        return str == null || str.trim().isEmpty() ? "" : str;
     }
 
     private static String joinCollection(Collection<String> collection, String separator) {
-        return escape(on(separator).join(collection));
-    }
-
-    private static String escape(String str) {
-        // Note: It would be superb if limpopo MAGETAB writer/parser can deal with '\n' by itself. Unfortunately
-        // it will never happen. We have two ways to workaround this: wrap all strings into double quotes by ourselves or
-        // replace '\n' with <br/>. First way unfortinately doesn't work well, as MAGETAB Parser not always strips
-        // escaping off (but eventually).
-        /* 1. return "\"" + str.replaceAll("\"", "\\\\\"") + "\""; */
-        /* 2. */
-        str = str.replaceAll("\t", " ");
-        return str.replaceAll("\n", "<br/>");
+        return on(separator).join(collection);
     }
 }
