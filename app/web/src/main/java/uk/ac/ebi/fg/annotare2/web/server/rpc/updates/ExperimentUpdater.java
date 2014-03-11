@@ -271,14 +271,10 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     @Override
     public void updateDataAssignmentColumn(DataAssignmentColumn column) {
         FileColumn fileColumn = exp.getFileColumn(column.getIndex());
-        Set<String> labeledExtractIds = new HashSet<String>(column.getLabeledExtractIds());
-        for (String labeledExtractId : labeledExtractIds) {
+        fileColumn.removeAll();
+
+        for (String labeledExtractId : column.getLabeledExtractIds()) {
             fileColumn.setFileRef(labeledExtractId, column.getFileRef(labeledExtractId));
-        }
-        for (String labeledExtractId : fileColumn.getLabeledExtractIds()) {
-            if (!labeledExtractIds.contains(labeledExtractId)) {
-                fileColumn.setFileRef(labeledExtractId, null);
-            }
         }
     }
 

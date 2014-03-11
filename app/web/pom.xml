@@ -152,7 +152,7 @@
         <dependency>
             <groupId>com.googlecode.gwtupload</groupId>
             <artifactId>gwtupload</artifactId>
-            <version>0.6.4</version>
+            <version>0.6.6</version>
         </dependency>
 
         <!-- needed by for jndi access (jetty embedded container) -->
@@ -256,6 +256,19 @@
             <version>1.4.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.42</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-coyote</artifactId>
+            <version>7.0.42</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

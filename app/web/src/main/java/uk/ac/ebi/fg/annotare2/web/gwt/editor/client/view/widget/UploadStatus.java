@@ -230,7 +230,7 @@ public class UploadStatus extends Composite implements IUploadStatus {
     }
 
     @Override
-    public void setProgress(int done, int total) {
+    public void setProgress(long done, long total) {
         double p = total == 0 ? 0 : 1.0 * done / total;
         setProgress(p);
     }
