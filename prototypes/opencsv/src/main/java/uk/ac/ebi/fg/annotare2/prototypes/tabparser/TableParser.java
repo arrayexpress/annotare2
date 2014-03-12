@@ -40,22 +40,14 @@ public class TableParser {
         this.state = State.FIRST_CHAR;
     }
 
-    private String bufferedRead(Reader input) throws IOException {
-        int charsRead = input.read(buffer, 0, BUFFER_SIZE);
-        if (-1 != charsRead) {
-            return new String(buffer, 0, charsRead);
-        } else {
-            return null;
-        }
-    }
-
     public String[][] parse(Reader reader) throws IOException, TableParserException {
 
         if (null == reader) {
             throw new TableParserException(ERROR_NULL_READER);
         }
+
         while (reader.ready()) {
-            processLine(bufferedRead(reader));
+            processBuffer(reader.read(buffer, 0, BUFFER_SIZE));
         }
 
         if (state.isOneOf(
@@ -64,14 +56,15 @@ public class TableParser {
                 State.ESCAPED_CHAR_INSIDE_QUOTE)) {
             throwInvalidStateError();
         }
+
         actionEndOfRow();
         return rows.toArray(new String[rows.size()][]);
     }
 
-    private void processLine(String line) throws TableParserException {
+    private void processBuffer(int charRead) throws TableParserException {
         char c;
-        for (int pos = 0; pos < line.length(); ++pos) {
-            c = line.charAt(pos);
+        for (int pos = 0; pos < charRead; ++pos) {
+            c = buffer[pos];
             switch (c) {
                 case TAB:
                     if (state.isOneOf(
