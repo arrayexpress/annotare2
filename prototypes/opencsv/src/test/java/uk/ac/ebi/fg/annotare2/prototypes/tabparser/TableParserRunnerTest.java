@@ -6,13 +6,13 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-public class TableParserTest {
+public class TableParserRunnerTest {
 
     // default charset for testing
     private final static String DEFAULT_ENCODING                            = "UTF-8";
 
     // newline constant for testing
-    private final static String NL                                          = System.getProperty("line.separator");
+    private final static String NEWLINE                                     = "\n";
 
     // single line test rows
     private final static String ROW_SIMPLE                                  = "foo\tbar\tbaz";
@@ -29,15 +29,15 @@ public class TableParserTest {
     private final static String[] PARSED_QUOTE_ESCAPED_STRIPPED             = {"foo", "\"bar\"", "baz"};
 
     // multiline test rows
-    private final static String ROW_FIRST_MULTILINE_CELL                    = "\"foo1" + NL + "foo2\"\tbar\tbaz";
-    private final static String[] PARSED_FIRST_MULTILINE_CELL_STRIPPED      = {"foo1" + NL + "foo2", "bar", "baz"};
-    private final static String ROW_MIDDLE_MULTILINE_CELL                   = "\"foo\"\t\"bar1" + NL + "bar2" + NL + "bar3\"\tbaz";
-    private final static String[] PARSED_MIDDLE_MULTILINE_CELL_UNSTRIPPED   = {"\"foo\"", "\"bar1" + NL + "bar2" + NL + "bar3\"", "baz"};
-    private final static String ROW_ALL_MULTILINE_CELLS                     = "\"foo1" + NL + "foo2" + NL + "foo3\"\t\"bar1" + NL + "bar2\"\t\"baz1" + NL + "baz2\"";
-    private final static String[] PARSED_ALL_MULTILINE_CELLS_STRIPPED       = {"foo1" + NL + "foo2" + NL + "foo3", "bar1" + NL + "bar2", "baz1" + NL + "baz2"};
+    private final static String ROW_FIRST_MULTILINE_CELL                    = "\"foo1" + NEWLINE + "foo2\"\tbar\tbaz";
+    private final static String[] PARSED_FIRST_MULTILINE_CELL_STRIPPED      = {"foo1" + NEWLINE + "foo2", "bar", "baz"};
+    private final static String ROW_MIDDLE_MULTILINE_CELL                   = "\"foo\"\t\"bar1" + NEWLINE + "bar2" + NEWLINE + "bar3\"\tbaz";
+    private final static String[] PARSED_MIDDLE_MULTILINE_CELL_UNSTRIPPED   = {"\"foo\"", "\"bar1" + NEWLINE + "bar2" + NEWLINE + "bar3\"", "baz"};
+    private final static String ROW_ALL_MULTILINE_CELLS                     = "\"foo1" + NEWLINE + "foo2" + NEWLINE + "foo3\"\t\"bar1" + NEWLINE + "bar2\"\t\"baz1" + NEWLINE + "baz2\"";
+    private final static String[] PARSED_ALL_MULTILINE_CELLS_STRIPPED       = {"foo1" + NEWLINE + "foo2" + NEWLINE + "foo3", "bar1" + NEWLINE + "bar2", "baz1" + NEWLINE + "baz2"};
 
     // incorrect multiline test rows
-    private final static String ROW_INCORRECT_FIRST_MULTILINE_CELL          = "\"foo1\" + NL + \"foo2\tbar\tbaz";
+    private final static String ROW_INCORRECT_FIRST_MULTILINE_CELL          = "\"foo1" + NEWLINE + "foo2\tbar\tbaz";
 
 
     @Test
@@ -52,10 +52,10 @@ public class TableParserTest {
     }
 
     @Test
-    public void testParse_2() {
+    public void testParse_2() throws TableParserException {
         // try standard, comment and quoted tabulation; quoting is not stripped out
         String[][] out = runReadTabDelimitedInputStreamOnString(
-                ROW_SIMPLE + NL + ROW_COMMENT + NL + ROW_QUOTED,
+                ROW_SIMPLE + NEWLINE + ROW_COMMENT + NEWLINE + ROW_QUOTED,
                 DEFAULT_ENCODING,
                 false);
         assertTrue("Output should contain 3 lines", 3 == out.length);
@@ -65,7 +65,7 @@ public class TableParserTest {
     }
 
     @Test
-    public void testParse_3() {
+    public void testParse_3() throws TableParserException {
         // try quoted multiline row
         String[][] out = runReadTabDelimitedInputStreamOnString(
                 ROW_QUOTE_ESCAPED,
@@ -76,11 +76,11 @@ public class TableParserTest {
     }
 
     @Test
-    public void testParse_4() {
+    public void testParse_4() throws TableParserException {
         // try complex tabulation w/o stripping out quoting
         String[][] out = runReadTabDelimitedInputStreamOnString(
-                ROW_SIMPLE + NL + ROW_EMPTY + NL + ROW_QUOTED + NL + ROW_QUOTE_ESCAPED + NL
-                        + ROW_MIDDLE_MULTILINE_CELL + NL + ROW_COMMENT + NL,
+                ROW_SIMPLE + NEWLINE + ROW_EMPTY + NEWLINE + ROW_QUOTED + NEWLINE + ROW_QUOTE_ESCAPED + NEWLINE
+                        + ROW_MIDDLE_MULTILINE_CELL + NEWLINE + ROW_COMMENT + NEWLINE,
                 DEFAULT_ENCODING,
                 false);
         assertTrue("Output should contain 6 lines", 6 == out.length);
@@ -93,11 +93,11 @@ public class TableParserTest {
     }
 
     @Test
-    public void testParse_5() {
+    public void testParse_5() throws TableParserException {
         // try complex tabulation with stripping out quoting
         String[][] out = runReadTabDelimitedInputStreamOnString(
-                ROW_SIMPLE + NL + ROW_QUOTED + NL + ROW_QUOTE_ESCAPED + NL +
-                        ROW_FIRST_MULTILINE_CELL + NL + ROW_ALL_MULTILINE_CELLS,
+                ROW_SIMPLE + NEWLINE + ROW_QUOTED + NEWLINE + ROW_QUOTE_ESCAPED + NEWLINE +
+                        ROW_FIRST_MULTILINE_CELL + NEWLINE + ROW_ALL_MULTILINE_CELLS,
                 DEFAULT_ENCODING,
                 true);
         assertTrue("Output should contain 5 lines", 5 == out.length);
@@ -108,10 +108,20 @@ public class TableParserTest {
         assertArrayEquals(PARSED_ALL_MULTILINE_CELLS_STRIPPED, out[4]);
     }
 
-    private String[][] runReadTabDelimitedInputStreamOnString(String input, String encoding, boolean stripQuoting) {
+    @Test(expected=TableParserException.class)
+    public void testParse_6() throws TableParserException {
+        // try invalid tab
+        runReadTabDelimitedInputStreamOnString(
+                ROW_SIMPLE + NEWLINE + ROW_INCORRECT_FIRST_MULTILINE_CELL,
+                DEFAULT_ENCODING,
+                true);
+    }
+
+    private String[][] runReadTabDelimitedInputStreamOnString(String input, String encoding, boolean stripQuoting)
+            throws TableParserException {
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-            return new TableParser().parse(in, encoding, stripQuoting, false);
+            return new TableParserRunner().parse(in, encoding, stripQuoting, false);
         } catch (IOException x) {
             x.printStackTrace();
         }
