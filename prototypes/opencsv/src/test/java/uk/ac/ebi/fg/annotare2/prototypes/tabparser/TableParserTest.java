@@ -20,16 +20,16 @@ public class TableParserTest {
     private final static String ROW_COMMENT                                 = "# comment";
     private final static String[] PARSED_COMMENT                            = {"# comment"};
     private final static String ROW_EMPTY                                   = "          ";
-    private final static String[] PARSED_EMPTY                              = {};
+    private final static String[] PARSED_EMPTY                              = {"          "};
     private final static String ROW_QUOTED                                  = "\"foo\"\tbar\t\"baz\"";
     private final static String[] PARSED_QUOTED_UNSTRIPPED                  = {"\"foo\"", "bar", "\"baz\""};
     private final static String[] PARSED_QUOTED_STRIPPED                    = PARSED_SIMPLE;
-    private final static String ROW_QUOTE_ESCAPED                           = "foo\t\\\"bar\\\"\tbaz";
-    private final static String[] PARSED_QUOTE_ESCAPED_UNSTRIPPED           = {"foo", "\\\"bar\\\"", "baz"};
+    private final static String ROW_QUOTE_ESCAPED                           = "\"foo\"\t\\\"bar\\\"\tbaz";
+    private final static String[] PARSED_QUOTE_ESCAPED_UNSTRIPPED           = {"\"foo\"", "\"bar\"", "baz"};
     private final static String[] PARSED_QUOTE_ESCAPED_STRIPPED             = {"foo", "\"bar\"", "baz"};
 
     // multiline test rows
-    private final static String ROW_FIRST_MULTILINE_CELL                    = "\"foo1\" + NL + \"foo2\"\tbar\tbaz";
+    private final static String ROW_FIRST_MULTILINE_CELL                    = "\"foo1" + NL + "foo2\"\tbar\tbaz";
     private final static String[] PARSED_FIRST_MULTILINE_CELL_STRIPPED      = {"foo1" + NL + "foo2", "bar", "baz"};
     private final static String ROW_MIDDLE_MULTILINE_CELL                   = "\"foo\"\t\"bar1" + NL + "bar2" + NL + "bar3\"\tbaz";
     private final static String[] PARSED_MIDDLE_MULTILINE_CELL_UNSTRIPPED   = {"\"foo\"", "\"bar1" + NL + "bar2" + NL + "bar3\"", "baz"};
@@ -72,7 +72,7 @@ public class TableParserTest {
                 DEFAULT_ENCODING,
                 false);
         assertTrue("Output should contain 1 line", 1 == out.length);
-        assertArrayEquals(PARSED_QUOTE_ESCAPED_STRIPPED, out[0]);
+        assertArrayEquals(PARSED_QUOTE_ESCAPED_UNSTRIPPED, out[0]);
     }
 
     @Test

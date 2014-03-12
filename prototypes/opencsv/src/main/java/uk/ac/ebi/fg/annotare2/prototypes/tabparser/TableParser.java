@@ -8,7 +8,8 @@ public class TableParser {
     enum Option {
         STRIP_QUOTING,
         STRIP_ESCAPING,
-        TRIM_WHITESPACE
+        TRIM_CELL_WHITESPACE,
+        TRIM_EMPTY_ROWS
     }
 
     private final static int BUFFER_SIZE = 10000;
@@ -18,32 +19,18 @@ public class TableParser {
             throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(input, encoding));
-        RowAssembler rowAssembler = new RowAssembler(
+        RowAssembler assembler = new RowAssembler(
                 Option.STRIP_ESCAPING,
+                Option.TRIM_EMPTY_ROWS,
                 stripQuoting ? Option.STRIP_QUOTING : null,
-                trimWhiteSpace ? Option.TRIM_WHITESPACE : null
+                trimWhiteSpace ? Option.TRIM_CELL_WHITESPACE : null
         );
-        List<String[]> parsed = new ArrayList<String[]>();
 
         while (reader.ready()) {
-            String line = bufferedRead(reader);
-            boolean isEOF = null == line;
-            // we have a line, feed it to the assembler
-            if (!isEOF) {
-                rowAssembler.processLine(line);
-            }
-            // get all we parsed so far
-            // (including possibly incomplete last row)
-            if (rowAssembler.isRowComplete() || isEOF) {
-                parsed.add(rowAssembler.getRow(isEOF));
-            }
-            // no more data from the input, exit the loop
-            if (isEOF) {
-                break;
-            }
+            assembler.processLine(bufferedRead(reader));
         }
 
-        return parsed.toArray(new String[parsed.size()][]);
+        return assembler.getRows();
     }
 
     private String bufferedRead(Reader input) throws IOException {
@@ -59,34 +46,29 @@ public class TableParser {
 
         private final static char TAB       = '\t';
         private final static char CR        = '\r';
-        private final static char NL        = '\n';
+        private final static char LF        = '\n';
         private final static char ESCAPE    = '\\';
         private final static char QUOTE     = '\"';
+        private final static char COMMENT   = '#';
 
         private final Set<Option> options;
 
-        private boolean isRowComplete;
-        private List<String> assembled;
+        private List<String[]> rows;
+        private List<String> row;
         private StringBuilder column;
         private State state;
 
         public RowAssembler(Option... options) {
             this.options =  new HashSet<Option>(Arrays.asList(options));
-            this.isRowComplete = false;
-            this.assembled = new ArrayList<String>();
-            this.column = new StringBuilder();
-            this.state = State.NORMAL_COLUMN;
+            this.rows = new ArrayList<String[]>();
+            this.row = new ArrayList<String>();
+            this.column = new StringBuilder(BUFFER_SIZE);
+            this.state = State.FIRST_CHAR;
         }
 
-        public boolean isRowComplete() {
-            return this.isRowComplete;
-        }
-
-        public String[] getRow(boolean shouldIncludeIncomplete) {
-            if (shouldIncludeIncomplete) {
-                assembled.add(column.toString());
-            }
-            return assembled.toArray(new String[assembled.size()]);
+        public String[][] getRows() {
+            actionEndOfRow();
+            return rows.toArray(new String[rows.size()][]);
         }
 
         public void processLine(String line) {
@@ -94,15 +76,191 @@ public class TableParser {
             for (int pos = 0; pos < line.length(); ++pos) {
                 c = line.charAt(pos);
                 switch (c) {
+                    case TAB:
+                        if (state.isOneOf(
+                                State.FIRST_CHAR,
+                                State.AFTER_CARRIAGE_RETURN,
+                                State.REGULAR_CHAR)) {
+                            actionEndOfColumn();
+                            state = State.REGULAR_CHAR;
+                        } else if (state.isOneOf(State.QUOTED_CHAR, State.COMMENT_CHAR)) {
+                            column.append(c);
+                        } else if (State.ESCAPED_CHAR == state) {
+                            column.append(c);
+                            state = State.REGULAR_CHAR;
+                        } else if (State.ESCAPED_CHAR_INSIDE_QUOTE == state) {
+                            column.append(c);
+                            state = State.QUOTED_CHAR;
+                        } else {
+                            throwInvalidState(state);
+                        }
+                        break;
+                    case CR:
+                        if (state.isOneOf(
+                                State.FIRST_CHAR,
+                                State.AFTER_CARRIAGE_RETURN,
+                                State.REGULAR_CHAR,
+                                State.COMMENT_CHAR)) {
+                            actionEndOfRow();
+                            state = State.AFTER_CARRIAGE_RETURN;
+                        } else if (state.isOneOf(State.QUOTED_CHAR)) {
+                            column.append(c);
+                        } else if (State.ESCAPED_CHAR == state) {
+                            column.append(ESCAPE);
+                            actionEndOfRow();
+                            state = State.AFTER_CARRIAGE_RETURN;
+                        } else if (State.ESCAPED_CHAR_INSIDE_QUOTE == state) {
+                            column.append(ESCAPE).append(c);
+                            state = State.QUOTED_CHAR;
+                        } else {
+                            throwInvalidState(state);
+                        }
+                        break;
+                    case LF:
+                        if (state.isOneOf(
+                                State.FIRST_CHAR,
+                                State.REGULAR_CHAR,
+                                State.COMMENT_CHAR)) {
+                            actionEndOfRow();
+                            state = State.FIRST_CHAR;
+                        } else if (State.QUOTED_CHAR == state) {
+                            column.append(c);
+                        } else if (State.ESCAPED_CHAR == state) {
+                            column.append(ESCAPE);
+                            actionEndOfRow();
+                            state = State.FIRST_CHAR;
+                        } else if (State.ESCAPED_CHAR_INSIDE_QUOTE == state) {
+                            column.append(ESCAPE).append(c);
+                            state = State.QUOTED_CHAR;
+                        } else if (State.AFTER_CARRIAGE_RETURN == state) {
+                            state = State.FIRST_CHAR;
+                        } else {
+                            throwInvalidState(state);
+                        }
+                        break;
+                    case ESCAPE:
+                        if (state.isOneOf(
+                                State.FIRST_CHAR,
+                                State.AFTER_CARRIAGE_RETURN,
+                                State.REGULAR_CHAR)) {
+                            if (!options.contains(Option.STRIP_ESCAPING)) {
+                                column.append(c);
+                            }
+                            state = State.ESCAPED_CHAR;
+                        } else if (State.QUOTED_CHAR == state) {
+                            if (!options.contains(Option.STRIP_ESCAPING)) {
+                                column.append(c);
+                            }
+                            state = State.ESCAPED_CHAR_INSIDE_QUOTE;
+                        } else if (State.ESCAPED_CHAR == state) {
+                            column.append(c);
+                            state = State.REGULAR_CHAR;
+                        } else if (State.ESCAPED_CHAR_INSIDE_QUOTE == state) {
+                            column.append(c);
+                            state = State.QUOTED_CHAR;
+                        } else if (State.COMMENT_CHAR == state) {
+                            column.append(c);
+                        } else {
+                            throwInvalidState(state);
+                        }
+                        break;
+                    case QUOTE:
+                        if (state.isOneOf(
+                                State.FIRST_CHAR,
+                                State.AFTER_CARRIAGE_RETURN,
+                                State.REGULAR_CHAR)) {
+                            if (!options.contains(Option.STRIP_QUOTING)) {
+                                column.append(c);
+                            }
+                            state = State.QUOTED_CHAR;
+                        } else if (State.QUOTED_CHAR == state) {
+                            if (!options.contains(Option.STRIP_QUOTING)) {
+                                column.append(c);
+                            }
+                            state = State.REGULAR_CHAR;
+                        } else if (State.ESCAPED_CHAR == state) {
+                            column.append(c);
+                            state = State.REGULAR_CHAR;
+                        } else if (State.ESCAPED_CHAR_INSIDE_QUOTE == state) {
+                            column.append(c);
+                            state = State.QUOTED_CHAR;
+                        } else if (State.COMMENT_CHAR == state) {
+                            column.append(c);
+                        } else {
+                            throwInvalidState(state);
+                        }
+                        break;
+                    case COMMENT:
+                        if (state.isOneOf(State.FIRST_CHAR, State.AFTER_CARRIAGE_RETURN)) {
+                            column.append(c);
+                            state = State.COMMENT_CHAR;
+                            break;
+                        }
                     default:
-                        column.append(c);
+                        if (state.isOneOf(
+                                State.FIRST_CHAR,
+                                State.AFTER_CARRIAGE_RETURN,
+                                State.REGULAR_CHAR,
+                                State.ESCAPED_CHAR)) {
+                            column.append(c);
+                            state = State.REGULAR_CHAR;
+                        } else if (state.isOneOf(State.QUOTED_CHAR, State.COMMENT_CHAR)) {
+                            column.append(c);
+                        } else if (State.ESCAPED_CHAR_INSIDE_QUOTE == state) {
+                            column.append(c);
+                            state = State.QUOTED_CHAR;
+                        } else {
+                            throwInvalidState(state);
+                        }
                         break;
                 }
             }
         }
 
+        private void actionEndOfColumn() {
+            String col = column.toString();
+            row.add(options.contains(Option.TRIM_CELL_WHITESPACE) ? col.trim() : col);
+            column.setLength(0);
+        }
+
+        private void actionEndOfRow() {
+            actionEndOfColumn();
+            if (!options.contains(Option.TRIM_EMPTY_ROWS) || !isRowEmpty()) {
+                rows.add(row.toArray(new String[row.size()]));
+            }
+            row.clear();
+        }
+
+        private boolean isRowEmpty() {
+            for (String col : row) {
+                if (!col.isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void throwInvalidState(State state) {
+            throw new RuntimeException("Invalid parser state: " + state.name());
+        }
+
         enum State {
-            NORMAL_COLUMN
-        };
+            FIRST_CHAR,
+            REGULAR_CHAR,
+            QUOTED_CHAR,
+            ESCAPED_CHAR,
+            ESCAPED_CHAR_INSIDE_QUOTE,
+            COMMENT_CHAR,
+            AFTER_CARRIAGE_RETURN;
+
+            public boolean isOneOf(State... states) {
+                for (State s : states) {
+                    if (this.equals(s)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
     }
 }
