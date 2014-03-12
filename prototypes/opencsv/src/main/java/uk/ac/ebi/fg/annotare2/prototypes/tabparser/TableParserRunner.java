@@ -10,7 +10,7 @@ public class TableParserRunner {
         TableParser parser = new TableParser(
                 TableParser.Option.STRIP_ESCAPING,
                 TableParser.Option.TRIM_EMPTY_ROWS,
-                TableParser.Option.THROWS_PARSER_ERRORS,
+                TableParser.Option.THROW_PARSER_ERRORS,
                 stripQuoting ? TableParser.Option.STRIP_QUOTING : null,
                 trimWhiteSpace ? TableParser.Option.TRIM_CELL_WHITESPACE : null
         );

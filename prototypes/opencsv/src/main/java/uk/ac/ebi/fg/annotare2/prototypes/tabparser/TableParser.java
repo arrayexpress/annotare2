@@ -11,7 +11,7 @@ public class TableParser {
         STRIP_ESCAPING,
         TRIM_CELL_WHITESPACE,
         TRIM_EMPTY_ROWS,
-        THROWS_PARSER_ERRORS
+        THROW_PARSER_ERRORS
     }
 
     private final static char TAB       = '\t';
@@ -238,7 +238,7 @@ public class TableParser {
     }
 
     private void throwInvalidStateError() throws TableParserException {
-        if (options.contains(Option.THROWS_PARSER_ERRORS)) {
+        if (options.contains(Option.THROW_PARSER_ERRORS)) {
             throw new TableParserException("Invalid parser state: " + state.name());
         }
     }
