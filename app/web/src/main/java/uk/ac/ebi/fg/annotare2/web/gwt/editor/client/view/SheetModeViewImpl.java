@@ -133,7 +133,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
 
             final int colIndex = (i - 1);
             String title = hasHeaders ? headerRow.getValue(colIndex) : (i + 1) + "";
-            Column<IndexedRow, String> column = new Column<IndexedRow, String>(new TextCell()) {
+            Column<IndexedRow, String> column = new Column<IndexedRow, String>(new TextCell(MultiLineSafeHtmlRenderer.getInstance())) {
                 @Override
                 public String getCellStyleNames(Cell.Context context, IndexedRow row) {
                     String value = row.getValue(colIndex);
