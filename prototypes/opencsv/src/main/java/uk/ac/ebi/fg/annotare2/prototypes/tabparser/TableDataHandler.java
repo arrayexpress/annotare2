@@ -36,7 +36,7 @@ public class TableDataHandler implements ITableDataHandler {
 
     public void endTable() {
         if (options.contains(TableParser.Option.TRIM_EMPTY_TRAILING_ROWS)) {
-            trimEmptyTrilingRows();
+            trimEmptyTrailingRows();
         }
     }
 
@@ -62,7 +62,7 @@ public class TableDataHandler implements ITableDataHandler {
         }
     }
 
-    private void trimEmptyTrilingRows() {
+    private void trimEmptyTrailingRows() {
         for (ListIterator<String[]> i = rows.listIterator(rows.size()); i.hasPrevious(); ) {
             if (isRowEmpty(i.previous())) {
                 i.remove();

@@ -48,7 +48,7 @@ public class TableParserRunnerTest {
     @Test
     public void testParse_1() throws Exception {
         // try simple one-liner
-        String[][] out = runReadTabDelimitedInputStreamOnString(
+        String[][] out = parseString(
                 ROW_SIMPLE,
                 DEFAULT_ENCODING,
                 false);
@@ -59,7 +59,7 @@ public class TableParserRunnerTest {
     @Test
     public void testParse_2() throws TableParserException {
         // try standard, comment and quoted tabulation; quoting is not stripped out
-        String[][] out = runReadTabDelimitedInputStreamOnString(
+        String[][] out = parseString(
                 ROW_SIMPLE + NEWLINE + ROW_COMMENT + NEWLINE + ROW_QUOTED,
                 DEFAULT_ENCODING,
                 false);
@@ -72,7 +72,7 @@ public class TableParserRunnerTest {
     @Test
     public void testParse_3() throws TableParserException {
         // try quoted multiline row
-        String[][] out = runReadTabDelimitedInputStreamOnString(
+        String[][] out = parseString(
                 ROW_QUOTE_ESCAPED,
                 DEFAULT_ENCODING,
                 false);
@@ -83,7 +83,7 @@ public class TableParserRunnerTest {
     @Test
     public void testParse_4() throws TableParserException {
         // try complex tabulation w/o stripping out quoting
-        String[][] out = runReadTabDelimitedInputStreamOnString(
+        String[][] out = parseString(
                 ROW_SIMPLE + NEWLINE + ROW_EMPTY + NEWLINE + ROW_QUOTED + NEWLINE + ROW_QUOTE_ESCAPED + NEWLINE
                         + ROW_MIDDLE_MULTILINE_CELL + NEWLINE + ROW_COMMENT + NEWLINE,
                 DEFAULT_ENCODING,
@@ -100,7 +100,7 @@ public class TableParserRunnerTest {
     @Test
     public void testParse_5() throws TableParserException {
         // try complex tabulation with stripping out quoting
-        String[][] out = runReadTabDelimitedInputStreamOnString(
+        String[][] out = parseString(
                 ROW_SIMPLE + NEWLINE + ROW_QUOTED + NEWLINE + ROW_QUOTE_ESCAPED + NEWLINE +
                         ROW_FIRST_MULTILINE_CELL + NEWLINE + ROW_ALL_MULTILINE_CELLS,
                 DEFAULT_ENCODING,
@@ -116,7 +116,7 @@ public class TableParserRunnerTest {
     @Test(expected=TableParserException.class)
     public void testParse_6() throws TableParserException {
         // try invalid tab
-        runReadTabDelimitedInputStreamOnString(
+        parseString(
                 ROW_SIMPLE + NEWLINE + ROW_INCORRECT_FIRST_MULTILINE_CELL,
                 DEFAULT_ENCODING,
                 true);
@@ -129,8 +129,11 @@ public class TableParserRunnerTest {
 
         line = SECTION_TAG_1 + NEWLINE + ROW_SIMPLE + NEWLINE + ROW_COMMENT + NEWLINE +
                 SECTION_TAG_2 + NEWLINE + ROW_SIMPLE + NEWLINE + ROW_QUOTED + NEWLINE + ROW_QUOTE_ESCAPED;
+
         ByteArrayInputStream in = new ByteArrayInputStream(line.getBytes());
-        String[][] out = readMergedTabDelimitedInputStream(
+        assertTrue("Parser should detect sections", hasSectionDetected(in, DEFAULT_ENCODING, SECTION_TAG_1, SECTION_TAG_2));
+
+        String[][] out = parseSection(
                 in,
                 DEFAULT_ENCODING,
                 false,
@@ -140,37 +143,48 @@ public class TableParserRunnerTest {
         assertArrayEquals(PARSED_SIMPLE, out[0]);
         assertArrayEquals(PARSED_COMMENT, out[1]);
 
-        out = readTabDelimitedInputStream(in, DEFAULT_ENCODING, true);
+        out = parse(in, DEFAULT_ENCODING, true);
         assertTrue("Output should contain 3 lines", 3 == out.length);
         assertArrayEquals(PARSED_SIMPLE, out[0]);
         assertArrayEquals(PARSED_QUOTED_STRIPPED, out[1]);
         assertArrayEquals(PARSED_QUOTE_ESCAPED_STRIPPED, out[2]);
     }
 
-    private String[][] runReadTabDelimitedInputStreamOnString(String input, String encoding, boolean stripQuoting)
+    private String[][] parseString(String input, String encoding, boolean stripQuoting)
             throws TableParserException {
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        return readTabDelimitedInputStream(in, encoding, stripQuoting);
+        return parse(in, encoding, stripQuoting);
     }
 
-    private String[][] readTabDelimitedInputStream(InputStream input, String encoding, boolean stripQuoting)
+    private String[][] parse(InputStream input, String encoding, boolean stripQuoting)
             throws TableParserException {
         try {
-            return new TableParserRunner().parse(input, encoding, stripQuoting, true);
+            return TableParserRunner.parse(input, encoding, stripQuoting, true);
         } catch (IOException x) {
             x.printStackTrace();
         }
         return null;
     }
 
-    private String[][] readMergedTabDelimitedInputStream(InputStream input, String encoding, boolean stripQuoting,
-                                                                    String startTag, String endTag)
+    private String[][] parseSection(InputStream input, String encoding, boolean stripQuoting,
+                                    String startTag, String endTag)
             throws TableParserException {
         try {
-            return new TableParserRunner().parseSection(input, encoding, stripQuoting, true, startTag, endTag);
+            return TableParserRunner.parseSection(input, encoding, stripQuoting, true, startTag, endTag);
         } catch (IOException x) {
             x.printStackTrace();
         }
         return null;
     }
+
+    private boolean hasSectionDetected(InputStream input, String encoding, String... sectionTags)
+        throws TableParserException {
+        try {
+            return TableParserRunner.hasSectionDetected(input, encoding, sectionTags);
+        } catch (IOException x) {
+            x.printStackTrace();
+        }
+        return false;
+    }
+
 }
