@@ -1,10 +1,12 @@
 package uk.ac.ebi.fg.annotare2.prototypes.tabparser;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.*;
 
 public class TableParserRunnerTest {
 
@@ -20,7 +22,7 @@ public class TableParserRunnerTest {
     private final static String ROW_COMMENT                                 = "# comment";
     private final static String[] PARSED_COMMENT                            = {"# comment"};
     private final static String ROW_EMPTY                                   = "          ";
-    private final static String[] PARSED_EMPTY                              = {"          "};
+    private final static String[] PARSED_EMPTY                              = {};
     private final static String ROW_QUOTED                                  = "\"foo\"\tbar\t\"baz\"";
     private final static String[] PARSED_QUOTED_UNSTRIPPED                  = {"\"foo\"", "bar", "\"baz\""};
     private final static String[] PARSED_QUOTED_STRIPPED                    = PARSED_SIMPLE;
@@ -39,6 +41,9 @@ public class TableParserRunnerTest {
     // incorrect multiline test rows
     private final static String ROW_INCORRECT_FIRST_MULTILINE_CELL          = "\"foo1" + NEWLINE + "foo2\tbar\tbaz";
 
+    // sample section tags
+    private final static String SECTION_TAG_1                               = "[SECTION_1]";
+    private final static String SECTION_TAG_2                               = "[SECTION_2]";
 
     @Test
     public void testParse_1() throws Exception {
@@ -117,11 +122,52 @@ public class TableParserRunnerTest {
                 true);
     }
 
+    @Test
+    public void testParseSection_1() throws TableParserException {
+        String line;
+        // try standard and comment tabulation
+
+        line = SECTION_TAG_1 + NEWLINE + ROW_SIMPLE + NEWLINE + ROW_COMMENT + NEWLINE +
+                SECTION_TAG_2 + NEWLINE + ROW_SIMPLE + NEWLINE + ROW_QUOTED + NEWLINE + ROW_QUOTE_ESCAPED;
+        ByteArrayInputStream in = new ByteArrayInputStream(line.getBytes());
+        String[][] out = readMergedTabDelimitedInputStream(
+                in,
+                DEFAULT_ENCODING,
+                false,
+                SECTION_TAG_1,
+                SECTION_TAG_2);
+        assertEquals("Output should contain 2 lines", 2, out.length);
+        assertArrayEquals(PARSED_SIMPLE, out[0]);
+        assertArrayEquals(PARSED_COMMENT, out[1]);
+
+        out = readTabDelimitedInputStream(in, DEFAULT_ENCODING, true);
+        assertTrue("Output should contain 3 lines", 3 == out.length);
+        assertArrayEquals(PARSED_SIMPLE, out[0]);
+        assertArrayEquals(PARSED_QUOTED_STRIPPED, out[1]);
+        assertArrayEquals(PARSED_QUOTE_ESCAPED_STRIPPED, out[2]);
+    }
+
     private String[][] runReadTabDelimitedInputStreamOnString(String input, String encoding, boolean stripQuoting)
             throws TableParserException {
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        return readTabDelimitedInputStream(in, encoding, stripQuoting);
+    }
+
+    private String[][] readTabDelimitedInputStream(InputStream input, String encoding, boolean stripQuoting)
+            throws TableParserException {
         try {
-            ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-            return new TableParserRunner().parse(in, encoding, stripQuoting, false);
+            return new TableParserRunner().parse(input, encoding, stripQuoting, true);
+        } catch (IOException x) {
+            x.printStackTrace();
+        }
+        return null;
+    }
+
+    private String[][] readMergedTabDelimitedInputStream(InputStream input, String encoding, boolean stripQuoting,
+                                                                    String startTag, String endTag)
+            throws TableParserException {
+        try {
+            return new TableParserRunner().parseSection(input, encoding, stripQuoting, true, startTag, endTag);
         } catch (IOException x) {
             x.printStackTrace();
         }
