@@ -1,126 +1,84 @@
 package uk.ac.ebi.fg.annotare.prototype.datagrid.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.event.dom.client.*;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
+
 public class DataGridSample implements EntryPoint {
-	private VerticalPanel mainPanel;
-	private FlexTable stocksFlexTable;
-	private HorizontalPanel addPanel;
-	private TextBox newSymbolTextBox;
-	private Button addButton;
-	private ArrayList <String> stocks = new ArrayList<String>();
-	private Label lblStockWatcher;
-	
-	public void onModuleLoad() {
-		RootPanel rootPanel = RootPanel.get();
-		{
-			mainPanel = new VerticalPanel();
-			rootPanel.add(mainPanel, 5, 5);
-			mainPanel.setSize("440px", "290px");
-			{
-				lblStockWatcher = new Label("DataGrid Sample");
-				lblStockWatcher.setStyleName("gwt-Label-DataGridSample");
-				
-				mainPanel.add(lblStockWatcher);
-			}
-			{
-				stocksFlexTable = new FlexTable();
-				//Add these lines
-				stocksFlexTable.setText(0, 0, "Symbol");
-				stocksFlexTable.setText(0, 1, "Price");
-				stocksFlexTable.setText(0, 2, "Change");
-				stocksFlexTable.setText(0, 3, "Remove");
-				
-				// Add styles to elements in the stock list table.
-				stocksFlexTable.setCellPadding(6);
-			    stocksFlexTable.getRowFormatter().addStyleName(0, "watchListHeader");
-			    stocksFlexTable.addStyleName("watchList");
-			    stocksFlexTable.getCellFormatter().addStyleName(0, 1, "watchListNumericColumn");
-			    stocksFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
-			    stocksFlexTable.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
-			    
-				mainPanel.add(stocksFlexTable);
-			}
-			{
-				addPanel = new HorizontalPanel();
-				addPanel.addStyleName("addPanel");
-				mainPanel.add(addPanel);
-				{
-					newSymbolTextBox = new TextBox();
-					newSymbolTextBox.addKeyPressHandler(new KeyPressHandler() {
-						public void onKeyPress(KeyPressEvent event) {
-							if (event.getCharCode() == KeyCodes.KEY_ENTER){
-								addStock();
-							}
-						}
-					});
-					newSymbolTextBox.setFocus(true);
-					addPanel.add(newSymbolTextBox);
-				}
-				{
-					addButton = new Button("New button");
-					addButton.setStyleName("gwt-Button-Add");
-					addButton.addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							addStock();
-						}
-					});
-					addButton.setText("Add");
-					addPanel.add(addButton);
-				}
-			}
-		}
-		
 
-	}
+    @UiField
+    DataGrid<DataRow> dataGrid;
 
+    interface DataGridSampleBinder extends UiBinder<Widget, DataGridSample> { //
+    }
 
-	private void addStock() {
-		final String symbol = newSymbolTextBox.getText().toUpperCase().trim();
-	    newSymbolTextBox.setFocus(true);
+    private static class DataRow {
+        private final String column1;
+        private final String column2;
+        private final String column3;
 
-	    // Stock code must be between 1 and 10 chars that are numbers, letters, or dots.
-	    if (!symbol.matches("^[0-9A-Z\\.]{1,10}$")) {
-	      Window.alert("'" + symbol + "' is not a valid symbol.");
-	      newSymbolTextBox.selectAll();
-	      return;
-	    }
+        public DataRow(String column1, String column2, String column3) {
+            this.column1 = column1;
+            this.column2 = column2;
+            this.column3 = column3;
+        }
+    }
 
-	    newSymbolTextBox.setText("");
+    private static final List<DataRow> DATA_ROWS = Arrays.asList(
+            new DataRow("John", "Doe", "123 Fourth Avenue"),
+            new DataRow("Joe", "Wells", "22 Lance Ln"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"));
 
-	 // don't add the stock if it's already in the watch list
-	    if (stocks.contains(symbol))
-	        return;
+    public void onModuleLoad() {
+        final DataGridSampleBinder binder = GWT.create(DataGridSampleBinder.class);
+        final Widget widget = binder.createAndBindUi(this);
+        RootLayoutPanel.get().add(widget);
 
-	    // add the stock to the list
-	    int row = stocksFlexTable.getRowCount();
-	    stocks.add(symbol);
-	    stocksFlexTable.setText(row, 0, symbol);
-	    stocksFlexTable.setWidget(row, 2, new Label());
-	    stocksFlexTable.getCellFormatter().addStyleName(row, 1, "watchListNumericColumn");
-	    stocksFlexTable.getCellFormatter().addStyleName(row, 2, "watchListNumericColumn");
-	    stocksFlexTable.getCellFormatter().addStyleName(row, 3, "watchListRemoveColumn");
-	    
-	    // add button to remove this stock from the list
-	    Button removeStock = new Button("x");
-	    removeStock.addStyleDependentName("remove");
-	    removeStock.addClickHandler(new ClickHandler() {
-	    public void onClick(ClickEvent event) {					
-	        int removedIndex = stocks.indexOf(symbol);
-	        stocks.remove(removedIndex);
-	        stocksFlexTable.removeRow(removedIndex + 1);
-	    }
-	    });
-	    stocksFlexTable.setWidget(row, 3, removeStock);	
-		
+        //Add these lines
+        TextColumn<DataRow> column1 = new TextColumn<DataRow>() {
+            @Override
+            public String getValue(DataRow object) {
+                return object.column1;
+            }
+        };
+        dataGrid.addColumn(column1, "First column");
+        dataGrid.setColumnWidth(column1, 200, Style.Unit.PX);
+
+        TextColumn<DataRow> column2 = new TextColumn<DataRow>() {
+            @Override
+            public String getValue(DataRow object) {
+                return object.column2;
+            }
+        };
+        dataGrid.addColumn(column2, "Second column");
+        dataGrid.setColumnWidth(column2, 200, Style.Unit.PX);
+
+        TextColumn<DataRow> column3 = new TextColumn<DataRow>() {
+            @Override
+            public String getValue(DataRow object) {
+                return object.column3;
+            }
+        };
+
+        dataGrid.addColumn(column3, "Third column");
+        dataGrid.setColumnWidth(column3, 200, Style.Unit.PX);
+
+        dataGrid.setRowCount(DATA_ROWS.size(), true);
+        dataGrid.setRowData(0, DATA_ROWS);
 	}
 }
+

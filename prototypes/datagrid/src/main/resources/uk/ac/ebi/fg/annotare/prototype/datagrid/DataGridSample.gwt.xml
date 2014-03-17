@@ -1,5 +1,5 @@
 <module>
 	<inherits name="com.google.gwt.user.User"/>
-	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
+	<inherits name="com.google.gwt.user.theme.clean.Clean"/>
 	<entry-point class="uk.ac.ebi.fg.annotare.prototype.datagrid.client.DataGridSample"/>
 </module>
