@@ -13,7 +13,7 @@
 
     <properties>
         <!-- Convenience property to set the GWT version -->
-        <gwtVersion>2.6.0</gwtVersion>
+        <gwtVersion>2.5.1</gwtVersion>
         <!-- GWT needs at least java 1.5 -->
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -88,7 +88,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
+                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dgwt.persistentunitcache=fals</extraJvmArgs>
                             <logLevel>INFO</logLevel>
                             <style>DETAILED</style>
                             <module>uk.ac.ebi.fg.annotare.prototype.datagrid.DataGridSample</module>

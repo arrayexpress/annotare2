@@ -84,6 +84,15 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         });
         gridView.addTool(button);
 
+        button = new Button("Populate Value(s)");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                //
+            }
+        });
+        gridView.addTool(button);
+
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);

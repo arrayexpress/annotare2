@@ -1,11 +1,12 @@
 package uk.ac.ebi.fg.annotare.prototype.datagrid.client;
 
+import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -20,8 +21,8 @@ import java.util.List;
 
 public class DataGridSample implements EntryPoint {
 
-    @UiField
-    DataGrid<DataRow> dataGrid;
+    @UiField(provided=true)
+    CustomDataGrid<DataRow> dataGrid;
 
     interface DataGridSampleBinder extends UiBinder<Widget, DataGridSample> { //
     }
@@ -43,13 +44,17 @@ public class DataGridSample implements EntryPoint {
             new DataRow("Joe", "Wells", "22 Lance Ln"),
             new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"));
 
+    public DataGridSample() {
+        dataGrid = new CustomDataGrid<DataRow>();
+    }
+
     public void onModuleLoad() {
         final DataGridSampleBinder binder = GWT.create(DataGridSampleBinder.class);
         final Widget widget = binder.createAndBindUi(this);
         RootLayoutPanel.get().add(widget);
 
         //Add these lines
-        TextColumn<DataRow> column1 = new TextColumn<DataRow>() {
+        Column<DataRow, String> column1 = new Column<DataRow, String>(new EditTextCell()) {
             @Override
             public String getValue(DataRow object) {
                 return object.column1;
@@ -58,7 +63,7 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column1, "First column");
         dataGrid.setColumnWidth(column1, 200, Style.Unit.PX);
 
-        TextColumn<DataRow> column2 = new TextColumn<DataRow>() {
+        Column<DataRow, String> column2 = new Column<DataRow, String>(new EditTextCell()) {
             @Override
             public String getValue(DataRow object) {
                 return object.column2;
@@ -67,7 +72,7 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column2, "Second column");
         dataGrid.setColumnWidth(column2, 200, Style.Unit.PX);
 
-        TextColumn<DataRow> column3 = new TextColumn<DataRow>() {
+        Column<DataRow, String> column3 = new Column<DataRow, String>(new EditTextCell()) {
             @Override
             public String getValue(DataRow object) {
                 return object.column3;
