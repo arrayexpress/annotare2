@@ -44,7 +44,7 @@
                 <td align="right" colspan="2">
                     <g:Button ui:field="cancelButton">Cancel</g:Button>
                     <g:Button ui:field="selectNone">Select none</g:Button>
-                    <g:Button ui:field="okButton" addStyleNames="ok">Ok</g:Button>
+                    <g:Button ui:field="okButton" addStyleNames="ok">OK</g:Button>
                 </td>
             </tr>
         </table>
