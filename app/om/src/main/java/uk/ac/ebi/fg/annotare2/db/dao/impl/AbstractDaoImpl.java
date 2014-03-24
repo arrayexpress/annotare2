@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
-import org.hibernate.LockOptions;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
@@ -40,7 +39,7 @@ public abstract class AbstractDaoImpl<T> {
     protected T get(long id, Class<T> clazz) throws RecordNotFoundException {
         T t;
         try {
-            t = clazz.cast(getCurrentSession().load(clazz, id, LockOptions.NONE));
+            t = clazz.cast(getCurrentSession().get(clazz, id));
         } catch (ObjectNotFoundException x) {
             t = null;
         }
