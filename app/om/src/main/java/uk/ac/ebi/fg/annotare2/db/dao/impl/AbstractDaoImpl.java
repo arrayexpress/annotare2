@@ -38,11 +38,17 @@ public abstract class AbstractDaoImpl<T> {
     }
 
     protected T get(long id, Class<T> clazz) throws RecordNotFoundException {
+        T t;
         try {
-            return clazz.cast(getCurrentSession().load(clazz, id, LockOptions.UPGRADE));
+            t = clazz.cast(getCurrentSession().load(clazz, id, LockOptions.NONE));
         } catch (ObjectNotFoundException x) {
+            t = null;
+        }
+        if (null == t) {
             throw new RecordNotFoundException("Object of class=" + clazz + " with id=" + id + " was not found");
         }
+        return t;
+
     }
 
     public void save(T t) {
