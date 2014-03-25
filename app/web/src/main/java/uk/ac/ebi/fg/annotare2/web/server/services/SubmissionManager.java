@@ -27,7 +27,6 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -41,7 +40,7 @@ public class SubmissionManager {
         this.submissionDao = submissionDao;
     }
 
-    public List<Submission> getAllSubmissions(User user) {
+    public Collection<Submission> getAllSubmissions(User user) {
         return submissionDao.getSubmissions(user);
     }
 
@@ -95,7 +94,7 @@ public class SubmissionManager {
 
     private <T extends Submission> T withPermission(User user, Permission permission, T sb) throws AccessControlException {
         if (!user.isAllowed(sb, permission)) {
-            throw new AccessControlException("User " + user + " doesn't have a permission to [" + permission + " ] the submission " + sb);
+            throw new AccessControlException("User " + user + " doesn't have a permission to [" + permission + "] the submission " + sb);
         }
         return sb;
     }
