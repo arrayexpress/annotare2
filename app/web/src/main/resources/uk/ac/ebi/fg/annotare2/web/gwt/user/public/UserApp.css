@@ -48,21 +48,6 @@
     padding: 10px 15px;
 }
 
-/* Styling Main Layout */
-
-.app-ListContent {
-    padding:0;
-    border-left: 1px solid #898989;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    vertical-align: top;
-}
-
-.app-MenuContent {
-    padding:0;
-    vertical-align: top;
-}
-
 /* Styling Left Menu */
 
 .app-LeftMenu {
@@ -101,6 +86,11 @@
 /* Styling Submission List */
 
 .app-SubmissionList {
+    padding: 0;
+    border-left: 1px solid #898989;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    vertical-align: top;
 }
 
 .app-SubmissionList td div {
