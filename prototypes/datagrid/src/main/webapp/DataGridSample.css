@@ -12,3 +12,13 @@ input {
 input:focus {
     outline: 0 none;
 }
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 7px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+    background:rgba(0,0,0,0.3);
+}
