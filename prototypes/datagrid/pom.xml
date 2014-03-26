@@ -88,7 +88,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
+                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dgwt.persistentunitcache=fals</extraJvmArgs>
                             <logLevel>INFO</logLevel>
                             <style>DETAILED</style>
                             <module>uk.ac.ebi.fg.annotare.prototype.datagrid.DataGridSample</module>

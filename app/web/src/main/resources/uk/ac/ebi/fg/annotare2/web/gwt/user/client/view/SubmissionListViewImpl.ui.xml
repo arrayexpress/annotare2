@@ -20,8 +20,8 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
-     <g:HTMLPanel addStyleNames="app-SubmissionList">
-         <c:CellTable ui:field='cellTable' />
-     </g:HTMLPanel>
+     <g:ResizeLayoutPanel addStyleNames="app-SubmissionList">
+         <c:DataGrid ui:field='dataGrid' width="100%" height="100%"/>
+     </g:ResizeLayoutPanel>
 
 </ui:UiBinder>
