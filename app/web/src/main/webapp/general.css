@@ -17,10 +17,12 @@
 /* Fix for phantom scroll bars appearing in WebKit/OS X */
 ::-webkit-scrollbar {
     width: 7px;
+    height: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
     width: 7px;
+    height: 7px;
     -webkit-border-radius:3px;
     border-radius:3px;
     background:rgba(0,0,0,0.3);
