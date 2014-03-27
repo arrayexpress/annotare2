@@ -20,6 +20,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-public class SubsTrackingWatchdog {
+public class SubsTrackingWatchdog extends AbstractIdleService {
 
     private static final Logger log = LoggerFactory.getLogger(SubsTrackingWatchdog.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -82,13 +83,10 @@ public class SubsTrackingWatchdog {
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.emailer = emailer;
-
-        if (properties.getAeSubsTrackingEnabled()) {
-            start();
-        }
     }
 
-    public void start() {
+    @Override
+    public void startUp() throws Exception {
         final Runnable periodicProcess = new Runnable() {
             @Override
             public void run() {
@@ -105,10 +103,17 @@ public class SubsTrackingWatchdog {
 
         };
 
-        scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
+        if (properties.getAeSubsTrackingEnabled()) {
+            scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
+        }
     }
 
-    public void periodicRun() throws Exception {
+    @Override
+    public void shutDown() throws Exception {
+        scheduler.shutdown();
+    }
+
+    private void periodicRun() throws Exception {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
         );
@@ -216,8 +221,16 @@ public class SubsTrackingWatchdog {
         SubmissionOutcome result = SubmissionOutcome.SUBMISSION_FAILED;
         Connection subsTrackingConnection = null;
 
+        File exportDir;
         try {
-            File exportDir;
+            // check all files are in a good shape first; if not - skip
+            Collection<DataFile> files = dataFileManager.getAssignedFiles(submission);
+            for (DataFile file : files) {
+                if (DataFileStatus.ASSOCIATED != file.getStatus() &&
+                        DataFileStatus.STORED != file.getStatus()) {
+                    return result;
+                }
+            }
 
             if (properties.getAeSubsTrackingEnabled()) {
                 subsTrackingConnection = subsTracking.getConnection();
@@ -226,7 +239,6 @@ public class SubsTrackingWatchdog {
                 }
 
                 subsTrackingConnection.setAutoCommit(false);
-
                 Integer subsTrackingId = submission.getSubsTrackingId();
                 if (null == subsTrackingId) {
                     subsTrackingId = subsTracking.addSubmission(subsTrackingConnection, submission);

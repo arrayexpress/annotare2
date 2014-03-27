@@ -18,8 +18,9 @@ package uk.ac.ebi.fg.annotare2.db.dao;
 
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Olga Melnichuk
@@ -36,5 +37,7 @@ public interface DataFileDao {
 
     void save(DataFile dataFile);
 
-    List<DataFile> getAllWithDigest(String digest);
+    Collection<DataFile> getFilesByDigest(String digest);
+
+    Collection<DataFile> getFilesByStatus(DataFileStatus... statuses);
 }

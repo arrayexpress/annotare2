@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
-import com.google.common.util.concurrent.Service;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
@@ -29,12 +28,12 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
-import org.apache.activemq.broker.BrokerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubsTrackingWatchdog;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyPeriodicProcess;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -45,12 +44,10 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.inject.internal.util.$Lists.newArrayList;
 import static com.google.inject.util.Modules.override;
 import static org.reflections.util.ClasspathHelper.forPackage;
 
@@ -62,8 +59,8 @@ public class AppServletContextListener extends GuiceServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(AppServletContextListener.class);
 
     private Set<URL> libPaths = newHashSet();
-    private List<Service> servicesToStop = newArrayList();
-    private BrokerService brokerService;
+    //private List<Service> servicesToStop = newArrayList();
+    //private BrokerService brokerService;
     private Injector injector;
 
     @Override
@@ -72,7 +69,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
         updateDb(servletContextEvent);
 
-        startActiveMqBroker();
+        //startActiveMqBroker();
 
         findMageTabCheckAnnotationPackages();
 
@@ -83,9 +80,8 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        stopFileCopyMessagingQuere();
-
-        stopActiveMqBroker();
+        //stopFileCopyMessagingQuere();
+        //stopActiveMqBroker();
 
         stopServices();
 
@@ -105,16 +101,21 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     private void startServices(Injector injector) {
         log.info("Starting services on context init");
-        Service service = injector.getInstance(HibernateSessionFactoryProvider.class);
-        service.start();
-        servicesToStop.add(service);
+        injector.getInstance(HibernateSessionFactoryProvider.class).start();
+        injector.getInstance(FileCopyPeriodicProcess.class).start();
+        injector.getInstance(SubsTrackingWatchdog.class).start();
+        //service.start();
+        //servicesToStop.add(service);
     }
 
     private void stopServices() {
         log.info("Stopping services on context destroy");
-        for (Service service : servicesToStop) {
-            service.stop();
-        }
+        injector.getInstance(SubsTrackingWatchdog.class).stop();
+        injector.getInstance(FileCopyPeriodicProcess.class).stop();
+        injector.getInstance(HibernateSessionFactoryProvider.class).stop();
+        //for (Service service : servicesToStop) {
+        //    service.stop();
+        //}
     }
 
     private void lookupPropertiesInContext() {
@@ -194,7 +195,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
             throw new RuntimeException(e);
         }
     }
-
+    /*
     private void startActiveMqBroker() {
         try {
             log.info("Starting local JMS broker...");
@@ -225,4 +226,5 @@ public class AppServletContextListener extends GuiceServletContextListener {
             log.error("Unable to stop file copy messaging queue", e);
         }
     }
+    */
 }

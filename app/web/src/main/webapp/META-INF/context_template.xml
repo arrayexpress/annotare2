@@ -32,7 +32,7 @@
             username="${st_dbUser}"
             password="${st_dbPassword}"/>
     <% } %>
-
+    <!--
     <Resource name="jms/jmsConnectionFactory"
               auth="Container"
               type="org.apache.activemq.ActiveMQConnectionFactory"
@@ -46,4 +46,5 @@
               description="JMS Copy File Queue"
               factory="org.apache.activemq.jndi.JNDIReferenceFactory"
               physicalName="COPY_FILE.QUEUE"/>
+    -->
 </Context>
