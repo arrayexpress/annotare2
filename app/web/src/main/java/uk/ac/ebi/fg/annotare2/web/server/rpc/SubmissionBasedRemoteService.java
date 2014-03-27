@@ -39,11 +39,13 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
     private static final Logger log = LoggerFactory.getLogger(SubmissionBasedRemoteService.class);
 
     private final SubmissionManager submissionManager;
+    private final EmailSender email;
 
     protected SubmissionBasedRemoteService(AccountService accountService,
                                            SubmissionManager submissionManager,
                                            EmailSender emailSender) {
         super(accountService, emailSender);
+        this.email = emailSender;
         this.submissionManager = submissionManager;
     }
 
@@ -75,18 +77,21 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
         submissionManager.deleteSubmissionSoftly(submission);
     }
 
-    protected static UnexpectedException unexpected(Throwable e) {
+    protected UnexpectedException unexpected(Throwable e) {
         log.error("server error", e);
+        email.sendException("Unexpected server error for [" + getCurrentUsername() + "]", e);
         return new UnexpectedException("Unexpected server error", e);
     }
 
-    protected static ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
+    protected ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
         log.error("server error", e);
+        email.sendException("Submission not found for [" + getCurrentUsername() + "]", e);
         return new ResourceNotFoundException("Submission not found");
     }
 
-    protected static NoPermissionException noPermission(AccessControlException e) {
+    protected NoPermissionException noPermission(AccessControlException e) {
         log.error("server error", e);
+        email.sendException("No permission for [" + getCurrentUsername() + "]", e);
         return new NoPermissionException("No permission");
     }
 }

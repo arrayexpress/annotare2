@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
@@ -25,20 +26,33 @@ import javax.servlet.http.HttpSession;
 /**
  * @author Olga Melnichuk
  */
-abstract class AuthBasedRemoteService extends ErrorReportingRemoteServiceServlet {
+abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
     private final AccountService accountService;
+    private final EmailSender email;
+
 
     public AuthBasedRemoteService(AccountService accountService, EmailSender emailSender) {
-        super(emailSender);
         this.accountService = accountService;
+        this.email = emailSender;
+    }
+
+    protected HttpSession getSession() {
+        return getThreadLocalRequest().getSession();
     }
 
     protected User getCurrentUser() {
         return accountService.getCurrentUser(getSession());
     }
 
-    protected HttpSession getSession() {
-        return getThreadLocalRequest().getSession();
+    protected String getCurrentUsername() {
+        return accountService.getCurrentUsername(getSession());
     }
+
+    @Override
+    protected void doUnexpectedFailure(Throwable e) {
+        email.sendException("Unexpected exception in RPC call for [" + getCurrentUsername() + "]", e);
+        super.doUnexpectedFailure(e);
+    }
+
 }
