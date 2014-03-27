@@ -67,7 +67,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             public String getValue(SubmissionRow object) {
                 return getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(object.getCreated());
             }
-        }, new TextHeader("Created"));
+        }, new TextHeader("Created on"));
 
         /* TODO: uncomment when we have array submissions
         dataGrid.addColumn(new TextColumn<SubmissionRow>() {
@@ -157,7 +157,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
                 public String getValue(SubmissionRow object) {
                     return object.getUserEmail();
                 }
-            }, new TextHeader("User"));
+            }, new TextHeader("Created By"));
             dataGrid.setColumnWidth(0, 12, Style.Unit.EM);
             dataGrid.setColumnWidth(1, 11, Style.Unit.EM);
             dataGrid.setColumnWidth(2, 11, Style.Unit.EM);

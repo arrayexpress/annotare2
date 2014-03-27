@@ -66,7 +66,7 @@ public class UIObjectConverter {
                     submission.getCreated(),
                     submission.getStatus(),
                     SUBMISSION_TYPE.apply(submission),
-                    submission.getOwnedBy().getEmail()
+                    submission.getCreatedBy().getEmail()
             );
         }
     };
