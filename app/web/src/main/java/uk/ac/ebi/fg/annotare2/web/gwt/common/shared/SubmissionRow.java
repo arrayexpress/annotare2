@@ -38,6 +38,8 @@ public class SubmissionRow implements IsSerializable {
 
     private SubmissionType type;
 
+    private String userEmail;
+
     public SubmissionRow() {
     }
 
@@ -46,13 +48,15 @@ public class SubmissionRow implements IsSerializable {
                          String title,
                          Date created,
                          SubmissionStatus status,
-                         SubmissionType type) {
+                         SubmissionType type,
+                         String userEmail) {
         this.id = id;
         this.accession = new Accession(accession);
         this.title = title;
         this.created = created;
         this.status = status;
         this.type = type;
+        this.userEmail = userEmail;
     }
 
     public long getId() {
@@ -77,5 +81,9 @@ public class SubmissionRow implements IsSerializable {
 
     public SubmissionType getType() {
         return type;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
     }
 }

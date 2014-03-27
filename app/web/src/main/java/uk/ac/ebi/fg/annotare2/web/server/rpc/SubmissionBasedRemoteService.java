@@ -79,19 +79,19 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
 
     protected UnexpectedException unexpected(Throwable e) {
         log.error("server error", e);
-        email.sendException("Unexpected server error for [" + getCurrentUsername() + "]", e);
+        email.sendException("Unexpected server error for [" + getCurrentUserEmail() + "]", e);
         return new UnexpectedException("Unexpected server error", e);
     }
 
     protected ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
         log.error("server error", e);
-        email.sendException("Submission not found for [" + getCurrentUsername() + "]", e);
+        email.sendException("Submission not found for [" + getCurrentUserEmail() + "]", e);
         return new ResourceNotFoundException("Submission not found");
     }
 
     protected NoPermissionException noPermission(AccessControlException e) {
         log.error("server error", e);
-        email.sendException("No permission for [" + getCurrentUsername() + "]", e);
+        email.sendException("No permission for [" + getCurrentUserEmail() + "]", e);
         return new NoPermissionException("No permission");
     }
 }

@@ -45,13 +45,13 @@ abstract class AuthBasedRemoteService extends RemoteServiceServlet {
         return accountService.getCurrentUser(getSession());
     }
 
-    protected String getCurrentUsername() {
-        return accountService.getCurrentUsername(getSession());
+    protected String getCurrentUserEmail() {
+        return accountService.getCurrentUserEmail(getSession());
     }
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
-        email.sendException("Unexpected exception in RPC call for [" + getCurrentUsername() + "]", e);
+        email.sendException("Unexpected exception in RPC call for [" + getCurrentUserEmail() + "]", e);
         super.doUnexpectedFailure(e);
     }
 

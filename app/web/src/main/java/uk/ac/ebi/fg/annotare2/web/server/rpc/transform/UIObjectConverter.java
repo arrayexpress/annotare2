@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import uk.ac.ebi.fg.annotare2.db.model.*;
+import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
@@ -48,14 +49,14 @@ import static com.google.common.collect.Lists.transform;
  */
 public class UIObjectConverter {
 
-    static Function<User, UserDto> USER_TRANSFORM = new Function<User, UserDto>() {
+    private static Function<User, UserDto> USER_TRANSFORM = new Function<User, UserDto>() {
         public UserDto apply(@Nullable User user) {
             checkNotNull(user);
-            return new UserDto(user.getName());
+            return new UserDto(user.getName(), isCurator(user));
         }
     };
 
-    static Function<Submission, SubmissionRow> SUBMISSION_ROW = new Function<Submission, SubmissionRow>() {
+    private static Function<Submission, SubmissionRow> SUBMISSION_ROW = new Function<Submission, SubmissionRow>() {
         public SubmissionRow apply(@Nullable Submission submission) {
             checkNotNull(submission);
             return new SubmissionRow(
@@ -64,12 +65,13 @@ public class UIObjectConverter {
                     submission.getTitle(),
                     submission.getCreated(),
                     submission.getStatus(),
-                    SUBMISSION_TYPE.apply(submission)
+                    SUBMISSION_TYPE.apply(submission),
+                    submission.getOwnedBy().getEmail()
             );
         }
     };
 
-    static Function<Submission, SubmissionDetails> SUBMISSION_DETAILS = new Function<Submission, SubmissionDetails>() {
+    private static Function<Submission, SubmissionDetails> SUBMISSION_DETAILS = new Function<Submission, SubmissionDetails>() {
         public SubmissionDetails apply(@Nullable Submission submission) {
             checkNotNull(submission);
             return new SubmissionDetails(
@@ -84,7 +86,7 @@ public class UIObjectConverter {
         }
     };
 
-    static Function<Submission, SubmissionType> SUBMISSION_TYPE = new Function<Submission, SubmissionType>() {
+    private static Function<Submission, SubmissionType> SUBMISSION_TYPE = new Function<Submission, SubmissionType>() {
         public SubmissionType apply(@Nullable Submission submission) {
             checkNotNull(submission);
             if (submission instanceof ExperimentSubmission)
@@ -95,7 +97,7 @@ public class UIObjectConverter {
         }
     };
 
-    static Function<DataFile, DataFileRow> DATA_FILE_ROW = new Function<DataFile, DataFileRow>() {
+    private static Function<DataFile, DataFileRow> DATA_FILE_ROW = new Function<DataFile, DataFileRow>() {
         @Nullable
         @Override
         public DataFileRow apply(@Nullable DataFile dataFile) {
@@ -110,6 +112,17 @@ public class UIObjectConverter {
         }
     };
 
+    private static boolean isCurator(User user) {
+        Collection<UserRole> userRoles = user.getRoles();
+        if (null != userRoles) {
+            for (UserRole role : userRoles) {
+                if (Role.CURATOR == role.getRole()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(

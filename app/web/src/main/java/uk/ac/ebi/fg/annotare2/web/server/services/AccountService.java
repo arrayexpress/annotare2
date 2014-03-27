@@ -44,5 +44,5 @@ public interface AccountService {
 
     User getCurrentUser(HttpSession session);
 
-    String getCurrentUsername(HttpSession session);
+    String getCurrentUserEmail(HttpSession session);
 }

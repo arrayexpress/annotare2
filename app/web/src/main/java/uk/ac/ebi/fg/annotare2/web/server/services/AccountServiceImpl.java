@@ -217,7 +217,7 @@ public class AccountServiceImpl implements AccountService {
 
     public User getCurrentUser(HttpSession session) {
         User user = null;
-        String email = getCurrentUsername(session);
+        String email = getCurrentUserEmail(session);
         if (null != email) {
             user = accountManager.getByEmail(email);
         }
@@ -227,7 +227,7 @@ public class AccountServiceImpl implements AccountService {
         return user;
     }
 
-    public String getCurrentUsername(HttpSession session) {
+    public String getCurrentUserEmail(HttpSession session) {
         if (LOGGED_IN_SESSION_ATTRIBUTE.exists(session)) {
             return  (String) EMAIL_SESSION_ATTRIBUTE.get(session);
         }

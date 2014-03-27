@@ -30,6 +30,8 @@ public interface SubmissionListView extends IsWidget {
 
     void setSubmissions(List<SubmissionRow> submissions);
 
+    void setCurator(boolean isCurator);
+
     public interface Presenter  {
         void onSubmissionSelected(long id);
     }

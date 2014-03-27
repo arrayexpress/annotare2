@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -68,12 +69,14 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             }
         }, new TextHeader("Created"));
 
+        /* TODO: uncomment when we have array submissions
         dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
                 return object.getType().getTitle();
             }
         }, new TextHeader("Type"));
+        */
 
         dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
@@ -113,6 +116,11 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         dataGrid.addColumn(editIconColumn);
 
+        dataGrid.setColumnWidth(0, 11, Style.Unit.EM);
+        dataGrid.setColumnWidth(1, 11, Style.Unit.EM);
+        dataGrid.setColumnWidth(3, 9, Style.Unit.EM);
+        dataGrid.setColumnWidth(4, 5, Style.Unit.EM);
+
         final SingleSelectionModel<SubmissionRow> selectionModel = new SingleSelectionModel<SubmissionRow>(
                 new ProvidesKey<SubmissionRow>() {
                     public Object getKey(SubmissionRow item) {
@@ -140,6 +148,23 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public void setCurator(boolean isCurator) {
+        if (isCurator) {
+            dataGrid.insertColumn(0, new TextColumn<SubmissionRow>() {
+                @Override
+                public String getValue(SubmissionRow object) {
+                    return object.getUserEmail();
+                }
+            }, new TextHeader("User"));
+            dataGrid.setColumnWidth(0, 12, Style.Unit.EM);
+            dataGrid.setColumnWidth(1, 11, Style.Unit.EM);
+            dataGrid.setColumnWidth(2, 11, Style.Unit.EM);
+            dataGrid.clearColumnWidth(3);
+            dataGrid.setColumnWidth(4, 9, Style.Unit.EM);
+            dataGrid.setColumnWidth(5, 5, Style.Unit.EM);
+        }
     }
 
     public void setPresenter(Presenter presenter) {
