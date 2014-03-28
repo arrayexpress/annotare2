@@ -18,12 +18,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Composite;
@@ -55,41 +56,43 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
     private ListDataProvider<SubmissionRow> dataProvider;
 
     @UiField(provided = true)
-    CellTable<SubmissionRow> cellTable;
+    DataGrid<SubmissionRow> dataGrid;
 
     public SubmissionListViewImpl() {
-        cellTable = new CellTable<SubmissionRow>();
-        cellTable.setWidth("100%", true);
+        dataGrid = new DataGrid<SubmissionRow>(Integer.MAX_VALUE);
+        dataGrid.setWidth("100%");
 
-        cellTable.addColumn(new TextColumn<SubmissionRow>() {
+        dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
                 return getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(object.getCreated());
             }
-        }, new TextHeader("Created"));
+        }, new TextHeader("Created on"));
 
-        cellTable.addColumn(new TextColumn<SubmissionRow>() {
+        /* TODO: uncomment when we have array submissions
+        dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
                 return object.getType().getTitle();
             }
         }, new TextHeader("Type"));
+        */
 
-        cellTable.addColumn(new TextColumn<SubmissionRow>() {
+        dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
-               return object.getAccession();
+                return object.getAccession();
             }
         }, new TextHeader("Accession"));
 
-        cellTable.addColumn(new TextColumn<SubmissionRow>() {
+        dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
                 return object.getTitle();
             }
         }, new TextHeader("Title"));
 
-        cellTable.addColumn(new TextColumn<SubmissionRow>() {
+        dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
                 return object.getStatus().getTitle();
@@ -111,7 +114,12 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             }
         });
 
-        cellTable.addColumn(editIconColumn);
+        dataGrid.addColumn(editIconColumn);
+
+        dataGrid.setColumnWidth(0, 11, Style.Unit.EM);
+        dataGrid.setColumnWidth(1, 11, Style.Unit.EM);
+        dataGrid.setColumnWidth(3, 9, Style.Unit.EM);
+        dataGrid.setColumnWidth(4, 5, Style.Unit.EM);
 
         final SingleSelectionModel<SubmissionRow> selectionModel = new SingleSelectionModel<SubmissionRow>(
                 new ProvidesKey<SubmissionRow>() {
@@ -130,16 +138,33 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         });
 
         //todo create column black list dynamically
-        cellTable.setSelectionModel(selectionModel,
+        dataGrid.setSelectionModel(selectionModel,
                 DefaultSelectionEventManager.<SubmissionRow>createBlacklistManager(4));
 
-        cellTable.addStyleName("no-cell-borders");
+        dataGrid.addStyleName("no-cell-borders");
 
         dataProvider = new ListDataProvider<SubmissionRow>();
-        dataProvider.addDataDisplay(cellTable);
+        dataProvider.addDataDisplay(dataGrid);
 
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public void setCurator(boolean isCurator) {
+        if (isCurator) {
+            dataGrid.insertColumn(0, new TextColumn<SubmissionRow>() {
+                @Override
+                public String getValue(SubmissionRow object) {
+                    return object.getUserEmail();
+                }
+            }, new TextHeader("Created By"));
+            dataGrid.setColumnWidth(0, 12, Style.Unit.EM);
+            dataGrid.setColumnWidth(1, 11, Style.Unit.EM);
+            dataGrid.setColumnWidth(2, 11, Style.Unit.EM);
+            dataGrid.clearColumnWidth(3);
+            dataGrid.setColumnWidth(4, 9, Style.Unit.EM);
+            dataGrid.setColumnWidth(5, 5, Style.Unit.EM);
+        }
     }
 
     public void setPresenter(Presenter presenter) {

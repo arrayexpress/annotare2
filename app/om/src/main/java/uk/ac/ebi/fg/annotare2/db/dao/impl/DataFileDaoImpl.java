@@ -22,9 +22,10 @@ import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Olga Melnichuk
@@ -51,9 +52,17 @@ public class DataFileDaoImpl extends AbstractDaoImpl<DataFile> implements DataFi
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<DataFile> getAllWithDigest(String digest) {
+    public Collection<DataFile> getFilesByDigest(String digest) {
         return getCurrentSession().createCriteria(DataFile.class)
                 .add(Restrictions.eq("digest", digest))
+                .list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<DataFile> getFilesByStatus(DataFileStatus... statuses) {
+        return getCurrentSession().createCriteria(DataFile.class)
+                .add(Restrictions.in("status", statuses))
                 .list();
     }
 

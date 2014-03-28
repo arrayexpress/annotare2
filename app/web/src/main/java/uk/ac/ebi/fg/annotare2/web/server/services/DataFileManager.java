@@ -30,10 +30,8 @@ import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
 
-import javax.jms.JMSException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,13 +48,13 @@ public class DataFileManager {
     private final DataFileDao dataFileDao;
     private final DataFileStore fileStore;
 
-    private final FileCopyMessageQueue fileCopy;
+//    private final FileCopyMessageQueue fileCopy;
 
     @Inject
-    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao, FileCopyMessageQueue messageQueue) {
+    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao/*, FileCopyMessageQueue messageQueue*/) {
         this.dataFileDao = dataFileDao;
         this.fileStore = fileStore;
-        this.fileCopy = messageQueue;
+//        this.fileCopy = messageQueue;
     }
 
     /**
@@ -66,22 +64,23 @@ public class DataFileManager {
      * @param submission submission to add file to
      */
     public void addFile(DataFileSource source, Submission submission, boolean shouldStore)
-            throws JMSException, DataSerializationException, IOException {
+            throws DataSerializationException, IOException {
         DataFile dataFile = dataFileDao.create(source.getName(), shouldStore, submission);
         dataFile.setSourceUri(source.getUri().toString());
         dataFile.setDigest(source.getDigest());
         submission.getFiles().add(dataFile);
-        if (shouldStore) {
-            fileCopy.schedule(source, dataFile, true);
-        }
+//        if (shouldStore) {
+//            fileCopy.schedule(source, dataFile, true);
+//        }
     }
 
-    public void storeAssociatedFile(DataFile dataFile)
-            throws JMSException, URISyntaxException, IOException {
-        if (null != dataFile && DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
-            DataFileSource fileSource = getFileSource(dataFile);
-            fileCopy.schedule(fileSource, dataFile, false);
-        }
+    public void storeAssociatedFile(DataFile dataFile) {
+        dataFile.setStatus(DataFileStatus.TO_BE_STORED);
+
+//        if (null != dataFile && DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
+//            DataFileSource fileSource = getFileSource(dataFile);
+//            fileCopy.schedule(fileSource, dataFile, false);
+//        }
     }
 
     public Set<DataFile> getAssignedFiles(Submission submission) throws DataSerializationException {

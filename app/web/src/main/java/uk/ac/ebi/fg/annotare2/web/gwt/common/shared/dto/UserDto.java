@@ -24,16 +24,22 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class UserDto implements IsSerializable {
 
     private String name;
+    private boolean isCurator;
 
     UserDto() {
         /* used by GWT Serialization */
     }
 
-    public UserDto(String name) {
+    public UserDto(String name, boolean isCurator) {
         this.name = name;
+        this.isCurator = isCurator;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isCurator() {
+        return isCurator;
     }
 }

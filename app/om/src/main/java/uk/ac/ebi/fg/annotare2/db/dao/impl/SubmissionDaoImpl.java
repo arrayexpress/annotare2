@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.AclType;
+import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
@@ -76,8 +77,20 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
     }
 
     @Override
-    public List<Submission> getSubmissions(User user) {
-        return user.getSubmissions();
+    @SuppressWarnings("unchecked")
+    public Collection<Submission> getSubmissions() {
+        return getCurrentSession()
+                .createCriteria(Submission.class)
+                .list();
+    }
+
+    @Override
+    public Collection<Submission> getSubmissions(final User user) {
+        return filter(getSubmissions(), new Predicate<Submission>() {
+            public boolean apply(@Nullable Submission input) {
+                return input != null && user.isAllowed(input, Permission.VIEW);
+            }
+        });
     }
 
     @Override

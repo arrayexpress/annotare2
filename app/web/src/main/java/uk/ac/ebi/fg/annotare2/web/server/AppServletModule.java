@@ -44,8 +44,7 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyConsumer;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyMessageQueue;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileCopyPeriodicProcess;
 import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
@@ -129,13 +128,15 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(SubmissionValidationService.NAME, SubmissionValidationServiceImpl.class, "EditorApp");
         serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");
 
-        bind(JmsResources.class).toProvider(JmsResources.Creator.class).asEagerSingleton();
+        //bind(JmsResources.class).toProvider(JmsResources.Creator.class).asEagerSingleton();
 
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
         bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
 
-        bind(FileCopyConsumer.class).in(SINGLETON);
-        bind(FileCopyMessageQueue.class).asEagerSingleton();
+        bind(FileCopyPeriodicProcess.class).asEagerSingleton();
+
+        //bind(FileCopyConsumer.class).in(SINGLETON);
+        //bind(FileCopyMessageQueue.class).asEagerSingleton();
 
         bind(SubmissionListServiceImpl.class).in(SINGLETON);
 

@@ -23,7 +23,7 @@ import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -82,7 +82,7 @@ public class DataFileDaoImplTest extends DaoTestBase {
         }
         flush();
 
-        List<DataFile> list = dataFileDao.getAllWithDigest(digest);
+        Collection<DataFile> list = dataFileDao.getFilesByDigest(digest);
         assertEquals(n, list.size());
     }
 

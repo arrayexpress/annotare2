@@ -217,14 +217,21 @@ public class AccountServiceImpl implements AccountService {
 
     public User getCurrentUser(HttpSession session) {
         User user = null;
-        if (LOGGED_IN_SESSION_ATTRIBUTE.exists(session)) {
-            String email = (String) EMAIL_SESSION_ATTRIBUTE.get(session);
+        String email = getCurrentUserEmail(session);
+        if (null != email) {
             user = accountManager.getByEmail(email);
         }
         if (null == user) {
             throw new UnauthorizedAccessException("Sorry, you are not logged in");
         }
         return user;
+    }
+
+    public String getCurrentUserEmail(HttpSession session) {
+        if (LOGGED_IN_SESSION_ATTRIBUTE.exists(session)) {
+            return  (String) EMAIL_SESSION_ATTRIBUTE.get(session);
+        }
+        return null;
     }
 
     static class LoginParams extends FormParams {

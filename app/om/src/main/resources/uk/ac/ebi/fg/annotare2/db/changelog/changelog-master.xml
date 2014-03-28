@@ -29,4 +29,9 @@
             ALTER TABLE data_files ADD sourceURI VARCHAR(500) AFTER status;
         </sql>
     </changeSet>
+    <changeSet id="removeCuratorUpdatePermission" author="kolais">
+        <sql>
+            DELETE FROM acl_entries WHERE role = 'CURATOR' AND permission = 'UPDATE';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

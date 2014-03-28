@@ -20,7 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -28,14 +29,14 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class AppLayout extends Composite {
 
-    interface Binder extends UiBinder<DockPanel, AppLayout> {
+    interface Binder extends UiBinder<DockLayoutPanel, AppLayout> {
     }
 
     @UiField
     SimplePanel westPanel;
 
     @UiField
-    SimplePanel centerPanel;
+    SimpleLayoutPanel centerPanel;
 
     @UiField
     SimplePanel topPanel;
@@ -49,7 +50,7 @@ public class AppLayout extends Composite {
         return westPanel;
     }
 
-    public SimplePanel getCenterPanel() {
+    public SimpleLayoutPanel getCenterPanel() {
         return centerPanel;
     }
 

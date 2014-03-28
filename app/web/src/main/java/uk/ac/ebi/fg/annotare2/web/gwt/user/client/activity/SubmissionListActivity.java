@@ -24,8 +24,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
@@ -39,15 +41,20 @@ import java.util.ArrayList;
 public class SubmissionListActivity extends AbstractActivity implements SubmissionListView.Presenter {
 
     private final SubmissionListView view;
-    private final PlaceController placeController;
     private final SubmissionListServiceAsync rpcService;
+    private final PlaceController placeController;
+    private final CurrentUserAccountServiceAsync userService;
     private SubmissionListFilter filter;
 
     @Inject
-    public SubmissionListActivity(SubmissionListView view, PlaceController placeController, SubmissionListServiceAsync rpcService) {
+    public SubmissionListActivity(SubmissionListView view,
+                                  PlaceController placeController,
+                                  SubmissionListServiceAsync rpcService,
+                                  CurrentUserAccountServiceAsync userService) {
         this.view = view;
         this.placeController = placeController;
         this.rpcService = rpcService;
+        this.userService = userService;
     }
 
     public SubmissionListActivity withPlace(SubmissionListPlace place) {
@@ -58,7 +65,22 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        loadCurrentUserAsync();
         loadSubmissionListAsync();
+    }
+
+    private void loadCurrentUserAsync() {
+        userService.me(new AsyncCallbackWrapper<UserDto>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error retrieving user");
+            }
+
+            @Override
+            public void onSuccess(UserDto result) {
+                view.setCurator(result.isCurator());
+            }
+        }.wrap());
     }
 
     private void loadSubmissionListAsync() {

@@ -43,4 +43,6 @@ public interface AccountService {
     void logout(HttpSession session);
 
     User getCurrentUser(HttpSession session);
+
+    String getCurrentUserEmail(HttpSession session);
 }

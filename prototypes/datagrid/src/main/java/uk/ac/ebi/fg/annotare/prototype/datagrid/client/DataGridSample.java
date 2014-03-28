@@ -7,7 +7,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,7 +41,20 @@ public class DataGridSample implements EntryPoint {
     private static final List<DataRow> DATA_ROWS = Arrays.asList(
             new DataRow("John", "Doe", "123 Fourth Avenue"),
             new DataRow("Joe", "Wells", "22 Lance Ln"),
-            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"));
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
+            new DataRow("John", "Doe", "123 Fourth Avenue"),
+            new DataRow("Joe", "Wells", "22 Lance Ln"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
+            new DataRow("John", "Doe", "123 Fourth Avenue"),
+            new DataRow("Joe", "Wells", "22 Lance Ln"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
+            new DataRow("John", "Doe", "123 Fourth Avenue"),
+            new DataRow("Joe", "Wells", "22 Lance Ln"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
+            new DataRow("John", "Doe", "123 Fourth Avenue"),
+            new DataRow("Joe", "Wells", "22 Lance Ln"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue")
+    );
 
     public DataGridSample() {
         dataGrid = new CustomDataGrid<DataRow>();
