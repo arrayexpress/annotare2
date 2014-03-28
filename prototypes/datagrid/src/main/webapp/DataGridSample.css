@@ -1,7 +1,10 @@
+body, table td {
+    font-family: Verdana, Sans-Serif !important;
+}
+
 input {
-    font-family: Arial, Sans-Serif;
-    font-size: small;
-    margin-bottom: 5px;
+    font-family: inherit;
+    font-size: inherit;
     display: block;
     padding: 0px;
     margin: 0px;
@@ -12,13 +15,42 @@ input {
 input:focus {
     outline: 0 none;
 }
+.select {
+    background: #f0f0f0 url("data:image/png;base64,R0lGODlhDwAUAIABAAAAAP///yH5BAEAAAEALAAAAAAPABQAAAIXjI+py+0Po5wH2HsXzmw//lHiSJZmUAAAOw==") no-repeat 100% 50%;
+    width: 100%;
+}
+
+.select select {
+    font-family: inherit;
+    font-size: inherit;
+    display: block;
+    padding: 0px;
+    margin: 0px;
+    border: 0 none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+    width: 100%;
+}
+
+select:focus {
+    outline: 0 none;
+}
+
 ::-webkit-scrollbar {
     width: 7px;
+    height: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
     width: 7px;
-    -webkit-border-radius:3px;
-    border-radius:3px;
-    background:rgba(0,0,0,0.3);
+    height: 7px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.3);
 }

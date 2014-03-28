@@ -14,5 +14,7 @@ public class CustomDataGrid<T> extends DataGrid<T> {
 
     public CustomDataGrid() {
         super(50, (CustomDataGridResources)GWT.create(CustomDataGridResources.class));
+        //getTableHeadElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
+        //getTableBodyElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
     }
 }

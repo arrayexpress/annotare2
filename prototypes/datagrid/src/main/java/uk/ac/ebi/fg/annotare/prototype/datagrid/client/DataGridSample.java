@@ -30,30 +30,32 @@ public class DataGridSample implements EntryPoint {
         private final String column1;
         private final String column2;
         private final String column3;
+        private final String column4;
 
-        public DataRow(String column1, String column2, String column3) {
+        public DataRow(String column1, String column2, String column3, String column4) {
             this.column1 = column1;
             this.column2 = column2;
             this.column3 = column3;
+            this.column4 = column4;
         }
     }
 
     private static final List<DataRow> DATA_ROWS = Arrays.asList(
-            new DataRow("John", "Doe", "123 Fourth Avenue"),
-            new DataRow("Joe", "Wells", "22 Lance Ln"),
-            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
-            new DataRow("John", "Doe", "123 Fourth Avenue"),
-            new DataRow("Joe", "Wells", "22 Lance Ln"),
-            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
-            new DataRow("John", "Doe", "123 Fourth Avenue"),
-            new DataRow("Joe", "Wells", "22 Lance Ln"),
-            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
-            new DataRow("John", "Doe", "123 Fourth Avenue"),
-            new DataRow("Joe", "Wells", "22 Lance Ln"),
-            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue"),
-            new DataRow("John", "Doe", "123 Fourth Avenue"),
-            new DataRow("Joe", "Wells", "22 Lance Ln"),
-            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue")
+            new DataRow("John", "Doe", "123 Fourth Avenue", "first"),
+            new DataRow("Joe", "Wells", "22 Lance Ln", "second"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue", "third"),
+            new DataRow("John", "Doe", "123 Fourth Avenue", "fourth"),
+            new DataRow("Joe", "Wells", "22 Lance Ln", "fifth"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue", "first"),
+            new DataRow("John", "Doe", "123 Fourth Avenue", "second"),
+            new DataRow("Joe", "Wells", "22 Lance Ln", "third"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue", "fourth"),
+            new DataRow("John", "Doe", "123 Fourth Avenue", "fifth"),
+            new DataRow("Joe", "Wells", "22 Lance Ln", "first"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue", "second"),
+            new DataRow("John", "Doe", "123 Fourth Avenue", "third"),
+            new DataRow("Joe", "Wells", "22 Lance Ln", "fourth"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue", "fifth")
     );
 
     public DataGridSample() {
@@ -73,7 +75,7 @@ public class DataGridSample implements EntryPoint {
             }
         };
         dataGrid.addColumn(column1, "First column");
-        dataGrid.setColumnWidth(column1, 200, Style.Unit.PX);
+        dataGrid.setColumnWidth(column1, 20, Style.Unit.PC);
 
         Column<DataRow, String> column2 = new Column<DataRow, String>(new EditTextCell()) {
             @Override
@@ -82,7 +84,7 @@ public class DataGridSample implements EntryPoint {
             }
         };
         dataGrid.addColumn(column2, "Second column");
-        dataGrid.setColumnWidth(column2, 200, Style.Unit.PX);
+        dataGrid.setColumnWidth(column2, 20, Style.Unit.PC);
 
         Column<DataRow, String> column3 = new Column<DataRow, String>(new EditTextCell()) {
             @Override
@@ -92,7 +94,17 @@ public class DataGridSample implements EntryPoint {
         };
 
         dataGrid.addColumn(column3, "Third column");
-        dataGrid.setColumnWidth(column3, 200, Style.Unit.PX);
+        dataGrid.setColumnWidth(column3, 40, Style.Unit.PC);
+
+        Column<DataRow, String> column4 = new Column<DataRow, String>(new EditSelectionCell(Arrays.asList("first", "second", "third", "fourth", "fifth"))) {
+            @Override
+            public String getValue(DataRow object) {
+                return object.column4;
+            }
+        };
+
+        dataGrid.addColumn(column4, "Fourth column");
+        dataGrid.setColumnWidth(column4, 20, Style.Unit.PC);
 
         dataGrid.setRowCount(DATA_ROWS.size(), true);
         dataGrid.setRowData(0, DATA_ROWS);
