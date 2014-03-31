@@ -34,6 +34,8 @@ import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.google.gwt.dom.client.BrowserEvents.*;
 
@@ -115,12 +117,17 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
     private List<String> options = new ArrayList<String>();
 
+    private final Logger logger = Logger.getLogger("EditSelectionCell");
+    private boolean isSelected;
+
     public EditSelectionCell(List<String> options) {
         this(SimpleSafeHtmlRenderer.getInstance(), options);
     }
 
     public EditSelectionCell(SafeHtmlRenderer<String> renderer, List<String> options) {
-        super(CLICK, KEYUP, KEYDOWN,  BLUR, CHANGE);
+        super(CLICK, KEYUP, KEYDOWN, FOCUS, BLUR, CHANGE);
+        this.isSelected = false;
+
         if (template == null) {
             template = GWT.create(Template.class);
         }
@@ -144,17 +151,23 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     @Override
     public void onBrowserEvent(Context context, Element parent, String value,
                                NativeEvent event, ValueUpdater<String> valueUpdater) {
+        String type = event.getType();
+        if (BLUR.equals(type)) {
+            isSelected = false;
+        }
+
         Object key = context.getKey();
         ViewData viewData = getViewData(key);
+        logger.log(Level.INFO, value + ": " + type + ", " + (null != viewData && viewData.isEditing()) + ", " + isSelected);
+
         if (viewData != null && viewData.isEditing()) {
             // Handle the edit event.
             editEvent(context, parent, value, viewData, event, valueUpdater);
         } else {
-            String type = event.getType();
             int keyCode = event.getKeyCode();
             boolean enterPressed = KEYUP.equals(type)
                     && keyCode == KeyCodes.KEY_ENTER;
-            if (CLICK.equals(type) || enterPressed) {
+            if ((CLICK.equals(type) && isSelected) || enterPressed) {
                 // Go into edit mode.
                 if (viewData == null) {
                     viewData = new ViewData(value);
@@ -163,6 +176,9 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
                     viewData.setEditing(true);
                 }
                 edit(context, parent, value);
+            }
+            if ((CLICK.equals(type) || false) && !isSelected) {
+                isSelected = true;
             }
         }
     }
