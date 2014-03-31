@@ -23,11 +23,11 @@
         </layout>
     </appender>
 
-    <appender name="server-log" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/annotare.log"/>
-        <param name="MaxFileSize" value="100KB"/>
-        <param name="MaxBackupIndex" value="3"/>
-        <param name="Append" value="false"/>
+    <appender name="server-log" class="org.apache.log4j.rolling.RollingFileAppender">
+        <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+            <param name="FileNamePattern"
+                   value="${catalina.base}/logs/${tomcat.hostname}/annotare-%d{yyyy-MM-dd}.log" />
+        </rollingPolicy>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
         </layout>
