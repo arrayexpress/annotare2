@@ -55,7 +55,6 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
-import javax.jms.JMSException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -261,8 +260,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (URISyntaxException e) {
             throw unexpected(e);
-        } catch (JMSException e) {
-            throw unexpected(e);
+        ///} catch (JMSException e) {
+        ///    throw unexpected(e);
         } catch (IOException e) {
             throw unexpected(e);
         }
@@ -364,8 +363,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
-        } catch (JMSException e) {
-            throw unexpected(e);
+        ///} catch (JMSException e) {
+        ///    throw unexpected(e);
         } catch (DataSerializationException e) {
             throw unexpected(e);
         }
@@ -420,7 +419,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private void saveFile(final DataFileSource source, final ExperimentSubmission submission)
-            throws JMSException, DataSerializationException, IOException {
+            throws /***JMSException,***/ DataSerializationException, IOException {
         String fileName = source.getName();
         Set<DataFile> files = submission.getFiles();
         for (DataFile dataFile : files) {
@@ -438,7 +437,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private void storeAssociatedFiles(ExperimentSubmission submission)
-            throws DataSerializationException, JMSException, URISyntaxException, IOException {
+            throws DataSerializationException/***, JMSException***/, URISyntaxException, IOException {
 
         Set<DataFile> files = dataFileManager.getAssignedFiles(
                 submission,
