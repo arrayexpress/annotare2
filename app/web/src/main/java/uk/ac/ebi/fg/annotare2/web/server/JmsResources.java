@@ -16,19 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
-import com.google.inject.Provider;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 /**
  * @author Olga Melnichuk
  */
 public class JmsResources {
-
+/***
     private ConnectionFactory connectionFactory;
     private Queue fileCopyQueue;
 
@@ -64,4 +56,5 @@ public class JmsResources {
             return resources;
         }
     }
+***/
 }

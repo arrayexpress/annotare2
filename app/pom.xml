@@ -97,7 +97,12 @@
         </dependency>
 
         <!-- logging -->
-
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency> <!-- this will allow redirection of java.util.logging calls via slf4j -->
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>

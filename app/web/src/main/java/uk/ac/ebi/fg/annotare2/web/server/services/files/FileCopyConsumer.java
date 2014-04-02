@@ -17,27 +17,8 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
  *
  */
 
-import com.google.common.base.Objects;
-import com.google.inject.Inject;
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.ActiveMQSession;
-import org.apache.activemq.RedeliveryPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
-import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.model.DataFile;
-import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
-
-import javax.jms.*;
-import java.io.IOException;
-
-import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.ERROR;
-import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.STORED;
-
-public class FileCopyConsumer implements MessageListener {
-
+public class FileCopyConsumer /*implements MessageListener*/ {
+/***
     private static final Logger log = LoggerFactory.getLogger(FileCopyConsumer.class);
 
     private final DataFileStore fileStore;
@@ -164,4 +145,5 @@ public class FileCopyConsumer implements MessageListener {
         dataFile.setStatus(ERROR);
         fileDao.save(dataFile);
     }
+***/
 }

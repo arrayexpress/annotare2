@@ -188,7 +188,6 @@
         </dependency>
 
         <!-- jstl support-->
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
@@ -212,7 +211,7 @@
         </dependency>
 
         <!-- active MQ -->
-
+        <!--
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
@@ -228,7 +227,7 @@
             <artifactId>activemq-kahadb-store</artifactId>
             <version>5.8.0</version>
         </dependency>
-
+        -->
         <!-- Liquibase -->
 
         <dependency>

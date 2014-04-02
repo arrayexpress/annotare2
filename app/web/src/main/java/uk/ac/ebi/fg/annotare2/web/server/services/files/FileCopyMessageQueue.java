@@ -16,22 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
-import com.google.inject.Inject;
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.ActiveMQSession;
-import org.apache.activemq.ScheduledMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.db.model.DataFile;
-import uk.ac.ebi.fg.annotare2.web.server.JmsResources;
-
-import javax.jms.*;
-
 /**
  * @author Olga Melnichuk
  */
 public class FileCopyMessageQueue {
-
+/***
     private static final Logger log = LoggerFactory.getLogger(FileCopyMessageQueue.class);
 
     private final FileCopyProducer producer;
@@ -115,4 +104,5 @@ public class FileCopyMessageQueue {
             }
         }
     }
+***/
 }
