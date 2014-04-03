@@ -64,7 +64,7 @@ public class GridView<R extends HasIdentity> extends Composite {
     @UiField
     HorizontalPanel tools;
 
-    private MyDataGrid<R> dataGrid;
+    private CustomDataGrid<R> dataGrid;
     private MultiSelectionModel<R> selectionModel;
     private ColumnSortEvent.ListHandler<R> sortHandler;
     private SimplePager pager;
@@ -86,9 +86,7 @@ public class GridView<R extends HasIdentity> extends Composite {
             dataProvider.setList(rows);
             return;
         }
-        //TODO put resources as inner interface
-        MyDataGridResources resources = GWT.create(MyDataGridResources.class);
-        dataGrid = new MyDataGrid<R>(PAGE_SIZE, resources);
+        dataGrid = new CustomDataGrid<R>(PAGE_SIZE, CustomDataGrid.createResources());
         dataGrid.setEmptyTableWidget(new Label("No data"));
 
         selectionModel =

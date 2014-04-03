@@ -63,8 +63,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
     public void setTable(Table table, boolean hasHeaders) {
         panel.remove(loadingIndicator);
 
-        MyDataGridResources resources = GWT.create(MyDataGridResources.class);
-        MyDataGrid<IndexedRow> dataGrid = new MyDataGrid<IndexedRow>(PAGE_SIZE, resources);
+        CustomDataGrid<IndexedRow> dataGrid = new CustomDataGrid<IndexedRow>(PAGE_SIZE, CustomDataGrid.createResources());
         dataGrid.setEmptyTableWidget(new Label(noDataText));
 
         dataGrid.setSelectionModel(new NoSelectionModel<IndexedRow>());
@@ -97,7 +96,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
         return rows;
     }
 
-    private void initColumns(Table table, MyDataGrid<IndexedRow> dataGrid, ColumnSortEvent.ListHandler<IndexedRow> sortHandler, boolean hasHeaders) {
+    private void initColumns(Table table, CustomDataGrid<IndexedRow> dataGrid, ColumnSortEvent.ListHandler<IndexedRow> sortHandler, boolean hasHeaders) {
         if (table == null || table.isEmpty()) {
             return;
         }
