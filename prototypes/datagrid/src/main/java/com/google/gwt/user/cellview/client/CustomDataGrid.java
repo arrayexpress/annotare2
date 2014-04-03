@@ -3,6 +3,7 @@ package com.google.gwt.user.cellview.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Event;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CustomDataGrid<T> extends DataGrid<T> {
@@ -24,7 +25,15 @@ public class CustomDataGrid<T> extends DataGrid<T> {
 
     @Override
     public void onBrowserEvent2(Event event) {
-        //logger.log(Level.INFO, event.getType());
         super.onBrowserEvent2(event);
+        logger.log(Level.INFO, getKeyboardSelectedColumn() + ", " + getKeyboardSelectedRow());
+    }
+
+    public T getKeyboardSelectedRow2() {
+        int index = getKeyboardSelectedRow();
+        if (index >= 0 && index < getVisibleItemCount()) {
+            return getVisibleItem(index);
+        }
+        return null;
     }
 }
