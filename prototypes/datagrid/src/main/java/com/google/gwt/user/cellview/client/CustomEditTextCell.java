@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare.prototype.datagrid.client;
+package com.google.gwt.user.cellview.client;
 
 import com.google.gwt.cell.client.EditTextCell;
 
