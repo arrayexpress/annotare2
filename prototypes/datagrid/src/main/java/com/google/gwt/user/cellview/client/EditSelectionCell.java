@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare.prototype.datagrid.client;
+package com.google.gwt.user.cellview.client;
 
 /*
  * Copyright 2009-2014 European Molecular Biology Laboratory
@@ -118,16 +118,13 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     private List<String> options = new ArrayList<String>();
 
     private final Logger logger = Logger.getLogger("EditSelectionCell");
-    private boolean isSelected;
 
     public EditSelectionCell(List<String> options) {
         this(SimpleSafeHtmlRenderer.getInstance(), options);
     }
 
     public EditSelectionCell(SafeHtmlRenderer<String> renderer, List<String> options) {
-        super(CLICK, KEYUP, KEYDOWN, FOCUS, BLUR, CHANGE);
-        this.isSelected = false;
-
+        super(CLICK, KEYUP, KEYDOWN,  BLUR, CHANGE);
         if (template == null) {
             template = GWT.create(Template.class);
         }
@@ -145,29 +142,27 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     @Override
     public boolean isEditing(Context context, Element parent, String value) {
         ViewData viewData = getViewData(context.getKey());
+        logger.log(Level.INFO, "isEditing/before");
         return viewData != null && viewData.isEditing();
     }
 
     @Override
     public void onBrowserEvent(Context context, Element parent, String value,
                                NativeEvent event, ValueUpdater<String> valueUpdater) {
-        String type = event.getType();
-        if (BLUR.equals(type)) {
-            isSelected = false;
-        }
-
         Object key = context.getKey();
         ViewData viewData = getViewData(key);
-        logger.log(Level.INFO, value + ": " + type + ", " + (null != viewData && viewData.isEditing()) + ", " + isSelected);
+
+        logger.log(Level.INFO, "onBrowserEvent/before, " + event.getType());
 
         if (viewData != null && viewData.isEditing()) {
             // Handle the edit event.
             editEvent(context, parent, value, viewData, event, valueUpdater);
         } else {
+            String type = event.getType();
             int keyCode = event.getKeyCode();
             boolean enterPressed = KEYUP.equals(type)
                     && keyCode == KeyCodes.KEY_ENTER;
-            if ((CLICK.equals(type) && isSelected) || enterPressed) {
+            if (CLICK.equals(type) || enterPressed) {
                 // Go into edit mode.
                 if (viewData == null) {
                     viewData = new ViewData(value);
@@ -176,9 +171,6 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
                     viewData.setEditing(true);
                 }
                 edit(context, parent, value);
-            }
-            if ((CLICK.equals(type) || false) && !isSelected) {
-                isSelected = true;
             }
         }
     }

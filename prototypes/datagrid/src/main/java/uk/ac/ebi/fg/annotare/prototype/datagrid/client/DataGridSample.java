@@ -1,14 +1,17 @@
 package uk.ac.ebi.fg.annotare.prototype.datagrid.client;
 
 import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.CustomDataGrid;
+import com.google.gwt.user.cellview.client.EditSelectionCell;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +30,10 @@ public class DataGridSample implements EntryPoint {
     }
 
     private static class DataRow {
-        private final String column1;
-        private final String column2;
-        private final String column3;
-        private final String column4;
+        private String column1;
+        private String column2;
+        private String column3;
+        private String column4;
 
         public DataRow(String column1, String column2, String column3, String column4) {
             this.column1 = column1;
@@ -48,8 +51,10 @@ public class DataGridSample implements EntryPoint {
             new DataRow("Joe", "Wells", "22 Lance Ln", "fifth")
     );
 
+    private ListDataProvider<DataRow> dataProvider;
+
     public DataGridSample() {
-        dataGrid = new CustomDataGrid<DataRow>();
+        dataGrid = new CustomDataGrid<DataRow>(CustomDataGrid.createResources());
     }
 
     public void onModuleLoad() {
@@ -64,6 +69,15 @@ public class DataGridSample implements EntryPoint {
                 return object.column1;
             }
         };
+
+        column1.setFieldUpdater(new FieldUpdater<DataRow, String>() {
+            @Override
+            public void update(int index, DataRow object, String value) {
+                object.column1 = value;
+                dataProvider.refresh();
+            }
+        });
+
         dataGrid.addColumn(column1, "First column");
         //dataGrid.setColumnWidth(column1, 20, Style.Unit.PC);
 
@@ -73,6 +87,15 @@ public class DataGridSample implements EntryPoint {
                 return object.column2;
             }
         };
+
+        column2.setFieldUpdater(new FieldUpdater<DataRow, String>() {
+            @Override
+            public void update(int index, DataRow object, String value) {
+                object.column2 = value;
+                dataProvider.refresh();
+            }
+        });
+
         dataGrid.addColumn(column2, "Second column");
         //dataGrid.setColumnWidth(column2, 20, Style.Unit.PC);
 
@@ -82,6 +105,14 @@ public class DataGridSample implements EntryPoint {
                 return object.column3;
             }
         };
+
+        column3.setFieldUpdater(new FieldUpdater<DataRow, String>() {
+            @Override
+            public void update(int index, DataRow object, String value) {
+                object.column3 = value;
+                dataProvider.refresh();
+            }
+        });
 
         dataGrid.addColumn(column3, "Third column");
         //dataGrid.setColumnWidth(column3, 40, Style.Unit.PC);
@@ -93,11 +124,18 @@ public class DataGridSample implements EntryPoint {
             }
         };
 
+        column4.setFieldUpdater(new FieldUpdater<DataRow, String>() {
+            @Override
+            public void update(int index, DataRow object, String value) {
+                object.column4 = value;
+                dataProvider.refresh();
+            }
+        });
         dataGrid.addColumn(column4, "Fourth column");
-        //dataGrid.setColumnWidth(column4, 20, Style.Unit.PC);
 
-        dataGrid.setRowCount(DATA_ROWS.size(), true);
-        dataGrid.setRowData(0, DATA_ROWS);
+        dataProvider = new ListDataProvider<DataRow>();
+        dataProvider.addDataDisplay(dataGrid);
+        dataProvider.getList().addAll(DATA_ROWS);
 	}
 }
 

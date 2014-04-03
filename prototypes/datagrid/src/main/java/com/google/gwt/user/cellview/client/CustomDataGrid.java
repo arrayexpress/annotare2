@@ -1,50 +1,125 @@
 package com.google.gwt.user.cellview.client;
 
+import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.view.client.CellPreviewEvent;
 
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CustomDataGrid<T> extends DataGrid<T> {
-    public interface CustomDataGridResources extends DataGrid.Resources {
+
+    public interface CustomStyle extends DataGrid.Style {
+        String dataGridKeyboardSelectedInactiveCell();
+    }
+
+    public interface CustomResources extends DataGrid.Resources {
 
         @Override
         @Source("CustomDataGrid.css")
-        Style dataGridStyle();
+        CustomStyle dataGridStyle();
 
     }
 
-    private final Logger logger = Logger.getLogger("CustomDataGrid");
+    public static CustomResources createResources() {
+        return GWT.create(CustomResources.class);
+    }
 
-    public CustomDataGrid() {
-        super(50, (CustomDataGridResources) GWT.create(CustomDataGridResources.class));
+    private final CustomResources resources;
+
+    private final static Logger logger = Logger.getLogger("CustomDataGrid");
+
+
+
+    public CustomDataGrid(CustomResources resources) {
+        super(50, resources);
+        this.resources = resources;
         setKeyboardSelectionHandler(new CustomDataGridKeyboardSelectionHandler<T>(this));
-        //getTableHeadElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
-        //getTableBodyElement().getParentElement().getStyle().setProperty("borderCollapse", "collapse");
     }
+
 
     @Override
     public void onBrowserEvent2(Event event) {
-        logger.log(Level.INFO, event.getType());
+        logger.log(Level.INFO, "onBrowserEvent2/before, " + event.getType() + ", " + getKeyboardSelectedColumn() + ", " + getKeyboardSelectedRow());
         super.onBrowserEvent2(event);
-        logger.log(Level.INFO, getKeyboardSelectedColumn() + ", " + getKeyboardSelectedRow());
     }
 
     @Override
-    public void onBlur() {
-        logger.log(Level.INFO, "onBlur called");
+    protected void onFocus() {
+        TableCellElement td = getKeyboardSelectedTableCellElement();
+        if (td != null) {
+            TableRowElement tr = td.getParentElement().cast();
+            td.replaceClassName(getStyle().dataGridKeyboardSelectedInactiveCell(), getStyle().dataGridKeyboardSelectedCell());
+            setRowStyleName(tr, getStyle().dataGridKeyboardSelectedRow(), getStyle().dataGridKeyboardSelectedRowCell(), true);
+        }
     }
 
     @Override
-    public void onFocus() {
-        logger.log(Level.INFO, "onFocus called");
+    protected void onBlur() {
+        TableCellElement td = getKeyboardSelectedTableCellElement();
+        if (td != null) {
+            TableRowElement tr = td.getParentElement().cast();
+            td.replaceClassName(getStyle().dataGridKeyboardSelectedCell(), getStyle().dataGridKeyboardSelectedInactiveCell());
+            setRowStyleName(tr, getStyle().dataGridKeyboardSelectedRow(), getStyle().dataGridKeyboardSelectedRowCell(), false);
+        }
+    }
+
+    @Override
+    protected void setKeyboardSelected(int index, boolean selected, boolean stealFocus) {
+        if (KeyboardSelectionPolicy.DISABLED == getKeyboardSelectionPolicy()
+                || !isRowWithinBounds(index)) {
+            return;
+        }
+
+        TableRowElement tr = getSubRowElement(index + getPageStart(), getKeyboardSelectedSubRow());
+        if (null != tr) {
+            NodeList<TableCellElement> cells = tr.getCells();
+            for (int i = 0; i < cells.getLength(); i++) {
+                TableCellElement td = cells.getItem(i);
+                td.removeClassName(getStyle().dataGridKeyboardSelectedInactiveCell());
+            }
+        }
+
+        super.setKeyboardSelected(index, selected, stealFocus);
+    }
+
+    private TableCellElement getKeyboardSelectedTableCellElement() {
+        int colIndex = getKeyboardSelectedColumn();
+        if (colIndex < 0) {
+            return null;
+        }
+
+        // Do not use getRowElement() because that will flush the presenter.
+        int rowIndex = getKeyboardSelectedRow();
+        if (rowIndex < 0 || rowIndex >= getTableBodyElement().getRows().getLength()) {
+            return null;
+        }
+        TableRowElement tr = getSubRowElement(rowIndex + getPageStart(), getKeyboardSelectedSubRow());
+        if (tr != null) {
+            int cellCount = tr.getCells().getLength();
+            if (cellCount > 0) {
+                int column = Math.min(colIndex, cellCount - 1);
+                return tr.getCells().getItem(column);
+            }
+        }
+        return null;
+    }
+
+    private void setRowStyleName(TableRowElement tr, String rowStyle, String cellStyle, boolean add) {
+        setStyleName(tr, rowStyle, add);
+        NodeList<TableCellElement> cells = tr.getCells();
+        for (int i = 0; i < cells.getLength(); i++) {
+            setStyleName(cells.getItem(i), cellStyle, add);
+        }
+    }
+
+    private CustomStyle getStyle() {
+        return resources.dataGridStyle();
     }
 
     public static class CustomDataGridKeyboardSelectionHandler<T> extends
@@ -66,6 +141,9 @@ public class CustomDataGrid<T> extends DataGrid<T> {
         public void onCellPreview(CellPreviewEvent<T> event) {
             NativeEvent nativeEvent = event.getNativeEvent();
             String eventType = event.getNativeEvent().getType();
+
+            logger.log(Level.INFO, "onCellPreview/before, " + nativeEvent.getType() + ", " + event.getColumn() + ", " + event.getIndex());
+
             if (BrowserEvents.KEYDOWN.equals(eventType) && !event.isCellEditing()) {
         /*
          * Handle keyboard navigation, unless the cell is being edited. If the
@@ -79,14 +157,16 @@ public class CustomDataGrid<T> extends DataGrid<T> {
                 int keyCodeNext = isRtl ? KeyCodes.KEY_LEFT : KeyCodes.KEY_RIGHT;
                 int keyCodePrevious = isRtl ? KeyCodes.KEY_RIGHT : KeyCodes.KEY_LEFT;
                 int keyCode = nativeEvent.getKeyCode();
+                int newColumn = oldColumn;
                 if (keyCode == keyCodeNext) {
-                    int nextColumn = oldColumn < table.getColumnCount() - 1 ? oldColumn + 1 : oldColumn;
-                    table.setKeyboardSelectedColumn(nextColumn);
+                    newColumn = oldColumn < table.getColumnCount() - 1 ? oldColumn + 1 : oldColumn;
                     handledEvent(event);
                 } else if (keyCode == keyCodePrevious) {
-                    int prevColumn = oldColumn > 0 ? oldColumn - 1 : oldColumn;
-                    table.setKeyboardSelectedColumn(prevColumn);
+                    newColumn = oldColumn > 0 ? oldColumn - 1 : oldColumn;
                     handledEvent(event);
+                }
+                if (newColumn != oldColumn && isColumnInteractive(table.getColumn(newColumn))) {
+                    table.setKeyboardSelectedColumn(newColumn);
                 }
             } else if (BrowserEvents.CLICK.equals(eventType) || BrowserEvents.FOCUS.equals(eventType)) {
         /*
@@ -116,7 +196,7 @@ public class CustomDataGrid<T> extends DataGrid<T> {
 
                     // Update the column index.
                     table.setKeyboardSelectedColumn(col, stealFocus);
-                    handledEvent(event);
+                    //handledEvent(event);
                 }
 
                 // Do not cancel the event as the click may have occurred on a Cell.
@@ -125,6 +205,11 @@ public class CustomDataGrid<T> extends DataGrid<T> {
 
             // Let the parent class handle the event.
             super.onCellPreview(event);
+        }
+
+        private boolean isColumnInteractive(HasCell<?, ?> column) {
+            Set<String> consumedEvents = column.getCell().getConsumedEvents();
+            return consumedEvents != null && consumedEvents.size() > 0;
         }
     }
 }
