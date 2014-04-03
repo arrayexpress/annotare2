@@ -84,6 +84,15 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         });
         gridView.addTool(button);
 
+        button = new Button("Fill Down Value");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                fillDownValue();
+            }
+        });
+        gridView.addTool(button);
+
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
@@ -160,6 +169,10 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         }
         presenter.removeSamples(new ArrayList<SampleRow>(selection));
         gridView.removeSelectedRows();
+    }
+
+    private void fillDownValue() {
+        gridView.fillDownKeyboardSelectedColumn();
     }
 
     private void addNameColumn() {
@@ -254,7 +267,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                 updateRow(row);
             }
         });
-        column.setSortable(true);
+        //column.setSortable(true);
         gridView.addColumn(sampleColumn.getTitle(), column, null, COLUMN_WIDTH, Style.Unit.PX);
     }
 
@@ -284,7 +297,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                 updateRow(row);
             }
         });
-        column.setSortable(true);
+        //column.setSortable(true);
         gridView.addColumn(sampleColumn.getTitle(), column, null, COLUMN_WIDTH, Style.Unit.PX);
     }
 
@@ -302,7 +315,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
                 updateRow(row);
             }
         });
-        column.setSortable(true);
+        //column.setSortable(true);
         gridView.addPermanentColumn("Material Type", column, null, COLUMN_WIDTH, Style.Unit.PX);
     }
 }
