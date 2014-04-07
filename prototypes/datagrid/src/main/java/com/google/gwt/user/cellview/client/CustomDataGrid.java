@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEventHandler, CellPreviewEvent.Handler<T> {
+public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEventHandler {
 
     public interface CustomStyle extends DataGrid.Style {
         String dataGridKeyboardSelectedInactiveCell();
@@ -34,35 +34,19 @@ public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEve
 
     private final static Logger logger = Logger.getLogger("CustomDataGrid");
 
-    private final PasteArea pasteArea;
-
     public CustomDataGrid(CustomResources resources) {
         super(50, resources);
         this.resources = resources;
-        this.pasteArea = new PasteArea();
-        this.pasteArea.addPasteHandler(this);
-        this.addCellPreviewHandler(this);
+
+        PasteArea<T> pasteArea = new PasteArea<T>();
+        pasteArea.addPasteHandler(this);
+        this.addCellPreviewHandler(pasteArea);
+
         setKeyboardSelectionHandler(new CustomDataGridKeyboardSelectionHandler<T>(this));
     }
 
-
-    //@Override
-    //public void onBrowserEvent2(Event event) {
-    //    super.onBrowserEvent2(event);
-    //}
-
     @Override
-    public void onCellPreview(CellPreviewEvent<T> event) {
-        if (!event.isCellEditing()) {
-            NativeEvent e = event.getNativeEvent();
-            if (BrowserEvents.KEYDOWN.equals(e.getType()) && 86 == e.getKeyCode()) {
-                pasteArea.intercept(Element.as(e.getEventTarget()));
-            }
-        }
-    }
-
-    @Override
-    public void onEvent(PasteArea.PasteEvent event) {
+    public void onPaste(PasteArea.PasteEvent event) {
         logger.log(Level.INFO, "pasted: " + event.getData());
     }
 
@@ -211,7 +195,7 @@ public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEve
 
                     // Update the column index.
                     table.setKeyboardSelectedColumn(col, stealFocus);
-                    //handledEvent(event);
+                    handledEvent(event);
                 }
 
                 // Do not cancel the event as the click may have occurred on a Cell.

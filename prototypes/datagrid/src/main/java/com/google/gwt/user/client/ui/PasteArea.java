@@ -17,18 +17,22 @@ package com.google.gwt.user.client.ui;
  *
  */
 
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.view.client.CellPreviewEvent;
 
-public class PasteArea extends TextArea {
+public class PasteArea<T> extends TextArea implements CellPreviewEvent.Handler<T> {
 
     public interface PasteEventHandler extends EventHandler {
-        public void onEvent(PasteEvent event);
+        public void onPaste(PasteEvent event);
     }
 
     public static class PasteEvent extends GwtEvent<PasteEventHandler> {
@@ -48,7 +52,7 @@ public class PasteArea extends TextArea {
 
         @Override
         protected void dispatch(PasteEventHandler handler) {
-            handler.onEvent(this);
+            handler.onPaste(this);
         }
 
         public String getData() {
@@ -57,9 +61,11 @@ public class PasteArea extends TextArea {
 
     }
 
-    private final TextAreaElement element;
+    private Element restoreFocusElement;
 
-    private Element focusElement;
+    private final boolean areWeRunningOnMac;
+
+    private final TextAreaElement element;
 
     public PasteArea() {
         this.element = this.getElement().cast();
@@ -67,16 +73,30 @@ public class PasteArea extends TextArea {
         this.element.getStyle().setZIndex(100);
         this.element.getStyle().setLeft(-1000, com.google.gwt.dom.client.Style.Unit.PX);
 
+        this.areWeRunningOnMac = Window.Navigator.getPlatform().contains("Mac");
+
         sinkEvents(Event.ONPASTE);
 
-        this.focusElement = null;
+        this.restoreFocusElement = null;
 
         RootPanel.get().add(this);
     }
 
-    public void intercept(Element focusElement) {
+    @Override
+    public void onCellPreview(CellPreviewEvent<T> event) {
+        if (!event.isCellEditing()) {
+            NativeEvent e = event.getNativeEvent();
+            if (BrowserEvents.KEYDOWN.equals(e.getType())) {
+                if (86 == e.getKeyCode() && ((e.getMetaKey() && areWeRunningOnMac) || (e.getCtrlKey() && !areWeRunningOnMac))) {
+                    intercept(Element.as(e.getEventTarget()));
+                }
+            }
+        }
+    }
+
+    private void intercept(Element focusElement) {
         this.element.focus();
-        this.focusElement = focusElement;
+        this.restoreFocusElement = focusElement;
     }
 
     @Override
@@ -93,9 +113,9 @@ public class PasteArea extends TextArea {
     private void fireDelayed() {
         Timer t = new Timer() {
             public void run() {
-                if (null != focusElement) {
-                    focusElement.focus();
-                    focusElement = null;
+                if (null != restoreFocusElement) {
+                    restoreFocusElement.focus();
+                    restoreFocusElement = null;
                 }
                 String s = getValue();
                 fireEvent(new PasteEvent(s));
