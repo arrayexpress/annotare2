@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
+import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -211,6 +212,7 @@ public class GridView<R extends HasIdentity> extends Composite {
         return selectionModel.getSelectedSet();
     }
 
+    @SuppressWarnings("unchecked")
     public void fillDownKeyboardSelectedColumn() {
         int colIndex = dataGrid.getKeyboardSelectedColumn();
         int rowIndex = dataGrid.getKeyboardSelectedRow();
@@ -218,11 +220,13 @@ public class GridView<R extends HasIdentity> extends Composite {
         if (colIndex >= 2 && colIndex < dataGrid.getColumnCount() &&
                 rowIndex >=0 && rowIndex < dataGrid.getRowCount()) {
             Column<R, ?> column = dataGrid.getColumn(colIndex);
+            AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
             List<R> rows = dataProvider.getList();
             String value = (String) column.getValue(rows.get(rowIndex));
             FieldUpdater<R, String> updater = (FieldUpdater<R, String>) column.getFieldUpdater();
             for (int i = rowIndex + 1; i < rows.size(); i++) {
                 updater.update(i, rows.get(i), value);
+                cell.clearViewData(rows.get(i));
             }
             dataProvider.refresh();
         }
