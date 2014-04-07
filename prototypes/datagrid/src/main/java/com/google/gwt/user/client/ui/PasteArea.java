@@ -17,19 +17,16 @@ package com.google.gwt.user.client.ui;
  *
  */
 
-import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.view.client.CellPreviewEvent;
 
-public class PasteArea<T> extends TextArea implements CellPreviewEvent.Handler<T> {
+public class PasteArea<T> extends FocusWidget implements CellPreviewEvent.Handler<T> {
 
     public interface PasteEventHandler extends EventHandler {
         public void onPaste(PasteEvent event);
@@ -68,7 +65,8 @@ public class PasteArea<T> extends TextArea implements CellPreviewEvent.Handler<T
     private final TextAreaElement element;
 
     public PasteArea() {
-        this.element = this.getElement().cast();
+        super(Document.get().createTextAreaElement());
+        this.element = getElement().cast();
         this.element.getStyle().setPosition(com.google.gwt.dom.client.Style.Position.ABSOLUTE);
         this.element.getStyle().setZIndex(100);
         this.element.getStyle().setLeft(-1000, com.google.gwt.dom.client.Style.Unit.PX);
@@ -95,6 +93,7 @@ public class PasteArea<T> extends TextArea implements CellPreviewEvent.Handler<T
     }
 
     private void intercept(Element focusElement) {
+        this.element.setValue("");
         this.element.focus();
         this.restoreFocusElement = focusElement;
     }
@@ -105,24 +104,19 @@ public class PasteArea<T> extends TextArea implements CellPreviewEvent.Handler<T
         switch (event.getTypeInt()) {
             case Event.ONPASTE:
                 event.stopPropagation();
-                fireDelayed();
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if (null != restoreFocusElement) {
+                            restoreFocusElement.focus();
+                            restoreFocusElement = null;
+                        }
+                        String s = element.getValue();
+                        fireEvent(new PasteEvent(s));
+                    }
+                });
                 break;
         }
-    }
-
-    private void fireDelayed() {
-        Timer t = new Timer() {
-            public void run() {
-                if (null != restoreFocusElement) {
-                    restoreFocusElement.focus();
-                    restoreFocusElement = null;
-                }
-                String s = getValue();
-                fireEvent(new PasteEvent(s));
-                setValue("");
-            }
-        };
-        t.schedule(5);
     }
 
     public HandlerRegistration addPasteHandler(PasteEventHandler handler) {
