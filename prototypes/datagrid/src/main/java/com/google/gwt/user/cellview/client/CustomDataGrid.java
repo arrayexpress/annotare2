@@ -5,14 +5,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.PasteArea;
 import com.google.gwt.view.client.CellPreviewEvent;
 
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CustomDataGrid<T> extends DataGrid<T> {
+public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEventHandler, CellPreviewEvent.Handler<T> {
 
     public interface CustomStyle extends DataGrid.Style {
         String dataGridKeyboardSelectedInactiveCell();
@@ -34,19 +34,36 @@ public class CustomDataGrid<T> extends DataGrid<T> {
 
     private final static Logger logger = Logger.getLogger("CustomDataGrid");
 
-
+    private final PasteArea pasteArea;
 
     public CustomDataGrid(CustomResources resources) {
         super(50, resources);
         this.resources = resources;
+        this.pasteArea = new PasteArea();
+        this.pasteArea.addPasteHandler(this);
+        this.addCellPreviewHandler(this);
         setKeyboardSelectionHandler(new CustomDataGridKeyboardSelectionHandler<T>(this));
     }
 
 
+    //@Override
+    //public void onBrowserEvent2(Event event) {
+    //    super.onBrowserEvent2(event);
+    //}
+
     @Override
-    public void onBrowserEvent2(Event event) {
-        logger.log(Level.INFO, "onBrowserEvent2/before, " + event.getType() + ", " + getKeyboardSelectedColumn() + ", " + getKeyboardSelectedRow());
-        super.onBrowserEvent2(event);
+    public void onCellPreview(CellPreviewEvent<T> event) {
+        if (!event.isCellEditing()) {
+            NativeEvent e = event.getNativeEvent();
+            if (BrowserEvents.KEYDOWN.equals(e.getType()) && 86 == e.getKeyCode()) {
+                pasteArea.intercept(Element.as(e.getEventTarget()));
+            }
+        }
+    }
+
+    @Override
+    public void onEvent(PasteArea.PasteEvent event) {
+        logger.log(Level.INFO, "pasted: " + event.getData());
     }
 
     @Override
@@ -141,8 +158,6 @@ public class CustomDataGrid<T> extends DataGrid<T> {
         public void onCellPreview(CellPreviewEvent<T> event) {
             NativeEvent nativeEvent = event.getNativeEvent();
             String eventType = event.getNativeEvent().getType();
-
-            logger.log(Level.INFO, "onCellPreview/before, " + nativeEvent.getType() + ", " + event.getColumn() + ", " + event.getIndex());
 
             if (BrowserEvents.KEYDOWN.equals(eventType) && !event.isCellEditing()) {
         /*

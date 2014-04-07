@@ -34,8 +34,6 @@ import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.google.gwt.dom.client.BrowserEvents.*;
 
@@ -117,8 +115,6 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
     private List<String> options = new ArrayList<String>();
 
-    private final Logger logger = Logger.getLogger("EditSelectionCell");
-
     public EditSelectionCell(List<String> options) {
         this(SimpleSafeHtmlRenderer.getInstance(), options);
     }
@@ -142,7 +138,6 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     @Override
     public boolean isEditing(Context context, Element parent, String value) {
         ViewData viewData = getViewData(context.getKey());
-        logger.log(Level.INFO, "isEditing/before");
         return viewData != null && viewData.isEditing();
     }
 
@@ -151,8 +146,6 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
                                NativeEvent event, ValueUpdater<String> valueUpdater) {
         Object key = context.getKey();
         ViewData viewData = getViewData(key);
-
-        logger.log(Level.INFO, "onBrowserEvent/before, " + event.getType());
 
         if (viewData != null && viewData.isEditing()) {
             // Handle the edit event.
@@ -191,7 +184,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
             String text = viewData.getText();
             if (viewData.isEditing()) {
                 int selectedIndex = getSelectedIndex(viewData.getText());
-                sb.appendHtmlConstant("<div class=\"select\"><select tabindex=\"-1\">");
+                sb.appendHtmlConstant("<select tabindex=\"-1\">");
                 int index = 0;
                 for (String option : options) {
                     if (index++ == selectedIndex) {
@@ -200,7 +193,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
                         sb.append(template.deselected(option));
                     }
                 }
-                sb.appendHtmlConstant("</select></div>");
+                sb.appendHtmlConstant("</select>");
                 return;
             } else {
                 // The user pressed enter, but view data still exists.
@@ -276,7 +269,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
         if (index == null) {
             return -1;
         }
-        return index.intValue();
+        return index;
     }
 
     @Override
@@ -295,7 +288,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     }
 
     private SelectElement getSelectElement(Element parent) {
-        return parent.getFirstChild().getFirstChild().cast();
+        return parent.getFirstChild().cast();
     }
 
 }

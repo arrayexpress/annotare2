@@ -25,9 +25,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.user.client.impl.DOMImpl;
 import com.google.gwt.user.client.ui.PotentialElement;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * This class provides a set of static methods that allow you to manipulate the
  * browser's Document Object Model (DOM). It contains methods for manipulating
@@ -1352,10 +1349,7 @@ public class DOM {
             }
         }
 
-        logger.log(Level.INFO, "dispatchEventImpl " + evt.toString());
         // Pass the event to the listener.
         listener.onBrowserEvent(evt);
     }
-
-    private final static Logger logger = Logger.getLogger("DOM");
 }

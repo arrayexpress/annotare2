@@ -280,7 +280,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
         if (index == null) {
             return -1;
         }
-        return index.intValue();
+        return index;
     }
 
     @Override
@@ -299,7 +299,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     }
 
     private SelectElement getSelectElement(Element parent) {
-        return parent.getFirstChild().<SelectElement>cast();
+        return parent.getFirstChild().cast();
     }
 
 }

@@ -56,8 +56,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * An abstract {@link com.google.gwt.user.client.ui.Widget} that implements {@link com.google.gwt.view.client.HasData}.
@@ -463,8 +461,6 @@ public abstract class AbstractHasData<T> extends Composite implements HasData<T>
     private HandlerRegistration selectionManagerReg;
     private int tabIndex;
 
-    private final static Logger logger = Logger.getLogger("AbstractHasData");
-
     /**
      * Constructs an {@link AbstractHasData} with the given page size.
      *
@@ -705,8 +701,6 @@ public abstract class AbstractHasData<T> extends Composite implements HasData<T>
      */
     @Override
     public final void onBrowserEvent(Event event) {
-        logger.log(Level.INFO, "onBrowserEvent/before, " + event.getType() + ", " + getKeyboardSelectedRow());
-
         CellBasedWidgetImpl.get().onBrowserEvent(this, event);
 
         // Ignore spurious events (such as onblur) while we refresh the table.
