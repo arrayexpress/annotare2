@@ -85,7 +85,7 @@ public class PasteArea<T> extends FocusWidget implements CellPreviewEvent.Handle
         if (!event.isCellEditing()) {
             NativeEvent e = event.getNativeEvent();
             if (BrowserEvents.KEYDOWN.equals(e.getType())) {
-                if ('v' == e.getKeyCode() && ((e.getMetaKey() && areWeRunningOnMac) || (e.getCtrlKey() && !areWeRunningOnMac))) {
+                if ('V' == e.getKeyCode() && ((e.getMetaKey() && areWeRunningOnMac) || (e.getCtrlKey() && !areWeRunningOnMac))) {
                     intercept(Element.as(e.getEventTarget()));
                 }
             }
