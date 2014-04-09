@@ -24,7 +24,7 @@
                 <g:Label>Please enter values to import, one per line:</g:Label>
             </g:north>
             <g:center>
-                <g:TextArea ui:field="values" width="289" height="322"/>
+                <g:TextArea ui:field="values" width="286px" height="322px"/>
             </g:center>
             <g:south size="40">
                 <g:HTMLPanel>
