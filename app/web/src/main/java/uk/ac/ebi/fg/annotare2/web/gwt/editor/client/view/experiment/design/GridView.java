@@ -48,7 +48,7 @@ import java.util.Set;
 /**
  * @author Olga Melnichuk
  */
-public class GridView<R extends HasIdentity> extends Composite implements PasteArea.PasteEventHandler {
+public class GridView<R extends HasIdentity> extends Composite {
 
     private static final int PAGE_SIZE = 50;
 
@@ -69,7 +69,7 @@ public class GridView<R extends HasIdentity> extends Composite implements PasteA
     private MultiSelectionModel<R> selectionModel;
     private ColumnSortEvent.ListHandler<R> sortHandler;
     private SimplePager pager;
-    private PasteArea<R> pasteArea;
+
 
     private ListDataProvider<R> dataProvider;
 
@@ -100,11 +100,6 @@ public class GridView<R extends HasIdentity> extends Composite implements PasteA
                 });
 
         dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager.<R>createCheckboxManager());
-
-        pasteArea = new PasteArea<R>();
-        pasteArea.addPasteHandler(this);
-
-        dataGrid.addCellPreviewHandler(pasteArea);
 
         dataProvider = new ListDataProvider<R>();
         dataProvider.addDataDisplay(dataGrid);
@@ -238,24 +233,21 @@ public class GridView<R extends HasIdentity> extends Composite implements PasteA
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public void onPaste(PasteArea.PasteEvent event) {
+    public void importValuesToKeyboardSelectedColumn(List<String> values) {
         int colIndex = dataGrid.getKeyboardSelectedColumn();
         int rowIndex = dataGrid.getKeyboardSelectedRow();
 
-        String pastedData = event.getData();
-        if (null != pastedData && !pastedData.isEmpty()) {
-            String[] pastedRows = pastedData.split("\\r\\n|[\\r\\n]");
+        if (null != values && !values.isEmpty()) {
             if (colIndex >= 2 && colIndex < dataGrid.getColumnCount() &&
                     rowIndex >=0 && rowIndex < dataGrid.getRowCount()) {
                 Column<R, ?> column = dataGrid.getColumn(colIndex);
                 AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
                 List<R> rows = dataProvider.getList();
                 FieldUpdater<R, String> updater = (FieldUpdater<R, String>) column.getFieldUpdater();
-                for (int i = 0; i < Math.min(rows.size() - rowIndex, pastedRows.length); i++) {
+                for (int i = 0; i < Math.min(rows.size() - rowIndex, values.size()); i++) {
                     int j = i + rowIndex;
-                    updater.update(j, rows.get(j), pastedRows[i]);
+                    updater.update(j, rows.get(j), values.get(i));
                     cell.clearViewData(rows.get(j));
                 }
                 dataProvider.refresh();

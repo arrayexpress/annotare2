@@ -93,6 +93,15 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         });
         gridView.addTool(button);
 
+        button = new Button("Import Values");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                importValues();
+            }
+        });
+        gridView.addTool(button);
+
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
@@ -173,6 +182,16 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     private void fillDownValue() {
         gridView.fillDownKeyboardSelectedColumn();
+    }
+
+    private void importValues() {
+        new ImportValuesDialog(
+                new DialogCallback<List<String>>() {
+                    @Override
+                    public void onOkay(List<String> values) {
+                        gridView.importValuesToKeyboardSelectedColumn(values);
+                    }
+                });
     }
 
     private void addNameColumn() {
