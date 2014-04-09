@@ -5,6 +5,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PasteArea;
 import com.google.gwt.view.client.CellPreviewEvent;
 
@@ -41,6 +43,7 @@ public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEve
         PasteArea<T> pasteArea = new PasteArea<T>();
         pasteArea.addPasteHandler(this);
         this.addCellPreviewHandler(pasteArea);
+        sinkEvents(Event.ONPASTE);
 
         setKeyboardSelectionHandler(new CustomDataGridKeyboardSelectionHandler<T>(this));
     }
@@ -48,6 +51,7 @@ public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEve
     @Override
     public void onPaste(PasteArea.PasteEvent event) {
         logger.log(Level.INFO, "pasted: " + event.getData());
+        Window.alert(event.getData());
     }
 
     @Override

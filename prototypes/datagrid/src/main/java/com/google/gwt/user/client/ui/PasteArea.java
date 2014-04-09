@@ -26,6 +26,9 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.view.client.CellPreviewEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class PasteArea<T> extends FocusWidget implements CellPreviewEvent.Handler<T> {
 
     public interface PasteEventHandler extends EventHandler {
@@ -60,9 +63,13 @@ public class PasteArea<T> extends FocusWidget implements CellPreviewEvent.Handle
 
     private Element restoreFocusElement;
 
-    private final boolean areWeRunningOnMac;
+    private final boolean isMacOS;
+    private final boolean isWebKit;
+    private final boolean isOpera;
 
     private final TextAreaElement element;
+
+    private final static Logger logger = Logger.getLogger("PasteArea");
 
     public PasteArea() {
         super(Document.get().createTextAreaElement());
@@ -71,7 +78,9 @@ public class PasteArea<T> extends FocusWidget implements CellPreviewEvent.Handle
         this.element.getStyle().setZIndex(100);
         this.element.getStyle().setLeft(-1000, com.google.gwt.dom.client.Style.Unit.PX);
 
-        this.areWeRunningOnMac = Window.Navigator.getPlatform().contains("Mac");
+        this.isMacOS = Window.Navigator.getPlatform().contains("Mac");
+        this.isWebKit = Window.Navigator.getUserAgent().contains("WebKit");
+        this.isOpera = Window.Navigator.getUserAgent().contains("OPR/");
 
         sinkEvents(Event.ONPASTE);
 
@@ -85,8 +94,18 @@ public class PasteArea<T> extends FocusWidget implements CellPreviewEvent.Handle
         if (!event.isCellEditing()) {
             NativeEvent e = event.getNativeEvent();
             if (BrowserEvents.KEYDOWN.equals(e.getType())) {
-                if ('V' == e.getKeyCode() && ((e.getMetaKey() && areWeRunningOnMac) || (e.getCtrlKey() && !areWeRunningOnMac))) {
-                    intercept(Element.as(e.getEventTarget()));
+                if ('V' == e.getKeyCode() && ((e.getMetaKey() && isMacOS) || (e.getCtrlKey() && !isMacOS))) {
+                    if (isWebKit) {
+                        logger.log(Level.INFO, "webkit - webkit");
+                        e.preventDefault();
+                        e.stopPropagation();
+                    } else {
+                        intercept(Element.as(e.getEventTarget()));
+                    }
+                }
+            } else if ("paste".equals(e.getType())) {
+                if (isWebKit && isOpera) {
+                    logger.log(Level.INFO, "opera - opera");
                 }
             }
         }
