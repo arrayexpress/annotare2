@@ -88,11 +88,15 @@ public class ImportValuesDialog extends DialogBox {
     }
 
     private List<String> getImportedValues() {
-        String pastedValue = values.getValue();
+        String pastedRows = values.getValue();
         List<String> result = new ArrayList<String>();
-        if (null != pastedValue && !pastedValue.isEmpty()) {
-            for (String value : pastedValue.split("\\r\\n|[\\r\\n]")) {
-                result.add(value.split("\\t")[0].replace("^[\"][^\"]*[\"]$", "$1").trim());
+        if (null != pastedRows && !pastedRows.isEmpty()) {
+            for (String row : pastedRows.split("\\r\\n|[\\r\\n]")) {
+                String[] cols = row.split("\\t");
+                result.add(cols.length > 0 ?
+                        cols[0].replaceAll("^[\"]([^\"]*)[\"]$", "$1").trim() :
+                        ""
+                );
             }
         }
         return result;
