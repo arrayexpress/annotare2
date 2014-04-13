@@ -343,9 +343,10 @@ public class CustomDataGrid<T> extends DataGrid<T> {
                 int col = event.getColumn();
                 int relRow = event.getIndex() - getDisplay().getPageStart();
                 int subrow = event.getContext().getSubIndex();
-                if ((table.getKeyboardSelectedColumn() != col)
+                if (((table.getKeyboardSelectedColumn() != col)
                         || (table.getKeyboardSelectedRow() != relRow)
-                        || (table.getKeyboardSelectedSubRow() != subrow)) {
+                        || (table.getKeyboardSelectedSubRow() != subrow))
+                            && isColumnInteractive(table.getColumn(col))) {
                     boolean stealFocus = false;
                     if (BrowserEvents.CLICK.equals(eventType)) {
                         // If a natively focusable element was just clicked, then do not
