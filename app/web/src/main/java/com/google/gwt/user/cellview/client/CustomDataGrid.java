@@ -24,6 +24,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HeaderPanel;
@@ -250,6 +251,12 @@ public class CustomDataGrid<T> extends DataGrid<T> {
             td.replaceClassName(getStyle().dataGridKeyboardSelectedCell(), getStyle().dataGridKeyboardSelectedInactiveCell());
             setRowStyleName(tr, getStyle().dataGridKeyboardSelectedRow(), getStyle().dataGridKeyboardSelectedRowCell(), false);
         }
+    }
+
+    @Override
+    protected void replaceAllChildren(List<T> values, SafeHtml html) {
+        super.replaceAllChildren(values, html);
+        this.onBlur();
     }
 
     private CustomStyle getStyle() {
