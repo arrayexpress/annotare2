@@ -59,9 +59,27 @@ public class SubmissionValidator {
 
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
 
-        Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
-        if (null != dataFiles && dataFiles.size() > 0) {
-            for (DataFile dataFile : dataFiles) {
+        Set<DataFile> allFiles = submission.getFiles();
+        Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
+
+        if (null == allFiles || 0 == allFiles.size()) {
+            results.add(
+                    CheckResult.checkFailed(
+                            "At least one data file must be uploaded and assigned"
+                            , CheckModality.ERROR
+                            , CheckPosition.undefinedPosition()
+                    )
+            );
+        } else if (null == assignedFiles || 0 == assignedFiles.size()) {
+            results.add(
+                    CheckResult.checkFailed(
+                            "At least one uploaded data file must be assigned"
+                            , CheckModality.ERROR
+                            , CheckPosition.undefinedPosition()
+                    )
+            );
+        } else {
+            for (DataFile dataFile : assignedFiles) {
                 DataFileSource source = dataFileManager.getFileSource(dataFile);
                 if (null == source || !source.exists()) {
                     results.add(
