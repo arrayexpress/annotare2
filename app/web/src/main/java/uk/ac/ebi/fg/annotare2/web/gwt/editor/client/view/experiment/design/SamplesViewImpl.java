@@ -206,7 +206,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             @Override
             public void update(int index, SampleRow row, String value) {
                 if (isNameValid(value, index)) {
-                    row.setName(value);
+                    row.setName(trimValue(value));
                     updateRow(row);
                 } else {
                     nameCell.clearViewData(row);
@@ -282,7 +282,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
             @Override
             public void update(int index, SampleRow row, String value) {
-                row.setValue(value, sampleColumn);
+                row.setValue(trimValue(value), sampleColumn);
                 updateRow(row);
             }
         });
@@ -312,7 +312,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
             @Override
             public void update(int index, SampleRow row, String value) {
-                row.setValue(value, sampleColumn);
+                row.setValue(trimValue(value), sampleColumn);
                 updateRow(row);
             }
         });
@@ -330,11 +330,18 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
             @Override
             public void update(int index, SampleRow row, String value) {
-                row.setValue(value, sampleColumn);
+                row.setValue(trimValue(value), sampleColumn);
                 updateRow(row);
             }
         });
         //column.setSortable(true);
         gridView.addPermanentColumn("Material Type", column, null, COLUMN_WIDTH, Style.Unit.PX);
+    }
+
+    private String trimValue(String value) {
+        if (null != value) {
+            value = value.replaceAll("([^\\t]*)[\\t].*", "$1").trim();
+        }
+        return value;
     }
 }
