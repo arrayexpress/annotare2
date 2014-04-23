@@ -295,7 +295,7 @@ public class MageTabGenerator {
             return emptyMap();
         }
 
-        FileColumn fileColumn = getFirstRawFileColumn();
+        FileColumn fileColumn = getFirstFileColumn();
         if (null == fileColumn) {
             return emptyMap();
         }
@@ -317,9 +317,9 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private FileColumn getFirstRawFileColumn() {
+    private FileColumn getFirstFileColumn() {
         Collection<FileColumn> columns = sortFileColumns(
-                exp.getFileColumns(FileType.RAW_FILE, FileType.RAW_MATRIX_FILE)
+                exp.getFileColumns()
         );
         return columns.isEmpty() ? null : columns.iterator().next();
     }
