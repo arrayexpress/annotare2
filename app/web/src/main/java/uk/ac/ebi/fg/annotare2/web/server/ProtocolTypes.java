@@ -100,6 +100,9 @@ public class ProtocolTypes {
         @JsonProperty("subject")
         private final ProtocolSubjectType subjectType;
 
+        @JsonProperty("precedence")
+        private final Integer precedence;
+
         @JsonProperty("definition")
         private final String definition;
 
@@ -107,11 +110,13 @@ public class ProtocolTypes {
                       @JsonProperty("id") String id,
                       @JsonProperty("usage") Usage usage,
                       @JsonProperty("subject") ProtocolSubjectType subjectType,
+                      @JsonProperty("precedence") Integer precedence,
                       @JsonProperty("definition") String definition) {
             this.label = checkNotNull(label);
             this.id = checkNotNull(id);
             this.usage = checkNotNull(usage);
             this.subjectType = checkNotNull(subjectType);
+            this.precedence = checkNotNull(precedence);
             this.definition = checkNotNull(definition);
         }
 
@@ -125,6 +130,10 @@ public class ProtocolTypes {
 
         public ProtocolSubjectType getSubjectType() {
             return subjectType;
+        }
+
+        public Integer getPrecedence() {
+            return precedence;
         }
 
         private boolean isUsedIn(ExperimentProfileType expType) {

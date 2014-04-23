@@ -31,7 +31,8 @@ public class ProtocolType implements IsSerializable {
 
     private ProtocolSubjectType subjectType;
 
-    ProtocolType() {
+    @SuppressWarnings("unused")
+    private ProtocolType() {
     }
 
     public ProtocolType(OntologyTerm term, String definition, ProtocolSubjectType subjectType) {

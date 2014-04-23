@@ -4,6 +4,7 @@
         "id": "EFO_0003789",
         "usage": "ANY",
         "subject": "SAMPLE",
+        "precedence": "1",
         "definition": "A growth protocol is a protocol which provides instructions on the growth of a biological sample. E.g. the growth of a specific cell line or Drosophila culture"
     },
     {
@@ -11,6 +12,7 @@
         "id": "EFO_0003969",
         "usage": "ANY",
         "subject": "SAMPLE",
+        "precedence": "2",
         "definition": "A protocol in which the aim is to treat a sample, collection of samples, organism or group of organisms for some experimental analysis of outcome."
     },
     {
@@ -18,20 +20,39 @@
         "id": "EFO_0002944",
         "usage": "ANY",
         "subject": "SAMPLE",
+        "precedence": "3",
         "definition": "A protocol description in which a material separation to recover the nucleic acid fraction of an input material is performed"
+    },
+    {
+        "label": "nucleic acid library construction protocol",
+        "id": "EFO_0004184",
+        "usage": "SEQUENCING",
+        "subject": "SAMPLE",
+        "precedence": "4",
+        "definition": "A protocol describing the processes performed and equipment used to prepare nucleic acid sequencing library."
     },
     {
         "label": "nucleic acid labeling protocol",
         "id": "EFO_0003813",
         "usage": "MICRO_ARRAY",
         "subject": "EXTRACT",
+        "precedence": "10",
         "definition": "A protocol description in which input nucleic acid material is labeled."
+    },
+    {
+        "label": "nucleic acid sequencing protocol",
+        "id": "EFO_0004170",
+        "usage": "SEQUENCING",
+        "subject": "EXTRACT",
+        "precedence": "11",
+        "definition": "A protocol describing the processes performed and equipment used to determine the order of nucleotide bases in a nucleic acid sample"
     },
     {
         "label": "nucleic acid hybridization to array protocol",
         "id": "EFO_0003815",
         "usage": "MICRO_ARRAY",
         "subject": "LABELED_EXTRACT",
+        "precedence": "20",
         "definition": "A protocol describing the hybridisation of the target nucleic acid sample to a fixed probe on the array."
     },
     {
@@ -39,27 +60,15 @@
         "id": "EFO_0003814",
         "usage": "MICRO_ARRAY",
         "subject": "ASSAY",
+        "precedence": "30",
         "definition": "A protocol describing an image acquisition process that generates an image and features extracted in numerical form from an array."
-    },
-    {
-        "label": "nucleic acid library construction protocol",
-        "id": "EFO_0004184",
-        "usage": "SEQUENCING",
-        "subject": "SAMPLE",
-        "definition": "A protocol describing the processes performed and equipment used to prepare nucleic acid sequencing library."
-    },
-    {
-        "label": "nucleic acid sequencing protocol",
-        "id": "EFO_0004170",
-        "usage": "SEQUENCING",
-        "subject": "EXTRACT",
-        "definition": "A protocol describing the processes performed and equipment used to determine the order of nucleotide bases in a nucleic acid sample"
     },
     {
         "label": "high throughput sequence alignment protocol",
         "id": "EFO_0004917",
         "usage": "SEQUENCING",
-        "subject": "ASSAY",
+        "subject": "RAW_FILE",
+        "precedence": "40",
         "definition": "Is a protocol which provides instructions on the alignment of sequencing reads to reference genome"
     },
     {
@@ -67,6 +76,7 @@
         "id": "EFO_0003816",
         "usage": "ANY",
         "subject": "RAW_FILE",
+        "precedence": "41",
         "definition": "A protocol describing a data transformation in which data transformation has the objective normalization"
     }
 ]
