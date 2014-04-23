@@ -27,9 +27,6 @@ public class URIEncoderDecoder {
     }
 
     public static String encode(String str) throws UnsupportedEncodingException {
-
-        String result = str;
-
         return URLEncoder.encode(str, "UTF-8")
                     .replaceAll("\\%28", "(")
                     .replaceAll("\\%29", ")")
