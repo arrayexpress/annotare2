@@ -39,6 +39,14 @@
     <title>Annotare 2.0 - Sign In</title>
     <link type="text/css" rel="stylesheet" href="general.css">
     <link type="text/css" rel="stylesheet" href="login.css">
+    <script>
+        function fixEmail() {
+            var email_elt = document.forms["login"]["email"];
+            if (undefined != email_elt.value && email_elt.value.length > 0 && -1 == email_elt.value.indexOf("@")) {
+                email_elt.value = email_elt.value + "@ebi.ac.uk";
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -46,7 +54,7 @@
     <div class="inner">
 
         <div class="frame">
-            <form method="POST">
+            <form name="login" method="POST">
                 <table class="form">
                     <tr>
                         <td></td>
@@ -65,10 +73,10 @@
                         <td>
                             <c:choose>
                                 <c:when test="${email != ''}">
-                                    <input type="text" name="email" value="${email}" style="width:98%"/>
+                                    <input type="text" name="email" value="${email}" style="width:98%" onblur="fixEmail()"/>
                                 </c:when>
                                 <c:otherwise>
-                                    <input type="text" name="email" style="width:98%" autofocus="autofocus"/>
+                                    <input type="text" name="email" style="width:98%" autofocus="autofocus" onblur="fixEmail()"/>
                                 </c:otherwise>
                             </c:choose>
                         </td>
