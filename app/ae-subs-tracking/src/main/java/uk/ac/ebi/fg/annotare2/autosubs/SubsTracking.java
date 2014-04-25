@@ -88,8 +88,8 @@ public class SubsTracking {
                                 .set(EXPERIMENTS.USER_ID, userId)
                                 .set(EXPERIMENTS.DATE_SUBMITTED, new Timestamp(new Date().getTime()))
                                 .set(EXPERIMENTS.ACCESSION, submission.getAccession())
-                                .set(EXPERIMENTS.NAME, iso88591CompliantString(submission.getTitle()))
-                                .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, iso88591CompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
+                                .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()))
+                                .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
                                 .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
                                 .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() ? 1 : 0)
                                 .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
@@ -129,8 +129,8 @@ public class SubsTracking {
                 getContext(connection).update(EXPERIMENTS)
                         .set(EXPERIMENTS.DATE_LAST_EDITED, updateDate)
                         .set(EXPERIMENTS.DATE_SUBMITTED, updateDate)
-                        .set(EXPERIMENTS.NAME, iso88591CompliantString(submission.getTitle()))
-                        .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, iso88591CompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
+                        .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()))
+                        .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
                         .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
                         .set(EXPERIMENTS.NUM_SUBMISSIONS, numSubmissions + 1)
                         .where(EXPERIMENTS.ID.equal(submission.getSubsTrackingId()))
@@ -314,10 +314,10 @@ public class SubsTracking {
         }
     }
 
-    private String iso88591CompliantString(String s) {
+    private String asciiCompliantString(String s) {
         try {
-            byte[] b = s.getBytes("ISO-8859-1");
-            return new String(b, "ISO-8859-1");
+            byte[] b = s.getBytes("US-ASCII");
+            return new String(b, "US-ASCII");
         } catch (UnsupportedEncodingException x) {
             //
         }
