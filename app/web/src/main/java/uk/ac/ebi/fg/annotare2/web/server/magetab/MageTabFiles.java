@@ -28,17 +28,11 @@ import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
-import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.NodeFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.web.server.UnexpectedException;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 
 import static com.google.common.io.Closeables.close;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllAssayNameValues;
@@ -74,8 +68,6 @@ public class MageTabFiles {
 
         /* Generated MAGE-TAB lacks cell locations, which are good to have during validation.
          * So we have to write files to disk and parse again */
-
-        useDirtyHack();
 
         generated.IDF.sdrfFile.add(sdrfFile.getName());
 
@@ -158,46 +150,4 @@ public class MageTabFiles {
             log.error("Can't sanitize MAGE-TAB file" + file.getAbsolutePath(), e);
         }
     }
-
-    /**
-     * A workaround to reset NodeFactory.instance field to reflect changes in SDRF nodes;
-     * without this workaround SDRFWriter uses SDRF nodes from the first run;
-     */
-    private static void useDirtyHack() {
-        try {
-            NodeFactory newValue = newNodeFactoryHack();
-
-            Field field = NodeFactory.class.getDeclaredField("instance");
-            field.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-            field.set(null, newValue);
-        } catch (ClassNotFoundException e) {
-            throw unexpectedException(e);
-        } catch (NoSuchMethodException e) {
-            throw unexpectedException(e);
-        } catch (IllegalAccessException e) {
-            throw unexpectedException(e);
-        } catch (InvocationTargetException e) {
-            throw unexpectedException(e);
-        } catch (InstantiationException e) {
-            throw unexpectedException(e);
-        } catch (NoSuchFieldException e) {
-            throw unexpectedException(e);
-        }
-    }
-
-    private static UnexpectedException unexpectedException(Exception e) {
-        return new UnexpectedException("MAGE TAB hack doesn't work", e);
-    }
-
-    private static NodeFactory newNodeFactoryHack() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        Class<?> clazz = Class.forName("uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.NodeFactory");
-        Constructor<?> constructor = clazz.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        return (NodeFactory) constructor.newInstance();
-    }
-
 }
