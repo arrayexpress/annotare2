@@ -16,10 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import org.apache.commons.io.FilenameUtils;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
+import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.SDRFGraphWriter;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
@@ -45,7 +49,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
@@ -55,10 +59,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -66,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllAssayNameValues;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
@@ -165,15 +167,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private Table asIdfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, false);
-        return new TsvParser().parse(new FileInputStream(mageTab.getIdfFile()));
-        //TODO: delete temporary file ?
+        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate(MageTabGenerator.GeneratePart.IDF);
+        StringWriter out = new StringWriter();
+        new IDFWriter(out).write(mageTab.IDF);
+        return new TsvParser().parse(new ByteArrayInputStream(out.toString().getBytes(Charsets.UTF_8)));
     }
 
     private Table asSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, false);
-        return new TsvParser().parse(new FileInputStream(mageTab.getSdrfFile()));
-        //TODO: delete temporary file ?
+        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate(MageTabGenerator.GeneratePart.SDRF);
+        StringWriter out = new StringWriter();
+        new SDRFGraphWriter(out).write(mageTab.SDRF);
+        String sdrf = replaceAllAssayNameValues(out.toString());
+        return new TsvParser().parse(new ByteArrayInputStream(sdrf.getBytes(Charsets.UTF_8)));
     }
 
     @Transactional
@@ -260,8 +265,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (URISyntaxException e) {
             throw unexpected(e);
-        ///} catch (JMSException e) {
-        ///    throw unexpected(e);
         } catch (IOException e) {
             throw unexpected(e);
         }
@@ -363,8 +366,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
-        ///} catch (JMSException e) {
-        ///    throw unexpected(e);
         } catch (DataSerializationException e) {
             throw unexpected(e);
         }
@@ -419,7 +420,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private void saveFile(final DataFileSource source, final ExperimentSubmission submission)
-            throws /***JMSException,***/ DataSerializationException, IOException {
+            throws DataSerializationException, IOException {
         String fileName = source.getName();
         Set<DataFile> files = submission.getFiles();
         for (DataFile dataFile : files) {
@@ -437,7 +438,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private void storeAssociatedFiles(ExperimentSubmission submission)
-            throws DataSerializationException/***, JMSException***/, URISyntaxException, IOException {
+            throws DataSerializationException, URISyntaxException, IOException {
 
         Set<DataFile> files = dataFileManager.getAssignedFiles(
                 submission,

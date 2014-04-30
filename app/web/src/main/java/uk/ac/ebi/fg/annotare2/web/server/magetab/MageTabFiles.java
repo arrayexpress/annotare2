@@ -64,7 +64,7 @@ public class MageTabFiles {
     }
 
     private MageTabFiles init(ExperimentProfile exp) throws IOException, ParseException {
-        MAGETABInvestigation generated = (new MageTabGenerator(exp)).generate();
+        MAGETABInvestigation generated = (new MageTabGenerator(exp)).generate(MageTabGenerator.GeneratePart.BOTH);
 
         /* Generated MAGE-TAB lacks cell locations, which are good to have during validation.
          * So we have to write files to disk and parse again */

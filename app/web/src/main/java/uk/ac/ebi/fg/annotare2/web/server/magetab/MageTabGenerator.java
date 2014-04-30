@@ -43,6 +43,8 @@ import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
  */
 public class MageTabGenerator {
 
+    public enum GeneratePart { IDF, SDRF, BOTH }
+
     public static String replaceAllAssayNameValues(String str) {
         return AssayNameValue.replaceAll(str);
     }
@@ -103,16 +105,24 @@ public class MageTabGenerator {
         this.exp = exp;
     }
 
-    public MAGETABInvestigation generate() throws ParseException {
+    public MAGETABInvestigation generate(GeneratePart part) throws ParseException {
         nodeCache.clear();
 
         unassignedValue = new UnassignedValue();
         assayNameValue = new AssayNameValue();
 
         MAGETABInvestigation inv = new MAGETABInvestigation();
-        generateIdf(inv.IDF);
-        generateSdrf(inv.SDRF);
-        addTermSources(inv.IDF);
+
+        if (GeneratePart.BOTH == part || GeneratePart.IDF == part) {
+            generateIdf(inv.IDF);
+        }
+        if (GeneratePart.BOTH == part || GeneratePart.SDRF == part) {
+            generateSdrf(inv.SDRF);
+        }
+        if (GeneratePart.BOTH == part || GeneratePart.IDF == part) {
+            addTermSources(inv.IDF);
+        }
+
         return inv;
     }
 
@@ -368,7 +378,6 @@ public class MageTabGenerator {
             if (protocolNode == null) {
                 if (protocol.isAssigned()) {
                     protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
-                    protocolNode.setNodeName(nodeName);
                     protocolNode.protocol = protocol.getName();
                     if (protocol.hasPerformer()) {
                         PerformerAttribute attr = new PerformerAttribute();
@@ -377,6 +386,7 @@ public class MageTabGenerator {
                     }
                 } else {
                     protocolNode = createFakeNode(ProtocolApplicationNode.class);
+                    protocolNode.protocol = "";
                 }
             }
             connect(prev, protocolNode);
