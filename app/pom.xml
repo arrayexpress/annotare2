@@ -147,7 +147,7 @@
             <dependency>
                 <groupId>uk.ac.ebi.fg.annotare2</groupId>
                 <artifactId>magetabcheck</artifactId>
-                <version>1.12-SNAPSHOT</version>
+                <version>1.12</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>
