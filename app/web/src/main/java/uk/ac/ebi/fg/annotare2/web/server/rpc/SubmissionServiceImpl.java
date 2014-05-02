@@ -167,14 +167,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private Table asIdfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate(MageTabGenerator.GeneratePart.IDF);
+        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate();
         StringWriter out = new StringWriter();
         new IDFWriter(out).write(mageTab.IDF);
         return new TsvParser().parse(new ByteArrayInputStream(out.toString().getBytes(Charsets.UTF_8)));
     }
 
     private Table asSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate(MageTabGenerator.GeneratePart.SDRF);
+        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate();
         StringWriter out = new StringWriter();
         new SDRFGraphWriter(out).write(mageTab.SDRF);
         String sdrf = replaceAllAssayNameValues(out.toString());
