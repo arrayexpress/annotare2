@@ -639,7 +639,9 @@ public class ExperimentProfile implements Serializable {
         for (Integer sampleId : sampleId2ExtractIds.keySet()) {
             Sample sample = sampleMap.get(sampleId);
             for (Integer extractId : sampleId2ExtractIds.get(sampleId)) {
-                sample2Extracts.put(sample, extractMap.get(extractId));
+                if (extractMap.containsKey(extractId)) {
+                    sample2Extracts.put(sample, extractMap.get(extractId));
+                }
             }
         }
         sampleId2ExtractIds = null;
@@ -652,7 +654,9 @@ public class ExperimentProfile implements Serializable {
         for (Integer protocolId : protocolId2SampleIds.keySet()) {
             Protocol protocol = protocolMap.get(protocolId);
             for (Integer sampleId : protocolId2SampleIds.get(protocolId)) {
-                protocol2Samples.put(protocol, sampleMap.get(sampleId));
+                if (sampleMap.containsKey(sampleId)) {
+                    protocol2Samples.put(protocol, sampleMap.get(sampleId));
+                }
             }
         }
         protocolId2SampleIds = null;
@@ -665,7 +669,9 @@ public class ExperimentProfile implements Serializable {
         for (Integer protocolId : protocolId2ExtractIds.keySet()) {
             Protocol protocol = protocolMap.get(protocolId);
             for (Integer extractId : protocolId2ExtractIds.get(protocolId)) {
-                protocol2Extracts.put(protocol, extractMap.get(extractId));
+                if (extractMap.containsKey(extractId)) {
+                    protocol2Extracts.put(protocol, extractMap.get(extractId));
+                }
             }
         }
         protocolId2ExtractIds = null;
@@ -678,7 +684,9 @@ public class ExperimentProfile implements Serializable {
         for (Integer protocolId : protocolId2LabeledExtractIds.keySet()) {
             Protocol protocol = protocolMap.get(protocolId);
             for (String labeledExtractId : protocolId2LabeledExtractIds.get(protocolId)) {
-                protocol2LabeledExtracts.put(protocol, labeledExtractMap.get(labeledExtractId));
+                if (labeledExtractMap.containsKey(labeledExtractId)) {
+                    protocol2LabeledExtracts.put(protocol, labeledExtractMap.get(labeledExtractId));
+                }
             }
         }
         protocolId2LabeledExtractIds = null;
