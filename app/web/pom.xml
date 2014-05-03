@@ -299,11 +299,29 @@
                             <directory>${basedir}/src/main/webapp</directory>
                             <includes>
                                 <include>META-INF/context.xml</include>
+                                <include>login.jsp</include>
                             </includes>
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
                     <!--packagingExcludes>**/client/**</packagingExcludes-->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <shortRevisionLength>10</shortRevisionLength>
                 </configuration>
             </plugin>
             <plugin>

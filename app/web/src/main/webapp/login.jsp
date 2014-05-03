@@ -58,7 +58,7 @@
                 <table class="form">
                     <tr>
                         <td></td>
-                        <td><h1>Annotare 2.0 <span style="color:red">beta</span></h1></td>
+                        <td><h1><a href="./" title="Annotare 2.${project.version} rev. ${buildNumber}">Annotare 2.0 <span style="color:red">beta</span></a></h1></td>
                     </tr>
                     <tr class="info">
                         <td></td>
