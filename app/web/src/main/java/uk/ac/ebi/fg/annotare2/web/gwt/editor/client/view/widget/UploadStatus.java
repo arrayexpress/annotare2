@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gwtupload.client.IUploadStatus;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -153,8 +154,8 @@ public class UploadStatus extends Composite implements IUploadStatus {
     }
 
     @Override
-    public void setFileName(String name) {
-        fileName.setText(name);
+    public void setFileNames(List<String> name) {
+        fileName.setText(name.get(0));
     }
 
     @Override
