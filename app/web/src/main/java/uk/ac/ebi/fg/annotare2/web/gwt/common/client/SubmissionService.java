@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetai
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
@@ -64,9 +65,9 @@ public interface SubmissionService extends RemoteService {
 
     List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    void uploadDataFile(long id, String fileName) throws ResourceNotFoundException, NoPermissionException;
+    void registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 
-    Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException;
+    Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 
     void deleteDataFile(long id, long fileId) throws ResourceNotFoundException, NoPermissionException;
 

@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.fileupload.FileItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
@@ -45,6 +45,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetai
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
@@ -312,13 +313,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void uploadDataFile(long id, String fileNameOrPath) throws ResourceNotFoundException, NoPermissionException {
+    public void registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
-            String fileName = FilenameUtils.getName(fileNameOrPath);
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            File uploadedFile = new File(properties.getHttpUploadDir(), fileName);
-            UploadedFiles.get(getSession(), fileName).write(uploadedFile);
-            saveFile(new LocalFileSource(uploadedFile), submission);
+            for (HttpFileInfo info : filesInfo) {
+                File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
+                FileItem received = UploadedFiles.get(getSession(), info.getFieldName());
+                received.write(uploadedFile);
+                saveFile(new LocalFileSource(uploadedFile), submission);
+            }
+            UploadedFiles.removeSessionFiles(getSession());
         } catch (Exception e) {
             throw unexpected(e);
         }
@@ -326,7 +330,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> details) throws ResourceNotFoundException, NoPermissionException {
+    public Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
 
@@ -340,7 +344,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
             Map<Integer, String> errors = new HashMap<Integer, String>();
             int index = 0;
-            for (FtpFileInfo info : details) {
+            for (FtpFileInfo info : filesInfo) {
                 URI fileUri = new URI(ftpRoot + URIEncoderDecoder.encode(info.getFileName()));
                 DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 

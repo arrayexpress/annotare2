@@ -25,6 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 
 import java.util.ArrayList;
@@ -106,8 +107,8 @@ public class DataFilesProxy {
         }
     }
 
-    public void uploadFileAsync(String name) {
-        submissionServiceAsync.uploadDataFile(getSubmissionId(), name, new AsyncCallbackWrapper<Void>() {
+    public void registerHttpFilesAsync(List<HttpFileInfo> filesInfo) {
+        submissionServiceAsync.registerHttpFiles(getSubmissionId(), filesInfo, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Server error: can't finish file uploading");

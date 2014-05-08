@@ -18,30 +18,27 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * @author Olga Melnichuk
- */
-public class FtpFileInfo implements IsSerializable {
+public class HttpFileInfo implements IsSerializable {
+
+    private String fieldName;
 
     private String fileName;
 
-    private String md5;
-
     @SuppressWarnings("unused")
-    FtpFileInfo() {
+    HttpFileInfo() {
         /* used by GWT serialization */
     }
 
-    public FtpFileInfo(String fileName, String md5) {
+    public HttpFileInfo(String fieldName, String fileName) {
+        this.fieldName = fieldName;
         this.fileName = fileName;
-        this.md5 = md5;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     public String getFileName() {
         return fileName;
-    }
-
-    public String getMd5() {
-        return md5;
     }
 }
