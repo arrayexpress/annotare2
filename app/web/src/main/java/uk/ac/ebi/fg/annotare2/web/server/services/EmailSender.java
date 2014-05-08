@@ -63,24 +63,24 @@ public class EmailSender
 
     public void sendException(String note, Throwable x) {
         try {
-        Thread currentThread = Thread.currentThread();
-        String hostName = "unknown";
-        try {
-            InetAddress localMachine = InetAddress.getLocalHost();
-            hostName = localMachine.getHostName();
-        } catch (UnknownHostException xx) {
-            log.error("Unable to obtain a hostname", xx);
-        }
-        sendFromTemplate(
-                EXCEPTION_REPORT_TEMPLATE,
-                ImmutableMap.of(
-                        "application.host", hostName,
-                        "application.thread", currentThread.getName(),
-                        "exception.note", note,
-                        "exception.message", x.getMessage(),
-                        "exception.stack", getStackTrace(x)
-                )
-        );
+            Thread currentThread = Thread.currentThread();
+            String hostName = "unknown";
+            try {
+                InetAddress localMachine = InetAddress.getLocalHost();
+                hostName = localMachine.getHostName();
+            } catch (UnknownHostException xx) {
+                log.error("Unable to obtain a hostname", xx);
+            }
+            sendFromTemplate(
+                    EXCEPTION_REPORT_TEMPLATE,
+                    ImmutableMap.of(
+                            "application.host", hostName,
+                            "application.thread", currentThread.getName(),
+                            "exception.note", note,
+                            "exception.message", (null != x && null != x.getMessage()) ? x.getMessage() : "",
+                            "exception.stack", getStackTrace(x)
+                    )
+            );
         } catch (Throwable xxx) {
             log.error("[SEVERE] Unable to send exception report, error:", xxx);
         }
