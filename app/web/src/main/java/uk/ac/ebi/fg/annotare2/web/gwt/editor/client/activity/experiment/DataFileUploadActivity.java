@@ -28,6 +28,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
@@ -107,13 +108,13 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     }
 
     @Override
-    public void fileUploaded(String name) {
-        dataFilesProxy.uploadFileAsync(name);
+    public void filesUploaded(List<HttpFileInfo> filesInfo) {
+        dataFilesProxy.registerHttpFilesAsync(filesInfo);
     }
 
     @Override
-    public void onFtpRegistrationFormSubmit(List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> callback) {
-        dataFilesProxy.registerFtpFilesAsync(details, callback);
+    public void onFtpRegistrationFormSubmit(List<FtpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+        dataFilesProxy.registerFtpFilesAsync(filesInfo, callback);
     }
 
     @Override

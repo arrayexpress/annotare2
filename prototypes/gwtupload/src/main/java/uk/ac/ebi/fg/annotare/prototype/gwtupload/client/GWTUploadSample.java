@@ -11,6 +11,9 @@ import gwtupload.client.MultiUploader;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -19,6 +22,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class GWTUploadSample implements EntryPoint {
     interface GWTUploadSampleBinder extends UiBinder<Widget, GWTUploadSample> { //
     }
+
+    private final static Logger logger = Logger.getLogger("GWTUploadSample");
+
 
     public void onModuleLoad() {
         //final GWTUploadSampleBinder binder = GWT.create(GWTUploadSampleBinder.class);
@@ -37,15 +43,17 @@ public class GWTUploadSample implements EntryPoint {
     private IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
         public void onFinish(IUploader uploader) {
             if (uploader.getStatus() == Status.SUCCESS) {
-
-                // The server sends useful information to the client by default
-                IUploader.UploadedInfo info = uploader.getServerInfo();
-                System.out.println("File name " + info.name);
-                System.out.println("File content-type " + info.ctype);
-                System.out.println("File size " + info.size);
-
-                // You can send any customized message and parse it
-                System.out.println("Server message " + info.message);
+                //
+                IFileInput input = uploader.getFileInput();
+                String fieldName = input.getName();
+                List<String> fileNames = input.getFilenames();
+                for (int i = 0; i < input.getFilenames().size(); ++i) {
+                    logger.info("Input file name [" + fileNames.get(i) + "], field name [" + fieldName + "-" + i + "]");
+                }
+                List<IUploader.UploadedInfo> infos = uploader.getServerMessage().getUploadedInfos();
+                for (IUploader.UploadedInfo info : infos) {
+                    logger.info("Uploaded file name [" + info.getFileName() + "], field name [" + info.getField() + "]");
+                }
             }
         }
     };

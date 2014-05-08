@@ -27,24 +27,28 @@ import java.util.List;
  */
 public class UploadedFiles {
 
-    private static final String GWTUPLOAD_ATTRIBUTE_NAME = "LAST_FILES";
+    private static final String GWTUPLOAD_ATTRIBUTE_NAME = "FILES";
 
-    public static FileItem getFirst(HttpSession session) throws FileNotFoundException {
-        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
-        if (items.isEmpty()) {
-            throw new FileNotFoundException("Can't find the uploaded file.");
-        }
-        return items.get(0);
-    }
-
-    public static FileItem get(HttpSession session, String fileName) throws FileNotFoundException {
+    @SuppressWarnings("unchecked")
+    public static FileItem get(HttpSession session, String fieldName) throws FileNotFoundException {
         List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
         for (FileItem item : items) {
-            if (item.getFieldName().equals(fileName)) {
+            if (item.getFieldName().equals(fieldName)) {
                 return item;
             }
         }
         throw new FileNotFoundException("Can't find the uploaded file.");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void removeSessionFiles(HttpSession session) {
+        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        for (FileItem item : items) {
+            if (null != item && !item.isFormField()) {
+                item.delete();
+            }
+        }
+        session.removeAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
     }
 
 }

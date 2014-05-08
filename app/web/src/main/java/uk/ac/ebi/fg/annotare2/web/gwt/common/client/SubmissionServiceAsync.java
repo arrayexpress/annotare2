@@ -7,6 +7,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetai
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
@@ -41,9 +42,9 @@ public interface SubmissionServiceAsync {
 
     void loadDataFiles(long id, AsyncCallback<List<DataFileRow>> async);
 
-    void uploadDataFile(long id, String fileName, AsyncCallback<Void> async);
+    void registerHttpFiles(long id, List<HttpFileInfo> filesInfo, AsyncCallback<Void> async);
 
-    void registerFtpFiles(long id, List<FtpFileInfo> details, AsyncCallback<Map<Integer, String>> async);
+    void registerFtpFiles(long id, List<FtpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
 
     void deleteDataFile(long id, long fileId, AsyncCallback<Void> async);
 
