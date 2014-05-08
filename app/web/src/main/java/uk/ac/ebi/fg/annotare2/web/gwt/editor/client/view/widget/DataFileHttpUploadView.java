@@ -22,11 +22,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import gwtupload.client.IFileInput;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploader;
 import gwtupload.client.MultiUploader;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static gwtupload.client.IUploadStatus.Status.SUCCESS;
@@ -48,7 +50,7 @@ public class DataFileHttpUploadView extends Composite {
     public DataFileHttpUploadView() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        final MultiUploader uploader = new MultiUploader();
+        final MultiUploader uploader = new MultiUploader(IFileInput.FileInputType.LABEL);
         uploader.avoidRepeatFiles(false);
         Set<IUploadStatus.CancelBehavior> cancelBehaviors = new HashSet<IUploadStatus.CancelBehavior>();
         cancelBehaviors.add(IUploadStatus.CancelBehavior.REMOVE_CANCELLED_FROM_LIST);
@@ -64,9 +66,12 @@ public class DataFileHttpUploadView extends Composite {
             @Override
             public void onFinish(IUploader iuploader) {
                 if (iuploader.getStatus() == SUCCESS) {
-                    iuploader.getWidget().removeFromParent();
+                    //iuploader.asWidget().removeFromParent();
                     if (presenter != null) {
-                        presenter.fileUploaded(iuploader.getFileName());
+                        List<IUploader.UploadedInfo> uploaded = iuploader.getServerMessage().getUploadedInfos();
+                        for (IUploader.UploadedInfo info : uploaded) {
+                            presenter.fileUploaded(info.getField());
+                        }
                     }
                 }
             }

@@ -40,7 +40,7 @@ public class UploadedFiles {
     public static FileItem get(HttpSession session, String fileName) throws FileNotFoundException {
         List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
         for (FileItem item : items) {
-            if (item.getName().equals(fileName)) {
+            if (item.getFieldName().equals(fileName)) {
                 return item;
             }
         }
