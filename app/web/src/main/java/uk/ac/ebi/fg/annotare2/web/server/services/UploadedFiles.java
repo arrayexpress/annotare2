@@ -37,7 +37,16 @@ public class UploadedFiles {
                 return item;
             }
         }
-        throw new FileNotFoundException("Can't find the uploaded file.");
+        throw new FileNotFoundException("Unable to locate uploaded file");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static FileItem getFirst(HttpSession session) throws FileNotFoundException {
+        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        if (items.size() > 0) {
+            return items.get(0);
+        }
+        throw new FileNotFoundException("Unable to locate uploaded file");
     }
 
     @SuppressWarnings("unchecked")
