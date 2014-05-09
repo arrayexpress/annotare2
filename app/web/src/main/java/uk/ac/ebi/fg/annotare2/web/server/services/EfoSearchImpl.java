@@ -80,80 +80,49 @@ public class EfoSearchImpl implements EfoSearch {
 
     @Override
     public Collection<EfoTerm> searchByPrefix(String prefix, int limit) {
-        try {
-            return prefixSearch(prefix, limit);
-        } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
-        }
-        return emptyList();
+        return prefixSearch(prefix, limit);
     }
 
     @Override
     public Collection<EfoTerm> searchByPrefix(String prefix, String branchAccession, int limit) {
-        try {
-            return prefixSearch(prefix, branchAccession, limit);
-        } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
-        }
-        return emptyList();
+        return prefixSearch(prefix, branchAccession, limit);
     }
 
     @Override
     public Collection<EfoTerm> getSubTerms(EfoTerm efoTerm, int limit) {
-        try {
-            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
-            Query query = parser.parse(
-                    PARENT_FIELD.matchesPhrase(efoTerm.getAccession().toLowerCase()));
-            return runQuery(query, limit);
-        } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
-        }
-        return emptyList();
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+        Query query = parse(
+                parser
+                , PARENT_FIELD.matchesPhrase(efoTerm.getAccession().toLowerCase())
+        );
+        return runQuery(query, limit);
     }
 
     @Override
     public EfoTerm searchByLabel(String label) {
-        try {
-            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
-            Query query = parser.parse(
-                    LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
-            );
-            List<EfoTerm> result = runQuery(query, 1);
-            return result.isEmpty() ? null : result.get(0);
-        } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
-        }
-        return null;
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+        Query query = parse(
+                parser
+                , LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
+        );
+        List<EfoTerm> result = runQuery(query, 1);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
     public EfoTerm searchByLabel(String label, String branchAccession) {
-        try {
-            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
-            Query query = parser.parse(
-                    LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
-                            + " AND ("
-                            + ASCENDANT_FIELD.matchesPhrase(branchAccession)
-                            + " OR "
-                            + ACCESSION_FIELD_LOWERCASE.matchesPhrase(branchAccession.toLowerCase())
-                            + ")"
-            );
-            List<EfoTerm> result = runQuery(query, 1);
-            return result.isEmpty() ? null : result.get(0);
-        } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
-        }
-        return null;
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+        Query query = parse(
+                parser
+                , LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
+                        + " AND ("
+                        + ASCENDANT_FIELD.matchesPhrase(branchAccession)
+                        + " OR "
+                        + ACCESSION_FIELD_LOWERCASE.matchesPhrase(branchAccession.toLowerCase())
+                        + ")"
+        );
+        List<EfoTerm> result = runQuery(query, 1);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
@@ -161,60 +130,67 @@ public class EfoSearchImpl implements EfoSearch {
         if (accession.equals(branchAccession)) {
             return searchByAccession(accession);
         }
-        try {
-            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
-            Query query = parser.parse(
-                    ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase())
-                            + " AND " + ASCENDANT_FIELD.matchesPhrase(branchAccession));
-            List<EfoTerm> result = runQuery(query, 1);
-            return result.isEmpty() ? null : result.get(0);
-        } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
-        }
-        return null;
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+        Query query = parse(
+                parser
+                , ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase())
+                        + " AND " + ASCENDANT_FIELD.matchesPhrase(branchAccession)
+        );
+        List<EfoTerm> result = runQuery(query, 1);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
     public EfoTerm searchByAccession(String accession) {
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+        Query query = parse(
+                parser
+                , ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase())
+        );
+        List<EfoTerm> result = runQuery(query, 1);
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    private Collection<EfoTerm> prefixSearch(String prefix, int limit) {
+        QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
+        Query query = parse(
+                parser
+                , TEXT_FIELD.matchesPrefix(prefix)
+        );
+        return runQuery(query, limit);
+    }
+
+    private Collection<EfoTerm> prefixSearch(String prefix, String rootAccession, int limit) {
+        QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
+        Query query = parse(
+                parser
+                , TEXT_FIELD.matchesPrefix(prefix)
+                        + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession)
+        );
+        return runQuery(query, limit);
+    }
+
+    private Query parse(QueryParser parser, String queryString) {
         try {
-            QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
-            Query query = parser.parse(
-                    ACCESSION_FIELD_LOWERCASE.matchesPhrase(accession.toLowerCase()));
-            List<EfoTerm> result = runQuery(query, 1);
-            return result.isEmpty() ? null : result.get(0);
+            return parser.parse(queryString);
         } catch (ParseException e) {
-            logError(e);
-        } catch (IOException e) {
-            logError(e);
+            log.error("Unable to parse [{}]", queryString, e);
         }
         return null;
     }
 
-    private void logError(Exception e) {
-        log.error("EFO search unexpected error", e);
+    private List<EfoTerm> runQuery(Query query, int maxHits) {
+        if (null != query) {
+            try {
+                return asTerms(runDocumentQuery(query, maxHits));
+            } catch (IOException e) {
+                log.error("Unexpected exception:", e);
+            }
+        }
+        return emptyList();
     }
 
-    private Collection<EfoTerm> prefixSearch(String prefix, int limit) throws ParseException, IOException {
-        QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
-        Query query = parser.parse(TEXT_FIELD.matchesPrefix(prefix));
-        return runQuery(query, limit);
-    }
-
-    private Collection<EfoTerm> prefixSearch(String prefix, String rootAccession, int limit) throws ParseException, IOException {
-        QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
-        Query query = parser.parse(
-                TEXT_FIELD.matchesPrefix(prefix)
-                        + " AND " + ASCENDANT_FIELD.matchesPhrase(rootAccession));
-        return runQuery(query, limit);
-    }
-
-    private List<EfoTerm> runQuery(Query query, int maxHits) throws IOException, ParseException {
-        return asTerms(runDocumentQuery(query, maxHits));
-    }
-
-    private List<Document> runDocumentQuery(Query query, int maxHits) throws IOException, ParseException {
+    private List<Document> runDocumentQuery(Query query, int maxHits) throws IOException {
         IndexReader reader = null;
         try {
             reader = DirectoryReader.open(FSDirectory.open(properties.getEfoIndexDir()));
@@ -264,10 +240,10 @@ public class EfoSearchImpl implements EfoSearch {
             EfoLoader efoLoader = new EfoLoader(properties);
             createIndex(efoLoader.load());
         } catch (IOException e) {
-            log.error("Can't load EFO", e);
+            log.error("Unable to load EFO", e);
 
         } catch (OWLOntologyCreationException e) {
-            log.error("Can't load EFO", e);
+            log.error("Unable to load EFO", e);
         }
     }
 
