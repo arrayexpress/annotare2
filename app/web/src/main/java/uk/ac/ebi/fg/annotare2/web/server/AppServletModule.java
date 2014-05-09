@@ -64,7 +64,7 @@ public class AppServletModule extends ServletModule {
 
     private static final Map<String, String> UPLOAD_SERVLET_PARAMS = new HashMap<String, String>() {
         {
-            put("maxSize", Long.toString(10 * 1024 * 1024));  // 10MB
+            put("maxSize", Long.toString(100 * 1024 * 1024));  // 100MB
         }
     };
 
