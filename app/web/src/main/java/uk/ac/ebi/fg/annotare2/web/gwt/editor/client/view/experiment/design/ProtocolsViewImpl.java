@@ -188,21 +188,21 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell() {
             @Override
             public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
-                if (data != null) {
-                    sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">");
-                    sb.append(data);
-                    sb.appendHtmlConstant("</button>");
-                }
+                sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">");
+                sb.append(data);
+                sb.appendHtmlConstant("</button>");
             }
         }) {
             @Override
             public String getValue(ProtocolRow object) {
-                return object.isAssignable() ? "Assign..." : null;
+                return "Assign...";
             }
         };
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
             @Override
             public void update(int index, ProtocolRow row, String value) {
+                final boolean isRowAssignable = row.isAssignable();
+                final String protocolType = row.getProtocolType().getLabel();
                 presenter.getAssignmentProfileAsync(row.getId(), new AsyncCallback<ProtocolAssignmentProfile>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -211,8 +211,11 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
                     @Override
                     public void onSuccess(ProtocolAssignmentProfile result) {
-                        if (result.getNames().isEmpty()) {
-                            Window.alert("You do not have any '" + result.getProtocolSubjectType() + "' entries to assign protocols to.");
+                        if (!isRowAssignable) {
+                            Window.alert("Protocol \"" + protocolType + "\" is always assigned to all nodes");
+                            return;
+                        } else if (result.getNames().isEmpty()) {
+                            Window.alert("You do not have any \"" + result.getProtocolSubjectType() + "\" entries to assign protocols to");
                             return;
                         }
                         new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
