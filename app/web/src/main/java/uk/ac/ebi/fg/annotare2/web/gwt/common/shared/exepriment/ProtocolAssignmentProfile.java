@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
+import uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,7 +30,18 @@ import static java.util.Collections.emptyMap;
  */
 public class ProtocolAssignmentProfile implements IsSerializable {
 
-    public static final ProtocolAssignmentProfile EMPTY = new ProtocolAssignmentProfile() {
+    public static final class Empty extends ProtocolAssignmentProfile {
+
+        @SuppressWarnings("unused")
+        Empty() {
+            super.target = "unknown";
+        /* used by GWT serialization */
+        }
+
+        public Empty(ProtocolSubjectType subjectType) {
+            super.target = subjectType.getTitle();
+        }
+
         @Override
         public String getProtocolName() {
             return "unknown";
@@ -49,12 +61,7 @@ public class ProtocolAssignmentProfile implements IsSerializable {
         public Map<String, String> getNames() {
             return emptyMap();
         }
-
-        @Override
-        public String getProtocolSubjectType() {
-            return "unknown";
-        }
-    };
+    }
 
     private int protocolId;
     private String protocolName;
