@@ -171,7 +171,7 @@ public abstract class ProtocolAssignment {
     }
 
     public static ProtocolAssignment createProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
-        ProtocolSubjectType subjectType = protocol.getSubjectType();
+        final ProtocolSubjectType subjectType = protocol.getSubjectType();
         switch (subjectType) {
             case SAMPLE:
                 return new SampleProtocolAssignment(exp, protocol);
@@ -183,7 +183,7 @@ public abstract class ProtocolAssignment {
                 return new ProtocolAssignment(exp, protocol) {
                     @Override
                     protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
-                        return ProtocolAssignmentProfile.EMPTY;
+                        return new ProtocolAssignmentProfile.Empty(subjectType);
                     }
 
                     @Override

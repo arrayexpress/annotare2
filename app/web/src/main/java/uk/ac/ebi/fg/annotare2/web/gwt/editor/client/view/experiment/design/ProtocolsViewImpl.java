@@ -206,16 +206,16 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                 presenter.getAssignmentProfileAsync(row.getId(), new AsyncCallback<ProtocolAssignmentProfile>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        Window.alert("Can't load protocol assignments");
+                        Window.alert("Unable to load protocol assignments");
                     }
 
                     @Override
                     public void onSuccess(ProtocolAssignmentProfile result) {
                         if (!isRowAssignable) {
-                            Window.alert("Protocol \"" + protocolType + "\" is always assigned to all nodes");
+                            Window.alert("Protocol \"" + protocolType + "\" is always assigned to all " + result.getProtocolSubjectType() + "s.");
                             return;
                         } else if (result.getNames().isEmpty()) {
-                            Window.alert("You do not have any \"" + result.getProtocolSubjectType() + "\" entries to assign protocols to");
+                            Window.alert("You do not have any " + result.getProtocolSubjectType() + "s to assign protocols to.");
                             return;
                         }
                         new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
