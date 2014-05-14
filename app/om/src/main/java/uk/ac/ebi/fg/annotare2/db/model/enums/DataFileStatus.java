@@ -27,6 +27,8 @@ public enum DataFileStatus {
     STORED("stored"),
     TO_BE_ASSOCIATED("verifying..."),
     ASSOCIATED("associated"),
+    MD5_ERROR("MD5 check error"),
+    FILE_NOT_FOUND_ERROR("file not found"),
     ERROR("error");
 
     private final String title;

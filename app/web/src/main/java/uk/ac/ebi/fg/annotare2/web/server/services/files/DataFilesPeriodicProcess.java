@@ -108,25 +108,26 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
         try {
             DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
             if (source.exists()) {
-                String digest = fileStore.store(source);
+                String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
-                    throw new IOException("MD5 is different between the source and the stored file");
+                    file.setStatus(MD5_ERROR);
+                    log.error("MD5 mismatch for source file {}", source.getUri());
+                } else {
+                    fileStore.store(source);
+                    file.setSourceDigest(null);
+                    file.setDigest(digest);
+                    file.setStatus(STORED);
+                    source.delete();
+                    file.setSourceUri(null);
                 }
-                file.setDigest(digest);
-                file.setStatus(STORED);
-                source.delete();
-                file.setSourceUri(null);
             } else {
-                log.error("Unable to find source file {}", source.getName());
+                throw new IOException("Unable to find source file " + source.getUri() + "");
             }
-        } catch (IOException x) {
-            file.setStatus(ERROR);
-            throw new UnexpectedException("File copy error", x);
-        } catch (URISyntaxException x) {
-            file.setStatus(ERROR);
-            throw new UnexpectedException("File copy error", x);
-        } finally {
             fileDao.save(file);
+        } catch (IOException x) {
+            throw new UnexpectedException(x.getMessage(), x);
+        } catch (URISyntaxException x) {
+            throw new UnexpectedException(x.getMessage(), x);
         }
     }
 
@@ -137,20 +138,22 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
             if (source.exists()) {
                 String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
-                    file.setStatus(ERROR);
+                    file.setStatus(MD5_ERROR);
+                    log.error("MD5 mismatch for source file {}", source.getUri());
                 } else {
+                    file.setSourceDigest(null);
                     file.setDigest(digest);
                     file.setStatus(ASSOCIATED);
                 }
             } else {
-                file.setStatus(ERROR);
-                log.error("Unable to find source file {}", source.getName());
+                file.setStatus(FILE_NOT_FOUND_ERROR);
+                log.error("Unable to find source file {}", source.getUri());
             }
             fileDao.save(file);
         } catch (IOException x) {
-            throw new UnexpectedException("File verification error", x);
+            throw new UnexpectedException(x.getMessage(), x);
         } catch (URISyntaxException x) {
-            throw new UnexpectedException("File verification error", x);
+            throw new UnexpectedException(x.getMessage(), x);
         }
     }
 

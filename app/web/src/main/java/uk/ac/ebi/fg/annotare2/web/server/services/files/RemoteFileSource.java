@@ -28,8 +28,10 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
 
     private final URI uri;
     private final RemoteFileAccess access;
+    private String digest;
 
     public RemoteFileSource(URI uri) throws IOException {
+        this.digest = null;
         this.uri = uri;
         if (null != uri && "scp".equals(uri.getScheme())) {
             this.access = new ScpFileAccess();
@@ -51,7 +53,10 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
     }
 
     public String getDigest() throws IOException {
-        return access.getDigest(uri);
+        if (null == digest) {
+            digest = access.getDigest(uri);
+        }
+        return digest;
     }
 
     public void copyTo(File destination) throws IOException {
