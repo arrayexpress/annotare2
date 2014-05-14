@@ -47,6 +47,8 @@ public class DataFileListView extends Composite {
 
     private final ListDataProvider<DataFileRow> dataProvider;
 
+    private final static int MAX_FILES = 40000;
+
     private Set<Long> selected = new HashSet<Long>();
 
     private Presenter presenter;
@@ -55,7 +57,7 @@ public class DataFileListView extends Composite {
         ScrollPanel scrollPanel = new ScrollPanel();
         initWidget(scrollPanel);
 
-        CellTable<DataFileRow> grid = new CellTable<DataFileRow>();
+        CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES);
         grid.setEmptyTableWidget(new Label("You have not uploaded any data files yet"));
         grid.addColumn(new Column<DataFileRow, SafeHtml>(new SafeHtmlCell()) {
             @Override
