@@ -30,11 +30,14 @@ public class LocalFileSource extends DataFileSource implements Serializable {
 
     private final File file;
 
+    private String digest;
+
     public LocalFileSource(File file) throws IllegalArgumentException {
         if (null == file) {
             throw new IllegalArgumentException("File argument cannot be null");
         }
         this.file = file;
+        this.digest = null;
     }
 
     public boolean exists() throws IOException {
@@ -52,8 +55,12 @@ public class LocalFileSource extends DataFileSource implements Serializable {
             return null;
         }
     }
+
     public String getDigest() throws IOException {
-        return Files.hash(file, Hashing.md5()).toString();
+        if (null == digest) {
+            digest = Files.hash(file, Hashing.md5()).toString();
+        }
+        return digest;
     }
 
     public void copyTo(File destination) throws IOException {

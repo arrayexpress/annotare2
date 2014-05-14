@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
@@ -320,7 +319,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
                 FileItem received = UploadedFiles.get(getSession(), info.getFieldName());
                 received.write(uploadedFile);
-                saveFile(new LocalFileSource(uploadedFile), submission);
+                saveFile(new LocalFileSource(uploadedFile), null, submission);
             }
             UploadedFiles.removeSessionFiles(getSession());
         } catch (Exception e) {
@@ -349,11 +348,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 
                 if (fileSource.exists()) {
-                    if (Objects.equal(fileSource.getDigest(), info.getMd5())) {
-                        saveFile(fileSource, submission);
-                    } else {
-                        errors.put(index, "MD5 of received file does not match the submitted value");
-                    }
+                        saveFile(fileSource, info.getMd5(), submission);
                 } else {
                     errors.put(index, "File not found");
                 }
@@ -423,7 +418,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private void saveFile(final DataFileSource source, final ExperimentSubmission submission)
+    private void saveFile(final DataFileSource source, final String md5, final ExperimentSubmission submission)
             throws DataSerializationException, IOException {
         String fileName = source.getName();
         Set<DataFile> files = submission.getFiles();
@@ -437,7 +432,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         boolean shouldStore = !(source instanceof RemoteFileSource &&
                 submission.getExperimentProfile().getType().isSequencing());
 
-        dataFileManager.addFile(source, submission, shouldStore);
+        dataFileManager.addFile(source, md5, submission, shouldStore);
         save(submission);
     }
 

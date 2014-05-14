@@ -48,6 +48,8 @@ public class DataFile {
     @Column(name = "sourceUri")
     private String sourceUri;
 
+    @Column(name = "sourceDigest")
+    private String sourceDigest;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ownedBy", nullable = false)
@@ -57,12 +59,12 @@ public class DataFile {
     private boolean deleted;
 
     public DataFile() {
-        this(null, true);
+        this(null);
     }
 
-    public DataFile(String name, boolean shouldBeStored) {
+    public DataFile(String name) {
         created = new Date();
-        status = shouldBeStored ? DataFileStatus.TO_BE_STORED : DataFileStatus.ASSOCIATED;
+        status = DataFileStatus.TO_BE_STORED;
         this.name = name;
     }
 
@@ -104,6 +106,14 @@ public class DataFile {
 
     public void setSourceUri(String sourceUri) {
         this.sourceUri = sourceUri;
+    }
+
+    public String getSourceDigest() {
+        return sourceDigest;
+    }
+
+    public void setSourceDigest(String sourceDigest) {
+        this.sourceDigest = sourceDigest;
     }
 
     public Submission getOwnedBy() {
