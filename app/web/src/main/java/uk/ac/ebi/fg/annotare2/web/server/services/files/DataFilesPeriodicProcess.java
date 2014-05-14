@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
-import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.web.server.UnexpectedException;
 import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
@@ -38,9 +37,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.STORED;
+import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.*;
 
-public class FileCopyPeriodicProcess extends AbstractIdleService {
+public class DataFilesPeriodicProcess extends AbstractIdleService {
 
     private static final Logger log = LoggerFactory.getLogger(FileCopyConsumer.class);
 
@@ -52,10 +51,10 @@ public class FileCopyPeriodicProcess extends AbstractIdleService {
     private final EmailSender emailer;
 
     @Inject
-    public FileCopyPeriodicProcess(DataFileStore fileStore,
-                                   DataFileDao fileDao,
-                                   HibernateSessionFactory sessionFactory,
-                                   EmailSender emailer) {
+    public DataFilesPeriodicProcess(DataFileStore fileStore,
+                                    DataFileDao fileDao,
+                                    HibernateSessionFactory sessionFactory,
+                                    EmailSender emailer) {
         this.fileStore = fileStore;
         this.fileDao = fileDao;
         this.sessionFactory = sessionFactory;
@@ -73,8 +72,8 @@ public class FileCopyPeriodicProcess extends AbstractIdleService {
                     try {
                         periodicRun();
                     } catch (Throwable x) {
-                        log.error("File copy error", x);
-                        emailer.sendException("File copy error", x);
+                        log.error(x.getMessage(), x);
+                        emailer.sendException("Error in data file periodic process", x);
                     } finally {
                         session.close();
                     }
@@ -91,8 +90,16 @@ public class FileCopyPeriodicProcess extends AbstractIdleService {
     }
 
     private void periodicRun() throws Exception {
-        for (DataFile file : fileDao.getFilesByStatus(DataFileStatus.TO_BE_STORED)) {
-            copyFile(file);
+        for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED)) {
+            switch (file.getStatus()) {
+                case TO_BE_STORED:
+                    copyFile(file);
+                    break;
+
+                case TO_BE_ASSOCIATED:
+                    verifyFile(file);
+                    break;
+            }
         }
     }
 
@@ -102,20 +109,49 @@ public class FileCopyPeriodicProcess extends AbstractIdleService {
             DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
             if (source.exists()) {
                 String digest = fileStore.store(source);
-                if (!Objects.equal(digest, source.getDigest())) {
+                if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
                     throw new IOException("MD5 is different between the source and the stored file");
                 }
+                file.setDigest(digest);
                 file.setStatus(STORED);
                 source.delete();
                 file.setSourceUri(null);
-                fileDao.save(file);
             } else {
                 log.error("Unable to find source file {}", source.getName());
             }
         } catch (IOException x) {
+            file.setStatus(ERROR);
             throw new UnexpectedException("File copy error", x);
         } catch (URISyntaxException x) {
+            file.setStatus(ERROR);
             throw new UnexpectedException("File copy error", x);
+        } finally {
+            fileDao.save(file);
         }
     }
+
+    @Transactional
+    public void verifyFile(DataFile file) throws UnexpectedException {
+        try {
+            DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
+            if (source.exists()) {
+                String digest = source.getDigest();
+                if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
+                    file.setStatus(ERROR);
+                } else {
+                    file.setDigest(digest);
+                    file.setStatus(ASSOCIATED);
+                }
+            } else {
+                file.setStatus(ERROR);
+                log.error("Unable to find source file {}", source.getName());
+            }
+            fileDao.save(file);
+        } catch (IOException x) {
+            throw new UnexpectedException("File verification error", x);
+        } catch (URISyntaxException x) {
+            throw new UnexpectedException("File verification error", x);
+        }
+    }
+
 }

@@ -34,4 +34,10 @@
             DELETE FROM acl_entries WHERE role = 'CURATOR' AND permission = 'UPDATE';
         </sql>
     </changeSet>
+    <changeSet id="addSourceDigestAndVerifyAssociatedFileStatusToDataFiles" author="kolais">
+        <sql>
+            ALTER TABLE data_files ADD sourceDigest VARCHAR(255) AFTER sourceURI;
+            ALTER TABLE data_files MODIFY status ENUM('TO_BE_STORED', 'STORED', 'TO_BE_ASSOCIATED', 'ASSOCIATED', 'ERROR') NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -29,7 +29,7 @@ public interface DataFileDao {
 
     DataFile get(long id) throws RecordNotFoundException;
 
-    DataFile create(String fileName, boolean shouldBeStored, Submission submission);
+    DataFile create(String fileName, Submission submission);
 
     void delete(DataFile dataFile);
 

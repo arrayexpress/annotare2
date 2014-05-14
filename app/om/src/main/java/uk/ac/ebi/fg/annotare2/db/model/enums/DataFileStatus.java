@@ -25,6 +25,7 @@ import com.google.common.annotations.GwtCompatible;
 public enum DataFileStatus {
     TO_BE_STORED("processing..."),
     STORED("stored"),
+    TO_BE_ASSOCIATED("verifying..."),
     ASSOCIATED("associated"),
     ERROR("error");
 
@@ -39,7 +40,7 @@ public enum DataFileStatus {
     }
 
     public boolean isFinal() {
-        return TO_BE_STORED != this;
+        return TO_BE_STORED != this && TO_BE_ASSOCIATED != this;
     }
 
     public boolean isOk() {

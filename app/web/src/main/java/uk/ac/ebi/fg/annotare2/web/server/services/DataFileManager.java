@@ -43,44 +43,34 @@ import java.util.Set;
  */
 public class DataFileManager {
 
-    //private static final Logger log = LoggerFactory.getLogger(DataFileManager.class);
-
     private final DataFileDao dataFileDao;
     private final DataFileStore fileStore;
-
-//    private final FileCopyMessageQueue fileCopy;
 
     @Inject
     public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao/*, FileCopyMessageQueue messageQueue*/) {
         this.dataFileDao = dataFileDao;
         this.fileStore = fileStore;
-//        this.fileCopy = messageQueue;
     }
 
     /**
      * Creates {@link DataFile} record in the database and schedules a task to copy the file into a file store.
      *
      * @param source     file to be copied
+     * @param md5        verification md5 if not null
      * @param submission submission to add file to
      */
-    public void addFile(DataFileSource source, Submission submission, boolean shouldStore)
+    public void addFile(DataFileSource source, String md5, Submission submission, boolean shouldStore)
             throws DataSerializationException, IOException {
-        DataFile dataFile = dataFileDao.create(source.getName(), shouldStore, submission);
+        DataFile dataFile = dataFileDao.create(source.getName(), submission);
+
         dataFile.setSourceUri(source.getUri().toString());
-        dataFile.setDigest(source.getDigest());
+        dataFile.setSourceDigest(md5);
+        dataFile.setStatus(shouldStore ? DataFileStatus.TO_BE_STORED : DataFileStatus.TO_BE_ASSOCIATED);
         submission.getFiles().add(dataFile);
-//        if (shouldStore) {
-//            fileCopy.schedule(source, dataFile, true);
-//        }
     }
 
     public void storeAssociatedFile(DataFile dataFile) {
         dataFile.setStatus(DataFileStatus.TO_BE_STORED);
-
-//        if (null != dataFile && DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
-//            DataFileSource fileSource = getFileSource(dataFile);
-//            fileCopy.schedule(fileSource, dataFile, false);
-//        }
     }
 
     public Set<DataFile> getAssignedFiles(Submission submission) throws DataSerializationException {
