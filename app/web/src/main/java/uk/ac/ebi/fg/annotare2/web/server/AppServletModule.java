@@ -80,6 +80,11 @@ public class AppServletModule extends ServletModule {
 
     @Override
     protected void configureServlets() {
+        filterRegex("^/.+[.]nocache[.]js",
+                    "^/status/?").through(ExpiresNowFilter.class);
+
+        filterRegex("^/status/?").through(AccessLoggingSuppressFilter.class);
+
         filter("/login",
                 "/logout",
                 "/export",
@@ -95,6 +100,8 @@ public class AppServletModule extends ServletModule {
                 "/edit/*",
                 "/export").through(SecurityFilter.class);
 
+        serveRegex("^/status/?").with(StatusServlet.class);
+
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
         serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
         serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
@@ -107,8 +114,11 @@ public class AppServletModule extends ServletModule {
         serve("/export").with(ExportServlet.class);
         serve("/error").with(UncaughtExceptionServlet.class);
 
+        bind(ExpiresNowFilter.class).in(SINGLETON);
+        bind(AccessLoggingSuppressFilter.class).in(SINGLETON);
         bind(HibernateSessionFilter.class).in(SINGLETON);
         bind(SecurityFilter.class).in(SINGLETON);
+        bind(StatusServlet.class).in(SINGLETON);
         bind(LoginServlet.class).in(SINGLETON);
         bind(LogoutServlet.class).in(SINGLETON);
         bind(HomeServlet.class).in(SINGLETON);
