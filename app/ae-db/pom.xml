@@ -17,10 +17,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>ae-subs-tracking</artifactId>
+    <artifactId>ae-db</artifactId>
     <packaging>jar</packaging>
     <version>0.24-SNAPSHOT</version>
-    <name>ArrayExpress Submissions Tracking Integration</name>
+    <name>ArrayExpress DB Integration</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
@@ -74,12 +74,12 @@
                 <artifactId>jooq-codegen-maven</artifactId>
                 <version>${jooq.version}</version>
 
-                <!-- Manage the plugin's dependency -->
+                <!-- Manage the plugin's JDBC dependency -->
                 <dependencies>
                     <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>${mysql-jdbc.version}</version>
+                        <groupId>com.oracle</groupId>
+                        <artifactId>ojdbc14</artifactId>
+                        <version>${oracle-jdbc.version}</version>
                     </dependency>
                 </dependencies>
 
@@ -88,26 +88,26 @@
 
                     <!-- JDBC connection parameters -->
                     <jdbc>
-                        <driver>${annotare.subsTracking.db.driver}</driver>
-                        <url>${annotare.subsTracking.db.url}</url>
-                        <user>${annotare.subsTracking.db.user}</user>
-                        <password>${annotare.subsTracking.db.password}</password>
+                        <driver>${annotare.ae.db.driver}</driver>
+                        <url>${annotare.ae.db.url}</url>
+                        <user>${annotare.ae.db.user}</user>
+                        <password>${annotare.ae.db.password}</password>
                     </jdbc>
 
                     <!-- Generator parameters -->
                     <generator>
                         <!-- <name>org.jooq.util.DefaultGenerator</name> -->
                         <database>
-                            <name>org.jooq.util.mysql.MySQLDatabase</name>
-                            <includes>users|roles|roles_users|experiments|data_files|spreadsheets</includes>
+                            <name>org.jooq.util.oracle.OracleDatabase</name>
+                            <includes>study|sc_label|sc_owner|sc_user</includes>
                             <excludes />
-                            <inputSchema>${annotare.subsTracking.db.schema}</inputSchema>
+                            <inputSchema>${annotare.ae.db.schema}</inputSchema>
                         </database>
                         <generate>
 
                         </generate>
                         <target>
-                            <packageName>uk.ac.ebi.fg.annotare2.autosubs.jooq</packageName>
+                            <packageName>uk.ac.ebi.fg.annotare2.ae.jooq</packageName>
                             <directory>${project.basedir}/src/main/java</directory>
                         </target>
                     </generator>
@@ -130,8 +130,8 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>

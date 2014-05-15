@@ -24,9 +24,10 @@
     <name>Annotare 2.0</name>
 
     <modules>
+        <module>ae-subs-tracking</module>
+        <module>ae-db</module>
         <module>om</module>
         <module>web</module>
-        <module>ae-subs-tracking</module>
     </modules>
 
     <licenses>
@@ -44,6 +45,8 @@
     </scm>
 
     <properties>
+        <limpopo.version>1.1.7</limpopo.version>
+        <magetabcheck.version>1.12</magetabcheck.version>
         <gwt.version>2.5.1</gwt.version>
         <gwt.maven.plugin.version>2.5.1</gwt.maven.plugin.version>
         <gwtupload.version>1.0.1</gwtupload.version>
@@ -51,11 +54,17 @@
         <guava.version>14.0-rc1</guava.version>
         <guice.version>3.0</guice.version>
         <liquibase.version>2.0.5</liquibase.version>
+        <hibernate.version>4.2.4.Final</hibernate.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.2</logback.version>
-        <surefire.version>2.12</surefire.version>
+        <surefire.version>2.17</surefire.version>
         <clover.version>3.1.3</clover.version>
         <lucene.version>4.3.0</lucene.version>
+        <jooq.version>3.1.0</jooq.version>
+        <tomcat.version>7.0.42</tomcat.version>
+        <mysql-jdbc.version>5.1.26</mysql-jdbc.version>
+        <oracle-jdbc.version>10.2.0.4</oracle-jdbc.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -95,14 +104,24 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
+                <artifactId>annotare2-om</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.ebi.fg.annotare2</groupId>
+                <artifactId>ae-subs-tracking</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>uk.ac.ebi.arrayexpress2</groupId>
                 <artifactId>limpopo</artifactId>
-                <version>1.1.7</version>
+                <version>${limpopo.version}</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.fg.annotare2</groupId>
                 <artifactId>magetabcheck</artifactId>
-                <version>1.12</version>
+                <version>${magetabcheck.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.gwt</groupId>
@@ -180,6 +199,11 @@
                 <version>2.6.1</version>
             </dependency>
             <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-core</artifactId>
                 <version>${lucene.version}</version>
@@ -193,6 +217,31 @@
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-queryparser</artifactId>
                 <version>${lucene.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq</artifactId>
+                <version>${jooq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-meta</artifactId>
+                <version>${jooq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc14</artifactId>
+                <version>${oracle-jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -283,14 +332,20 @@
                 <annotare.db.dataSource>com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource</annotare.db.dataSource>
 
                 <!-- SubsTracking DB integration -->
-                <!--
                 <annotare.subsTracking.db.schema>subsTracking_db_schema</annotare.subsTracking.db.schema>
                 <annotare.subsTracking.db.url>subsTracking_db_url</annotare.subsTracking.db.url>
                 <annotare.subsTracking.db.user>subsTracking_db_user</annotare.subsTracking.db.user>
                 <annotare.subsTracking.db.password>subsTracking_db_password</annotare.subsTracking.db.password>
                 <annotare.subsTracking.db.driver>subsTracking_db_driver_class</annotare.subsTracking.db.driver>
                 <annotare.subsTracking.db.dataSource>subsTracking_db_dataSource_class</annotare.subsTracking.db.dataSource>
-                -->
+
+                <!-- ArrayExpress DB integration -->
+                <annotare.ae.db.schema>ae_db_schema</annotare.ae.db.schema>
+                <annotare.ae.db.url>ae_db_url</annotare.ae.db.url>
+                <annotare.ae.db.user>ae_db_user</annotare.ae.db.user>
+                <annotare.ae.db.password>ae_db_password</annotare.ae.db.password>
+                <annotare.ae.db.driver>ae_db_driver_class</annotare.ae.db.driver>
+                <annotare.ae.db.dataSource>ae_db_dataSource_class</annotare.ae.db.dataSource>
 
                 <annotare.test.db.url>test_db_url</annotare.test.db.url>
                 <annotare.test.db.user>test_db_user</annotare.test.db.user>
