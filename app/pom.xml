@@ -329,7 +329,6 @@
                 <annotare.db.user>annotare_db_user</annotare.db.user>
                 <annotare.db.password>annotare_db_password</annotare.db.password>
                 <annotare.db.driver>com.mysql.jdbc.Driver</annotare.db.driver>
-                <annotare.db.dataSource>com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource</annotare.db.dataSource>
 
                 <!-- SubsTracking DB integration -->
                 <annotare.subsTracking.db.schema>subsTracking_db_schema</annotare.subsTracking.db.schema>
@@ -337,7 +336,6 @@
                 <annotare.subsTracking.db.user>subsTracking_db_user</annotare.subsTracking.db.user>
                 <annotare.subsTracking.db.password>subsTracking_db_password</annotare.subsTracking.db.password>
                 <annotare.subsTracking.db.driver>subsTracking_db_driver_class</annotare.subsTracking.db.driver>
-                <annotare.subsTracking.db.dataSource>subsTracking_db_dataSource_class</annotare.subsTracking.db.dataSource>
 
                 <!-- ArrayExpress DB integration -->
                 <annotare.ae.db.schema>ae_db_schema</annotare.ae.db.schema>
@@ -345,7 +343,6 @@
                 <annotare.ae.db.user>ae_db_user</annotare.ae.db.user>
                 <annotare.ae.db.password>ae_db_password</annotare.ae.db.password>
                 <annotare.ae.db.driver>ae_db_driver_class</annotare.ae.db.driver>
-                <annotare.ae.db.dataSource>ae_db_dataSource_class</annotare.ae.db.dataSource>
 
                 <annotare.test.db.url>test_db_url</annotare.test.db.url>
                 <annotare.test.db.user>test_db_user</annotare.test.db.user>

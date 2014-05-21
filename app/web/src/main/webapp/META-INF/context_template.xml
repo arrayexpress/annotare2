@@ -32,19 +32,16 @@
             username="${st_dbUser}"
             password="${st_dbPassword}"/>
     <% } %>
-    <!--
-    <Resource name="jms/jmsConnectionFactory"
-              auth="Container"
-              type="org.apache.activemq.ActiveMQConnectionFactory"
-              description="JMS Connection Factory"
-              factory="org.apache.activemq.jndi.JNDIReferenceFactory"
-              brokerURL="vm://localhost?create=false"/>
 
-    <Resource name="jms/fileCopyQueue"
-              auth="Container"
-              type="org.apache.activemq.command.ActiveMQQueue"
-              description="JMS Copy File Queue"
-              factory="org.apache.activemq.jndi.JNDIReferenceFactory"
-              physicalName="COPY_FILE.QUEUE"/>
-    -->
+    <% if (ae_dbUrl != null) { %>
+    <Resource
+            name="jdbc/arrayExpressDataSource"
+            type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            url="${ae_dbUrl}?autoReconnect=true"
+            driverClassName="${ae_dbDriver}"
+            username="${ae_dbUser}"
+            password="${ae_dbPassword}"/>
+    <% } %>
+
 </Context>

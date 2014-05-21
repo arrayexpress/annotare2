@@ -99,7 +99,7 @@
                         <!-- <name>org.jooq.util.DefaultGenerator</name> -->
                         <database>
                             <name>org.jooq.util.oracle.OracleDatabase</name>
-                            <includes>study|sc_label|sc_owner|sc_user</includes>
+                            <includes>STUDY|SC_LABEL|SC_OWNER|SC_USER</includes>
                             <excludes />
                             <inputSchema>${annotare.ae.db.schema}</inputSchema>
                         </database>
