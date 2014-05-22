@@ -133,23 +133,43 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
     }
 
     @Override
-    public Boolean getAeSubsTrackingEnabled() {
+    public Boolean getSubsTrackingEnabled() {
         return Boolean.parseBoolean(getProperty("ae-subs-tracking.enabled"));
     }
 
     @Override
-    public String getAeSubsTrackingUser() {
+    public String getSubsTrackingUser() {
         return getProperty("ae-subs-tracking.user");
     }
 
     @Override
-    public String getAeSubsTrackingExperimentType() {
+    public String getSubsTrackingExperimentType() {
         return getProperty("ae-subs-tracking.experiment-type");
     }
 
     @Override
-    public File getAeSubsTrackingExportDir() {
+    public File getSubsTrackingExportDir() {
         return getDirProperty("ae-subs-tracking.export.dir");
+    }
+
+    @Override
+    public String getSubsTrackingConnectionDriverClass() {
+        return getProperty("ae-subs-tracking.connection.driver");
+    }
+
+    @Override
+    public String getSubsTrackingConnectionURL() {
+        return getProperty("ae-subs-tracking.connection.url");
+    }
+
+    @Override
+    public String getSubsTrackingConnectionUser() {
+        return getProperty("ae-subs-tracking.connection.user");
+    }
+
+    @Override
+    public String getSubsTrackingConnectionPassword() {
+        return getProperty("ae-subs-tracking.connection.password");
     }
 
     @Override
@@ -168,7 +188,7 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
     }
 
     @Override
-    public String getAeConnectionUsername() {
+    public String getAeConnectionUser() {
         return getProperty("ae-connection.user");
     }
 

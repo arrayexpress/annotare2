@@ -389,10 +389,6 @@
                                                  'dbDriver': project.properties['annotare.db.driver'],
                                                  'dbUser': project.properties['annotare.db.user'],
                                                  'dbPassword': project.properties['annotare.db.password'],
-                                                 'st_dbUrl': project.properties['annotare.subsTracking.db.url'],
-                                                 'st_dbDriver': project.properties['annotare.subsTracking.db.driver'],
-                                                 'st_dbUser': project.properties['annotare.subsTracking.db.user'],
-                                                 'st_dbPassword': project.properties['annotare.subsTracking.db.password']
                                 ]
 
                                 for(file in templateFiles) {

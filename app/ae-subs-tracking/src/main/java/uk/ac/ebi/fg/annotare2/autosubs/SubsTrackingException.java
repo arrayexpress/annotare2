@@ -24,13 +24,14 @@ public class SubsTrackingException extends Exception {
     public static final String CAUGHT_EXCEPTION = "Caught an exception";
     public static final String NOT_IMPLEMENTED_EXCEPTION = "Functionality called is not implemented yet";
     public static final String USER_NOT_CONFIGURED_EXCEPTION = "Submission Tracking user name is not defined in the configuration";
-    public static final String UNABLE_TO_OBTAIN_CONNECTION = "Unable to obtain Submission Tracking database connection";
+    public static final String UNABLE_TO_OBTAIN_CONNECTION = "Unable to obtain a connection; pool has not been initialized";
+    public static final String ILLEGAL_REPEAT_INITIALIZATION = "Illegal repeat initialization of SubsTracking connection";
 
     public SubsTrackingException(String message) {
         super(message);
     }
 
-    public SubsTrackingException(String message, Throwable cause) {
-        super(message, cause);
+    public SubsTrackingException(Throwable cause) {
+        super(CAUGHT_EXCEPTION, cause);
     }
 }

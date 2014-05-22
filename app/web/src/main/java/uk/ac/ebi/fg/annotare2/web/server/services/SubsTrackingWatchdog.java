@@ -111,10 +111,10 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             }
 
         };
-
+        subsTracking.initialize();
         aeConnection.initialize();
 
-        if (properties.getAeSubsTrackingEnabled()) {
+        if (properties.getSubsTrackingEnabled()) {
             scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
         }
     }
@@ -123,6 +123,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
     public void shutDown() throws Exception {
         scheduler.shutdown();
         aeConnection.terminate();
+        subsTracking.terminate();
     }
 
     private void periodicRun() throws Exception {
@@ -170,7 +171,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                     )
             );
 
-            if (properties.getAeSubsTrackingEnabled()) {
+            if (properties.getSubsTrackingEnabled()) {
                 String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
                         EmailSender.INITIAL_SUBMISSION_OTRS_TEMPLATE : EmailSender.REPEAT_SUBMISSION_OTRS_TEMPLATE;
 
@@ -181,8 +182,8 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                                 put("to.email", submission.getCreatedBy().getEmail()).
                                 put("submission.title", submission.getTitle()).
                                 put("submission.date", submission.getUpdated().toString()).
-                                put("subsTracking.user", properties.getAeSubsTrackingUser()).
-                                put("subsTracking.experiment.type", properties.getAeSubsTrackingExperimentType()).
+                                put("subsTracking.user", properties.getSubsTrackingUser()).
+                                put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType()).
                                 put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
                                 build()
                 );
@@ -226,7 +227,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                                 "submission.date", submission.getUpdated().toString()
                         )
                 );
-            } else {
+            } else if (properties.getAeConnectionEnabled()) {
                 String accession = submission.getAccession();
                 if (!isNullOrEmpty(accession)) {
                     AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
@@ -244,30 +245,34 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
 
     @Transactional(rollbackOn = {AEConnectionException.class})
     public void processPrivateInAE(Submission submission) throws AEConnectionException {
-        String accession = submission.getAccession();
-        if (!isNullOrEmpty(accession)) {
-            AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-            if (NOT_LOADED == state) {
-                submission.setStatus(SubmissionStatus.IN_CURATION);
-                submissionManager.save(submission);
-            } else if (PUBLIC == state) {
-                submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
-                submissionManager.save(submission);
-            }
-        }
+       if (properties.getAeConnectionEnabled()) {
+           String accession = submission.getAccession();
+           if (!isNullOrEmpty(accession)) {
+               AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+               if (NOT_LOADED == state) {
+                   submission.setStatus(SubmissionStatus.IN_CURATION);
+                   submissionManager.save(submission);
+               } else if (PUBLIC == state) {
+                   submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
+                   submissionManager.save(submission);
+               }
+           }
+       }
     }
 
     @Transactional(rollbackOn = {AEConnectionException.class})
     public void processPublicInAE(Submission submission) throws AEConnectionException {
-        String accession = submission.getAccession();
-        if (!isNullOrEmpty(accession)) {
-            AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-            if (NOT_LOADED == state) {
-                submission.setStatus(SubmissionStatus.IN_CURATION);
-                submissionManager.save(submission);
-            } else if (PRIVATE == state) {
-                submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
-                submissionManager.save(submission);
+        if (properties.getAeConnectionEnabled()) {
+            String accession = submission.getAccession();
+            if (!isNullOrEmpty(accession)) {
+                AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+                if (NOT_LOADED == state) {
+                    submission.setStatus(SubmissionStatus.IN_CURATION);
+                    submissionManager.save(submission);
+                } else if (PRIVATE == state) {
+                    submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
+                    submissionManager.save(submission);
+                }
             }
         }
     }
@@ -288,7 +293,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 }
             }
 
-            if (properties.getAeSubsTrackingEnabled()) {
+            if (properties.getSubsTrackingEnabled()) {
                 subsTrackingConnection = subsTracking.getConnection();
                 if (null == subsTrackingConnection) {
                     throw new SubsTrackingException(SubsTrackingException.UNABLE_TO_OBTAIN_CONNECTION);
@@ -305,12 +310,12 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                     result = SubmissionOutcome.REPEAT_SUBMISSION_OK;
                 }
 
-                exportDir = new File(properties.getAeSubsTrackingExportDir(), properties.getAeSubsTrackingUser());
+                exportDir = new File(properties.getSubsTrackingExportDir(), properties.getSubsTrackingUser());
                 if (!exportDir.exists()) {
                     exportDir.mkdir();
                     exportDir.setWritable(true, false);
                 }
-                exportDir = new File(exportDir, properties.getAeSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
+                exportDir = new File(exportDir, properties.getSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
                 if (!exportDir.exists()) {
                     exportDir.mkdir();
                     exportDir.setWritable(true, false);
@@ -323,23 +328,23 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 exportSubmissionFiles(subsTrackingConnection, (ExperimentSubmission)submission, exportDir);
             }
 
-            if (properties.getAeSubsTrackingEnabled()) {
+            if (properties.getSubsTrackingEnabled()) {
                 subsTracking.sendSubmission(subsTrackingConnection, submission.getSubsTrackingId());
                 subsTrackingConnection.commit();
             }
 
             return result;
-        } catch (Throwable x) {
+        } catch (Throwable e) {
             try {
                 if (null != subsTrackingConnection) {
                     subsTrackingConnection.rollback();
                 }
             } catch (SQLException xx) {
-                log.error("SQLException:", x);
+                log.error("SQLException:", e);
             }
-            throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
+            throw new SubsTrackingException(e);
         } finally {
-            if (properties.getAeSubsTrackingEnabled()) {
+            if (properties.getSubsTrackingEnabled()) {
                 subsTracking.releaseConnection(subsTrackingConnection);
             }
         }
@@ -354,7 +359,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             if (null == fileName) {
                 fileName = "submission" + submission.getId() + "_annotare";
             }
-            if (properties.getAeSubsTrackingEnabled()) {
+            if (properties.getSubsTrackingEnabled()) {
                 int version = 1;
                 while (subsTracking.hasMageTabFileAdded(
                         connection,
@@ -371,7 +376,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             }
             mageTab.getIdfFile().setWritable(true, false);
 
-            if (properties.getAeSubsTrackingEnabled()) {
+            if (properties.getSubsTrackingEnabled()) {
                 subsTracking.deleteFiles(connection, subsTrackingId);
                 subsTracking.addMageTabFile(connection, subsTrackingId, mageTab.getIdfFile().getName());
             }
@@ -398,13 +403,13 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                         source.copyTo(f);
                         f.setWritable(true, false);
                     }
-                    if (properties.getAeSubsTrackingEnabled()) {
+                    if (properties.getSubsTrackingEnabled()) {
                         subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
                     }
                 }
             }
-        } catch (Exception x) {
-            throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
+        } catch (Exception e) {
+            throw new SubsTrackingException(e);
         }
     }
 

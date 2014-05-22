@@ -21,8 +21,12 @@ import java.io.File;
 
 public interface SubsTrackingProperties
 {
-    public Boolean getAeSubsTrackingEnabled();
-    public String getAeSubsTrackingUser();
-    public String getAeSubsTrackingExperimentType();
-    public File getAeSubsTrackingExportDir();
+    public Boolean getSubsTrackingEnabled();
+    public String getSubsTrackingUser();
+    public String getSubsTrackingExperimentType();
+    public File getSubsTrackingExportDir();
+    public String getSubsTrackingConnectionDriverClass();
+    public String getSubsTrackingConnectionURL();
+    public String getSubsTrackingConnectionUser();
+    public String getSubsTrackingConnectionPassword();
 }

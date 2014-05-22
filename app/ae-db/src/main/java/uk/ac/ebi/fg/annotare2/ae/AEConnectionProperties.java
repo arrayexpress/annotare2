@@ -21,6 +21,6 @@ public interface AEConnectionProperties {
     public Boolean getAeConnectionEnabled();
     public String getAeConnectionDriverClass();
     public String getAeConnectionURL();
-    public String getAeConnectionUsername();
+    public String getAeConnectionUser();
     public String getAeConnectionPassword();
 }

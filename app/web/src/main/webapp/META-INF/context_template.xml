@@ -22,16 +22,4 @@
             username="${dbUser}"
             password="${dbPassword}"/>
 
-    <% if (st_dbUrl != null) { %>
-    <Resource
-            name="jdbc/subsTrackingDataSource"
-            type="javax.sql.DataSource"
-            maxActive="100" maxIdle="30" maxWait="10000"
-            url="${st_dbUrl}?autoReconnect=true&amp;useUnicode=false&amp;characterEncoding=ISO-8859-1"
-            driverClassName="${st_dbDriver}"
-            username="${st_dbUser}"
-            password="${st_dbPassword}"/>
-    <% } %>
-
-
 </Context>

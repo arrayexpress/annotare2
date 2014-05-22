@@ -141,7 +141,7 @@ public class AEConnection {
 
         BoneCPConfig cpConf = new BoneCPConfig();
         cpConf.setJdbcUrl(connectionProperties.getAeConnectionURL());
-        cpConf.setUsername(connectionProperties.getAeConnectionUsername());
+        cpConf.setUsername(connectionProperties.getAeConnectionUser());
         cpConf.setPassword(connectionProperties.getAeConnectionPassword());
         cpConf.setConnectionTestStatement("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
         cpConf.setMinConnectionsPerPartition(2);

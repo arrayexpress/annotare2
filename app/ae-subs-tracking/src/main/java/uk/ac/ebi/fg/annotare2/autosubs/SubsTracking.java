@@ -18,6 +18,8 @@
 package uk.ac.ebi.fg.annotare2.autosubs;
 
 import com.google.inject.Inject;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPConfig;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -32,8 +34,6 @@ import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -45,20 +45,24 @@ import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 
 public class SubsTracking {
     private final SubsTrackingProperties properties;
+    private BoneCP connectionPool;
 
     private final static String STATUS_PENDING = "Waiting";
-    private final static String SUBS_TRACKING_DATA_SOURCE = "java:/comp/env/jdbc/subsTrackingDataSource";
 
     @Inject
     public SubsTracking( SubsTrackingProperties properties ) {
         this.properties = properties;
+        this.connectionPool = null;
     }
 
     public Connection getConnection() throws SubsTrackingException {
+        if (null == connectionPool) {
+            throw new SubsTrackingException("Unable to obtain a connection; pool has not been initialized");
+        }
         try {
-            return ((DataSource)(new InitialContext().lookup(SUBS_TRACKING_DATA_SOURCE))).getConnection();
-        } catch (Exception x) {
-            throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
+            return connectionPool.getConnection();
+        } catch (SQLException e) {
+            throw new SubsTrackingException(e);
         }
     }
 
@@ -67,8 +71,8 @@ public class SubsTracking {
             if (null != connection && !connection.isClosed()) {
                 connection.close();
             }
-        } catch (SQLException x) {
-            throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
+        } catch (SQLException e) {
+            throw new SubsTrackingException(e);
         }
     }
 
@@ -90,7 +94,7 @@ public class SubsTracking {
                                 .set(EXPERIMENTS.ACCESSION, submission.getAccession())
                                 .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()))
                                 .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
-                                .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
+                                .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
                                 .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() ? 1 : 0)
                                 .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
                                 .returning(EXPERIMENTS.ID)
@@ -98,8 +102,8 @@ public class SubsTracking {
                 if (null != r) {
                     subsTrackingId = r.getId();
                 }
-            } catch (DataSerializationException x) {
-                throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
+            } catch (DataSerializationException e) {
+                throw new SubsTrackingException(e);
             }
         } else {
             throw new SubsTrackingException(SubsTrackingException.NOT_IMPLEMENTED_EXCEPTION);
@@ -131,13 +135,13 @@ public class SubsTracking {
                         .set(EXPERIMENTS.DATE_SUBMITTED, updateDate)
                         .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()))
                         .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
-                        .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getAeSubsTrackingExperimentType())
+                        .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
                         .set(EXPERIMENTS.NUM_SUBMISSIONS, numSubmissions + 1)
                         .where(EXPERIMENTS.ID.equal(submission.getSubsTrackingId()))
                         .execute();
 
-            } catch (DataSerializationException x) {
-                throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
+            } catch (DataSerializationException e) {
+                throw new SubsTrackingException(e);
             }
         } else {
             throw new SubsTrackingException(SubsTrackingException.NOT_IMPLEMENTED_EXCEPTION);
@@ -277,7 +281,7 @@ public class SubsTracking {
 
     private Integer getAnnotareUserId(DSLContext context) throws SubsTrackingException {
 
-        String subsTrackingUser = properties.getAeSubsTrackingUser();
+        String subsTrackingUser = properties.getSubsTrackingUser();
         if (isNullOrEmpty(subsTrackingUser)) {
             throw new SubsTrackingException(SubsTrackingException.USER_NOT_CONFIGURED_EXCEPTION);
         }
@@ -301,16 +305,52 @@ public class SubsTracking {
     }
 
     private DSLContext getContext(Connection connection) throws SubsTrackingException {
-        if (properties.getAeSubsTrackingEnabled()) {
+        if (properties.getSubsTrackingEnabled()) {
             try {
                 Settings settings = new Settings()
                         .withRenderSchema(false);
                 return DSL.using(new DefaultConnectionProvider(connection), SQLDialect.MYSQL, settings);
-            } catch (Exception x) {
-                throw new SubsTrackingException(SubsTrackingException.CAUGHT_EXCEPTION, x);
+            } catch (Exception e) {
+                throw new SubsTrackingException(e);
             }
         } else {
             return null;
+        }
+    }
+
+    public void initialize() throws SubsTrackingException {
+        if (null != connectionPool) {
+            throw new SubsTrackingException(SubsTrackingException.ILLEGAL_REPEAT_INITIALIZATION);
+        }
+
+        try {
+            Class.forName(properties.getSubsTrackingConnectionDriverClass());
+        } catch (ClassNotFoundException x) {
+            String message = "Unable to load driver [" +
+                    properties.getSubsTrackingConnectionDriverClass() +
+                    "] for AEConnection";
+            throw new SubsTrackingException(message);
+        }
+
+        BoneCPConfig cpConf = new BoneCPConfig();
+        cpConf.setJdbcUrl(properties.getSubsTrackingConnectionURL());
+        cpConf.setUsername(properties.getSubsTrackingConnectionUser());
+        cpConf.setPassword(properties.getSubsTrackingConnectionPassword());
+        cpConf.setConnectionTestStatement("SELECT 1 FROM EXPERIMENTS LIMIT 1");
+        cpConf.setMinConnectionsPerPartition(2);
+        cpConf.setMaxConnectionsPerPartition(2);
+        cpConf.setPartitionCount(1);
+
+        try {
+            this.connectionPool = new BoneCP(cpConf);
+        } catch (SQLException e) {
+            throw new SubsTrackingException(e);
+        }
+    }
+
+    public void terminate() throws SubsTrackingException {
+        if (null != connectionPool) {
+            connectionPool.shutdown();
         }
     }
 
