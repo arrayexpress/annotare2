@@ -384,11 +384,7 @@
                                 def binding = [
                                                  'annotareProperties': project.properties['annotare.properties.path'],
                                                  'mageTabCheckProperties': project.properties['magetabcheck.properties.path'],
-                                                 'contextPath': project.properties['annotare.contextPath'],
-                                                 'dbUrl': project.properties['annotare.db.url'],
-                                                 'dbDriver': project.properties['annotare.db.driver'],
-                                                 'dbUser': project.properties['annotare.db.user'],
-                                                 'dbPassword': project.properties['annotare.db.password'],
+                                                 'contextPath': project.properties['annotare.contextPath']
                                 ]
 
                                 for(file in templateFiles) {

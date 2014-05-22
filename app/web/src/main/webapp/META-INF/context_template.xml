@@ -11,15 +11,4 @@
                  type="java.lang.String" override="false"/>
     <% } %>
 
-    <Resource
-            name="jdbc/annotareDataSource" type="javax.sql.DataSource"
-            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
-            maxActive="100" maxIdle="30" maxWait="10000"
-            validationQuery="SELECT 1"
-            testOnBorrow="true"
-            url="${dbUrl}?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"
-            driverClassName="${dbDriver}"
-            username="${dbUser}"
-            password="${dbPassword}"/>
-
 </Context>

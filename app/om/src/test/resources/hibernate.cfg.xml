@@ -21,10 +21,10 @@
     <session-factory>
 
         <!-- Database connection settings -->
-        <property name="hibernate.connection.driver_class">${annotare.db.driver}</property>
-        <property name="hibernate.connection.url">${annotare.db.url}</property>
-        <property name="hibernate.connection.username">${annotare.db.user}</property>
-        <property name="hibernate.connection.password">${annotare.db.password}</property>
+        <property name="hibernate.connection.driver_class">${annotare.test.db.driver}</property>
+        <property name="hibernate.connection.url">${annotare.test.db.url}</property>
+        <property name="hibernate.connection.username">${annotare.test.db.user}</property>
+        <property name="hibernate.connection.password">${annotare.test.db.password}</property>
         <!--
         <property name="connection.datasource">java:comp/env/jdbc/annotareDataSource</property>
         -->

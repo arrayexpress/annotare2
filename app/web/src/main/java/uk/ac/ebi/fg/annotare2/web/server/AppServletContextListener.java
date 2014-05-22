@@ -28,6 +28,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
+import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -40,9 +41,9 @@ import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
-import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Enumeration;
 import java.util.Set;
 
@@ -140,14 +141,20 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     private void updateDb(ServletContextEvent servletContextEvent) {
         try {
-            Context ic = null;
             Connection connection = null;
             try {
-                ic = new InitialContext();
-                //todo get ds string from web.xml
-                DataSource dataSource = (DataSource) ic.lookup("java:comp/env/jdbc/annotareDataSource");
+                // get all connection properties from Hibernate
+                // TODO: create a register data source here and point Hibernate etc to it
+                Configuration configuration = new Configuration();
+                configuration.configure();
 
-                connection = dataSource.getConnection();
+                String dbDriver = configuration.getProperty("hibernate.connection.driver_class");
+                String dbUrl = configuration.getProperty("hibernate.connection.url");
+                String dbUser = configuration.getProperty("hibernate.connection.username");
+                String dbPassword = configuration.getProperty("hibernate.connection.password");
+
+                Class.forName(dbDriver);
+                connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 
                 Thread currentThread = Thread.currentThread();
                 ClassLoader contextClassLoader = currentThread.getContextClassLoader();
@@ -171,10 +178,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
                 liquibase.update("");
             } finally {
-                if (ic != null) {
-                    ic.close();
-                }
-                if (connection != null) {
+                if (null != connection) {
                     connection.close();
                 }
             }

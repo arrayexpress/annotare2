@@ -61,6 +61,7 @@
         <clover.version>3.1.3</clover.version>
         <lucene.version>4.3.0</lucene.version>
         <jooq.version>3.1.0</jooq.version>
+        <bonecp.version>0.8.0.RELEASE</bonecp.version>
         <tomcat.version>7.0.42</tomcat.version>
         <mysql-jdbc.version>5.1.26</mysql-jdbc.version>
         <oracle-jdbc.version>10.2.0.4</oracle-jdbc.version>
@@ -236,7 +237,12 @@
             <dependency>
                 <groupId>com.jolbox</groupId>
                 <artifactId>bonecp</artifactId>
-                <version>0.8.0.RELEASE</version>
+                <version>${bonecp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jolbox</groupId>
+                <artifactId>bonecp-provider</artifactId>
+                <version>0.8.0-alpha1</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
@@ -340,6 +346,12 @@
                 <annotare.db.password>annotare_db_password</annotare.db.password>
                 <annotare.db.driver>com.mysql.jdbc.Driver</annotare.db.driver>
 
+                <annotare.test.db.url>test_db_url</annotare.test.db.url>
+                <annotare.test.db.user>test_db_user</annotare.test.db.user>
+                <annotare.test.db.password>test_db_password</annotare.test.db.password>
+                <annotare.test.db.driver>com.mysql.jdbc.Driver</annotare.test.db.driver>
+                <annotare.test.db.dataSource>com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource</annotare.test.db.dataSource>
+
                 <!-- SubsTracking DB integration -->
                 <annotare.subsTracking.db.schema>subsTracking_db_schema</annotare.subsTracking.db.schema>
                 <annotare.subsTracking.db.url>subsTracking_db_url</annotare.subsTracking.db.url>
@@ -353,12 +365,6 @@
                 <annotare.ae.db.user>ae_db_user</annotare.ae.db.user>
                 <annotare.ae.db.password>ae_db_password</annotare.ae.db.password>
                 <annotare.ae.db.driver>ae_db_driver_class</annotare.ae.db.driver>
-
-                <annotare.test.db.url>test_db_url</annotare.test.db.url>
-                <annotare.test.db.user>test_db_user</annotare.test.db.user>
-                <annotare.test.db.password>test_db_password</annotare.test.db.password>
-                <annotare.test.db.driver>com.mysql.jdbc.Driver</annotare.test.db.driver>
-                <annotare.test.db.dataSource>com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource</annotare.test.db.dataSource>
             </properties>
         </profile>
     </profiles>
