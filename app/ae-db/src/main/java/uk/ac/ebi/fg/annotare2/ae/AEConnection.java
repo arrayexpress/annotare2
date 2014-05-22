@@ -17,6 +17,9 @@
 
 package uk.ac.ebi.fg.annotare2.ae;
 
+import com.google.inject.Inject;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPConfig;
 import org.jooq.DSLContext;
 import org.jooq.Record2;
 import org.jooq.SQLDialect;
@@ -24,8 +27,6 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConnectionProvider;
 
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,13 +34,23 @@ import java.sql.SQLException;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.ae.jooq.Tables.*;
 
-public class ArrayExpress {
-    private final static String AE_DATA_SOURCE = "java:/comp/env/jdbc/arrayExpressDataSource";
+public class AEConnection {
+    //private final static Logger logger = LoggerFactory.getLogger(ArrayExpress.class);
+
+    private final AEConnectionProperties connectionProperties;
+
+    private BoneCP connectionPool;
 
     public enum SubmissionState {
         NOT_LOADED,
         PRIVATE,
         PUBLIC
+    }
+
+    @Inject
+    public AEConnection(AEConnectionProperties properties) throws AEConnectionException {
+        this.connectionProperties = properties;
+        this.connectionPool = null;
     }
 
     public SubmissionState getSubmissionState(String accession) throws AEConnectionException {
@@ -84,9 +95,12 @@ public class ArrayExpress {
     }
 
     private Connection getConnection() throws AEConnectionException {
+        if (null == connectionPool) {
+            throw new AEConnectionException("Unable to obtain a connection; pool has not been initialized");
+        }
         try {
-            return ((DataSource)(new InitialContext().lookup(AE_DATA_SOURCE))).getConnection();
-        } catch (Exception e) {
+            return connectionPool.getConnection();
+        } catch (SQLException e) {
             throw new AEConnectionException(e);
         }
     }
@@ -109,6 +123,41 @@ public class ArrayExpress {
         } catch (Exception e) {
             throw new AEConnectionException(e);
         }
+    }
 
+    public void initialize() throws AEConnectionException {
+        if (null != connectionPool) {
+            throw new AEConnectionException("Illegal repeat initialization of AEConnection");
+        }
+
+        try {
+            Class.forName(connectionProperties.getAeConnectionDriverClass());
+        } catch (ClassNotFoundException x) {
+            String message = "Unable to load driver [" +
+                    connectionProperties.getAeConnectionDriverClass() +
+                    "] for AEConnection";
+            throw new AEConnectionException(message);
+        }
+
+        BoneCPConfig cpConf = new BoneCPConfig();
+        cpConf.setJdbcUrl(connectionProperties.getAeConnectionURL());
+        cpConf.setUsername(connectionProperties.getAeConnectionUsername());
+        cpConf.setPassword(connectionProperties.getAeConnectionPassword());
+        cpConf.setConnectionTestStatement("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
+        cpConf.setMinConnectionsPerPartition(2);
+        cpConf.setMaxConnectionsPerPartition(2);
+        cpConf.setPartitionCount(1);
+
+        try {
+            this.connectionPool = new BoneCP(cpConf);
+        } catch (SQLException e) {
+            throw new AEConnectionException(e);
+        }
+    }
+
+    public void terminate() throws AEConnectionException {
+        if (null != connectionPool) {
+            connectionPool.shutdown();
+        }
     }
 }

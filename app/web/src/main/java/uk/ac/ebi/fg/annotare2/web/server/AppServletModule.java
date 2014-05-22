@@ -23,6 +23,8 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import gwtupload.server.UploadServlet;
+import uk.ac.ebi.fg.annotare2.ae.AEConnection;
+import uk.ac.ebi.fg.annotare2.ae.AEConnectionProperties;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
@@ -162,6 +164,7 @@ public class AppServletModule extends ServletModule {
         bind(EmailSender.class).in(SINGLETON);
 
         bind(SubsTracking.class).in(SINGLETON);
+        bind(AEConnection.class).in(SINGLETON);
         bind(SubsTrackingWatchdog.class).asEagerSingleton();
 
         bind(AccountService.class).to(AccountServiceImpl.class).in(SINGLETON);
@@ -170,6 +173,7 @@ public class AppServletModule extends ServletModule {
         bind(AnnotareProperties.class).asEagerSingleton();
         bind(DataFileStoreProperties.class).to(AnnotareProperties.class);
         bind(SubsTrackingProperties.class).to(AnnotareProperties.class);
+        bind(AEConnectionProperties.class).to(AnnotareProperties.class);
         bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
         bind(AnnotareEfoService.class).in(SINGLETON);
 

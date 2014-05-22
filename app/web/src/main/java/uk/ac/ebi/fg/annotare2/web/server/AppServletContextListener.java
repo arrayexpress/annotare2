@@ -59,8 +59,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(AppServletContextListener.class);
 
     private Set<URL> libPaths = newHashSet();
-    //private List<Service> servicesToStop = newArrayList();
-    //private BrokerService brokerService;
     private Injector injector;
 
     @Override
@@ -68,8 +66,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
         SLF4JBridgeHandler.install();
 
         updateDb(servletContextEvent);
-
-        //startActiveMqBroker();
 
         findMageTabCheckAnnotationPackages();
 
@@ -80,9 +76,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        //stopFileCopyMessagingQuere();
-        //stopActiveMqBroker();
-
         stopServices();
 
         SLF4JBridgeHandler.uninstall();
@@ -104,8 +97,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
         injector.getInstance(HibernateSessionFactoryProvider.class).start();
         injector.getInstance(DataFilesPeriodicProcess.class).start();
         injector.getInstance(SubsTrackingWatchdog.class).start();
-        //service.start();
-        //servicesToStop.add(service);
     }
 
     private void stopServices() {
@@ -113,9 +104,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
         injector.getInstance(SubsTrackingWatchdog.class).stop();
         injector.getInstance(DataFilesPeriodicProcess.class).stop();
         injector.getInstance(HibernateSessionFactoryProvider.class).stop();
-        //for (Service service : servicesToStop) {
-        //    service.stop();
-        //}
     }
 
     private void lookupPropertiesInContext() {
@@ -195,36 +183,4 @@ public class AppServletContextListener extends GuiceServletContextListener {
             throw new RuntimeException(e);
         }
     }
-    /*
-    private void startActiveMqBroker() {
-        try {
-            log.info("Starting local JMS broker...");
-            brokerService = new BrokerService();
-            brokerService.setBrokerName("localhost");
-            brokerService.setUseJmx(false);
-            brokerService.setSchedulerSupport(true);
-            brokerService.start();
-        } catch (Exception e) {
-            log.error("Unable to start JMS broker", e);
-        }
-    }
-
-    private void stopActiveMqBroker() {
-        try {
-            log.info("Stopping local JMS broker...");
-            brokerService.stop();
-        } catch (Exception e) {
-            log.error("Unable to stop JMS broker", e);
-        }
-    }
-
-    private void stopFileCopyMessagingQuere() {
-        try {
-            log.info("Stopping file copy messaging queue...");
-            injector.getInstance(FileCopyMessageQueue.class).shutdown();
-        } catch (Exception e) {
-            log.error("Unable to stop file copy messaging queue", e);
-        }
-    }
-    */
 }

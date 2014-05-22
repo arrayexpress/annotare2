@@ -21,6 +21,7 @@ import com.google.common.base.Predicate;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.ae.AEConnectionProperties;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoServiceProperties;
@@ -41,7 +42,7 @@ import static java.util.Collections.emptyList;
 /**
  * @author Olga Melnichuk
  */
-public class AnnotareProperties implements DataFileStoreProperties, SubsTrackingProperties {
+public class AnnotareProperties implements DataFileStoreProperties, SubsTrackingProperties, AEConnectionProperties {
 
     private static final Logger log = LoggerFactory.getLogger(AnnotareProperties.class);
 
@@ -149,6 +150,31 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
     @Override
     public File getAeSubsTrackingExportDir() {
         return getDirProperty("ae-subs-tracking.export.dir");
+    }
+
+    @Override
+    public Boolean getAeConnectionEnabled() {
+        return Boolean.parseBoolean(getProperty("ae-connection.enabled"));
+    }
+
+    @Override
+    public String getAeConnectionDriverClass() {
+        return getProperty("ae-connection.driver");
+    }
+
+    @Override
+    public String getAeConnectionURL() {
+        return getProperty("ae-connection.url");
+    }
+
+    @Override
+    public String getAeConnectionUsername() {
+        return getProperty("ae-connection.user");
+    }
+
+    @Override
+    public String getAeConnectionPassword() {
+        return getProperty("ae-connection.password");
     }
 
     private File getDirProperty(String name) {

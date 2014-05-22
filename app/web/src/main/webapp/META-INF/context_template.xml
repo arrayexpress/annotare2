@@ -33,15 +33,5 @@
             password="${st_dbPassword}"/>
     <% } %>
 
-    <% if (ae_dbUrl != null) { %>
-    <Resource
-            name="jdbc/arrayExpressDataSource"
-            type="javax.sql.DataSource"
-            maxActive="100" maxIdle="30" maxWait="10000"
-            url="${ae_dbUrl}?autoReconnect=true"
-            driverClassName="${ae_dbDriver}"
-            username="${ae_dbUser}"
-            password="${ae_dbPassword}"/>
-    <% } %>
 
 </Context>

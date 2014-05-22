@@ -118,7 +118,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         dataGrid.setColumnWidth(0, 11, Style.Unit.EM);
         dataGrid.setColumnWidth(1, 11, Style.Unit.EM);
-        dataGrid.setColumnWidth(3, 9, Style.Unit.EM);
+        dataGrid.setColumnWidth(3, 14, Style.Unit.EM);
         dataGrid.setColumnWidth(4, 5, Style.Unit.EM);
 
         final SingleSelectionModel<SubmissionRow> selectionModel = new SingleSelectionModel<SubmissionRow>(
@@ -162,7 +162,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
             dataGrid.setColumnWidth(1, 11, Style.Unit.EM);
             dataGrid.setColumnWidth(2, 11, Style.Unit.EM);
             dataGrid.clearColumnWidth(3);
-            dataGrid.setColumnWidth(4, 9, Style.Unit.EM);
+            dataGrid.setColumnWidth(4, 14, Style.Unit.EM);
             dataGrid.setColumnWidth(5, 5, Style.Unit.EM);
         }
     }

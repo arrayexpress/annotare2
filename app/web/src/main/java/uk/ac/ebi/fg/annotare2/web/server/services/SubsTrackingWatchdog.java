@@ -25,6 +25,8 @@ import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.ae.AEConnection;
+import uk.ac.ebi.fg.annotare2.ae.AEConnectionException;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
@@ -40,15 +42,19 @@ import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
+import javax.mail.MessagingException;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static uk.ac.ebi.fg.annotare2.ae.AEConnection.SubmissionState.*;
 
 public class SubsTrackingWatchdog extends AbstractIdleService {
 
@@ -56,6 +62,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
+    private final AEConnection aeConnection;
     private final SubmissionDao submissionDao;
     private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
@@ -72,12 +79,14 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
     public SubsTrackingWatchdog(HibernateSessionFactory sessionFactory,
                                 AnnotareProperties properties,
                                 SubsTracking subsTracking,
+                                AEConnection aeConnection,
                                 SubmissionDao submissionDao,
                                 SubmissionManager submissionManager,
                                 DataFileManager dataFileManager,
                                 EmailSender emailer) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
+        this.aeConnection = aeConnection;
         this.submissionDao = submissionDao;
         this.submissionManager = submissionManager;
         this.dataFileManager = dataFileManager;
@@ -103,6 +112,8 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
 
         };
 
+        aeConnection.initialize();
+
         if (properties.getAeSubsTrackingEnabled()) {
             scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
         }
@@ -111,11 +122,15 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
     @Override
     public void shutDown() throws Exception {
         scheduler.shutdown();
+        aeConnection.terminate();
     }
 
     private void periodicRun() throws Exception {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
-                SubmissionStatus.SUBMITTED, SubmissionStatus.IN_CURATION
+                SubmissionStatus.SUBMITTED
+                , SubmissionStatus.IN_CURATION
+                , SubmissionStatus.PRIVATE_IN_AE
+                , SubmissionStatus.PUBLIC_IN_AE
         );
 
         for (Submission submission : submissions) {
@@ -126,6 +141,15 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
 
                 case IN_CURATION:
                     processInCuration(submission);
+                    break;
+
+                case PRIVATE_IN_AE:
+                    processPrivateInAE(submission);
+                    break;
+
+                case PUBLIC_IN_AE:
+                    processPublicInAE(submission);
+                    break;
             }
         }
     }
@@ -136,9 +160,65 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
-            try {
-                emailer.sendFromTemplate(
-                        EmailSender.INITIAL_SUBMISSION_TEMPLATE,
+            sendEmail(
+                    EmailSender.INITIAL_SUBMISSION_TEMPLATE,
+                    ImmutableMap.of(
+                            "to.name", submission.getCreatedBy().getName(),
+                            "to.email", submission.getCreatedBy().getEmail(),
+                            "submission.title", submission.getTitle(),
+                            "submission.date", submission.getUpdated().toString()
+                    )
+            );
+
+            if (properties.getAeSubsTrackingEnabled()) {
+                String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
+                        EmailSender.INITIAL_SUBMISSION_OTRS_TEMPLATE : EmailSender.REPEAT_SUBMISSION_OTRS_TEMPLATE;
+
+                sendEmail(
+                        otrsTemplate,
+                        new ImmutableMap.Builder<String, String>().
+                                put("to.name", submission.getCreatedBy().getName()).
+                                put("to.email", submission.getCreatedBy().getEmail()).
+                                put("submission.title", submission.getTitle()).
+                                put("submission.date", submission.getUpdated().toString()).
+                                put("subsTracking.user", properties.getAeSubsTrackingUser()).
+                                put("subsTracking.experiment.type", properties.getAeSubsTrackingExperimentType()).
+                                put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
+                                build()
+                );
+            }
+        }
+    }
+
+    @Transactional(rollbackOn = {SubsTrackingException.class, AEConnectionException.class})
+    public void processInCuration(Submission submission) throws SubsTrackingException, AEConnectionException {
+        Integer subsTrackingId = submission.getSubsTrackingId();
+        if (null != subsTrackingId) {
+
+            // check if the accession has been assigned or updated in subs tracking
+            String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
+            if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
+                submission.setAccession(subsTrackingAccession);
+                submissionManager.save(submission);
+                sendEmail(
+                        EmailSender.ACCESSION_UPDATE_TEMPLATE,
+                        ImmutableMap.of(
+                                "to.name", submission.getCreatedBy().getName(),
+                                "to.email", submission.getCreatedBy().getEmail(),
+                                "submission.title", submission.getTitle(),
+                                "submission.accession", submission.getAccession(),
+                                "submission.date", submission.getUpdated().toString()
+                        )
+                );
+            }
+
+            // check if the submission has been rejected
+            if (!isInCuration(submission.getSubsTrackingId())) {
+                submission.setStatus(SubmissionStatus.IN_PROGRESS);
+                submission.setOwnedBy(submission.getCreatedBy());
+                submissionManager.save(submission);
+                sendEmail(
+                        EmailSender.REJECTED_SUBMISSION_TEMPLATE,
                         ImmutableMap.of(
                                 "to.name", submission.getCreatedBy().getName(),
                                 "to.email", submission.getCreatedBy().getEmail(),
@@ -146,72 +226,48 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                                 "submission.date", submission.getUpdated().toString()
                         )
                 );
-
-                if (properties.getAeSubsTrackingEnabled()) {
-                    String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
-                            EmailSender.INITIAL_SUBMISSION_OTRS_TEMPLATE : EmailSender.REPEAT_SUBMISSION_OTRS_TEMPLATE;
-
-                    emailer.sendFromTemplate(
-                            otrsTemplate,
-                            new ImmutableMap.Builder<String,String>().
-                                    put("to.name", submission.getCreatedBy().getName()).
-                                    put("to.email", submission.getCreatedBy().getEmail()).
-                                    put("submission.title", submission.getTitle()).
-                                    put("submission.date", submission.getUpdated().toString()).
-                                    put("subsTracking.user", properties.getAeSubsTrackingUser()).
-                                    put("subsTracking.experiment.type",  properties.getAeSubsTrackingExperimentType()).
-                                    put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
-                                    build()
-                    );
+            } else {
+                String accession = submission.getAccession();
+                if (!isNullOrEmpty(accession)) {
+                    AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+                    if (PRIVATE == state) {
+                        submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
+                        submissionManager.save(submission);
+                    } else if (PUBLIC == state) {
+                        submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
+                        submissionManager.save(submission);
+                    }
                 }
-            } catch (Exception x) {
-                log.error("Email process threw an exception:", x);
             }
         }
     }
 
-    @Transactional(rollbackOn = {SubsTrackingException.class})
-    public void processInCuration(Submission submission) throws SubsTrackingException {
-        Integer subsTrackingId = submission.getSubsTrackingId();
-        if (null != subsTrackingId) {
-
-            String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
-            if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
-                submission.setAccession(subsTrackingAccession);
+    @Transactional(rollbackOn = {AEConnectionException.class})
+    public void processPrivateInAE(Submission submission) throws AEConnectionException {
+        String accession = submission.getAccession();
+        if (!isNullOrEmpty(accession)) {
+            AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+            if (NOT_LOADED == state) {
+                submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
-                try {
-                    emailer.sendFromTemplate(
-                            EmailSender.ACCESSION_UPDATE_TEMPLATE,
-                            ImmutableMap.of(
-                                    "to.name", submission.getCreatedBy().getName(),
-                                    "to.email", submission.getCreatedBy().getEmail(),
-                                    "submission.title", submission.getTitle(),
-                                    "submission.accession", submission.getAccession(),
-                                    "submission.date", submission.getUpdated().toString()
-                            )
-                    );
-                } catch (Exception x) {
-                    log.error("Email process threw an exception:", x);
-                }
+            } else if (PUBLIC == state) {
+                submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
+                submissionManager.save(submission);
             }
+        }
+    }
 
-            if (!isInCuration(submission.getSubsTrackingId())) {
-                submission.setStatus(SubmissionStatus.IN_PROGRESS);
-                submission.setOwnedBy(submission.getCreatedBy());
+    @Transactional(rollbackOn = {AEConnectionException.class})
+    public void processPublicInAE(Submission submission) throws AEConnectionException {
+        String accession = submission.getAccession();
+        if (!isNullOrEmpty(accession)) {
+            AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+            if (NOT_LOADED == state) {
+                submission.setStatus(SubmissionStatus.IN_CURATION);
                 submissionManager.save(submission);
-                try {
-                    emailer.sendFromTemplate(
-                            EmailSender.REJECTED_SUBMISSION_TEMPLATE,
-                            ImmutableMap.of(
-                                    "to.name", submission.getCreatedBy().getName(),
-                                    "to.email", submission.getCreatedBy().getEmail(),
-                                    "submission.title", submission.getTitle(),
-                                    "submission.date", submission.getUpdated().toString()
-                            )
-                    );
-                } catch (Exception x) {
-                    log.error("Email process threw an exception:", x);
-                }
+            } else if (PRIVATE == state) {
+                submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
+                submissionManager.save(submission);
             }
         }
     }
@@ -367,6 +423,14 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             return subsTracking.getAccession(dbConnection, subsTrackingId);
         } finally {
             subsTracking.releaseConnection(dbConnection);
+        }
+    }
+
+    private void sendEmail(String template, Map<String,String> params) {
+        try {
+            emailer.sendFromTemplate(template, params);
+        } catch (MessagingException e) {
+            log.error("Unable to send email", e);
         }
     }
 }
