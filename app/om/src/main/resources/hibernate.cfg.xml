@@ -20,31 +20,14 @@
 <hibernate-configuration>
     <session-factory>
 
-        <!-- Database connection settings -->
-        <property name="hibernate.connection.driver_class">${annotare.db.driver}</property>
-        <property name="hibernate.connection.url">${annotare.db.url}</property>
-        <property name="hibernate.connection.username">${annotare.db.user}</property>
-        <property name="hibernate.connection.password">${annotare.db.password}</property>
-        <!--
-        <property name="connection.datasource">java:comp/env/jdbc/annotareDataSource</property>
-        -->
-        <!-- BoneCP connection settings -->
-        <property name="hibernate.connection.provider_class">com.jolbox.bonecp.provider.BoneCPConnectionProvider</property>
-        <property name="bonecp.idleMaxAgeInMinutes">10</property>
-        <property name="bonecp.idleConnectionTestPeriodInMinutes">1</property>
-        <property name="bonecp.partitionCount">1</property>
-        <property name="bonecp.acquireIncrement">1</property>
-        <property name="bonecp.maxConnectionsPerPartition">100</property>
-        <property name="bonecp.minConnectionsPerPartition">20</property>
-        <property name="bonecp.statementsCacheSize">0</property>
-        <property name="bonecp.connectionTestStatement">SELECT 1 FROM SUBMISSION LIMIT 1</property>
+        <!-- JDBC connection data source -->
+        <property name="hibernate.connection.datasource">annotareDb</property>
+
+        <!-- JDBC auto commit -->
+        <property name="hibernate.connection.autocommit">false</property>
 
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
-
-        <!-- JDBC connection pool (use the built-in) -->
-        <property name="hibernate.connection.pool_size">1</property>
-        <property name="hibernate.connection.autocommit">false</property>
 
         <!-- Echo all executed SQL to stdout -->
         <property name="hibernate.show_sql">false</property>

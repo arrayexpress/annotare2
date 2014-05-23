@@ -20,15 +20,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
-import liquibase.resource.CompositeResourceAccessor;
-import liquibase.resource.FileSystemResourceAccessor;
-import liquibase.resource.ResourceAccessor;
-import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -42,9 +33,6 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.Enumeration;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -60,19 +48,19 @@ public class AppServletContextListener extends GuiceServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(AppServletContextListener.class);
 
     private Set<URL> libPaths = newHashSet();
-    private Injector injector;
+    private Injector injector = null;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         SLF4JBridgeHandler.install();
-
-        updateDb(servletContextEvent);
 
         findMageTabCheckAnnotationPackages();
 
         lookupPropertiesInContext();
 
         super.contextInitialized(servletContextEvent);
+
+        startServices();
     }
 
     @Override
@@ -86,15 +74,15 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     protected Injector getInjector() {
-        injector = Guice.createInjector(Stage.DEVELOPMENT,
-                override(new CheckerModule()).with(new AppServletModule(libPaths)));
-
-        startServices(injector);
+        if (null == injector) {
+            injector = Guice.createInjector(Stage.DEVELOPMENT,
+                    override(new CheckerModule()).with(new AppServletModule(libPaths)));
+        }
         return injector;
     }
 
-    private void startServices(Injector injector) {
-        log.info("Starting services on context init");
+    private void startServices() {
+        log.info("Starting services on context init...");
         injector.getInstance(HibernateSessionFactoryProvider.class).start();
         injector.getInstance(DataFilesPeriodicProcess.class).start();
         injector.getInstance(SubsTrackingWatchdog.class).start();
@@ -137,54 +125,5 @@ public class AppServletContextListener extends GuiceServletContextListener {
         /* note: better not to use forWebInfLib(), as you can't rely on servletContext.getResource(...) */
         //todo: move package names with magetabcheck annotations to the config
         libPaths.addAll(forPackage("uk.ac.ebi.fg.annotare2.magetabcheck.checks"));
-    }
-
-    private void updateDb(ServletContextEvent servletContextEvent) {
-        try {
-            Connection connection = null;
-            try {
-                // get all connection properties from Hibernate
-                // TODO: create a register data source here and point Hibernate etc to it
-                Configuration configuration = new Configuration();
-                configuration.configure();
-
-                String dbDriver = configuration.getProperty("hibernate.connection.driver_class");
-                String dbUrl = configuration.getProperty("hibernate.connection.url");
-                String dbUser = configuration.getProperty("hibernate.connection.username");
-                String dbPassword = configuration.getProperty("hibernate.connection.password");
-
-                Class.forName(dbDriver);
-                connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-
-                Thread currentThread = Thread.currentThread();
-                ClassLoader contextClassLoader = currentThread.getContextClassLoader();
-                ResourceAccessor threadClFO = new ClassLoaderResourceAccessor(contextClassLoader);
-
-                ResourceAccessor clFO = new ClassLoaderResourceAccessor();
-                ResourceAccessor fsFO = new FileSystemResourceAccessor();
-
-
-                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-                //todo move to web.xml
-                Liquibase liquibase = new Liquibase("uk/ac/ebi/fg/annotare2/db/changelog/changelog-master.xml", new CompositeResourceAccessor(clFO, fsFO, threadClFO), database);
-
-                Enumeration<String> initParameters = servletContextEvent.getServletContext().getInitParameterNames();
-                while (initParameters.hasMoreElements()) {
-                    String name = initParameters.nextElement().trim();
-                    if (name.startsWith("liquibase.parameter.")) {
-                        liquibase.setChangeLogParameter(name.substring("liquibase.parameter".length()), servletContextEvent.getServletContext().getInitParameter(name));
-                    }
-                }
-
-                liquibase.update("");
-            } finally {
-                if (null != connection) {
-                    connection.close();
-                }
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -114,7 +114,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         subsTracking.initialize();
         aeConnection.initialize();
 
-        if (properties.getSubsTrackingEnabled()) {
+        if (properties.isSubsTrackingEnabled()) {
             scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
         }
     }
@@ -171,7 +171,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                     )
             );
 
-            if (properties.getSubsTrackingEnabled()) {
+            if (properties.isSubsTrackingEnabled()) {
                 String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
                         EmailSender.INITIAL_SUBMISSION_OTRS_TEMPLATE : EmailSender.REPEAT_SUBMISSION_OTRS_TEMPLATE;
 
@@ -227,7 +227,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                                 "submission.date", submission.getUpdated().toString()
                         )
                 );
-            } else if (properties.getAeConnectionEnabled()) {
+            } else if (properties.isAeConnectionEnabled()) {
                 String accession = submission.getAccession();
                 if (!isNullOrEmpty(accession)) {
                     AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
@@ -245,7 +245,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
 
     @Transactional(rollbackOn = {AEConnectionException.class})
     public void processPrivateInAE(Submission submission) throws AEConnectionException {
-       if (properties.getAeConnectionEnabled()) {
+       if (properties.isAeConnectionEnabled()) {
            String accession = submission.getAccession();
            if (!isNullOrEmpty(accession)) {
                AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
@@ -262,7 +262,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
 
     @Transactional(rollbackOn = {AEConnectionException.class})
     public void processPublicInAE(Submission submission) throws AEConnectionException {
-        if (properties.getAeConnectionEnabled()) {
+        if (properties.isAeConnectionEnabled()) {
             String accession = submission.getAccession();
             if (!isNullOrEmpty(accession)) {
                 AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
@@ -293,7 +293,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 }
             }
 
-            if (properties.getSubsTrackingEnabled()) {
+            if (properties.isSubsTrackingEnabled()) {
                 subsTrackingConnection = subsTracking.getConnection();
                 if (null == subsTrackingConnection) {
                     throw new SubsTrackingException(SubsTrackingException.UNABLE_TO_OBTAIN_CONNECTION);
@@ -328,7 +328,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 exportSubmissionFiles(subsTrackingConnection, (ExperimentSubmission)submission, exportDir);
             }
 
-            if (properties.getSubsTrackingEnabled()) {
+            if (properties.isSubsTrackingEnabled()) {
                 subsTracking.sendSubmission(subsTrackingConnection, submission.getSubsTrackingId());
                 subsTrackingConnection.commit();
             }
@@ -344,7 +344,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             }
             throw new SubsTrackingException(e);
         } finally {
-            if (properties.getSubsTrackingEnabled()) {
+            if (properties.isSubsTrackingEnabled()) {
                 subsTracking.releaseConnection(subsTrackingConnection);
             }
         }
@@ -359,7 +359,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             if (null == fileName) {
                 fileName = "submission" + submission.getId() + "_annotare";
             }
-            if (properties.getSubsTrackingEnabled()) {
+            if (properties.isSubsTrackingEnabled()) {
                 int version = 1;
                 while (subsTracking.hasMageTabFileAdded(
                         connection,
@@ -376,7 +376,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             }
             mageTab.getIdfFile().setWritable(true, false);
 
-            if (properties.getSubsTrackingEnabled()) {
+            if (properties.isSubsTrackingEnabled()) {
                 subsTracking.deleteFiles(connection, subsTrackingId);
                 subsTracking.addMageTabFile(connection, subsTrackingId, mageTab.getIdfFile().getName());
             }
@@ -403,7 +403,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                         source.copyTo(f);
                         f.setWritable(true, false);
                     }
-                    if (properties.getSubsTrackingEnabled()) {
+                    if (properties.isSubsTrackingEnabled()) {
                         subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
                     }
                 }

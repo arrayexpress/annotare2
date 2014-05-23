@@ -132,8 +132,24 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         return getProperty("mail.template." + templateName.trim());
     }
 
+    public String getDbConnectionDriver() {
+        return getProperty("db.connection.driver");
+    }
+
+    public String getDbConnectionURL() {
+        return getProperty("db.connection.url");
+    }
+
+    public String getDbConnectionUser() {
+        return getProperty("db.connection.user");
+    }
+
+    public String getDbConnectionPassword() {
+        return getProperty("db.connection.password");
+    }
+
     @Override
-    public Boolean getSubsTrackingEnabled() {
+    public Boolean isSubsTrackingEnabled() {
         return Boolean.parseBoolean(getProperty("ae-subs-tracking.enabled"));
     }
 
@@ -173,7 +189,7 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
     }
 
     @Override
-    public Boolean getAeConnectionEnabled() {
+    public Boolean isAeConnectionEnabled() {
         return Boolean.parseBoolean(getProperty("ae-connection.enabled"));
     }
 

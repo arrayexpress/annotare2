@@ -130,28 +130,30 @@ public class AEConnection {
             throw new AEConnectionException("Illegal repeat initialization of AEConnection");
         }
 
-        try {
-            Class.forName(connectionProperties.getAeConnectionDriverClass());
-        } catch (ClassNotFoundException x) {
-            String message = "Unable to load driver [" +
-                    connectionProperties.getAeConnectionDriverClass() +
-                    "] for AEConnection";
-            throw new AEConnectionException(message);
-        }
+        if (connectionProperties.isAeConnectionEnabled()) {
+            try {
+                Class.forName(connectionProperties.getAeConnectionDriverClass());
+            } catch (ClassNotFoundException x) {
+                String message = "Unable to load driver [" +
+                        connectionProperties.getAeConnectionDriverClass() +
+                        "] for AEConnection";
+                throw new AEConnectionException(message);
+            }
 
-        BoneCPConfig cpConf = new BoneCPConfig();
-        cpConf.setJdbcUrl(connectionProperties.getAeConnectionURL());
-        cpConf.setUsername(connectionProperties.getAeConnectionUser());
-        cpConf.setPassword(connectionProperties.getAeConnectionPassword());
-        cpConf.setConnectionTestStatement("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
-        cpConf.setMinConnectionsPerPartition(2);
-        cpConf.setMaxConnectionsPerPartition(2);
-        cpConf.setPartitionCount(1);
+            BoneCPConfig cpConf = new BoneCPConfig();
+            cpConf.setJdbcUrl(connectionProperties.getAeConnectionURL());
+            cpConf.setUsername(connectionProperties.getAeConnectionUser());
+            cpConf.setPassword(connectionProperties.getAeConnectionPassword());
+            cpConf.setConnectionTestStatement("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
+            cpConf.setMinConnectionsPerPartition(2);
+            cpConf.setMaxConnectionsPerPartition(2);
+            cpConf.setPartitionCount(1);
 
-        try {
-            this.connectionPool = new BoneCP(cpConf);
-        } catch (SQLException e) {
-            throw new AEConnectionException(e);
+            try {
+                this.connectionPool = new BoneCP(cpConf);
+            } catch (SQLException e) {
+                throw new AEConnectionException(e);
+            }
         }
     }
 

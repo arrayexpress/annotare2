@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
@@ -26,8 +27,12 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 public class HibernateSessionFactoryProvider extends AbstractIdleService implements Provider<HibernateSessionFactory> {
 
     private final HibernateSessionFactory sessionFactory;
+    private final DatabaseDataSource ds;
 
-    public HibernateSessionFactoryProvider() {
+    @Inject
+    public HibernateSessionFactoryProvider(DatabaseDataSource ds) {
+        this.ds = ds;
+
         sessionFactory = HibernateSessionFactory.create();
     }
 
@@ -39,6 +44,7 @@ public class HibernateSessionFactoryProvider extends AbstractIdleService impleme
     @Override
     protected void shutDown() throws Exception {
         sessionFactory.close();
+        ds.shutDown();
     }
 
     @Override

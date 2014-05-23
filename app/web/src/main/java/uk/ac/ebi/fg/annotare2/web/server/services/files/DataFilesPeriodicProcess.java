@@ -41,7 +41,7 @@ import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.*;
 
 public class DataFilesPeriodicProcess extends AbstractIdleService {
 
-    private static final Logger log = LoggerFactory.getLogger(FileCopyConsumer.class);
+    private static final Logger log = LoggerFactory.getLogger(DataFilesPeriodicProcess.class);
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
