@@ -338,8 +338,8 @@
                 <annotare.contextPath>/</annotare.contextPath>
                 <!-- external properties -->
                 <!--
-                <annotare.properties.path>path/to/Annotare.properties</annotare.properties.path>
-                <magetabcheck.properties.path>path/to/MageTabCheck.properties</magetabcheck.properties.path>
+                <annotare.properties.path>/path/to/Annotare.properties</annotare.properties.path>
+                <magetabcheck.properties.path>/path/to/MageTabCheck.properties</magetabcheck.properties.path>
                 -->
                 <annotare.db.url>annotare_db_url</annotare.db.url>
                 <annotare.db.user>annotare_db_user</annotare.db.user>
