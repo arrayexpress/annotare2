@@ -17,6 +17,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.migration;
 
+import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class SubmissionMigrator {
+public class SubmissionMigrator extends AbstractIdleService {
     private static final Logger log = LoggerFactory.getLogger(SubmissionMigrator.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final HibernateSessionFactory sessionFactory;
@@ -57,11 +58,10 @@ public class SubmissionMigrator {
         this.sessionFactory = sessionFactory;
         this.submissionDao = submissionDao;
         this.submissionManager = submissionManager;
-
-        start();
     }
 
-    public void start() {
+    @Override
+    protected void startUp() {
         final Runnable periodicProcess = new Runnable() {
             @Override
             public void run() {
@@ -78,6 +78,11 @@ public class SubmissionMigrator {
         };
 
         scheduler.schedule(periodicProcess, 0, TimeUnit.SECONDS);
+    }
+
+    @Override
+    protected void shutDown() {
+        scheduler.shutdown();
     }
 
     public void migrate10to11() throws DataSerializationException {

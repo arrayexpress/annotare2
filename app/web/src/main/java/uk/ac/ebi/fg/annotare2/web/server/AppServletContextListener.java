@@ -35,6 +35,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubsTrackingWatchdog;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFilesPeriodicProcess;
+import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -96,6 +97,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
     private void startServices(Injector injector) {
         log.info("Starting services on context init");
         injector.getInstance(HibernateSessionFactoryProvider.class).start();
+        injector.getInstance(SubmissionMigrator.class).start();
         injector.getInstance(DataFilesPeriodicProcess.class).start();
         injector.getInstance(SubsTrackingWatchdog.class).start();
     }
@@ -104,6 +106,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
         log.info("Stopping services on context destroy");
         injector.getInstance(SubsTrackingWatchdog.class).stop();
         injector.getInstance(DataFilesPeriodicProcess.class).stop();
+        injector.getInstance(SubmissionMigrator.class).stop();
         injector.getInstance(HibernateSessionFactoryProvider.class).stop();
     }
 
