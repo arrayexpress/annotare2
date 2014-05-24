@@ -140,19 +140,13 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(SubmissionValidationService.NAME, SubmissionValidationServiceImpl.class, "EditorApp");
         serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");
 
-        //bind(JmsResources.class).toProvider(JmsResources.Creator.class).asEagerSingleton();
-
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
         bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
 
         bind(DataFilesPeriodicProcess.class).asEagerSingleton();
 
-        //bind(FileCopyConsumer.class).in(SINGLETON);
-        //bind(FileCopyMessageQueue.class).asEagerSingleton();
-
         bind(SubmissionListServiceImpl.class).in(SINGLETON);
 
-        bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
         bind(UserDao.class).to(UserDaoImpl.class).in(SINGLETON);
         bind(UserRoleDao.class).to(UserRoleDaoImpl.class).in(SINGLETON);
         bind(SubmissionDao.class).to(SubmissionDaoImpl.class).in(SINGLETON);
@@ -174,6 +168,9 @@ public class AppServletModule extends ServletModule {
         bind(DataFileStoreProperties.class).to(AnnotareProperties.class);
         bind(SubsTrackingProperties.class).to(AnnotareProperties.class);
         bind(AEConnectionProperties.class).to(AnnotareProperties.class);
+
+        bind(DatabaseDataSource.class).asEagerSingleton();
+
         bind(EfoSearch.class).to(EfoSearchImpl.class).asEagerSingleton();
         bind(AnnotareEfoService.class).in(SINGLETON);
 

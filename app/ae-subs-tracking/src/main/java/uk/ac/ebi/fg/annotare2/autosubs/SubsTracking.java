@@ -305,7 +305,7 @@ public class SubsTracking {
     }
 
     private DSLContext getContext(Connection connection) throws SubsTrackingException {
-        if (properties.getSubsTrackingEnabled()) {
+        if (properties.isSubsTrackingEnabled()) {
             try {
                 Settings settings = new Settings()
                         .withRenderSchema(false);
@@ -323,28 +323,30 @@ public class SubsTracking {
             throw new SubsTrackingException(SubsTrackingException.ILLEGAL_REPEAT_INITIALIZATION);
         }
 
-        try {
-            Class.forName(properties.getSubsTrackingConnectionDriverClass());
-        } catch (ClassNotFoundException x) {
-            String message = "Unable to load driver [" +
-                    properties.getSubsTrackingConnectionDriverClass() +
-                    "] for AEConnection";
-            throw new SubsTrackingException(message);
-        }
+        if (properties.isSubsTrackingEnabled()) {
+            try {
+                Class.forName(properties.getSubsTrackingConnectionDriverClass());
+            } catch (ClassNotFoundException x) {
+                String message = "Unable to load driver [" +
+                        properties.getSubsTrackingConnectionDriverClass() +
+                        "] for AEConnection";
+                throw new SubsTrackingException(message);
+            }
 
-        BoneCPConfig cpConf = new BoneCPConfig();
-        cpConf.setJdbcUrl(properties.getSubsTrackingConnectionURL());
-        cpConf.setUsername(properties.getSubsTrackingConnectionUser());
-        cpConf.setPassword(properties.getSubsTrackingConnectionPassword());
-        cpConf.setConnectionTestStatement("SELECT 1 FROM EXPERIMENTS LIMIT 1");
-        cpConf.setMinConnectionsPerPartition(2);
-        cpConf.setMaxConnectionsPerPartition(2);
-        cpConf.setPartitionCount(1);
+            BoneCPConfig cpConf = new BoneCPConfig();
+            cpConf.setJdbcUrl(properties.getSubsTrackingConnectionURL());
+            cpConf.setUsername(properties.getSubsTrackingConnectionUser());
+            cpConf.setPassword(properties.getSubsTrackingConnectionPassword());
+            cpConf.setConnectionTestStatement("SELECT 1 FROM EXPERIMENTS LIMIT 1");
+            cpConf.setMinConnectionsPerPartition(2);
+            cpConf.setMaxConnectionsPerPartition(2);
+            cpConf.setPartitionCount(1);
 
-        try {
-            this.connectionPool = new BoneCP(cpConf);
-        } catch (SQLException e) {
-            throw new SubsTrackingException(e);
+            try {
+                this.connectionPool = new BoneCP(cpConf);
+            } catch (SQLException e) {
+                throw new SubsTrackingException(e);
+            }
         }
     }
 

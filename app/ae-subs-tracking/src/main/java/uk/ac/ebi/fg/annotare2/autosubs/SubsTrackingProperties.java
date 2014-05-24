@@ -21,7 +21,7 @@ import java.io.File;
 
 public interface SubsTrackingProperties
 {
-    public Boolean getSubsTrackingEnabled();
+    public Boolean isSubsTrackingEnabled();
     public String getSubsTrackingUser();
     public String getSubsTrackingExperimentType();
     public File getSubsTrackingExportDir();
