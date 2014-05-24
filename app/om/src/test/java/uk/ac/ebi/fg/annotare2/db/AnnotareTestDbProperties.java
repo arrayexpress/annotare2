@@ -33,7 +33,7 @@ public class AnnotareTestDbProperties {
 
     static {
         try {
-            properties.load(AnnotareTestDbProperties.class.getResourceAsStream("/annotareTestDb.properties"));
+            properties.load(AnnotareTestDbProperties.class.getResourceAsStream("/AnnotareTestDb.properties"));
         } catch (IOException e) {
             log.error("Unable to load test DB properties", e);
         }

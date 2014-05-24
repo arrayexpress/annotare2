@@ -33,7 +33,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.lang.reflect.InvocationTargetException;
 
-import static uk.ac.ebi.fg.annotare2.db.annotareTestDbProperties.*;
+import static uk.ac.ebi.fg.annotare2.db.AnnotareTestDbProperties.*;
 
 /**
  * @author Olga Melnichuk
