@@ -26,10 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateComma
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -263,6 +260,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
     @Override
     public void removeDataAssignmentColumns(List<Integer> indices) {
+        Collections.sort(indices, Collections.reverseOrder());
         for (Integer index : indices) {
             exp.removeFileColumn(index);
         }
