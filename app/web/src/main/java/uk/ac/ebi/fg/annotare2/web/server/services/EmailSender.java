@@ -28,10 +28,12 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -43,6 +45,8 @@ public class EmailSender
     private static final Logger log = LoggerFactory.getLogger(EmailSender.class);
 
     private final AnnotareProperties properties;
+
+    private final static String UTF8 = "UTF-8";
 
     public static final String NEW_USER_TEMPLATE = "new-user";
     public static final String VERIFY_EMAIL_TEMPLATE = "verify-email";
@@ -93,16 +97,11 @@ public class EmailSender
         String subject = sub.replace(properties.getEmailSubject(template));
         String body = sub.replace(properties.getEmailTemplate(template));
         if (null != to) {
-            send(to.split("\\s,\\s"),
-                    null != bcc ? bcc.split("\\s,\\s") : null,
-                    subject,
-                    body,
-                    properties.getEmailFromAddress()
-            );
+            send(to, bcc, subject, body, properties.getEmailFromAddress());
         }
     }
 
-    private void send(String recipients[], String hiddenRecipients[], String subject, String message, String from)
+    private void send(String recipients, String hiddenRecipients, String subject, String message, String from)
             throws MessagingException {
 
         //Set the host SMTP address and port
@@ -122,25 +121,28 @@ public class EmailSender
         msg.setFrom(addressFrom);
 
         // set recipients (TO) address
-        InternetAddress[] addressTo = new InternetAddress[recipients.length];
-        for (int i = 0; i < recipients.length; i++) {
-            addressTo[i] = new InternetAddress(recipients[i]);
-        }
-        msg.setRecipients(Message.RecipientType.TO, addressTo);
+        msg.setRecipients(Message.RecipientType.TO, parseAddresses(recipients));
 
         // set hidden recipients (BCC) address
         if (null != hiddenRecipients) {
-            InternetAddress[] addressBcc = new InternetAddress[hiddenRecipients.length];
-            for (int i = 0; i < hiddenRecipients.length; i++) {
-                addressBcc[i] = new InternetAddress(hiddenRecipients[i]);
-            }
-            msg.setRecipients(Message.RecipientType.BCC, addressBcc);
+            msg.setRecipients(Message.RecipientType.BCC, parseAddresses(hiddenRecipients));
         }
-
         // Setting the Subject and Content Type
         msg.setSubject(subject);
-        msg.setText(message, "UTF-8");
+        msg.setText(message, UTF8);
         Transport.send(msg);
+    }
+
+    InternetAddress[] parseAddresses(String addresses) throws AddressException {
+        InternetAddress[] recips = InternetAddress.parse(addresses, false);
+        for(int i=0; i<recips.length; i++) {
+            try {
+                recips[i] = new InternetAddress(recips[i].getAddress(), recips[i].getPersonal(), UTF8);
+            } catch(UnsupportedEncodingException e) {
+                throw new RuntimeException("Unable to set encoding", e);
+            }
+        }
+        return recips;
     }
 
     private String getStackTrace(Throwable x) {

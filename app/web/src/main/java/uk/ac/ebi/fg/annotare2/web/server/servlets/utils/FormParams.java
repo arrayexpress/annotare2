@@ -17,6 +17,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.servlets.utils;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.*;
 
 import static com.google.common.base.Strings.nullToEmpty;
@@ -34,7 +36,7 @@ public abstract class FormParams {
 
     public String getParamValue(String paramName) {
         if (paramMap.containsKey(paramName)) {
-            return paramMap.get(paramName).getValue();
+            return StringEscapeUtils.unescapeHtml4(paramMap.get(paramName).getValue());
         }
         return null;
     }
