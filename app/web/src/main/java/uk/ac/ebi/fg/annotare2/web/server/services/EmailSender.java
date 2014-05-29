@@ -40,8 +40,7 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Properties;
 
-public class EmailSender
-{
+public class EmailSender {
     private static final Logger log = LoggerFactory.getLogger(EmailSender.class);
 
     private final AnnotareProperties properties;
