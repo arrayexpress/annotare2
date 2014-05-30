@@ -20,13 +20,13 @@
     <groupId>uk.ac.ebi.fg.annotare2.web</groupId>
     <artifactId>annotare2-web</artifactId>
     <packaging>war</packaging>
-    <version>0.24</version>
+    <version>0.25-SNAPSHOT</version>
     <name>Web</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.24</version>
+        <version>0.25-SNAPSHOT</version>
     </parent>
 
     <properties>
