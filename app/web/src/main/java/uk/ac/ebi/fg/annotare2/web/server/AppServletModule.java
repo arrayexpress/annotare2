@@ -220,7 +220,12 @@ public class AppServletModule extends ServletModule {
         private final Set<String> paths = new HashSet<String>();
 
         public boolean recognizeUri(String uri) {
-            return paths.contains(uri);
+            for (String path : paths) {
+                if (uri.endsWith(path)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         void awareOf(String path) {
