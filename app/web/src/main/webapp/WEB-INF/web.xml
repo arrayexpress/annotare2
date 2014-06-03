@@ -21,7 +21,7 @@
     http://java.sun.com/xml/ns/javaee
     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-        <filter>
+    <filter>
         <filter-name>guiceFilter</filter-name>
         <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
     </filter>
@@ -36,6 +36,16 @@
     <listener>
         <listener-class>uk.ac.ebi.fg.annotare2.web.server.AppServletContextListener</listener-class>
     </listener>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>secured</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>${webapp.webxml.security.transport.guarantee}</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
 
     <servlet>
         <servlet-name>jsp</servlet-name>

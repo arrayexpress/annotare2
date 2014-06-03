@@ -34,6 +34,7 @@
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <webapp.log.appender.ref>server-log</webapp.log.appender.ref>
+        <webapp.webxml.security.transport.guarantee>NONE</webapp.webxml.security.transport.guarantee>
 
         <!-- http://colorschemedesigner.com/#3L61Tw0w0w0w0 -->
         <color.p1>#1240AB</color.p1>
@@ -378,6 +379,7 @@
                             <directory>${basedir}/src/main/webapp</directory>
                             <includes>
                                 <include>META-INF/context.xml</include>
+                                <include>WEB-INF/web.xml</include>
                                 <include>login.jsp</include>
                                 <include>assets/css/*.css</include>
                             </includes>
