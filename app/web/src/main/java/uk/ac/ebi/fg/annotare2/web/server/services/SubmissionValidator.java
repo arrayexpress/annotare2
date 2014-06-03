@@ -68,6 +68,7 @@ public class SubmissionValidator {
                             "At least one data file must be uploaded and assigned"
                             , CheckModality.ERROR
                             , CheckPosition.undefinedPosition()
+                            ,null
                     )
             );
         } else if (null == assignedFiles || 0 == assignedFiles.size()) {
@@ -76,6 +77,7 @@ public class SubmissionValidator {
                             "At least one uploaded data file must be assigned"
                             , CheckModality.ERROR
                             , CheckPosition.undefinedPosition()
+                            ,null
                     )
             );
         } else {
@@ -88,6 +90,7 @@ public class SubmissionValidator {
                                             + ((source instanceof RemoteFileSource) ? " on FTP" : "")
                                     , CheckModality.ERROR
                                     , CheckPosition.undefinedPosition()
+                                    ,null
                             )
                     );
                 }
