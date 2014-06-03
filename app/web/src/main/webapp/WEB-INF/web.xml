@@ -39,6 +39,13 @@
 
     <security-constraint>
         <web-resource-collection>
+            <web-resource-name>not-secured</web-resource-name>
+            <url-pattern>/status</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
             <web-resource-name>secured</web-resource-name>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
