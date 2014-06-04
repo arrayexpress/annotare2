@@ -69,7 +69,10 @@
     </error-page>
 
     <session-config>
-        <!-- Disables URL-based sessions -->
+        <!-- sessions will persist for 24 hrs -->
+        <session-timeout>1440</session-timeout>
+
+        <!-- disables URL-based sessions -->
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
 </web-app>
