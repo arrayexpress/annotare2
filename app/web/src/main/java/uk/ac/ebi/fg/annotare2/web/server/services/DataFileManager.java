@@ -88,7 +88,7 @@ public class DataFileManager {
                 assignedFiles.addAll(col.getFileRefs());
             }
             for (DataFile file : submission.getFiles()) {
-                if (file.getStatus().isOk() & assignedFiles.contains(new FileRef(file.getName(), file.getDigest()))) {
+                if (file.getStatus().isOk() && assignedFiles.contains(new FileRef(file.getName(), file.getDigest()))) {
                     result.add(file);
                 }
             }
