@@ -2,6 +2,7 @@ package uk.ac.ebi.fg.annotare.prototype.datagrid.client;
 
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -117,7 +118,7 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column3, "Third column");
         //dataGrid.setColumnWidth(column3, 40, Style.Unit.PC);
 
-        Column<DataRow, String> column4 = new Column<DataRow, String>(new EditSelectionCell(Arrays.asList("first", "second", "third", "fourth", "fifth"))) {
+        Column<DataRow, String> column4 = new Column<DataRow, String>(new SelectionCell(Arrays.asList("first first", "second second second", "third third third third third third", "fourth", "fifth"))) {
             @Override
             public String getValue(DataRow object) {
                 return object.column4;
