@@ -107,16 +107,17 @@ public class DataFilesProxy {
         }
     }
 
-    public void registerHttpFilesAsync(List<HttpFileInfo> filesInfo) {
-        submissionServiceAsync.registerHttpFiles(getSubmissionId(), filesInfo, new AsyncCallbackWrapper<Void>() {
+    public void registerHttpFilesAsync(List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {
+        submissionServiceAsync.registerHttpFiles(getSubmissionId(), filesInfo, new AsyncCallbackWrapper<Map<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error: can't finish file uploading");
+                callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(Map<Integer, String> result) {
                 updater.update();
+                callback.onSuccess(result);
             }
         }.wrap());
     }

@@ -20,6 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import static gwtupload.client.IUploadStatus.Status.SUCCESS;
 
@@ -56,11 +59,29 @@ public class DataFileHttpUploadView extends Composite {
                     List<String> fileNames = input.getFilenames();
                     List<IUploader.UploadedInfo> uploaded = uploader.getServerMessage().getUploadedInfos();
                     if (uploaded.size() == fileNames.size()) {
-                        List<HttpFileInfo> filesInfo = new ArrayList<HttpFileInfo>(uploaded.size());
+                        final List<HttpFileInfo> filesInfo = new ArrayList<HttpFileInfo>(uploaded.size());
                         for (int i = 0; i < uploaded.size(); ++i) {
                             filesInfo.add(new HttpFileInfo(uploaded.get(i).getField(), fileNames.get(i)));
                         }
-                        presenter.filesUploaded(filesInfo);
+                        presenter.filesUploaded(filesInfo, new AsyncCallback<Map<Integer, String>>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                Window.alert("There was a problem uploading file(s)");
+                            }
+
+                            @Override
+                            public void onSuccess(Map<Integer, String> result) {
+                                if (!result.isEmpty()) {
+                                    String message = "Some files were not uploaded:\n\n";
+                                    for (int i = 0; i < filesInfo.size(); ++i) {
+                                        if (result.containsKey(i)) {
+                                            message += filesInfo.get(i).getFileName() + " - " + result.get(i) + "\n";
+                                        }
+                                    }
+                                    Window.alert(message);
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -91,7 +112,7 @@ public class DataFileHttpUploadView extends Composite {
         );
         final MultiUploader uploader = new MultiUploader(IFileInput.FileInputType.BUTTON);
         uploader.setI18Constants(I18N_CONSTANTS);
-        uploader.avoidRepeatFiles(true);
+        uploader.avoidRepeatFiles(false);
         uploader.addOnFinishUploadHandler(new OnFinishUploaderHandler());
         panel.add(uploader);
     }
@@ -101,6 +122,6 @@ public class DataFileHttpUploadView extends Composite {
     }
 
     public interface Presenter {
-        void filesUploaded(List<HttpFileInfo> filesInfo);
+        void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
     }
 }

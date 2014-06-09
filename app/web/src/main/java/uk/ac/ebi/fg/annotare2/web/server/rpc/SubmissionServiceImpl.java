@@ -85,6 +85,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final AnnotareProperties properties;
     private final UserDao userDao;
 
+    private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
+
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
                                  SubmissionManager submissionManager,
@@ -312,16 +314,26 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
+    public Map<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
+            Map<Integer, String> errors = new HashMap<Integer, String>();
+            int index = 0;
             for (HttpFileInfo info : filesInfo) {
                 File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
                 FileItem received = UploadedFiles.get(getSession(), info.getFieldName());
-                received.write(uploadedFile);
-                saveFile(new LocalFileSource(uploadedFile), null, submission);
+                if (checkFileExists(submission, info.getFileName())) {
+                    errors.put(index, "file already exists");
+                } else if (0L == received.getSize()) {
+                    errors.put(index, "empty file");
+                } else {
+                    received.write(uploadedFile);
+                    saveFile(new LocalFileSource(uploadedFile), null, submission);
+                }
+                index++;
             }
             UploadedFiles.removeSessionFiles(getSession());
+            return errors;
         } catch (Exception e) {
             throw unexpected(e);
         }
@@ -348,9 +360,15 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 
                 if (fileSource.exists()) {
+                    if (checkFileExists(submission, info.getFileName())) {
+                        errors.put(index, "file already exists");
+                    } else if (EMPTY_FILE_MD5.equals(info.getMd5())) {
+                        errors.put(index, "empty file");
+                    } else {
                         saveFile(fileSource, info.getMd5(), submission);
+                    }
                 } else {
-                    errors.put(index, "File not found");
+                    errors.put(index, "file not found");
                 }
                 index++;
             }
@@ -418,16 +436,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private void saveFile(final DataFileSource source, final String md5, final ExperimentSubmission submission)
-            throws DataSerializationException, IOException {
-        String fileName = source.getName();
+    private boolean checkFileExists(final ExperimentSubmission submission, final String fileName) {
         Set<DataFile> files = submission.getFiles();
         for (DataFile dataFile : files) {
             if (fileName.equals(dataFile.getName())) {
-                // TODO: show message: file with such name already exists
-                return;
+                return true;
             }
         }
+        return false;
+    }
+
+    private void saveFile(final DataFileSource source, final String md5, final ExperimentSubmission submission)
+            throws DataSerializationException, IOException {
 
         boolean shouldStore = !(source instanceof RemoteFileSource &&
                 submission.getExperimentProfile().getType().isSequencing());

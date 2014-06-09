@@ -42,7 +42,7 @@ public interface SubmissionServiceAsync {
 
     void loadDataFiles(long id, AsyncCallback<List<DataFileRow>> async);
 
-    void registerHttpFiles(long id, List<HttpFileInfo> filesInfo, AsyncCallback<Void> async);
+    void registerHttpFiles(long id, List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
 
     void registerFtpFiles(long id, List<FtpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
 

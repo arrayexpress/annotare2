@@ -99,7 +99,7 @@ public class FtpFileRegistrationForm extends Composite {
             @Override
             public void onFailure(Throwable caught) {
                 setFormEnabled(true);
-                Window.alert("server error: can't submit the data");
+                Window.alert("There was a problem uploading FTP file(s)");
             }
 
             @Override

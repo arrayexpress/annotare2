@@ -108,8 +108,8 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     }
 
     @Override
-    public void filesUploaded(List<HttpFileInfo> filesInfo) {
-        dataFilesProxy.registerHttpFilesAsync(filesInfo);
+    public void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+        dataFilesProxy.registerHttpFilesAsync(filesInfo, callback);
     }
 
     @Override

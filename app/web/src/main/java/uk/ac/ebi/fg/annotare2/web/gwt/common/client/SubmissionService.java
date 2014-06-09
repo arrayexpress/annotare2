@@ -65,7 +65,7 @@ public interface SubmissionService extends RemoteService {
 
     List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    void registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
+    Map<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 
     Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 
