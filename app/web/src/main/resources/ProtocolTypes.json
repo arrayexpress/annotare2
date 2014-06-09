@@ -53,7 +53,7 @@
         "usage": "MICRO_ARRAY",
         "subject": "LABELED_EXTRACT",
         "precedence": "20",
-        "definition": "A protocol describing the hybridisation of the target nucleic acid sample to a fixed probe on the array."
+        "definition": "A protocol describing the hybridization of the target nucleic acid sample to a fixed probe on the array."
     },
     {
         "label": "array scanning and feature extraction protocol",

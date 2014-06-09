@@ -51,7 +51,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
         arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(suggestService));
         initWidget(Binder.BINDER.createAndBindUi(this));
         description.setHTML(fromSafeConstant(
-                "<p><sup>*</sup> \"hybridizations\" are where a sample is hybridized on a array chip</p>" +
+                "<p>One hybridization is where two labeled samples are hybridized on an array chip.</p>" +
                         "<p>An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-3237/'>" +
                         "E-MEXP-3237</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/22432704'>" +
                         "Europe PMC 22432704</a>. " +

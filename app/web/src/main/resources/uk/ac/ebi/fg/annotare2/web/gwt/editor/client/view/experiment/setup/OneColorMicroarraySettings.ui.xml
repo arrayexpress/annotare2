@@ -22,7 +22,7 @@
     <g:HTMLPanel>
         <table>
             <tr>
-                <td>How many hybridizations<sup>*</sup> did you perform?</td>
+                <td>How many hybridizations did you perform?</td>
                 <td width="200px">
                     <g:TextBox ui:field="numberOfHybs" width="50px"/>
                 </td>
