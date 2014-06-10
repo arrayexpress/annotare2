@@ -25,12 +25,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadView;
@@ -46,14 +48,19 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     private final DataFileUploadView view;
     private final DataFilesProxy dataFilesProxy;
     private final ApplicationDataProxy appData;
+    private final ExperimentDataProxy expData;
 
     private HandlerRegistration handlerRegistration;
 
     @Inject
-    public DataFileUploadActivity(DataFileUploadView view, DataFilesProxy dataFilesProxy, ApplicationDataProxy appData) {
+    public DataFileUploadActivity(DataFileUploadView view,
+                                  DataFilesProxy dataFilesProxy,
+                                  ApplicationDataProxy appData,
+                                  ExperimentDataProxy expData) {
         this.view = view;
         this.dataFilesProxy = dataFilesProxy;
         this.appData = appData;
+        this.expData = expData;
     }
 
     public Activity withPlace(Place place) {
@@ -83,6 +90,17 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
     }
 
     private void loadAsync() {
+        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Server error: can't load experiment type");
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfileType result) {
+                view.setExperimentType(result);
+            }
+        });
         dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {

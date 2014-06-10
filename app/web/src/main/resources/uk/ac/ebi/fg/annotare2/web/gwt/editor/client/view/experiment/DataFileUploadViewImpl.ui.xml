@@ -19,7 +19,7 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
-    <g:TabLayoutPanel barUnit="PX" barHeight="30">
+    <g:TabLayoutPanel barUnit="PX" barHeight="30" ui:field="tabLayoutPanel">
         <g:tab>
             <g:header>All Files</g:header>
             <my:DataFileListView ui:field="dataFileListView"/>

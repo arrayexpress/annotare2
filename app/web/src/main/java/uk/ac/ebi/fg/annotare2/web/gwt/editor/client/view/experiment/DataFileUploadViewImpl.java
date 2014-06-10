@@ -20,7 +20,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
@@ -32,6 +34,9 @@ import java.util.List;
  * @author Olga Melnichuk
  */
 public class DataFileUploadViewImpl extends Composite implements DataFileUploadView {
+
+    @UiField
+    TabLayoutPanel tabLayoutPanel;
 
     @UiField
     DataFileListView dataFileListView;
@@ -53,6 +58,13 @@ public class DataFileUploadViewImpl extends Composite implements DataFileUploadV
     @Override
     public void setRows(List<DataFileRow> rows) {
         dataFileListView.setRows(rows);
+    }
+
+    @Override
+    public void setExperimentType(ExperimentProfileType type) {
+        if (ExperimentProfileType.SEQUENCING == type) {
+            tabLayoutPanel.remove(1);
+        }
     }
 
     @Override

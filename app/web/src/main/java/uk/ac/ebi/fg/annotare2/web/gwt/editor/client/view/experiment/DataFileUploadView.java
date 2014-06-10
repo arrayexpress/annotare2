@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
@@ -30,6 +31,8 @@ import java.util.List;
 public interface DataFileUploadView extends IsWidget {
 
     void setRows(List<DataFileRow> rows);
+
+    void setExperimentType(ExperimentProfileType type);
 
     void setPresenter(Presenter presenter);
 
