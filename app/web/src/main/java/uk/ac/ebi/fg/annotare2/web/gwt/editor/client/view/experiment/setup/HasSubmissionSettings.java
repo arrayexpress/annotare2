@@ -25,4 +25,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSe
 public interface HasSubmissionSettings extends IsWidget {
 
     ExperimentSetupSettings getSettings();
+
+    boolean areValid();
 }

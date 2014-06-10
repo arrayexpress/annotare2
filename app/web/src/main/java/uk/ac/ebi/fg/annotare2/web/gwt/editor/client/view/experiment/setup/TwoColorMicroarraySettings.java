@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
@@ -67,6 +68,25 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
         settings.setArrayDesign(arrayDesignList.getValue());
         settings.setNumberOfHybs(intValue(numberOfHybs.getValue()));
         return settings;
+    }
+
+
+    @Override
+    public boolean areValid() {
+        String validationErrors = "";
+        if (0 == intValue(numberOfHybs.getValue())) {
+            validationErrors += " - a number of hybridizations must be greater than zero\n";
+        } else if (500 < intValue(numberOfHybs.getValue())) {
+            validationErrors += " - Annotare does not support more than 500 hybridizations\n";
+        }
+        if (null == arrayDesignList.getValue() || arrayDesignList.getValue().isEmpty()) {
+            validationErrors += " - a non-empty array design must be used\n";
+        }
+        if (!validationErrors.isEmpty()) {
+            Window.alert("Please correct the following:\n\n" + validationErrors);
+            return false;
+        }
+        return true;
     }
 
     private int intValue(String value) {
