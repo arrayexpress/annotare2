@@ -30,7 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentCol
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SingleSelectionCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DynSelectionCell;
 
 import java.util.*;
 
@@ -158,16 +158,16 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private void addDataFileColumn(final DataAssignmentColumn dataColumn, String columnName) {
         Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(
-                new SingleSelectionCell<String>(
-                        new SingleSelectionCell.ListProvider<String>() {
+                new DynSelectionCell(
+                        new DynSelectionCell.ListProvider() {
                             @Override
-                            public List<SingleSelectionCell.Option<String>> getOptions() {
+                            public List<String> getOptions() {
                                 return dataAssignment.getOptions(dataColumn);
                             }
 
                             @Override
-                            public SingleSelectionCell.Option<String> getDefault() {
-                                return new SingleSelectionCell.Option<String>(NONE, NONE);
+                            public String getDefault() {
+                                return NONE;
                             }
                         })) {
             @Override
@@ -183,6 +183,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 dataColumn.setFileRef(row, NONE.equals(value) ? null : new FileRef(value, fileHashes.get(value)));
                 dataAssignment.update(dataColumn);
                 updateColumn(dataColumn);
+                gridView.redraw();
             }
         });
         gridView.addColumn(columnName, column, null, 200, Style.Unit.PX);
@@ -264,7 +265,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
         private Map<String, Integer> file2Column = new HashMap<String, Integer>();
         private Map<Integer, List<String>> column2Files = new HashMap<Integer, List<String>>();
-        private List<SingleSelectionCell.Option<String>> files = new ArrayList<SingleSelectionCell.Option<String>>();
+        private List<String> files = new ArrayList<String>();
 
         public void init(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows) {
             file2Column.clear();
@@ -283,7 +284,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             files.clear();
             for (DataFileRow row : dataFiles) {
                 if (row.getStatus().isOk()) {
-                    files.add(new SingleSelectionCell.Option<String>(row.getName(), row.getName()));
+                    files.add(row.getName());
                 }
             }
         }
@@ -310,12 +311,12 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             }
         }
 
-        public List<SingleSelectionCell.Option<String>> getOptions(DataAssignmentColumn dataColumn) {
-            List<SingleSelectionCell.Option<String>> options = new ArrayList<SingleSelectionCell.Option<String>>();
-            for (SingleSelectionCell.Option<String> option : files) {
-                Integer colIndex = file2Column.get(option.getValue());
+        public List<String> getOptions(DataAssignmentColumn dataColumn) {
+            List<String> options = new ArrayList<String>();
+            for (String file : files) {
+                Integer colIndex = file2Column.get(file);
                 if (colIndex == null || colIndex == dataColumn.getIndex()) {
-                    options.add(option);
+                    options.add(file);
                 }
             }
             return options;

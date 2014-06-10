@@ -31,6 +31,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DynSelectionCell extends AbstractInputCell<String, String> {
 
@@ -42,22 +43,30 @@ public class DynSelectionCell extends AbstractInputCell<String, String> {
         SafeHtml selected(String option);
     }
 
+    public static interface ListProvider {
+
+        public List<String> getOptions();
+
+        public String getDefault();
+
+    }
+
     private static Template template;
 
-    private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
-
     private final List<String> options;
+    private final Map<String, Integer> indexForOption;
 
-    public DynSelectionCell(List<String> options) {
+    private final ListProvider optionsProvider;
+
+    public DynSelectionCell(ListProvider optionsProvider) {
         super(BrowserEvents.CHANGE);
         if (template == null) {
             template = GWT.create(Template.class);
         }
-        this.options = new ArrayList<String>(options);
-        int index = 0;
-        for (String option : options) {
-            indexForOption.put(option, index++);
-        }
+        this.options = new ArrayList<String>();
+        this.indexForOption = new HashMap<String, Integer>();
+        this.optionsProvider = optionsProvider;
+        updateOptions();
     }
 
     @Override
@@ -65,6 +74,7 @@ public class DynSelectionCell extends AbstractInputCell<String, String> {
                                NativeEvent event, ValueUpdater<String> valueUpdater) {
         super.onBrowserEvent(context, parent, value, event, valueUpdater);
         String type = event.getType();
+
         if (BrowserEvents.CHANGE.equals(type)) {
             Object key = context.getKey();
             SelectElement select = parent.getFirstChild().cast();
@@ -101,10 +111,28 @@ public class DynSelectionCell extends AbstractInputCell<String, String> {
     }
 
     private int getSelectedIndex(String value) {
+        updateOptions();
+
         Integer index = indexForOption.get(value);
-        if (index == null) {
-            return -1;
+        if (null == index) {
+            return indexForOption.get(optionsProvider.getDefault());
+        } else {
+            return index;
         }
-        return index.intValue();
+    }
+
+    private void updateOptions() {
+        options.clear();
+        indexForOption.clear();
+        addOption(optionsProvider.getDefault());
+        List<String> opts = optionsProvider.getOptions();
+        for (String option : opts) {
+            addOption(option);
+        }
+    }
+
+    private void addOption(String option) {
+        indexForOption.put(option, options.size());
+        options.add(option);
     }
 }
