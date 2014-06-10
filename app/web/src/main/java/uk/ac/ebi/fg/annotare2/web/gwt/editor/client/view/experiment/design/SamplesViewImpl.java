@@ -23,6 +23,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -168,7 +169,11 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void createNewSample() {
-        presenter.createSample();
+        if (1000 == gridView.getRows().size()) {
+            Window.alert("Annotare does not support more than a 1000 samples");
+        } else {
+            presenter.createSample();
+        }
     }
 
     private void deleteSelectedSamples() {

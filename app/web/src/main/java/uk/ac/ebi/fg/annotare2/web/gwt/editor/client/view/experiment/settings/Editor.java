@@ -27,4 +27,5 @@ public interface Editor<T> extends IsWidget {
 
     T getValues();
 
+    boolean areValuesValid();
 }

@@ -72,8 +72,10 @@ public class ExperimentSettingsDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
-        callback.onOkay(editor.getValues());
-        hide();
+        if (editor.areValuesValid()) {
+            callback.onOkay(editor.getValues());
+            hide();
+        }
     }
 }
 

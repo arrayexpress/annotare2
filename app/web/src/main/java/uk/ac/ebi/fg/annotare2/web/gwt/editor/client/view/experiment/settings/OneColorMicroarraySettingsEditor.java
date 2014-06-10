@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -56,6 +57,22 @@ public class OneColorMicroarraySettingsEditor extends Composite implements Edito
 
         String lbl = experimentSettings.getLabel();
         label.setValue(lbl == null ? "" : lbl);
+    }
+
+    @Override
+    public boolean areValuesValid() {
+        String validationErrors = "";
+        if (null == label.getValue() || label.getValue().isEmpty()) {
+            validationErrors = " - a non-empty label must be used\n";
+        }
+        if (null == arrayDesign.getValue() || arrayDesign.getValue().isEmpty()) {
+            validationErrors += " - a non-empty array design must be used\n";
+        }
+        if (!validationErrors.isEmpty()) {
+            Window.alert("Please correct the following:\n\n" + validationErrors);
+            return false;
+        }
+        return true;
     }
 
     @Override

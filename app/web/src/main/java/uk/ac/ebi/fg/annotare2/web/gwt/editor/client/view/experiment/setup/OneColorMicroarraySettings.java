@@ -84,7 +84,7 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
         if (0 == intValue(numberOfHybs.getValue())) {
             validationErrors += " - a number of hybridizations must be greater than zero\n";
         } else if (1000 < intValue(numberOfHybs.getValue())) {
-            validationErrors += " - Annotare does not support more than 1000 hybridizations\n";
+            validationErrors += " - Annotare does not support more than a 1000 hybridizations\n";
         }
         if (null == arrayDesignList.getValue() || arrayDesignList.getValue().isEmpty()) {
             validationErrors += " - a non-empty array design must be used\n";

@@ -37,6 +37,11 @@ public class DummySettingsEditor extends Composite implements Editor<ExperimentS
     }
 
     @Override
+    public boolean areValuesValid() {
+        return true;
+    }
+
+    @Override
     public ExperimentSettings getValues() {
         return this.settings;
     }
