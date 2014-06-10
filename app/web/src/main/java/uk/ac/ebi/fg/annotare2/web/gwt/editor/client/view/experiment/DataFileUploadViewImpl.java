@@ -62,7 +62,8 @@ public class DataFileUploadViewImpl extends Composite implements DataFileUploadV
 
     @Override
     public void setExperimentType(ExperimentProfileType type) {
-        if (ExperimentProfileType.SEQUENCING == type) {
+        if (ExperimentProfileType.SEQUENCING == type
+                && 3 == tabLayoutPanel.getWidgetCount()) {
             tabLayoutPanel.remove(1);
         }
     }
