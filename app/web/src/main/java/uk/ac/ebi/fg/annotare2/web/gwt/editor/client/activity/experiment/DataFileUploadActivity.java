@@ -104,7 +104,7 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
         dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Unable to load file list");
+                Window.alert("Unable to load a list of data files");
             }
 
             @Override

@@ -109,7 +109,7 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
                     @Override
                     public void onFailure(Throwable caught) {
                         //TODO
-                        Window.alert(caught.getMessage());
+                        Window.alert("Unable to load submission settings");
                     }
 
                     @Override

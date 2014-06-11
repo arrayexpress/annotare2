@@ -20,7 +20,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
@@ -74,6 +73,5 @@ public class ArrayDesignTabBarActivity  extends AbstractActivity  implements Edi
                 goTo(new AdHeaderPlace());
                 return;
         }
-        Window.alert("unknown ADF tab: " + tab);
     }
 }

@@ -26,7 +26,7 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
 
     public void onPermissionDenied() {
-        Window.alert("Sorry, you do not have permissions to proceed with this operation");
+        Window.alert("Sorry, you do not have a permission to proceed with this operation");
     }
 
     public AsyncCallback<T> wrap() {

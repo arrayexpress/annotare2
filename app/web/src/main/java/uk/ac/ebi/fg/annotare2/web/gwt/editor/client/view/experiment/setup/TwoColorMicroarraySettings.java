@@ -77,7 +77,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
         if (0 == intValue(numberOfHybs.getValue())) {
             validationErrors += " - a number of hybridizations must be greater than zero\n";
         } else if (500 < intValue(numberOfHybs.getValue())) {
-            validationErrors += " - Annotare does not support more than 500 hybridizations\n";
+            validationErrors += " - this submission does not support more than 500 hybridizations\n";
         }
         if (null == arrayDesignList.getValue() || arrayDesignList.getValue().isEmpty()) {
             validationErrors += " - a non-empty array design must be used\n";

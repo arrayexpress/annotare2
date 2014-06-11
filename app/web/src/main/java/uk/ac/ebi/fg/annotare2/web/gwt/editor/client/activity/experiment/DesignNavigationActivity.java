@@ -113,7 +113,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
                     @Override
                     public void onFailure(Throwable caught) {
                         //TODO
-                        Window.alert(caught.getMessage());
+                        Window.alert("Unable to load submission settings");
                     }
 
                     @Override

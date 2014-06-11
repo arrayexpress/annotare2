@@ -114,7 +114,7 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
         dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Unable to load list of data files");
+                Window.alert("Unable to load a list of data files");
             }
 
             @Override

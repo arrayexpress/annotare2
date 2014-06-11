@@ -144,7 +144,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
         expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Unable to load the protocol list");
+                Window.alert("Unable to load a list of protocols");
             }
 
             @Override

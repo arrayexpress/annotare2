@@ -63,7 +63,7 @@ public class LabeledExtractsActivity extends AbstractActivity implements Labeled
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert(caught.getMessage());
+                Window.alert("Unable to load a list of labeled extracts");
             }
 
             @Override

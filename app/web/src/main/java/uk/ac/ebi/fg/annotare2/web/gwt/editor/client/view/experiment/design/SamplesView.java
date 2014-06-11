@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
@@ -29,6 +30,8 @@ import java.util.List;
 public interface SamplesView extends IsWidget {
 
     void setData(List<SampleRow> rows, List<SampleColumn> columns);
+
+    void setExperimentType(ExperimentProfileType type);
 
     void setPresenter(Presenter presenter);
 

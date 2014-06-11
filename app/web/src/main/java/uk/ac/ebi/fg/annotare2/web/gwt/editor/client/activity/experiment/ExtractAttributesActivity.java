@@ -64,7 +64,7 @@ public class ExtractAttributesActivity extends AbstractActivity implements Extra
         expData.getExtractAttributeRowsAsync(new AsyncCallback<List<ExtractAttributesRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert(caught.getMessage());
+                Window.alert("Unable to load a list of extract attributes");
             }
 
             @Override

@@ -27,6 +27,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -46,10 +47,13 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
     private AsyncOptionProvider materialTypes;
+    private int maxSamplesLimit;
 
     private Presenter presenter;
 
     public SamplesViewImpl() {
+        maxSamplesLimit = 1000;
+
         gridView = new GridView<SampleRow>();
         Button button = new Button("Sample Attributes...");
         button.addClickHandler(new ClickHandler() {
@@ -152,6 +156,13 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         materialTypes.update();
     }
 
+    @Override
+    public void setExperimentType(ExperimentProfileType type) {
+        if (ExperimentProfileType.TWO_COLOR_MICROARRAY == type) {
+            maxSamplesLimit = 500;
+        }
+    }
+
     private void setColumns(List<SampleColumn> columns) {
         this.columns = new ArrayList<SampleColumn>(columns);
         addNameColumn();
@@ -169,8 +180,8 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     }
 
     private void createNewSample() {
-        if (1000 == gridView.getRows().size()) {
-            Window.alert("Annotare does not support more than a 1000 samples");
+        if (maxSamplesLimit == gridView.getRows().size()) {
+            Window.alert("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples");
         } else {
             presenter.createSample();
         }

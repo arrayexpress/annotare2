@@ -23,6 +23,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
@@ -121,11 +122,22 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     private void loadAsync() {
+        expDataProxy.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to load submission type");
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfileType result) {
+                view.setExperimentType(result);
+            }
+        });
         expDataProxy.getSamplesAsync(new AsyncCallback<SampleRowsAndColumns>() {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert(caught.getMessage());
+                Window.alert("Unable to load a list of samples");
             }
 
             @Override

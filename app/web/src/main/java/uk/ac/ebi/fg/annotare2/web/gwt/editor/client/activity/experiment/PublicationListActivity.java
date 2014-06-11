@@ -101,7 +101,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
         experimentDataProxy.getPublicationsAsync(new AsyncCallback<List<PublicationDto>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Unable to load publication list");
+                Window.alert("Unable to load a list of publications");
             }
 
             @Override

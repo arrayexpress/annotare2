@@ -57,7 +57,7 @@ public class EditorTopBarActivity extends AbstractActivity {
         userService.me(new AsyncCallbackWrapper<UserDto>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Error retrieving user");
+                Window.alert("Unable to load user information");
             }
 
             @Override
