@@ -81,6 +81,38 @@ public class SubmissionValidator {
                     )
             );
         } else {
+            for (DataFile dataFile : allFiles) {
+                if (!dataFile.getStatus().isOk()) {
+                    String cause = "";
+                    switch (dataFile.getStatus()) {
+                        case MD5_ERROR:
+                            cause = " (MD5 check failed)";
+                            break;
+                        case FILE_NOT_FOUND_ERROR:
+                            cause = " (file not found)";
+                            break;
+                    }
+                    results.add(
+                            CheckResult.checkFailed(
+                                    "File " + dataFile.getName()
+                                            + " uploaded with an error" + cause
+                                    , CheckModality.ERROR
+                                    , CheckPosition.undefinedPosition()
+                                    ,null
+                            )
+                    );
+                } else if (!assignedFiles.contains(dataFile)) {
+                    results.add(
+                            CheckResult.checkFailed(
+                                    "File " + dataFile.getName() + " should be assigned to at least one labeled extract"
+                                    , CheckModality.WARNING
+                                    , CheckPosition.undefinedPosition()
+                                    ,null
+                            )
+                    );
+                }
+            }
+
             for (DataFile dataFile : assignedFiles) {
                 DataFileSource source = dataFileManager.getFileSource(dataFile);
                 if (null == source || !source.exists()) {
