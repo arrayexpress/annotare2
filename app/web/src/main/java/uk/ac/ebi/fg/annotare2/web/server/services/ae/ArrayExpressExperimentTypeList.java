@@ -63,7 +63,7 @@ public class ArrayExpressExperimentTypeList {
         try {
             return list.load();
         } catch (IOException e) {
-            log.error("Can't load AE Experiment Types", e);
+            log.error("Unable to load AE experiment types", e);
         }
         return list;
     }

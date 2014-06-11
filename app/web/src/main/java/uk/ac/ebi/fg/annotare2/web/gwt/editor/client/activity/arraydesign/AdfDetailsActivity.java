@@ -81,7 +81,7 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load ADF Data.");
+                Window.alert("Unable to load ADF data");
             }
 
             @Override

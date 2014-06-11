@@ -123,7 +123,7 @@ public class ContactListActivity extends AbstractActivity implements ContactList
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load contact list.");
+                Window.alert("Unable to load contact list");
             }
 
             @Override

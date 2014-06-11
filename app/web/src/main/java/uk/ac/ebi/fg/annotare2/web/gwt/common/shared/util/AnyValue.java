@@ -43,7 +43,7 @@ final class AnyValue extends ValueRange<Object> {
 
     @Override
     public Object get() {
-        throw new IllegalStateException("Can't call get() on ANY value range");
+        throw new IllegalStateException("Unable to call get() on ANY value range");
     }
 
     @Override

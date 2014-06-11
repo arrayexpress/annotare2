@@ -43,7 +43,7 @@ final class NoneValue extends ValueRange<Object> {
 
     @Override
     public Object get() {
-        throw new IllegalStateException("Can't call get() on NONE value range");
+        throw new IllegalStateException("Unable to call get() on NONE value range");
     }
 
     @Override

@@ -101,7 +101,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
         experimentDataProxy.getPublicationsAsync(new AsyncCallback<List<PublicationDto>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Can't load publication list.");
+                Window.alert("Unable to load publication list");
             }
 
             @Override
@@ -115,7 +115,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
         ontologyDataProxy.getPublicationStatuses(new AsyncCallback<List<OntologyTerm>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Can't load publication status options");
+                Window.alert("Unable to load publication status options");
                 view.setPublications(publications, Collections.<OntologyTerm>emptyList());
             }
 

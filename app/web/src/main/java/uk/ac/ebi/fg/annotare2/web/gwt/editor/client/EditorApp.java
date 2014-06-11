@@ -70,7 +70,7 @@ public class EditorApp implements EntryPoint {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load submission " + subId);
+                Window.alert("Unable to load submission " + subId);
             }
 
             @Override

@@ -236,7 +236,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
 
     private boolean isNameValid(String name, int rowIndex) {
         if (name == null || name.trim().isEmpty()) {
-            showErrorMessage("Sample name can't be empty");
+            showErrorMessage("Sample name should not be empty");
             return false;
         }
         if (isDuplicated(name, rowIndex)) {

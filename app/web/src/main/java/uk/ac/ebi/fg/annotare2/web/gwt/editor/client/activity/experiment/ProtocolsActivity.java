@@ -90,7 +90,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
         expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error; Can't get experiment type");
+                Window.alert("Unable to load experiment type");
             }
 
             @Override
@@ -144,7 +144,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
         expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error; Can't fetch the protocol list");
+                Window.alert("Unable to load the protocol list");
             }
 
             @Override

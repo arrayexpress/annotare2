@@ -88,7 +88,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
         experimentDataProxy.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Can't load experiment details.");
+                Window.alert("Unable to load experiment details");
             }
 
             @Override
@@ -102,7 +102,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
         applicationDataProxy.getAeExperimentTypesAsync(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Can't load ArrayExpress Experiment Type options");
+                Window.alert("Unable to experiment type options");
                 view.setDetails(details, Collections.<String>emptyList());
             }
 

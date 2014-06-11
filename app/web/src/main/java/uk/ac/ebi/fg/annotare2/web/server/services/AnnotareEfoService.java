@@ -38,43 +38,43 @@ public class AnnotareEfoService implements EfoService {
         String rootAccession = "MaterialEntity";
         EfoTerm node = findTermByLabel(label, rootAccession);
         if (node == null) {
-            errors.add("Can't find term by label (in branch): '" + label + "' | " + rootAccession);
+            errors.add("Unable to find term by label (in branch): '" + label + "' | " + rootAccession);
         }
 
         node = findTermByAccession(accession, rootAccession);
         if (node == null) {
-            errors.add("Can't find term by accession (in branch): " + accession + " | " + rootAccession);
+            errors.add("Unable to find term by accession (in branch): " + accession + " | " + rootAccession);
         }
 
         node = findTermByAccession(accession);
         if (node == null) {
-            errors.add("Can't find term by accession: " + accession);
+            errors.add("Unable to find term by accession: " + accession);
         }
 
         node = findTermByLabelOrAccession("", accession, rootAccession);
         if (node == null) {
-            errors.add("Can't find term by label or accession (in branch): '' | " + accession + " | " + rootAccession);
+            errors.add("Unable to find term by label or accession (in branch): '' | " + accession + " | " + rootAccession);
         }
 
         node = findTermByLabelOrAccession(label, "", rootAccession);
         if (node == null) {
-            errors.add("Can't find term by label or accession (in branch): '" + label + "' | '' | " + rootAccession);
+            errors.add("Unable to find term by label or accession (in branch): '" + label + "' | '' | " + rootAccession);
         }
 
         node = findTermByLabelOrAccession(label, accession, rootAccession);
         if (node == null) {
-            errors.add("Can't find term by label or accession (in branch): '" + label + "' | " + accession + " | " + rootAccession);
+            errors.add("Unable to find term by label or accession (in branch): '" + label + "' | " + accession + " | " + rootAccession);
         }
 
         String prefix = "cell li";
         Collection<EfoTerm> result = efoSearch.searchByPrefix(prefix, MAX_HITS);
         if (result.isEmpty()) {
-            errors.add("Can't find term by prefix: '" + prefix + "'");
+            errors.add("Unable to find term by prefix: '" + prefix + "'");
         }
 
         result = efoSearch.searchByPrefix(prefix, rootAccession, MAX_HITS);
         if (result.isEmpty()) {
-            errors.add("Can't find term by prefix (in branch): '" + prefix + "' | " + rootAccession);
+            errors.add("Unable to find term by prefix (in branch): '" + prefix + "' | " + rootAccession);
         }
 
         if (errors.isEmpty()) {

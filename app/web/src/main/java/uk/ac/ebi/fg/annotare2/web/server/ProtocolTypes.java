@@ -71,7 +71,7 @@ public class ProtocolTypes {
                 log.error(FILE + " was not found");
             }
         } catch (IOException e) {
-            log.error("Can't parse " + FILE, e);
+            log.error("Unable to parse " + FILE, e);
         }
         return new ProtocolTypes();
     }

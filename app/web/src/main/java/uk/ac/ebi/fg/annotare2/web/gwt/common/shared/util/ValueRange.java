@@ -12,7 +12,7 @@ public abstract class ValueRange<T> implements Serializable {
 
     public static <V> ValueRange<V> one(V v) {
         if (v == null) {
-            throw new NullPointerException("Can't create single value range from null object");
+            throw new NullPointerException("Unable to create single value range from null object");
         }
         return new SingletonValue<V>(v);
     }

@@ -207,7 +207,7 @@ public class SampleColumnsDialog extends DialogBox {
         efoSuggest.getSystemEfoTerms(new AsyncCallback<SystemEfoTermMap>() {
             @Override
             public void onFailure(Throwable throwable) {
-                Window.alert("Can't load system efo terms to create a column");
+                Window.alert("Unable load the ontology terms to create a column");
             }
 
             @Override

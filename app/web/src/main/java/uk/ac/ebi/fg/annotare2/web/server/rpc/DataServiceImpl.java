@@ -111,7 +111,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
 
             OntologyTerm term = loadSystemTerm(accession);
             if (term == null) {
-                log.error("can't load system term by accession: " + accession);
+                log.error("Unable to load system term by accession: " + accession);
                 continue;
             }
 
@@ -178,7 +178,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     public List<OntologyTermGroup> getExperimentalDesigns() {
         EfoTerm term = efoService.findTermByAccession(properties.getEfoTermAccession(SystemEfoTerm.STUDY_DESIGN));
         if (term == null) {
-            log.error("Can't find system required efo term: " + SystemEfoTerm.STUDY_DESIGN);
+            log.error("Unable to find system required efo term: " + SystemEfoTerm.STUDY_DESIGN);
             return Collections.emptyList();
         }
         Collection<EfoTerm> subTerms = efoService.getSubTerms(term, 100);

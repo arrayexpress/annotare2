@@ -141,7 +141,7 @@ public class DataFilesProxy {
         submissionServiceAsync.deleteDataFile(getSubmissionId(), dataFile.getId(), new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error: can't remove file " + dataFile.getName());
+                Window.alert("Unable to remove file " + dataFile.getName());
             }
 
             @Override

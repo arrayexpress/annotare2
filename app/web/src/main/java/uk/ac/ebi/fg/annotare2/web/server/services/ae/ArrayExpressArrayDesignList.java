@@ -69,7 +69,7 @@ public class ArrayExpressArrayDesignList {
         try {
             return new ArrayExpress.ArrayDesign(Integer.parseInt(parts[0]), parts[1], parts[2]);
         } catch (NumberFormatException e) {
-            log.error("Can't parse Array Design: [" + line + "]", e);
+            log.error("Unable to parse array design: [" + line + "]", e);
             return null;
         }
     }
@@ -83,7 +83,7 @@ public class ArrayExpressArrayDesignList {
         try {
             return list.load();
         } catch (IOException e) {
-            log.error("Can't load AE Array Designs", e);
+            log.error("Unable to load AE array design list", e);
         }
         return list;
     }

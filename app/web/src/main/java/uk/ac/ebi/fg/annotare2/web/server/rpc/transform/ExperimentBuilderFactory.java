@@ -92,7 +92,7 @@ public class ExperimentBuilderFactory {
         public static ExperimentProfile build(ExperimentSetupSettings settings) {
             Builder b = find(settings);
             if (b == null) {
-                throw new IllegalStateException("Can't build an experiment with null type");
+                throw new IllegalStateException("Unable to build an experiment with null type");
             }
             return b.setupExperiment(settings);
         }

@@ -147,7 +147,7 @@ public class MageTabFiles {
             }
             Files.write(str, file, Charsets.UTF_8);
         } catch (IOException e) {
-            log.error("Can't sanitize MAGE-TAB file" + file.getAbsolutePath(), e);
+            log.error("Unable to sanitize MAGE-TAB file" + file.getAbsolutePath(), e);
         }
     }
 }

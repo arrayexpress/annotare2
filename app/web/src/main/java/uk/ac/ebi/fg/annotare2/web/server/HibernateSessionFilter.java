@@ -54,7 +54,7 @@ public class HibernateSessionFilter implements Filter {
                 sessionFactory.closeSession();
                 log.debug("Hibernate session has been closed");
             } catch (HibernateException e) {
-                log.error("Can't close hibernate session", e);
+                log.error("Unable to close hibernate session", e);
             }
         }
     }

@@ -149,7 +149,7 @@ public class ProtocolAssignmentDialog extends DialogBox {
     void okClicked(ClickEvent event) {
         ProtocolAssignmentProfileUpdates updates = getAssignmentUpdates();
         if (updates.getAssignments().isEmpty()) {
-            showError("Assigned list can't be empty");
+            showError("Assigned list should not be empty");
             return;
         }
         hide();

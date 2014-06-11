@@ -84,7 +84,7 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
             submission.setHeader(header);
             save(submission);
         } catch (IOException e) {
-            log.warn("Can't import ADF body data (submissionId: " + submissionId + ")", e);
+            log.warn("Unable to import ADF body data (submissionId: " + submissionId + ")", e);
             throw new DataImportException(e.getMessage());
         } catch (AccessControlException e) {
             throw noPermission(e);

@@ -75,7 +75,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         AsyncCallback<Long> callback = new AsyncCallbackWrapper<Long>() {
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't create new submission");
+                Window.alert("Unable to create new submission");
             }
 
             public void onSuccess(Long submissionId) {
@@ -143,7 +143,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                     console.log("warn: Editor is not ready; attempt: " + func.attempt);
                     setTimeout(arguments.callee(), 1000);
                 } else {
-                    $wnd.alert("Sorry, can't open submission editing page. Please, try again later.");
+                    $wnd.alert("Unable to open submission editing page. Please try again later.");
                     editorWindow.close();
                 }
             }

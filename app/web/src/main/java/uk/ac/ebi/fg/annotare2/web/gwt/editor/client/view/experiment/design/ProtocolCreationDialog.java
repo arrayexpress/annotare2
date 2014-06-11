@@ -108,7 +108,7 @@ public class ProtocolCreationDialog extends DialogBox {
         presenter.getProtocolTypes(new AsyncCallback<List<ProtocolType>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error; can't load list of protocol types");
+                Window.alert("Unable to load a list of protocol types");
             }
 
             @Override

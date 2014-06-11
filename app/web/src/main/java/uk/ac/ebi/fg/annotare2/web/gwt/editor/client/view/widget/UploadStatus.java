@@ -161,7 +161,7 @@ public class UploadStatus extends Composite implements IUploadStatus {
     @Override
     public void setI18Constants(UploadStatusConstants strs) {
         /*if (strs == null) {
-            throw new NullPointerException("Upload status constants can't be null");
+            throw new NullPointerException("Upload status constants should not be null");
         }
         i18nStrs = strs;*/
     }

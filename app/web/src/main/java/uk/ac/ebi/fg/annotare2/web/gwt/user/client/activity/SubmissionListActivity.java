@@ -92,7 +92,7 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
                     }
 
                     public void onFailure(Throwable caught) {
-                        Window.alert("Can't load submission list");
+                        Window.alert("Unable to load submission list");
                     }
 
                 }.wrap());
@@ -105,7 +105,7 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
                     }
 
                     public void onFailure(Throwable caught) {
-                        Window.alert("Can't load submission list");
+                        Window.alert("Unable to load submission list");
                     }
 
                 }.wrap());
@@ -118,7 +118,7 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
                     }
 
                     public void onFailure(Throwable caught) {
-                        Window.alert("Can't load submission list");
+                        Window.alert("Unable to load submission list");
                     }
 
                 }.wrap());

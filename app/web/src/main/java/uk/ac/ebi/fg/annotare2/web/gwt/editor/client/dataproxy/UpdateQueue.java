@@ -84,7 +84,7 @@ public class UpdateQueue<C extends UpdateCommand> {
             @Override
             public void onFailure(Throwable caught) {
                 GWT.log("unexpected error", caught);
-                handleError("Can't save changes; unexpected server error");
+                handleError("Unable to save changes - unexpected error");
             }
 
             @Override
@@ -94,10 +94,10 @@ public class UpdateQueue<C extends UpdateCommand> {
                         handleSuccess(batchSize);
                         break;
                     case NO_PERMISSION:
-                        handleError("Can't save changes; no permission");
+                        handleError("You have no permission to save changes to this submission");
                         break;
                     default:
-                        handleError("Unsupported result type: " + result);
+                        handleError("Unsupported result type - " + result);
                 }
             }
         });

@@ -93,7 +93,7 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
         expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error: can't load experiment type");
+                Window.alert("Unable to load experiment type");
             }
 
             @Override
@@ -104,7 +104,7 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
         dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error: can't load file list");
+                Window.alert("Unable to load file list");
             }
 
             @Override
@@ -115,7 +115,7 @@ public class DataFileUploadActivity extends AbstractActivity implements DataFile
         appData.getApplicationPropertiesAsync(new AsyncCallback<ApplicationProperties>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Server error: can't load application properties");
+                Window.alert("Unable to load application properties");
             }
 
             @Override

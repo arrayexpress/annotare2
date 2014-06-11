@@ -69,7 +69,7 @@ public class SdrfPreviewActivity extends AbstractActivity {
         submissionService.getSdrfTable(getSubmissionId(), new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("server error: can't load SDRF preview");
+                Window.alert("Unable to load SDRF preview");
             }
 
             @Override

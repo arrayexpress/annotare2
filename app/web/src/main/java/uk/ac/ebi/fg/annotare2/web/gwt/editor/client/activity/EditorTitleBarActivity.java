@@ -117,7 +117,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
             @Override
             public void onFailure(Throwable caught) {
                 //TODO add proper logging
-                Window.alert("Can't load submission details ");
+                Window.alert("Unable to load submission details");
             }
 
             @Override

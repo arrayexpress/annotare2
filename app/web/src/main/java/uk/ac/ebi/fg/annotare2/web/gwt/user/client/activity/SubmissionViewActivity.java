@@ -68,7 +68,7 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     private void loadAsync() {
         submissionService.getSubmission(submissionId, new AsyncCallbackWrapper<SubmissionDetails>() {
             public void onFailure(Throwable caught) {
-                Window.alert("Server error: can't load submission details");
+                Window.alert("Unable to load submission details");
             }
 
             public void onSuccess(SubmissionDetails result) {
@@ -90,7 +90,7 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
             submissionService.deleteSubmission(submissionId, new AsyncCallbackWrapper<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    Window.alert("Server error: can't delete submission");
+                    Window.alert("Unable to delete submission");
                 }
 
                 @Override

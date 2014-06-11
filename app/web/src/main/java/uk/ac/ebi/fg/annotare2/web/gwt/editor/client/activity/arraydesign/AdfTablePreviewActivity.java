@@ -66,7 +66,7 @@ public class AdfTablePreviewActivity extends AbstractActivity {
             @Override
             public void onFailure(Throwable caught) {
                 //TODO
-                Window.alert("Can't load ADF table: " + caught.getMessage());
+                Window.alert("Unable to load ADF table, " + caught.getMessage());
             }
 
             @Override

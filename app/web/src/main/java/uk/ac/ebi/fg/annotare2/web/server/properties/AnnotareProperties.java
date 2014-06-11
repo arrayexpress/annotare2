@@ -219,7 +219,7 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
                 new File(property);
         if (!dir.exists()) {
             if (!dir.mkdirs()) {
-                log.error("Can't create directory: {}", dir);
+                log.error("Unable to create directory: {}", dir);
             }
         }
         return dir;
@@ -258,7 +258,7 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
             log.info("Loading properties from resource: " + resourceName);
             return load(AnnotareProperties.class.getResourceAsStream(resourceName), properties);
         } catch (IOException e) {
-            log.error("Can't load properties from classpath: " + resourceName, e);
+            log.error("Unable to load properties from classpath: " + resourceName, e);
         }
         return properties;
     }
@@ -268,9 +268,9 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
         try {
             return load(new FileInputStream(file), properties);
         } catch (FileNotFoundException e) {
-            log.error("Can't load properties from file " + file.getAbsoluteFile(), e);
+            log.error("Unable to load properties from file " + file.getAbsoluteFile(), e);
         } catch (IOException e) {
-            log.error("Can't load properties from file " + file.getAbsoluteFile(), e);
+            log.error("Unable to load properties from file " + file.getAbsoluteFile(), e);
         }
         return properties;
     }

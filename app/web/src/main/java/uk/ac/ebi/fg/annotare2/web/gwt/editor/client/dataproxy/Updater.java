@@ -60,7 +60,7 @@ public abstract class Updater {
                 onAsyncUpdate(new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        Window.alert("Can't get updates");
+                        Window.alert("Unable to load updates");
                         stop();
                     }
 

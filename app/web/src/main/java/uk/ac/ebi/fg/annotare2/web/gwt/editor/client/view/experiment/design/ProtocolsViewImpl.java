@@ -233,7 +233,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private boolean isNameValid(String name, int rowIndex) {
         if (name == null || name.trim().isEmpty()) {
-            showErrorMessage("Protocol name can't be empty");
+            showErrorMessage("Protocol name should not be empty");
             return false;
         }
         if (isDuplicated(name, rowIndex)) {
@@ -495,7 +495,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             return null;
         }
         if (selected.size() > 1) {
-            Window.alert("Sorry, can't move more than one row at a time");
+            Window.alert("Unable to move more than one row at a time");
             return null;
         }
         return selected.iterator().next();
