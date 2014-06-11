@@ -45,4 +45,9 @@
             ALTER TABLE data_files MODIFY status ENUM('TO_BE_STORED', 'STORED', 'TO_BE_ASSOCIATED', 'ASSOCIATED', 'MD5_ERROR', 'FILE_NOT_FOUND_ERROR', 'ERROR') NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addModelVersion12ToSubmissions" author="kolais">
+        <sql>
+            ALTER TABLE submissions MODIFY version ENUM('VERSION_1_0', 'VERSION_1_1', 'VERSION_1_2') NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

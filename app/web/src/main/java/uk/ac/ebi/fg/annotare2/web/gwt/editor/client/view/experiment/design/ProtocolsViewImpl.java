@@ -194,7 +194,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             }
         }) {
             @Override
-            public String getValue(ProtocolRow object) {
+            public String getValue(ProtocolRow row) {
                 return "Assign...";
             }
         };
@@ -228,7 +228,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                 });
             }
         });
-        gridView.addPermanentColumn("Assignment", column, null, 100, Style.Unit.PX);
+        gridView.addPermanentColumn("Assign protocols to materials/data files", column, null, 300, Style.Unit.PX);
     }
 
     private boolean isNameValid(String name, int rowIndex) {
@@ -279,7 +279,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Type", column, comparator, 150, Style.Unit.PX);
+        gridView.addPermanentColumn("Type", column, comparator, 200, Style.Unit.PX);
     }
 
     private void addDescriptionColumn() {

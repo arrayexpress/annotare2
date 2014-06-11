@@ -21,7 +21,8 @@ package uk.ac.ebi.fg.annotare2.submission.transform;
  */
 public enum ModelVersion {
     VERSION_1_0,
-    VERSION_1_1;
+    VERSION_1_1,
+    VERSION_1_2;
 
-    public final static ModelVersion CURRENT_VERSION = VERSION_1_1;
+    public final static ModelVersion CURRENT_VERSION = VERSION_1_2;
 }

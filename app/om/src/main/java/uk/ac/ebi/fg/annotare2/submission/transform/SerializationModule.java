@@ -95,6 +95,34 @@ public class SerializationModule extends SimpleModule {
                 serializers.addSerializer(Label.class, new LabelSerializer10());
                 deserializers.addDeserializer(Label.class, new LabelDeserializer10());
                 break;
+            case VERSION_1_2:
+                serializers.addSerializer(ExperimentProfile.class, new ExperimentProfileSerializer12());
+                deserializers.addDeserializer(ExperimentProfile.class, new ExperimentProfileDeserializer10());
+                serializers.addSerializer(OntologyTerm.class, new OntologyTermSerializer10());
+                deserializers.addDeserializer(OntologyTerm.class, new OntologyTermDeserializer10());
+                serializers.addSerializer(Contact.class, new ContactSerializer10());
+                deserializers.addDeserializer(Contact.class, new ContactDeserializer10());
+                serializers.addSerializer(Publication.class, new PublicationSerializer10());
+                deserializers.addDeserializer(Publication.class, new PublicationDeserializer10());
+                serializers.addSerializer(Protocol.class, new ProtocolSerializer10());
+                deserializers.addDeserializer(Protocol.class, new ProtocolDeserializer10());
+                serializers.addSerializer(SampleAttribute.class, new SampleAttributeSerializer10());
+                deserializers.addDeserializer(SampleAttribute.class, new SampleAttributeDeserializer10());
+                serializers.addSerializer(Sample.class, new SampleSerializer10());
+                deserializers.addDeserializer(Sample.class, new SampleDeserializer10());
+                serializers.addSerializer(Extract.class, new ExtractSerializer10());
+                deserializers.addDeserializer(Extract.class, new ExtractDeserializer10());
+                serializers.addSerializer(LabeledExtract.class, new LabeledExtractSerializer10());
+                deserializers.addDeserializer(LabeledExtract.class, new LabeledExtractDeserializer10());
+                serializers.addSerializer(FileColumn.class, new FileColumnSerializer11());
+                deserializers.addDeserializer(FileColumn.class, new FileColumnDeserializer11());
+                serializers.addSerializer(ArrayDesignHeader.class, new ArrayDesignHeaderSerializer10());
+                deserializers.addDeserializer(ArrayDesignHeader.class, new ArrayDesignHeaderDeserializer10());
+                serializers.addSerializer(PrintingProtocol.class, new PrintingProtocolSerializer10());
+                deserializers.addDeserializer(PrintingProtocol.class, new PrintingProtocolDeserializer10());
+                serializers.addSerializer(Label.class, new LabelSerializer10());
+                deserializers.addDeserializer(Label.class, new LabelDeserializer10());
+                break;
             default:
                 throw new IllegalStateException();
         }

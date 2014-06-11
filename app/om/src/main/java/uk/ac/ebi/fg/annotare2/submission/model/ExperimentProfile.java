@@ -92,6 +92,9 @@ public class ExperimentProfile implements Serializable {
     private Map<Integer, Set<String>> protocolId2LabeledExtractIds;
     private MultiSets<Protocol, LabeledExtract> protocol2LabeledExtracts;
 
+    private Map<Integer, Set<FileRef>> protocolId2FileRefs;
+    private MultiSets<Protocol, FileRef> protocol2FileRefs;
+
     @SuppressWarnings("unused")
     ExperimentProfile() {
         /* used by GWT serialization */
@@ -121,6 +124,7 @@ public class ExperimentProfile implements Serializable {
         protocol2Samples = new MultiSets<Protocol, Sample>();
         protocol2Extracts = new MultiSets<Protocol, Extract>();
         protocol2LabeledExtracts = new MultiSets<Protocol, LabeledExtract>();
+        protocol2FileRefs = new MultiSets<Protocol, FileRef>();
     }
 
     public ExperimentProfileType getType() {
@@ -492,6 +496,10 @@ public class ExperimentProfile implements Serializable {
         return unmodifiableSet(protocol2LabeledExtracts.get(protocol));
     }
 
+    public Set<FileRef> getFileRefs(Protocol protocol) {
+        return unmodifiableSet(protocol2FileRefs.get(protocol));
+    }
+
     public Set<Protocol> getProtocols(Sample sample) {
         if (sample == null) {
             return getProtocols(ProtocolSubjectType.SAMPLE);
@@ -630,6 +638,7 @@ public class ExperimentProfile implements Serializable {
         restoreProtocol2Samples();
         restoreProtocol2Extracts();
         restoreProtocol2LabeledExtracts();
+        restoreProtocol2FileRefs();
     }
 
     private void restoreSample2Extracts() {
@@ -690,6 +699,19 @@ public class ExperimentProfile implements Serializable {
             }
         }
         protocolId2LabeledExtractIds = null;
+    }
+
+    private void restoreProtocol2FileRefs() {
+        if (protocolId2FileRefs == null) {
+            return;
+        }
+        for (Integer protocolId : protocolId2FileRefs.keySet()) {
+            Protocol protocol = protocolMap.get(protocolId);
+            for (FileRef fileRef : protocolId2FileRefs.get(protocolId)) {
+                protocol2FileRefs.put(protocol, fileRef);
+            }
+        }
+        protocolId2FileRefs = null;
     }
 
     private void restoreLabeledExtracts() {

@@ -68,6 +68,7 @@ public class SubmissionMigrator extends AbstractIdleService {
                 Session session = sessionFactory.openSession();
                 try {
                     migrate10to11();
+                    migrate11to12();
                 } catch (Exception x) {
                     log.error("Submission watchdog process caught an exception:", x);
                 } finally {
@@ -91,6 +92,16 @@ public class SubmissionMigrator extends AbstractIdleService {
         for (Submission submission : submissions) {
             if (submission instanceof ExperimentSubmission) {
                 migrateExperimentSubmission10((ExperimentSubmission)submission);
+            }
+        }
+    }
+
+    public void migrate11to12() throws DataSerializationException {
+        Collection<Submission> submissions = submissionDao.getSubmissionsByVersion(ModelVersion.VERSION_1_1);
+
+        for (Submission submission : submissions) {
+            if (submission instanceof ExperimentSubmission) {
+                migrateExperimentSubmission11((ExperimentSubmission)submission);
             }
         }
     }
@@ -122,4 +133,16 @@ public class SubmissionMigrator extends AbstractIdleService {
         submissionManager.save(submission);
         log.info("Migrated experiment submission {} to version 1.1", submission.getId());
     }
+
+    @Transactional
+    public void migrateExperimentSubmission11(ExperimentSubmission submission)
+            throws DataSerializationException {
+        ExperimentProfile exp = submission.getExperimentProfile();
+
+        submission.setVersion(ModelVersion.VERSION_1_2);
+        submission.setExperimentProfile(exp);
+        submissionManager.save(submission);
+        log.info("Migrated experiment submission {} to version 1.2", submission.getId());
+    }
+
 }
