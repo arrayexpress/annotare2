@@ -462,7 +462,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Collection<FileColumn> getFileColumns() {
-        return getFileColumns(FileType.values());
+        return unmodifiableCollection(fileColumns);
     }
 
     public Collection<FileColumn> getFileColumns(FileType... types) {
