@@ -256,6 +256,9 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                    submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
                    submissionManager.save(submission);
                }
+           } else {
+               submission.setStatus(SubmissionStatus.IN_CURATION);
+               submissionManager.save(submission);
            }
        }
     }
@@ -273,6 +276,9 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                     submission.setStatus(SubmissionStatus.PRIVATE_IN_AE);
                     submissionManager.save(submission);
                 }
+            } else {
+                submission.setStatus(SubmissionStatus.IN_CURATION);
+                submissionManager.save(submission);
             }
         }
     }
