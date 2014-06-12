@@ -53,42 +53,55 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     public ProtocolsViewImpl() {
         gridView = new GridView<ProtocolRow>();
-        Button createButton = new Button("Add Protocol...");
-        createButton.addClickHandler(new ClickHandler() {
+        Button button = new Button("Add Protocol...");
+        button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 createProtocol();
             }
         });
-        gridView.addTool(createButton);
-        Button removeButton = new Button("Delete Selected Rows");
-        removeButton.addClickHandler(new ClickHandler() {
+        gridView.addTool(button);
+
+        button = new Button("Delete Selected Rows");
+        button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 removeSelectedProtocols();
             }
         });
-        gridView.addTool(removeButton);
-        Button moveUpButton = new Button();
-        moveUpButton.setHTML("&#8593;");
-        moveUpButton.setTitle("Move selected protocol one position up");
-        moveUpButton.addClickHandler(new ClickHandler() {
+        gridView.addTool(button);
+
+        button = new Button();
+        button.setHTML("&#8593;");
+        button.setTitle("Move selected protocol one position up");
+        button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 moveProtocolUp();
             }
         });
-        gridView.addTool(moveUpButton);
-        Button moveDownButton = new Button();
-        moveDownButton.setHTML("&#8595;");
-        moveDownButton.setTitle("Move selected protocol one position down");
-        moveDownButton.addClickHandler(new ClickHandler() {
+        gridView.addTool(button);
+
+        button = new Button();
+        button.setHTML("&#8595;");
+        button.setTitle("Move selected protocol one position down");
+        button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 moveProtocolDown();
             }
         });
-        gridView.addTool(moveDownButton);
+        gridView.addTool(button);
+
+        button = new Button("Fill Down Value");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                fillDownValue();
+            }
+        });
+        gridView.addTool(button);
+
         errorMessage = new ValidationMessage();
         gridView.addTool(errorMessage);
         initWidget(gridView);
@@ -499,5 +512,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
             return null;
         }
         return selected.iterator().next();
+    }
+
+    private void fillDownValue() {
+        gridView.fillDownKeyboardSelectedColumn();
     }
 }

@@ -20,7 +20,10 @@ import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
@@ -40,6 +43,16 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
 
     public ExtractAttributesViewImpl() {
         gridView = new GridView<ExtractAttributesRow>();
+
+        Button button = new Button("Fill Down Value");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                fillDownValue();
+            }
+        });
+        gridView.addTool(button);
+
         initWidget(gridView);
     }
 
@@ -113,5 +126,9 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
 
     private void updateRow(ExtractAttributesRow row) {
         presenter.updateRow(row.copy());
+    }
+
+    private void fillDownValue() {
+        gridView.fillDownKeyboardSelectedColumn();
     }
 }

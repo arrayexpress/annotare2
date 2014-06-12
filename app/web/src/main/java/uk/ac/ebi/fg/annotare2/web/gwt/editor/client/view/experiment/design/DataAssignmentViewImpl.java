@@ -49,8 +49,8 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     public DataAssignmentViewImpl() {
         gridView = new GridView<DataAssignmentRow>();
 
-        Button addColumnButton = new Button("Assign files...");
-        addColumnButton.addClickHandler(new ClickHandler() {
+        Button button = new Button("Assign files...");
+        button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 new AddColumnDialog<ColumnType>(new DialogCallback<ColumnType>() {
@@ -61,10 +61,10 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 }, ColumnType.values());
             }
         });
-        gridView.addTool(addColumnButton);
+        gridView.addTool(button);
 
-        Button removeColumnsButton = new Button("Delete Column(s)...");
-        removeColumnsButton.addClickHandler(new ClickHandler() {
+        button = new Button("Delete Column(s)...");
+        button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 new RemoveColumnsDialog(new DialogCallback<List<Integer>>() {
@@ -75,7 +75,16 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 }, getDataFileColumnNames());
             }
         });
-        gridView.addTool(removeColumnsButton);
+        gridView.addTool(button);
+
+        button = new Button("Fill Down Value");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                fillDownValue();
+            }
+        });
+        gridView.addTool(button);
 
         initWidget(gridView);
     }
@@ -233,6 +242,10 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         if (presenter != null) {
             presenter.updateColumn(column);
         }
+    }
+
+    private void fillDownValue() {
+        gridView.fillDownKeyboardSelectedColumn();
     }
 
     private static class ColumnType {
