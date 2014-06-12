@@ -37,12 +37,10 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
-import static com.google.common.collect.Lists.transform;
 
 /**
  * @author Olga Melnichuk
@@ -124,7 +122,7 @@ public class UIObjectConverter {
         return false;
     }
 
-    public static ArrayList<SubmissionRow> uiSubmissionRows(List<Submission> submissions) {
+    public static ArrayList<SubmissionRow> uiSubmissionRows(Collection<Submission> submissions) {
         return new ArrayList<SubmissionRow>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
     }
@@ -167,7 +165,7 @@ public class UIObjectConverter {
         );
     }
 
-    public static List<DataFileRow> uiDataFileRows(Set<DataFile> files) {
+    public static List<DataFileRow> uiDataFileRows(Collection<DataFile> files) {
         return new ArrayList<DataFileRow>(transform(files, DATA_FILE_ROW));
     }
 }

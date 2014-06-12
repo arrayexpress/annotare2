@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Function;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
@@ -59,14 +60,13 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static com.google.common.collect.Ordering.natural;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllAssayNameValues;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
@@ -203,7 +203,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     public List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
-            return uiDataFileRows(submission.getFiles());
+            Collection<DataFile> filesSortedByName = natural().onResultOf(new Function<DataFile, String>() {
+                @Nullable
+                @Override
+                public String apply(@Nullable DataFile input) {
+                    return (null != input && null != input.getName()) ? input.getName().toLowerCase() : null;
+                }
+            }).immutableSortedCopy(submission.getFiles());
+            return uiDataFileRows(filesSortedByName);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
