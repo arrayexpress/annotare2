@@ -160,7 +160,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<ColumnType> getAllowedColumnTypes() {
         List<ColumnType> types = new ArrayList<ColumnType>();
         for (FileType type : FileType.values()) {
-            if (!type.isFGEM() || 0 == columns.get(type).size()) {
+            if (!type.isFGEM() || null == columns.get(type) || 0 == columns.get(type).size()) {
                 types.add(new ColumnType(type));
             }
         }
