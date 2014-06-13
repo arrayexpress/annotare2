@@ -97,7 +97,7 @@ public class SerializationModule extends SimpleModule {
                 break;
             case VERSION_1_2:
                 serializers.addSerializer(ExperimentProfile.class, new ExperimentProfileSerializer12());
-                deserializers.addDeserializer(ExperimentProfile.class, new ExperimentProfileDeserializer10());
+                deserializers.addDeserializer(ExperimentProfile.class, new ExperimentProfileDeserializer12());
                 serializers.addSerializer(OntologyTerm.class, new OntologyTermSerializer10());
                 deserializers.addDeserializer(OntologyTerm.class, new OntologyTermDeserializer10());
                 serializers.addSerializer(Contact.class, new ContactSerializer10());

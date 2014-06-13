@@ -46,6 +46,10 @@ public class FileRef implements Serializable {
         return hash;
     }
 
+    public String asString() {
+        return hash + '|' + name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,5 +63,14 @@ public class FileRef implements Serializable {
     @Override
     public int hashCode() {
         return 31 * name.hashCode() + hash.hashCode();
+    }
+
+    public static FileRef fromString(String fileRefAsString) {
+        if (null == fileRefAsString) return null;
+
+        int separator = fileRefAsString.indexOf('|');
+        if (-1 == separator || separator >= fileRefAsString.length()) return null;
+
+        return new FileRef(fileRefAsString.substring(separator + 1), fileRefAsString.substring(0, separator));
     }
 }

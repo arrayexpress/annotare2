@@ -110,24 +110,70 @@ public abstract class ProtocolAssignment {
             exp.assignProtocol2LabeledExtracts(protocol, labeledExtracts);
         }
     }
-    /*
-    public static class AssayProtocolAssignment extends ProtocolAssignment {
-        private AssayProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
+
+    public static class FileProtocolAssignment extends ProtocolAssignment {
+        private FileProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
             super(exp, protocol);
         }
 
         @Override
         protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
-            Set<FileRef> assigned = exp.getFileRefs(protocol);
+            Collection<FileRef> assignees = exp.getFileRefs(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
-            for (FileRef fileRef : exp.getFileColumn(0)) {
-                assignments.put(new Item(labeledExtract.getId(), labeledExtract.getName()), assigned.contains(labeledExtract));
+            FileType type = null;
+            for (FileColumn col : exp.getFileColumns()) {
+                if (isAllowed(col.getType())) {
+                    if (null == type) {
+                        type = col.getType();
+                    }
+                    if (col.getType() == type) {
+                        for (FileRef fileRef : col.getFileRefs()) {
+                            assignments.put(new Item(fileRef.asString(),
+                                    fileRef.getName()),
+                                    isAssigned(fileRef, assignees)
+                            );
+                        }
+                    }
+                }
             }
             return new ProtocolAssignmentProfile(protocol, assignments);
         }
 
+        @Override
+        protected void update(ExperimentProfile exp, Protocol protocol, Set<String> assignments) {
+            List<FileRef> fileRefs = new ArrayList<FileRef>();
+            for (String refString : assignments) {
+                fileRefs.add(FileRef.fromString(refString));
+            }
+            exp.assignProtocol2FileRefs(protocol, fileRefs);
+        }
+
+        protected boolean isAllowed(FileType type) {
+            return true;
+        }
+
+        protected boolean isAssigned(FileRef file, Collection<FileRef> assignees) {
+            for (FileRef assignee : assignees) {
+                if (file.equals(assignee)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
-    */
+
+    public static class ProcessedFileProtocolAssignment extends FileProtocolAssignment {
+        private ProcessedFileProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
+            super(exp, protocol);
+        }
+
+        @Override
+        protected boolean isAllowed(FileType type) {
+            return type.isProcessed();
+        }
+    }
+
+
     public static class Item {
         private String id;
         private String name;
@@ -156,9 +202,7 @@ public abstract class ProtocolAssignment {
 
             Item that = (Item) o;
 
-            if (!id.equals(that.id)) return false;
-
-            return true;
+            return id.equals(that.id);
         }
 
         @Override
@@ -196,6 +240,10 @@ public abstract class ProtocolAssignment {
                 return new ExtractProtocolAssignment(exp, protocol);
             case LABELED_EXTRACT:
                 return new LabeledExtractProtocolAssignment(exp, protocol);
+            case RAW_FILE:
+                return new FileProtocolAssignment(exp, protocol);
+            case PROCESSED_FILE:
+                return new ProcessedFileProtocolAssignment(exp, protocol);
             default:
                 return new ProtocolAssignment(exp, protocol) {
                     @Override

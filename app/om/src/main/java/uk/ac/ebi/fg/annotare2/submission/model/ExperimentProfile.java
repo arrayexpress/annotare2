@@ -251,7 +251,11 @@ public class ExperimentProfile implements Serializable {
 
     public FileColumn createFileColumn(FileType fileType) {
         FileColumn fileColumn = new FileColumn(fileType);
-        fileColumns.add(fileColumn);
+        int insertIndex = 0;
+        while (insertIndex < fileColumns.size() && fileColumns.get(insertIndex).getType().ordinal() <= fileType.ordinal()) {
+            insertIndex++;
+        }
+        fileColumns.add(insertIndex, fileColumn);
         return fileColumn;
     }
 
@@ -585,6 +589,13 @@ public class ExperimentProfile implements Serializable {
         protocol2LabeledExtracts.putAll(protocol, set);
     }
 
+    public void assignProtocol2FileRefs(Protocol protocol, Collection<FileRef> fileRefs) {
+        Set<FileRef> set = new HashSet<FileRef>();
+        set.addAll(fileRefs);
+        protocol2FileRefs.remove(protocol);
+        protocol2FileRefs.putAll(protocol, set);
+    }
+
     public Collection<Label> getLabels() {
         return unmodifiableCollection(labelMap.values());
     }
@@ -648,6 +659,7 @@ public class ExperimentProfile implements Serializable {
         restoreProtocol2Extracts();
         restoreProtocol2LabeledExtracts();
         restoreProtocol2FileRefs();
+        sortFileColumns();
     }
 
     private void restoreSample2Extracts() {
@@ -727,5 +739,14 @@ public class ExperimentProfile implements Serializable {
             }
         }
         protocolId2FileRefs = null;
+    }
+
+    private void sortFileColumns() {
+        Collections.sort(fileColumns, new Comparator<FileColumn>() {
+            @Override
+            public int compare(FileColumn left, FileColumn right) {
+                return Integer.signum(left.getType().ordinal() - right.getType().ordinal());
+            }
+        });
     }
 }

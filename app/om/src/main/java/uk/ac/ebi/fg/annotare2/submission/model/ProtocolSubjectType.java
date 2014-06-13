@@ -50,8 +50,4 @@ public enum ProtocolSubjectType {
         }
         return filtered;
     }
-
-    public boolean isSampleExtractOrLabeledExtract() {
-        return this == SAMPLE || this == EXTRACT || this == LABELED_EXTRACT;
-    }
 }
