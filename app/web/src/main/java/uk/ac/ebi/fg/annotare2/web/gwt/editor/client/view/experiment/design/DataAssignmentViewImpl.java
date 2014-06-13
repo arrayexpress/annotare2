@@ -58,7 +58,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                     public void onOkay(ColumnType columnType) {
                         createColumn(columnType.getType());
                     }
-                }, ColumnType.values());
+                }, getAllowedColumnTypes());
             }
         });
         gridView.addTool(button);
@@ -154,7 +154,17 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private String getDataFileColumnName(DataAssignmentColumn column) {
         FileType type = column.getType();
         int index = columns.get(type).indexOf(column) + 1;
-        return type.getTitle() + " Data File (" + index + ")";
+        return type.getTitle() + " Data File" + (index > 1 ? " (" + index + ")" : "");
+    }
+
+    private List<ColumnType> getAllowedColumnTypes() {
+        List<ColumnType> types = new ArrayList<ColumnType>();
+        for (FileType type : FileType.values()) {
+            if (!type.isFGEM() || 0 == columns.get(type).size()) {
+                types.add(new ColumnType(type));
+            }
+        }
+        return types;
     }
 
     private List<String> getDataFileColumnNames() {
@@ -263,14 +273,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
         public FileType getType() {
             return type;
-        }
-
-        public static List<ColumnType> values() {
-            List<ColumnType> values = new ArrayList<ColumnType>();
-            for (FileType type : FileType.values()) {
-                values.add(new ColumnType(type));
-            }
-            return values;
         }
     }
 

@@ -41,11 +41,16 @@ public enum FileType {
 
     @SuppressWarnings("unused")
     public boolean isRaw() {
-        return this == RAW_FILE || this == RAW_MATRIX_FILE;
+        return RAW_FILE == this || RAW_MATRIX_FILE == this;
     }
 
     @SuppressWarnings("unused")
     public boolean isProcessed() {
-        return this == PROCESSED_FILE || this == PROCESSED_MATRIX_FILE;
+        return PROCESSED_FILE == this || PROCESSED_MATRIX_FILE == this;
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isFGEM() {
+        return RAW_MATRIX_FILE == this || PROCESSED_MATRIX_FILE == this;
     }
 }
