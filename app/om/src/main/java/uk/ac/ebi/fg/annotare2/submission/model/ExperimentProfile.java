@@ -438,6 +438,15 @@ public class ExperimentProfile implements Serializable {
         return unmodifiableCollection(sampleMap.values());
     }
 
+    public Sample getSampleByName(String name) {
+        for (Sample sample : getSamples()) {
+            if (sample.getName().equals(name)) {
+                return sample;
+            }
+        }
+        return null;
+    }
+
     public Collection<Extract> getExtracts() {
         return unmodifiableCollection(extractMap.values());
     }
@@ -656,6 +665,12 @@ public class ExperimentProfile implements Serializable {
         sampleId2ExtractIds = null;
     }
 
+    private void restoreLabeledExtracts() {
+        for (LabeledExtract labeledExtract : labeledExtractMap.values()) {
+            labeledExtract.restoreObjects(this);
+        }
+    }
+
     private void restoreProtocol2Samples() {
         if (protocolId2SampleIds == null) {
             return;
@@ -712,20 +727,5 @@ public class ExperimentProfile implements Serializable {
             }
         }
         protocolId2FileRefs = null;
-    }
-
-    private void restoreLabeledExtracts() {
-        for (LabeledExtract labeledExtract : labeledExtractMap.values()) {
-            labeledExtract.restoreObjects(this);
-        }
-    }
-
-    public Sample getSampleByName(String name) {
-        for (Sample sample : getSamples()) {
-            if (sample.getName().equals(name)) {
-                return sample;
-            }
-        }
-        return null;
     }
 }

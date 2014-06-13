@@ -311,7 +311,13 @@ public class MageTabGenerator {
 
             FileRef file = (labeledExtract == null) ? null : fileColumn.getFileRef(labeledExtract.getId());
             if (null != file) {
-                layer.put(labeledExtract.getId(), createAssayNode(labeledExtract, assayNameValue.next(file.getName()), labeledExtractNode, protocols));
+                layer.put(labeledExtract.getId(),
+                        createAssayNode(labeledExtract,
+                                assayNameValue.next(removeExtension(file.getName())),
+                                labeledExtractNode,
+                                protocols
+                        )
+                );
             } else {
                 layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode, protocols));
             }
@@ -324,6 +330,10 @@ public class MageTabGenerator {
                 exp.getFileColumns()
         );
         return columns.isEmpty() ? null : columns.iterator().next();
+    }
+
+    private String removeExtension(String fileName) {
+        return (null != fileName ? fileName.replaceAll("^(.+)[.][^.]*$", "$1") : null);
     }
 
     private Map<String, SDRFNode> generateSeqAssayNodes(Map<Integer, SDRFNode> extractLayer) {

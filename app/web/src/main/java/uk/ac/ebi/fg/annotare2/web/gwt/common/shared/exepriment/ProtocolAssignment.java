@@ -110,7 +110,24 @@ public abstract class ProtocolAssignment {
             exp.assignProtocol2LabeledExtracts(protocol, labeledExtracts);
         }
     }
+    /*
+    public static class AssayProtocolAssignment extends ProtocolAssignment {
+        private AssayProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
+            super(exp, protocol);
+        }
 
+        @Override
+        protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
+            Set<FileRef> assigned = exp.getFileRefs(protocol);
+            Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
+            for (FileRef fileRef : exp.getFileColumn(0)) {
+                assignments.put(new Item(labeledExtract.getId(), labeledExtract.getName()), assigned.contains(labeledExtract));
+            }
+            return new ProtocolAssignmentProfile(protocol, assignments);
+        }
+
+    }
+    */
     public static class Item {
         private String id;
         private String name;
