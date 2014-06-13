@@ -130,7 +130,7 @@ public abstract class ProtocolAssignment {
                         for (FileRef fileRef : col.getFileRefs()) {
                             assignments.put(new Item(fileRef.asString(),
                                     fileRef.getName()),
-                                    isAssigned(fileRef, assignees)
+                                    assignees.contains(fileRef)
                             );
                         }
                     }
@@ -150,15 +150,6 @@ public abstract class ProtocolAssignment {
 
         protected boolean isAllowed(FileType type) {
             return true;
-        }
-
-        protected boolean isAssigned(FileRef file, Collection<FileRef> assignees) {
-            for (FileRef assignee : assignees) {
-                if (file.equals(assignee)) {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 
