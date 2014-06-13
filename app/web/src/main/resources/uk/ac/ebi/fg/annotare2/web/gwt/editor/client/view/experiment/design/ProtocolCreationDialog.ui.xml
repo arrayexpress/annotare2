@@ -32,7 +32,7 @@
         <g:DockLayoutPanel>
             <g:center>
                 <g:SplitLayoutPanel>
-                    <g:west size="250">
+                    <g:west size="300">
                         <g:DockLayoutPanel>
                             <g:north size="20">
                                 <g:Label>Select a protocol type:</g:Label>
