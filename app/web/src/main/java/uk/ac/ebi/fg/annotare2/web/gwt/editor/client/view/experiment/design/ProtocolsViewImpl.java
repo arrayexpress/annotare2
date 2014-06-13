@@ -292,7 +292,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Type", column, comparator, 200, Style.Unit.PX);
+        gridView.addPermanentColumn("Type", column, comparator, 300, Style.Unit.PX);
     }
 
     private void addDescriptionColumn() {
