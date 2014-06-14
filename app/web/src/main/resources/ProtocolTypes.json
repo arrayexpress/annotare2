@@ -59,7 +59,7 @@
         "label": "array scanning and feature extraction protocol",
         "id": "EFO_0003814",
         "usage": "MICRO_ARRAY",
-        "subject": "RAW_FILE",
+        "subject": "FILE",
         "precedence": "30",
         "definition": "A protocol describing an image acquisition process that generates an image and features extracted in numerical form from an array."
     },

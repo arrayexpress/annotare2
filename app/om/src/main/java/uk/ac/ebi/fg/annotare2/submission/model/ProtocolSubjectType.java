@@ -28,6 +28,7 @@ public enum ProtocolSubjectType {
     EXTRACT("extract"),
     LABELED_EXTRACT("labeled extract"),
     ASSAY("assay"),
+    FILE("raw file"),
     RAW_FILE("raw file"),
     PROCESSED_FILE("processed file");
 

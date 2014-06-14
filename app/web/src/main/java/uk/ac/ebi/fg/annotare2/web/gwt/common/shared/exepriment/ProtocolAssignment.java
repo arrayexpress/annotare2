@@ -111,8 +111,8 @@ public abstract class ProtocolAssignment {
         }
     }
 
-    public static class FileProtocolAssignment extends ProtocolAssignment {
-        private FileProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
+    public static class BaseFileProtocolAssignment extends ProtocolAssignment {
+        private BaseFileProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
             super(exp, protocol);
         }
 
@@ -120,19 +120,10 @@ public abstract class ProtocolAssignment {
         protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
             Collection<FileRef> assignees = exp.getFileRefs(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
-            FileType type = null;
             for (FileColumn col : exp.getFileColumns()) {
                 if (isAllowed(col.getType())) {
-                    if (null == type) {
-                        type = col.getType();
-                    }
-                    if (col.getType() == type) {
-                        for (FileRef fileRef : col.getFileRefs()) {
-                            assignments.put(new Item(fileRef.asString(),
-                                    fileRef.getName()),
-                                    assignees.contains(fileRef)
-                            );
-                        }
+                    for (FileRef fileRef : col.getFileRefs()) {
+                        assignments.put(new Item(fileRef.asString(), fileRef.getName()), assignees.contains(fileRef));
                     }
                 }
             }
@@ -153,7 +144,18 @@ public abstract class ProtocolAssignment {
         }
     }
 
-    public static class ProcessedFileProtocolAssignment extends FileProtocolAssignment {
+    public static class RawFileProtocolAssignment extends BaseFileProtocolAssignment {
+        private RawFileProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
+            super(exp, protocol);
+        }
+
+        @Override
+        protected boolean isAllowed(FileType type) {
+            return type.isRaw();
+        }
+    }
+
+    public static class ProcessedFileProtocolAssignment extends BaseFileProtocolAssignment {
         private ProcessedFileProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
             super(exp, protocol);
         }
@@ -164,6 +166,29 @@ public abstract class ProtocolAssignment {
         }
     }
 
+    public static class RawOrProcessedFileProtocolAssignment extends BaseFileProtocolAssignment {
+        private RawOrProcessedFileProtocolAssignment(ExperimentProfile exp, Protocol protocol) {
+            super(exp, protocol);
+        }
+
+        @Override
+        protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
+            Collection<FileRef> assignees = exp.getFileRefs(protocol);
+            Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
+            boolean isRawOnly = false;
+            for (FileColumn col : exp.getFileColumns()) {
+                if (!isRawOnly & col.getType().isRaw()) {
+                    isRawOnly = true;
+                }
+                if (!isRawOnly || col.getType().isRaw()) {
+                    for (FileRef fileRef : col.getFileRefs()) {
+                        assignments.put(new Item(fileRef.asString(), fileRef.getName()), assignees.contains(fileRef));
+                    }
+                }
+            }
+            return new ProtocolAssignmentProfile(protocol, assignments);
+        }
+    }
 
     public static class Item {
         private String id;
@@ -231,8 +256,10 @@ public abstract class ProtocolAssignment {
                 return new ExtractProtocolAssignment(exp, protocol);
             case LABELED_EXTRACT:
                 return new LabeledExtractProtocolAssignment(exp, protocol);
+            case FILE:
+                return new RawOrProcessedFileProtocolAssignment(exp, protocol);
             case RAW_FILE:
-                return new FileProtocolAssignment(exp, protocol);
+                return new RawFileProtocolAssignment(exp, protocol);
             case PROCESSED_FILE:
                 return new ProcessedFileProtocolAssignment(exp, protocol);
             default:
