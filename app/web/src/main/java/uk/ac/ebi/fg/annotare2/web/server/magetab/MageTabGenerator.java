@@ -293,23 +293,35 @@ public class MageTabGenerator {
     }
 
     private Map<String, SDRFNode> generateMicroarrayAssayNodes(Map<String, SDRFNode> labeledExtractLayer) {
+        // no labeled extracts supplied? no assays can be generated
         if (labeledExtractLayer.isEmpty()) {
             return emptyMap();
         }
 
-        FileColumn fileColumn = getFirstFileColumn();
-        if (null == fileColumn) {
+        // no files uploaded? no assays can be generated
+        if (exp.getFileColumns().isEmpty()) {
             return emptyMap();
         }
+
+        Collection<FileColumn> fileColumns = exp.getFileColumns(FileType.RAW_FILE);
+        if (fileColumns.isEmpty()) {
+            fileColumns = exp.getFileColumns(FileType.PROCESSED_FILE);
+        }
+        if (fileColumns.isEmpty()) {
+            fileColumns =
+        }
+
 
         Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
         int fakeId = -1;
         for (String labeledExtractId : labeledExtractLayer.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
+
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
             Collection<Protocol> protocols = exp.getProtocols(labeledExtract);
 
-            FileRef file = (labeledExtract == null) ? null : fileColumn.getFileRef(labeledExtract.getId());
+            FileRef file = null;
+                    //(labeledExtract == null) ? null : fileColumn.getFileRef(labeledExtract.getId());
             if (null != file) {
                 layer.put(labeledExtract.getId(),
                         createAssayNode(labeledExtract,
@@ -325,12 +337,12 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private FileColumn getFirstFileColumn() {
-        Collection<FileColumn> columns = sortFileColumns(
-                exp.getFileColumns()
-        );
-        return columns.isEmpty() ? null : columns.iterator().next();
-    }
+    //private FileColumn getFirstFileColumn() {
+    //    Collection<FileColumn> columns = sortFileColumns(
+    //            exp.getFileColumns()
+    //    );
+    //    return columns.isEmpty() ? null : columns.iterator().next();
+    //}
 
     private String removeExtension(String fileName) {
         return (null != fileName ? fileName.replaceAll("^(.+)[.][^.]*$", "$1") : null);

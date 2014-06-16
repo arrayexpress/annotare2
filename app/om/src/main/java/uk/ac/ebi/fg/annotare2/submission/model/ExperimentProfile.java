@@ -28,7 +28,6 @@ import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
-import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableSet;
@@ -232,7 +231,7 @@ public class ExperimentProfile implements Serializable {
 
     public Extract createExtract(Sample... samples) {
         if (samples.length == 0) {
-            throw new IllegalArgumentException("Can't create empty extract");
+            throw new IllegalArgumentException("Unable to create empty extract");
         }
         Extract extract = new Extract(nextId());
         extractMap.put(extract.getId(), extract);
@@ -434,8 +433,16 @@ public class ExperimentProfile implements Serializable {
         return list;
     }
 
-    public Collection<Protocol> getProtocolsByType(ProtocolSubjectType type) {
-        return type.filter(getProtocols());
+    public Collection<Protocol> getProtocolsByType(ProtocolSubjectType... type) {
+        Set<ProtocolSubjectType> filter = new HashSet<ProtocolSubjectType>(Arrays.asList(type));
+        List<Protocol> list = newArrayList();
+        for (Integer id : protocolOrder) {
+            Protocol protocol = protocolMap.get(id);
+            if (filter.contains(protocol.getSubjectType())) {
+                list.add(protocol);
+            }
+        }
+        return list;
     }
 
     public Collection<Sample> getSamples() {
@@ -514,9 +521,6 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Set<Protocol> getProtocols(Sample sample) {
-        if (sample == null) {
-            return getProtocols(ProtocolSubjectType.SAMPLE);
-        }
         Collection<Protocol> sampleProtocols = getProtocolsByType(ProtocolSubjectType.SAMPLE);
         Set<Protocol> protocols = newLinkedHashSet();
         for (Protocol p : sampleProtocols) {
@@ -529,9 +533,6 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Set<Protocol> getProtocols(Extract extract) {
-        if (extract == null) {
-            return getProtocols(ProtocolSubjectType.EXTRACT);
-        }
         Collection<Protocol> extractProtocols = getProtocolsByType(ProtocolSubjectType.EXTRACT);
         Set<Protocol> protocols = newLinkedHashSet();
         for (Protocol p : extractProtocols) {
@@ -544,9 +545,6 @@ public class ExperimentProfile implements Serializable {
     }
 
     public Set<Protocol> getProtocols(LabeledExtract labeledExtract) {
-        if (labeledExtract == null) {
-            return getProtocols(ProtocolSubjectType.LABELED_EXTRACT);
-        }
         Collection<Protocol> labelExtractProtocols = getProtocolsByType(ProtocolSubjectType.LABELED_EXTRACT);
         Set<Protocol> protocols = newLinkedHashSet();
         for (Protocol p : labelExtractProtocols) {
@@ -557,16 +555,17 @@ public class ExperimentProfile implements Serializable {
         return protocols;
     }
 
-    public Set<Protocol> getProtocols(ProtocolSubjectType type) {
-        Collection<Protocol> protocolsByType = getProtocolsByType(type);
-        Set<Protocol> protocols = newHashSet();
-        for (Protocol p : protocolsByType) {
-            p.setAssigned(!protocol2Samples.containsKey(p));
+    public Set<Protocol> getProtocols(FileRef fileRef, ProtocolSubjectType subjectType) {
+        Collection<Protocol> fileProtocols = getProtocolsByType(subjectType);
+
+        Set<Protocol> protocols = newLinkedHashSet();
+        for (Protocol p : fileProtocols) {
+            Set<FileRef> fileRefs = protocol2FileRefs.get(p);
+            p.setAssigned(fileRefs.isEmpty() || fileRefs.contains(fileRef));
             protocols.add(p);
         }
         return protocols;
     }
-
 
     public void assignProtocol2Samples(Protocol protocol, Collection<Sample> samples) {
         Set<Sample> set = new HashSet<Sample>();
