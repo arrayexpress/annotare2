@@ -150,8 +150,21 @@ public abstract class ProtocolAssignment {
         }
 
         @Override
-        protected boolean isAllowed(FileType type) {
-            return type.isRaw();
+        protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
+            Collection<FileRef> assignees = exp.getFileRefs(protocol);
+            Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
+            FileType firstRawType = null;
+            for (FileColumn col : exp.getFileColumns()) {
+                if (null == firstRawType && col.getType().isRaw()) {
+                    firstRawType = col.getType();
+                }
+                if (col.getType() == firstRawType) {
+                    for (FileRef fileRef : col.getFileRefs()) {
+                        assignments.put(new Item(fileRef.asString(), fileRef.getName()), assignees.contains(fileRef));
+                    }
+                }
+            }
+            return new ProtocolAssignmentProfile(protocol, assignments);
         }
     }
 
