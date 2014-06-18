@@ -307,9 +307,9 @@ public class MageTabGenerator {
         if (fileColumns.isEmpty()) {
             fileColumns = exp.getFileColumns(FileType.PROCESSED_FILE);
         }
-        if (fileColumns.isEmpty()) {
-            fileColumns =
-        }
+        //if (fileColumns.isEmpty()) {
+        //    fileColumns =
+        //}
 
 
         Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
@@ -320,8 +320,7 @@ public class MageTabGenerator {
             SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
             Collection<Protocol> protocols = exp.getProtocols(labeledExtract);
 
-            FileRef file = null;
-                    //(labeledExtract == null) ? null : fileColumn.getFileRef(labeledExtract.getId());
+            FileRef file = (labeledExtract == null) ? null : fileColumns.iterator().next().getFileRef(labeledExtract.getId());
             if (null != file) {
                 layer.put(labeledExtract.getId(),
                         createAssayNode(labeledExtract,

@@ -398,22 +398,6 @@ public class ExperimentDataProxy {
         });
     }
 
-    /*
-    public void getLabelsAsync(final AsyncCallback<List<String>> callback) {
-        getExperiment(new AsyncCallback<ExperimentProfile>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(ExperimentProfile result) {
-                callback.onSuccess(new ArrayList<String>(result.getLabelNames()));
-            }
-        });
-    }
-    */
-
     public void createContact() {
         updateQueue.add(new CreateContactCommand());
     }
