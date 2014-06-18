@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
@@ -44,6 +45,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
     private Map<String, String> fileHashes = new HashMap<String, String>();
     private DataAssignment dataAssignment = new DataAssignment();
+    private ExperimentProfileType experimentType;
     private Presenter presenter;
 
     public DataAssignmentViewImpl() {
@@ -109,6 +111,12 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         gridView.redraw();
     }
 
+    @Override
+    public void setExperimentType(ExperimentProfileType type) {
+        experimentType = type;
+    }
+
+
     private void updateFileHashes(List<DataFileRow> dataFiles) {
         fileHashes.clear();
         for (DataFileRow row : dataFiles) {
@@ -160,7 +168,11 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<ColumnType> getAllowedColumnTypes() {
         List<ColumnType> types = new ArrayList<ColumnType>();
         for (FileType type : FileType.values()) {
-            if (!type.isFGEM() || null == columns.get(type) || 0 == columns.get(type).size()) {
+            if (ExperimentProfileType.SEQUENCING == experimentType) {
+                if (!type.isFGEM() || type.isProcessed() && (null == columns.get(type) || 0 == columns.get(type).size())) {
+                    types.add(new ColumnType(type));
+                }
+            } else if (null == columns.get(type) || 0 == columns.get(type).size()) {
                 types.add(new ColumnType(type));
             }
         }
