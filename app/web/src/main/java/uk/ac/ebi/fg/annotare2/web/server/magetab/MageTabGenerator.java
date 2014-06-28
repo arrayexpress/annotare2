@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
-import com.google.common.base.Function;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -26,14 +25,10 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Ordering.natural;
 import static java.util.Collections.emptyMap;
 import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
@@ -43,9 +38,9 @@ import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
  */
 public class MageTabGenerator {
 
-    public static String replaceAllAssayNameValues(String str) {
-        return AssayNameValue.replaceAll(str);
-    }
+    //public static String replaceAllAssayNameValues(String str) {
+    //    return AssayNameValue.replaceAll(str);
+    //}
 
     public static String replaceAllUnassignedValues(String str) {
         return UnassignedValue.replaceAll(str);
@@ -66,6 +61,7 @@ public class MageTabGenerator {
         }
     }
 
+    /*
     public static class AssayNameValue {
         private static final String TEMPLATE = "__ASSAY_NAME__([FILE_NAME])__@[ID]";
         private static final Pattern PATTERN = Pattern.compile(
@@ -90,6 +86,7 @@ public class MageTabGenerator {
             return sb.toString();
         }
     }
+    */
 
     private final ExperimentProfile exp;
 
@@ -97,7 +94,7 @@ public class MageTabGenerator {
     private final Set<TermSource> usedTermSources = new HashSet<TermSource>();
 
     private UnassignedValue unassignedValue;
-    private AssayNameValue assayNameValue;
+    //private AssayNameValue assayNameValue;
 
     public MageTabGenerator(ExperimentProfile exp) {
         this.exp = exp;
@@ -107,7 +104,7 @@ public class MageTabGenerator {
         nodeCache.clear();
 
         unassignedValue = new UnassignedValue();
-        assayNameValue = new AssayNameValue();
+        //assayNameValue = new AssayNameValue();
 
         MAGETABInvestigation inv = new MAGETABInvestigation();
 
@@ -229,14 +226,13 @@ public class MageTabGenerator {
         }
 
         Map<Integer, SDRFNode> extractLayer = generateExtractNodes(sourceLayer);
-        Map<String, SDRFNode> assayLayer;
         if (exp.getType().isMicroarray()) {
             Map<String, SDRFNode> labeledExtractLayer = generateLabeledExtractNodes(extractLayer);
-            assayLayer = generateMicroarrayAssayNodes(labeledExtractLayer);
+            generateMicroarrayScanAssayAndDataFileNodes(sdrf, labeledExtractLayer);
         } else {
-            assayLayer = generateSeqAssayNodes(extractLayer);
+            generateSeqAssayNodesAndDataFileNodes(extractLayer);
         }
-        generateDataFileNodes(assayLayer);
+        //generateDataFileNodes(assayLayer);
     }
 
     private Map<Integer, SDRFNode> generateSourceNodes() {
@@ -292,27 +288,19 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private Map<String, SDRFNode> generateMicroarrayAssayNodes(Map<String, SDRFNode> labeledExtractLayer) {
+    private Map<String, SDRFNode> generateMicroarrayScanAssayAndDataFileNodes(SDRF sdrf, Map<String, SDRFNode> labeledExtractLayer) {
         // no labeled extracts supplied? no assays can be generated
         if (labeledExtractLayer.isEmpty()) {
             return emptyMap();
         }
 
         // no files uploaded? no assays can be generated
-        if (exp.getFileColumns().isEmpty()) {
+        Collection<FileColumn> fileColumns = exp.getFileColumns();
+        if (fileColumns.isEmpty()) {
             return emptyMap();
         }
 
-        Collection<FileColumn> fileColumns = exp.getFileColumns(FileType.RAW_FILE);
-        if (fileColumns.isEmpty()) {
-            fileColumns = exp.getFileColumns(FileType.PROCESSED_FILE);
-        }
-        //if (fileColumns.isEmpty()) {
-        //    fileColumns =
-        //}
-
-
-        Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
+        Map<String, SDRFNode> assayLayer = new LinkedHashMap<String, SDRFNode>();
         int fakeId = -1;
         for (String labeledExtractId : labeledExtractLayer.keySet()) {
             LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
@@ -322,18 +310,21 @@ public class MageTabGenerator {
 
             FileRef file = (labeledExtract == null) ? null : fileColumns.iterator().next().getFileRef(labeledExtract.getId());
             if (null != file) {
-                layer.put(labeledExtract.getId(),
-                        createAssayNode(labeledExtract,
-                                assayNameValue.next(removeExtension(file.getName())),
+                assayLayer.put(
+                        labeledExtract.getId(),
+                        createAssayNode(
+                                removeExtension(file.getName()),
                                 labeledExtractNode,
-                                protocols
+                                true,
+                                protocols,
+                                sdrf
                         )
                 );
             } else {
-                layer.put("" + (fakeId--), createAssayNode(null, "", labeledExtractNode, protocols));
+                assayLayer.put("" + (fakeId--), createAssayNode("", labeledExtractNode, false, protocols, null));
             }
         }
-        return layer;
+        return assayLayer;
     }
 
     //private FileColumn getFirstFileColumn() {
@@ -347,7 +338,7 @@ public class MageTabGenerator {
         return (null != fileName ? fileName.replaceAll("^(.+)[.][^.]*$", "$1") : null);
     }
 
-    private Map<String, SDRFNode> generateSeqAssayNodes(Map<Integer, SDRFNode> extractLayer) {
+    private Map<String, SDRFNode> generateSeqAssayNodesAndDataFileNodes(Map<Integer, SDRFNode> extractLayer) {
         if (extractLayer.isEmpty()) {
             return emptyMap();
         }
@@ -359,12 +350,12 @@ public class MageTabGenerator {
             SDRFNode extractNode = extractLayer.get(extractId);
             Collection<Protocol> protocols = exp.getProtocols(extract);
             if (null == extract) {
-                layer.put("" + (fakeId--), createAssayNode(null, "", extractNode, protocols));
+                layer.put("" + (fakeId--), createAssayNode("", extractNode, false, protocols, null));
             } else {
 
                 layer.put(
                         "" + extract.getId(),
-                        createAssayNode(new LabeledExtract(extract), extract.getName(), extractNode, protocols)
+                        createAssayNode(extract.getName(), extractNode, true, protocols, null)
                 );
             }
         }
@@ -470,16 +461,18 @@ public class MageTabGenerator {
         return labeledExtractNode;
     }
 
-    private AssayNode createAssayNode(LabeledExtract labeledExtract, String assayName, SDRFNode prevNode, Collection<Protocol> protocols) {
+    private AssayNode createAssayNode(String assayName, SDRFNode prevNode, boolean isRealNode, Collection<Protocol> protocols, SDRF sdrf) {
         AssayNode assayNode;
-        if (labeledExtract == null) {
-            assayNode = createFakeNode(AssayNode.class);
-        } else {
+        if (isRealNode) {
             assayNode = getNode(AssayNode.class, assayName);
             if (assayNode != null) {
+                addFactorValues(assayNode, prevNode, sdrf);
+                connect(prevNode, assayNode, protocols);
                 return assayNode;
             }
             assayNode = createNode(AssayNode.class, assayName);
+        } else {
+            assayNode = createFakeNode(AssayNode.class);
         }
 
         assayNode.technologyType = createTechnologyTypeAttribute();
@@ -489,12 +482,12 @@ public class MageTabGenerator {
             assayNode.arrayDesigns.add(arrayDesignAttribute);
         }
 
-        addFactorValues(assayNode, prevNode);
+        addFactorValues(assayNode, prevNode, sdrf);
         connect(prevNode, assayNode, protocols);
         return assayNode;
     }
 
-    private void addFactorValues(AssayNode assayNode, SDRFNode prevNode) {
+    private void addFactorValues(AssayNode assayNode, SDRFNode prevNode, SDRF sdrf) {
         Collection<Sample> samples = findSamples(prevNode);
         if (samples.size() > 1) {
             throw new IllegalStateException("Too many samples");
@@ -511,6 +504,10 @@ public class MageTabGenerator {
                 //TODO if attr value is an EFO Term then fill in accession and source REF
                 //attr.termAccessionNumber = term.getAccession();
                 //attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
+                if (prevNode instanceof LabeledExtractNode && null != sdrf) {
+                    String label = ((LabeledExtractNode)prevNode).label.getAttributeValue();
+                    attr.scannerChannel = sdrf.getChannelNumber(label);
+                }
                 assayNode.factorValues.add(attr);
             }
         }
@@ -591,7 +588,7 @@ public class MageTabGenerator {
     }
 
     private void createFileNodes(LabeledExtract labeledExtract, SDRFNode assayNode) {
-        Collection<FileColumn> fileColumns = sortFileColumns(exp.getFileColumns());
+        Collection<FileColumn> fileColumns = exp.getFileColumns();
 
         List<SDRFNode> prev = new ArrayList<SDRFNode>();
         List<SDRFNode> next = new ArrayList<SDRFNode>();
@@ -653,16 +650,6 @@ public class MageTabGenerator {
     private TermSource ensureTermSource(TermSource termSource) {
         usedTermSources.add(termSource);
         return termSource;
-    }
-
-    private Collection<FileColumn> sortFileColumns(Collection<FileColumn> columns) {
-        return natural().onResultOf(new Function<FileColumn, Integer>() {
-            @Nullable
-            @Override
-            public Integer apply(@Nullable FileColumn input) {
-                return (null != input && null != input.getType()) ? input.getType().ordinal() : null;
-            }
-        }).immutableSortedCopy(columns);
     }
 
     private MaterialTypeAttribute extractMaterialTypeAttribute(Sample sample) {

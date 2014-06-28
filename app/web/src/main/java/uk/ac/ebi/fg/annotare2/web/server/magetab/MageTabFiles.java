@@ -35,7 +35,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static com.google.common.io.Closeables.close;
-import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllAssayNameValues;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllUnassignedValues;
 
 /**
@@ -140,7 +139,7 @@ public class MageTabFiles {
     private static void sanitize(File file, boolean everything) {
         try {
             String str = Files.toString(file, Charsets.UTF_8);
-            str = replaceAllAssayNameValues(str);
+            //str = replaceAllAssayNameValues(str);
 
             if (everything) {
                 str = replaceAllUnassignedValues(str);
