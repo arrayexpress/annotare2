@@ -223,6 +223,17 @@ public class MageTabGenerator {
         return (T) nodeCache.get(nodeId(clazz, name));
     }
 
+    private <T extends SDRFNode> T getOrCreateNode(Class<T> clazz, String nodeName) {
+        if (isNullOrEmpty(nodeName)) {
+            return createFakeNode(clazz);
+        }
+        T node = getNode(clazz, nodeName);
+        if (null == node) {
+            node = createNode(clazz, nodeName);
+        }
+        return node;
+    }
+
     private void generateSdrf(SDRF sdrf) throws ParseException {
         Map<Integer, SDRFNode> sourceLayer = generateSourceNodes();
         for (SDRFNode node : sourceLayer.values()) {
@@ -236,7 +247,6 @@ public class MageTabGenerator {
         } else {
             generateSeqAssayNodesAndDataFileNodes(extractLayer);
         }
-        //generateDataFileNodes(assayLayer);
     }
 
     private Map<Integer, SDRFNode> generateSourceNodes() {
@@ -347,7 +357,7 @@ public class MageTabGenerator {
 
                 // for the first column check if there are array scanning protocol(s) defined
                 // add scan object if necessary
-                if (fileColumn.equals(fileColumns.iterator().next())) {
+                if (isFirstColumn) {
                     boolean isScanProtocolDefined = Iterables.any(protocols, new Predicate<Protocol>() {
                         @Override
                         public boolean apply(@Nullable Protocol protocol) {
@@ -369,38 +379,43 @@ public class MageTabGenerator {
         return (null != fileName ? fileName.replaceAll("^(.+)[.][^.]*$", "$1") : null);
     }
 
-    private Map<String, SDRFNode> generateSeqAssayNodesAndDataFileNodes(Map<Integer, SDRFNode> extractLayer) {
+    private void generateSeqAssayNodesAndDataFileNodes(Map<Integer, SDRFNode> extractLayer) {
+        // no extracts supplied? no assays can be generated
         if (extractLayer.isEmpty()) {
-            return emptyMap();
-        }
-
-        Map<String, SDRFNode> layer = new LinkedHashMap<String, SDRFNode>();
-        int fakeId = -1;
-        for (Integer extractId : extractLayer.keySet()) {
-            Extract extract = exp.getExtract(extractId);
-            SDRFNode extractNode = extractLayer.get(extractId);
-            Collection<Protocol> protocols = exp.getProtocols(extract);
-            if (null == extract) {
-                layer.put("" + (fakeId--), createAssayNode(null, extractNode, protocols, null));
-            } else {
-
-                layer.put(
-                        "" + extract.getId(),
-                        createAssayNode(extract.getName(), extractNode, protocols, null)
-                );
-            }
-        }
-        return layer;
-    }
-
-    private void generateDataFileNodes(Map<String, SDRFNode> assayLayer) {
-        if (assayLayer.isEmpty() || exp.getFileColumns().isEmpty()) {
             return;
         }
-        for (String labeledExtractId : assayLayer.keySet()) {
-            LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
-            SDRFNode assayNode = assayLayer.get(labeledExtractId);
-            createFileNodes(labeledExtract, assayNode);
+
+        FileType[] fileTypesInOrder = new FileType[] {FileType.RAW_FILE, FileType.PROCESSED_FILE, FileType.PROCESSED_MATRIX_FILE};
+        MultiSets<Integer, SDRFNode> nextLayer = new MultiSets<Integer, SDRFNode>();
+
+        for (Integer extractId : extractLayer.keySet()) {
+            Extract extract = exp.getExtract(extractId);
+
+            SDRFNode extractNode = extractLayer.get(extractId);
+            Collection<Protocol> eProtocols = exp.getProtocols(extract);
+
+            String assayName = extractNode.getNodeName();
+            SDRFNode assayNode = createAssayNode(assayName, extractNode, eProtocols, null);
+            nextLayer.put(extractId, assayNode);
+
+            for (FileType fileType : fileTypesInOrder) {
+                Set<SDRFNode> sourceNodes = nextLayer.get(extractId);
+                nextLayer.remove(extractId);
+                for (FileColumn fileColumn : exp.getFileColumns(fileType)) {
+                    FileRef fileRef = fileColumn.getFileRef(String.valueOf(extractId));
+
+                    Collection<Protocol> protocols = null != fileRef ?
+                            exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE) :
+                            Collections.<Protocol>emptyList();
+
+                    SDRFNode fileNode = createFileNode(sourceNodes, fileColumn.getType(), fileRef, protocols);
+                    nextLayer.put(extractId, fileNode);
+                    if (!fileType.isRaw()) {
+                        sourceNodes = nextLayer.get(extractId);
+                        nextLayer.remove(extractId);
+                    }
+                }
+            }
         }
     }
 
@@ -419,9 +434,6 @@ public class MageTabGenerator {
                         attr.setAttributeValue(protocol.getPerformer());
                         protocolNode.performer = attr;
                     }
-                //} else {
-                //    protocolNode = createFakeNode(ProtocolApplicationNode.class);
-                //    protocolNode.protocol = "";
                 }
             }
             if (null != protocolNode) {
@@ -615,6 +627,13 @@ public class MageTabGenerator {
     }
 
     private SDRFNode createFileNode(SDRFNode prevNode, FileType fileType, FileRef fileRef, Collection<Protocol> protocols) {
+        Set<SDRFNode> prevNodes = new HashSet<SDRFNode>();
+        prevNodes.add(prevNode);
+
+        return createFileNode(prevNodes, fileType, fileRef, protocols);
+    }
+
+    private SDRFNode createFileNode(Set<SDRFNode> prevNodes, FileType fileType, FileRef fileRef, Collection<Protocol> protocols) {
         SDRFNode fileNode;
         String fileName = null != fileRef ? fileRef.getName() : null;
 
@@ -639,68 +658,10 @@ public class MageTabGenerator {
             default:
                 throw new IllegalStateException("Unsupported file type: " + fileType);
         }
-        connect(prevNode, fileNode, protocols);
+        for (SDRFNode prevNode : prevNodes) {
+            connect(prevNode, fileNode, protocols);
+        }
         return fileNode;
-    }
-
-    private void createFileNodes(LabeledExtract labeledExtract, SDRFNode assayNode) {
-        Collection<FileColumn> fileColumns = exp.getFileColumns();
-
-        List<SDRFNode> prev = new ArrayList<SDRFNode>();
-        List<SDRFNode> next = new ArrayList<SDRFNode>();
-        FileType prevType = null;
-        for (FileColumn fileColumn : fileColumns) {
-            FileType type = fileColumn.getType();
-            FileRef file = (null != labeledExtract) ? fileColumn.getFileRef(labeledExtract.getId()) : null;
-            String fileName = (null != file) ? file.getName() : null;
-            SDRFNode current;
-            switch (type) {
-                case RAW_FILE:
-                    current = getOrCreateNode(ArrayDataNode.class, fileName);
-                    break;
-                case RAW_MATRIX_FILE:
-                    current = getOrCreateNode(ArrayDataMatrixNode.class, fileName);
-                    break;
-                case PROCESSED_FILE:
-                    current = getOrCreateNode(DerivedArrayDataNode.class, fileName);
-                    break;
-                case PROCESSED_MATRIX_FILE:
-                    current = getOrCreateNode(DerivedArrayDataMatrixNode.class, fileName);
-                    break;
-                default:
-                    throw new IllegalStateException("Unsupported file type: " + type);
-            }
-            if (FileType.RAW_FILE == type && exp.getType().isSequencing()) {
-                ((ArrayDataNode)current).comments.put("MD5", Arrays.asList((null != file) ? file.getHash() : null));
-            }
-            if (type.isRaw() && (prevType == null || prevType == type)) {
-                // always connect raw data files to assays
-                connect(assayNode, current, exp.getProtocolsByType(ProtocolSubjectType.ASSAY));
-                prev.add(current);
-            } else {
-                if (prev.isEmpty()) {
-                    // no raw data files are defined
-                    prev.add(assayNode);
-                }
-                for (SDRFNode prevNode : prev) {
-                    connect(prevNode, current, exp.getProtocolsByType(ProtocolSubjectType.RAW_FILE));
-                }
-                next.add(current);
-                prev = next;
-            }
-            prevType = type;
-        }
-    }
-
-    private <T extends SDRFNode> T getOrCreateNode(Class<T> clazz, String nodeName) {
-        if (isNullOrEmpty(nodeName)) {
-            return createFakeNode(clazz);
-        }
-        T node = getNode(clazz, nodeName);
-        if (null == node) {
-            node = createNode(clazz, nodeName);
-        }
-        return node;
     }
 
     private TermSource ensureTermSource(TermSource termSource) {
