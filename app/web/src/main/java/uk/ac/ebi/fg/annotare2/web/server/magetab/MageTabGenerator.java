@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -25,11 +27,15 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Collections.emptyMap;
+import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 
@@ -38,22 +44,14 @@ import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
  */
 public class MageTabGenerator {
 
-    //public static String replaceAllAssayNameValues(String str) {
-    //    return AssayNameValue.replaceAll(str);
-    //}
-
-    public static String replaceAllUnassignedValues(String str) {
-        return UnassignedValue.replaceAll(str);
-    }
-
     public static class UnassignedValue {
-        private static final String TEMPLATE = "__UNASSIGNED__@[ID]";
-        private static final String PATTERN = TEMPLATE.replace("[ID]", "\\d+");
+        private static final String TEMPLATE = "__UNASSIGNED__@[SEQ]";
+        private static final String PATTERN = TEMPLATE.replace("[SEQ]", "\\d+");
 
-        private int id = 1;
+        private int seq = 1;
 
         public String next() {
-            return TEMPLATE.replace("[ID]", Integer.toString(id++));
+            return TEMPLATE.replace("[SEQ]", Integer.toString(seq++));
         }
 
         public static String replaceAll(String string) {
@@ -61,32 +59,38 @@ public class MageTabGenerator {
         }
     }
 
-    /*
-    public static class AssayNameValue {
-        private static final String TEMPLATE = "__ASSAY_NAME__([FILE_NAME])__@[ID]";
+    public static String restoreAllUnassignedValues(String str) {
+        return UnassignedValue.replaceAll(str);
+    }
+
+    public static class UniqueNameValue {
+        private static final String TEMPLATE = "__UNIQUE_NAME__([ORIGINAL_NAME])__@[SEQ]";
         private static final Pattern PATTERN = Pattern.compile(
-                TEMPLATE.replace("([FILE_NAME])", "\\((.*)\\)")
-                        .replace("[ID]", "\\d+")
+                TEMPLATE.replace("([ORIGINAL_NAME])", "\\((.*)\\)")
+                        .replace("[SEQ]", "\\d+")
         );
 
-        private int id = 1;
+        private int seq = 1;
 
-        public String next(String fileName) {
-            return TEMPLATE.replace("[ID]", Integer.toString(id++))
-                    .replace("[FILE_NAME]", fileName);
+        public String next(String name) {
+            return TEMPLATE.replace("[SEQ]", Integer.toString(seq++))
+                    .replace("[ORIGINAL_NAME]", name);
         }
 
         public static String replaceAll(String string) {
             Matcher matcher = PATTERN.matcher(string);
             StringBuffer sb = new StringBuffer();
             while (matcher.find()) {
-                matcher.appendReplacement(sb, matcher.group(1));
+                matcher.appendReplacement(sb, matcher.group(1).replaceAll("([\\\\$])", "\\\\$1"));
             }
             matcher.appendTail(sb);
             return sb.toString();
         }
     }
-    */
+
+    public static String restoreOriginalNameValues(String str) {
+        return UniqueNameValue.replaceAll(str);
+    }
 
     private final ExperimentProfile exp;
 
@@ -94,7 +98,7 @@ public class MageTabGenerator {
     private final Set<TermSource> usedTermSources = new HashSet<TermSource>();
 
     private UnassignedValue unassignedValue;
-    //private AssayNameValue assayNameValue;
+    private UniqueNameValue uniqueNameValue;
 
     public MageTabGenerator(ExperimentProfile exp) {
         this.exp = exp;
@@ -104,7 +108,7 @@ public class MageTabGenerator {
         nodeCache.clear();
 
         unassignedValue = new UnassignedValue();
-        //assayNameValue = new AssayNameValue();
+        uniqueNameValue = new UniqueNameValue();
 
         MAGETABInvestigation inv = new MAGETABInvestigation();
 
@@ -228,7 +232,7 @@ public class MageTabGenerator {
         Map<Integer, SDRFNode> extractLayer = generateExtractNodes(sourceLayer);
         if (exp.getType().isMicroarray()) {
             Map<String, SDRFNode> labeledExtractLayer = generateLabeledExtractNodes(extractLayer);
-            generateMicroarrayScanAssayAndDataFileNodes(sdrf, labeledExtractLayer);
+            generateMicroarrayAssayScanAndDataFileNodes(sdrf, labeledExtractLayer);
         } else {
             generateSeqAssayNodesAndDataFileNodes(extractLayer);
         }
@@ -288,51 +292,78 @@ public class MageTabGenerator {
         return layer;
     }
 
-    private Map<String, SDRFNode> generateMicroarrayScanAssayAndDataFileNodes(SDRF sdrf, Map<String, SDRFNode> labeledExtractLayer) {
+    private void generateMicroarrayAssayScanAndDataFileNodes(SDRF sdrf, Map<String, SDRFNode> labeledExtractLayer) {
         // no labeled extracts supplied? no assays can be generated
         if (labeledExtractLayer.isEmpty()) {
-            return emptyMap();
+            return;
         }
 
         // no files uploaded? no assays can be generated
         Collection<FileColumn> fileColumns = exp.getFileColumns();
         if (fileColumns.isEmpty()) {
-            return emptyMap();
+            return;
         }
 
-        Map<String, SDRFNode> assayLayer = new LinkedHashMap<String, SDRFNode>();
-        int fakeId = -1;
-        for (String labeledExtractId : labeledExtractLayer.keySet()) {
-            LabeledExtract labeledExtract = exp.getLabeledExtract(labeledExtractId);
-
-            SDRFNode labeledExtractNode = labeledExtractLayer.get(labeledExtractId);
-            Collection<Protocol> protocols = exp.getProtocols(labeledExtract);
-
-            FileRef file = (labeledExtract == null) ? null : fileColumns.iterator().next().getFileRef(labeledExtract.getId());
-            if (null != file) {
-                assayLayer.put(
-                        labeledExtract.getId(),
-                        createAssayNode(
-                                removeExtension(file.getName()),
-                                labeledExtractNode,
-                                true,
-                                protocols,
-                                sdrf
-                        )
-                );
-            } else {
-                assayLayer.put("" + (fakeId--), createAssayNode("", labeledExtractNode, false, protocols, null));
+        // create assay name per labeledExtractId map
+        Map<String, String> leIds2assayName = new HashMap<String, String>();
+        for (FileColumn fileColumn : fileColumns) {
+            if (!fileColumn.getType().isFGEM()) {
+                for (String leId : labeledExtractLayer.keySet()) {
+                    FileRef fileRef = fileColumn.getFileRef(leId);
+                    leIds2assayName.put(leId, null != fileRef ? removeExtension(fileRef.getName()) : null);
+                }
+                break;
             }
         }
-        return assayLayer;
-    }
 
-    //private FileColumn getFirstFileColumn() {
-    //    Collection<FileColumn> columns = sortFileColumns(
-    //            exp.getFileColumns()
-    //    );
-    //    return columns.isEmpty() ? null : columns.iterator().next();
-    //}
+        Map<String, SDRFNode> nextLayer = new LinkedHashMap<String, SDRFNode>();
+
+        for (String leId : labeledExtractLayer.keySet()) {
+            LabeledExtract labeledExtract = exp.getLabeledExtract(leId);
+
+            SDRFNode leNode = labeledExtractLayer.get(leId);
+            Collection<Protocol> leProtocols = exp.getProtocols(labeledExtract);
+
+            String assayName = leNode.getNodeName();
+            if (!leIds2assayName.isEmpty()) {
+                assayName = leIds2assayName.containsKey(leId) ? leIds2assayName.get(leId) : null;
+            }
+            SDRFNode assayNode = createAssayNode(assayName, leNode, leProtocols, sdrf);
+            nextLayer.put(leId, assayNode);
+
+            for (FileColumn fileColumn : fileColumns) {
+                FileRef fileRef = fileColumn.getFileRef(leId);
+                boolean isFirstColumn = fileColumn.equals(fileColumns.iterator().next());
+
+                List<ProtocolSubjectType> protocolSubjectTypes = new ArrayList<ProtocolSubjectType>();
+                if (isFirstColumn) {
+                    protocolSubjectTypes.add(FILE);
+                }
+                protocolSubjectTypes.add(fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE);
+
+                Collection<Protocol> protocols = null != fileRef ?
+                        exp.getProtocols(fileRef, protocolSubjectTypes.toArray(new ProtocolSubjectType[protocolSubjectTypes.size()])) :
+                        Collections.<Protocol>emptyList();
+
+                // for the first column check if there are array scanning protocol(s) defined
+                // add scan object if necessary
+                if (fileColumn.equals(fileColumns.iterator().next())) {
+                    boolean isScanProtocolDefined = Iterables.any(protocols, new Predicate<Protocol>() {
+                        @Override
+                        public boolean apply(@Nullable Protocol protocol) {
+                            return null != protocol && "EFO_0003814".equals(protocol.getType().getAccession());
+                        }
+                    });
+
+                    if (isScanProtocolDefined) {
+                        nextLayer.put(leId, createScanNode(nextLayer.get(leId), Collections.<Protocol>emptyList()));
+                    }
+                }
+                SDRFNode fileNode = createFileNode(nextLayer.get(leId), fileColumn.getType(), fileRef, protocols);
+                nextLayer.put(leId, fileNode);
+            }
+        }
+    }
 
     private String removeExtension(String fileName) {
         return (null != fileName ? fileName.replaceAll("^(.+)[.][^.]*$", "$1") : null);
@@ -350,12 +381,12 @@ public class MageTabGenerator {
             SDRFNode extractNode = extractLayer.get(extractId);
             Collection<Protocol> protocols = exp.getProtocols(extract);
             if (null == extract) {
-                layer.put("" + (fakeId--), createAssayNode("", extractNode, false, protocols, null));
+                layer.put("" + (fakeId--), createAssayNode(null, extractNode, protocols, null));
             } else {
 
                 layer.put(
                         "" + extract.getId(),
-                        createAssayNode(extract.getName(), extractNode, true, protocols, null)
+                        createAssayNode(extract.getName(), extractNode, protocols, null)
                 );
             }
         }
@@ -379,7 +410,7 @@ public class MageTabGenerator {
             // protocol node name must be unique
             String nodeName = prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
             ProtocolApplicationNode protocolNode = getNode(ProtocolApplicationNode.class, nodeName);
-            if (protocolNode == null) {
+            if (null == protocolNode) {
                 if (protocol.isAssigned()) {
                     protocolNode = createNode(ProtocolApplicationNode.class, nodeName);
                     protocolNode.protocol = protocol.getName();
@@ -388,13 +419,15 @@ public class MageTabGenerator {
                         attr.setAttributeValue(protocol.getPerformer());
                         protocolNode.performer = attr;
                     }
-                } else {
-                    protocolNode = createFakeNode(ProtocolApplicationNode.class);
-                    protocolNode.protocol = "";
+                //} else {
+                //    protocolNode = createFakeNode(ProtocolApplicationNode.class);
+                //    protocolNode.protocol = "";
                 }
             }
-            connect(prev, protocolNode);
-            prev = protocolNode;
+            if (null != protocolNode) {
+                connect(prev, protocolNode);
+                prev = protocolNode;
+            }
         }
         connect(prev, destination);
     }
@@ -438,6 +471,21 @@ public class MageTabGenerator {
         return extractNode;
     }
 
+    private static String getSdrfFriendlyName(ExtractAttribute attr) {
+        switch (attr) {
+            case LIBRARY_LAYOUT:
+                return "LIBRARY_LAYOUT";
+            case LIBRARY_SELECTION:
+                return "LIBRARY_SELECTION";
+            case LIBRARY_SOURCE:
+                return "LIBRARY_SOURCE";
+            case LIBRARY_STRATEGY:
+                return "LIBRARY_STRATEGY";
+            default:
+                return attr.getTitle();
+        }
+    }
+
     private LabeledExtractNode createLabeledExtractNode(LabeledExtract labeledExtract, SDRFNode extractNode, Collection<Protocol> protocols) {
         LabeledExtractNode labeledExtractNode;
         String label;
@@ -461,9 +509,9 @@ public class MageTabGenerator {
         return labeledExtractNode;
     }
 
-    private AssayNode createAssayNode(String assayName, SDRFNode prevNode, boolean isRealNode, Collection<Protocol> protocols, SDRF sdrf) {
+    private AssayNode createAssayNode(String assayName, SDRFNode prevNode, Collection<Protocol> protocols, SDRF sdrf) {
         AssayNode assayNode;
-        if (isRealNode) {
+        if (!isNullOrEmpty(assayName)) {
             assayNode = getNode(AssayNode.class, assayName);
             if (assayNode != null) {
                 addFactorValues(assayNode, prevNode, sdrf);
@@ -556,35 +604,43 @@ public class MageTabGenerator {
         return samples;
     }
 
-    private ScanNode createScanNode(Extract extract, SDRFNode assayNode) {
-        ScanNode scanNode;
-        if (extract == null) {
-            scanNode = createFakeNode(ScanNode.class);
-        } else {
-            scanNode = getNode(ScanNode.class, extract.getName());
-            if (scanNode != null) {
-                return scanNode;
-            }
-            scanNode = createNode(ScanNode.class, extract.getName());
+    private ScanNode createScanNode(SDRFNode assayNode, Collection<Protocol> protocols) {
+        ScanNode scanNode = getOrCreateNode(ScanNode.class, assayNode.getNodeName());
+        if (null == scanNode) {
+            scanNode = createNode(ScanNode.class, assayNode.getNodeName());
         }
 
-        connect(assayNode, scanNode, Collections.<Protocol>emptyList());
+        connect(assayNode, scanNode, protocols);
         return scanNode;
     }
 
-    private static String getSdrfFriendlyName(ExtractAttribute attr) {
-        switch (attr) {
-            case LIBRARY_LAYOUT:
-                return "LIBRARY_LAYOUT";
-            case LIBRARY_SELECTION:
-                return "LIBRARY_SELECTION";
-            case LIBRARY_SOURCE:
-                return "LIBRARY_SOURCE";
-            case LIBRARY_STRATEGY:
-                return "LIBRARY_STRATEGY";
+    private SDRFNode createFileNode(SDRFNode prevNode, FileType fileType, FileRef fileRef, Collection<Protocol> protocols) {
+        SDRFNode fileNode;
+        String fileName = null != fileRef ? fileRef.getName() : null;
+
+        switch (fileType) {
+            case RAW_FILE:
+                ArrayDataNode rawFileNode = getOrCreateNode(ArrayDataNode.class, fileName);
+
+                if (exp.getType().isSequencing() && rawFileNode.comments.isEmpty()) {
+                    rawFileNode.comments.put("MD5", Arrays.asList(null != fileRef ? fileRef.getHash() : null));
+                }
+                fileNode = rawFileNode;
+                break;
+            case RAW_MATRIX_FILE:
+                fileNode = getOrCreateNode(ArrayDataMatrixNode.class, uniqueNameValue.next(fileName));
+                break;
+            case PROCESSED_FILE:
+                fileNode = getOrCreateNode(DerivedArrayDataNode.class, fileName);
+                break;
+            case PROCESSED_MATRIX_FILE:
+                fileNode = getOrCreateNode(DerivedArrayDataMatrixNode.class, fileName);
+                break;
             default:
-                return attr.getTitle();
+                throw new IllegalStateException("Unsupported file type: " + fileType);
         }
+        connect(prevNode, fileNode, protocols);
+        return fileNode;
     }
 
     private void createFileNodes(LabeledExtract labeledExtract, SDRFNode assayNode) {
@@ -600,16 +656,16 @@ public class MageTabGenerator {
             SDRFNode current;
             switch (type) {
                 case RAW_FILE:
-                    current = createDataFileNode(fileName, ArrayDataNode.class);
+                    current = getOrCreateNode(ArrayDataNode.class, fileName);
                     break;
                 case RAW_MATRIX_FILE:
-                    current = createDataFileNode(fileName, ArrayDataMatrixNode.class);
+                    current = getOrCreateNode(ArrayDataMatrixNode.class, fileName);
                     break;
                 case PROCESSED_FILE:
-                    current = createDataFileNode(fileName, DerivedArrayDataNode.class);
+                    current = getOrCreateNode(DerivedArrayDataNode.class, fileName);
                     break;
                 case PROCESSED_MATRIX_FILE:
-                    current = createDataFileNode(fileName, DerivedArrayDataMatrixNode.class);
+                    current = getOrCreateNode(DerivedArrayDataMatrixNode.class, fileName);
                     break;
                 default:
                     throw new IllegalStateException("Unsupported file type: " + type);
@@ -636,15 +692,15 @@ public class MageTabGenerator {
         }
     }
 
-    private <T extends SDRFNode> SDRFNode createDataFileNode(String fileName, Class<T> clazz) {
-        if (fileName == null) {
+    private <T extends SDRFNode> T getOrCreateNode(Class<T> clazz, String nodeName) {
+        if (isNullOrEmpty(nodeName)) {
             return createFakeNode(clazz);
         }
-        T node = getNode(clazz, fileName);
-        if (node != null) {
-            return node;
+        T node = getNode(clazz, nodeName);
+        if (null == node) {
+            node = createNode(clazz, nodeName);
         }
-        return createNode(clazz, fileName);
+        return node;
     }
 
     private TermSource ensureTermSource(TermSource termSource) {

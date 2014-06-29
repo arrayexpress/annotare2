@@ -35,7 +35,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static com.google.common.io.Closeables.close;
-import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.replaceAllUnassignedValues;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.restoreAllUnassignedValues;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.restoreOriginalNameValues;
 
 /**
  * @author Olga Melnichuk
@@ -139,10 +140,10 @@ public class MageTabFiles {
     private static void sanitize(File file, boolean everything) {
         try {
             String str = Files.toString(file, Charsets.UTF_8);
-            //str = replaceAllAssayNameValues(str);
+            str = restoreOriginalNameValues(str);
 
             if (everything) {
-                str = replaceAllUnassignedValues(str);
+                str = restoreAllUnassignedValues(str);
             }
             Files.write(str, file, Charsets.UTF_8);
         } catch (IOException e) {

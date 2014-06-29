@@ -67,6 +67,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 import static com.google.common.collect.Ordering.natural;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.restoreOriginalNameValues;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
@@ -178,7 +179,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate();
         StringWriter out = new StringWriter();
         new SDRFGraphWriter(out).write(mageTab.SDRF);
-        String sdrf = out.toString();//  replaceAllAssayNameValues(out.toString());
+        String sdrf = restoreOriginalNameValues(out.toString());
         return new TsvParser().parse(new ByteArrayInputStream(sdrf.getBytes(Charsets.UTF_8)));
     }
 

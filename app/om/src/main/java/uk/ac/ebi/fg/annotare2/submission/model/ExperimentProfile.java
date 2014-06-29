@@ -555,7 +555,7 @@ public class ExperimentProfile implements Serializable {
         return protocols;
     }
 
-    public Set<Protocol> getProtocols(FileRef fileRef, ProtocolSubjectType subjectType) {
+    public Set<Protocol> getProtocols(FileRef fileRef, ProtocolSubjectType... subjectType) {
         Collection<Protocol> fileProtocols = getProtocolsByType(subjectType);
 
         Set<Protocol> protocols = newLinkedHashSet();
