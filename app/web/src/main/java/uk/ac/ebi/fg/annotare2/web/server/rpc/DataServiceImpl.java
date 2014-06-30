@@ -62,6 +62,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     @Inject
     public DataServiceImpl(ArrayExpressArrayDesignList arrayDesignList,
                            ArrayExpressExperimentTypeList experimentTypeList,
+                           ProtocolTypes protocolTypes,
                            AnnotareEfoService efoService,
                            AnnotareProperties properties,
                            EmailSender emailSender) {
@@ -70,7 +71,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
         this.experimentTypeList = experimentTypeList;
         this.efoService = efoService;
         this.properties = properties;
-        this.protocolTypes = ProtocolTypes.create();
+        this.protocolTypes = protocolTypes;
     }
 
     @Override
