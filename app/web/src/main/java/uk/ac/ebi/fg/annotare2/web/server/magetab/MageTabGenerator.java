@@ -16,8 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -27,7 +25,6 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -357,18 +354,18 @@ public class MageTabGenerator {
 
                 // for the first column check if there are array scanning protocol(s) defined
                 // add scan object if necessary
-                if (isFirstColumn) {
-                    boolean isScanProtocolDefined = Iterables.any(protocols, new Predicate<Protocol>() {
-                        @Override
-                        public boolean apply(@Nullable Protocol protocol) {
-                            return null != protocol && "EFO_0003814".equals(protocol.getType().getAccession());
-                        }
-                    });
-
-                    if (isScanProtocolDefined) {
-                        nextLayer.put(leId, createScanNode(nextLayer.get(leId), Collections.<Protocol>emptyList()));
-                    }
-                }
+                //if (isFirstColumn) {
+                //    boolean isScanProtocolDefined = Iterables.any(protocols, new Predicate<Protocol>() {
+                //        @Override
+                //        public boolean apply(@Nullable Protocol protocol) {
+                //            return null != protocol && "EFO_0003814".equals(protocol.getType().getAccession());
+                //        }
+                //    });
+                //
+                //    if (isScanProtocolDefined) {
+                //        nextLayer.put(leId, createScanNode(nextLayer.get(leId), Collections.<Protocol>emptyList()));
+                //    }
+                //}
                 SDRFNode fileNode = createFileNode(nextLayer.get(leId), fileColumn.getType(), fileRef, protocols);
                 nextLayer.put(leId, fileNode);
             }
