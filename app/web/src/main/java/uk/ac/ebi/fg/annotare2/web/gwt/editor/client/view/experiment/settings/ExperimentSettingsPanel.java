@@ -76,14 +76,14 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
             case ONE_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
-                                "<br/> array design: " + valueOrNone(settings.getArrayDesign()) +
-                                "<br/> label: " + aeArrayLinkOrNone(settings.getLabel()))));
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()) +
+                                "<br/> - label: " + valueOrNone(settings.getLabel()))));
                 changeLink.setVisible(true);
                 break;
             case TWO_COLOR_MICROARRAY:
                 summary.setHTML(templates.div(fromTrustedString(
                         settings.getExperimentType().getTitle() +
-                                "<br/> array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
+                                "<br/> - array design: " + aeArrayLinkOrNone(settings.getArrayDesign()))));
                 changeLink.setVisible(true);
                 break;
             default:
