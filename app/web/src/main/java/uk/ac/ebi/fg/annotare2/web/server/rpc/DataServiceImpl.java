@@ -80,7 +80,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
             @Nullable
             @Override
             public ArrayDesignRef apply(@Nullable ArrayExpress.ArrayDesign ad) {
-                return new ArrayDesignRef(ad.getName(), ad.getDesription());
+                return new ArrayDesignRef(ad.getAccession(), ad.getName());
             }
         }));
     }

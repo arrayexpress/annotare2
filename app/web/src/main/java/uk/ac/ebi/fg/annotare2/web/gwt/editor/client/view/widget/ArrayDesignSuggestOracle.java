@@ -23,6 +23,11 @@ public class ArrayDesignSuggestOracle extends SuggestOracle {
     }
 
     @Override
+    public boolean isDisplayStringHTML() {
+        return true;
+    }
+
+    @Override
     public void requestSuggestions(final Request request, final Callback callback) {
         suggestService.suggest(request.getQuery(), request.getLimit(), new AsyncCallback<List<ArrayDesignRef>>() {
             @Override
@@ -56,12 +61,12 @@ public class ArrayDesignSuggestOracle extends SuggestOracle {
 
         @Override
         public String getDisplayString() {
-            return ad.getDescription() + " : " + ad.getName();
+            return ad.getName() + " : <a href=\"http://www.ebi.ac.uk/arrayexpress/arrays/" + ad.getAccession() + "\" target=\"_blank\">" + ad.getAccession() + "</a>";
         }
 
         @Override
         public String getReplacementString() {
-            return ad.getName();
+            return ad.getAccession();
         }
     }
 }

@@ -27,7 +27,6 @@
         }
 
         .summary {
-            font-style: italic;
             margin-top: 20px;
             margin-left: 10px;
         }

@@ -23,22 +23,22 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class ArrayDesignRef implements IsSerializable {
 
+    private String accession;
     private String name;
-    private String description;
 
     public ArrayDesignRef() {
     }
 
-    public ArrayDesignRef(String name, String description) {
+    public ArrayDesignRef(String accession, String name) {
+        this.accession = accession;
         this.name = name;
-        this.description = description;
+    }
+
+    public String getAccession() {
+        return accession;
     }
 
     public String getName() {
         return name;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

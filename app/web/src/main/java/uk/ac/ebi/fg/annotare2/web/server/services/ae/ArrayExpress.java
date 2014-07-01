@@ -22,25 +22,25 @@ package uk.ac.ebi.fg.annotare2.web.server.services.ae;
 public abstract class ArrayExpress {
     public static class ArrayDesign {
         private final int id;
+        private final String accession;
         private final String name;
-        private final String desription;
 
-        public ArrayDesign(int id, String name, String desription) {
+        public ArrayDesign(int id, String accession, String name) {
             this.id = id;
+            this.accession = accession;
             this.name = name;
-            this.desription = desription;
         }
 
         public int getId() {
             return id;
         }
 
-        public String getName() {
-            return name;
+        public String getAccession() {
+            return accession;
         }
 
-        public String getDesription() {
-            return desription;
+        public String getName() {
+            return name;
         }
     }
 

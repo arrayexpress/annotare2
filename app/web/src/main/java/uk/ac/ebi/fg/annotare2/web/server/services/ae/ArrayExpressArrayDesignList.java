@@ -145,10 +145,10 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     ArrayExpress.ArrayDesign ad = createArrayDesign(line);
-                    if (null != ad && null != ad.getName()) {
-                        trie.put(ad.getName().toLowerCase(), ad);
-                        if (null != ad.getDesription()) {
-                            for (String word : ad.getDesription().toLowerCase().split("\\s+")) {
+                    if (null != ad && null != ad.getAccession()) {
+                        trie.put(ad.getAccession().toLowerCase(), ad);
+                        if (null != ad.getName()) {
+                            for (String word : ad.getName().toLowerCase().split("\\s+")) {
                                 trie.put(word + "___" + ad.getId(), ad);
                             }
                         }
@@ -202,12 +202,12 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
             return Ordering.natural().onResultOf(new Function<ArrayExpress.ArrayDesign, String>() {
                 @Override
                 public String apply(ArrayExpress.ArrayDesign ad) {
-                    if (null == ad || null == ad.getName()) {
+                    if (null == ad || null == ad.getAccession()) {
                         return null;
                     }
 
-                    String pipeline = ad.getName().substring(2, 6);
-                    String index = ad.getName().substring(7).replaceAll("^([0-9]+).*", "$1");
+                    String pipeline = ad.getAccession().substring(2, 6);
+                    String index = ad.getAccession().substring(7).replaceAll("^([0-9]+).*", "$1");
 
                     return ("GEOD".equalsIgnoreCase(pipeline) ? "ZZZZ" : pipeline) + String.format("%09d", Integer.valueOf(index));
                 }
