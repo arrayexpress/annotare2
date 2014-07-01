@@ -61,7 +61,7 @@ public class DataFileHttpUploadView extends Composite {
                     if (uploaded.size() == fileNames.size()) {
                         final List<HttpFileInfo> filesInfo = new ArrayList<HttpFileInfo>(uploaded.size());
                         for (int i = 0; i < uploaded.size(); ++i) {
-                            filesInfo.add(new HttpFileInfo(uploaded.get(i).getField(), fileNames.get(i)));
+                            filesInfo.add(new HttpFileInfo(uploaded.get(i).getField(), removeFakePath(fileNames.get(i))));
                         }
                         presenter.filesUploaded(filesInfo, new AsyncCallback<Map<Integer, String>>() {
                             @Override
@@ -123,5 +123,9 @@ public class DataFileHttpUploadView extends Composite {
 
     public interface Presenter {
         void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
+    }
+
+    private String removeFakePath(String fileName) {
+        return fileName.replaceAll("^.*\\\\[Ff][Aa][Kk][Ee][Pp][Aa][Tt][Hh]\\\\(.+)$", "$1");
     }
 }

@@ -20,8 +20,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Ordering;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
@@ -30,11 +32,8 @@ import uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.EnumSet.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ONE_COLOR_MICROARRAY;
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_COLOR_MICROARRAY;
@@ -48,13 +47,15 @@ public class ProtocolTypes {
 
     private static final String FILE = "/ProtocolTypes.json";
 
-    private List<Config> types = newArrayList();
+    private Map<String, Config> types = new HashMap<String, Config>();
 
     public ProtocolTypes() {
     }
 
     public ProtocolTypes(List<Config> types) {
-        this.types.addAll(types);
+        for (Config type : types) {
+            this.types.put(type.getId(), type);
+        }
     }
 
     public static ProtocolTypes create() {
@@ -77,12 +78,27 @@ public class ProtocolTypes {
     }
 
     public Collection<Config> filter(final ExperimentProfileType expType) {
-         return Collections2.filter(types, new Predicate<Config>() {
-             @Override
-             public boolean apply(@Nullable Config config) {
-                 return config != null && config.isUsedIn(expType);
-             }
-         });
+        return Ordering.natural().onResultOf(
+                new Function<Config, Integer>() {
+                    @Override
+                    public Integer apply(Config protocol) {
+                        return protocol.getPrecedence();
+                    }
+                }).sortedCopy(
+                Collections2.filter(types.values(), new Predicate<Config>() {
+                    @Override
+                    public boolean apply(@Nullable Config config) {
+                        return config != null && config.isUsedIn(expType);
+                    }
+                })
+        );
+    }
+
+    public Integer getPrecedence(String id) {
+        if (types.containsKey(id)) {
+            return types.get(id).getPrecedence();
+        }
+        return null;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

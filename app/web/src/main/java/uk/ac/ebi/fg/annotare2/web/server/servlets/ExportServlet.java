@@ -25,6 +25,7 @@ import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
@@ -56,6 +57,9 @@ public class ExportServlet extends HttpServlet {
 
     @Inject
     private SubmissionManager submissionManager;
+
+    @Inject
+    private ProtocolTypes protocolTypes;
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);

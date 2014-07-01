@@ -193,6 +193,12 @@ public class AppServletModule extends ServletModule {
         return ArrayExpressExperimentTypeList.create();
     }
 
+    @Singleton
+    @Provides
+    public ProtocolTypes getProtocolTypes() {
+        return ProtocolTypes.create();
+    }
+
     private void overrideMageTabCheck() {
         bind(new TypeLiteral<Set<URL>>() {
         }).annotatedWith(Names.named("libPaths")).toInstance(libPaths);

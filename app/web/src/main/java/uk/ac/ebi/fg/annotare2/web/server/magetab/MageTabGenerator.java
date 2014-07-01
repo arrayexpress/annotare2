@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Ordering;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -24,6 +26,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
+import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -41,7 +44,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
  */
 public class MageTabGenerator {
 
-    public static class UnassignedValue {
+    private static class UnassignedValue {
         private static final String TEMPLATE = "__UNASSIGNED__@[SEQ]";
         private static final String PATTERN = TEMPLATE.replace("[SEQ]", "\\d+");
 
@@ -60,7 +63,7 @@ public class MageTabGenerator {
         return UnassignedValue.replaceAll(str);
     }
 
-    public static class UniqueNameValue {
+    private static class UniqueNameValue {
         private static final String TEMPLATE = "__UNIQUE_NAME__([ORIGINAL_NAME])__@[SEQ]";
         private static final Pattern PATTERN = Pattern.compile(
                 TEMPLATE.replace("([ORIGINAL_NAME])", "\\((.*)\\)")
@@ -89,23 +92,29 @@ public class MageTabGenerator {
         return UniqueNameValue.replaceAll(str);
     }
 
-    private final ExperimentProfile exp;
-
     private final Map<String, SDRFNode> nodeCache = new HashMap<String, SDRFNode>();
     private final Set<TermSource> usedTermSources = new HashSet<TermSource>();
 
-    private UnassignedValue unassignedValue;
-    private UniqueNameValue uniqueNameValue;
+    private static ProtocolTypes protocolTypes = null;
+
+    private final UnassignedValue unassignedValue;
+    private final UniqueNameValue uniqueNameValue;
+
+    private final ExperimentProfile exp;
 
     public MageTabGenerator(ExperimentProfile exp) {
+        if (null == protocolTypes) {
+            protocolTypes = ProtocolTypes.create();
+        }
+
         this.exp = exp;
+        this.unassignedValue = new UnassignedValue();
+        this.uniqueNameValue = new UniqueNameValue();
     }
 
     public MAGETABInvestigation generate() throws ParseException {
-        nodeCache.clear();
-
-        unassignedValue = new UnassignedValue();
-        uniqueNameValue = new UniqueNameValue();
+        this.nodeCache.clear();
+        this.usedTermSources.clear();
 
         MAGETABInvestigation inv = new MAGETABInvestigation();
 
@@ -418,7 +427,15 @@ public class MageTabGenerator {
 
     private void connect(SDRFNode source, SDRFNode destination, Collection<Protocol> protocols) {
         SDRFNode prev = source;
-        for (Protocol protocol : protocols) {
+        Collection<Protocol> orderedProtocols =
+                Ordering.natural().onResultOf(new Function<Protocol, Integer>() {
+                    @Override
+                    public Integer apply(Protocol protocol) {
+                        return protocolTypes.getPrecedence(protocol.getType().getAccession());
+                    }
+                }).sortedCopy(protocols);
+
+        for (Protocol protocol : orderedProtocols) {
             // protocol node name must be unique
             String nodeName = prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
             ProtocolApplicationNode protocolNode = getNode(ProtocolApplicationNode.class, nodeName);
