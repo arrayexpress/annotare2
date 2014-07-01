@@ -44,7 +44,7 @@ public class ArrayExpressArrayDesignList {
     }
 
     private ArrayExpressArrayDesignList load() throws IOException {
-        InputStream in = getClass().getResourceAsStream("/ArrayExpressArrayDesigns-16042013.txt");
+        InputStream in = getClass().getResourceAsStream("/ArrayExpressArrayDesigns-01072014.txt");
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String line;
