@@ -65,7 +65,15 @@ public class ExperimentBuilderFactory {
         SEQUENCING_EXPERIMENT_BUILDER(SEQUENCING) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
-                return new ExperimentProfile(SEQUENCING);
+                ExperimentProfile exp = new ExperimentProfile(SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                int n = settings.getNumberOfHybs();
+                for (int i = 0; i < n; i++) {
+                    updater.createSample();
+                }
+                return exp;
             }
         };
 
