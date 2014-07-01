@@ -30,8 +30,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsViewImpl;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.DataFileUploadViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.*;
 
@@ -69,9 +67,9 @@ public class EditorGinModule extends AbstractGinModule {
         bind(SamplesView.class).to(SamplesViewImpl.class);
         bind(ExtractAttributesView.class).to(ExtractAttributesViewImpl.class);
         bind(LabeledExtractsView.class).to(LabeledExtractsViewImpl.class);
+        bind(DataFileUploadView.class).to(DataFileUploadViewImpl.class);
         bind(DataAssignmentView.class).to(DataAssignmentViewImpl.class);
         bind(ProtocolsView.class).to(ProtocolsViewImpl.class);
-        bind(DataFileUploadView.class).to(DataFileUploadViewImpl.class);
 
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);
 
