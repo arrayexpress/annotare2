@@ -103,7 +103,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
                     return (extractAttributesActivityProvider.get()).withPlace(designPlace);
                 case LABELED_EXTRACTS:
                     return (labeledExtractsActivityProvider.get()).withPlace(designPlace);
-                case RAW_FILES:
+                case FILES:
                     return (dataFilesActivityProvider.get()).withPlace(designPlace);
                 case PROTOCOLS:
                     return (protocolsActivityProvider.get()).withPlace(designPlace);

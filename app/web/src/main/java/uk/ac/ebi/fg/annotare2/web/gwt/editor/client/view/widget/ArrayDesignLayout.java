@@ -66,13 +66,13 @@ public class ArrayDesignLayout extends Composite implements EditorLayout {
         return null;
     }
 
-    @Override
-    public HasOneWidget getDockBarDisplay() {
-        return null;
-    }
+    //@Override
+    //public HasOneWidget getDockBarDisplay() {
+    //    return null;
+    //}
 
-    @Override
-    public HasOneWidget getDockBarPanelDisplay() {
-        return null;
-    }
+    //@Override
+    //public HasOneWidget getDockBarPanelDisplay() {
+    //    return null;
+    //}
 }

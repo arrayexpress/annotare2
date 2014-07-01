@@ -155,13 +155,13 @@ public class EditorApp implements EntryPoint {
         ActivityManager contentActivityManager = new ActivityManager(contentActivityMapper, eventBus);
         contentActivityManager.setDisplay(layout.getContentDisplay());
 
-        ActivityMapper dockBarActivityMapper = injector.getDockBarActivityMapper();
-        ActivityManager dockBarActivityManager = new ActivityManager(dockBarActivityMapper, eventBus);
-        dockBarActivityManager.setDisplay(layout.getDockBarDisplay());
+        //ActivityMapper dockBarActivityMapper = injector.getDockBarActivityMapper();
+        //ActivityManager dockBarActivityManager = new ActivityManager(dockBarActivityMapper, eventBus);
+        //dockBarActivityManager.setDisplay(layout.getDockBarDisplay());
 
-        ActivityMapper dockBarPanelActivityMapper = injector.getDockBarPanelActivityMapper();
-        ActivityManager dockBarPanelActivityManager = new ActivityManager(dockBarPanelActivityMapper, eventBus);
-        dockBarPanelActivityManager.setDisplay(layout.getDockBarPanelDisplay());
+        //ActivityMapper dockBarPanelActivityMapper = injector.getDockBarPanelActivityMapper();
+        //ActivityManager dockBarPanelActivityManager = new ActivityManager(dockBarPanelActivityMapper, eventBus);
+        //dockBarPanelActivityManager.setDisplay(layout.getDockBarPanelDisplay());
 
         if (layout.getLogBarDisplay() != null) {
             ActivityMapper logBarActivityMapper = injector.getLogBarActivityMapper();

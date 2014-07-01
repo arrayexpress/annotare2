@@ -17,22 +17,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
-        xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
-    <ui:style>
-        .padding {
-            margin-left: 15px;
-        }
-        .grid {
-            border-left: 1px solid #eeeeee;
-        }
-    </ui:style>
-    <g:DockLayoutPanel addStyleNames="{style.padding}">
-        <g:north size="40">
-            <g:HorizontalPanel ui:field="toolBar" width="100%"/>
-        </g:north>
-        <g:center>
-            <g:SimpleLayoutPanel ui:field="gridPanel" addStyleNames="{style.grid}"/>
-        </g:center>
-    </g:DockLayoutPanel>
+        xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <g:HTMLPanel>
+        <div/>
+    </g:HTMLPanel>
 </ui:UiBinder>
