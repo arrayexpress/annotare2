@@ -26,6 +26,7 @@ import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoServiceProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
+import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressProperties;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -42,7 +43,7 @@ import static java.util.Collections.emptyList;
 /**
  * @author Olga Melnichuk
  */
-public class AnnotareProperties implements DataFileStoreProperties, SubsTrackingProperties, AEConnectionProperties {
+public class AnnotareProperties implements DataFileStoreProperties, ArrayExpressProperties, SubsTrackingProperties, AEConnectionProperties {
 
     private static final Logger log = LoggerFactory.getLogger(AnnotareProperties.class);
 
@@ -146,6 +147,11 @@ public class AnnotareProperties implements DataFileStoreProperties, SubsTracking
 
     public String getDbConnectionPassword() {
         return getProperty("db.connection.password");
+    }
+
+    @Override
+    public String getArrayExpressArrayListURL() {
+        return getProperty("arrayexpress.arraylist.url");
     }
 
     @Override
