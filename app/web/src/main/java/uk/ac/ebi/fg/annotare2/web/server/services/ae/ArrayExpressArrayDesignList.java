@@ -16,6 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.ae;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
@@ -28,6 +32,8 @@ import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -139,9 +145,13 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     ArrayExpress.ArrayDesign ad = createArrayDesign(line);
-                    if (ad != null) {
+                    if (null != ad && null != ad.getName()) {
                         trie.put(ad.getName().toLowerCase(), ad);
-                        trie.put(ad.getDesription().toLowerCase(), ad);
+                        if (null != ad.getDesription()) {
+                            for (String word : ad.getDesription().toLowerCase().split("\\s+")) {
+                                trie.put(word + "___" + ad.getId(), ad);
+                            }
+                        }
                         isEmpty = false;
                     }
                 }
@@ -168,7 +178,40 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
         }
 
         public Iterable<ArrayExpress.ArrayDesign> getArrayDesigns(String query) {
-            return trie.getValuesForClosestKeys(query.toLowerCase());
+            if (null == query) {
+                return Collections.emptySet();
+            }
+
+            Set<ArrayExpress.ArrayDesign> ads = null;
+            for (String word : query.toLowerCase().split("\\s+")) {
+                Set<ArrayExpress.ArrayDesign> matches = ImmutableSet.copyOf(trie.getValuesForClosestKeys(word));
+                if (null != ads) {
+                    ads = Sets.intersection(ads, matches);
+                } else {
+                    ads = matches;
+                }
+                if (ads.isEmpty()) {
+                    return Collections.emptySet();
+                }
+            }
+
+            if (null == ads) {
+                return Collections.emptySet();
+            }
+
+            return Ordering.natural().onResultOf(new Function<ArrayExpress.ArrayDesign, String>() {
+                @Override
+                public String apply(ArrayExpress.ArrayDesign ad) {
+                    if (null == ad || null == ad.getName()) {
+                        return null;
+                    }
+
+                    String pipeline = ad.getName().substring(2, 6);
+                    String index = ad.getName().substring(7).replaceAll("^([0-9]+).*", "$1");
+
+                    return ("GEOD".equalsIgnoreCase(pipeline) ? "ZZZZ" : pipeline) + String.format("%09d", Integer.valueOf(index));
+                }
+            }).sortedCopy(ads);
         }
     }
 }
