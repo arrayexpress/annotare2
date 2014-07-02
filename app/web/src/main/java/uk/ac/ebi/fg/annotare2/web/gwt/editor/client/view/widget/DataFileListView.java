@@ -26,10 +26,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ImageResourceRenderer;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
@@ -56,6 +53,10 @@ public class DataFileListView extends Composite {
     public DataFileListView() {
         ScrollPanel scrollPanel = new ScrollPanel();
         initWidget(scrollPanel);
+
+        VerticalPanel vPanel = new VerticalPanel();
+        vPanel.setSpacing(5);
+        scrollPanel.add(vPanel);
 
         CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES);
         grid.setEmptyTableWidget(new Label("You have not uploaded any data files yet"));
@@ -105,7 +106,9 @@ public class DataFileListView extends Composite {
             }
         });
         grid.addColumn(deleteButton);
-        scrollPanel.add(grid);
+        vPanel.add(grid);
+
+        vPanel.add(new Label("Upload controls go here"));
 
         dataProvider = new ListDataProvider<DataFileRow>();
         dataProvider.addDataDisplay(grid);
