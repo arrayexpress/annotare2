@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class UploadedFiles {
 
-    private static final String GWTUPLOAD_ATTRIBUTE_NAME = "FILES_ASSIGNMENT";
+    private static final String GWTUPLOAD_ATTRIBUTE_NAME = "FILES";
 
     @SuppressWarnings("unchecked")
     public static FileItem get(HttpSession session, String fieldName) throws FileNotFoundException {
