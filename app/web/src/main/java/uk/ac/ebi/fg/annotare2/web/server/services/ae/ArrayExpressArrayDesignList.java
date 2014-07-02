@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.io.Closeables.close;
 import static java.util.concurrent.TimeUnit.HOURS;
 
@@ -82,7 +83,9 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
             }
 
         };
-        scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, HOURS);
+        if (!isNullOrEmpty(properties.getArrayExpressArrayListURL())) {
+            scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, HOURS);
+        }
     }
 
     @Override
