@@ -17,55 +17,59 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataAssignmentView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import java.util.List;
+import java.util.Map;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DockBarEvent.openDockBarEvent;
+public class DataUploadAndAssignmentActivity extends AbstractActivity implements DataUploadAndAssignmentView.Presenter {
 
-/**
- * @author Olga Melnichuk
- */
-public class DataAssignmentActivity extends AbstractActivity implements DataAssignmentView.Presenter {
-
-    private final DataAssignmentView view;
+    private final DataUploadAndAssignmentView view;
+    private final ApplicationDataProxy appData;
     private final ExperimentDataProxy expData;
-    private final DataFilesProxy dataFilesProxy;
+    private final DataFilesProxy dataFiles;
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
 
-
     @Inject
-    public DataAssignmentActivity(DataAssignmentView view, ExperimentDataProxy expData, DataFilesProxy dataFilesProxy) {
+    public DataUploadAndAssignmentActivity(DataUploadAndAssignmentView view,
+                                           ApplicationDataProxy appData,
+                                           ExperimentDataProxy expData,
+                                           DataFilesProxy dataFiles) {
         this.view = view;
+        this.appData = appData;
         this.expData = expData;
-        this.dataFilesProxy = dataFilesProxy;
+        this.dataFiles = dataFiles;
+    }
+
+    public Activity withPlace(Place place) {
+        return this;
     }
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
         view.setPresenter(this);
         panel.setWidget(view);
-        loadDataAsync();
-        loadFilesAsync();
+
         criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
             @Override
             public void criticalUpdateStarted(CriticalUpdateEvent event) {
@@ -76,14 +80,15 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
                 loadDataAsync();
             }
         });
-        dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
+        this.dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
             public void onDataFilesUpdate() {
                 loadFilesAsync();
             }
         });
 
-        eventBus.fireEvent(openDockBarEvent());
+        loadDataAsync();
+        loadFilesAsync();
     }
 
     @Override
@@ -93,11 +98,18 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
         super.onStop();
     }
 
-    public DataAssignmentActivity withPlace(ExpDesignPlace designPlace) {
-        return this;
-    }
-
     private void loadDataAsync() {
+        appData.getApplicationPropertiesAsync(new AsyncCallback<ApplicationProperties>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to load application properties");
+            }
+
+            @Override
+            public void onSuccess(ApplicationProperties result) {
+                view.getUploadView().setFtpProperties(result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword());
+            }
+        });
         expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -106,7 +118,8 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
 
             @Override
             public void onSuccess(ExperimentProfileType result) {
-                view.setExperimentType(result);
+                view.getUploadView().setExperimentType(result);
+                view.getAssignmentView().setExperimentType(result);
             }
         });
         expData.getDataAssignmentColumnsAndRowsAsync(new AsyncCallback<DataAssignmentColumnsAndRows>() {
@@ -117,13 +130,13 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
 
             @Override
             public void onSuccess(DataAssignmentColumnsAndRows result) {
-                view.setData(result.getColumns(), result.getRows());
+                view.getAssignmentView().setData(result.getColumns(), result.getRows());
             }
         });
     }
 
     private void loadFilesAsync() {
-        dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
+        dataFiles.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Unable to load a list of data files");
@@ -131,7 +144,8 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
 
             @Override
             public void onSuccess(List<DataFileRow> result) {
-                view.setDataFiles(result);
+                view.getUploadView().setDataFiles(result);
+                view.getAssignmentView().setDataFiles(result);
             }
         });
     }
@@ -150,4 +164,20 @@ public class DataAssignmentActivity extends AbstractActivity implements DataAssi
     public void updateColumn(DataAssignmentColumn column) {
         expData.updateDataAssignmentColumn(column);
     }
+
+    @Override
+    public void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+        dataFiles.registerHttpFilesAsync(filesInfo, callback);
+    }
+
+    @Override
+    public void onFtpRegistrationFormSubmit(List<FtpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+        dataFiles.registerFtpFilesAsync(filesInfo, callback);
+    }
+
+    @Override
+    public void removeFile(DataFileRow dataFileRow) {
+        dataFiles.removeFile(dataFileRow);
+    }
+
 }

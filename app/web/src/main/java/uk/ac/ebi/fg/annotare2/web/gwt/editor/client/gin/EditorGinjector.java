@@ -58,11 +58,5 @@ public interface EditorGinjector extends Ginjector {
     @EditorStartDisplay
     ActivityMapper getStartActivityMapper();
 
-    @EditorDockBarDisplay
-    ActivityMapper getDockBarActivityMapper();
-
-    @EditorDockBarPanelDisplay
-    ActivityMapper getDockBarPanelActivityMapper();
-
     SubmissionServiceAsync getSubmissionService();
 }

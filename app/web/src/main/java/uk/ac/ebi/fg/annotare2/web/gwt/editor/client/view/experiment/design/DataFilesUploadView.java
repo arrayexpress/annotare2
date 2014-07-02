@@ -28,9 +28,9 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public interface DataFileUploadView extends IsWidget {
+public interface DataFilesUploadView extends IsWidget {
 
-    void setRows(List<DataFileRow> rows);
+    void setDataFiles(List<DataFileRow> rows);
 
     void setExperimentType(ExperimentProfileType type);
 

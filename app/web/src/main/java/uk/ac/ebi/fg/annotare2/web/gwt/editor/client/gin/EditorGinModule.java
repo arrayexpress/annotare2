@@ -49,8 +49,6 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ActivityMapper.class).annotatedWith(EditorContentDisplay.class).to(EditorContentActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLogBarDisplay.class).to(EditorLogBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorStartDisplay.class).to(EditorStartActivityMapper.class).in(Singleton.class);
-        bind(ActivityMapper.class).annotatedWith(EditorDockBarDisplay.class).to(EditorDockBarActivityMapper.class).in(Singleton.class);
-        bind(ActivityMapper.class).annotatedWith(EditorDockBarPanelDisplay.class).to(EditorDockBarPanelActivityMapper.class).in(Singleton.class);
 
         bind(EditorTopBarView.class).to(EditorTopBarViewImpl.class);
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
@@ -67,8 +65,9 @@ public class EditorGinModule extends AbstractGinModule {
         bind(SamplesView.class).to(SamplesViewImpl.class);
         bind(ExtractAttributesView.class).to(ExtractAttributesViewImpl.class);
         bind(LabeledExtractsView.class).to(LabeledExtractsViewImpl.class);
-        bind(DataFileUploadView.class).to(DataFileUploadViewImpl.class);
-        bind(DataAssignmentView.class).to(DataAssignmentViewImpl.class);
+        bind(DataUploadAndAssignmentView.class).to(DataUploadAndAssignmentViewImpl.class);
+        //bind(DataFilesUploadView.class).to(DataFilesUploadViewImpl.class);
+        //bind(DataAssignmentView.class).to(DataAssignmentViewImpl.class);
         bind(ProtocolsView.class).to(ProtocolsViewImpl.class);
 
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);

@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class DataFileUploadViewImpl extends Composite implements DataFileUploadView {
+public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView {
 
     @UiField
     TabLayoutPanel tabLayoutPanel;
@@ -47,16 +47,16 @@ public class DataFileUploadViewImpl extends Composite implements DataFileUploadV
     @UiField
     DataFileFtpUploadView dataFileFtpUploadView;
 
-    interface Binder extends UiBinder<Widget, DataFileUploadViewImpl> {
+    interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public DataFileUploadViewImpl() {
+    public DataFilesUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
     @Override
-    public void setRows(List<DataFileRow> rows) {
+    public void setDataFiles(List<DataFileRow> rows) {
         dataFileListView.setRows(rows);
     }
 

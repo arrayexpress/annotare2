@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
-import com.google.inject.BindingAnnotation;
+import com.google.gwt.user.client.ui.IsWidget;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+public interface DataUploadAndAssignmentView extends IsWidget {
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+    void setPresenter(Presenter presenter);
 
-/**
- * @author Olga Melnichuk
- */
-@BindingAnnotation
-@Target({FIELD, PARAMETER, METHOD})
-@Retention(RUNTIME)
-public @interface EditorDockBarDisplay {
+    DataFilesUploadView getUploadView();
+
+    DataAssignmentView getAssignmentView();
+
+    interface Presenter extends DataFilesUploadView.Presenter, DataAssignmentView.Presenter {
+    }
 }
