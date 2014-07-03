@@ -27,6 +27,7 @@ public class RemoveProtocolsCommand implements ExperimentUpdateCommand {
 
     private List<ProtocolRow> rows;
 
+    @SuppressWarnings("unused")
     RemoveProtocolsCommand() {
         /*used by GWT serialization*/
     }

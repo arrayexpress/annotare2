@@ -38,14 +38,14 @@ import static gwtupload.client.IUploadStatus.Status.SUCCESS;
 /**
  * @author Olga Melnichuk
  */
-public class DataFileHttpUploadView extends Composite {
+public class DataFilesUploadPanel extends Composite {
 
     @UiField
     FlowPanel panel;
 
     private Presenter presenter;
 
-    interface Binder extends UiBinder<Widget, DataFileHttpUploadView> {
+    interface Binder extends UiBinder<Widget, DataFilesUploadPanel> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -96,7 +96,7 @@ public class DataFileHttpUploadView extends Composite {
 
     public static final UploaderConstants I18N_CONSTANTS = GWT.create(UploaderConstants.class);
 
-    public DataFileHttpUploadView() {
+    public DataFilesUploadPanel() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
         //UploadStatus status = new UploadStatus();

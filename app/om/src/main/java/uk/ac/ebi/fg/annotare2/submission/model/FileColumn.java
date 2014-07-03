@@ -62,11 +62,19 @@ public class FileColumn implements Serializable {
         leId2FileRefMap.remove(labeledExtractId);
     }
 
-    public void removeFileByName(String fileName) {
+    public void replaceFile(FileRef oldFileRef, FileRef newFileRef) {
+        for (String leId : leId2FileRefMap.keySet()) {
+            if (oldFileRef.equals(leId2FileRefMap.get(leId))) {
+                leId2FileRefMap.put(leId, newFileRef);
+            }
+        }
+    }
+
+    public void removeFile(FileRef fileRef) {
         Iterator<Map.Entry<String,FileRef>> iterator = leId2FileRefMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String,FileRef> file = iterator.next();
-            if (file.getValue().getName().equals(fileName)){
+            if (file.getValue().equals(fileRef)){
                 iterator.remove();
             }
         }

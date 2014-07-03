@@ -46,6 +46,8 @@ public interface SubmissionServiceAsync {
 
     void registerFtpFiles(long id, List<FtpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
 
+    void renameDataFile(long id, long fileId, String fileName, AsyncCallback<ExperimentProfile> async);
+
     void deleteDataFile(long id, long fileId, AsyncCallback<Void> async);
 
     void deleteSubmission(long id, AsyncCallback<Void> async);

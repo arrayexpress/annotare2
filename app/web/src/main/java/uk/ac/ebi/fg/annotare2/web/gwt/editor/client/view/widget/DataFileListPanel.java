@@ -22,11 +22,13 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ImageResourceRenderer;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
@@ -40,7 +42,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResou
 /**
  * @author Olga Melnichuk
  */
-public class DataFileListView extends Composite {
+public class DataFileListPanel extends Composite {
 
     private final ListDataProvider<DataFileRow> dataProvider;
 
@@ -50,16 +52,31 @@ public class DataFileListView extends Composite {
 
     private Presenter presenter;
 
-    public DataFileListView() {
-        ScrollPanel scrollPanel = new ScrollPanel();
-        initWidget(scrollPanel);
+    public DataFileListPanel() {
+        final CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES);
+        grid.setEmptyTableWidget(new Label("No files uploaded"));
+        initWidget(grid);
 
-        VerticalPanel vPanel = new VerticalPanel();
-        vPanel.setSpacing(5);
-        scrollPanel.add(vPanel);
-
-        CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES);
-        grid.setEmptyTableWidget(new Label("You have not uploaded any data files yet"));
+        final EditTextCell nameCell = new EditTextCell();
+        Column<DataFileRow, String> column = new Column<DataFileRow, String>(nameCell) {
+            @Override
+            public String getValue(DataFileRow row) {
+                return row.getName();
+            }
+        };
+        column.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
+            @Override
+            public void update(int index, DataFileRow row, String value) {
+                if (isNameValid(value, index)) {
+                    presenter.renameFile(row, value);
+                } else {
+                    nameCell.clearViewData(row);
+                    grid.redraw();
+                }
+            }
+        });
+        grid.addColumn(column);
+        /*
         grid.addColumn(new Column<DataFileRow, SafeHtml>(new SafeHtmlCell()) {
             @Override
             public SafeHtml getValue(DataFileRow object) {
@@ -69,7 +86,7 @@ public class DataFileListView extends Composite {
                 return sb.toSafeHtml();
             }
         });
-
+        */
         grid.addColumn(new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yyyy HH:mm"))) {
             @Override
             public Date getValue(DataFileRow object) {
@@ -106,9 +123,6 @@ public class DataFileListView extends Composite {
             }
         });
         grid.addColumn(deleteButton);
-        vPanel.add(grid);
-
-        vPanel.add(new Label("Upload controls go here"));
 
         dataProvider = new ListDataProvider<DataFileRow>();
         dataProvider.addDataDisplay(grid);
@@ -122,7 +136,38 @@ public class DataFileListView extends Composite {
         this.presenter = presenter;
     }
 
+    private boolean isNameValid(String name, int rowIndex) {
+        if (name == null || name.trim().isEmpty()) {
+            Window.alert("File name should not be empty");
+            return false;
+        }
+
+        if (!name.matches("^[_a-zA-Z0-9\\-\\.]+$")) {
+            Window.alert("File name should only contain alphanumeric characters, underscores and dots");
+            return false;
+        }
+
+        if (isDuplicated(name, rowIndex)) {
+            Window.alert("File with the name '" + name + "' already exists");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isDuplicated(String name, int rowIndex) {
+        List<DataFileRow> rows = dataProvider.getList();
+        int i = 0;
+        for (DataFileRow row : rows) {
+            if (i != rowIndex && name.equals(row.getName())) {
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
     public interface Presenter {
+        void renameFile(DataFileRow dataFileRow, String newFileName);
 
         void removeFile(DataFileRow dataFileRow);
     }

@@ -35,6 +35,7 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
@@ -397,6 +398,31 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
+    public ExperimentProfile renameDataFile(final long id, final long fileId, final String fileName) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
+            ExperimentProfile experiment = submission.getExperimentProfile();
+            DataFile dataFile = dataFileManager.get(fileId);
+            if (submission.getFiles().contains(dataFile)) {
+                experiment.renameFile(new FileRef(dataFile.getName(), dataFile.getDigest()), fileName);
+                submission.setExperimentProfile(experiment);
+                dataFile.setName(fileName);
+
+                save(submission);
+            }
+
+            return experiment;
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        }
+    }
+
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
+    @Override
     public void deleteDataFile(final long id, final long fileId) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
@@ -405,9 +431,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 return;
             }
 
-            String fileName = dataFile.getName();
             ExperimentProfile expProfile = submission.getExperimentProfile();
-            expProfile.removeFile(fileName);
+            expProfile.removeFile(new FileRef(dataFile.getName(), dataFile.getDigest()));
             submission.setExperimentProfile(expProfile);
 
             submission.getFiles().remove(dataFile);

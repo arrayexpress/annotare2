@@ -19,6 +19,13 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
 
+    <g:ScrollPanel ui:field="scrollPanel">
+        <g:VerticalPanel>
+            <my:DataFilesUploadPanel ui:field="uploadPanel"/>
+            <my:DataFileListPanel ui:field="filesList"/>
+        </g:VerticalPanel>
+    </g:ScrollPanel>
+    <!--
     <g:TabLayoutPanel barUnit="PX" barHeight="30" ui:field="tabLayoutPanel">
         <g:tab>
             <g:header>All Files</g:header>
@@ -37,5 +44,5 @@
             </g:ScrollPanel>
         </g:tab>
     </g:TabLayoutPanel>
-
+    -->
 </ui:UiBinder>

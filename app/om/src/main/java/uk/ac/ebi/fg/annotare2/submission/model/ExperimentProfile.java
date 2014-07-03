@@ -313,9 +313,26 @@ public class ExperimentProfile implements Serializable {
         fileColumns.remove(index);
     }
 
-    public void removeFile(String fileName) {
+    public void renameFile(FileRef fileRef, String newName) {
+        FileRef newRef = new FileRef(newName, fileRef.getHash());
         for (FileColumn fileColumn : fileColumns) {
-            fileColumn.removeFileByName(fileName);
+            fileColumn.replaceFile(fileRef, newRef);
+        }
+        for (Protocol p : protocol2FileRefs.keySet()) {
+            if ( protocol2FileRefs.get(p).contains(fileRef)) {
+                protocol2FileRefs.get(p).remove(fileRef);
+                protocol2FileRefs.get(p).add(newRef);
+            }
+        }
+    }
+
+
+    public void removeFile(FileRef fileRef) {
+        for (FileColumn fileColumn : fileColumns) {
+            fileColumn.removeFile(fileRef);
+        }
+        for (Protocol p : protocol2FileRefs.keySet()) {
+            protocol2FileRefs.get(p).remove(fileRef);
         }
     }
 

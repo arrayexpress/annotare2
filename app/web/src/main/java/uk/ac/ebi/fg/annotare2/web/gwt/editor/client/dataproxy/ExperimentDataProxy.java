@@ -81,6 +81,10 @@ public class ExperimentDataProxy {
 
         GWT.log(getClass().getName() + ": initialized");
     }
+    public void setUpdatedExperiment(ExperimentProfile exp) {
+        this.exp = exp;
+        notifyExperimentUpdated();
+    }
 
     private void notifyExperimentUpdated() {
         eventBus.fireEvent(new ExperimentUpdateEvent());
@@ -240,6 +244,10 @@ public class ExperimentDataProxy {
     private ProtocolAssignmentProfile getProtocolAssignmentProfile(int protocolId, ExperimentProfile exp) {
         Protocol protocol = exp.getProtocol(protocolId);
         return createProtocolAssignment(exp, protocol).getProfile();
+    }
+
+    public void setReloadExperiment() {
+        exp = null;
     }
 
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {

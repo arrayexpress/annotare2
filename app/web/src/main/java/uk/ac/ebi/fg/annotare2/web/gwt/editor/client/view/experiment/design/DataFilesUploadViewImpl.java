@@ -20,13 +20,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileHttpUploadView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFilesUploadPanel;
 
 import java.util.List;
 
@@ -36,16 +35,19 @@ import java.util.List;
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView {
 
     @UiField
-    TabLayoutPanel tabLayoutPanel;
+    ScrollPanel scrollPanel;
+
+    //@UiField
+    //TabLayoutPanel tabLayoutPanel;
 
     @UiField
-    DataFileListView dataFileListView;
+    DataFileListPanel filesList;
 
     @UiField
-    DataFileHttpUploadView dataFileHttpUploadView;
+    DataFilesUploadPanel uploadPanel;
 
-    @UiField
-    DataFileFtpUploadView dataFileFtpUploadView;
+    //@UiField
+    //DataFileFtpUploadView dataFileFtpUploadView;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -57,26 +59,26 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setDataFiles(List<DataFileRow> rows) {
-        dataFileListView.setRows(rows);
+        filesList.setRows(rows);
     }
 
     @Override
     public void setExperimentType(ExperimentProfileType type) {
-        if (ExperimentProfileType.SEQUENCING == type
-                && 3 == tabLayoutPanel.getWidgetCount()) {
-            tabLayoutPanel.remove(1);
-        }
+        //if (ExperimentProfileType.SEQUENCING == type
+        //        && 3 == tabLayoutPanel.getWidgetCount()) {
+        //    tabLayoutPanel.remove(1);
+        //}
     }
 
     @Override
     public void setPresenter(Presenter presenter) {
-        dataFileHttpUploadView.setPresenter(presenter);
-        dataFileFtpUploadView.setPresenter(presenter);
-        dataFileListView.setPresenter(presenter);
+        uploadPanel.setPresenter(presenter);
+        //dataFileFtpUploadView.setPresenter(presenter);
+        filesList.setPresenter(presenter);
     }
 
     @Override
     public void setFtpProperties(String url, String username, String password) {
-        dataFileFtpUploadView.setFtpProperties(url, username, password);
+        //dataFileFtpUploadView.setFtpProperties(url, username, password);
     }
 }

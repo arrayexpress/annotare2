@@ -21,6 +21,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -41,15 +42,19 @@ public class DataFilesProxy {
 
     private final SubmissionServiceAsync submissionServiceAsync;
     private final EventBus eventBus;
+    private final ExperimentDataProxy expDataProxy;
+
     private List<DataFileRow> fileRows;
 
     private final Updater updater;
 
     @Inject
     public DataFilesProxy(EventBus eventBus,
-                          SubmissionServiceAsync submissionServiceAsync) {
+                          SubmissionServiceAsync submissionServiceAsync,
+                          ExperimentDataProxy expDataProxy) {
         this.submissionServiceAsync = submissionServiceAsync;
         this.eventBus = eventBus;
+        this.expDataProxy = expDataProxy;
 
         updater = new Updater(5000) {
             public void onAsyncUpdate(final AsyncCallback<Boolean> callback) {
@@ -133,6 +138,21 @@ public class DataFilesProxy {
             public void onSuccess(Map<Integer, String> result) {
                 updater.update();
                 callback.onSuccess(result);
+            }
+        }.wrap());
+    }
+
+    public void renameFile(final DataFileRow dataFile, final String newFileName) {
+        submissionServiceAsync.renameDataFile(getSubmissionId(), dataFile.getId(), newFileName, new AsyncCallbackWrapper<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to rename file " + dataFile.getName());
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfile experiment) {
+                expDataProxy.setUpdatedExperiment(experiment);
+                updater.update();
             }
         }.wrap());
     }

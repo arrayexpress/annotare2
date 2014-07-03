@@ -32,10 +32,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     private final ApplicationDataProxy appData;
     private final ExperimentDataProxy expData;
     private final DataFilesProxy dataFiles;
-    private HandlerRegistration criticalUpdateHandler;
+    private HandlerRegistration experimentUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
 
     @Inject
@@ -70,14 +70,10 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
         view.setPresenter(this);
         panel.setWidget(view);
 
-        criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
+        experimentUpdateHandler = eventBus.addHandler(ExperimentUpdateEvent.getType(), new ExperimentUpdateEventHandler() {
             @Override
-            public void criticalUpdateStarted(CriticalUpdateEvent event) {
-            }
-
-            @Override
-            public void criticalUpdateFinished(CriticalUpdateEvent event) {
-                loadDataAsync();
+            public void onExperimentUpdate() {
+                loadExpDataAsync();
             }
         });
         this.dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
@@ -87,18 +83,33 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
             }
         });
 
-        loadDataAsync();
+        loadAppDataAsync();
+        loadExpDataAsync();
         loadFilesAsync();
     }
 
     @Override
     public void onStop() {
-        criticalUpdateHandler.removeHandler();
+        experimentUpdateHandler.removeHandler();
         dataUpdateHandler.removeHandler();
         super.onStop();
     }
 
-    private void loadDataAsync() {
+    private void loadAppDataAsync() {
+        appData.getApplicationPropertiesAsync(new AsyncCallback<ApplicationProperties>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to load application properties");
+            }
+
+            @Override
+            public void onSuccess(ApplicationProperties result) {
+                view.getUploadView().setFtpProperties(result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword());
+            }
+        });
+    }
+
+    private void loadExpDataAsync() {
         appData.getApplicationPropertiesAsync(new AsyncCallback<ApplicationProperties>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -173,6 +184,12 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     @Override
     public void onFtpRegistrationFormSubmit(List<FtpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
         dataFiles.registerFtpFilesAsync(filesInfo, callback);
+    }
+
+    @Override
+    public void renameFile(DataFileRow dataFileRow, String newFileName) {
+        dataFiles.renameFile(dataFileRow, newFileName);
+        //expData.renameDataFile(dataFileRow, newFileName);
     }
 
     @Override
