@@ -148,7 +148,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
                 }
 
                 private boolean isUnassigned(String value) {
-                    return value != null && value.startsWith("__UNASSIGNED__@");
+                    return value != null && value.startsWith("____UNASSIGNED____");
                 }
 
                 private boolean isEmpty(String value) {

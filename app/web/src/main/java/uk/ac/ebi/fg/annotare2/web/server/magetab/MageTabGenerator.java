@@ -45,7 +45,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 public class MageTabGenerator {
 
     private static class UnassignedValue {
-        private static final String TEMPLATE = "__UNASSIGNED__@[SEQ]";
+        private static final String TEMPLATE = "____UNASSIGNED____[SEQ]";
         private static final String PATTERN = TEMPLATE.replace("[SEQ]", "\\d+");
 
         private int seq = 1;
@@ -64,15 +64,18 @@ public class MageTabGenerator {
     }
 
     private static class UniqueNameValue {
-        private static final String TEMPLATE = "__UNIQUE_NAME__([ORIGINAL_NAME])__@[SEQ]";
+        private static final String TEMPLATE = "____[ORIGINAL_NAME]____[SEQ]____";
         private static final Pattern PATTERN = Pattern.compile(
-                TEMPLATE.replace("([ORIGINAL_NAME])", "\\((.*)\\)")
+                TEMPLATE.replace("____[ORIGINAL_NAME]____", "____(.*)____")
                         .replace("[SEQ]", "\\d+")
         );
 
         private int seq = 1;
 
         public String next(String name) {
+            if (null == name) {
+                return null;
+            }
             return TEMPLATE.replace("[SEQ]", Integer.toString(seq++))
                     .replace("[ORIGINAL_NAME]", name);
         }
