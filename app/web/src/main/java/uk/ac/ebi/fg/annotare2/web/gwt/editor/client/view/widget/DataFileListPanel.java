@@ -26,9 +26,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ImageResourceRenderer;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
@@ -42,7 +42,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResou
 /**
  * @author Olga Melnichuk
  */
-public class DataFileListPanel extends Composite {
+public class DataFileListPanel extends SimpleLayoutPanel {
 
     private final ListDataProvider<DataFileRow> dataProvider;
 
@@ -55,7 +55,7 @@ public class DataFileListPanel extends Composite {
     public DataFileListPanel() {
         final CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES);
         grid.setEmptyTableWidget(new Label("No files uploaded"));
-        initWidget(grid);
+        grid.setWidth("100%", true);
 
         final EditTextCell nameCell = new EditTextCell();
         Column<DataFileRow, String> column = new Column<DataFileRow, String>(nameCell) {
@@ -76,17 +76,6 @@ public class DataFileListPanel extends Composite {
             }
         });
         grid.addColumn(column);
-        /*
-        grid.addColumn(new Column<DataFileRow, SafeHtml>(new SafeHtmlCell()) {
-            @Override
-            public SafeHtml getValue(DataFileRow object) {
-                SafeHtmlBuilder sb = new SafeHtmlBuilder();
-                String md5 = object.getMd5();
-                sb.appendEscapedLines(object.getName() + "\n" + (md5 == null || md5.isEmpty() ? "" : md5));
-                return sb.toSafeHtml();
-            }
-        });
-        */
         grid.addColumn(new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yyyy HH:mm"))) {
             @Override
             public Date getValue(DataFileRow object) {
@@ -101,7 +90,7 @@ public class DataFileListPanel extends Composite {
             }
         });
 
-        ActionCell<DataFileRow> actionCell = new ActionCell<DataFileRow>("delete", EDITOR_RESOURCES.smallLoader()) {
+        ActionCell<DataFileRow> actionCell = new ActionCell<DataFileRow>("Delete...", EDITOR_RESOURCES.smallLoader()) {
             @Override
             public boolean isActivated(DataFileRow row) {
                 return selected.contains(row);
@@ -126,6 +115,8 @@ public class DataFileListPanel extends Composite {
 
         dataProvider = new ListDataProvider<DataFileRow>();
         dataProvider.addDataDisplay(grid);
+
+        add(grid);
     }
 
     public void setRows(List<DataFileRow> rows) {

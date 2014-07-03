@@ -20,7 +20,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -33,9 +32,6 @@ import java.util.List;
  * @author Olga Melnichuk
  */
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView {
-
-    @UiField
-    ScrollPanel scrollPanel;
 
     //@UiField
     //TabLayoutPanel tabLayoutPanel;

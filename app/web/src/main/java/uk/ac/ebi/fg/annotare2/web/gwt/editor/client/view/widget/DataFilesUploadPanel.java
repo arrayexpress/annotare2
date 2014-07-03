@@ -18,13 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Constants;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 import gwtupload.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 
@@ -40,14 +37,7 @@ import static gwtupload.client.IUploadStatus.Status.SUCCESS;
  */
 public class DataFilesUploadPanel extends Composite {
 
-    @UiField
-    FlowPanel panel;
-
     private Presenter presenter;
-
-    interface Binder extends UiBinder<Widget, DataFilesUploadPanel> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
 
     class OnFinishUploaderHandler implements IUploader.OnFinishUploaderHandler {
         @Override
@@ -97,10 +87,8 @@ public class DataFilesUploadPanel extends Composite {
     public static final UploaderConstants I18N_CONSTANTS = GWT.create(UploaderConstants.class);
 
     public DataFilesUploadPanel() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
-
-        //UploadStatus status = new UploadStatus();
-        //status.setCancelConfiguration(cancelBehaviors);
+        FlowPanel panel = new FlowPanel();
+        initWidget(panel);
 
         IUploadStatus status = new BaseUploadStatus();
         status.setCancelConfiguration(
