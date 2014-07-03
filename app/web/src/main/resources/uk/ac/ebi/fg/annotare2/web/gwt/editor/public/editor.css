@@ -467,6 +467,10 @@ table.GWTUpld {
     width: 100%;
 }
 
+.GWTUpld .gwt-Button {
+    font-size: 13px;
+}
+
 .app-ToggleImage {
     padding: 4px;
     border: 1px solid #fefefe;
