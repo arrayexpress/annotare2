@@ -349,16 +349,16 @@ public class MageTabGenerator {
 
             for (FileColumn fileColumn : fileColumns) {
                 FileRef fileRef = fileColumn.getFileRef(leId);
-                boolean isFirstColumn = fileColumn.equals(fileColumns.iterator().next());
+                //boolean isFirstColumn = fileColumn.equals(fileColumns.iterator().next());
 
-                List<ProtocolSubjectType> protocolSubjectTypes = new ArrayList<ProtocolSubjectType>();
-                if (isFirstColumn) {
-                    protocolSubjectTypes.add(FILE);
-                }
-                protocolSubjectTypes.add(fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE);
+                //List<ProtocolSubjectType> protocolSubjectTypes = new ArrayList<ProtocolSubjectType>();
+                //if (isFirstColumn) {
+                //    protocolSubjectTypes.add(FILE);
+                //}
+                //protocolSubjectTypes.add(fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE);
 
                 Collection<Protocol> protocols = null != fileRef ?
-                        exp.getProtocols(fileRef, protocolSubjectTypes.toArray(new ProtocolSubjectType[protocolSubjectTypes.size()])) :
+                        exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE, FILE) :
                         Collections.<Protocol>emptyList();
 
                 // for the first column check if there are array scanning protocol(s) defined
