@@ -99,6 +99,8 @@ public class DataFilesUploadPanel extends Composite {
                 )
         );
         final MultiUploader uploader = new MultiUploader(IFileInput.FileInputType.BUTTON);
+        uploader.setStatusWidget(status);
+        uploader.setStyleName("customUpload");
         uploader.setI18Constants(I18N_CONSTANTS);
         uploader.avoidRepeatFiles(false);
         uploader.addOnFinishUploadHandler(new OnFinishUploaderHandler());

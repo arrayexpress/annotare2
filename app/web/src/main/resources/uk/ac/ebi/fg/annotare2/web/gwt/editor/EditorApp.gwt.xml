@@ -21,7 +21,7 @@
     <!-- Include GWTUpload library -->
     <inherits name="gwtupload.GWTUpload"/>
 
-    <stylesheet src="Upload.css"/>
+    <stylesheet src="customUpload.css"/>
 
     <!-- Include GWT libraries -->
     <inherits name="com.google.gwt.user.User"/>

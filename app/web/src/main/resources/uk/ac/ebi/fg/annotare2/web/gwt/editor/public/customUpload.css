@@ -1,0 +1,177 @@
+@external GWTUpld;
+@external gwt-*;
+@external upld*;
+@external DecoratedFileUpload*;
+@external status*;
+@external prgbar*;
+@external cancel;
+@external changed;
+@external filename;
+
+.customUpload .GWTUpld, .customUpload table.GWTUpld td {
+    font-family: Verdana, Arial;
+    font-size: 12px;
+    padding: 0px;
+}
+
+.customUpload .GWTUpld form,
+.customUpload .GWTUpld .upld-form-elements {
+    padding: 0px;
+    vertical-align: top;
+}
+
+.customUpload .GWTUpld .upld-status {
+    font-family: arial;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+@if user.agent ie6 ie8 ie9 {
+    .customUpload .GWTUpld .upld-status div.cancel {
+        width: 14px;
+        height: 10px;
+        cursor: pointer;
+        margin-top: 2px;
+    }
+} @else {
+    .customUpload .GWTUpld .upld-status div.cancel {
+        width: 12px;
+        height: 12px;
+        cursor: pointer;
+        margin-top: 1px;
+    }
+}
+
+@sprite .customUpload .GWTUpld .upld-status div.cancel  {
+    gwt-image: 'imgCancelUpload';
+}
+
+@sprite .customUpload .GWTUpld .upld-status div.cancel:hover  {
+    gwt-image: 'imgCancelUploadHover';
+}
+
+.customUpload .GWTUpld .upld-status .filename {
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 8px;
+    margin-right: 11px;
+    height: 100%;
+    font-size: 12px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+}
+.customUpload .GWTUpld .upld-status .status {
+    padding-left: 8px;
+    white-space: nowrap;
+    height: 100%;
+    font-size: 12px;
+}
+.customUpload .GWTUpld .upld-status .status-success {
+    color: green;
+}
+.customUpload .GWTUpld .upld-status .status-error,
+.customUpload .GWTUpld .upld-status .status-canceled {
+    color: red;
+}
+.customUpload .GWTUpld .prgbar {
+    height: 12px;
+    float: left;
+    width: 100px;
+    margin-left: 2px;
+}
+.customUpload .GWTUpld .prgbar-back {
+    background: #ffffff none repeat scroll 0 0;
+    border: 1px solid #999999;
+    overflow: hidden;
+    padding: 1px;
+}
+
+@if user.agent ie6 ie8 ie9 {
+    .customUpload .GWTUpld .GWTUpld .prgbar-back {
+        height: 12px;
+        margin-top: 2px;
+    }
+}
+
+.customUpload .GWTUpld .prgbar-done {
+    background: #d4e4ff none repeat scroll 0 0;
+    font-size: 0;
+    height: 100%;
+    float: left;
+}
+.customUpload .GWTUpld .prgbar-msg {
+    position: absolute;
+    z-index: 9;
+    font-size: 9px;
+    font-weight: normal;
+    margin-left: 3px;
+}
+
+@if user.agent ie6 ie8 ie9 {
+    .customUpload .GWTUpld .prgbar-msg {
+        top: 0px;
+        left: 4px;
+    }
+}
+
+.customUpload .GWTUpld .changed {
+    color: red;
+    font-weight: bold;
+    text-decoration: blink;
+}
+.upld-modal .customUpload .GWTUpld {
+    border: 2px groove #F6A828;
+    padding: 10px;
+    background: #bf984c;
+    -moz-border-radius-bottomleft: 6px;
+    -moz-border-radius-bottomright: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+}
+
+.upld-modal-glass {
+    background-color: #d4e4ff;
+    opacity: 0.3;
+}
+
+@if user.agent ie6 ie8 ie9 {
+    .upld-modal-glass {
+        filter: literal('alpha(opacity=30)');
+    }
+}
+
+.customUpload .GWTUpld .DecoratedFileUpload {
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.customUpload .GWTUpld .DecoratedFileUpload-button {
+    white-space: nowrap;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.customUpload .GWTUpld .gwt-Button, .customUpload .GWTUpld .gwt-FileUpload {
+    font-size: 13px;
+    min-height: 15px;
+}
+
+.customUpload .GWTUpld .DecoratedFileUpload .gwt-Anchor,
+.customUpload .GWTUpld .DecoratedFileUpload .gwt-Label {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.customUpload .GWTUpld .DecoratedFileUpload-button:HOVER,
+.customUpload .GWTUpld .DecoratedFileUpload-button-over {
+    color: black;
+}
+
+.customUpload .GWTUpld .DecoratedFileUpload-disabled {
+    color: grey;
+}
+
+.customUpload .GWTUpld input[type="file"] {
+    cursor: pointer;
+}
