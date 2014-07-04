@@ -17,18 +17,18 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.cell.client.*;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ImageResourceRenderer;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
@@ -52,19 +52,29 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
     private Presenter presenter;
 
+    public interface CustomCellTableResources extends CellTable.Resources {
+
+        interface TableStyle extends CellTable.Style {
+        }
+
+        @Override
+        @Source({"customCellTable.css"})
+        TableStyle cellTableStyle();
+    }
+
     public DataFileListPanel() {
-        final CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES);
+        final CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES, (CellTable.Resources)GWT.create(CustomCellTableResources.class));
         grid.setEmptyTableWidget(new Label("No files uploaded"));
         grid.setWidth("100%", true);
 
         final EditTextCell nameCell = new EditTextCell();
-        Column<DataFileRow, String> column = new Column<DataFileRow, String>(nameCell) {
+        Column<DataFileRow, String> nameColumn = new Column<DataFileRow, String>(nameCell) {
             @Override
             public String getValue(DataFileRow row) {
                 return row.getName();
             }
         };
-        column.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
+        nameColumn.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
             @Override
             public void update(int index, DataFileRow row, String value) {
                 if (isNameValid(value, index)) {
@@ -75,20 +85,25 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 }
             }
         });
-        grid.addColumn(column);
-        grid.addColumn(new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yyyy HH:mm"))) {
+        grid.addColumn(nameColumn);
+
+        grid.addColumn(new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yy HH:mm"))) {
             @Override
             public Date getValue(DataFileRow object) {
                 return object.getCreated();
             }
         });
+        grid.setColumnWidth(1, 100, Style.Unit.PX);
 
-        grid.addColumn(new Column<DataFileRow, String>(new TextCell()) {
+        Column<DataFileRow, String> statusText = new Column<DataFileRow, String>(new TextCell()) {
             @Override
             public String getValue(DataFileRow object) {
                 return object.getStatus().getTitle();
             }
-        });
+        };
+        statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        grid.addColumn(statusText);
+        grid.setColumnWidth(2, 100, Style.Unit.PX);
 
         ActionCell<DataFileRow> actionCell = new ActionCell<DataFileRow>("Delete...", EDITOR_RESOURCES.smallLoader()) {
             @Override
@@ -111,12 +126,18 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 }
             }
         });
+        deleteButton.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         grid.addColumn(deleteButton);
+        grid.setColumnWidth(3, 80, Style.Unit.PX);
 
         dataProvider = new ListDataProvider<DataFileRow>();
         dataProvider.addDataDisplay(grid);
 
-        add(grid);
+        ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.setWidth("100%");
+        scrollPanel.add(grid);
+
+        add(scrollPanel);
     }
 
     public void setRows(List<DataFileRow> rows) {

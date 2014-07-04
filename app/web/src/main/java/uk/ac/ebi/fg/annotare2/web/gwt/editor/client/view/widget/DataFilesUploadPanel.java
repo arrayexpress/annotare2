@@ -80,7 +80,7 @@ public class DataFilesUploadPanel extends Composite {
 
     interface UploaderConstants extends IUploader.UploaderConstants {
 
-        @Constants.DefaultStringValue("Upload files...")
+        @Constants.DefaultStringValue("Direct upload...")
         String uploaderBrowse();
     }
 

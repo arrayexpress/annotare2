@@ -17,8 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
@@ -33,17 +37,14 @@ import java.util.List;
  */
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView {
 
-    //@UiField
-    //TabLayoutPanel tabLayoutPanel;
-
     @UiField
     DataFileListPanel filesList;
 
     @UiField
     DataFilesUploadPanel uploadPanel;
 
-    //@UiField
-    //DataFileFtpUploadView dataFileFtpUploadView;
+    @UiField
+    Button ftpUploadBtn;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -51,6 +52,21 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     public DataFilesUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+
+        ftpUploadBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.alert("Yup, I was clicked!");
+                //new FTPUploadDialog(columns,
+                //        presenter.getEfoTerms(),
+                //        new DialogCallback<List<SampleColumn>>() {
+                //            @Override
+                //            public void onOkay(List<SampleColumn> columns) {
+                //                updateColumns(columns);
+                //            }
+                //        });
+            }
+        });
     }
 
     @Override

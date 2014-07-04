@@ -141,18 +141,18 @@
 }
 
 .customUpload .GWTUpld .DecoratedFileUpload {
-    margin-right: 5px;
+    margin-right: 0;
     display: inline-block;
 }
 
 .customUpload .GWTUpld .DecoratedFileUpload-button {
     white-space: nowrap;
-    font-size: 13px;
+    font-size: small;
     cursor: pointer;
 }
 
 .customUpload .GWTUpld .gwt-Button, .customUpload .GWTUpld .gwt-FileUpload {
-    font-size: 13px;
+    font-size: small;
     min-height: 15px;
 }
 

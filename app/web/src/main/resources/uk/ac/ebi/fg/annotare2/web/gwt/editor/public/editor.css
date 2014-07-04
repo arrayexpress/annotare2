@@ -463,10 +463,6 @@ a.wgt-button :hover {
     cursor: pointer;
 }
 
-table.GWTUpld {
-    width: 100%;
-}
-
 .app-ToggleImage {
     padding: 4px;
     border: 1px solid #fefefe;
