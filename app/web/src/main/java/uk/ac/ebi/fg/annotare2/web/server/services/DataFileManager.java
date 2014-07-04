@@ -112,6 +112,11 @@ public class DataFileManager {
 
     }
 
+    public void renameDataFile(DataFile dataFile, String newFileName) {
+        dataFile.setName(newFileName);
+        dataFileDao.save(dataFile);
+    }
+
     public void deleteDataFile(DataFile dataFile) throws IOException {
         dataFileDao.delete(dataFile);
     }

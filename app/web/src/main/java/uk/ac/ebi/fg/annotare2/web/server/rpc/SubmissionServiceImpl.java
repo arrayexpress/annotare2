@@ -403,10 +403,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
             ExperimentProfile experiment = submission.getExperimentProfile();
             DataFile dataFile = dataFileManager.get(fileId);
-            if (submission.getFiles().contains(dataFile)) {
+            if (submission.getFiles().contains(dataFile) && dataFile.getStatus().isFinal()) {
                 experiment.renameFile(new FileRef(dataFile.getName(), dataFile.getDigest()), fileName);
                 submission.setExperimentProfile(experiment);
-                dataFile.setName(fileName);
+                dataFileManager.renameDataFile(dataFile, fileName);
 
                 save(submission);
             }
