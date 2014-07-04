@@ -51,7 +51,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     public DataAssignmentViewImpl() {
         gridView = new GridView<DataAssignmentRow>();
 
-        Button button = new Button("Assign files...");
+        Button button = new Button("Assign Files...");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

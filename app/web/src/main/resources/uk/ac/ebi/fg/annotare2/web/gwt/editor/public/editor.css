@@ -356,6 +356,14 @@
     display: table !important;
 }
 
+/* Cell Table */
+.gwt-cellTable input[type="text"], .gwt-cellTable select {
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
 /* Idf List */
 
 .app-IdfListView {

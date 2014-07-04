@@ -66,6 +66,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         final CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES, (CellTable.Resources)GWT.create(CustomCellTableResources.class));
         grid.setEmptyTableWidget(new Label("No files uploaded"));
         grid.setWidth("100%", true);
+        grid.addStyleName("gwt-cellTable");
 
         final EditTextCell nameCell = new EditTextCell();
         Column<DataFileRow, String> nameColumn = new Column<DataFileRow, String>(nameCell) {

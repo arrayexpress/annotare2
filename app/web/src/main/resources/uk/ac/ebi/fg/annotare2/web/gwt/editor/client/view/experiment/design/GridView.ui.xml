@@ -34,7 +34,7 @@
             </g:HorizontalPanel>
         </g:north>
         <g:center>
-            <g:SimpleLayoutPanel ui:field="gridPanel" addStyleNames="{style.grid}"/>
+            <g:SimpleLayoutPanel ui:field="gridPanel" width="100%" addStyleNames="{style.grid}"/>
         </g:center>
     </g:DockLayoutPanel>
 </ui:UiBinder>
