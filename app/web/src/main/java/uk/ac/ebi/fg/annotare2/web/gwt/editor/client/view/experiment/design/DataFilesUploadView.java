@@ -19,9 +19,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileFtpUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFilesUploadPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FTPUploadDialog;
 
 import java.util.List;
 
@@ -38,6 +38,6 @@ public interface DataFilesUploadView extends IsWidget {
 
     void setFtpProperties(String url, String username, String password);
 
-    interface Presenter extends DataFilesUploadPanel.Presenter, DataFileFtpUploadView.Presenter, DataFileListPanel.Presenter {
+    interface Presenter extends DataFilesUploadPanel.Presenter, FTPUploadDialog.Presenter, DataFileListPanel.Presenter {
     }
 }

@@ -111,6 +111,10 @@ public class DataFilesUploadPanel extends Composite {
         this.presenter = presenter;
     }
 
+    public void hide() {
+        getWidget().setVisible(false);
+    }
+
     public interface Presenter {
         void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
     }

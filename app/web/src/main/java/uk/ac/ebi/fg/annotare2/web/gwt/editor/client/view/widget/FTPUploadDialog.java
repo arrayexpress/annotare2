@@ -19,16 +19,16 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataFileFtpUploadView extends Composite {
+public class FTPUploadDialog extends DialogBox {
 
-    interface Binder extends UiBinder<Widget, DataFileFtpUploadView> {
+    interface Binder extends UiBinder<Widget, FTPUploadDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -44,12 +44,20 @@ public class DataFileFtpUploadView extends Composite {
     @UiField
     FtpFileRegistrationForm fileRegistrationForm;
 
-    public DataFileFtpUploadView() {
-        initWidget(Binder.BINDER.createAndBindUi(this));
-    }
+    private final Presenter presenter;
 
-    public void setPresenter(Presenter presenter) {
+    public FTPUploadDialog(Presenter presenter) {
+        this.presenter = presenter;
+
+        setModal(true);
+        setGlassEnabled(true);
+        setText("FTP Upload");
+
+        setWidget(Binder.BINDER.createAndBindUi(this));
+
         fileRegistrationForm.setPresenter(presenter);
+
+        center();
     }
 
     public void setFtpProperties(String url, String username, String password) {
