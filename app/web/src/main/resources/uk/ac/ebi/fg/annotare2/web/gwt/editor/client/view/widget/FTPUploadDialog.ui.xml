@@ -33,6 +33,12 @@
             color: #E5A066;
             font-weight: bolder;
         }
+
+        .close {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
     </ui:style>
 
     <g:FlowPanel>
@@ -69,5 +75,8 @@
                 </li>
             </ul>
         </g:HTMLPanel>
+        <g:FlowPanel addStyleNames="{style.close}">
+            <g:Button text="Close"/>
+        </g:FlowPanel>
     </g:FlowPanel>
 </ui:UiBinder>

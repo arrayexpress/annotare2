@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -39,11 +40,29 @@ public class DataFilesUploadPanel extends Composite {
 
     private Presenter presenter;
 
-    class OnFinishUploaderHandler implements IUploader.OnFinishUploaderHandler {
+    private final MultiUploader uploader;
+
+    private static class CustomModalUploadStatus extends ModalUploadStatus {
+        @Override
+        public IUploadStatus newInstance() {
+            IUploadStatus ret = new CustomModalUploadStatus();
+            ret.setCancelConfiguration(cancelCfg);
+            return ret;
+        }
+    }
+
+    private class OnFinishUploaderHandler implements IUploader.OnFinishUploaderHandler {
         @Override
         public void onFinish(IUploader uploader) {
+            final IUploadStatus status = uploader.getStatusWidget();
+            new Timer() {
+                public void run() {
+                    status.setVisible(false);
+                }
+            }.schedule(2000);
+
+            uploader.asWidget().removeFromParent();
             if (uploader.getStatus() == SUCCESS) {
-                uploader.asWidget().removeFromParent();
                 if (presenter != null) {
                     IFileInput input = uploader.getFileInput();
                     List<String> fileNames = input.getFilenames();
@@ -90,15 +109,13 @@ public class DataFilesUploadPanel extends Composite {
         FlowPanel panel = new FlowPanel();
         initWidget(panel);
 
-        IUploadStatus status = new BaseUploadStatus();
+        IUploadStatus status = new CustomModalUploadStatus();
         status.setCancelConfiguration(
                 EnumSet.of(
                         IUploadStatus.CancelBehavior.STOP_CURRENT
-                        , IUploadStatus.CancelBehavior.REMOVE_INVALID
-                        , IUploadStatus.CancelBehavior.REMOVE_CANCELLED_FROM_LIST
                 )
         );
-        final MultiUploader uploader = new MultiUploader(IFileInput.FileInputType.BUTTON);
+        uploader = new MultiUploader(IFileInput.FileInputType.BUTTON);
         uploader.setStatusWidget(status);
         uploader.setStyleName("customUpload");
         uploader.setI18Constants(I18N_CONSTANTS);
@@ -106,6 +123,10 @@ public class DataFilesUploadPanel extends Composite {
         uploader.addOnFinishUploadHandler(new OnFinishUploaderHandler());
         panel.add(uploader);
     }
+
+    //public void setStatusWidget(IUploadStatus widget) {
+    //    uploader.setStatusWidget(widget);
+    //}
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;

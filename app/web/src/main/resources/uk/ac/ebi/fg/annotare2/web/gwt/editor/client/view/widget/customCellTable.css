@@ -92,7 +92,7 @@
 }
 
 .cellTableKeyboardSelectedRow {
-    background: #ffc;
+    background: inherit;
 }
 
 .cellTableKeyboardSelectedRowCell {

@@ -54,10 +54,9 @@ public class FTPUploadDialog extends DialogBox {
         setText("FTP Upload");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
+        center();
 
         fileRegistrationForm.setPresenter(presenter);
-
-        center();
     }
 
     public void setFtpProperties(String url, String username, String password) {

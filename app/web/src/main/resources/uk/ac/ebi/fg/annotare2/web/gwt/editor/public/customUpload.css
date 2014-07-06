@@ -8,10 +8,10 @@
 @external changed;
 @external filename;
 
-.customUpload .GWTUpld, .customUpload table.GWTUpld td {
-    font-family: Verdana, Arial;
-    font-size: 12px;
-    padding: 0px;
+.GWTUpld, table.GWTUpld td {
+    font-family: Arial, sans-serif !important;
+    font-size: small !important;
+    padding: 0px !important;
 }
 
 .customUpload .GWTUpld form,
@@ -20,10 +20,10 @@
     vertical-align: top;
 }
 
-.customUpload .GWTUpld .upld-status {
-    font-family: arial;
-    font-size: 12px;
-    font-weight: bold;
+.GWTUpld .upld-status {
+    font-family: Arial, sans-serif !important;
+    font-size: small !important;
+    font-weight: normal !important;
 }
 
 @if user.agent ie6 ie8 ie9 {
@@ -56,7 +56,7 @@
     margin-left: 8px;
     margin-right: 11px;
     height: 100%;
-    font-size: 12px;
+    font-size: small;
     max-width: 200px;
     text-overflow: ellipsis;
 }
@@ -64,7 +64,7 @@
     padding-left: 8px;
     white-space: nowrap;
     height: 100%;
-    font-size: 12px;
+    font-size: small;
 }
 .customUpload .GWTUpld .upld-status .status-success {
     color: green;
@@ -119,19 +119,18 @@
     font-weight: bold;
     text-decoration: blink;
 }
-.upld-modal .customUpload .GWTUpld {
-    border: 2px groove #F6A828;
-    padding: 10px;
-    background: #bf984c;
-    -moz-border-radius-bottomleft: 6px;
-    -moz-border-radius-bottomright: 6px;
-    -moz-border-radius-topleft: 6px;
-    -moz-border-radius-topright: 6px;
+.upld-modal .GWTUpld {
+    border: 1px solid #48877C !important;
+    padding: 20px !important;
+    background: #ffffff !important;
+    -webkit-border-radius: 5px !important;
+    -moz-border-radius: 5px !important;
+    border-radius: 5px !important;
 }
 
 .upld-modal-glass {
-    background-color: #d4e4ff;
-    opacity: 0.3;
+    background-color: #000 !important;
+    opacity: 0.3 !important;
 }
 
 @if user.agent ie6 ie8 ie9 {
