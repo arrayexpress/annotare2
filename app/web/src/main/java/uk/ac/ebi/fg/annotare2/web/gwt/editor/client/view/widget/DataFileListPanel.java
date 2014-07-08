@@ -94,7 +94,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 return object.getCreated();
             }
         });
-        grid.setColumnWidth(1, 100, Style.Unit.PX);
+        grid.setColumnWidth(1, 110, Style.Unit.PX);
 
         Column<DataFileRow, String> statusText = new Column<DataFileRow, String>(new TextCell()) {
             @Override
