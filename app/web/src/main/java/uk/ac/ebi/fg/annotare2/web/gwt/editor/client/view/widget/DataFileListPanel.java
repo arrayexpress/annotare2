@@ -121,7 +121,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         deleteButton.setFieldUpdater(new FieldUpdater<DataFileRow, DataFileRow>() {
             @Override
             public void update(int index, DataFileRow object, DataFileRow value) {
-                if (presenter != null && confirm("The file " + object.getName() + " will be removed from the submission. Do you want to continue?")) {
+                if (presenter != null && confirm("The file " + object.getName() + " will no longer be available to assign if you delete.Used  Do you want to continue?")) {
                     selected.add(object.getId());
                     presenter.removeFile(object);
                 }
