@@ -474,7 +474,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private final Pattern md5Pattern1 = Pattern.compile("^\\s*MD5\\((.+)\\)\\s*=\\s*([0-9a-fA-F]{32})\\s*$");
+    private final Pattern md5Pattern1 = Pattern.compile("^\\s*[mM][dD]5\\s+\\((.+)\\)\\s*=\\s*([0-9a-fA-F]{32})\\s*$");
     private final Pattern md5Pattern2 = Pattern.compile("^\\s*([0-9a-fA-F]{32})\\s+(.+)\\s*$");
     private final Pattern md5Pattern3 = Pattern.compile("^\\s*(.+)\\s+([0-9a-fA-F]{32})\\s*$");
 
