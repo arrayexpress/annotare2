@@ -105,11 +105,25 @@ public class MageTabGenerator {
 
     private final ExperimentProfile exp;
 
-    public MageTabGenerator(ExperimentProfile exp) {
+    private final Set<GenerateOption> options;
+    private final String newLine;
+
+    public static enum GenerateOption {
+        REPLACE_NEWLINES_WITH_SPACES
+    }
+
+    public MageTabGenerator(ExperimentProfile exp, GenerateOption... options) {
         if (null == protocolTypes) {
             protocolTypes = ProtocolTypes.create();
         }
 
+        this.options = new HashSet<GenerateOption>(Arrays.asList(options));
+        if (this.options.contains(GenerateOption.REPLACE_NEWLINES_WITH_SPACES)) {
+            newLine = " ";
+        } else {
+            newLine = System.getProperty("line.separator");
+        }
+        
         this.exp = exp;
         this.unassignedValue = new UnassignedValue();
         this.uniqueNameValue = new UniqueNameValue();
@@ -133,50 +147,50 @@ public class MageTabGenerator {
             idf.addComment("AEExperimentType", exp.getAeExperimentType());
         }
 
-        idf.investigationTitle = nullOrAllWhitespaceToEmpty(exp.getTitle());
-        idf.experimentDescription = nullOrAllWhitespaceToEmpty(exp.getDescription());
-        idf.publicReleaseDate = nullOrAllWhitespaceToEmpty(formatDate(exp.getPublicReleaseDate()));
-        idf.dateOfExperiment = nullOrAllWhitespaceToEmpty(formatDate(exp.getExperimentDate()));
-        idf.accession = nullOrAllWhitespaceToEmpty(exp.getAccession());
+        idf.investigationTitle = convertToIdfFriendly(exp.getTitle(), newLine);
+        idf.experimentDescription = convertToIdfFriendly(exp.getDescription(), newLine);
+        idf.publicReleaseDate = convertToIdfFriendly(formatDate(exp.getPublicReleaseDate()), newLine);
+        idf.dateOfExperiment = convertToIdfFriendly(formatDate(exp.getExperimentDate()), newLine);
+        idf.accession = convertToIdfFriendly(exp.getAccession(), newLine);
 
         for (OntologyTerm term : exp.getExperimentalDesigns()) {
-            idf.experimentalDesign.add(nullOrAllWhitespaceToEmpty(term.getLabel()));
-            idf.experimentalDesignTermAccession.add(nullOrAllWhitespaceToEmpty(term.getAccession()));
+            idf.experimentalDesign.add(convertToIdfFriendly(term.getLabel(), newLine));
+            idf.experimentalDesignTermAccession.add(convertToIdfFriendly(term.getAccession(), newLine));
             idf.experimentalDesignTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
         }
 
         for (Contact contact : exp.getContacts()) {
-            idf.personFirstName.add(nullOrAllWhitespaceToEmpty(contact.getFirstName()));
-            idf.personLastName.add(nullOrAllWhitespaceToEmpty(contact.getLastName()));
-            idf.personMidInitials.add(nullOrAllWhitespaceToEmpty(contact.getMidInitials()));
-            idf.personEmail.add(nullOrAllWhitespaceToEmpty(contact.getEmail()));
-            idf.personPhone.add(nullOrAllWhitespaceToEmpty(contact.getPhone()));
-            idf.personFax.add(nullOrAllWhitespaceToEmpty(contact.getFax()));
-            idf.personAddress.add(nullOrAllWhitespaceToEmpty(contact.getAddress()));
-            idf.personAffiliation.add(nullOrAllWhitespaceToEmpty(contact.getAffiliation()));
+            idf.personFirstName.add(convertToIdfFriendly(contact.getFirstName(), newLine));
+            idf.personLastName.add(convertToIdfFriendly(contact.getLastName(), newLine));
+            idf.personMidInitials.add(convertToIdfFriendly(contact.getMidInitials(), newLine));
+            idf.personEmail.add(convertToIdfFriendly(contact.getEmail(), newLine));
+            idf.personPhone.add(convertToIdfFriendly(contact.getPhone(), newLine));
+            idf.personFax.add(convertToIdfFriendly(contact.getFax(), newLine));
+            idf.personAddress.add(convertToIdfFriendly(contact.getAddress(), newLine));
+            idf.personAffiliation.add(convertToIdfFriendly(contact.getAffiliation(), newLine));
             idf.personRoles.add(joinCollection(contact.getRoles(), ";"));
         }
 
         for (Publication publication : exp.getPublications()) {
-            idf.publicationTitle.add(nullOrAllWhitespaceToEmpty(publication.getTitle()));
-            idf.publicationAuthorList.add(nullOrAllWhitespaceToEmpty(publication.getAuthors()));
-            idf.pubMedId.add(nullOrAllWhitespaceToEmpty(publication.getPubMedId()));
-            idf.publicationDOI.add(nullOrAllWhitespaceToEmpty(publication.getDoi()));
+            idf.publicationTitle.add(convertToIdfFriendly(publication.getTitle(), newLine));
+            idf.publicationAuthorList.add(convertToIdfFriendly(publication.getAuthors(), newLine));
+            idf.pubMedId.add(convertToIdfFriendly(publication.getPubMedId(), newLine));
+            idf.publicationDOI.add(convertToIdfFriendly(publication.getDoi(), newLine));
             OntologyTerm status = publication.getStatus();
-            idf.publicationStatus.add(nullOrAllWhitespaceToEmpty(status == null ? null : status.getLabel()));
-            idf.publicationStatusTermAccession.add(nullOrAllWhitespaceToEmpty(status == null ? null : status.getAccession()));
-            idf.publicationStatusTermSourceREF.add(nullOrAllWhitespaceToEmpty(status == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName()));
+            idf.publicationStatus.add(convertToIdfFriendly(status == null ? null : status.getLabel(), newLine));
+            idf.publicationStatusTermAccession.add(convertToIdfFriendly(status == null ? null : status.getAccession(), newLine));
+            idf.publicationStatusTermSourceREF.add(convertToIdfFriendly(status == null ? null : ensureTermSource(EFO_TERM_SOURCE).getName(), newLine));
         }
 
         for (Protocol protocol : exp.getProtocols()) {
             if (protocol.isAssigned()) {
-                idf.protocolName.add(nullOrAllWhitespaceToEmpty(protocol.getName()));
-                idf.protocolDescription.add(nullOrAllWhitespaceToEmpty(protocol.getDescription()));
-                idf.protocolType.add(nullOrAllWhitespaceToEmpty(protocol.getType().getLabel()));
-                idf.protocolTermAccession.add(nullOrAllWhitespaceToEmpty(protocol.getType().getAccession()));
+                idf.protocolName.add(convertToIdfFriendly(protocol.getName(), newLine));
+                idf.protocolDescription.add(convertToIdfFriendly(protocol.getDescription(), newLine));
+                idf.protocolType.add(convertToIdfFriendly(protocol.getType().getLabel(), newLine));
+                idf.protocolTermAccession.add(convertToIdfFriendly(protocol.getType().getAccession(), newLine));
                 idf.protocolTermSourceREF.add(ensureTermSource(EFO_TERM_SOURCE).getName());
-                idf.protocolHardware.add(nullOrAllWhitespaceToEmpty(protocol.getHardware()));
-                idf.protocolSoftware.add(nullOrAllWhitespaceToEmpty(protocol.getSoftware()));
+                idf.protocolHardware.add(convertToIdfFriendly(protocol.getHardware(), newLine));
+                idf.protocolSoftware.add(convertToIdfFriendly(protocol.getSoftware(), newLine));
             }
         }
 
@@ -184,14 +198,14 @@ public class MageTabGenerator {
             if (!attribute.getType().isFactorValue()) {
                 continue;
             }
-            idf.experimentalFactorName.add(nullOrAllWhitespaceToEmpty(getName(attribute)));
+            idf.experimentalFactorName.add(convertToIdfFriendly(getName(attribute), newLine));
             OntologyTerm term = attribute.getTerm();
             if (term != null) {
-                idf.experimentalFactorType.add(nullOrAllWhitespaceToEmpty(term.getLabel()));
-                idf.experimentalFactorTermAccession.add(nullOrAllWhitespaceToEmpty(term.getAccession()));
-                idf.experimentalFactorTermSourceREF.add(nullOrAllWhitespaceToEmpty(ensureTermSource(EFO_TERM_SOURCE).getName()));
+                idf.experimentalFactorType.add(convertToIdfFriendly(term.getLabel(), newLine));
+                idf.experimentalFactorTermAccession.add(convertToIdfFriendly(term.getAccession(), newLine));
+                idf.experimentalFactorTermSourceREF.add(convertToIdfFriendly(ensureTermSource(EFO_TERM_SOURCE).getName(), newLine));
             } else {
-                idf.experimentalFactorType.add(nullOrAllWhitespaceToEmpty(getName(attribute)));
+                idf.experimentalFactorType.add(convertToIdfFriendly(getName(attribute), newLine));
                 idf.experimentalFactorTermAccession.add("");
                 idf.experimentalFactorTermSourceREF.add("");
             }
@@ -200,9 +214,9 @@ public class MageTabGenerator {
 
     private void addTermSources(IDF idf) {
         for (TermSource termSource : usedTermSources) {
-            idf.termSourceName.add(nullOrAllWhitespaceToEmpty(termSource.getName()));
-            idf.termSourceVersion.add(nullOrAllWhitespaceToEmpty(termSource.getVersion()));
-            idf.termSourceFile.add(nullOrAllWhitespaceToEmpty(termSource.getUrl()));
+            idf.termSourceName.add(convertToIdfFriendly(termSource.getName(), newLine));
+            idf.termSourceVersion.add(convertToIdfFriendly(termSource.getVersion(), newLine));
+            idf.termSourceFile.add(convertToIdfFriendly(termSource.getUrl(), newLine));
         }
     }
 
@@ -754,8 +768,8 @@ public class MageTabGenerator {
                         null;
     }
 
-    private static String nullOrAllWhitespaceToEmpty(String str) {
-        return str == null || str.trim().isEmpty() ? "" : str;
+    private static String convertToIdfFriendly(String str, String newLine) {
+        return str == null || str.trim().isEmpty() ? "" : str.replaceAll("(\\r\\n|[\\r\\n])", newLine);
     }
 
     private static String joinCollection(Collection<String> collection, String separator) {
