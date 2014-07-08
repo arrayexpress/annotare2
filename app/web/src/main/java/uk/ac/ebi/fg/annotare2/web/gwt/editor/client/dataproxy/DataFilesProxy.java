@@ -25,7 +25,6 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 
@@ -127,15 +126,15 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void registerFtpFilesAsync(List<FtpFileInfo> details, final AsyncCallback<Map<Integer, String>> callback) {
-        submissionServiceAsync.registerFtpFiles(getSubmissionId(), details, new AsyncCallbackWrapper<Map<Integer, String>>() {
+    public void registerFtpFilesAsync(List<String> details, final AsyncCallback<String> callback) {
+        submissionServiceAsync.registerFtpFiles(getSubmissionId(), details, new AsyncCallbackWrapper<String>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(Map<Integer, String> result) {
+            public void onSuccess(String result) {
                 updater.update();
                 callback.onSuccess(result);
             }

@@ -6,7 +6,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
@@ -44,7 +43,7 @@ public interface SubmissionServiceAsync {
 
     void registerHttpFiles(long id, List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
 
-    void registerFtpFiles(long id, List<FtpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
+    void registerFtpFiles(long id, List<String> filesInfo, AsyncCallback<String> async);
 
     void renameDataFile(long id, long fileId, String fileName, AsyncCallback<ExperimentProfile> async);
 

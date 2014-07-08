@@ -23,7 +23,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
@@ -67,7 +66,7 @@ public interface SubmissionService extends RemoteService {
 
     Map<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 
-    Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
+    String registerFtpFiles(long id, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 
     ExperimentProfile renameDataFile(long id, long fileId, String fileName) throws ResourceNotFoundException, NoPermissionException;
 

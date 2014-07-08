@@ -17,11 +17,19 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -42,21 +50,26 @@ public class FTPUploadDialog extends DialogBox {
     InlineLabel ftpUrl;
 
     @UiField
-    FtpFileRegistrationForm fileRegistrationForm;
+    TextArea values;
 
-    private final Presenter presenter;
+    @UiField
+    Button cancelButton;
 
-    public FTPUploadDialog(Presenter presenter) {
-        this.presenter = presenter;
+    @UiField
+    Button okButton;
 
+    private Presenter presenter;
+
+    public FTPUploadDialog() {
         setModal(true);
         setGlassEnabled(true);
         setText("FTP Upload");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
-        center();
+    }
 
-        fileRegistrationForm.setPresenter(presenter);
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     public void setFtpProperties(String url, String username, String password) {
@@ -65,7 +78,53 @@ public class FTPUploadDialog extends DialogBox {
         ftpPassword.setText(password);
     }
 
-    public interface Presenter extends FtpFileRegistrationForm.Presenter {
+    @Override
+    public void show() {
+        values.setValue("");
+        super.show();
+        Scheduler.get().scheduleDeferred(new Command() {
+            public void execute() {
+                values.setFocus(true);
+            }
+        });
     }
 
+    @UiHandler("okButton")
+    void okButtonClicked(ClickEvent event) {
+        List<String> pastedData = getPastedData();
+        if (!pastedData.isEmpty() && null != presenter) {
+            presenter.onFtpDataSubmit(pastedData, new AsyncCallback<String>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    Window.alert("Unable to send file information, please try again");
+                }
+
+                @Override
+                public void onSuccess(String result) {
+                    if (null != result && !result.isEmpty()) {
+                        Window.alert("Unable to process FTP files:\n" + result);
+                    } else {
+                        hide();
+                    }
+                }
+            });
+        }
+    }
+
+    @UiHandler("cancelButton")
+    void cancelButtonClicked(ClickEvent event) {
+        hide();
+    }
+
+    private List<String> getPastedData() {
+        String pastedRows = values.getValue();
+        List<String> result = new ArrayList<String>();
+        if (null != pastedRows && !pastedRows.isEmpty()) {
+            result.addAll(Arrays.asList(pastedRows.split("\\r\\n|[\\r\\n]")));
+        }
+        return result;
+    }
+    public interface Presenter {
+        void onFtpDataSubmit(List<String> data, AsyncCallback<String> callback);
+    }
 }

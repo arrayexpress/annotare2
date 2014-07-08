@@ -66,6 +66,8 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.collect.Ordering.natural;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.restoreOriginalNameValues;
@@ -349,7 +351,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public Map<Integer, String> registerFtpFiles(long id, List<FtpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
+    public String registerFtpFiles(long id, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
 
@@ -361,26 +363,30 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 ftpRoot = ftpRoot + "/";
             }
 
-            Map<Integer, String> errors = new HashMap<Integer, String>();
-            int index = 0;
-            for (FtpFileInfo info : filesInfo) {
-                URI fileUri = new URI(ftpRoot + URIEncoderDecoder.encode(info.getFileName()));
-                DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
+            StringBuilder errors = new StringBuilder();
+            for (String infoStr : filesInfo) {
+                FtpFileInfo info = getFtpFileInfo(infoStr);
+                if (null != info) {
+                    URI fileUri = new URI(ftpRoot + URIEncoderDecoder.encode(info.getFileName()));
+                    DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 
-                if (fileSource.exists()) {
-                    if (checkFileExists(submission, info.getFileName())) {
-                        errors.put(index, "file already exists");
-                    } else if (EMPTY_FILE_MD5.equals(info.getMd5())) {
-                        errors.put(index, "empty file");
+                    if (fileSource.exists()) {
+                        if (checkFileExists(submission, info.getFileName())) {
+                            errors.append(" - file \"").append(info.getFileName()).append("\" already exists");
+                        } else if (EMPTY_FILE_MD5.equals(info.getMd5())) {
+                            errors.append("empty file \"").append(info.getFileName()).append("\"");
+                        } else {
+                            saveFile(fileSource, info.getMd5(), submission);
+                        }
                     } else {
-                        saveFile(fileSource, info.getMd5(), submission);
+                        errors.append(" - file \"").append(info.getFileName()).append("\" not found");
                     }
                 } else {
-                    errors.put(index, "file not found");
+                    errors.append(" - unrecognized format \"").append(infoStr).append("\"");
                 }
-                index++;
+                errors.append("\n");
             }
-            return errors;
+            return errors.toString();
         } catch (URISyntaxException e) {
             throw unexpected(e);
         } catch (FileNotFoundException e) {
@@ -466,6 +472,35 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (IOException e) {
             throw unexpected(e);
         }
+    }
+
+    private final Pattern md5Pattern1 = Pattern.compile("^\\s*MD5\\((.+)\\)\\s*=\\s*([0-9a-fA-F]{32})\\s*$");
+    private final Pattern md5Pattern2 = Pattern.compile("^\\s*([0-9a-fA-F]{32})\\s+(.+)\\s*$");
+    private final Pattern md5Pattern3 = Pattern.compile("^\\s*(.+)\\s+([0-9a-fA-F]{32})\\s*$");
+
+    private FtpFileInfo getFtpFileInfo(final String str) {
+        if (null == str || str.isEmpty())
+            return null;
+        String fileName = null, md5 = null;
+
+        Matcher matcher1 = md5Pattern1.matcher(str);
+        Matcher matcher2 = md5Pattern2.matcher(str);
+        Matcher matcher3 = md5Pattern3.matcher(str);
+
+        if (matcher1.find()) {
+            fileName = matcher1.group(1);
+            md5 = matcher1.group(2);
+        } else if (matcher2.find()) {
+            md5 = matcher2.group(1);
+            fileName = matcher2.group(2);
+        } else if (matcher3.find()) {
+            fileName = matcher3.group(1);
+            md5 = matcher3.group(2);
+        }
+        if (null != md5) {
+            return new FtpFileInfo(fileName, md5);
+        }
+        return null;
     }
 
     private boolean checkFileExists(final ExperimentSubmission submission, final String fileName) {
