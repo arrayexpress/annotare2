@@ -60,9 +60,9 @@
                                 <li><a href="http://support.microsoft.com/kb/841290" target="_blank">FCIV</a> on Windows</li></ul></li>
                         <li><a href="http://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html" target="_blank">Upload your data file(s)</a> to our FTP server at
                             <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}">_ftp_url_</g:InlineLabel>
-                            using the following username and password:
-                            <g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}">_ftp_username_</g:InlineLabel>,
-                            <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}">_ftp_password_</g:InlineLabel></li>
+                            using the following credentials:
+                            user <g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}">_ftp_username_</g:InlineLabel>,
+                            password <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}">_ftp_password_</g:InlineLabel></li>
                         <li> Paste file names and MD5 hashes into the area below, one file per line. Recognized formats:
                             <ul>
                                 <li><code>filename.ext cc43eddbea164ff18047c5e49ec4d61c</code></li>
