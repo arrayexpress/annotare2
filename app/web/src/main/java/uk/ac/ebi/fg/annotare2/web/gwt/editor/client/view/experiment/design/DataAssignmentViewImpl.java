@@ -88,6 +88,15 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         });
         gridView.addTool(button);
 
+        button = new Button("Import Values");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                importValues();
+            }
+        });
+        gridView.addTool(button);
+
         initWidget(gridView);
     }
 
@@ -269,6 +278,17 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private void fillDownValue() {
         gridView.fillDownKeyboardSelectedColumn();
     }
+
+    private void importValues() {
+        new ImportValuesDialog(
+                new DialogCallback<List<String>>() {
+                    @Override
+                    public void onOkay(List<String> values) {
+                        gridView.importValuesToKeyboardSelectedColumn(values);
+                    }
+                });
+    }
+
 
     private static class ColumnType {
 
