@@ -29,6 +29,9 @@
     </ui:style>
     <g:ResizeLayoutPanel height="300px" width="400px">
         <g:DockLayoutPanel>
+            <g:north size="20">
+                <g:Label>Please enter values to import, one per line:</g:Label>
+            </g:north>
             <g:center>
                 <g:TextArea ui:field="values" addStyleNames="{style.textarea}"/>
             </g:center>
