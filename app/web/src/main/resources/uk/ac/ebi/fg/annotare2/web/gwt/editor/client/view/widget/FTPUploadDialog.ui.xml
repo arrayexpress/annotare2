@@ -58,7 +58,7 @@
                                 <li><code>md5sum file1 file2 ... fileN</code> on Linux</li>
                                 <li><code>md5 file1 file2 ... fileN</code> on Mac</li>
                                 <li><a href="http://support.microsoft.com/kb/841290" target="_blank">FCIV</a> on Windows</li></ul></li>
-                        <li>Upload your data file(s) to our FTP server at
+                        <li><a href="http://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html" target="_blank">Upload your data file(s)</a> to our FTP server at
                             <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}">_ftp_url_</g:InlineLabel>
                             using the following username and password:
                             <g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}">_ftp_username_</g:InlineLabel>,
