@@ -43,9 +43,6 @@
             color: #E5A066;
             font-weight: bolder;
         }
-        .errorMessage {
-            color: red;
-        }
     </ui:style>
 
     <g:ResizeLayoutPanel width="540px" height="480px">
@@ -87,44 +84,4 @@
             </g:south>
         </g:DockLayoutPanel>
     </g:ResizeLayoutPanel>
-    <!--
-    <g:FlowPanel>
-        <g:FlowPanel>
-            <g:HTMLPanel>
-                <p class="{style.text}">
-                    Step 1. Upload your data file(s) to our ftp
-                    <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}">_ftp_url_</g:InlineLabel>
-                    using the following
-                    username and password:<g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}">
-                    _ftp_username_</g:InlineLabel>,
-                    <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}">_ftp_password_</g:InlineLabel>
-                </p>
-                <p class="{style.text}">
-                    Step 2. Let us know about the files by filling the form below
-                </p>
-            </g:HTMLPanel>
-            <my:FtpFileRegistrationForm ui:field="fileRegistrationForm"/>
-        </g:FlowPanel>
-        <g:HTMLPanel>
-            <p class="{style.text}">
-                Help tip: To calculate
-                <a href="http://en.wikipedia.org/wiki/MD5" target="_blank">md5 hash</a>
-                of a file you can use following tools:
-            </p>
-            <ul class="{style.text}">
-                <li>md5 command (on Mac OS)</li>
-                <li>md5sum utility (on Linux)</li>
-                <li>
-                    <a href="http://support.microsoft.com/kb/841290" target="_blank">File Checksum Integrity Verifier or
-                        FCIV
-                    </a>
-                    (on Windows)
-                </li>
-            </ul>
-        </g:HTMLPanel>
-        <g:FlowPanel addStyleNames="{style.close}">
-            <g:Button text="Close"/>
-        </g:FlowPanel>
-    </g:FlowPanel>
-    -->
 </ui:UiBinder>

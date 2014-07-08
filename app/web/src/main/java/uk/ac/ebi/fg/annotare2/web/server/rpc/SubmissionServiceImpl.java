@@ -372,19 +372,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
                     if (fileSource.exists()) {
                         if (checkFileExists(submission, info.getFileName())) {
-                            errors.append(" - file \"").append(info.getFileName()).append("\" already exists");
+                            errors.append(" - file \"").append(info.getFileName()).append("\" already exists").append("\n");
                         } else if (EMPTY_FILE_MD5.equals(info.getMd5())) {
-                            errors.append("empty file \"").append(info.getFileName()).append("\"");
+                            errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
                         } else {
                             saveFile(fileSource, info.getMd5(), submission);
                         }
                     } else {
-                        errors.append(" - file \"").append(info.getFileName()).append("\" not found");
+                        errors.append(" - file \"").append(info.getFileName()).append("\" not found").append("\n");
                     }
                 } else {
-                    errors.append(" - unrecognized format \"").append(infoStr).append("\"");
+                    errors.append(" - unrecognized format \"").append(infoStr).append("\"").append("\n");
                 }
-                errors.append("\n");
             }
             return errors.toString();
         } catch (URISyntaxException e) {
