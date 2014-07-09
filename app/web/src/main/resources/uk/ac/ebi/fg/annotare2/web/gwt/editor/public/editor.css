@@ -363,38 +363,15 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
-/* File upload progress bar */
-.wgt-progress {
+
+/* Data Grid */
+.gwt-dataGrid input[type="text"], .gwt-dataGrid select {
     width: 100%;
-    height: 5px;
-    position: relative;
-    background: #555;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    padding: 10px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
-.wgt-progress > div {
-    display: block;
-    height: 100%;
-    -webkit-border-top-right-radius: 1px;
-    -webkit-border-bottom-right-radius: 1px;
-    -moz-border-radius-topright: 1px;
-    -moz-border-radius-bottomright: 1px;
-    border-top-right-radius: 1px;
-    border-bottom-right-radius: 1px;
-    -webkit-border-top-left-radius: 1px;
-    -webkit-border-bottom-left-radius: 1px;
-    -moz-border-radius-topleft: 1px;
-    -moz-border-radius-bottomleft: 1px;
-    border-top-left-radius: 1px;
-    border-bottom-left-radius: 1px;
-    background-color: rgb(43,194,83);
-
-    position: relative;
-    overflow: hidden;
-}
 /* Idf List */
 
 .app-IdfListView {

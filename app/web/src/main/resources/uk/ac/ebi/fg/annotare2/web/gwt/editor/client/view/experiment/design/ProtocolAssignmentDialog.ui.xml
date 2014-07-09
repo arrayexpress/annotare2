@@ -43,7 +43,26 @@
                     </g:center>
                     <g:east size="250">
                         <g:DockLayoutPanel>
-                            <g:west size="30">
+                            <g:west size="40">
+                                <g:SimpleLayoutPanel>
+                                    <g:HTMLPanel>
+                                        <div style="height:20px">&#160;</div>
+                                        <table style="width:100%" cellspacing="1">
+                                            <tr>
+                                                <td>
+                                                    <g:Button width="100%" ui:field="addButton">&lt;</g:Button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <g:Button width="100%" ui:field="removeButton">
+                                                        &gt;</g:Button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </g:HTMLPanel>
+                                </g:SimpleLayoutPanel>
+                                <!--
                                 <g:DockLayoutPanel>
                                     <g:north size="20">
                                         <g:SimplePanel/>
@@ -58,6 +77,7 @@
                                         <g:Button ui:field="addButton">&lt;</g:Button>
                                     </g:south>
                                 </g:DockLayoutPanel>
+                                -->
                             </g:west>
                             <g:center>
                                 <g:DockLayoutPanel>
@@ -75,10 +95,10 @@
             </g:center>
             <g:south size="50">
                 <g:HTMLPanel>
-                    <table style="width:100%">
+                    <table style="width:100%;height:100%">
                         <tr>
                             <td><g:Label ui:field="errorMessage" addStyleNames="{style.errorMessage}"/></td>
-                            <td align="right">
+                            <td align="right" valign="bottom">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
                                 <g:Button ui:field="okButton">Save</g:Button>
                             </td>

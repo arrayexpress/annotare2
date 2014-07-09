@@ -21,7 +21,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListPanel;
@@ -36,23 +38,15 @@ import java.util.List;
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView {
 
     @UiField
-    HorizontalPanel controlPanel;
-
-    @UiField
-    FlowPanel statusPanel;
-
-    @UiField
-    DataFileListPanel fileListPanel;
-
-    @UiField
     DataFilesUploadPanel uploadPanel;
 
     @UiField
     Button ftpUploadBtn;
 
-    private final FTPUploadDialog ftpUploadDialog;
+    @UiField
+    DataFileListPanel fileListPanel;
 
-    private Presenter presenter;
+    private final FTPUploadDialog ftpUploadDialog;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -63,6 +57,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         ftpUploadDialog = new FTPUploadDialog();
     }
 
+    @SuppressWarnings("unused")
     @UiHandler("ftpUploadBtn")
     void ftpUploadBtClicked(ClickEvent event) {
         ftpUploadDialog.center();
@@ -83,8 +78,6 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
-
         uploadPanel.setPresenter(presenter);
         fileListPanel.setPresenter(presenter);
         ftpUploadDialog.setPresenter(presenter);

@@ -89,6 +89,7 @@ public class GridView<R extends HasIdentity> extends Composite {
             return;
         }
         dataGrid = new CustomDataGrid<R>(PAGE_SIZE, CustomDataGrid.createResources());
+        dataGrid.addStyleName("gwt-dataGrid");
         dataGrid.setWidth("100%");
         dataGrid.setEmptyTableWidget(new Label("No data"));
 

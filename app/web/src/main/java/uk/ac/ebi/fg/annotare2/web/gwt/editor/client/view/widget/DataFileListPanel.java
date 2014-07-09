@@ -63,10 +63,10 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     }
 
     public DataFileListPanel() {
-        final CellTable<DataFileRow> grid = new CellTable<DataFileRow>(MAX_FILES, (CellTable.Resources)GWT.create(CustomCellTableResources.class));
-        grid.setEmptyTableWidget(new Label("No files uploaded"));
-        grid.setWidth("100%", true);
-        grid.addStyleName("gwt-cellTable");
+        final CellTable<DataFileRow> cellTable = new CellTable<DataFileRow>(MAX_FILES, (CellTable.Resources)GWT.create(CustomCellTableResources.class));
+        cellTable.setEmptyTableWidget(new Label("No files uploaded"));
+        cellTable.setWidth("100%", true);
+        cellTable.addStyleName("gwt-cellTable");
 
         final EditTextCell nameCell = new EditTextCell();
         Column<DataFileRow, String> nameColumn = new Column<DataFileRow, String>(nameCell) {
@@ -82,19 +82,19 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                     presenter.renameFile(row, value);
                 } else {
                     nameCell.clearViewData(row);
-                    grid.redraw();
+                    cellTable.redraw();
                 }
             }
         });
-        grid.addColumn(nameColumn);
+        cellTable.addColumn(nameColumn);
 
-        grid.addColumn(new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yy HH:mm"))) {
+        cellTable.addColumn(new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yy HH:mm"))) {
             @Override
             public Date getValue(DataFileRow object) {
                 return object.getCreated();
             }
         });
-        grid.setColumnWidth(1, 110, Style.Unit.PX);
+        cellTable.setColumnWidth(1, 110, Style.Unit.PX);
 
         Column<DataFileRow, String> statusText = new Column<DataFileRow, String>(new TextCell()) {
             @Override
@@ -103,8 +103,8 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             }
         };
         statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        grid.addColumn(statusText);
-        grid.setColumnWidth(2, 100, Style.Unit.PX);
+        cellTable.addColumn(statusText);
+        cellTable.setColumnWidth(2, 100, Style.Unit.PX);
 
         ActionCell<DataFileRow> actionCell = new ActionCell<DataFileRow>("Delete...", EDITOR_RESOURCES.smallLoader()) {
             @Override
@@ -128,15 +128,15 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             }
         });
         deleteButton.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        grid.addColumn(deleteButton);
-        grid.setColumnWidth(3, 80, Style.Unit.PX);
+        cellTable.addColumn(deleteButton);
+        cellTable.setColumnWidth(3, 80, Style.Unit.PX);
 
         dataProvider = new ListDataProvider<DataFileRow>();
-        dataProvider.addDataDisplay(grid);
+        dataProvider.addDataDisplay(cellTable);
 
         ScrollPanel scrollPanel = new ScrollPanel();
         scrollPanel.setWidth("100%");
-        scrollPanel.add(grid);
+        scrollPanel.add(cellTable);
 
         add(scrollPanel);
     }
