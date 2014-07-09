@@ -62,22 +62,6 @@
                                         </table>
                                     </g:HTMLPanel>
                                 </g:SimpleLayoutPanel>
-                                <!--
-                                <g:DockLayoutPanel>
-                                    <g:north size="20">
-                                        <g:SimplePanel/>
-                                    </g:north>
-                                    <g:north size="30">
-                                        <g:Button ui:field="removeButton">&gt;</g:Button>
-                                    </g:north>
-                                    <g:center>
-                                        <g:SimplePanel/>
-                                    </g:center>
-                                    <g:south size="30">
-                                        <g:Button ui:field="addButton">&lt;</g:Button>
-                                    </g:south>
-                                </g:DockLayoutPanel>
-                                -->
                             </g:west>
                             <g:center>
                                 <g:DockLayoutPanel>

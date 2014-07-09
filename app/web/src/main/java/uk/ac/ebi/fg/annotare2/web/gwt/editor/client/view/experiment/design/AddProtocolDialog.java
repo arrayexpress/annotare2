@@ -37,9 +37,9 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolCreationDialog extends DialogBox {
+public class AddProtocolDialog extends DialogBox {
 
-    interface Binder extends UiBinder<Widget, ProtocolCreationDialog> {
+    interface Binder extends UiBinder<Widget, AddProtocolDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -59,7 +59,7 @@ public class ProtocolCreationDialog extends DialogBox {
     private List<ProtocolType> protocolTypes;
     private DialogCallback<ProtocolType> callback;
 
-    public ProtocolCreationDialog(Presenter presenter, DialogCallback<ProtocolType> callback) {
+    public AddProtocolDialog(Presenter presenter, DialogCallback<ProtocolType> callback) {
         this.presenter = presenter;
         this.callback = callback;
 

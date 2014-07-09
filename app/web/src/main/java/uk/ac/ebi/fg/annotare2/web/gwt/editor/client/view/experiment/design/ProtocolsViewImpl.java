@@ -466,7 +466,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         if (presenter == null) {
             return;
         }
-        (new ProtocolCreationDialog(presenter,
+        (new AddProtocolDialog(presenter,
                 new DialogCallback<ProtocolType>() {
                     @Override
                     public void onOkay(ProtocolType protocolType) {

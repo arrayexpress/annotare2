@@ -23,7 +23,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
@@ -44,7 +44,7 @@ public class ExperimentSettingsDialog extends DialogBox {
     Button cancelButton;
 
     @UiField
-    SimplePanel content;
+    SimpleLayoutPanel content;
 
     private final Editor<ExperimentSettings> editor;
     private final DialogCallback<ExperimentSettings> callback;

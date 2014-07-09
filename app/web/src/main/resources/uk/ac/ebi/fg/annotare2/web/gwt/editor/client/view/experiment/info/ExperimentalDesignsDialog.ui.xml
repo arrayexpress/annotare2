@@ -25,9 +25,9 @@
             </g:center>
             <g:south size="50">
                 <g:HTMLPanel>
-                    <table style="width:100%">
+                    <table style="width:100%;height:100%">
                         <tr>
-                            <td align="right">
+                            <td align="right" valign="bottom">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
                                 <g:Button ui:field="okButton">Add</g:Button>
                             </td>
