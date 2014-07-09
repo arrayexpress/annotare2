@@ -19,7 +19,7 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-    <g:ResizeLayoutPanel height="160px" width="250px">
+    <g:ResizeLayoutPanel height="180px" width="250px">
     <g:DockLayoutPanel>
         <g:center>
             <g:SimpleLayoutPanel ui:field="content"/>
