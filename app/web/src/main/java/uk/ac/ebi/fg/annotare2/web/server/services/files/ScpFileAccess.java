@@ -39,7 +39,9 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (executor.execute(
                     "ssh " + file.getHost() + " md5sum " + escapeFilePath(file.getPath())
-                    )) {
+                    // Mac version:
+                    // "ssh " + file.getHost() + " md5 " + escapeFilePath(file.getPath()) + " | sed -e 's/MD5.*= //'"
+            )) {
                 return executor.getOutput().replaceFirst("([^\\s]+)[\\d\\D]*", "$1");
             } else {
                 throw new IOException(executor.getErrors());
