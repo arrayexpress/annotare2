@@ -47,7 +47,7 @@ public class FileRef implements Serializable {
     }
 
     public String asString() {
-        return hash + '|' + name;
+        return null != hash ? hash : "null"  + '|' + name;
     }
 
     @Override
@@ -57,12 +57,12 @@ public class FileRef implements Serializable {
 
         FileRef fileRef = (FileRef) o;
 
-        return name.equals(fileRef.name) && hash.equals(fileRef.hash);
+        return name.equals(fileRef.name) && (null == hash && null == fileRef.hash || hash.equals(fileRef.hash));
     }
 
     @Override
     public int hashCode() {
-        return 31 * name.hashCode() + hash.hashCode();
+        return 31 * name.hashCode() + (null != hash ? hash.hashCode() : 0);
     }
 
     public static FileRef fromString(String fileRefAsString) {
