@@ -454,7 +454,7 @@ public class MageTabGenerator {
 
         for (Protocol protocol : orderedProtocols) {
             // protocol node name must be unique
-            String nodeName = prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
+            String nodeName = prev.getClass().getSimpleName() + ":" + prev.getNodeName() + ":" + protocol.getId() + (protocol.isAssigned() ? "" : "F");
             ProtocolApplicationNode protocolNode = getNode(ProtocolApplicationNode.class, nodeName);
             if (null == protocolNode) {
                 if (protocol.isAssigned()) {
