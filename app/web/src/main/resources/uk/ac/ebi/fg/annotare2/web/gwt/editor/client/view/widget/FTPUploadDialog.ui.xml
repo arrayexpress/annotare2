@@ -76,7 +76,7 @@
                         <tr>
                             <td align="right" valign="bottom">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
-                                <g:Button ui:field="okButton">Import</g:Button>
+                                <g:Button ui:field="okButton">Proceed</g:Button>
                             </td>
                         </tr>
                     </table>
