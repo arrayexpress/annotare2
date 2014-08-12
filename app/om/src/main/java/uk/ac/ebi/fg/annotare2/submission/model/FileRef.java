@@ -26,28 +26,32 @@ public class FileRef implements Serializable {
     private static final long serialVersionUID = -6698786096836245227L;
 
     private String name;
-    private String hash;
+    private String md5;
 
 
     @SuppressWarnings("unused")
     public FileRef() {
     }
 
-    public FileRef(String name, String hash) {
+    public FileRef(String name, String md5) {
+        if (null == name) {
+            throw new IllegalArgumentException("Name for FileRef cannot be null");
+        }
+
         this.name = name;
-        this.hash = hash;
+        this.md5 = md5;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getHash() {
-        return hash;
+    public String getMd5() {
+        return md5;
     }
 
     public String asString() {
-        return null != hash ? hash : "null"  + '|' + name;
+        return null != md5 ? md5 : "null"  + '|' + name;
     }
 
     @Override
@@ -57,12 +61,12 @@ public class FileRef implements Serializable {
 
         FileRef fileRef = (FileRef) o;
 
-        return name.equals(fileRef.name) && (null == hash && null == fileRef.hash || hash.equals(fileRef.hash));
+        return name.equals(fileRef.name) && (null == md5 && null == fileRef.md5 || md5.equals(fileRef.md5));
     }
 
     @Override
     public int hashCode() {
-        return 31 * name.hashCode() + (null != hash ? hash.hashCode() : 0);
+        return 31 * name.hashCode() + (null != md5 ? md5.hashCode() : 0);
     }
 
     public static FileRef fromString(String fileRefAsString) {

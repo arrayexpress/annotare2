@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DynSelectionCell extends AbstractInputCell<String, String> {
+public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
 
     interface Template extends SafeHtmlTemplates {
         @Template("<option value=\"{0}\">{0}</option>")
@@ -43,42 +43,48 @@ public class DynSelectionCell extends AbstractInputCell<String, String> {
         SafeHtml selected(String option);
     }
 
-    public static interface ListProvider {
+    public interface Option<C> {
+        public C getValue();
 
-        public List<String> getOptions();
+        public String getText();
+    }
 
-        public String getDefault();
+    public interface ListProvider<C> {
+
+        public List<Option<C>> getOptions();
+
+        public Option<C> getDefault();
 
     }
 
     private static Template template;
 
-    private final List<String> options;
-    private final Map<String, Integer> indexForOption;
+    private final List<Option<C>> options;
+    private final Map<C, Integer> indexForOption;
 
-    private final ListProvider optionsProvider;
+    private final ListProvider<C> optionsProvider;
 
-    public DynSelectionCell(ListProvider optionsProvider) {
+    public DynSelectionCell(ListProvider<C> optionsProvider) {
         super(BrowserEvents.CHANGE);
         if (template == null) {
             template = GWT.create(Template.class);
         }
-        this.options = new ArrayList<String>();
-        this.indexForOption = new HashMap<String, Integer>();
+        this.options = new ArrayList<Option<C>>();
+        this.indexForOption = new HashMap<C, Integer>();
         this.optionsProvider = optionsProvider;
         updateOptions();
     }
 
     @Override
-    public void onBrowserEvent(Context context, Element parent, String value,
-                               NativeEvent event, ValueUpdater<String> valueUpdater) {
+    public void onBrowserEvent(Context context, Element parent, C value,
+                               NativeEvent event, ValueUpdater<C> valueUpdater) {
         super.onBrowserEvent(context, parent, value, event, valueUpdater);
         String type = event.getType();
 
         if (BrowserEvents.CHANGE.equals(type)) {
             Object key = context.getKey();
             SelectElement select = parent.getFirstChild().cast();
-            String newValue = options.get(select.getSelectedIndex());
+            C newValue = options.get(select.getSelectedIndex()).getValue();
             setViewData(key, newValue);
             finishEditing(parent, newValue, key, valueUpdater);
             if (valueUpdater != null) {
@@ -88,10 +94,10 @@ public class DynSelectionCell extends AbstractInputCell<String, String> {
     }
 
     @Override
-    public void render(Context context, String value, SafeHtmlBuilder sb) {
+    public void render(Context context, C value, SafeHtmlBuilder sb) {
         // Get the view data.
         Object key = context.getKey();
-        String viewData = getViewData(key);
+        C viewData = getViewData(key);
         if (viewData != null && viewData.equals(value)) {
             clearViewData(key);
             viewData = null;
@@ -100,22 +106,22 @@ public class DynSelectionCell extends AbstractInputCell<String, String> {
         int selectedIndex = getSelectedIndex(viewData == null ? value : viewData);
         sb.appendHtmlConstant("<select tabindex=\"-1\">");
         int index = 0;
-        for (String option : options) {
+        for (Option<C> option : options) {
             if (index++ == selectedIndex) {
-                sb.append(template.selected(option));
+                sb.append(template.selected(option.getText()));
             } else {
-                sb.append(template.deselected(option));
+                sb.append(template.deselected(option.getText()));
             }
         }
         sb.appendHtmlConstant("</select>");
     }
 
-    private int getSelectedIndex(String value) {
+    private int getSelectedIndex(C value) {
         updateOptions();
 
         Integer index = indexForOption.get(value);
         if (null == index) {
-            return indexForOption.get(optionsProvider.getDefault());
+            return indexForOption.get(optionsProvider.getDefault().getValue());
         } else {
             return index;
         }
@@ -125,14 +131,14 @@ public class DynSelectionCell extends AbstractInputCell<String, String> {
         options.clear();
         indexForOption.clear();
         addOption(optionsProvider.getDefault());
-        List<String> opts = optionsProvider.getOptions();
-        for (String option : opts) {
+        List<Option<C>> opts = optionsProvider.getOptions();
+        for (Option<C> option : opts) {
             addOption(option);
         }
     }
 
-    private void addOption(String option) {
-        indexForOption.put(option, options.size());
+    private void addOption(Option<C> option) {
+        indexForOption.put(option.getValue(), options.size());
         options.add(option);
     }
 }

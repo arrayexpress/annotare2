@@ -314,7 +314,7 @@ public class ExperimentProfile implements Serializable {
     }
 
     public void renameFile(FileRef fileRef, String newName) {
-        FileRef newRef = new FileRef(newName, fileRef.getHash());
+        FileRef newRef = new FileRef(newName, fileRef.getMd5());
         for (FileColumn fileColumn : fileColumns) {
             fileColumn.replaceFile(fileRef, newRef);
         }

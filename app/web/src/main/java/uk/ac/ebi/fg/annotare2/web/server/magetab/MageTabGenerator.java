@@ -673,7 +673,7 @@ public class MageTabGenerator {
                 ArrayDataNode rawFileNode = getOrCreateNode(ArrayDataNode.class, fileName);
 
                 if (exp.getType().isSequencing() && rawFileNode.comments.isEmpty()) {
-                    rawFileNode.comments.put("MD5", Arrays.asList(null != fileRef ? fileRef.getHash() : null));
+                    rawFileNode.comments.put("MD5", Arrays.asList(null != fileRef ? fileRef.getMd5() : null));
                 }
                 fileNode = rawFileNode;
                 break;

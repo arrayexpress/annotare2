@@ -40,10 +40,9 @@ import java.util.*;
  */
 public class DataAssignmentViewImpl extends Composite implements DataAssignmentView {
 
-    public static final String NONE = "none";
+    public static final FileRef NONE = new FileRef("none", null);
     private final GridView<DataAssignmentRow> gridView;
     private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
-    private Map<String, String> fileHashes = new HashMap<String, String>();
     private DataAssignment dataAssignment = new DataAssignment();
     private ExperimentProfileType experimentType;
     private Presenter presenter;
@@ -115,7 +114,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     @Override
     public void setDataFiles(List<DataFileRow> dataFiles) {
-        updateFileHashes(dataFiles);
         dataAssignment.init(dataFiles);
         gridView.redraw();
     }
@@ -123,16 +121,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     @Override
     public void setExperimentType(ExperimentProfileType type) {
         experimentType = type;
-    }
-
-
-    private void updateFileHashes(List<DataFileRow> dataFiles) {
-        fileHashes.clear();
-        for (DataFileRow row : dataFiles) {
-            if (row.getStatus().isOk()) {
-                fileHashes.put(row.getName(), row.getMd5());
-            }
-        }
     }
 
     private void setColumns(List<DataAssignmentColumn> columns) {
@@ -197,30 +185,40 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     private void addDataFileColumn(final DataAssignmentColumn dataColumn, String columnName) {
-        Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(
-                new DynSelectionCell(
-                        new DynSelectionCell.ListProvider() {
+        Column<DataAssignmentRow, FileRef> column = new Column<DataAssignmentRow, FileRef>(
+                new DynSelectionCell<FileRef>(
+                        new DynSelectionCell.ListProvider<FileRef>() {
                             @Override
-                            public List<String> getOptions() {
+                            public List<DynSelectionCell.Option<FileRef>> getOptions() {
                                 return dataAssignment.getOptions(dataColumn);
                             }
 
                             @Override
-                            public String getDefault() {
-                                return NONE;
+                            public DynSelectionCell.Option<FileRef> getDefault() {
+                                return new DynSelectionCell.Option<FileRef>() {
+                                    @Override
+                                    public FileRef getValue() {
+                                        return NONE;
+                                    }
+
+                                    @Override
+                                    public String getText() {
+                                        return NONE.getName();
+                                    }
+                                };
                             }
                         })) {
             @Override
-            public String getValue(DataAssignmentRow row) {
+            public FileRef getValue(DataAssignmentRow row) {
                 FileRef file = dataColumn.getFileRef(row);
-                return null == file ? NONE : file.getName();
+                return null == file ? NONE : file;
             }
         };
         column.setCellStyleNames("app-SelectionCell");
-        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
+        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, FileRef>() {
             @Override
-            public void update(int index, DataAssignmentRow row, String value) {
-                dataColumn.setFileRef(row, NONE.equals(value) ? null : new FileRef(value, fileHashes.get(value)));
+            public void update(int index, DataAssignmentRow row, FileRef value) {
+                dataColumn.setFileRef(row, NONE.equals(value) ? null : value);
                 dataAssignment.update(dataColumn);
                 updateColumn(dataColumn);
                 gridView.redraw();
@@ -310,9 +308,9 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
 
     private static class DataAssignment {
 
-        private Map<String, Integer> file2Column = new HashMap<String, Integer>();
-        private Map<Integer, List<String>> column2Files = new HashMap<Integer, List<String>>();
-        private List<String> files = new ArrayList<String>();
+        private Map<FileRef, Integer> file2Column = new HashMap<FileRef, Integer>();
+        private Map<Integer, List<FileRef>> column2Files = new HashMap<Integer, List<FileRef>>();
+        private List<FileRef> files = new ArrayList<FileRef>();
 
         public void init(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows) {
             file2Column.clear();
@@ -321,7 +319,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 for (DataAssignmentRow row : rows) {
                     FileRef file = column.getFileRef(row);
                     if (null != file && null != file.getName()) {
-                        add(file.getName(), column);
+                        add(file, column);
                     }
                 }
             }
@@ -331,39 +329,48 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             files.clear();
             for (DataFileRow row : dataFiles) {
                 if (row.getStatus().isOk()) {
-                    files.add(row.getName());
+                    files.add(new FileRef(row.getName(), row.getMd5()));
                 }
             }
         }
 
-        private void add(String fileName, DataAssignmentColumn column) {
+        private void add(FileRef file, DataAssignmentColumn column) {
             int colIndex = column.getIndex();
-            file2Column.put(fileName, colIndex);
-            List<String> list = column2Files.get(colIndex);
+            file2Column.put(file, colIndex);
+            List<FileRef> list = column2Files.get(colIndex);
             if (list == null) {
-                list = new ArrayList<String>();
+                list = new ArrayList<FileRef>();
                 column2Files.put(colIndex, list);
             }
-            list.add(fileName);
+            list.add(file);
         }
 
         private void remove(DataAssignmentColumn column) {
             int colIndex = column.getIndex();
-            List<String> fileNames = column2Files.remove(colIndex);
-            if (fileNames == null) {
-                return;
-            }
-            for (String fileName : fileNames) {
-                file2Column.remove(fileName);
+            List<FileRef> files = column2Files.remove(colIndex);
+            if (null != files) {
+                for (FileRef file : files) {
+                    file2Column.remove(file);
+                }
             }
         }
 
-        public List<String> getOptions(DataAssignmentColumn dataColumn) {
-            List<String> options = new ArrayList<String>();
-            for (String file : files) {
+        public List<DynSelectionCell.Option<FileRef>> getOptions(DataAssignmentColumn dataColumn) {
+            List<DynSelectionCell.Option<FileRef>> options = new ArrayList<DynSelectionCell.Option<FileRef>>();
+            for (final FileRef file : files) {
                 Integer colIndex = file2Column.get(file);
                 if (colIndex == null || colIndex == dataColumn.getIndex()) {
-                    options.add(file);
+                    options.add(new DynSelectionCell.Option<FileRef>() {
+                        @Override
+                        public FileRef getValue() {
+                            return file;
+                        }
+
+                        @Override
+                        public String getText() {
+                            return file.getName();
+                        }
+                    });
                 }
             }
             return options;
@@ -372,7 +379,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         public void update(DataAssignmentColumn column) {
             remove(column);
             for (FileRef file : column.getFileRefs()) {
-                add(file.getName(), column);
+                add(file, column);
             }
         }
     }

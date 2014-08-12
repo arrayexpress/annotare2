@@ -23,6 +23,8 @@ import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 
 import javax.servlet.http.HttpSession;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 /**
  * @author Olga Melnichuk
  */
@@ -49,9 +51,23 @@ abstract class AuthBasedRemoteService extends RemoteServiceServlet {
         return accountService.getCurrentUserEmail(getSession());
     }
 
+    protected String getRequestURI() {
+        return nullToEmpty(getThreadLocalRequest().getRequestURI());
+    }
+
+    protected String getRequestReferer() {
+        return nullToEmpty(getThreadLocalRequest().getHeader("Referer"));
+    }
+
     @Override
     protected void doUnexpectedFailure(Throwable e) {
-        email.sendException("Unexpected exception in RPC call for [" + getCurrentUserEmail() + "]", e);
+        email.sendException(
+                "Unexpected exception in RPC call\n" +
+                        "URI: " + getRequestURI()  + "\n" +
+                        "Referer: " + getRequestReferer() + "\n" +
+                        "User: " + getCurrentUserEmail() + "",
+                e)
+        ;
         super.doUnexpectedFailure(e);
     }
 
