@@ -26,7 +26,7 @@ public class FileRef implements Serializable {
     private static final long serialVersionUID = -6698786096836245227L;
 
     private String name;
-    private String md5;
+    private String hash;
 
 
     @SuppressWarnings("unused")
@@ -39,7 +39,7 @@ public class FileRef implements Serializable {
         }
 
         this.name = name;
-        this.md5 = md5;
+        this.hash = md5;
     }
 
     public String getName() {
@@ -47,11 +47,11 @@ public class FileRef implements Serializable {
     }
 
     public String getMd5() {
-        return md5;
+        return hash;
     }
 
     public String asString() {
-        return null != md5 ? md5 : "null"  + '|' + name;
+        return null != hash ? hash : "null"  + '|' + name;
     }
 
     @Override
@@ -61,12 +61,12 @@ public class FileRef implements Serializable {
 
         FileRef fileRef = (FileRef) o;
 
-        return name.equals(fileRef.name) && (null == md5 && null == fileRef.md5 || md5.equals(fileRef.md5));
+        return name.equals(fileRef.name) && (null == hash && null == fileRef.hash || hash.equals(fileRef.hash));
     }
 
     @Override
     public int hashCode() {
-        return 31 * name.hashCode() + (null != md5 ? md5.hashCode() : 0);
+        return 31 * name.hashCode() + (null != hash ? hash.hashCode() : 0);
     }
 
     public static FileRef fromString(String fileRefAsString) {
