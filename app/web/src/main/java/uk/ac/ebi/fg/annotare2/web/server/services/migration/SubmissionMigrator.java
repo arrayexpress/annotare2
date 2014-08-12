@@ -120,7 +120,7 @@ public class SubmissionMigrator extends AbstractIdleService {
         for (FileColumn column : exp.getFileColumns()) {
             for (String id : column.getLabeledExtractIds()) {
                 FileRef file = column.getFileRef(id);
-                if (null != file && isNullOrEmpty(file.getMd5())) {
+                if (null != file && isNullOrEmpty(file.getHash())) {
                     if (hashes.containsKey(file.getName())) {
                         file = new FileRef(file.getName(), hashes.get(file.getName()));
                         column.setFileRef(id, file);

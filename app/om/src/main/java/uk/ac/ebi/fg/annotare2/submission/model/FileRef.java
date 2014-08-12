@@ -33,20 +33,20 @@ public class FileRef implements Serializable {
     public FileRef() {
     }
 
-    public FileRef(String name, String md5) {
+    public FileRef(String name, String hash) {
         if (null == name) {
             throw new IllegalArgumentException("Name for FileRef cannot be null");
         }
 
         this.name = name;
-        this.hash = md5;
+        this.hash = hash;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getMd5() {
+    public String getHash() {
         return hash;
     }
 
