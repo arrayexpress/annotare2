@@ -1,3 +1,5 @@
+package uk.ac.ebi.fg.annotare2.prototypes;
+
 /*
  * Copyright 2009-2014 European Molecular Biology Laboratory
  *
@@ -15,8 +17,6 @@
  *
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services.utils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 public class LinuxShellCommandExecutor {
 
@@ -59,7 +58,11 @@ public class LinuxShellCommandExecutor {
             output = streamToString(stdOut, "UTF-8");
             errors = streamToString(stdErr, "UTF-8");
 
-            return 0 == process.waitFor();
+            int returnCode = process.waitFor();
+
+
+
+            return 0 == returnCode;
         } catch (InterruptedException x) {
             throw new IOException(x);
         }

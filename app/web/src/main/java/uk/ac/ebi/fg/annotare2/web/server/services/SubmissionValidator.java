@@ -26,6 +26,9 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperim
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -110,10 +113,10 @@ public class SubmissionValidator {
                     );
                 }
             }
-            /* to be redeveloped
+            FileAvailabilityChecker checker = new FileAvailabilityChecker();
             for (DataFile dataFile : assignedFiles) {
                 DataFileSource source = dataFileManager.getFileSource(dataFile);
-                if (null == source || !source.exists()) {
+                if (null == source || !checker.isAvailable(source)) {
                     results.add(
                             CheckResult.checkFailed(
                                     "File " + dataFile.getName() + " is not accessible"
@@ -125,7 +128,6 @@ public class SubmissionValidator {
                     );
                 }
             }
-            */
         }
         return natural().sortedCopy(results);
     }

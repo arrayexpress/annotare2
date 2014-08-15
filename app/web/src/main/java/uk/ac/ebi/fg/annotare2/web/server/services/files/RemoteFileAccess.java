@@ -23,6 +23,8 @@ import java.net.URI;
 
 public interface RemoteFileAccess {
 
+    public boolean isSupported(URI file);
+
     public boolean isAccessible(URI file) throws IOException;
 
     public String getDigest(URI file) throws IOException;

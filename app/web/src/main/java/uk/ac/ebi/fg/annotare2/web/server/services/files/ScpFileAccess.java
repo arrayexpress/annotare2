@@ -21,21 +21,29 @@ import uk.ac.ebi.fg.annotare2.web.server.services.utils.LinuxShellCommandExecuto
 
 import java.io.*;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 public class ScpFileAccess implements RemoteFileAccess, Serializable {
 
     private static final long serialVersionUID = 752647115562277616L;
 
+    public boolean isSupported(URI file) {
+        return null != file && "scp".equals(file.getScheme());
+    }
+
+
     public boolean isAccessible(URI file) throws IOException {
-        return (null != file &&
-                "scp".equals(file.getScheme())) &&
+        return (isSupported(file) &&
                 new LinuxShellCommandExecutor().execute(
                     "ssh " + file.getHost() + " test -f " + escapeFilePath(file.getPath())
-                        );
+                )
+        );
+
     }
 
     public String getDigest(URI file) throws IOException {
-        if (null != file && "scp".equals(file.getScheme())) {
+        if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (executor.execute(
                     "ssh " + file.getHost() + " md5sum " + escapeFilePath(file.getPath())
@@ -51,7 +59,7 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
     }
 
     public void copyTo(URI file, File destination) throws IOException {
-        if (null != file && "scp".equals(file.getScheme())) {
+        if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute(
                     "scp " + file.getHost() + ":" + escapeFilePath(file.getPath()) + " " + destination.getPath()
@@ -62,13 +70,29 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
     }
 
     public void delete(URI file) throws IOException {
-        if (null != file && "scp".equals(file.getScheme())) {
+        if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute(
                     "ssh " + file.getHost() + " rm " + escapeFilePath(file.getPath())
                     ))) {
                 throw new IOException(executor.getErrors());
             }
+        }
+    }
+
+    public List<String> listFiles(URI file) throws IOException {
+        if (isSupported(file)) {
+            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+            if (!(executor.execute(
+                    "ssh " + file.getHost() + " ls -1 " + escapeFilePath(file.getPath().replaceFirst("(.+/)[^/]*$", "$1"))
+            ))) {
+                throw new IOException(executor.getErrors());
+            }
+            return Arrays.asList(executor.getOutput().split("\\r\\n|[\\r\\n]"));
+        } else if (null == file) {
+            return null;
+        } else {
+            throw new IOException("Unsupported scheme " + file.getScheme());
         }
     }
 
