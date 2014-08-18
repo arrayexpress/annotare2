@@ -32,6 +32,8 @@ public interface DataAssignmentView extends IsWidget {
 
     void setData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
 
+    void updateData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows);
+
     void setExperimentType(ExperimentProfileType type);
 
     void setPresenter(Presenter presenter);

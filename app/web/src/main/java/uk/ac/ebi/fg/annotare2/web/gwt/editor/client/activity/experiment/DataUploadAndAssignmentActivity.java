@@ -76,7 +76,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
         experimentUpdateHandler = eventBus.addHandler(ExperimentUpdateEvent.getType(), new ExperimentUpdateEventHandler() {
             @Override
             public void onExperimentUpdate() {
-                loadExpDataAsync();
+                reloadExpDataAsync();
             }
         });
         this.dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
@@ -113,17 +113,6 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     private void loadExpDataAsync() {
-        appData.getApplicationPropertiesAsync(new AsyncCallback<ApplicationProperties>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load application properties");
-            }
-
-            @Override
-            public void onSuccess(ApplicationProperties result) {
-                view.getUploadView().setFtpProperties(result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword());
-            }
-        });
         expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -148,6 +137,21 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
             }
         });
     }
+
+    private void reloadExpDataAsync() {
+        expData.getDataAssignmentColumnsAndRowsAsync(new AsyncCallback<DataAssignmentColumnsAndRows>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to load data assignment rows");
+            }
+
+            @Override
+            public void onSuccess(DataAssignmentColumnsAndRows result) {
+                view.getAssignmentView().updateData(result.getColumns(), result.getRows());
+            }
+        });
+    }
+
 
     private void loadFilesAsync() {
         dataFiles.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {

@@ -40,7 +40,8 @@ import java.util.*;
  */
 public class DataAssignmentViewImpl extends Composite implements DataAssignmentView {
 
-    public static final FileRef NONE = new FileRef("none", null);
+    public static final String NONE = "none";
+
     private final GridView<DataAssignmentRow> gridView;
     private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
     private DataAssignment dataAssignment = new DataAssignment();
@@ -109,6 +110,14 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         gridView.clearAllColumns();
         gridView.setRows(rows);
         setColumns(columns);
+        dataAssignment.init(columns, rows);
+    }
+
+    @Override
+    public void updateData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows) {
+        //gridView.clearAllColumns();
+        //gridView.setRows(rows);
+        //setColumns(columns);
         dataAssignment.init(columns, rows);
     }
 
@@ -185,40 +194,40 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     private void addDataFileColumn(final DataAssignmentColumn dataColumn, String columnName) {
-        Column<DataAssignmentRow, FileRef> column = new Column<DataAssignmentRow, FileRef>(
-                new DynSelectionCell<FileRef>(
-                        new DynSelectionCell.ListProvider<FileRef>() {
+        Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(
+                new DynSelectionCell<String>(
+                        new DynSelectionCell.ListProvider<String>() {
                             @Override
-                            public List<DynSelectionCell.Option<FileRef>> getOptions() {
+                            public List<DynSelectionCell.Option<String>> getOptions() {
                                 return dataAssignment.getOptions(dataColumn);
                             }
 
                             @Override
-                            public DynSelectionCell.Option<FileRef> getDefault() {
-                                return new DynSelectionCell.Option<FileRef>() {
+                            public DynSelectionCell.Option<String> getDefault() {
+                                return new DynSelectionCell.Option<String>() {
                                     @Override
-                                    public FileRef getValue() {
+                                    public String getValue() {
                                         return NONE;
                                     }
 
                                     @Override
                                     public String getText() {
-                                        return NONE.getName();
+                                        return NONE;
                                     }
                                 };
                             }
                         })) {
             @Override
-            public FileRef getValue(DataAssignmentRow row) {
+            public String getValue(DataAssignmentRow row) {
                 FileRef file = dataColumn.getFileRef(row);
-                return null == file ? NONE : file;
+                return null == file ? NONE : file.getName();
             }
         };
         column.setCellStyleNames("app-SelectionCell");
-        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, FileRef>() {
+        column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
             @Override
-            public void update(int index, DataAssignmentRow row, FileRef value) {
-                dataColumn.setFileRef(row, NONE.equals(value) ? null : value);
+            public void update(int index, DataAssignmentRow row, String value) {
+                dataColumn.setFileRef(row, NONE.equals(value) ? null : dataAssignment.getFileRef(value));
                 dataAssignment.update(dataColumn);
                 updateColumn(dataColumn);
                 gridView.redraw();
@@ -355,15 +364,15 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             }
         }
 
-        public List<DynSelectionCell.Option<FileRef>> getOptions(DataAssignmentColumn dataColumn) {
-            List<DynSelectionCell.Option<FileRef>> options = new ArrayList<DynSelectionCell.Option<FileRef>>();
+        public List<DynSelectionCell.Option<String>> getOptions(DataAssignmentColumn dataColumn) {
+            List<DynSelectionCell.Option<String>> options = new ArrayList<DynSelectionCell.Option<String>>();
             for (final FileRef file : files) {
                 Integer colIndex = file2Column.get(file);
                 if (colIndex == null || colIndex == dataColumn.getIndex()) {
-                    options.add(new DynSelectionCell.Option<FileRef>() {
+                    options.add(new DynSelectionCell.Option<String>() {
                         @Override
-                        public FileRef getValue() {
-                            return file;
+                        public String getValue() {
+                            return file.getName();
                         }
 
                         @Override
@@ -374,6 +383,15 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 }
             }
             return options;
+        }
+
+        public FileRef getFileRef(String name) {
+            for (FileRef file : files) {
+                if (file.getName().equals(name)) {
+                    return file;
+                }
+            }
+            return null;
         }
 
         public void update(DataAssignmentColumn column) {
