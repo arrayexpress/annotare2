@@ -473,7 +473,8 @@
     font-size: 110%;
 }
 
-.gwt-SuggestBox-Popup .item-selected {
+.gwt-SuggestBox-Popup .item-selected,
+.gwt-SuggestBox-Popup .item-selected a {
     background-color: #5E8CC0;
     color: white;
 }
