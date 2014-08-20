@@ -364,8 +364,13 @@ public class MageTabGenerator {
             SDRFNode assayNode = createAssayNode(assayName, leNode, leProtocols, sdrf);
             nextLayer.put(leId, assayNode);
 
+            boolean isRawDataPresent = false;
             for (FileColumn fileColumn : fileColumns) {
                 FileRef fileRef = fileColumn.getFileRef(leId);
+                FileType colType = fileColumn.getType();
+                if (!isRawDataPresent && colType.isRaw()) {
+                    isRawDataPresent = true;
+                }
                 //boolean isFirstColumn = fileColumn.equals(fileColumns.iterator().next());
 
                 //List<ProtocolSubjectType> protocolSubjectTypes = new ArrayList<ProtocolSubjectType>();
@@ -374,9 +379,14 @@ public class MageTabGenerator {
                 //}
                 //protocolSubjectTypes.add(fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE);
 
-                Collection<Protocol> protocols = null != fileRef ?
-                        exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE, FILE) :
-                        Collections.<Protocol>emptyList();
+                Collection<Protocol> protocols = Collections.<Protocol>emptyList();
+                if (null != fileRef) {
+                    if ((isRawDataPresent && colType.isRaw()) || (!isRawDataPresent && colType.isProcessed())) {
+                        protocols = exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE, FILE);
+                    } else {
+                        protocols = exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE);
+                    }
+                }
 
                 // for the first column check if there are array scanning protocol(s) defined
                 // add scan object if necessary
