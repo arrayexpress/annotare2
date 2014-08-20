@@ -63,6 +63,7 @@ public class ExperimentSettingsDialog extends DialogBox {
 
         setWidget(Binder.BINDER.createAndBindUi(this));
         content.setWidget(editor);
+        editor.setValues(settings);
 
         center();
     }
