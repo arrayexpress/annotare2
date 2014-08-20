@@ -43,7 +43,9 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     public static final String NONE = "none";
 
     private final GridView<DataAssignmentRow> gridView;
-    private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
+    //private Map<FileType, List<DataAssignmentColumn>> columns = new HashMap<FileType, List<DataAssignmentColumn>>();
+    private List<DataAssignmentColumn> columns = new ArrayList<DataAssignmentColumn>();
+
     private DataAssignment dataAssignment = new DataAssignment();
     private ExperimentProfileType experimentType;
     private Presenter presenter;
@@ -117,7 +119,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     public void updateData(List<DataAssignmentColumn> columns, List<DataAssignmentRow> rows) {
         //gridView.clearAllColumns();
         //gridView.setRows(rows);
-        //setColumns(columns);
+        this.columns = columns;
         dataAssignment.init(columns, rows);
     }
 
@@ -133,41 +135,27 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     }
 
     private void setColumns(List<DataAssignmentColumn> columns) {
-        this.columns.clear();
-        for (DataAssignmentColumn column : columns) {
-            FileType type = column.getType();
-            List<DataAssignmentColumn> list = this.columns.get(type);
-            if (list == null) {
-                list = new ArrayList<DataAssignmentColumn>();
-                this.columns.put(type, list);
-            }
-            list.add(column);
-        }
 
+        this.columns = columns;
         addNameColumn();
-
-        for (DataAssignmentColumn column : getColumns()) {
-            addDataFileColumn(column, getDataFileColumnName(column));
+        for (int index = 0; index < columns.size(); index++) {
+            addDataFileColumn(index, getDataFileColumnName(columns.get(index)));
         }
     }
 
-    private List<DataAssignmentColumn> getColumns() {
-        List<DataAssignmentColumn> columns = new ArrayList<DataAssignmentColumn>();
-        for (FileType type : FileType.values()) {
-            List<DataAssignmentColumn> list = this.columns.get(type);
-            if (list == null) {
-                continue;
-            }
-            for (DataAssignmentColumn column : list) {
-                columns.add(column);
+    private int countColumnsByType(FileType type) {
+        int count = 0;
+        for (DataAssignmentColumn c : columns) {
+            if (c.getType() == type) {
+                count++;
             }
         }
-        return columns;
+        return count;
     }
 
     private String getDataFileColumnName(DataAssignmentColumn column) {
         FileType type = column.getType();
-        int index = columns.get(type).indexOf(column) + 1;
+        int index = countColumnsByType(type);
         return type.getTitle() + " Data File" + (index > 1 ? " (" + index + ")" : "");
     }
 
@@ -175,31 +163,30 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         List<ColumnType> types = new ArrayList<ColumnType>();
         for (FileType type : FileType.values()) {
             if (ExperimentProfileType.SEQUENCING == experimentType) {
-                if (!type.isFGEM() || type.isProcessed() && (null == columns.get(type) || 0 == columns.get(type).size())) {
+                if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
                     types.add(new ColumnType(type));
                 }
-            } else if (null == columns.get(type) || 0 == columns.get(type).size()) {
+            } else if (0 == countColumnsByType(type)) {
                 types.add(new ColumnType(type));
             }
         }
         return types;
     }
-
     private List<String> getDataFileColumnNames() {
         List<String> names = new ArrayList<String>();
-        for (DataAssignmentColumn column : getColumns()) {
+        for (DataAssignmentColumn column : columns) {
             names.add(getDataFileColumnName(column));
         }
         return names;
     }
 
-    private void addDataFileColumn(final DataAssignmentColumn dataColumn, String columnName) {
+    private void addDataFileColumn(final int columnIndex, String columnName) {
         Column<DataAssignmentRow, String> column = new Column<DataAssignmentRow, String>(
                 new DynSelectionCell<String>(
                         new DynSelectionCell.ListProvider<String>() {
                             @Override
                             public List<DynSelectionCell.Option<String>> getOptions() {
-                                return dataAssignment.getOptions(dataColumn);
+                                return dataAssignment.getOptions(columns.get(columnIndex));
                             }
 
                             @Override
@@ -219,7 +206,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                         })) {
             @Override
             public String getValue(DataAssignmentRow row) {
-                FileRef file = dataColumn.getFileRef(row);
+                FileRef file = columns.get(columnIndex).getFileRef(row);
                 return null == file ? NONE : file.getName();
             }
         };
@@ -227,9 +214,9 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         column.setFieldUpdater(new FieldUpdater<DataAssignmentRow, String>() {
             @Override
             public void update(int index, DataAssignmentRow row, String value) {
-                dataColumn.setFileRef(row, NONE.equals(value) ? null : dataAssignment.getFileRef(value));
-                dataAssignment.update(dataColumn);
-                updateColumn(dataColumn);
+                columns.get(columnIndex).setFileRef(row, NONE.equals(value) ? null : dataAssignment.getFileRef(value));
+                dataAssignment.update(columns.get(columnIndex));
+                updateColumn(columns.get(columnIndex));
                 gridView.redraw();
             }
         });
@@ -262,7 +249,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         if (presenter == null) {
             return;
         }
-        List<DataAssignmentColumn> columns = getColumns();
         List<Integer> indices = new ArrayList<Integer>();
         for(Integer position : columnPositions) {
             indices.add(columns.get(position).getIndex());

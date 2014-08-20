@@ -35,10 +35,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import java.util.List;
@@ -51,6 +48,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     private final ExperimentDataProxy expData;
     private final DataFilesProxy dataFiles;
     private HandlerRegistration experimentUpdateHandler;
+    private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
 
     @Inject
@@ -77,6 +75,16 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
             @Override
             public void onExperimentUpdate() {
                 reloadExpDataAsync();
+            }
+        });
+        criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
+            @Override
+            public void criticalUpdateStarted(CriticalUpdateEvent event) {
+            }
+
+            @Override
+            public void criticalUpdateFinished(CriticalUpdateEvent event) {
+                loadExpDataAsync();
             }
         });
         this.dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
