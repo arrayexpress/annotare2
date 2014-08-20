@@ -21,7 +21,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -42,5 +45,10 @@ public class StartViewImpl extends Composite implements StartView {
     @Override
     public void setPresenter(Presenter presenter) {
         view.setPresenter(presenter);
+    }
+
+    @Override
+    public void setArrayDesignList(List<ArrayDesignRef> adList) {
+        view.setArrayDesignList(adList);
     }
 }

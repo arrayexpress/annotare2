@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -54,6 +55,17 @@ public class SetupActivity extends AbstractActivity implements StartView.Present
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
+        dataService.getArrayDesignList(null, 99999, new AsyncCallback<List<ArrayDesignRef>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to load array designs");
+            }
+
+            @Override
+            public void onSuccess(List<ArrayDesignRef> result) {
+                view.setArrayDesignList(result);
+            }
+        });
         containerWidget.setWidget(view.asWidget());
     }
 

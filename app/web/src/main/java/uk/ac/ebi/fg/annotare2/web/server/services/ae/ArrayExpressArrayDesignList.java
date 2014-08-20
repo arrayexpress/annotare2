@@ -181,20 +181,20 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
         }
 
         public Iterable<ArrayExpress.ArrayDesign> getArrayDesigns(String query) {
-            if (null == query) {
-                return Collections.emptySet();
-            }
-
             Set<ArrayExpress.ArrayDesign> ads = null;
-            for (String word : query.toLowerCase().split("\\s+")) {
-                Set<ArrayExpress.ArrayDesign> matches = ImmutableSet.copyOf(trie.getValuesForClosestKeys(word));
-                if (null != ads) {
-                    ads = Sets.intersection(ads, matches);
-                } else {
-                    ads = matches;
-                }
-                if (ads.isEmpty()) {
-                    return Collections.emptySet();
+            if (null == query) {
+                ads = ImmutableSet.copyOf(trie.getValuesForKeysStartingWith(""));
+            } else {
+                for (String word : query.toLowerCase().split("\\s+")) {
+                    Set<ArrayExpress.ArrayDesign> matches = ImmutableSet.copyOf(trie.getValuesForClosestKeys(word));
+                    if (null != ads) {
+                        ads = Sets.intersection(ads, matches);
+                    } else {
+                        ads = matches;
+                    }
+                    if (ads.isEmpty()) {
+                        return Collections.emptySet();
+                    }
                 }
             }
 

@@ -17,7 +17,10 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -25,6 +28,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupE
 public interface StartView extends IsWidget {
 
     void setPresenter(Presenter presenter);
+
+    void setArrayDesignList(List<ArrayDesignRef> arrayDesigns);
 
     public static interface Presenter extends SetupExpSubmissionView.Presenter {
 

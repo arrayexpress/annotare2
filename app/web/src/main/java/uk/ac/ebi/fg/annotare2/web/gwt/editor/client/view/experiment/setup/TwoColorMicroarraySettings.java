@@ -21,10 +21,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_COLOR_MICROARRAY;
@@ -44,14 +42,17 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
     @UiField
     TextBox numberOfHybs;
 
+    final SetupExpSubmissionView view;
+
     interface Binder extends UiBinder<Widget, TwoColorMicroarraySettings> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    public TwoColorMicroarraySettings(SuggestService<ArrayDesignRef> suggestService) {
-        arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(suggestService));
+    public TwoColorMicroarraySettings(SetupExpSubmissionView view) {
+        this.view = view;
+        this.arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(view));
         initWidget(Binder.BINDER.createAndBindUi(this));
-        description.setHTML(fromSafeConstant(
+        this.description.setHTML(fromSafeConstant(
                 "<p>One hybridization is where two labeled samples are hybridized on an array chip.</p>" +
                         "<p>An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-3237/'>" +
                         "E-MEXP-3237</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/22432704'>" +
@@ -79,9 +80,14 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
         } else if (500 < intValue(numberOfHybs.getValue())) {
             validationErrors += " - this submission does not support more than 500 hybridizations\n";
         }
-        if (null == arrayDesignList.getValue() || arrayDesignList.getValue().isEmpty()) {
+
+        String ad = arrayDesignList.getValue();
+        if (null == ad || ad.isEmpty()) {
             validationErrors += " - a non-empty array design must be used\n";
+        } else if (!view.isArrayDesignPresent(ad)) {
+            validationErrors += " - array design with accession '" + ad + "' must be available in ArrayExpress\n";
         }
+
         if (!validationErrors.isEmpty()) {
             Window.alert("Please correct the following:\n\n" + validationErrors);
             return false;

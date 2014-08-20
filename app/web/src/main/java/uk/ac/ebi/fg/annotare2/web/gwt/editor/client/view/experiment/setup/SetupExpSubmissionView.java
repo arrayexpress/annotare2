@@ -31,9 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSe
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -60,6 +58,8 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
     private final Map<ExperimentProfileType, HasSubmissionSettings> widgets = new HashMap<ExperimentProfileType, HasSubmissionSettings>();
 
+    private final Set<String> arrayDesignAccessions = new HashSet<String>();
+
     public SetupExpSubmissionView() {
         this(null);
     }
@@ -84,6 +84,13 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             }
         });
         selectFirstTemplate(templateBox);
+    }
+
+    public void setArrayDesignList(List<ArrayDesignRef> arrayDesigns) {
+        arrayDesignAccessions.clear();
+        for (ArrayDesignRef ad : arrayDesigns) {
+            arrayDesignAccessions.add(ad.getAccession().toLowerCase());
+        }
     }
 
     @UiHandler("okButton")
@@ -114,15 +121,18 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
     @Override
     public void suggest(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
-        if (presenter != null) {
+        if (null != presenter) {
             presenter.getArrayDesigns(query, limit, callback);
         }
+    }
+
+    public boolean isArrayDesignPresent(String accession) {
+        return (null != accession) && arrayDesignAccessions.contains(accession.toLowerCase());
     }
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
-
 
     private String getSelectedSettingsTemplate() {
         return templateBox.getValue(templateBox.getSelectedIndex());
