@@ -121,6 +121,11 @@ public class SuggestBox extends Composite implements HasText, HasFocus,
         protected abstract void hideSuggestions();
 
         /**
+         * Check if suggestion list is showing
+         */
+        protected abstract boolean isSuggestionListShowing();
+
+        /**
          * Highlight the suggestion directly below the current selection in the
          * list.
          */
@@ -332,6 +337,7 @@ public class SuggestBox extends Composite implements HasText, HasFocus,
          *
          * @return true if the suggestions are visible, false if not
          */
+        @Override
         public boolean isSuggestionListShowing() {
             return suggestionPopup.isShowing();
         }
@@ -1112,10 +1118,19 @@ public class SuggestBox extends Composite implements HasText, HasFocus,
             public void onKeyDown(KeyDownEvent event) {
                 switch (event.getNativeKeyCode()) {
                     case KeyCodes.KEY_DOWN:
-                        display.moveSelectionDown();
+                        if (display.isSuggestionListShowing()) {
+                            display.moveSelectionDown();
+                            event.preventDefault();
+                        }
                         break;
                     case KeyCodes.KEY_UP:
-                        display.moveSelectionUp();
+                        if (display.isSuggestionListShowing()) {
+                            display.moveSelectionUp();
+                            event.preventDefault();
+                        }
+                        break;
+                    case KeyCodes.KEY_ESCAPE:
+                        display.hideSuggestions();
                         break;
                     case KeyCodes.KEY_ENTER:
                     case KeyCodes.KEY_TAB:
