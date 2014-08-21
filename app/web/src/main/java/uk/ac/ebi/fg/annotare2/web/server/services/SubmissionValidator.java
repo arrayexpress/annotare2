@@ -58,7 +58,7 @@ public class SubmissionValidator {
         ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
         MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate();
-        //MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, true);
+        mageTab.SDRF.getLayout().calculateLocations(mageTab.SDRF);
 
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF), type);
 
