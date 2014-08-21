@@ -37,7 +37,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
     HTML description;
 
     @UiField(provided = true)
-    SuggestBox arrayDesignList;
+    SuggestBox arrayDesign;
 
     @UiField
     TextBox numberOfHybs;
@@ -50,7 +50,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
 
     public TwoColorMicroarraySettings(SetupExpSubmissionView view) {
         this.view = view;
-        this.arrayDesignList = new SuggestBox(new ArrayDesignSuggestOracle(view));
+        this.arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(view));
         initWidget(Binder.BINDER.createAndBindUi(this));
         this.description.setHTML(fromSafeConstant(
                 "<p>One hybridization is where two labeled samples are hybridized on an array chip.</p>" +
@@ -66,7 +66,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
     @Override
     public ExperimentSetupSettings getSettings() {
         ExperimentSetupSettings settings = new ExperimentSetupSettings(TWO_COLOR_MICROARRAY);
-        settings.setArrayDesign(arrayDesignList.getValue());
+        settings.setArrayDesign(arrayDesign.getValue());
         settings.setNumberOfHybs(intValue(numberOfHybs.getValue()));
         return settings;
     }
@@ -81,7 +81,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
             validationErrors += " - this submission does not support more than 500 hybridizations\n";
         }
 
-        String ad = arrayDesignList.getValue();
+        String ad = arrayDesign.getValue();
         if (null == ad || ad.isEmpty()) {
             validationErrors += " - a non-empty array design must be used\n";
         } else if (!view.isArrayDesignPresent(ad)) {

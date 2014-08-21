@@ -80,6 +80,17 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
             }
         });
         loadExperimentSettings();
+        getArrayDesigns(null, 999999, new AsyncCallback<List<ArrayDesignRef>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to load array designs list");
+            }
+
+            @Override
+            public void onSuccess(List<ArrayDesignRef> result) {
+                view.setArrayDesignList(result);
+            }
+        });
     }
 
     @Override

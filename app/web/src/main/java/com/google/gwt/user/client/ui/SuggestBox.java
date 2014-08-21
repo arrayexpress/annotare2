@@ -1130,12 +1130,15 @@ public class SuggestBox extends Composite implements HasText, HasFocus,
                         }
                         break;
                     case KeyCodes.KEY_ESCAPE:
-                        display.hideSuggestions();
+                        if (display.isSuggestionListShowing()) {
+                            display.hideSuggestions();
+                            event.preventDefault();
+                        }
                         break;
                     case KeyCodes.KEY_ENTER:
                     case KeyCodes.KEY_TAB:
                         Suggestion suggestion = display.getCurrentSelection();
-                        if (suggestion == null) {
+                        if (null == suggestion) {
                             display.hideSuggestions();
                         } else {
                             setNewSelection(suggestion);

@@ -25,10 +25,8 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignSuggestOracle;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
 /**
  * @author Olga Melnichuk
@@ -45,8 +43,11 @@ public class OneColorMicroarraySettingsEditor extends Composite implements Edito
     @UiField
     TextBox label;
 
-    public OneColorMicroarraySettingsEditor(SuggestService<ArrayDesignRef> suggestService) {
-        arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(suggestService));
+    private final ExperimentSettingsPanel panel;
+
+    public OneColorMicroarraySettingsEditor(ExperimentSettingsPanel panel) {
+        this.panel = panel;
+        this.arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(panel));
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
@@ -65,9 +66,14 @@ public class OneColorMicroarraySettingsEditor extends Composite implements Edito
         if (null == label.getValue() || label.getValue().isEmpty()) {
             validationErrors = " - a non-empty label must be used\n";
         }
-        if (null == arrayDesign.getValue() || arrayDesign.getValue().isEmpty()) {
+
+        String ad = arrayDesign.getValue();
+        if (null == ad || ad.isEmpty()) {
             validationErrors += " - a non-empty array design must be used\n";
+        } else if (!panel.isArrayDesignPresent(ad)) {
+            validationErrors += " - array design with accession '" + ad + "' must be available in ArrayExpress\n";
         }
+
         if (!validationErrors.isEmpty()) {
             Window.alert("Please correct the following:\n\n" + validationErrors);
             return false;

@@ -30,7 +30,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromTrustedString;
@@ -58,6 +60,7 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
     Anchor changeLink;
 
     private ExperimentSettings settings;
+    private final Set<String> arrayDesignAccessions = new HashSet<String>();
     private Presenter presenter;
 
     public ExperimentSettingsPanel(ExperimentSettings settings) {
@@ -136,6 +139,17 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
         if (presenter != null) {
             presenter.getArrayDesigns(query, limit, callback);
         }
+    }
+
+    public void setArrayDesignList(List<ArrayDesignRef> arrayDesigns) {
+        arrayDesignAccessions.clear();
+        for (ArrayDesignRef ad : arrayDesigns) {
+            arrayDesignAccessions.add(ad.getAccession().toLowerCase());
+        }
+    }
+
+    public boolean isArrayDesignPresent(String accession) {
+        return (null != accession) && arrayDesignAccessions.contains(accession.toLowerCase());
     }
 
     public interface Presenter {

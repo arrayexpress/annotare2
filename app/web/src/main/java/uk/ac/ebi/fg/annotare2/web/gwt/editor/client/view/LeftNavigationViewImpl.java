@@ -136,6 +136,11 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
         selectLabel(section);
     }
 
+    @Override
+    public void setArrayDesignList(List<ArrayDesignRef> arrayDesigns) {
+        settingsPanel.setArrayDesignList(arrayDesigns);
+    }
+
     private void onSectionClick(Section section) {
         selectLabel(section);
         if (presenter != null) {

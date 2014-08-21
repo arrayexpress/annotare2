@@ -55,7 +55,7 @@ public class SetupActivity extends AbstractActivity implements StartView.Present
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
-        dataService.getArrayDesignList(null, 99999, new AsyncCallback<List<ArrayDesignRef>>() {
+        dataService.getArrayDesignList(null, 999999, new AsyncCallback<List<ArrayDesignRef>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Unable to load array designs");

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings.ExperimentSettingsPanel;
 
@@ -36,6 +37,8 @@ public interface LeftNavigationView extends IsWidget {
     void setSelected(Section section);
 
     void setExperimentSettings(ExperimentSettings settings);
+
+    void setArrayDesignList(List<ArrayDesignRef> arrayDesigns);
 
     public interface Presenter extends ExperimentSettingsPanel.Presenter {
 
