@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -25,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
+import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
@@ -56,9 +57,10 @@ public class SubmissionValidator {
         ExperimentProfile exp = submission.getExperimentProfile();
         ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
-        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, true);
+        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate();
+        //MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, true);
 
-        Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
+        Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF), type);
 
         Set<DataFile> allFiles = submission.getFiles();
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
