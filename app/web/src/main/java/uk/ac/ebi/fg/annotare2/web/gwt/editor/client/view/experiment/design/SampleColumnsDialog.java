@@ -195,10 +195,10 @@ public class SampleColumnsDialog extends DialogBox {
         return templates;
     }
 
-    private Set<String> getUserColumnNames() {
+    private Set<String> getUserColumnNamesLowerCased() {
         Set<String> names = new HashSet<String>();
         for (SampleColumn column : columnMap.values()) {
-            names.add(column.getName());
+            names.add(column.getName().toLowerCase());
         }
         return names;
     }
@@ -219,10 +219,13 @@ public class SampleColumnsDialog extends DialogBox {
 
     private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context) {
         SampleColumn column = SampleColumn.create(template, context);
-        if (column == null || getUserColumnNames().contains(column.getName())) {
-            return;
+        if (column == null) {
+            Window.alert("Unable to add an attribute");
+        } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
+            Window.alert("Unable to add '" + column.getName() + "': attribute is already defined");
+        } else {
+            setColumn(column, true);
         }
-        setColumn(column, true);
     }
 
     private void updateColumn(int index, SampleColumn value) {
@@ -299,7 +302,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void checkNamesUnique(List<String> errors) {
-        if (getUserColumnNames().size() != columnMap.size()) {
+        if (getUserColumnNamesLowerCased().size() != columnMap.size()) {
             errors.add("Attribute names must be unique");
         }
     }
