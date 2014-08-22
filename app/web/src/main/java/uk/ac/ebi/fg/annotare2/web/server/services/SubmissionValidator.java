@@ -115,10 +115,10 @@ public class SubmissionValidator {
                     );
                 }
             }
-            FileAvailabilityChecker checker = new FileAvailabilityChecker();
+            FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
             for (DataFile dataFile : assignedFiles) {
                 DataFileSource source = dataFileManager.getFileSource(dataFile);
-                if (null == source || !checker.isAvailable(source)) {
+                if (null == source || !fileChecker.isAvailable(source)) {
                     results.add(
                             CheckResult.checkFailed(
                                     "File " + dataFile.getName() + " is not accessible"
