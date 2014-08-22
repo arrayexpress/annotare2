@@ -71,13 +71,18 @@ public class ExperimentSettingsDialog extends DialogBox {
     @UiHandler("cancelButton")
     void cancelClicked(ClickEvent event) {
         hide();
+        if (null != callback) {
+            callback.onCancel();
+        }
     }
 
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
         if (editor.areValuesValid()) {
-            callback.onOkay(editor.getValues());
             hide();
+            if (null != callback) {
+                callback.onOkay(editor.getValues());
+            }
         }
     }
 
@@ -87,6 +92,9 @@ public class ExperimentSettingsDialog extends DialogBox {
         if (Event.ONKEYDOWN == event.getTypeInt()) {
             if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
                 hide();
+                if (null != callback) {
+                    callback.onCancel();
+                }
             }
         }
     }

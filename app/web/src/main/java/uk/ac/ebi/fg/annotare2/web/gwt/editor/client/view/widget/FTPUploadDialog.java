@@ -19,10 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -116,6 +118,15 @@ public class FTPUploadDialog extends DialogBox {
         hide();
     }
 
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (Event.ONKEYDOWN == event.getTypeInt()) {
+            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
+                hide();
+            }
+        }
+    }
     private List<String> getPastedData() {
         String pastedRows = values.getValue();
         List<String> result = new ArrayList<String>();

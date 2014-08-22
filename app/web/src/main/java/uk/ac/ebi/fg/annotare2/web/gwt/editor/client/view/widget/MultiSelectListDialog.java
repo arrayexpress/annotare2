@@ -21,11 +21,13 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
@@ -112,7 +114,7 @@ public class MultiSelectListDialog extends DialogBox {
     @UiHandler("cancelButton")
     void cancelClicked(ClickEvent event) {
         hide();
-        if (callback != null) {
+        if (null != callback) {
             callback.onCancel();
         }
     }
@@ -120,8 +122,21 @@ public class MultiSelectListDialog extends DialogBox {
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
         hide();
-        if (callback != null) {
+        if (null != callback) {
             callback.onOkay(getSelected());
+        }
+    }
+
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (Event.ONKEYDOWN == event.getTypeInt()) {
+            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
+                hide();
+                if (null != callback) {
+                    callback.onCancel();
+                }
+            }
         }
     }
 

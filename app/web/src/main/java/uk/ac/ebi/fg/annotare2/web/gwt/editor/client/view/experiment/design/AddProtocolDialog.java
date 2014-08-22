@@ -18,13 +18,11 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -84,7 +82,7 @@ public class AddProtocolDialog extends DialogBox {
     @UiHandler("cancelButton")
     void cancelClicked(ClickEvent event) {
         hide();
-        if (callback != null) {
+        if (null != callback) {
             callback.onCancel();
         }
     }
@@ -92,15 +90,27 @@ public class AddProtocolDialog extends DialogBox {
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
         ProtocolType selected = getSelectedType();
-        if (selected == null) {
+        if (null == selected) {
             return;
         }
         hide();
-        if (callback != null) {
+        if (null != callback) {
             callback.onOkay(selected);
         }
     }
 
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (Event.ONKEYDOWN == event.getTypeInt()) {
+            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
+                hide();
+                if (null != callback) {
+                    callback.onCancel();
+                }
+            }
+        }
+    }
     private void loadProtocolTypes() {
         if (presenter == null) {
             return;

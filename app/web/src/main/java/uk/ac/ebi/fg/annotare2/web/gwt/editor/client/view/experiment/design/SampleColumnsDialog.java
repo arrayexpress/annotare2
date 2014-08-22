@@ -21,11 +21,13 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -144,7 +146,7 @@ public class SampleColumnsDialog extends DialogBox {
     void okButtonClicked(ClickEvent event) {
         if (isValid()) {
             hide();
-            if (callback != null) {
+            if (null != callback) {
                 callback.onOkay(getColumns());
             }
         }
@@ -153,11 +155,23 @@ public class SampleColumnsDialog extends DialogBox {
     @UiHandler("cancelButton")
     void cancelButtonClicked(ClickEvent event) {
         hide();
-        if (callback != null) {
+        if (null != callback) {
             callback.onCancel();
         }
     }
 
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (Event.ONKEYDOWN == event.getTypeInt()) {
+            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
+                hide();
+                if (null != callback) {
+                    callback.onCancel();
+                }
+            }
+        }
+    }
     @UiHandler("moveUpButton")
     void moveColumnUp(ClickEvent event) {
         int index = columnList.getSelectedIndex();

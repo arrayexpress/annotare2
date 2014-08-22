@@ -19,10 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.TextArea;
@@ -76,7 +78,7 @@ public class ImportValuesDialog extends DialogBox {
     void okButtonClicked(ClickEvent event) {
         List<String> importedValues = getImportedValues();
         hide();
-        if (!importedValues.isEmpty()) {
+        if (!importedValues.isEmpty() && null != callback) {
             callback.onOkay(importedValues);
         }
     }
@@ -84,7 +86,22 @@ public class ImportValuesDialog extends DialogBox {
     @UiHandler("cancelButton")
     void cancelButtonClicked(ClickEvent event) {
         hide();
-        callback.onCancel();
+        if (null != callback) {
+            callback.onCancel();
+        }
+    }
+
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (Event.ONKEYDOWN == event.getTypeInt()) {
+            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
+                hide();
+                if (null != callback) {
+                    callback.onCancel();
+                }
+            }
+        }
     }
 
     private List<String> getImportedValues() {

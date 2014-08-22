@@ -18,6 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 
 
@@ -84,5 +86,15 @@ public class ValidateSubmissionDialog extends DialogBox {
                 "Once all the required information is provided we will send you an accession number.</p>" +
                 "<p>In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
                  "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html</a></p>");
+    }
+
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (Event.ONKEYDOWN == event.getTypeInt()) {
+            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
+                hide();
+            }
+        }
     }
 }
