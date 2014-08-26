@@ -16,6 +16,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc.transform;
 
+import com.google.common.collect.Lists;
+import uk.ac.ebi.fg.annotare2.db.model.User;
+import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
@@ -23,6 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater;
 
 import java.util.Map;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
@@ -97,16 +101,93 @@ public class ExperimentBuilderFactory {
             return map.get(settings.getExperimentType());
         }
 
-        public static ExperimentProfile build(ExperimentSetupSettings settings) {
+        private static String getFirstName(String fullName) {
+            String firstName = "";
+
+            if (!isNullOrEmpty(fullName)) {
+                String[] names = fullName.split("\\s+");
+                if (!isUpperCase(fullName)) {
+                    boolean haveUpperCaseNamesFound = false;
+                    for (String name : names) {
+                        if (isUpperCase(name)) {
+                            haveUpperCaseNamesFound = true;
+                            break;
+                        }
+                    }
+                    if (haveUpperCaseNamesFound) {
+                        for (String name : names) {
+                            if (!isUpperCase(name)) {
+                                firstName = firstName + (firstName.isEmpty() ? "" : " ") + name;
+                            }
+                        }
+                        return firstName;
+                    }
+                }
+                if (names.length > 1) {
+                    for (int i = 0; i < names.length - 1; i++) {
+                        firstName = firstName + (firstName.isEmpty() ? "" : " ") + names[i];
+                    }
+                } else {
+                    firstName = names[0];
+                }
+            }
+            return firstName;
+        }
+
+        private static String getLastName(String fullName) {
+            String lastName = "";
+
+            if (!isNullOrEmpty(fullName)) {
+
+                String[] names = fullName.split("\\s+");
+                if (!isUpperCase(fullName)) {
+                    boolean haveUpperCaseNamesFound = false;
+                    for (String name : names) {
+                        if (isUpperCase(name)) {
+                            haveUpperCaseNamesFound = true;
+                            break;
+                        }
+                    }
+                    if (haveUpperCaseNamesFound) {
+                        for (String name : names) {
+                            if (isUpperCase(name)) {
+                                lastName = lastName + (lastName.isEmpty() ? "" : " ") + name;
+                            }
+                        }
+                        return lastName;
+                    }
+                }
+                if (names.length > 1) {
+                    lastName = names[names.length - 1];
+                }
+            }
+            return lastName;
+        }
+
+        private static boolean isUpperCase(String text) {
+            return text.equals(text.toUpperCase());
+        }
+
+        public static ExperimentProfile build(ExperimentSetupSettings settings, User creator) {
             Builder b = find(settings);
             if (b == null) {
                 throw new IllegalStateException("Unable to build an experiment with null type");
             }
-            return b.setupExperiment(settings);
+            ExperimentProfile experimentProfile = b.setupExperiment(settings);
+
+            if (null != creator) {
+                Contact submitter = experimentProfile.createContact();
+                submitter.setEmail(creator.getEmail());
+                submitter.setLastName(getLastName(creator.getName()));
+                submitter.setFirstName(getFirstName(creator.getName()));
+                submitter.setRoles(Lists.newArrayList("submitter"));
+            }
+
+            return experimentProfile;
         }
     }
 
-    public static ExperimentProfile createExperimentProfile(ExperimentSetupSettings settings) {
-        return Builder.build(settings);
+    public static ExperimentProfile createExperimentProfile(ExperimentSetupSettings settings, User creator) {
+        return Builder.build(settings, creator);
     }
 }

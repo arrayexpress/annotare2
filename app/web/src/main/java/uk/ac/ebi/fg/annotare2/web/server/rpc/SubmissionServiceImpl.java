@@ -248,7 +248,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             ExperimentSubmission submission =
                     getExperimentSubmission(id, Permission.UPDATE);
-            submission.setExperimentProfile(createExperimentProfile(settings));
+            submission.setExperimentProfile(createExperimentProfile(settings, submission.getCreatedBy()));
             save(submission);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
