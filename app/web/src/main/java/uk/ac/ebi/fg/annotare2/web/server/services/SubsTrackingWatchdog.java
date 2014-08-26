@@ -40,6 +40,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.mail.MessagingException;
@@ -345,8 +346,8 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 if (null != subsTrackingConnection) {
                     subsTrackingConnection.rollback();
                 }
-            } catch (SQLException xx) {
-                log.error("SQLException:", e);
+            } catch (SQLException ee) {
+                log.error("SQLException:", ee);
             }
             throw new SubsTrackingException(e);
         } finally {
@@ -382,9 +383,11 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             }
             mageTab.getIdfFile().setWritable(true, false);
 
+            String dataFilesPostProcessingScript = null;
             if (properties.isSubsTrackingEnabled()) {
                 subsTracking.deleteFiles(connection, subsTrackingId);
                 subsTracking.addMageTabFile(connection, subsTrackingId, mageTab.getIdfFile().getName());
+                dataFilesPostProcessingScript = properties.getSubsTrackingDataFilesPostProcessingScript();
             }
 
             exportDirectory = new File(exportDirectory, "unpacked");
@@ -408,6 +411,17 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                         DataFileSource source = dataFileManager.getFileSource(dataFile);
                         source.copyTo(f);
                         f.setWritable(true, false);
+                        if (!isNullOrEmpty(dataFilesPostProcessingScript)) {
+                            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+                            if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
+                                log.info(isNullOrEmpty(
+                                        executor.getOutput()) ?
+                                                "Ran post-processing script on " + f.getName() : executor.getOutput()
+                                );
+                            } else {
+                                log.error("Data file post-processing script returned an error: {}", executor.getErrors());
+                            }
+                        }
                     }
                     if (properties.isSubsTrackingEnabled()) {
                         subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());

@@ -21,12 +21,13 @@ import java.io.File;
 
 public interface SubsTrackingProperties
 {
-    public Boolean isSubsTrackingEnabled();
-    public String getSubsTrackingUser();
-    public String getSubsTrackingExperimentType();
-    public File getSubsTrackingExportDir();
-    public String getSubsTrackingConnectionDriverClass();
-    public String getSubsTrackingConnectionURL();
-    public String getSubsTrackingConnectionUser();
-    public String getSubsTrackingConnectionPassword();
+    Boolean isSubsTrackingEnabled();
+    String getSubsTrackingUser();
+    String getSubsTrackingExperimentType();
+    File getSubsTrackingExportDir();
+    String getSubsTrackingConnectionDriverClass();
+    String getSubsTrackingConnectionURL();
+    String getSubsTrackingConnectionUser();
+    String getSubsTrackingConnectionPassword();
+    String getSubsTrackingDataFilesPostProcessingScript();
 }

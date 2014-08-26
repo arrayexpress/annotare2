@@ -195,6 +195,11 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
     }
 
     @Override
+    public String getSubsTrackingDataFilesPostProcessingScript() {
+        return getProperty("ae-subs-tracking.export.post-processing-script");
+    }
+
+    @Override
     public Boolean isAeConnectionEnabled() {
         return Boolean.parseBoolean(getProperty("ae-connection.enabled"));
     }
