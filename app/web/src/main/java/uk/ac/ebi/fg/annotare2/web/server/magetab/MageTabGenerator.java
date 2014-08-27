@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
@@ -25,8 +26,10 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.graph.Node;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.*;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.sdrf.node.attribute.*;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
+import uk.ac.ebi.fg.annotare2.web.server.services.EfoSearch;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -108,11 +111,15 @@ public class MageTabGenerator {
     private final Set<GenerateOption> options;
     private final String newLine;
 
+    private final EfoSearch efoSearch;
+
     public static enum GenerateOption {
         REPLACE_NEWLINES_WITH_SPACES
     }
 
-    public MageTabGenerator(ExperimentProfile exp, GenerateOption... options) {
+    public MageTabGenerator(ExperimentProfile exp, EfoSearch efoSearch, GenerateOption... options) {
+        this.efoSearch = efoSearch;
+
         if (null == protocolTypes) {
             protocolTypes = ProtocolTypes.create();
         }
@@ -758,12 +765,38 @@ public class MageTabGenerator {
         return attributes;
     }
 
+    private static Set<String> ROOT_UNIT_TYPES = Sets.newHashSet("uo_0000000", "uo_0000045", "uo_0000046");
+
+    private String getUnitType(String unitAccession) {
+
+        EfoTerm unitTerm = efoSearch.searchByAccession(unitAccession);
+        if (null != unitTerm) {
+            if (!Sets.intersection(new HashSet<String>(unitTerm.getParents()), ROOT_UNIT_TYPES).isEmpty()) {
+                return unitTerm.getLabel();
+            }
+
+            for (String parentAccession : unitTerm.getParents()) {
+                String unitType = getUnitType(parentAccession);
+                if (null != unitType) {
+                    return unitType;
+                }
+            }
+        }
+        return null;
+    }
+
     private UnitAttribute createUnitAttribute(OntologyTerm units) {
-        if (units == null) {
+        if (null == units) {
             return null;
         }
+
+        String unitType = getUnitType(units.getAccession());
+        if (null == unitType) {
+            return null;
+        }
+
         UnitAttribute attr = new UnitAttribute();
-        attr.type = units.getLabel();
+        attr.type = unitType;
         attr.setAttributeValue(units.getLabel());
         attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
         attr.termAccessionNumber = units.getAccession();

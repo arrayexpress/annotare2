@@ -43,11 +43,13 @@ public class SubmissionValidator {
 
     private final MageTabChecker checker;
     private final DataFileManager dataFileManager;
+    private final EfoSearch efoSearch;
 
     @Inject
-    public SubmissionValidator(MageTabChecker checker, DataFileManager dataFileManager) {
+    public SubmissionValidator(MageTabChecker checker, DataFileManager dataFileManager, EfoSearch efoSearch) {
         this.checker = checker;
         this.dataFileManager = dataFileManager;
+        this.efoSearch = efoSearch;
     }
 
     public Collection<CheckResult> validate(ExperimentSubmission submission) throws IOException,
@@ -56,7 +58,7 @@ public class SubmissionValidator {
         ExperimentProfile exp = submission.getExperimentProfile();
         ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
-        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, true);
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, efoSearch, true);
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.getIdf(), mageTab.getSdrf()), type);
 
         //TODO: add reference to SDRF in IDF and re-enable this

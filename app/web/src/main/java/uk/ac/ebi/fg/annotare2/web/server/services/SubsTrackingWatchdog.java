@@ -67,6 +67,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
     private final SubmissionDao submissionDao;
     private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
+    private final EfoSearch efoSearch;
     private final AnnotareProperties properties;
     private final EmailSender emailer;
 
@@ -84,6 +85,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                                 SubmissionDao submissionDao,
                                 SubmissionManager submissionManager,
                                 DataFileManager dataFileManager,
+                                EfoSearch efoSearch,
                                 EmailSender emailer) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
@@ -91,6 +93,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         this.submissionDao = submissionDao;
         this.submissionManager = submissionManager;
         this.dataFileManager = dataFileManager;
+        this.efoSearch = efoSearch;
         this.properties = properties;
         this.emailer = emailer;
     }
@@ -376,7 +379,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 }
                 fileName = fileName + "_v" + version;
             }
-            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
+            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, efoSearch, exportDirectory, fileName + ".idf.txt", fileName + ".sdrf.txt");
 
             if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
                 throw new Exception("Unable to locate generated MAGE-TAB files");

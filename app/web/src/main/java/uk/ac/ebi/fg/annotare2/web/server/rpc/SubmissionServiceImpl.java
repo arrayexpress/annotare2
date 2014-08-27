@@ -87,6 +87,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
     private final UserDao userDao;
+    private final EfoSearch efoSearch;
 
     private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
 
@@ -96,11 +97,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                                  DataFileManager dataFileManager,
                                  AnnotareProperties properties,
                                  UserDao userDao,
+                                 EfoSearch efoSearch,
                                  EmailSender emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.userDao = userDao;
+        this.efoSearch = efoSearch;
     }
 
     @Transactional
@@ -172,14 +175,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     }
 
     private Table asIdfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate();
+        MAGETABInvestigation mageTab = (new MageTabGenerator(exp, efoSearch)).generate();
         StringWriter out = new StringWriter();
         new IDFWriter(out).write(mageTab.IDF);
         return new TsvParser().parse(new ByteArrayInputStream(out.toString().getBytes(Charsets.UTF_8)));
     }
 
     private Table asSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
-        MAGETABInvestigation mageTab = (new MageTabGenerator(exp)).generate();
+        MAGETABInvestigation mageTab = (new MageTabGenerator(exp, efoSearch)).generate();
         StringWriter out = new StringWriter();
         new SDRFGraphWriter(out).write(mageTab.SDRF);
         String sdrf = restoreOriginalNameValues(out.toString());

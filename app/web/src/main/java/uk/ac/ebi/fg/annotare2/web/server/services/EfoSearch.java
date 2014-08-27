@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 
 import java.util.Collection;
 
@@ -38,4 +39,6 @@ public interface EfoSearch {
     EfoTerm searchByAccession(String accession, String branchAccession);
 
     EfoTerm searchByAccession(String accession);
+
+    EfoTerm getSystemTerm(SystemEfoTerm term);
 }

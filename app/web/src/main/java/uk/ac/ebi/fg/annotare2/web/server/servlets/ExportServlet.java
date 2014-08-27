@@ -29,6 +29,7 @@ import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.EfoSearch;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 
 import javax.servlet.ServletException;
@@ -61,6 +62,9 @@ public class ExportServlet extends HttpServlet {
     @Inject
     private ProtocolTypes protocolTypes;
 
+    @Inject
+    private EfoSearch efoSearch;
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
@@ -78,7 +82,7 @@ public class ExportServlet extends HttpServlet {
 
     private void exportMageTab(ExperimentSubmission submission, ZipOutputStream zip) throws IOException, ServletException {
         try {
-            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(submission.getExperimentProfile(), true);
+            MageTabFiles mageTab = MageTabFiles.createMageTabFiles(submission.getExperimentProfile(), efoSearch, true);
             File idfFile = mageTab.getIdfFile();
             zip.putNextEntry(new ZipEntry(idfFile.getName()));
             copy(new FileInputStream(idfFile), zip, false);

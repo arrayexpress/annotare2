@@ -29,6 +29,7 @@ import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.SDRFWriter;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.web.server.services.EfoSearch;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -63,8 +64,8 @@ public class MageTabFiles {
         this.sanitize = sanitize;
     }
 
-    private MageTabFiles init(ExperimentProfile exp) throws IOException, ParseException {
-        MAGETABInvestigation generated = (new MageTabGenerator(exp, MageTabGenerator.GenerateOption.REPLACE_NEWLINES_WITH_SPACES)).generate();
+    private MageTabFiles init(ExperimentProfile exp, EfoSearch efoSearch) throws IOException, ParseException {
+        MAGETABInvestigation generated = (new MageTabGenerator(exp, efoSearch, MageTabGenerator.GenerateOption.REPLACE_NEWLINES_WITH_SPACES)).generate();
 
         /* Generated MAGE-TAB lacks cell locations, which are good to have during validation.
          * So we have to write files to disk and parse again */
@@ -121,15 +122,15 @@ public class MageTabFiles {
         return sdrfFile;
     }
 
-    public static MageTabFiles createMageTabFiles(ExperimentProfile exp, boolean sanitize) throws IOException, ParseException {
+    public static MageTabFiles createMageTabFiles(ExperimentProfile exp, EfoSearch efoSearch, boolean sanitize) throws IOException, ParseException {
         File tmp = Files.createTempDir();
         tmp.deleteOnExit();
-        return (new MageTabFiles(new File(tmp, "idf.csv"), new File(tmp, "sdrf.csv"), sanitize)).init(exp);
+        return (new MageTabFiles(new File(tmp, "idf.csv"), new File(tmp, "sdrf.csv"), sanitize)).init(exp, efoSearch);
     }
 
-    public static MageTabFiles createMageTabFiles(ExperimentProfile exp, File directory, String idfFileName,
+    public static MageTabFiles createMageTabFiles(ExperimentProfile exp, EfoSearch efoSearch, File directory, String idfFileName,
                                                   String sdrfFileName) throws IOException, ParseException {
-        return (new MageTabFiles(new File(directory, idfFileName), new File(directory, sdrfFileName))).init(exp);
+        return (new MageTabFiles(new File(directory, idfFileName), new File(directory, sdrfFileName))).init(exp, efoSearch);
     }
 
     /**

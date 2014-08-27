@@ -44,6 +44,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 
 import javax.annotation.Nullable;
@@ -151,6 +152,11 @@ public class EfoSearchImpl implements EfoSearch {
         return result.isEmpty() ? null : result.get(0);
     }
 
+    @Override
+    public EfoTerm getSystemTerm(SystemEfoTerm term) {
+        return searchByAccession(properties.getEfoTermAccession(term));
+    }
+
     private Collection<EfoTerm> prefixSearch(String prefix, int limit) {
         QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));
         Query query = parse(
@@ -232,7 +238,9 @@ public class EfoSearchImpl implements EfoSearch {
                 doc.get(LABEL_FIELD.name),
                 doc.get(DEFINITION_FIELD.name),
                 parseBoolean(doc.get(ORGANISATIONAL_FLAG_FIELD.name)),
-                Collections.<String>emptyList());
+                Collections.<String>emptyList(),
+                Arrays.asList(doc.getValues(PARENT_FIELD.name)),
+                Arrays.asList(doc.getValues(ASCENDANT_FIELD.name)));
     }
 
     private void load(EfoServiceProperties properties) {
@@ -389,13 +397,13 @@ public class EfoSearchImpl implements EfoSearch {
         ASCENDANT_FIELD("ascendant") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getAccession().toLowerCase(), NO);
+                return new StringField(name, node.getAccession().toLowerCase(), YES);
             }
         },
         PARENT_FIELD("parent") {
             @Override
             protected Field create(String name, EfoNode node) {
-                return new StringField(name, node.getAccession().toLowerCase(), NO);
+                return new StringField(name, node.getAccession().toLowerCase(), YES);
             }
         };
 

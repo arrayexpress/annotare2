@@ -58,7 +58,7 @@ public class SampleColumn implements IsSerializable {
     }
 
     public String getTitle() {
-        return attr.getName() + (template.hasUnits() ? "[" + (attr.getUnits() == null ? "no units" : attr.getUnits().getLabel()) + "]" : "");
+        return attr.getName() + (template.hasUnits() ? " (" + (attr.getUnits() == null ? "no units" : attr.getUnits().getLabel()) + ")" : "");
     }
 
     public OntologyTerm getTerm() {
