@@ -796,7 +796,7 @@ public class MageTabGenerator {
         }
 
         UnitAttribute attr = new UnitAttribute();
-        attr.type = unitType;
+        attr.type = unitType.replaceFirst("\\s*derived\\s*", "");
         attr.setAttributeValue(units.getLabel());
         attr.termSourceREF = ensureTermSource(TermSource.EFO_TERM_SOURCE).getName();
         attr.termAccessionNumber = units.getAccession();
