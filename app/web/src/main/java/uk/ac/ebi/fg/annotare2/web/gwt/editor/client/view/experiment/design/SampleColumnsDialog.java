@@ -195,7 +195,7 @@ public class SampleColumnsDialog extends DialogBox {
         Set<SampleAttributeTemplate> used = getUsedTemplates();
 
         for (SampleAttributeTemplate template : SampleAttributeTemplate.getAll()) {
-            if (!used.contains(template)) {
+            if (!used.contains(template) && template.isVisible()) {
                 templateColumnList.addItem(template.getName() + (template.isFactorValueOnly() ? " (Factor Value)" : ""), template.name());
             }
         }
