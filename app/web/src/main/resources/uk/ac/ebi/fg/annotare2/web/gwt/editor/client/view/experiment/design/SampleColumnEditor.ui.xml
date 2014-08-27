@@ -40,7 +40,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Measurement Units:</td>
+                <td>Measurement Unit:</td>
                 <td>
                     <g:SuggestBox ui:field="unitsSuggest" width="100%"/>
                 </td>

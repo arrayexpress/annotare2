@@ -16,6 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Ordering;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -194,7 +196,10 @@ public class SampleColumnsDialog extends DialogBox {
         templateColumnList.clear();
         Set<SampleAttributeTemplate> used = getUsedTemplates();
 
-        for (SampleAttributeTemplate template : SampleAttributeTemplate.getAll()) {
+        for (SampleAttributeTemplate template : Ordering.natural().onResultOf(new Function<SampleAttributeTemplate, String>() {
+            @Override
+            public String apply(SampleAttributeTemplate template) { return template.getName(); }
+        }).sortedCopy(SampleAttributeTemplate.getAll())) {
             if (!used.contains(template) && template.isVisible()) {
                 templateColumnList.addItem(template.getName() + (template.isFactorValueOnly() ? " (Factor Value)" : ""), template.name());
             }

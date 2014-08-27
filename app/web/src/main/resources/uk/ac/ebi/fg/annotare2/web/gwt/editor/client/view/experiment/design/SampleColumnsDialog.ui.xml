@@ -34,11 +34,11 @@
             font-size: 12px;
         }
     </ui:style>
-    <g:ResizeLayoutPanel height="500px" width="650px">
+    <g:ResizeLayoutPanel height="500px" width="700px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:DockLayoutPanel>
-                    <g:east size="200">
+                    <g:east size="300">
                         <g:DockLayoutPanel>
                             <g:center>
                                 <g:ListBox ui:field="templateColumnList" visibleItemCount="9" width="100%"/>
