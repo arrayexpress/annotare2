@@ -97,7 +97,14 @@ public enum ExtractAttribute {
             "MDA (Multiple displacement amplification)",
             "padlock probes capture method (to be used in conjuction with Bisulfite-Seq)",
             "other (Other library enrichment, screening, or selection process)",
-            "unspecified (Library enrichment, screening, or selection is not specified)");
+            "unspecified (Library enrichment, screening, or selection is not specified)"),
+
+    LIBRARY_STRAND("Library Strand",
+                           "",
+                           "not applicable",
+                           "first strand",
+                           "second strand");
+
 
     private final String title;
     private final List<String> values;

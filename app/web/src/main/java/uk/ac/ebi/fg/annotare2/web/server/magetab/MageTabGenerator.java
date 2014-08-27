@@ -541,6 +541,8 @@ public class MageTabGenerator {
                 return "LIBRARY_SOURCE";
             case LIBRARY_STRATEGY:
                 return "LIBRARY_STRATEGY";
+            case LIBRARY_STRAND:
+                return "LIBRARY_STRAND";
             default:
                 return attr.getTitle();
         }

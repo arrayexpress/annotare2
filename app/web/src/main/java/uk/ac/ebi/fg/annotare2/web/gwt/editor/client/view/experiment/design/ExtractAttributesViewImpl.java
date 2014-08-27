@@ -73,6 +73,7 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
         addColumn(LIBRARY_SOURCE);
         addColumn(LIBRARY_STRATEGY);
         addColumn(LIBRARY_SELECTION);
+        addColumn(LIBRARY_STRAND);
     }
 
     private void addNameColumn() {
