@@ -223,15 +223,22 @@ public class GridView<R extends HasIdentity> extends Composite {
         if (colIndex >= 2 && colIndex < dataGrid.getColumnCount() &&
                 rowIndex >=0 && rowIndex < dataGrid.getRowCount()) {
             Column<R, ?> column = dataGrid.getColumn(colIndex);
-            AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
             List<R> rows = dataProvider.getList();
-            String value = (String) column.getValue(rows.get(rowIndex));
-            FieldUpdater<R, String> updater = (FieldUpdater<R, String>) column.getFieldUpdater();
-            for (int i = rowIndex + 1; i < rows.size(); i++) {
-                updater.update(i, rows.get(i), value);
-                cell.clearViewData(rows.get(i));
+            boolean isConditionalColumn = column instanceof ConditionalColumn;
+            if (!isConditionalColumn || ((ConditionalColumn<R>)column).isEditable(rows.get(rowIndex))) {
+
+                AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
+                String value = (String) column.getValue(rows.get(rowIndex));
+                FieldUpdater<R, String> updater = (FieldUpdater<R, String>) column.getFieldUpdater();
+
+                for (int i = rowIndex + 1; i < rows.size(); i++) {
+                    if (!isConditionalColumn || ((ConditionalColumn<R>) column).isEditable(rows.get(i))) {
+                        updater.update(i, rows.get(i), value);
+                        cell.clearViewData(rows.get(i));
+                    }
+                }
+                dataProvider.refresh();
             }
-            dataProvider.refresh();
         }
     }
 
@@ -244,13 +251,19 @@ public class GridView<R extends HasIdentity> extends Composite {
             if (colIndex >= 2 && colIndex < dataGrid.getColumnCount() &&
                     rowIndex >=0 && rowIndex < dataGrid.getRowCount()) {
                 Column<R, ?> column = dataGrid.getColumn(colIndex);
-                AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
                 List<R> rows = dataProvider.getList();
+
+                boolean isConditionalColumn = column instanceof ConditionalColumn;
+
+                AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
                 FieldUpdater<R, String> updater = (FieldUpdater<R, String>) column.getFieldUpdater();
+
                 for (int i = 0; i < Math.min(rows.size() - rowIndex, values.size()); i++) {
                     int j = i + rowIndex;
-                    updater.update(j, rows.get(j), values.get(i));
-                    cell.clearViewData(rows.get(j));
+                    if (!isConditionalColumn || ((ConditionalColumn<R>)column).isEditable(rows.get(i))) {
+                        updater.update(j, rows.get(j), values.get(i));
+                        cell.clearViewData(rows.get(j));
+                    }
                 }
                 dataProvider.refresh();
             }
