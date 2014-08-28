@@ -8,8 +8,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ConditonalColumn;
 import com.google.gwt.user.cellview.client.CustomDataGrid;
-import com.google.gwt.user.cellview.client.EditSelectionCell;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -45,11 +45,11 @@ public class DataGridSample implements EntryPoint {
     }
 
     private static final List<DataRow> DATA_ROWS = Arrays.asList(
-            new DataRow("John", "Doe", "123 Fourth Avenue", "first"),
-            new DataRow("Joe", "Wells", "22 Lance Ln", "second"),
-            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue", "third"),
-            new DataRow("John", "Doe", "123 Fourth Avenue", "fourth"),
-            new DataRow("Joe", "Wells", "22 Lance Ln", "fifth")
+            new DataRow("John", "Doe", "123 Fourth Avenue", ""),
+            new DataRow("Joe", "Wells", "22 Lance Ln", "SINGLE"),
+            new DataRow("George", "Tsunpo", "1600 Pennsylvania Avenue", "PAIRED"),
+            new DataRow("John", "Doe", "123 Fourth Avenue", "SINGLE"),
+            new DataRow("Joe", "Wells", "22 Lance Ln", "SINGLE")
     );
 
     private ListDataProvider<DataRow> dataProvider;
@@ -82,10 +82,15 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column1, "First column");
         //dataGrid.setColumnWidth(column1, 20, Style.Unit.PC);
 
-        Column<DataRow, String> column2 = new Column<DataRow, String>(new EditTextCell()) {
+        Column<DataRow, String> column2 = new ConditonalColumn<DataRow, String>(new EditTextCell()) {
             @Override
             public String getValue(DataRow object) {
                 return object.column2;
+            }
+
+            @Override
+            public boolean isEditable(DataRow object) {
+                return "paired".equalsIgnoreCase(object.column4);
             }
         };
 
@@ -118,7 +123,7 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column3, "Third column");
         //dataGrid.setColumnWidth(column3, 40, Style.Unit.PC);
 
-        Column<DataRow, String> column4 = new Column<DataRow, String>(new SelectionCell(Arrays.asList("first first", "second second second", "third third third third third third", "fourth", "fifth"))) {
+        Column<DataRow, String> column4 = new Column<DataRow, String>(new SelectionCell(Arrays.asList("", "SINGLE", "PAIRED"))) {
             @Override
             public String getValue(DataRow object) {
                 return object.column4;
