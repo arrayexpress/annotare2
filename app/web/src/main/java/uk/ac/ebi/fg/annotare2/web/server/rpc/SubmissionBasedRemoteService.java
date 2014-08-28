@@ -91,7 +91,8 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
 
     protected NoPermissionException noPermission(AccessControlException e) {
         log.error("server error", e);
-        email.sendException("No permission for [" + getCurrentUserEmail() + "]", e);
+        //TODO: no need to email this
+        //email.sendException("No permission for [" + getCurrentUserEmail() + "]", e);
         return new NoPermissionException("No permission");
     }
 }
