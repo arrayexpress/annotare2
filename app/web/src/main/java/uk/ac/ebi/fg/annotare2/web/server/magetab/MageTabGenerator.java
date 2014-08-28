@@ -523,29 +523,12 @@ public class MageTabGenerator {
             for (ExtractAttribute attr : ExtractAttribute.values()) {
                 String value = extract.getAttributeValue(attr);
                 if (!isNullOrEmpty(value)) {
-                    extractNode.comments.put(getSdrfFriendlyName(attr), Arrays.asList(value));
+                    extractNode.comments.put(attr.getName(), Arrays.asList(value));
                 }
             }
         }
         connect(sampleNode, extractNode, protocols);
         return extractNode;
-    }
-
-    private static String getSdrfFriendlyName(ExtractAttribute attr) {
-        switch (attr) {
-            case LIBRARY_LAYOUT:
-                return "LIBRARY_LAYOUT";
-            case LIBRARY_SELECTION:
-                return "LIBRARY_SELECTION";
-            case LIBRARY_SOURCE:
-                return "LIBRARY_SOURCE";
-            case LIBRARY_STRATEGY:
-                return "LIBRARY_STRATEGY";
-            case LIBRARY_STRAND:
-                return "LIBRARY_STRAND";
-            default:
-                return attr.getTitle();
-        }
     }
 
     private LabeledExtractNode createLabeledExtractNode(LabeledExtract labeledExtract, SDRFNode extractNode, Collection<Protocol> protocols) {

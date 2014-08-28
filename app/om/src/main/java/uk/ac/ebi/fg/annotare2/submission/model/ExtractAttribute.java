@@ -103,8 +103,13 @@ public enum ExtractAttribute {
                            "",
                            "not applicable",
                            "first strand",
-                           "second strand");
+                           "second strand"),
 
+    NOMINAL_LENGTH("Nominal Length"),
+
+    NOMINAL_SDEV("Nominal SDev"),
+
+    ORIENTATION("Orientation", "", "5'-3'-3'-5'", "5'-3'-5'-3'");
 
     private final String title;
     private final List<String> values;
@@ -121,8 +126,16 @@ public enum ExtractAttribute {
         }
     }
 
+    public String getName() {
+        return toString();
+    }
+
     public String getTitle() {
         return title;
+    }
+
+    public boolean hasOptions() {
+        return !this.options.isEmpty();
     }
 
     public List<String> getOptions() {

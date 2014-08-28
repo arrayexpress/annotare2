@@ -59,5 +59,4 @@ public abstract class ConditionalEditTextCell extends EditTextCell {
             }
         }
     }
-
 }
