@@ -29,7 +29,6 @@
         <param-value>0</param-value>
     </context-param>
 
-    <!--
     <filter>
         <filter-name>guiceFilter</filter-name>
         <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
@@ -41,15 +40,7 @@
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
-    -->
-    <servlet>
-        <servlet-name>down.jsp</servlet-name>
-        <jsp-file>/down.jsp</jsp-file>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>down.jsp</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
+
     <listener>
         <listener-class>uk.ac.ebi.fg.annotare2.web.server.AppServletContextListener</listener-class>
     </listener>
