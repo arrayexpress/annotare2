@@ -195,11 +195,14 @@ public class SampleColumnsDialog extends DialogBox {
     private void updateTemplates() {
         templateColumnList.clear();
         Set<SampleAttributeTemplate> used = getUsedTemplates();
-
-        for (SampleAttributeTemplate template : Ordering.natural().onResultOf(new Function<SampleAttributeTemplate, String>() {
+        Collection<SampleAttributeTemplate> all = Ordering.natural().onResultOf(new Function<SampleAttributeTemplate, String>() {
             @Override
-            public String apply(SampleAttributeTemplate template) { return template.getName(); }
-        }).sortedCopy(SampleAttributeTemplate.getAll())) {
+            public String apply(SampleAttributeTemplate template) {
+                return template.getName();
+            }
+        }).sortedCopy(SampleAttributeTemplate.getAll());
+
+        for (SampleAttributeTemplate template : all) {
             if (!used.contains(template) && template.isVisible()) {
                 templateColumnList.addItem(template.getName() + (template.isFactorValueOnly() ? " (Factor Value)" : ""), template.name());
             }
@@ -260,10 +263,14 @@ public class SampleColumnsDialog extends DialogBox {
             return;
         }
         int columnId = parseInt(columnList.getValue(index));
-        columnList.removeItem(index);
-        columnMap.remove(columnId);
-        updateTemplates();
-        DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
+        if (!columnMap.get(columnId).getTemplate().isMandatory()) {
+            columnList.removeItem(index);
+            columnMap.remove(columnId);
+            updateTemplates();
+            DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
+        } else {
+            showError("Unable to remove a mandatory attribute");
+        }
     }
 
     private void updateColumnTitles() {
