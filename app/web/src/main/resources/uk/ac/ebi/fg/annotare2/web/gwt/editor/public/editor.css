@@ -670,6 +670,4 @@ a.wgt-button :hover {
 .col-NoEdit {
     color: #777;
     background: #eee;
-    background: linear-gradient(-45deg, white 25%, #eee 25%, #eee 50%, white 50%, white 75%, #eee 75%, #eee);
-    background-size:10px 10px;
 }
