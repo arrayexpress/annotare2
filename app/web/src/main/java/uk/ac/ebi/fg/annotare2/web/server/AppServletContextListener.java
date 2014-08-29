@@ -66,7 +66,7 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
         super.contextInitialized(servletContextEvent);
 
-        //startServices();
+        startServices();
     }
 
     @Override
