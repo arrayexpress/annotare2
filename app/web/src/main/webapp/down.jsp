@@ -63,7 +63,7 @@
 
         .frame {
             padding: 15px 10px 2px;
-            font-size: small;
+            font-size: medium;
         }
 
         .error {
@@ -139,7 +139,7 @@
 <div class="outer">
     <div class="inner">
         <div class="frame">
-            <div>Dear submitters. Unfortunately, technical problems prevent Annotare from functionning at the moment.
+            <div>Dear Submitters,<br/>Unfortunately, technical problems prevent Annotare from functionning at the moment.
                 Our engineers are working to restore the service as soon as possible. Should you have an urgent matter,
                 please contact us at <a href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a>. Apologies for the inconvenience.</div>
         </div>
