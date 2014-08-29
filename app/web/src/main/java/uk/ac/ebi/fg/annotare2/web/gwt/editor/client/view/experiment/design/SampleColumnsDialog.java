@@ -101,11 +101,14 @@ public class SampleColumnsDialog extends DialogBox {
         this.efoSuggest = efoSuggest;
         this.callback = callback;
         setColumns(columns);
+        addMandatoryColumns();
         updateTemplates();
     }
 
     @UiHandler("columnList")
     void columnSelected(ChangeEvent event) {
+        clearError();
+
         final int index = columnList.getSelectedIndex();
         SampleColumn column = index < 0 ? null : getColumn(columnList.getValue(index));
 
@@ -127,6 +130,8 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("addButton")
     void addButtonClicked(ClickEvent event) {
+        clearError();
+
         SampleAttributeTemplate template = getSelectedTemplate();
         if (template != null) {
             templateColumnList.removeItem(templateColumnList.getSelectedIndex());
@@ -136,16 +141,22 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("removeButton")
     void removeButtonClicked(ClickEvent event) {
+        clearError();
+
         removeSelectedColumn();
     }
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
+        clearError();
+
         addColumn(USER_DEFIED_ATTRIBUTE);
     }
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
+        clearError();
+
         if (isValid()) {
             hide();
             if (null != callback) {
@@ -176,6 +187,8 @@ public class SampleColumnsDialog extends DialogBox {
     }
     @UiHandler("moveUpButton")
     void moveColumnUp(ClickEvent event) {
+        clearError();
+
         int index = columnList.getSelectedIndex();
         if (index <= 0) {
             return;
@@ -185,11 +198,24 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("moveDownButton")
     void moveColumnDown(ClickEvent event) {
+        clearError();
+
         int index = columnList.getSelectedIndex();
         if (index < 0 || index >= columnList.getItemCount() - 1) {
             return;
         }
         move(index, index + 1);
+    }
+
+    private void addMandatoryColumns() {
+        Set<SampleAttributeTemplate> used = getUsedTemplates();
+        Collection<SampleAttributeTemplate> all = SampleAttributeTemplate.getAll();
+
+        for (SampleAttributeTemplate template : all) {
+            if (!used.contains(template) && template.isMandatory()) {
+                addColumn(template);
+            }
+        }
     }
 
     private void updateTemplates() {
@@ -269,7 +295,7 @@ public class SampleColumnsDialog extends DialogBox {
             updateTemplates();
             DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
         } else {
-            showError("Unable to remove a mandatory attribute");
+            showError("Unable to remove this mandatory attribute");
         }
     }
 
@@ -331,6 +357,10 @@ public class SampleColumnsDialog extends DialogBox {
         if (getUserColumnNamesLowerCased().size() != columnMap.size()) {
             errors.add("Attribute names must be unique");
         }
+    }
+
+    private void clearError() {
+        showError("");
     }
 
     private void showError(String message) {
