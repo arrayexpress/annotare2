@@ -42,7 +42,15 @@ public enum SystemEfoTerm {
     SPECIMEN_WITH_KNOWN_STORAGE_STATE("Specimen With Known Storage State", "specimen_with_known_storage_state"),
     GROWTH_CONDITION("Growth Condition", "growth_condition"),
     DOSE("Dose", "dose"),
-    IMMUNOPRECIPITATE("Immunoprecipitate", "immunoprecipitate");
+    IMMUNOPRECIPITATE("Immunoprecipitate", "immunoprecipitate"),
+    CLINICAL_HISTORY("Clinical History", "clinical_history"),
+    DISEASE_STAGING("Disease Staging", "disease_staging"),
+    ECOTYPE("Ecotype", "ecotype"),
+    IRRADIATE("Irradiate", "irradiate"),
+    FRACTION("Fraction", "fraction"),
+    KARYOTYPE("Karyotype", "karyotype"),
+    PHENOTYPE("Phenotype", "phenotype"),
+    TUMOR_GRADING("Tumor grading", "tumor_grading");
 
     private final String name;
     private final String propertyName;

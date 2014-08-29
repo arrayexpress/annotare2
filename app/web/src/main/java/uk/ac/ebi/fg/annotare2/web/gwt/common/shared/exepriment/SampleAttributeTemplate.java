@@ -61,6 +61,16 @@ public enum SampleAttributeTemplate {
     TREATMENT_ATTRIBUTE("Treatment", of(FACTOR_VALUE), false, false),
     COMPOUND_ATTRIBUTE("Compound", of(FACTOR_VALUE)),
 
+    STIMULUS_ATTRIBUTE("Stimulus", range(CHARACTERISTIC, CHARACTERISTIC_AND_FACTOR_VALUE)),
+    CLINICAL_HISTORY_ATTRIBUTE(CLINICAL_HISTORY),
+    DISEASE_STAGING_ATTRIBUTE(DISEASE_STAGING),
+    ECOTYPE_ATTRIBUTE(ECOTYPE),
+    IRRADIATE_ATTRIBUTE(IRRADIATE),
+    FRACTION_ATTRIBUTE(FRACTION),
+    KARYOTYPE_ATTRIBUTE(KARYOTYPE),
+    PHENOTYPE_ATTRIBUTE(PHENOTYPE),
+    TUMOR_GRADING_ATTRIBUTE(TUMOR_GRADING),
+
     USER_DEFIED_ATTRIBUTE(ValueRange.<String>any(), ValueRange.<SystemEfoTerm>any(), ValueRange.<SystemEfoTerm>any(), range(CHARACTERISTIC, FACTOR_VALUE), false, true);
 
     private final ValueRange<String> nameRange;
@@ -101,7 +111,7 @@ public enum SampleAttributeTemplate {
     }
 
     private SampleAttributeTemplate(String nameRange, EnumSet<SampleAttributeType> typeRange) {
-        this(nameRange, typeRange, false, false);
+        this(nameRange, typeRange, false, true);
     }
 
     private SampleAttributeTemplate(String nameRange, EnumSet<SampleAttributeType> typeRange, boolean isMandatory, boolean isVisible) {

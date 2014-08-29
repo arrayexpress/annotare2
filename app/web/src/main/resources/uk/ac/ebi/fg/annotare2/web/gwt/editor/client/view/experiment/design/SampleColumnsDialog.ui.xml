@@ -34,7 +34,7 @@
             font-size: 12px;
         }
     </ui:style>
-    <g:ResizeLayoutPanel height="500px" width="700px">
+    <g:ResizeLayoutPanel height="600px" width="700px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:DockLayoutPanel>
