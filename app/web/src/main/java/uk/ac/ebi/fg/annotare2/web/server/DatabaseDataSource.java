@@ -49,15 +49,15 @@ public class DatabaseDataSource {
         this.ds.setPassword(properties.getDbConnectionPassword());
         this.ds.setPartitionCount(1);
         this.ds.setIdleMaxAgeInMinutes(10);
-        //this.ds.setIdleConnectionTestPeriodInMinutes(1);
+        this.ds.setIdleConnectionTestPeriodInMinutes(1);
         this.ds.setMinConnectionsPerPartition(20);
         this.ds.setMaxConnectionsPerPartition(100);
-        //this.ds.setConnectionTestStatement("SELECT 1");
+        this.ds.setConnectionTestStatement("SELECT 1");
 
         // register data source in the naming context so hibernate can find it
         context.bind("annotareDb", this.ds);
 
-        //updateDatabase();
+        updateDatabase();
     }
 
     @SuppressWarnings("unused")
