@@ -140,7 +140,7 @@
     <div class="inner">
         <div class="frame">
             <div>Dear Submitters,<br/>Unfortunately, technical problems prevent Annotare from functionning at the moment.
-                Our engineers are working to restore the service as soon as possible. Should you have an urgent matter,
+                Our engineers are working to restore the service as soon as possible. If you have any questions or comments,
                 please contact us at <a href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a>. Apologies for the inconvenience.</div>
         </div>
     </div>
