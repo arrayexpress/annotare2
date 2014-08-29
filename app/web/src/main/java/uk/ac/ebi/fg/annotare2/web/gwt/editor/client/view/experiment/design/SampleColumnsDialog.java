@@ -20,10 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Ordering;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -98,6 +95,21 @@ public class SampleColumnsDialog extends DialogBox {
         setWidget(Binder.BINDER.createAndBindUi(this));
         center();
 
+        this.templateColumnList.sinkEvents(Event.ONDBLCLICK);
+        this.templateColumnList.addHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                addButtonClicked(null);
+            }
+        }, DoubleClickEvent.getType());
+
+        this.columnList.sinkEvents(Event.ONDBLCLICK);
+        this.columnList.addHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                removeButtonClicked(null);
+            }
+        }, DoubleClickEvent.getType());
         this.efoSuggest = efoSuggest;
         this.callback = callback;
         setColumns(columns);
