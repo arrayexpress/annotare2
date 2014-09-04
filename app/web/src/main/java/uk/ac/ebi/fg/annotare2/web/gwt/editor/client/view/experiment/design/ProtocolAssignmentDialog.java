@@ -77,22 +77,6 @@ public class ProtocolAssignmentDialog extends DialogBox {
         this.assignments = new LinkedHashMap<String, Boolean>(profile.getAssignments());
         this.names = new LinkedHashMap<String, String>(profile.getNames());
 
-        this.availableListBox.sinkEvents(Event.ONDBLCLICK);
-        this.availableListBox.addHandler(new DoubleClickHandler() {
-            @Override
-            public void onDoubleClick(DoubleClickEvent event) {
-                addButtonClicked(null);
-            }
-        }, DoubleClickEvent.getType());
-
-        this.assignedListBox.sinkEvents(Event.ONDBLCLICK);
-        this.assignedListBox.addHandler(new DoubleClickHandler() {
-            @Override
-            public void onDoubleClick(DoubleClickEvent event) {
-                removeButtonClicked(null);
-            }
-        }, DoubleClickEvent.getType());
-
         setModal(true);
         setGlassEnabled(true);
         setText("Assign " + profile.getProtocolName() + " to " + profile.getProtocolSubjectType() + "s...");
@@ -142,8 +126,25 @@ public class ProtocolAssignmentDialog extends DialogBox {
     }
 
     private void createDialog2(ProtocolAssignmentProfile profile) {
-        assignedListBox = new ListBox(true);
-        availableListBox = new ListBox(true);
+        this.availableListBox = new ListBox(true);
+        this.assignedListBox = new ListBox(true);
+
+        this.availableListBox.sinkEvents(Event.ONDBLCLICK);
+        this.availableListBox.addHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                addButtonClicked(null);
+            }
+        }, DoubleClickEvent.getType());
+
+        this.assignedListBox.sinkEvents(Event.ONDBLCLICK);
+        this.assignedListBox.addHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                removeButtonClicked(null);
+            }
+        }, DoubleClickEvent.getType());
+
         setWidget(Binder.BINDER.createAndBindUi(this));
         center();
         protocolSubject.setText(profile.getProtocolSubjectType());
