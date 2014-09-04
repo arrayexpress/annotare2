@@ -51,7 +51,7 @@ public class FileRef implements Serializable {
     }
 
     public String asString() {
-        return null != hash ? hash : "null"  + '|' + name;
+        return (null != hash ? hash : "null")  + '|' + name;
     }
 
     @Override
