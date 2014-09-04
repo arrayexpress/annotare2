@@ -18,10 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -79,6 +76,22 @@ public class ProtocolAssignmentDialog extends DialogBox {
         this.protocolId = profile.getProtocolId();
         this.assignments = new LinkedHashMap<String, Boolean>(profile.getAssignments());
         this.names = new LinkedHashMap<String, String>(profile.getNames());
+
+        this.availableListBox.sinkEvents(Event.ONDBLCLICK);
+        this.availableListBox.addHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                addButtonClicked(null);
+            }
+        }, DoubleClickEvent.getType());
+
+        this.assignedListBox.sinkEvents(Event.ONDBLCLICK);
+        this.assignedListBox.addHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                removeButtonClicked(null);
+            }
+        }, DoubleClickEvent.getType());
 
         setModal(true);
         setGlassEnabled(true);
