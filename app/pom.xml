@@ -46,7 +46,7 @@
 
     <properties>
         <limpopo.version>1.1.9</limpopo.version>
-        <magetabcheck.version>1.15-SNAPSHOT</magetabcheck.version>
+        <magetabcheck.version>1.15</magetabcheck.version>
         <gwt.version>2.5.1</gwt.version>
         <gwt.maven.plugin.version>2.5.1</gwt.maven.plugin.version>
         <gwtupload.version>1.0.1</gwtupload.version>
