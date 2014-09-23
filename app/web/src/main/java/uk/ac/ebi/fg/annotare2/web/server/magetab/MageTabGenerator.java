@@ -444,15 +444,17 @@ public class MageTabGenerator {
                 for (FileColumn fileColumn : exp.getFileColumns(fileType)) {
                     FileRef fileRef = fileColumn.getFileRef(String.valueOf(extractId));
 
-                    Collection<Protocol> protocols = null != fileRef ?
-                            exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE) :
-                            Collections.<Protocol>emptyList();
+                    if (!fileType.isRaw() || null != fileRef || nextLayer.get(extractId).isEmpty()) {
+                        Collection<Protocol> protocols = null != fileRef ?
+                                exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE) :
+                                Collections.<Protocol>emptyList();
 
-                    SDRFNode fileNode = createFileNode(sourceNodes, fileColumn.getType(), fileRef, protocols);
-                    nextLayer.put(extractId, fileNode);
-                    if (!fileType.isRaw()) {
-                        sourceNodes = nextLayer.get(extractId);
-                        nextLayer.remove(extractId);
+                        SDRFNode fileNode = createFileNode(sourceNodes, fileColumn.getType(), fileRef, protocols);
+                        nextLayer.put(extractId, fileNode);
+                        if (!fileType.isRaw()) {
+                            sourceNodes = nextLayer.get(extractId);
+                            nextLayer.remove(extractId);
+                        }
                     }
                 }
             }
