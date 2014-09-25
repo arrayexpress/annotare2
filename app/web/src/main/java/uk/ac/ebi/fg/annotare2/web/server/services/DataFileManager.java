@@ -66,11 +66,13 @@ public class DataFileManager {
         dataFile.setSourceUri(source.getUri().toString());
         dataFile.setSourceDigest(md5);
         dataFile.setStatus(shouldStore ? DataFileStatus.TO_BE_STORED : DataFileStatus.TO_BE_ASSOCIATED);
+        dataFileDao.save(dataFile);
         submission.getFiles().add(dataFile);
     }
 
     public void storeAssociatedFile(DataFile dataFile) {
         dataFile.setStatus(DataFileStatus.TO_BE_STORED);
+        dataFileDao.save(dataFile);
     }
 
     public Set<DataFile> getAssignedFiles(Submission submission) throws DataSerializationException {
@@ -88,7 +90,7 @@ public class DataFileManager {
                 assignedFiles.addAll(col.getFileRefs());
             }
             for (DataFile file : submission.getFiles()) {
-                if (file.getStatus().isOk() && assignedFiles.contains(new FileRef(file.getName(), file.getDigest()))) {
+                if (assignedFiles.contains(new FileRef(file.getName(), file.getDigest()))) {
                     result.add(file);
                 }
             }

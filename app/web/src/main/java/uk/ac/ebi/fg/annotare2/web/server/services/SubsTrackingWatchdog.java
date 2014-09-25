@@ -45,6 +45,7 @@ import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.mail.MessagingException;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -297,8 +298,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             // check all files are in a good shape first; if not - skip
             Collection<DataFile> files = dataFileManager.getAssignedFiles(submission);
             for (DataFile file : files) {
-                if (DataFileStatus.ASSOCIATED != file.getStatus() &&
-                        DataFileStatus.STORED != file.getStatus()) {
+                if (!file.getStatus().isFinal()) {
                     return result;
                 }
             }
@@ -407,7 +407,6 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             // copy data files
             Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
             if (dataFiles.size() > 0) {
-
                 for (DataFile dataFile : dataFiles) {
                     if (DataFileStatus.STORED == dataFile.getStatus()) {
                         File f = new File(exportDirectory, dataFile.getName());
@@ -425,6 +424,8 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                                 log.error("Data file post-processing script returned an error: {}", executor.getErrors());
                             }
                         }
+                    } else if (!dataFile.getStatus().isOk()) {
+                        throw new IOException("Unable to process data file " + dataFile.getName() + ": " + dataFile.getStatus().getTitle());
                     }
                     if (properties.isSubsTrackingEnabled()) {
                         subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
