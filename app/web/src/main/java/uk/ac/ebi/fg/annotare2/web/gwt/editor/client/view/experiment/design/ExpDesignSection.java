@@ -31,7 +31,7 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_
  * @author Olga Melnichuk
  */
 public enum ExpDesignSection implements LeftNavigationView.Section {
-    SAMPLES("Create your samples", allOf(ExperimentProfileType.class)),
+    SAMPLES("Create samples, add attributes and experimental variables", allOf(ExperimentProfileType.class)),
     EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING)),
     LABELED_EXTRACTS("Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
     FILES("Upload and assign data files", allOf(ExperimentProfileType.class)),

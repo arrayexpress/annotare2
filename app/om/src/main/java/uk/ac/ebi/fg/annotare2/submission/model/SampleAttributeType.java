@@ -21,8 +21,8 @@ package uk.ac.ebi.fg.annotare2.submission.model;
  */
 public enum SampleAttributeType {
     CHARACTERISTIC("Sample Characteristic"),
-    CHARACTERISTIC_AND_FACTOR_VALUE("Sample Characteristic and Factor Value"),
-    FACTOR_VALUE("Factor Value"),
+    CHARACTERISTIC_AND_FACTOR_VALUE("Sample Characteristic and Experimental Variable"),
+    FACTOR_VALUE("Experimental Variable"),
     MATERIAL_TYPE("Material Type"),
     PROVIDER("Provider"),
     DESCRIPTION("Description");

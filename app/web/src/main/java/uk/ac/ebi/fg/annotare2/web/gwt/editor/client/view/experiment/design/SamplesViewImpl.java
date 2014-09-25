@@ -55,7 +55,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         maxSamplesLimit = 1000;
 
         gridView = new GridView<SampleRow>();
-        Button button = new Button("Sample Attributes...");
+        Button button = new Button("Sample Attributes and Variables...");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

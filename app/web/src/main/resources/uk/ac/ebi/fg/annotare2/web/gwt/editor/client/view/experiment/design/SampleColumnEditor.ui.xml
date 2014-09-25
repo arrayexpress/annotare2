@@ -19,12 +19,22 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
+    <ui:style>
+        .checkBox {
+            margin-right:15px;
+        }
+
+        .checkBox input[type = 'checkbox'] {
+            vertical-align: baseline;
+            margin: 0 3px;
+        }
+    </ui:style>
     <g:HTMLPanel>
         <table style="padding:10px" cellspacing="1" width="100%">
             <tr>
-                <td width="80px">Type:</td>
-                <td>
-                    <g:ListBox ui:field="typeList"/>
+                <td colspan="2" style="text-align:center">
+                    <g:CheckBox addStyleNames="{style.checkBox}" ui:field="saChkBox">Sample Attribute</g:CheckBox>
+                    <g:CheckBox addStyleNames="{style.checkBox}" ui:field="fvChkBox">Experimental Variable</g:CheckBox>
                 </td>
             </tr>
             <tr>

@@ -49,7 +49,10 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
     }
 
     @UiField
-    ListBox typeList;
+    CheckBox saChkBox;
+
+    @UiField
+    CheckBox fvChkBox;
 
     @UiField
     TextBox nameText;
@@ -62,6 +65,9 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
     private final SampleColumn column;
     private final SampleAttributeEfoSuggest efoSuggestService;
+
+    private boolean isSaEnabled;
+    private boolean isFvEnabled;
 
     public SampleColumnEditor(SampleColumn column, final SampleAttributeEfoSuggest efoSuggestService) {
         this.column = column.copy();
@@ -94,24 +100,39 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
         unitsSuggest.setValue(column.getUnits() == null ? "" : column.getUnits().getLabel());
         unitsSuggest.setEnabled(template.getUnitRange().isAny());
 
+        boolean saPresent = false, saAbsent = false, fvPresent = false, fvAbsent = false;
         for (SampleAttributeType type : template.getTypes()) {
-            typeList.addItem(type.getName(), type.name());
-        }
-        setType(column.getType());
-        typeList.setEnabled(template.getTypes().size() > 1);
-    }
-
-    private void setType(SampleAttributeType type) {
-        for (int i = 0; i < typeList.getItemCount(); i++) {
-            if (type.name().equals(typeList.getValue(i))) {
-                typeList.setItemSelected(i, true);
+            if (type.isCharacteristic()) {
+                saPresent = true;
+            } else {
+                saAbsent = true;
+            }
+            if (type.isFactorValue()) {
+                fvPresent = true;
+            } else {
+                fvAbsent = true;
             }
         }
-    }
+        isSaEnabled = saPresent && saAbsent;
+        isFvEnabled = fvPresent && fvAbsent;
 
-    private SampleAttributeType getType() {
-        int index = typeList.getSelectedIndex();
-        return SampleAttributeType.valueOf(typeList.getValue(index));
+        saChkBox.setValue(column.getType().isCharacteristic());
+        fvChkBox.setValue(column.getType().isFactorValue());
+
+        setChkBoxesEnabled();
+
+        saChkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
+                saChkBoxChanged();
+            }
+        });
+        fvChkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
+                fvChkBoxChanged();
+            }
+        });
     }
 
     @UiHandler("nameText")
@@ -120,8 +141,42 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
         notifyColumnChanged();
     }
 
-    @UiHandler("typeList")
-    void typeChanged(ChangeEvent event) {
+    void setChkBoxesEnabled() {
+        if (isSaEnabled && isFvEnabled) {
+            saChkBox.setEnabled(fvChkBox.getValue());
+            fvChkBox.setEnabled(saChkBox.getValue());
+        } else {
+            saChkBox.setEnabled(isSaEnabled);
+            fvChkBox.setEnabled(isFvEnabled);
+        }
+    }
+
+    void saChkBoxChanged() {
+        setChkBoxesEnabled();
+        typeChanged();
+    }
+
+    void fvChkBoxChanged() {
+        setChkBoxesEnabled();
+        typeChanged();
+    }
+
+    SampleAttributeType getType() {
+        if (saChkBox.getValue()) {
+            if (fvChkBox.getValue()) {
+                return SampleAttributeType.CHARACTERISTIC_AND_FACTOR_VALUE;
+            } else {
+                return SampleAttributeType.CHARACTERISTIC;
+            }
+        } else {
+            if (fvChkBox.getValue()) {
+                return SampleAttributeType.FACTOR_VALUE;
+            }
+        }
+        return null;
+    }
+
+    void typeChanged() {
         column.setType(getType());
         notifyColumnChanged();
     }

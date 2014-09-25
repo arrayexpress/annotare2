@@ -90,7 +90,7 @@ public class SampleColumnsDialog extends DialogBox {
                                DialogCallback<List<SampleColumn>> callback) {
         setModal(true);
         setGlassEnabled(true);
-        setText("Sample Attributes");
+        setText("Sample Attributes and Experimental Variables");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
         center();
@@ -242,7 +242,7 @@ public class SampleColumnsDialog extends DialogBox {
 
         for (SampleAttributeTemplate template : all) {
             if (!used.contains(template) && template.isVisible()) {
-                templateColumnList.addItem(template.getName() + (template.isFactorValueOnly() ? " (Factor Value)" : ""), template.name());
+                templateColumnList.addItem(template.getName() + (template.isFactorValueOnly() ? " (Experimental Variable)" : ""), template.name());
             }
         }
     }
@@ -319,7 +319,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private String getColumnTitle(SampleColumn column) {
-        return column.getName() + (column.getType().isFactorValue() ? " (Factor Value)" : "");
+        return column.getName() + (column.getType().isFactorValue() ? " (Experimental Variable)" : "");
     }
 
     private void setColumns(List<SampleColumn> columns) {
