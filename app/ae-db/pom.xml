@@ -19,13 +19,13 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ae-db</artifactId>
     <packaging>jar</packaging>
-    <version>0.28-SNAPSHOT</version>
+    <version>0.28</version>
     <name>ArrayExpress DB Integration</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.28-SNAPSHOT</version>
+        <version>0.28</version>
     </parent>
 
     <properties>
