@@ -46,6 +46,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
                 panel.add(new Label("Validation failed with " + result.getErrors().size() + " errors:"));
                 addAll(result.getErrors());
             }
+        } else {
             panel.add(new Label("There was a problem with validation software, please contact annotare@ebi.ac.uk for help"));
             //addAll(result.getFailures());
         }
