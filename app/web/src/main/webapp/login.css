@@ -91,6 +91,30 @@ table {
     background: white;
 }
 
+.noie67 {
+    display: none;
+}
+
+.ie6 .noie67,
+.ie7 .noie67 {
+    display: block;
+}
+
+.warning {
+    padding: 30px 0;
+    font-size: large;
+    border-bottom: 2px solid #9F6000;
+    background-color: #FEEFB3;
+}
+
+.on-top {
+    width:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    text-align:center;
+}
+
 .at-bottom {
     width:100%;
     position:absolute;

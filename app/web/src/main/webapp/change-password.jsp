@@ -33,9 +33,12 @@
     }
     pageContext.setAttribute("email", email == null ? "" : email);
 %>
-
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<!--[if lt IE 7 ]><html class="ie6"><![endif]-->
+<!--[if IE 7 ]><html class="ie7"><![endif]-->
+<!--[if IE 8 ]><html class="ie8"><![endif]-->
+<!--[if IE 9 ]><html class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html class=""><!--<![endif]-->
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Annotare 2.0 - Change password request</title>
@@ -43,10 +46,10 @@
     <link type="text/css" rel="stylesheet" href="login.css">
 </head>
 <body>
-
+<div class="on-top warning noie67">Attention: Annotare does not support Internet Explorer versions 6 and 7.<br/>
+    Please open Annotare in a different browser.<br/>Apologies for the inconvenience.</div>
 <div class="outer">
     <div class="inner">
-
         <div class="frame">
             <form method="POST">
                 <table class="form">
