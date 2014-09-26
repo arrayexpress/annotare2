@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
@@ -182,11 +184,11 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
             log.error("Unable to find system required efo term: " + SystemEfoTerm.STUDY_DESIGN);
             return Collections.emptyList();
         }
-        Collection<EfoTerm> subTerms = efoService.getSubTerms(term, 100);
+        Collection<EfoTerm> subTerms = sortedCopy(efoService.getSubTerms(term, 100));
+
         List<OntologyTermGroup> groups = new ArrayList<OntologyTermGroup>();
         for (EfoTerm subTerm : subTerms) {
-            Collection<EfoTerm> descendants =
-                    efoService.suggest("", subTerm.getAccession(), 100);
+            Collection<EfoTerm> descendants = sortedCopy(efoService.suggest("", subTerm.getAccession(), 100));
 
             OntologyTermGroup group = new OntologyTermGroup(subTerm.getLabel());
             for (EfoTerm descendant : descendants) {
@@ -198,6 +200,15 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
             groups.add(group);
         }
         return groups;
+    }
+
+    private Collection<EfoTerm> sortedCopy(Collection<EfoTerm> terms) {
+        return Ordering.natural().onResultOf(new Function<EfoTerm, String>() {
+            @Override
+            public String apply(EfoTerm term) {
+                return null != term ? nullToEmpty(term.getLabel()).toLowerCase() : null;
+            }
+        }).sortedCopy(terms);
     }
 
     private OntologyTerm loadSystemTerm(String accession) {

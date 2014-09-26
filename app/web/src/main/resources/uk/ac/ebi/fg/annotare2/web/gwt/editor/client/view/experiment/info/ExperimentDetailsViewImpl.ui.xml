@@ -34,6 +34,14 @@
             text-align: right;
             padding-right: 10px;
         }
+
+        .buttons {
+            width: 100%;
+        }
+
+        .buttons td {
+            padding-bottom: 1px;
+        }
     </ui:style>
 
     <g:ScrollPanel height="100%">
@@ -76,8 +84,18 @@
                                         <g:ListBox width="300px" visibleItemCount="5" ui:field="experimentalDesignList"/>
                                     </td>
                                     <td valign="top">
-                                        <div><g:Button ui:field="removeExpDesignsButton">Delete Selected</g:Button></div>
-                                        <div><g:Button ui:field="addExpDesignsButton">Add...</g:Button></div>
+                                        <table class="{style.buttons}" cellspacing="1">
+                                            <tr>
+                                                <td>
+                                                    <g:Button ui:field="addExpDesignsButton">Add...</g:Button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <g:Button ui:field="removeExpDesignsButton">Remove Selected</g:Button>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>

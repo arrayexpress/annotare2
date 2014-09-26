@@ -21,10 +21,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.SelectionChangeEvent;
-
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources.EDITOR_RESOURCES;
 
 
 /**
@@ -34,7 +35,7 @@ public class SelectableLabel<T> extends Composite implements SelectionChangeEven
 
     private HorizontalPanel panel;
     private CheckBox checkbox;
-    private SimplePanel infoIcon;
+    //private SimplePanel infoIcon;
 
     private final T value;
 
@@ -56,18 +57,18 @@ public class SelectableLabel<T> extends Composite implements SelectionChangeEven
             }
         });
 
-        infoIcon = new SimplePanel();
-        EDITOR_RESOURCES.editorStyles().ensureInjected();
-        infoIcon.addStyleName(EDITOR_RESOURCES.editorStyles().infoIconClass());
+        //infoIcon = new SimplePanel();
+        //EDITOR_RESOURCES.editorStyles().ensureInjected();
+        //infoIcon.addStyleName(EDITOR_RESOURCES.editorStyles().infoIconClass());
 
         panel = new HorizontalPanel();
         panel.addStyleName("app-SelectableLabel");
         panel.setWidth("100%");
         panel.add(checkbox);
         panel.add(label);
-        panel.add(infoIcon);
+        //panel.add(infoIcon);
         panel.setCellWidth(checkbox, "25px");
-        panel.setCellWidth(infoIcon, "16px");
+        //panel.setCellWidth(infoIcon, "16px");
         initWidget(panel);
     }
 
@@ -100,7 +101,7 @@ public class SelectableLabel<T> extends Composite implements SelectionChangeEven
         return addHandler(handler, SelectionChangeEvent.getType());
     }
 
-    public Widget info() {
-        return infoIcon;
-    }
+    //public Widget info() {
+    //    return infoIcon;
+    //}
 }

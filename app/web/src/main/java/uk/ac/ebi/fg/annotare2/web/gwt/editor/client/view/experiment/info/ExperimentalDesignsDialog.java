@@ -30,7 +30,6 @@ import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SelectableLabel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.Tooltip;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -57,7 +56,7 @@ public class ExperimentalDesignsDialog extends DialogBox {
     @UiField
     SimpleLayoutPanel contentPanel;
 
-    private Tooltip tooltip;
+    //private Tooltip tooltip;
     private Set<OntologyTerm> selection = new HashSet<OntologyTerm>();
     private DialogCallback<List<OntologyTerm>> callback;
 
@@ -68,8 +67,8 @@ public class ExperimentalDesignsDialog extends DialogBox {
         setGlassEnabled(true);
         setText("Experimental Designs");
 
-        tooltip = new Tooltip();
-        tooltip.setWidth("200px");
+        //tooltip = new Tooltip();
+        //tooltip.setWidth("200px");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
         contentPanel.add(createContent(groups));
@@ -128,10 +127,10 @@ public class ExperimentalDesignsDialog extends DialogBox {
                     updateSelection(label.getValue(), label.isSelected());
                 }
             });
-            String definition = group.getDefinition(term);
-            if (definition != null && !definition.isEmpty()) {
-                tooltip.attach(label.info(), definition);
-            }
+            //String definition = group.getDefinition(term);
+            //if (definition != null && !definition.isEmpty()) {
+            //    tooltip.attach(label.info(), definition);
+            //}
             panel.add(label);
         }
 
