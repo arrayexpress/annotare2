@@ -230,13 +230,10 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                 return;
             }
         }
-
-        aeExperimentType.setSelectedIndex(0);
     }
 
     private void setAeExperimentTypeOptions(Collection<String> options) {
         aeExperimentType.clear();
-        aeExperimentType.addItem("none");
         for (String option : options) {
             aeExperimentType.addItem(option);
         }

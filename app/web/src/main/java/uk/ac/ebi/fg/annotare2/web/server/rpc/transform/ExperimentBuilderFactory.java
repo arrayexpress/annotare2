@@ -47,6 +47,7 @@ public class ExperimentBuilderFactory {
                 for (int i = 0; i < n; i++) {
                     updater.createSample();
                 }
+                exp.setAeExperimentType("transcription profiling by array");
                 return exp;
             }
         },
@@ -63,6 +64,7 @@ public class ExperimentBuilderFactory {
                 for (int i = 0; i < n; i++) {
                     updater.createSample();
                 }
+                exp.setAeExperimentType("transcription profiling by array");
                 return exp;
             }
         },
@@ -77,6 +79,7 @@ public class ExperimentBuilderFactory {
                 for (int i = 0; i < n; i++) {
                     updater.createSample();
                 }
+                exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }
         };

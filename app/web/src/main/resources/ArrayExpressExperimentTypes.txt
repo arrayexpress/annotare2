@@ -12,19 +12,20 @@ metabolomic profiling
 methylation profiling by array
 methylation profiling by high throughput sequencing
 microRNA profiling by array
+microRNA profiling by high throughput sequencing
 proteomic profiling by array
 proteomic profiling by mass spectrometer
+random RNA-Seq across whole transcriptome
+RNA-seq of coding RNA
+RNA-seq of non coding RNA
 RNAi profiling by array
 tiling path by array
 transcription profiling by array
 transcription profiling by high throughput sequencing
-random RNA-Seq across whole transcriptome
-RNA-seq of coding RNA
-RNA-seq of non coding RNA
-microRNA profiling by high throughput sequencing
-whole chromosome random sequencing
 transcription profiling by MPSS
 transcription profiling by RT-PCR
 transcription profiling by SAGE
 transcription profiling by tiling array
 translation profiling
+whole chromosome random sequencing
+other
