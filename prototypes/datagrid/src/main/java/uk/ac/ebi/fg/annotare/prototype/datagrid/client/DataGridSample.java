@@ -5,6 +5,7 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
@@ -80,7 +81,7 @@ public class DataGridSample implements EntryPoint {
         });
 
         dataGrid.addColumn(column1, "First column");
-        //dataGrid.setColumnWidth(column1, 20, Style.Unit.PC);
+        dataGrid.setColumnWidth(column1, 100, Style.Unit.PX);
 
         Column<DataRow, String> column2 = new ConditonalColumn<DataRow, String>(new EditTextCell()) {
             @Override
