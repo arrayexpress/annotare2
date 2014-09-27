@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.io.Closeables.close;
-import static java.util.Collections.sort;
 import static java.util.Collections.unmodifiableList;
 
 /**
@@ -47,7 +46,6 @@ public class ArrayExpressExperimentTypeList {
             while ((line = reader.readLine()) != null) {
                 experimentTypes.add(line.trim());
             }
-            sort(experimentTypes);
             return this;
         } finally {
             close(in, true);
