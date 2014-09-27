@@ -34,15 +34,17 @@ import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpress;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
+import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.intersection;
-import static com.google.common.collect.Sets.newHashSet;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
 
@@ -54,6 +56,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
 
     private final ArrayExpressArrayDesignList arrayDesignList;
+    private final ArrayExpressExperimentTypeList experimentTypeList;
 
     private final AnnotareEfoService efoService;
     private final AnnotareProperties properties;
@@ -61,12 +64,14 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
 
     @Inject
     public DataServiceImpl(ArrayExpressArrayDesignList arrayDesignList,
+                           ArrayExpressExperimentTypeList experimentTypeList,
                            ProtocolTypes protocolTypes,
                            AnnotareEfoService efoService,
                            AnnotareProperties properties,
                            EmailSender emailSender) {
         super(emailSender);
         this.arrayDesignList = arrayDesignList;
+        this.experimentTypeList = experimentTypeList;
         this.efoService = efoService;
         this.properties = properties;
         this.protocolTypes = protocolTypes;
@@ -160,11 +165,16 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
 
     @Override
     public List<String> getAeExperimentTypes(ExperimentProfileType type) {
-        Set<String> allTypes = newHashSet(transformed(getDescendantTerms(SystemEfoTerm.AE_EXPERIMENT_TYPE, 100)));
-        Set<String> profileSpecificTypes = newHashSet(transformed(getDescendantTerms(type.isMicroarray() ? SystemEfoTerm.ARRAY_ASSAY : SystemEfoTerm.SEQUENCING_ASSAY, 100)));
-
-        return new ArrayList<String>(sorted(intersection(allTypes, profileSpecificTypes)));
+        return new ArrayList<String>(experimentTypeList.getExperimentTypes());
     }
+
+    //@Override
+    //public List<String> getAeExperimentTypes(ExperimentProfileType type) {
+    //    Set<String> allTypes = newHashSet(transformed(getDescendantTerms(SystemEfoTerm.AE_EXPERIMENT_TYPE, 100)));
+    //    Set<String> profileSpecificTypes = newHashSet(transformed(getDescendantTerms(type.isMicroarray() ? SystemEfoTerm.ARRAY_ASSAY : SystemEfoTerm.SEQUENCING_ASSAY, 100)));
+    //
+    //    return new ArrayList<String>(sorted(intersection(allTypes, profileSpecificTypes)));
+    //}
 
     @Override
     public List<String> getMaterialTypes() {
