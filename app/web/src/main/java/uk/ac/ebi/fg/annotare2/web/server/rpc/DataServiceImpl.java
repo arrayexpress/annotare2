@@ -36,14 +36,13 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpress;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.intersection;
+import static com.google.common.collect.Sets.newHashSet;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
 
@@ -160,20 +159,11 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     }
 
     @Override
-    public List<String> getAeExperimentTypes() {
-        EfoTerm term = efoService.findTermByAccession(properties.getEfoTermAccession(SystemEfoTerm.AE_EXPERIMENT_TYPE));
-        if (term == null) {
-            log.error("Unable to find system required EFO term: " + SystemEfoTerm.AE_EXPERIMENT_TYPE);
-            return Collections.emptyList();
-        }
-        Collection<EfoTerm> subTerms = sortedCopy(efoService.getDescendantTerms(term, 100));
-        return new ArrayList<String>(transform(subTerms, new Function<EfoTerm, String>() {
-            @Nullable
-            @Override
-            public String apply(@Nullable EfoTerm efoTerm) {
-                return null != efoTerm ? efoTerm.getLabel() : "";
-            }
-        }));
+    public List<String> getAeExperimentTypes(ExperimentProfileType type) {
+        Set<String> allTypes = newHashSet(transformed(getDescendantTerms(SystemEfoTerm.AE_EXPERIMENT_TYPE, 100))));
+        Set<String> profileSpecificTypes = newHashSet(transformed(getDescendantTerms(type.isMicroarray() ? SystemEfoTerm.ARRAY_ASSAY : SystemEfoTerm.SEQUENCING_ASSAY, 100)));
+
+        return new ArrayList<String>(sorted(intersection(allTypes, profileSpecificTypes)));
     }
 
     @Override
@@ -188,16 +178,11 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
 
     @Override
     public List<OntologyTermGroup> getExperimentalDesigns() {
-        EfoTerm term = efoService.findTermByAccession(properties.getEfoTermAccession(SystemEfoTerm.STUDY_DESIGN));
-        if (term == null) {
-            log.error("Unable to find system required efo term: " + SystemEfoTerm.STUDY_DESIGN);
-            return Collections.emptyList();
-        }
-        Collection<EfoTerm> subTerms = sortedCopy(efoService.getChildTerms(term, 100));
+        Collection<EfoTerm> subTerms = sortedByTermLabel(getChildTerms(SystemEfoTerm.STUDY_DESIGN, 100));
 
         List<OntologyTermGroup> groups = new ArrayList<OntologyTermGroup>();
         for (EfoTerm subTerm : subTerms) {
-            Collection<EfoTerm> descendants = sortedCopy(efoService.suggest("", subTerm.getAccession(), 100));
+            Collection<EfoTerm> descendants = sortedByTermLabel(efoService.getDescendantTerms(subTerm, 100));
 
             OntologyTermGroup group = new OntologyTermGroup(subTerm.getLabel());
             for (EfoTerm descendant : descendants) {
@@ -211,7 +196,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
         return groups;
     }
 
-    private Collection<EfoTerm> sortedCopy(Collection<EfoTerm> terms) {
+    private Collection<EfoTerm> sortedByTermLabel(Collection<EfoTerm> terms) {
         return Ordering.natural().onResultOf(new Function<EfoTerm, String>() {
             @Override
             public String apply(EfoTerm term) {
@@ -220,7 +205,49 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
         }).sortedCopy(terms);
     }
 
+    private Collection<String> sorted(Collection<String> terms) {
+        return Ordering.natural().onResultOf(new Function<String, String>() {
+            @Override
+            public String apply(String term) {
+                return nullToEmpty(term).toLowerCase();
+            }
+        }).sortedCopy(terms);
+    }
+
+    private Collection<String> transformed(Collection<EfoTerm> terms) {
+        return transform(terms, new Function<EfoTerm, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable EfoTerm efoTerm) {
+                return null != efoTerm ? efoTerm.getLabel() : "";
+            }
+        });
+    }
     private OntologyTerm loadSystemTerm(String accession) {
         return uiEfoTerm(efoService.findTermByAccession(accession));
+    }
+
+    private EfoTerm getSystemTerm(SystemEfoTerm systemEfoTerm) {
+        EfoTerm sysTerm = efoService.findTermByAccession(properties.getEfoTermAccession(systemEfoTerm));
+        if (null == sysTerm) {
+            log.error("Unable to find system EFO term: " + systemEfoTerm);
+        }
+        return sysTerm;
+    }
+
+    private Collection<EfoTerm> getChildTerms(SystemEfoTerm baseEfoTerm, int limit) {
+        EfoTerm term = getSystemTerm(baseEfoTerm);
+        if (null == term) {
+            return Collections.emptyList();
+        }
+        return efoService.getChildTerms(term, limit);
+    }
+
+    private Collection<EfoTerm> getDescendantTerms(SystemEfoTerm baseEfoTerm, int limit) {
+        EfoTerm term = getSystemTerm(baseEfoTerm);
+        if (null == term) {
+            return Collections.emptyList();
+        }
+        return efoService.getDescendantTerms(term, limit);
     }
 }

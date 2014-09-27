@@ -54,7 +54,7 @@ public interface DataService extends RemoteService {
 
     ApplicationProperties getApplicationProperties();
 
-    List<String> getAeExperimentTypes();
+    List<String> getAeExperimentTypes(ExperimentProfileType type);
 
     List<String> getMaterialTypes();
 

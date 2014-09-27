@@ -24,6 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
@@ -85,6 +86,21 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
     }
 
     private void loadAsync() {
+        experimentDataProxy.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to load experiment type");
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfileType result) {
+                loadDetailsAsync(result);
+            }
+        });
+
+    }
+
+    private void loadDetailsAsync(final ExperimentProfileType type) {
         experimentDataProxy.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -93,13 +109,13 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
 
             @Override
             public void onSuccess(ExperimentDetailsDto details) {
-                setDetails(details);
+                setDetails(type, details);
             }
         });
     }
 
-    private void setDetails(final ExperimentDetailsDto details) {
-        applicationDataProxy.getAeExperimentTypesAsync(new AsyncCallback<List<String>>() {
+    private void setDetails(ExperimentProfileType type, final ExperimentDetailsDto details) {
+        applicationDataProxy.getAeExperimentTypesAsync(type, new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Unable to experiment type options");
