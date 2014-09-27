@@ -60,7 +60,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
         });
         gridView.addTool(button);
 
-        button = new Button("Delete Selected Rows");
+        button = new Button("Delete Protocols");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -453,9 +453,10 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
     private void removeSelectedProtocols() {
         Set<ProtocolRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            return;
+            Window.alert("Please select protocols you want to delete first");
+        } else if (Window.confirm("The selected protocols will no longer be available if you delete. Do you want to continue?")) {
+            presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
         }
-        presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
     }
 
     private void moveProtocolUp() {

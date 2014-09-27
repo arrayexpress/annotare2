@@ -60,10 +60,24 @@ public class CustomDataGrid<T> extends DataGrid<T> {
     }
 
     private final CustomResources resources;
+    private final boolean isResizable;
+
+    public CustomDataGrid(int pageSize) {
+        this(pageSize, createResources());
+    }
+
+    public CustomDataGrid(int pageSize, boolean isResizable) {
+        this(pageSize, createResources(), isResizable);
+    }
 
     public CustomDataGrid(int pageSize, CustomResources resources) {
+        this(pageSize, resources, true);
+    }
+
+    public CustomDataGrid(int pageSize, CustomResources resources, boolean isResizable) {
         super(pageSize, resources);
         this.resources = resources;
+        this.isResizable = isResizable;
         setKeyboardSelectionHandler(new CustomDataGridKeyboardSelectionHandler<T>(this));
     }
 
@@ -92,12 +106,16 @@ public class CustomDataGrid<T> extends DataGrid<T> {
     }
 
     public void insertResizableColumn(Column<T, ?> column, String title, int beforeIndex) {
-        insertColumn(beforeIndex, column, new MyResizableHeader<T>(title, column, this), null);
+        if (isResizable) {
+            insertColumn(beforeIndex, column, new MyResizableHeader<T>(title, column, this), null);
+        } else {
+            insertColumn(beforeIndex, column, title);
+        }
     }
 
     @Override
     public void insertColumn(int beforeIndex, Column<T, ?> col, Header<?> header, Header<?> footer) {
-        if (getColumnCount() == 0) {
+        if (isResizable && getColumnCount() == 0) {
             Column<T, ?> lastColumn = new Column<T, String>(new TextCell()) {
                 @Override
                 public String getValue(T object) {
@@ -107,7 +125,7 @@ public class CustomDataGrid<T> extends DataGrid<T> {
             super.insertColumn(0, lastColumn, new MyResizableHeader<T>("", lastColumn, this), null);
             beforeIndex = 1;
         }
-        if (getColumnCount() > 0 && beforeIndex == getColumnCount()) {
+        if (isResizable && getColumnCount() > 0 && beforeIndex == getColumnCount()) {
             beforeIndex -= 1;
         }
         super.insertColumn(beforeIndex, col, header, footer);

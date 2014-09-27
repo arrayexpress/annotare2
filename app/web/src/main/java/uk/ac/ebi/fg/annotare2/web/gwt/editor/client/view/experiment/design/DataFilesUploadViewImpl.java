@@ -44,6 +44,9 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     Button ftpUploadBtn;
 
     @UiField
+    Button deleteFilesBtn;
+
+    @UiField
     DataFileListPanel fileListPanel;
 
     private final FTPUploadDialog ftpUploadDialog;
@@ -63,6 +66,11 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         ftpUploadDialog.center();
     }
 
+    @SuppressWarnings("unused")
+    @UiHandler("deleteFilesBtn")
+    void deleteFilesBtnClicked(ClickEvent event) {
+        fileListPanel.deleteSelectedFiles();
+    }
 
     @Override
     public void setDataFiles(List<DataFileRow> rows) {

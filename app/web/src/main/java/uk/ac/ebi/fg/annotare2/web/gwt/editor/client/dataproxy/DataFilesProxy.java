@@ -156,16 +156,18 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void removeFile(final DataFileRow dataFile) {
-        submissionServiceAsync.deleteDataFile(getSubmissionId(), dataFile.getId(), new AsyncCallbackWrapper<Void>() {
+    public void removeFiles(final List<Long> dataFiles, final AsyncCallback<Void> callback) {
+        submissionServiceAsync.deleteDataFiles(getSubmissionId(), dataFiles, new AsyncCallbackWrapper<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Unable to remove file " + dataFile.getName());
+                callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(ExperimentProfile experiment) {
+                expDataProxy.setUpdatedExperiment(experiment);
                 updater.update();
+                callback.onSuccess(null);
             }
         }.wrap());
     }

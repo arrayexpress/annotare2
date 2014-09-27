@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
+import com.google.common.base.Function;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
@@ -38,15 +39,20 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProx
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import static com.google.common.collect.Collections2.transform;
 
 public class DataUploadAndAssignmentActivity extends AbstractActivity implements DataUploadAndAssignmentView.Presenter {
 
     private final DataUploadAndAssignmentView view;
     private final ApplicationDataProxy appData;
     private final ExperimentDataProxy expData;
-    private final DataFilesProxy dataFiles;
+    private final DataFilesProxy dataFilesProxy;
     private HandlerRegistration experimentUpdateHandler;
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
@@ -55,11 +61,11 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     public DataUploadAndAssignmentActivity(DataUploadAndAssignmentView view,
                                            ApplicationDataProxy appData,
                                            ExperimentDataProxy expData,
-                                           DataFilesProxy dataFiles) {
+                                           DataFilesProxy dataFilesProxy) {
         this.view = view;
         this.appData = appData;
         this.expData = expData;
-        this.dataFiles = dataFiles;
+        this.dataFilesProxy = dataFilesProxy;
     }
 
     public Activity withPlace(Place place) {
@@ -102,6 +108,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     @Override
     public void onStop() {
         experimentUpdateHandler.removeHandler();
+        criticalUpdateHandler.removeHandler();
         dataUpdateHandler.removeHandler();
         super.onStop();
     }
@@ -162,7 +169,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
 
     private void loadFilesAsync() {
-        dataFiles.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
+        dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 Window.alert("Unable to load a list of data files");
@@ -193,22 +200,26 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
     @Override
     public void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
-        dataFiles.registerHttpFilesAsync(filesInfo, callback);
+        dataFilesProxy.registerHttpFilesAsync(filesInfo, callback);
     }
 
     @Override
     public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
-        dataFiles.registerFtpFilesAsync(filesInfo, callback);
+        dataFilesProxy.registerFtpFilesAsync(filesInfo, callback);
     }
 
     @Override
-    public void renameFile(DataFileRow dataFileRow, String newFileName) {
-        dataFiles.renameFile(dataFileRow, newFileName);
+    public void renameFile(DataFileRow dataFile, String newFileName) {
+        dataFilesProxy.renameFile(dataFile, newFileName);
     }
 
     @Override
-    public void removeFile(DataFileRow dataFileRow) {
-        dataFiles.removeFile(dataFileRow);
+    public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
+        dataFilesProxy.removeFiles(new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
+            public Long apply(@Nullable DataFileRow input) {
+                return null != input ? input.getId() : null;
+            }
+        })), callback);
     }
 
 }

@@ -80,7 +80,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         });
         gridView.addTool(button);
 
-        button = new Button("Delete Selected Rows");
+        button = new Button("Delete Samples");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -190,10 +190,11 @@ public class SamplesViewImpl extends Composite implements SamplesView {
     private void deleteSelectedSamples() {
         Set<SampleRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            return;
+            Window.alert("Please select samples you want to delete first");
+        } else if (Window.confirm("The selected samples and all associated information will no longer be available if you delete. Do you want to continue?")) {
+            presenter.removeSamples(new ArrayList<SampleRow>(selection));
+            gridView.removeSelectedRows();
         }
-        presenter.removeSamples(new ArrayList<SampleRow>(selection));
-        gridView.removeSelectedRows();
     }
 
     private void fillDownValue() {

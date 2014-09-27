@@ -367,6 +367,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
 
             StringBuilder errors = new StringBuilder();
+            Map<String,DataFileSource> files = new HashMap<String, DataFileSource>();
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
                 if (null != info) {
@@ -379,13 +380,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                         } else if (EMPTY_FILE_MD5.equals(info.getMd5())) {
                             errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
                         } else {
-                            saveFile(fileSource, info.getMd5(), submission);
+                            files.put(info.getMd5(), fileSource);
                         }
                     } else {
                         errors.append(" - file \"").append(info.getFileName()).append("\" not found").append("\n");
                     }
                 } else {
                     errors.append(" - unrecognized format \"").append(infoStr).append("\"").append("\n");
+                }
+            }
+            if (0 == errors.length()) {
+                for (Map.Entry<String, DataFileSource> fileToSave : files.entrySet()) {
+                    saveFile(fileToSave.getValue(), fileToSave.getKey(), submission);
                 }
             }
             return errors.toString();
@@ -431,22 +437,25 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void deleteDataFile(final long id, final long fileId) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentProfile deleteDataFiles(final long id, final List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            DataFile dataFile = dataFileManager.get(fileId);
-            if (!submission.getFiles().contains(dataFile)) {
-                return;
+            ExperimentProfile experiment = submission.getExperimentProfile();
+            for (Long fileId : fileIds) {
+                DataFile dataFile = dataFileManager.get(fileId);
+                if (submission.getFiles().contains(dataFile)) {
+
+
+                    experiment.removeFile(new FileRef(dataFile.getName(), dataFile.getDigest()));
+                    submission.setExperimentProfile(experiment);
+
+                    submission.getFiles().remove(dataFile);
+                    dataFileManager.deleteDataFile(dataFile);
+                }
             }
-
-            ExperimentProfile expProfile = submission.getExperimentProfile();
-            expProfile.removeFile(new FileRef(dataFile.getName(), dataFile.getDigest()));
-            submission.setExperimentProfile(expProfile);
-
-            submission.getFiles().remove(dataFile);
-            dataFileManager.deleteDataFile(dataFile);
-
             save(submission);
+            return experiment;
+
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {

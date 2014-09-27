@@ -47,7 +47,7 @@ public interface SubmissionServiceAsync {
 
     void renameDataFile(long id, long fileId, String fileName, AsyncCallback<ExperimentProfile> async);
 
-    void deleteDataFile(long id, long fileId, AsyncCallback<Void> async);
+    void deleteDataFiles(long id, List<Long> files, AsyncCallback<ExperimentProfile> async);
 
     void deleteSubmission(long id, AsyncCallback<Void> async);
 }

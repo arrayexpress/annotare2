@@ -124,10 +124,6 @@ public class DataFilesUploadPanel extends Composite {
         panel.add(uploader);
     }
 
-    //public void setStatusWidget(IUploadStatus widget) {
-    //    uploader.setStatusWidget(widget);
-    //}
-
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }

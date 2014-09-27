@@ -34,6 +34,7 @@
             <g:HorizontalPanel spacing="3">
                 <my:DataFilesUploadPanel ui:field="uploadPanel"/>
                 <g:Button text="FTP Upload..." ui:field="ftpUploadBtn"/>
+                <g:Button text="Delete Files" ui:field="deleteFilesBtn"/>
             </g:HorizontalPanel>
         </g:north>
         <g:center>

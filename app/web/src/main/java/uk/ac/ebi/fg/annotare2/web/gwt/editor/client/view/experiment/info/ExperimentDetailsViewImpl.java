@@ -244,8 +244,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     private ExperimentDetailsDto getResult() {
         return new ExperimentDetailsDto(
-                title.getValue(),
-                description.getValue(),
+                title.getValue().replaceAll("\\r\\n|[\\r\\n]", " ").trim(),
+                description.getValue().trim(),
                 dateOfExperiment.getValue(),
                 dateOfPublicRelease.getValue(),
                 getAeExperimentType(),

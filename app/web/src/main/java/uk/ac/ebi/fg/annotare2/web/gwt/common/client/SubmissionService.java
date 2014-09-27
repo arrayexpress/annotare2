@@ -70,7 +70,7 @@ public interface SubmissionService extends RemoteService {
 
     ExperimentProfile renameDataFile(long id, long fileId, String fileName) throws ResourceNotFoundException, NoPermissionException;
 
-    void deleteDataFile(long id, long fileId) throws ResourceNotFoundException, NoPermissionException;
+    ExperimentProfile deleteDataFiles(long id, List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException;
 
     void deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 }
