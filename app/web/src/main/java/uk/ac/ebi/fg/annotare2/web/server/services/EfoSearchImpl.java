@@ -44,7 +44,6 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.*;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 
 import javax.annotation.Nullable;
@@ -90,11 +89,21 @@ public class EfoSearchImpl implements EfoSearch {
     }
 
     @Override
-    public Collection<EfoTerm> getSubTerms(EfoTerm efoTerm, int limit) {
+    public Collection<EfoTerm> getChildTerms(EfoTerm term, int limit) {
         QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
         Query query = parse(
                 parser
-                , PARENT_FIELD.matchesPhrase(efoTerm.getAccession().toLowerCase())
+                , PARENT_FIELD.matchesPhrase(term.getAccession().toLowerCase())
+        );
+        return runQuery(query, limit);
+    }
+
+    @Override
+    public Collection<EfoTerm> getDescendantTerms(EfoTerm term, int limit) {
+        QueryParser parser = new QueryParser(Version.LUCENE_43, null, new KeywordAnalyzer());
+        Query query = parse(
+                parser
+                , ASCENDANT_FIELD.matchesPhrase(term.getAccession().toLowerCase())
         );
         return runQuery(query, limit);
     }
@@ -152,10 +161,12 @@ public class EfoSearchImpl implements EfoSearch {
         return result.isEmpty() ? null : result.get(0);
     }
 
+    /*
     @Override
     public EfoTerm getSystemTerm(SystemEfoTerm term) {
         return searchByAccession(properties.getEfoTermAccession(term));
     }
+    */
 
     private Collection<EfoTerm> prefixSearch(String prefix, int limit) {
         QueryParser parser = new AnalyzingQueryParser(Version.LUCENE_43, TEXT_FIELD.name, new StandardAnalyzer(Version.LUCENE_43));

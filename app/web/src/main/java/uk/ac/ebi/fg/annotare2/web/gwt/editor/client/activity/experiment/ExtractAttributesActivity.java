@@ -22,6 +22,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
@@ -61,6 +62,17 @@ public class ExtractAttributesActivity extends AbstractActivity implements Extra
     }
 
     private void loadAsync() {
+        expData.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Unable to get experiment details");
+            }
+
+            @Override
+            public void onSuccess(ExperimentDetailsDto result) {
+                view.setAeExperimentType(result.getAeExperimentType());
+            }
+        });
         expData.getExtractAttributeRowsAsync(new AsyncCallback<List<ExtractAttributesRow>>() {
             @Override
             public void onFailure(Throwable caught) {

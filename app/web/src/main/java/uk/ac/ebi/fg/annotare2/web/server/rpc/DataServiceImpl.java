@@ -34,7 +34,6 @@ import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
 import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpress;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
-import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerm;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiEfoTerms;
@@ -55,7 +55,6 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
 
     private final ArrayExpressArrayDesignList arrayDesignList;
-    private final ArrayExpressExperimentTypeList experimentTypeList;
 
     private final AnnotareEfoService efoService;
     private final AnnotareProperties properties;
@@ -63,14 +62,12 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
 
     @Inject
     public DataServiceImpl(ArrayExpressArrayDesignList arrayDesignList,
-                           ArrayExpressExperimentTypeList experimentTypeList,
                            ProtocolTypes protocolTypes,
                            AnnotareEfoService efoService,
                            AnnotareProperties properties,
                            EmailSender emailSender) {
         super(emailSender);
         this.arrayDesignList = arrayDesignList;
-        this.experimentTypeList = experimentTypeList;
         this.efoService = efoService;
         this.properties = properties;
         this.protocolTypes = protocolTypes;
@@ -164,7 +161,19 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
 
     @Override
     public List<String> getAeExperimentTypes() {
-        return new ArrayList<String>(experimentTypeList.getExperimentTypes());
+        EfoTerm term = efoService.findTermByAccession(properties.getEfoTermAccession(SystemEfoTerm.AE_EXPERIMENT_TYPE));
+        if (term == null) {
+            log.error("Unable to find system required EFO term: " + SystemEfoTerm.AE_EXPERIMENT_TYPE);
+            return Collections.emptyList();
+        }
+        Collection<EfoTerm> subTerms = sortedCopy(efoService.getDescendantTerms(term, 100));
+        return new ArrayList<String>(transform(subTerms, new Function<EfoTerm, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable EfoTerm efoTerm) {
+                return null != efoTerm ? efoTerm.getLabel() : "";
+            }
+        }));
     }
 
     @Override
@@ -184,7 +193,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
             log.error("Unable to find system required efo term: " + SystemEfoTerm.STUDY_DESIGN);
             return Collections.emptyList();
         }
-        Collection<EfoTerm> subTerms = sortedCopy(efoService.getSubTerms(term, 100));
+        Collection<EfoTerm> subTerms = sortedCopy(efoService.getChildTerms(term, 100));
 
         List<OntologyTermGroup> groups = new ArrayList<OntologyTermGroup>();
         for (EfoTerm subTerm : subTerms) {

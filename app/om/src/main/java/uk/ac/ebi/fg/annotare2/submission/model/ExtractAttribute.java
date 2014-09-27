@@ -109,7 +109,9 @@ public enum ExtractAttribute {
 
     NOMINAL_SDEV("Nominal SDev"),
 
-    ORIENTATION("Orientation", "", "5'-3'-3'-5'", "5'-3'-5'-3'");
+    ORIENTATION("Orientation", "", "5'-3'-3'-5'", "5'-3'-5'-3'"),
+
+    ADAPTER_SEQUENCE("Adapter Sequence");
 
     private final String title;
     private final List<String> values;

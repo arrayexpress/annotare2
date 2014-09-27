@@ -246,10 +246,6 @@ public class ExperimentDataProxy {
         return createProtocolAssignment(exp, protocol).getProfile();
     }
 
-    public void setReloadExperiment() {
-        exp = null;
-    }
-
     public void getSettingsAsync(final AsyncCallback<ExperimentSettings> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override

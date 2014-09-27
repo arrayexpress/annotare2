@@ -37,8 +37,11 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute.*;
  */
 public class ExtractAttributesViewImpl extends Composite implements ExtractAttributesView {
 
+    private final static String MICRORNA_BY_HTS_TYPE = "microRNA profiling by high throughput sequencing";
+
     private final GridView<ExtractAttributesRow> gridView;
     private Presenter presenter;
+    private String aeExperimentType;
 
     public ExtractAttributesViewImpl() {
         gridView = new GridView<ExtractAttributesRow>();
@@ -62,6 +65,11 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     @Override
+    public void setAeExperimentType(String experimentType) {
+        aeExperimentType = experimentType;
+    }
+
+    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
@@ -73,6 +81,9 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
         addColumn(LIBRARY_STRATEGY);
         addColumn(LIBRARY_SELECTION);
         addColumn(LIBRARY_STRAND);
+        if (MICRORNA_BY_HTS_TYPE.equals(aeExperimentType)) {
+            addColumn(ADAPTER_SEQUENCE);
+        }
         addColumnForPairedLayout(NOMINAL_LENGTH);
         addColumnForPairedLayout(NOMINAL_SDEV);
         addColumnForPairedLayout(ORIENTATION);
@@ -110,18 +121,19 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     private void addColumn(final ExtractAttribute attr) {
-        Column<ExtractAttributesRow, String> column = new Column<ExtractAttributesRow, String>(new SelectionCell(attr.getOptions())) {
+        Cell<String> cell = attr.hasOptions() ? new SelectionCell(attr.getOptions()) : new EditTextCell();
+        Column<ExtractAttributesRow, String> column = new Column<ExtractAttributesRow, String>(cell) {
             @Override
             public String getValue(ExtractAttributesRow row) {
                 String value = row.getValue(attr);
-                return value == null ? "" : attr.getOption(value);
+                return value == null ? "" : attr.hasOptions() ? attr.getOption(value) : value;
             }
         };
         column.setCellStyleNames("app-SelectionCell");
         column.setFieldUpdater(new FieldUpdater<ExtractAttributesRow, String>() {
             @Override
             public void update(int index, ExtractAttributesRow row, String value) {
-                row.setValue(attr.getValue(value), attr);
+                row.setValue(attr.hasOptions() ? attr.getValue(value) : value, attr);
                 if (LIBRARY_LAYOUT.equals(attr) && !isPairedLayout(value)) {
                     row.setValue("", NOMINAL_LENGTH);
                     row.setValue("", NOMINAL_SDEV);

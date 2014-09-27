@@ -92,8 +92,12 @@ public class AnnotareEfoService implements EfoService {
         return efoSearch.searchByPrefix(prefix, branchAccession, limit);
     }
 
-    public Collection<EfoTerm> getSubTerms(EfoTerm term, int limit) {
-        return efoSearch.getSubTerms(term, limit);
+    public Collection<EfoTerm> getChildTerms(EfoTerm term, int limit) {
+        return efoSearch.getChildTerms(term, limit);
+    }
+
+    public Collection<EfoTerm> getDescendantTerms(EfoTerm term, int limit) {
+        return efoSearch.getDescendantTerms(term, limit);
     }
 
     public EfoTerm findTermByLabel(String label) {

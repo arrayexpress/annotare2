@@ -28,6 +28,8 @@ public interface ExtractAttributesView extends IsWidget {
 
     void setData(List<ExtractAttributesRow> rows);
 
+    void setAeExperimentType(String experimentType);
+
     void setPresenter(Presenter presenter);
 
     public interface Presenter {

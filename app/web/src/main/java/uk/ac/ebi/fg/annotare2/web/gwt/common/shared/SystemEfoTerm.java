@@ -50,7 +50,10 @@ public enum SystemEfoTerm {
     FRACTION("Fraction", "fraction"),
     KARYOTYPE("Karyotype", "karyotype"),
     PHENOTYPE("Phenotype", "phenotype"),
-    TUMOR_GRADING("Tumor grading", "tumor_grading");
+    TUMOR_GRADING("Tumor grading", "tumor_grading"),
+    AE_EXPERIMENT_TYPE("AE Experiment Type", "ae_experiment_type"),
+    ARRAY_ASSAY("Array Assay", "array_assay"),
+    SEQUENCING_ASSAY("Sequencing Assay", "sequencing_assay");
 
     private final String name;
     private final String propertyName;
