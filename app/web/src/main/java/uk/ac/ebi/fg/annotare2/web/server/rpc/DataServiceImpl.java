@@ -160,7 +160,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
 
     @Override
     public List<String> getAeExperimentTypes(ExperimentProfileType type) {
-        Set<String> allTypes = newHashSet(transformed(getDescendantTerms(SystemEfoTerm.AE_EXPERIMENT_TYPE, 100))));
+        Set<String> allTypes = newHashSet(transformed(getDescendantTerms(SystemEfoTerm.AE_EXPERIMENT_TYPE, 100)));
         Set<String> profileSpecificTypes = newHashSet(transformed(getDescendantTerms(type.isMicroarray() ? SystemEfoTerm.ARRAY_ASSAY : SystemEfoTerm.SEQUENCING_ASSAY, 100)));
 
         return new ArrayList<String>(sorted(intersection(allTypes, profileSpecificTypes)));
