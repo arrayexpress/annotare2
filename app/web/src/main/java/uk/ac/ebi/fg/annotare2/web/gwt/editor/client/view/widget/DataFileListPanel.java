@@ -30,10 +30,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.ArrayList;
@@ -49,16 +46,20 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     private final DataGrid<DataFileRow> grid;
     private final ListDataProvider<DataFileRow> dataProvider;
     private final MultiSelectionModel<DataFileRow> selectionModel;
+    private final CheckboxHeader checkboxHeader;
+    private final LoadingIndicator loadingIndicator;
 
     private final static int MAX_FILES = 40000;
 
     private Presenter presenter;
 
     public DataFileListPanel() {
+        loadingIndicator = new LoadingIndicator();
         grid = new CustomDataGrid<DataFileRow>(MAX_FILES, false);
         grid.addStyleName("gwt-dataGrid");
         grid.setWidth("100%");
         grid.setHeight("100%");
+
         selectionModel =
                 new MultiSelectionModel<DataFileRow>(new ProvidesKey<DataFileRow>() {
                     @Override
@@ -73,13 +74,15 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 return grid.getSelectionModel().isSelected(object);
             }
         };
-        CheckboxHeader checkboxHeader = new CheckboxHeader();
+
+        checkboxHeader = new CheckboxHeader();
         checkboxHeader.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
                 selectAllRows(event.getValue());
             }
         });
+
         grid.addColumn(checkboxColumn, checkboxHeader);
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
@@ -129,6 +132,13 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         add(grid);
     }
 
+    public void addSelectionChangeHandler(SelectionChangeEvent.Handler handler) {
+        selectionModel.addSelectionChangeHandler(handler);
+    }
+
+    public Set<DataFileRow> getSelectedRows() {
+        return selectionModel.getSelectedSet();
+    }
     public void setRows(List<DataFileRow> rows) {
         dataProvider.setList(new ArrayList<DataFileRow>(rows));
     }
@@ -137,20 +147,23 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         this.presenter = presenter;
     }
 
-    public void deleteSelectedFiles() {
-        final Set<DataFileRow> selection = selectionModel.getSelectedSet();
+    public void deleteSelectedFiles(final AsyncCallback<Void> callback) {
+        final Set<DataFileRow> selection = getSelectedRows();
         if (selection.isEmpty()) {
             Window.alert("Please select files you want to delete first");
         } else if (Window.confirm("The selected files will no longer be available to assign if you delete. Do you want to continue?")) {
             presenter.removeFiles(selection, new AsyncCallback<Void>() {
                 @Override
                 public void onFailure(Throwable caught) {
-                    Window.alert("Unable to send file information, please try again");
+                    Window.alert("Unable to delete files");
+                    callback.onFailure(caught);
                 }
 
                 @Override
                 public void onSuccess(Void result) {
+                    checkboxHeader.setValue(false);
                     selectionModel.clear();
+                    callback.onSuccess(result);
                 }
             });
         }
@@ -197,8 +210,4 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         void renameFile(DataFileRow dataFileRow, String newFileName);
         void removeFiles(Set<DataFileRow> dataFileRow, AsyncCallback<Void> callback);
     }
-
-    /**
-
-    **/
 }

@@ -101,18 +101,16 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         HasSubmissionSettings settings = (HasSubmissionSettings) templateDetails.getWidget();
         if (settings.areValid()) {
             okButton.setEnabled(false);
-            final WaitingPopup w = new WaitingPopup("Creating new submission, please wait...");
-            w.showRelativeTo(okButton);
+            final WaitingPopup w = new WaitingPopup();
             presenter.setupNewSubmission(settings.getSettings(),
                     new AsyncCallback<Void>() {
                         @Override
                         public void onFailure(Throwable caught) {
-                            w.showError(caught);
+                            Window.alert("Unable to create submission");
                         }
 
                         @Override
                         public void onSuccess(Void result) {
-                            w.showSuccess("New submission has been created. Loading the content...");
                             Window.Location.reload();
                         }
                     });

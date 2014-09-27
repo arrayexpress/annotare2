@@ -96,15 +96,18 @@ public class FTPUploadDialog extends DialogBox {
         List<String> pastedData = getPastedData();
         if (!pastedData.isEmpty() && null != presenter) {
             okButton.setEnabled(false);
+            final PopupPanel waiting = new WaitingPopup();
             presenter.onFtpDataSubmit(pastedData, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
+                    waiting.hide();
                     Window.alert("Unable to send file information, please try again");
                     okButton.setEnabled(true);
                 }
 
                 @Override
                 public void onSuccess(String result) {
+                    waiting.hide();
                     if (null != result && !result.isEmpty()) {
                         Window.alert("Unable to process FTP files:\n" + result);
                         okButton.setEnabled(true);

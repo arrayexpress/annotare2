@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
@@ -24,23 +23,22 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class WaitingPopup extends PopupPanel {
 
-    private WaitingPanel panel;
-
-    public WaitingPopup(String message) {
+    public WaitingPopup() {
         super(false, true);
-        panel = new WaitingPanel(message);
-        setWidget(panel);
+        setWidget(new LoadingIndicator());
+        setGlassEnabled(true);
+        center();
     }
 
-    public void showError(Throwable caught) {
-        panel.showError(caught);
-    }
+    //public void showError(Throwable caught) {
+    //    panel.showError(caught);
+    //}
 
-    public void showSuccess(String message) {
-        panel.showSuccess(message);
-    }
+    //public void showSuccess(String message) {
+    //    panel.showSuccess(message);
+    //}
 
-    public void positionAtWindowCenter(){
-        setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
-    }
+    //public void positionAtWindowCenter(){
+    //    setPopupPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
+    //}
 }

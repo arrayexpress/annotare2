@@ -56,6 +56,7 @@ import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
@@ -368,13 +369,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
             StringBuilder errors = new StringBuilder();
             Map<String,DataFileSource> files = new HashMap<String, DataFileSource>();
+            FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
                 if (null != info) {
                     URI fileUri = new URI(ftpRoot + URIEncoderDecoder.encode(info.getFileName()));
                     DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 
-                    if (fileSource.exists()) {
+                    if (fileChecker.isAvailable(fileSource)) {
                         if (checkFileExists(submission, info.getFileName())) {
                             errors.append(" - file \"").append(info.getFileName()).append("\" already exists").append("\n");
                         } else if (EMPTY_FILE_MD5.equals(info.getMd5())) {

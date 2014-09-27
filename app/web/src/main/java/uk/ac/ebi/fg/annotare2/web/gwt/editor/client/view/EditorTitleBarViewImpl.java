@@ -64,7 +64,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     private Presenter presenter;
 
-    private WaitingPopup criticalUpdatePopup;
+    private WaitingPopup waiting;
 
     public EditorTitleBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
@@ -107,19 +107,17 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @Override
     public void criticalUpdateStarted() {
-        if (criticalUpdatePopup == null) {
-            criticalUpdatePopup = new WaitingPopup("Sending updates to the server; please wait..");
-            criticalUpdatePopup.positionAtWindowCenter();
-            criticalUpdatePopup.setGlassEnabled(true);
-        } else if (!criticalUpdatePopup.isShowing()) {
-            criticalUpdatePopup.show();
+        if (waiting == null) {
+            waiting = new WaitingPopup();
+        } else if (!waiting.isShowing()) {
+            waiting.show();
         }
     }
 
     @Override
     public void criticalUpdateStopped() {
-        if (criticalUpdatePopup != null && criticalUpdatePopup.isShowing()) {
-            criticalUpdatePopup.hide();
+        if (waiting != null && waiting.isShowing()) {
+            waiting.hide();
         }
     }
 

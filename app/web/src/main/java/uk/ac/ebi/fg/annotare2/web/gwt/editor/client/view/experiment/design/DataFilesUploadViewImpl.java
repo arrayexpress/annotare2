@@ -21,14 +21,18 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFilesUploadPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FTPUploadDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
 import java.util.List;
 
@@ -58,6 +62,14 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     public DataFilesUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
         ftpUploadDialog = new FTPUploadDialog();
+
+        deleteFilesBtn.setEnabled(false);
+        fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent event) {
+                deleteFilesBtn.setEnabled(!fileListPanel.getSelectedRows().isEmpty());
+            }
+        });
     }
 
     @SuppressWarnings("unused")
@@ -69,7 +81,22 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @SuppressWarnings("unused")
     @UiHandler("deleteFilesBtn")
     void deleteFilesBtnClicked(ClickEvent event) {
-        fileListPanel.deleteSelectedFiles();
+        deleteFilesBtn.setEnabled(false);
+        final PopupPanel waiting = new WaitingPopup();
+
+        fileListPanel.deleteSelectedFiles(new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                waiting.hide();
+                deleteFilesBtn.setEnabled(true);
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                waiting.hide();
+                deleteFilesBtn.setEnabled(true);
+            }
+        });
     }
 
     @Override
