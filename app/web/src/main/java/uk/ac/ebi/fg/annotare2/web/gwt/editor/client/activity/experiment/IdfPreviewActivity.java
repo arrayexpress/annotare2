@@ -69,7 +69,7 @@ public class IdfPreviewActivity extends AbstractActivity {
         submissionService.getIdfTable(getSubmissionId(), new AsyncCallbackWrapper<Table>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Unable to load IDF preview");
+                Window.alert("Unable to load IDF Preview");
             }
 
             @Override
