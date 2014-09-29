@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
@@ -43,11 +44,11 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
             if (result.getErrors().isEmpty()) {
                 panel.add(new Label("Validation has been successful"));
             } else {
-                panel.add(new Label("Validation failed with " + result.getErrors().size() + " errors:"));
+                panel.add(new HTML("Validation failed with " + result.getErrors().size() + " errors (for help fixing errors please go to <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html</a>):"));
                 addAll(result.getErrors());
             }
         } else {
-            panel.add(new Label("There was a problem with validation software, please contact annotare@ebi.ac.uk for help"));
+            panel.add(new HTML("There was a problem with validation software, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> for help"));
             //addAll(result.getFailures());
         }
     }
