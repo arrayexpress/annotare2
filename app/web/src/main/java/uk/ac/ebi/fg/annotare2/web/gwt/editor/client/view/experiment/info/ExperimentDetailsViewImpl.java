@@ -161,8 +161,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
         {
             dateOfPublicRelease.setValue(today, false);
         }
-        if (today == dateOfPublicRelease.getValue()) {
-            Window.alert("Warning! The submission will be immediately released to public once loaded to ArrayExpress. Please select a future date if you wish to keep data private.");
+        if (0 == today.compareTo(dateOfPublicRelease.getValue())) {
+            Window.alert("Warning! The submission will be immediately released to public once loaded to ArrayExpress. Please select a date from future if you wish to have the experiment private until that date.");
         }
         save();
     }
