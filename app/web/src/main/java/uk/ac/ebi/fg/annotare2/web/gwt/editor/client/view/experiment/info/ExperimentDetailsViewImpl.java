@@ -20,12 +20,16 @@ import com.google.common.base.Predicate;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ShowRangeEvent;
+import com.google.gwt.event.logical.shared.ShowRangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
@@ -89,6 +93,21 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
         dateOfPublicRelease.setFormat(format);
         dateOfPublicRelease.getElement().setPropertyString("placeholder", dateTimeFormatPlaceholder());
+        dateOfPublicRelease.getDatePicker().addShowRangeHandler(new ShowRangeHandler<Date>()
+        {
+            @Override
+            public void onShowRange(final ShowRangeEvent<Date> event)
+            {
+                final Date today = today();
+                Date d = zeroTime(event.getStart());
+                final long endTime = event.getEnd().getTime();
+                while (d.before(today) && d.getTime() <= endTime)
+                {
+                    dateOfPublicRelease.getDatePicker().setTransientEnabledOnDates(false, d);
+                    d = nextDay(d);
+                }
+            }
+        });
     }
 
     @Override
@@ -137,6 +156,14 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     @UiHandler("dateOfPublicRelease")
     void dateOfPublicReleaseChanged(ValueChangeEvent<Date> event) {
+        final Date today = today();
+        if (event.getValue().before(today))
+        {
+            dateOfPublicRelease.setValue(today, false);
+        }
+        if (today == dateOfPublicRelease.getValue()) {
+            Window.alert("Warning! The submission will be immediately released to public once loaded to ArrayExpress. Please select a future date if you wish to keep data private.");
+        }
         save();
     }
 
@@ -247,6 +274,22 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                 dateOfPublicRelease.getValue(),
                 getAeExperimentType(),
                 experimentalDesigns.values());
+    }
+
+    private static Date today()
+    {
+        return zeroTime(new Date());
+    }
+
+    private static Date zeroTime(final Date date)
+    {
+        return new Date(date.getYear(),date.getMonth(),date.getDate());
+    }
+
+    private static Date nextDay(final Date date)
+    {
+        CalendarUtil.addDaysToDate(date, 1);
+        return date;
     }
 
     private void save() {
