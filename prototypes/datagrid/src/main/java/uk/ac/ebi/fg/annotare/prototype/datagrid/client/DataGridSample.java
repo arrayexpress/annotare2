@@ -11,9 +11,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ConditonalColumn;
 import com.google.gwt.user.cellview.client.CustomDataGrid;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import uk.ac.ebi.fg.annotare.prototype.datagrid.client.cell.EditSuggestCell;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +30,9 @@ public class DataGridSample implements EntryPoint {
 
     @UiField(provided=true)
     CustomDataGrid<DataRow> dataGrid;
+
+    @UiField(provided=true)
+    SuggestBox suggestBox;
 
     interface DataGridSampleBinder extends UiBinder<Widget, DataGridSample> { //
     }
@@ -54,9 +60,18 @@ public class DataGridSample implements EntryPoint {
     );
 
     private ListDataProvider<DataRow> dataProvider;
+    private MultiWordSuggestOracle oracle;
 
     public DataGridSample() {
         dataGrid = new CustomDataGrid<DataRow>(CustomDataGrid.createResources());
+
+        oracle = new MultiWordSuggestOracle();
+        oracle.add("123 Fourth Avenue");
+        oracle.add("22 Lance Ln");
+        oracle.add("1600 Pennsylvania Avenue");
+        oracle.add("2570 Cascade Ln");
+
+        suggestBox = new SuggestBox(oracle);
     }
 
     public void onModuleLoad() {
@@ -106,7 +121,7 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column2, "Second column");
         //dataGrid.setColumnWidth(column2, 20, Style.Unit.PC);
 
-        Column<DataRow, String> column3 = new Column<DataRow, String>(new EditTextCell()) {
+        Column<DataRow, String> column3 = new Column<DataRow, String>(new EditSuggestCell(oracle)) {
             @Override
             public String getValue(DataRow object) {
                 return object.column3;

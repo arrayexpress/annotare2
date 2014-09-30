@@ -53,6 +53,7 @@
             <version>${gwtVersion}</version>
             <scope>provided</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -66,6 +67,7 @@
             <classifier>sources</classifier>
             <scope>compile</scope>
         </dependency>
+        -->
     </dependencies>
 
     <build>
@@ -82,15 +84,16 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dgwt.persistentunitcache=fals</extraJvmArgs>
+                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dgwt.persistentunitcache=false</extraJvmArgs>
                             <logLevel>INFO</logLevel>
                             <style>DETAILED</style>
+                            <strict>true</strict>
                             <module>uk.ac.ebi.fg.annotare.prototype.datagrid.DataGridSample</module>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
                             <goal>test</goal>
-                            <goal>generateAsync</goal>
+                            <!-- <goal>generateAsync</goal> -->
                         </goals>
                     </execution>
                 </executions>

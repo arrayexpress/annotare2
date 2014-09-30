@@ -6,5 +6,6 @@
     <set-property name="gwt.logging.popupHandler" value="DISABLED" />
     <set-property name="gwt.logging.consoleHandler" value="ENABLED" />
 
+    <stylesheet src="DataGridSample.css"/>
 	<entry-point class="uk.ac.ebi.fg.annotare.prototype.datagrid.client.DataGridSample"/>
 </module>

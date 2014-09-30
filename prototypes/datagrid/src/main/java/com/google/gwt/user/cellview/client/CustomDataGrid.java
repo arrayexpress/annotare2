@@ -5,16 +5,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.PasteArea;
 import com.google.gwt.view.client.CellPreviewEvent;
 
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEventHandler {
+public class CustomDataGrid<T> extends DataGrid<T> {
 
     public interface CustomStyle extends DataGrid.Style {
         String dataGridKeyboardSelectedInactiveCell();
@@ -40,18 +36,7 @@ public class CustomDataGrid<T> extends DataGrid<T> implements PasteArea.PasteEve
         super(50, resources);
         this.resources = resources;
 
-        PasteArea<T> pasteArea = new PasteArea<T>();
-        pasteArea.addPasteHandler(this);
-        this.addCellPreviewHandler(pasteArea);
-        sinkEvents(Event.ONPASTE);
-
         setKeyboardSelectionHandler(new CustomDataGridKeyboardSelectionHandler<T>(this));
-    }
-
-    @Override
-    public void onPaste(PasteArea.PasteEvent event) {
-        logger.log(Level.INFO, "pasted: " + event.getData());
-        Window.alert(event.getData());
     }
 
     @Override

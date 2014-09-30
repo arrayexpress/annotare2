@@ -5,9 +5,17 @@
         xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
     <g:RootLayoutPanel width="100%" height="100%">
-        <!-- DataGrid -->
-        <g:layer left="10px" right="10px" top="10px" bottom="10px">
-            <c:DataGrid ui:field='dataGrid' width="100%" height="100%" />
+        <g:layer left="20px" right="20px" top="20px" bottom="20px">
+            <g:DockLayoutPanel>
+                <g:north size="40">
+                    <g:HorizontalPanel ui:field="toolBar" width="100%">
+                        <g:SuggestBox ui:field="suggestBox" width="100%"/>
+                    </g:HorizontalPanel>
+                </g:north>
+                <g:center>
+                    <c:DataGrid ui:field='dataGrid' width="100%" height="100%" />
+                </g:center>
+            </g:DockLayoutPanel>
         </g:layer>
     </g:RootLayoutPanel>
 </ui:UiBinder>
