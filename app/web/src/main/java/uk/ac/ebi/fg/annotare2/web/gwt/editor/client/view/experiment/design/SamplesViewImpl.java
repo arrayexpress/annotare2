@@ -311,7 +311,7 @@ public class SamplesViewImpl extends Composite implements SamplesView {
         final SampleAttributeEfoSuggest efoSuggestService = presenter.getEfoTerms();
         final OntologyTerm term = sampleColumn.getTerm();
 
-        Cell<String> efoSuggestCell = new SuggestBoxCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
+        Cell<String> efoSuggestCell = new EditSuggestCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
             public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoSuggestService.getTerms(query, term, limit, callback);

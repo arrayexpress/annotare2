@@ -453,7 +453,7 @@
     -moz-box-sizing: border-box;
 }
 
-.gwt-SuggestBox-Popup {
+.gwt-SuggestionPopup {
     padding: 0;
     overflow: hidden;
     z-index: 99999;
@@ -466,19 +466,18 @@
     -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
 }
 
-.gwt-SuggestBox-Popup .item {
+.gwt-SuggestionPopup .item {
     padding: 2px 6px;
     color: #000;
     cursor: default;
     font-size: 110%;
 }
 
-.gwt-SuggestBox-Popup .item-selected,
-.gwt-SuggestBox-Popup .item-selected a {
+.gwt-SuggestionPopup .item-selected,
+.gwt-SuggestionPopup .item-selected a {
     background-color: #5E8CC0;
     color: white;
 }
-
 
 /* store status */
 

@@ -47,7 +47,7 @@
 
     <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorApp"/>
 
-    <stylesheet src="editor.css"/>
+    <stylesheet src="EditorApp.css"/>
 
     <source path="client"/>
     <source path="shared"/>
