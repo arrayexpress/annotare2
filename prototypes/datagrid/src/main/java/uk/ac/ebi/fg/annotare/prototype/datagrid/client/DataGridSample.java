@@ -66,9 +66,22 @@ public class DataGridSample implements EntryPoint {
         dataGrid = new CustomDataGrid<DataRow>(CustomDataGrid.createResources());
 
         oracle = new MultiWordSuggestOracle();
+        oracle.add("15 Fourth Avenue");
+        oracle.add("45 Fourth Avenue");
         oracle.add("123 Fourth Avenue");
+        oracle.add("10 Lance Ln");
+        oracle.add("12 Lance Ln");
         oracle.add("22 Lance Ln");
+        oracle.add("42 Lance Ln");
+        oracle.add("100 Pennsylvania Avenue");
+        oracle.add("200 Pennsylvania Avenue");
+        oracle.add("400 Pennsylvania Avenue");
+        oracle.add("800 Pennsylvania Avenue");
         oracle.add("1600 Pennsylvania Avenue");
+        oracle.add("3200 Pennsylvania Avenue");
+        oracle.add("1570 Cascade Ln");
+        oracle.add("1670 Cascade Ln");
+        oracle.add("2070 Cascade Ln");
         oracle.add("2570 Cascade Ln");
 
         suggestBox = new SuggestBox(oracle);

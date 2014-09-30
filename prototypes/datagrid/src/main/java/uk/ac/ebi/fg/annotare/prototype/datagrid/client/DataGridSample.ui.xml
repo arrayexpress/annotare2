@@ -9,7 +9,7 @@
             <g:DockLayoutPanel>
                 <g:north size="40">
                     <g:HorizontalPanel ui:field="toolBar" width="100%">
-                        <g:SuggestBox ui:field="suggestBox" width="100%"/>
+                        <g:SuggestBox ui:field="suggestBox" width="300px"/>
                     </g:HorizontalPanel>
                 </g:north>
                 <g:center>

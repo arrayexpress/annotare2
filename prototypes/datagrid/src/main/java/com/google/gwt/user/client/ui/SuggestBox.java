@@ -124,7 +124,7 @@ public class SuggestBox extends Composite implements HasText, HasFocus,
     }
 
     private int limit = 20;
-    private boolean selectsFirstItem = false;
+    private boolean selectsFirstItem = true;
     private SuggestOracle oracle;
     private String currentText;
     private LeafValueEditor<String> editor;
