@@ -31,6 +31,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.BasicSuggestionDisplay;
+import com.google.gwt.user.client.ui.ErrorPopupPanel;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
@@ -189,6 +190,7 @@ public class EditSuggestCell extends
     private SuggestOracle oracle;
     private int limit = 20;
     private boolean selectsFirstItem = true;
+    private boolean sctrictlySuggestions = false;
     private final SuggestionDisplay display;
 
     /**
@@ -197,6 +199,15 @@ public class EditSuggestCell extends
      */
     public EditSuggestCell(SuggestOracle oracle) {
         this(SimpleSafeHtmlRenderer.getInstance(), oracle);
+    }
+
+    /**
+     * Construct a new EditSuggestCell that will use a
+     * {@link com.google.gwt.text.shared.SimpleSafeHtmlRenderer}.
+     */
+    public EditSuggestCell(SuggestOracle oracle, boolean sctrictlySuggestions) {
+        this(SimpleSafeHtmlRenderer.getInstance(), oracle);
+        this.sctrictlySuggestions = sctrictlySuggestions && null != display;
     }
 
     /**
@@ -403,8 +414,16 @@ public class EditSuggestCell extends
                         setNewSelection(context, parent, suggestion, valueUpdater);
                     }
                 } else {
-                    // Commit the change.
-                    commit(context, parent, viewData, valueUpdater);
+                    if (sctrictlySuggestions) {
+                        Suggestion suggestion = display.getCurrentSelection();
+                        if (null != suggestion && suggestion.getReplacementString().equals(value)) {
+                            commit(context, parent, viewData, valueUpdater);
+                        } else {
+                            new ErrorPopupPanel("Please select one of the suggestions provided");
+                        }
+                    } else {
+                        commit(context, parent, viewData, valueUpdater);
+                    }
                 }
             } else {
                 String oldText = viewData.getText();

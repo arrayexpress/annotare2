@@ -34,3 +34,13 @@
     background-color: #5E8CC0;
     color: white;
 }
+
+.gwt-ErrorPopup {
+    max-width: 30%;
+    padding: 20px 40px;
+    background: #efefef;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    border-bottom: 3px solid #561c07;
+}

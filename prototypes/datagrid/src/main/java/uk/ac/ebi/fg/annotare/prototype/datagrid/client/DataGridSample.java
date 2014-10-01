@@ -133,7 +133,7 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column2, "Second column");
         //dataGrid.setColumnWidth(column2, 20, Style.Unit.PC);
 
-        Column<DataRow, String> column3 = new Column<DataRow, String>(new EditSuggestCell(oracle)) {
+        Column<DataRow, String> column3 = new Column<DataRow, String>(new EditSuggestCell(oracle, true)) {
             @Override
             public String getValue(DataRow object) {
                 return object.column3;
@@ -144,7 +144,7 @@ public class DataGridSample implements EntryPoint {
             @Override
             public void update(int index, DataRow object, String value) {
                 object.column3 = value;
-                dataProvider.refresh();
+                //dataProvider.refresh();
             }
         });
 
