@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.SuggestionDisplay;
 import static com.google.gwt.dom.client.BrowserEvents.*;
 
 /**
- * An editable text cell. Click to edit, escape to cancel, return to commit.
+ * An editable text cell with suggestion popup. Click to edit, escape to cancel, return to commit.
  */
 public class EditSuggestCell extends
         AbstractEditableCell<String, EditSuggestCell.ViewData> {
@@ -154,7 +154,6 @@ public class EditSuggestCell extends
         }
 
         public void onSuggestionSelected(Suggestion suggestion) {
-            resetFocus(context, parent, null);
             setNewSelection(context, parent, suggestion, valueUpdater);
         }
     }
@@ -337,7 +336,6 @@ public class EditSuggestCell extends
      */
     private void cancel(Context context, Element parent, String value) {
         clearInput(getInputElement(parent));
-        parent.focus();
         setValue(context, parent, value);
     }
 
@@ -404,9 +402,10 @@ public class EditSuggestCell extends
                     } else {
                         setNewSelection(context, parent, suggestion, valueUpdater);
                     }
+                } else {
+                    // Commit the change.
+                    commit(context, parent, viewData, valueUpdater);
                 }
-                // Commit the change.
-                commit(context, parent, viewData, valueUpdater);
             } else {
                 String oldText = viewData.getText();
                 String curText = updateViewData(parent, viewData, true);
@@ -416,13 +415,15 @@ public class EditSuggestCell extends
 
             }
         } else if (BLUR.equals(type)) {
-            // Commit the change. Ensure that we are blurring the input element and
-            // not the parent element itself.
-            EventTarget eventTarget = event.getEventTarget();
-            if (Element.is(eventTarget)) {
-                Element target = Element.as(eventTarget);
-                if ("input".equals(target.getTagName().toLowerCase())) {
-                    commit(context, parent, viewData, valueUpdater);
+            if (!display.isSuggestionListShowing()) {
+                // Commit the change. Ensure that we are blurring the input element and
+                // not the parent element itself.
+                EventTarget eventTarget = event.getEventTarget();
+                if (Element.is(eventTarget)) {
+                    Element target = Element.as(eventTarget);
+                    if ("input".equals(target.getTagName().toLowerCase())) {
+                        commit(context, parent, viewData, valueUpdater);
+                    }
                 }
             }
         }
@@ -487,6 +488,9 @@ public class EditSuggestCell extends
             String value = curSuggestion.getReplacementString();
             getInputElement(parent).setValue(value);
             display.hideSuggestions();
+            commit(context, parent, viewData, valueUpdater);
+            //fireSuggestionEvent(curSuggestion);
         }
     }
 }
+
