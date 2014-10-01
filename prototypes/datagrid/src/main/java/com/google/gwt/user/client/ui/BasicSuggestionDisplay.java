@@ -205,7 +205,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
             // text box is at the bottom of the window and the suggestions will not
             // fit below the text box). In this case, users would expect to be able
             // to use the up arrow to navigate to the suggestions.
-            if (suggestionMenu.getSelectedItemIndex() == -1) {
+            if (-1 == suggestionMenu.getSelectedItemIndex()) {
                 suggestionMenu.selectItem(suggestionMenu.getNumItems() - 1);
             } else {
                 suggestionMenu.selectItem(suggestionMenu.getSelectedItemIndex() - 1);
@@ -315,7 +315,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         }
 
         public SuggestionMenuItem getSelectedItem() {
-            if (0 <= selectedItem && getChildren().size() < selectedItem) {
+            if (selectedItem >= 0 && selectedItem < getChildren().size()) {
                 return (SuggestionMenuItem)getChildren().get(selectedItem);
             }
             return null;
