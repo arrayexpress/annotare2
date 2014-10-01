@@ -17,6 +17,7 @@ metabolomic profiling
 methylation profiling by array
 methylation profiling by high throughput sequencing
 microRNA profiling by array
+microRNA profiling by high-throughput sequencing
 MNase-seq
 MRE-seq
 proteomic profiling by array
