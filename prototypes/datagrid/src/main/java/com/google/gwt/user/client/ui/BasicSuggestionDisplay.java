@@ -17,7 +17,11 @@
 
 package com.google.gwt.user.client.ui;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.*;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.PopupPanel.AnimationType;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
@@ -252,11 +256,11 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         for (final Suggestion curSuggestion : suggestions) {
             final SuggestionMenuItem menuItem = new SuggestionMenuItem(
                     curSuggestion, isDisplayStringHTML);
-            //menuItem.setScheduledCommand(new ScheduledCommand() {
-            //    public void execute() {
-            //        callback.onSuggestionSelected(curSuggestion);
-            //    }
-            //});
+            menuItem.setScheduledCommand(new ScheduledCommand() {
+                public void execute() {
+                    callback.onSuggestionSelected(curSuggestion);
+                }
+            });
 
             suggestionMenu.addItem(menuItem);
         }
@@ -294,7 +298,40 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
 
         public SuggestionMenu() {
             setElement(Document.get().createULElement());
-            //setFocusOnHoverEnabled(false);
+            sinkEvents(Event.ONCLICK | Event.ONMOUSEOVER | Event.ONMOUSEOUT);
+        }
+
+        @Override
+        public void onBrowserEvent(Event event) {
+            int item = findItemIndex(DOM.eventGetTarget(event));
+            switch (DOM.eventGetType(event)) {
+                case Event.ONCLICK: {
+                    FocusPanel.impl.focus(getElement());
+                    // Fire an item's command when the user clicks on it.
+                    if (-1 != item) {
+                        doItemAction(item);
+                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    break;
+                }
+
+                case Event.ONMOUSEOVER: {
+                    if (-1 != item) {
+                        selectItem(item);
+                    }
+                    break;
+                }
+
+                case Event.ONMOUSEOUT: {
+                    if (-1 != item) {
+                        selectItem(-1);
+                    }
+                    break;
+                }
+
+            } // end switch (DOM.eventGetType(event))
+            super.onBrowserEvent(event);
         }
 
         public void clearItems() {
@@ -322,13 +359,42 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         }
 
         public void selectItem(int index) {
+            if (-1 != selectedItem) {
+                getChildren().get(selectedItem).removeStyleName("selected");
+                selectedItem = -1;
+            }
+
             if (index >= 0 && index < getChildren().size()) {
-                if (-1 != selectedItem) {
-                    getChildren().get(selectedItem).removeStyleName("selected");
-                }
                 getChildren().get(index).setStyleName("selected");
                 selectedItem = index;
             }
+        }
+
+        private void doItemAction(int itemIndex) {
+            selectItem(itemIndex);
+
+            SuggestionMenuItem item = getSelectedItem();
+            // if the command should be fired and the item has one, fire it
+            if (null != item && null != item.getScheduledCommand()) {
+                // Fire the item's command. The command must be fired in the same event
+                // loop or popup blockers will prevent popups from opening.
+                final Scheduler.ScheduledCommand cmd = item.getScheduledCommand();
+                Scheduler.get().scheduleFinally(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        cmd.execute();
+                    }
+                });
+            }
+        }
+
+        private int findItemIndex(Element hItem) {
+            for (int index = 0; index < getChildren().size(); index++) {
+                if (getChildren().get(index).getElement().isOrHasChild(hItem)) {
+                    return index;
+                }
+            }
+            return -1;
         }
 
         void setMenuItemDebugIds(String baseID) {
@@ -353,6 +419,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
     private static class SuggestionMenuItem extends SimplePanel {
 
         private Suggestion suggestion;
+        private ScheduledCommand scheduledCommand;
 
         private SuggestionMenuItem() {
             super((Element) Document.get().createLIElement().cast());
@@ -380,6 +447,13 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         public void setSuggestion(Suggestion suggestion) {
             this.suggestion = suggestion;
         }
-    }
 
+        public ScheduledCommand getScheduledCommand() {
+            return scheduledCommand;
+        }
+
+        public void setScheduledCommand(ScheduledCommand scheduledCommand) {
+            this.scheduledCommand = scheduledCommand;
+        }
+    }
 }
