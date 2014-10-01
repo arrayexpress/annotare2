@@ -1,6 +1,5 @@
 package uk.ac.ebi.fg.annotare.prototype.datagrid.client;
 
-import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.EntryPoint;
@@ -93,7 +92,7 @@ public class DataGridSample implements EntryPoint {
         RootLayoutPanel.get().add(widget);
 
         //Add these lines
-        Column<DataRow, String> column1 = new Column<DataRow, String>(new EditTextCell()) {
+        Column<DataRow, String> column1 = new Column<DataRow, String>(new EditSuggestCell(null)) {
             @Override
             public String getValue(DataRow object) {
                 return object.column1;
@@ -111,7 +110,7 @@ public class DataGridSample implements EntryPoint {
         dataGrid.addColumn(column1, "First column");
         dataGrid.setColumnWidth(column1, 100, Style.Unit.PX);
 
-        Column<DataRow, String> column2 = new ConditonalColumn<DataRow, String>(new EditTextCell()) {
+        Column<DataRow, String> column2 = new ConditonalColumn<DataRow, String>(new EditSuggestCell(null)) {
             @Override
             public String getValue(DataRow object) {
                 return object.column2;

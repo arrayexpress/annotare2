@@ -285,7 +285,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
             public void setPosition(int offsetWidth, int offsetHeight) {
                 suggestionPopup.setPopupPosition(inputElement.getAbsoluteLeft(),
                         inputElement.getAbsoluteBottom());
-                suggestionPopup.setWidth(
+                suggestionPopup.getElement().getStyle().setProperty("min-width",
                         (inputElement.getAbsoluteRight() - inputElement.getAbsoluteLeft())
                                 + Style.Unit.PX.getType());
             }
@@ -306,7 +306,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
             int item = findItemIndex(DOM.eventGetTarget(event));
             switch (DOM.eventGetType(event)) {
                 case Event.ONCLICK: {
-                    FocusPanel.impl.focus(getElement());
+                    //FocusPanel.impl.focus(getElement());
                     // Fire an item's command when the user clicks on it.
                     if (-1 != item) {
                         doItemAction(item);

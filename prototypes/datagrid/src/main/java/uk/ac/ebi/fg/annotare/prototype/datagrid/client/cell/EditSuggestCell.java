@@ -192,7 +192,7 @@ public class EditSuggestCell extends
     private final SuggestionDisplay display;
 
     /**
-     * Construct a new EditTextCell that will use a
+     * Construct a new EditSuggestCell that will use a
      * {@link com.google.gwt.text.shared.SimpleSafeHtmlRenderer}.
      */
     public EditSuggestCell(SuggestOracle oracle) {
@@ -200,7 +200,7 @@ public class EditSuggestCell extends
     }
 
     /**
-     * Construct a new EditTextCell that will use a given {@link SafeHtmlRenderer}
+     * Construct a new EditSuggestCell that will use a given {@link SafeHtmlRenderer}
      * to render the value when not in edit mode.
      *
      * @param renderer a {@link SafeHtmlRenderer SafeHtmlRenderer<String>}
@@ -216,9 +216,8 @@ public class EditSuggestCell extends
         }
         this.renderer = renderer;
 
-        this.display = new BasicSuggestionDisplay();
         this.oracle = oracle;
-
+        this.display = null != oracle ? new BasicSuggestionDisplay() : null;
     }
 
     public boolean isAutoSelectEnabled() {
@@ -332,11 +331,19 @@ public class EditSuggestCell extends
      *
      * @param context the context of the cell
      * @param parent the parent Element
-     * @param value the value associated with the cell
+     * @param viewData the {@link ViewData} object
      */
-    private void cancel(Context context, Element parent, String value) {
+    private void cancel(Context context, Element parent, ViewData viewData) {
+
+        String originalText = viewData.getOriginal();
+        if (viewData.isEditingAgain()) {
+            viewData.setText(originalText);
+            viewData.setEditing(false);
+        } else {
+            setViewData(context.getKey(), null);
+        }
         clearInput(getInputElement(parent));
-        setValue(context, parent, value);
+        setValue(context, parent, originalText);
     }
 
     /**
@@ -377,25 +384,18 @@ public class EditSuggestCell extends
         int keyCode = event.getKeyCode();
 
         if (KEYDOWN.equals(type)) {
-            if (display.isSuggestionListShowing() && handleSuggestionKeyDown(context, parent, event, valueUpdater))
+            if (null != display && display.isSuggestionListShowing() && handleSuggestionKeyDown(context, parent, event, valueUpdater))
                 return;
 
             if (KeyCodes.KEY_ESCAPE == keyCode) {
                 // Cancel edit mode.
-                String originalText = viewData.getOriginal();
-                if (viewData.isEditingAgain()) {
-                    viewData.setText(originalText);
-                    viewData.setEditing(false);
-                } else {
-                    setViewData(context.getKey(), null);
-                }
-                cancel(context, parent, value);
+                cancel(context, parent, viewData);
             } else {
                 updateViewData(parent, viewData, true);
             }
         } else if (KEYUP.equals(type)) {
             if (KeyCodes.KEY_ENTER == keyCode) {
-                if (display.isSuggestionListShowing()) {
+                if (null != display && display.isSuggestionListShowing()) {
                     Suggestion suggestion = display.getCurrentSelection();
                     if (null == suggestion) {
                         display.hideSuggestions();
@@ -409,20 +409,20 @@ public class EditSuggestCell extends
             } else {
                 String oldText = viewData.getText();
                 String curText = updateViewData(parent, viewData, true);
-                if (!oldText.equals(curText)) {
+                if (null != display && !oldText.equals(curText)) {
                     showSuggestions(context, parent, curText, valueUpdater);
                 }
 
             }
         } else if (BLUR.equals(type)) {
-            if (!display.isSuggestionListShowing()) {
-                // Commit the change. Ensure that we are blurring the input element and
-                // not the parent element itself.
+            if (null == display || !display.isSuggestionListShowing()) {
+                // cancel the change
                 EventTarget eventTarget = event.getEventTarget();
                 if (Element.is(eventTarget)) {
                     Element target = Element.as(eventTarget);
                     if ("input".equals(target.getTagName().toLowerCase())) {
-                        commit(context, parent, viewData, valueUpdater);
+                        // Cancel edit mode.
+                        cancel(context, parent, viewData);
                     }
                 }
             }
