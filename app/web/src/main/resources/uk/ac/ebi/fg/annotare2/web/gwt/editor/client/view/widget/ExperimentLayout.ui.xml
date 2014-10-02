@@ -51,23 +51,6 @@
                         </g:west>
                         <g:center>
                             <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
-                            <!--
-                            <g:SplitLayoutPanel ui:field="verticalSplitPanel">
-                                <g:center>
-                                    <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
-                                </g:center>
-                                <g:east size="20">
-                                    <g:DockLayoutPanel ui:field="dockPanel">
-                                        <g:east size="20">
-                                            <g:SimpleLayoutPanel ui:field="dockBarDisplay"/>
-                                        </g:east>
-                                        <g:center>
-                                            <g:SimpleLayoutPanel ui:field="dockBarPanelDisplay"/>
-                                        </g:center>
-                                    </g:DockLayoutPanel>
-                                </g:east>
-                            </g:SplitLayoutPanel>
-                            -->
                         </g:center>
                     </g:DockLayoutPanel>
                 </g:center>

@@ -35,8 +35,4 @@ public interface EditorLayout extends IsWidget {
     HasOneWidget getContentDisplay();
 
     HasOneWidget getLogBarDisplay();
-
-    //HasOneWidget getDockBarDisplay();
-
-    //HasOneWidget getDockBarPanelDisplay();
 }
