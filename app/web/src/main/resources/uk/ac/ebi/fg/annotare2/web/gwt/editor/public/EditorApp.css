@@ -490,6 +490,15 @@
     color: white;
 }
 
+.gwt-ErrorPopup {
+    max-width: 40%;
+    padding: 20px 40px;
+    background: #efefef;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border-bottom: 4px solid #800000;
+}
 /* store status */
 
 a.wgt-button {

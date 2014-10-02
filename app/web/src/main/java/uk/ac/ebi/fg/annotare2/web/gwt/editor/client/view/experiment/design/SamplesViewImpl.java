@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,6 +26,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ErrorPopupPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
@@ -44,7 +44,6 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     private static final int COLUMN_WIDTH = 200;
 
     private final GridView<SampleRow> gridView;
-    private ValidationMessage errorMessage;
 
     private List<SampleColumn> columns = new ArrayList<SampleColumn>();
     private AsyncOptionProvider materialTypes;
@@ -108,8 +107,6 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         });
         gridView.addTool(button);
 
-        errorMessage = new ValidationMessage();
-        gridView.addTool(errorMessage);
         initWidget(gridView);
 
         materialTypes = new AsyncOptionProvider() {
@@ -182,7 +179,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     private void createNewSample() {
         if (maxSamplesLimit == gridView.getRows().size()) {
-            Window.alert("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples");
+            ErrorPopupPanel.message("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples");
         } else {
             presenter.createSample();
         }
@@ -191,7 +188,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     private void deleteSelectedSamples() {
         Set<SampleRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            Window.alert("Please select samples you want to delete first");
+            ErrorPopupPanel.message("Please select samples you want to delete first");
         } else if (Window.confirm("The selected samples and all associated information will no longer be available if you delete. Do you want to continue?")) {
             presenter.removeSamples(new ArrayList<SampleRow>(selection));
             gridView.removeSelectedRows();
@@ -213,7 +210,20 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     }
 
     private void addNameColumn() {
-        final EditTextCell nameCell = new EditTextCell();
+        final EditSuggestCell nameCell = new EditSuggestCell(null) {
+            @Override
+            public boolean validateInput(String value, int rowIndex) {
+                if (value == null || value.trim().isEmpty()) {
+                    ErrorPopupPanel.message("Sample with empty name is not permitted.");
+                    return false;
+                }
+                if (isDuplicated(value, rowIndex)) {
+                    ErrorPopupPanel.message("Sample with the name '" + value + "' already exists.");
+                    return false;
+                }
+                return true;
+            }
+        };
         Column<SampleRow, String> column = new Column<SampleRow, String>(nameCell) {
             @Override
             public String getValue(SampleRow row) {
@@ -223,13 +233,8 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
             @Override
             public void update(int index, SampleRow row, String value) {
-                if (isNameValid(value, index)) {
-                    row.setName(trimValue(value));
-                    updateRow(row);
-                } else {
-                    nameCell.clearViewData(row);
-                    gridView.redraw();
-                }
+                row.setName(trimValue(value));
+                updateRow(row);
             }
         });
         column.setSortable(true);
@@ -247,18 +252,6 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
-    private boolean isNameValid(String name, int rowIndex) {
-        if (name == null || name.trim().isEmpty()) {
-            showErrorMessage("Sample name should not be empty");
-            return false;
-        }
-        if (isDuplicated(name, rowIndex)) {
-            showErrorMessage("Sample with the name '" + name + "' already exists");
-            return false;
-        }
-        return true;
-    }
-
     private boolean isDuplicated(String name, int rowIndex) {
         List<SampleRow> rows = gridView.getRows();
         Set<String> names = new HashSet<String>();
@@ -270,10 +263,6 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
             i++;
         }
         return names.contains(name);
-    }
-
-    private void showErrorMessage(String msg) {
-        errorMessage.setMessage(msg);
     }
 
     private void addColumn(final SampleColumn sampleColumn) {
@@ -290,7 +279,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     private void addTextColumn(final SampleColumn sampleColumn) {
         Column<SampleRow, String> column = new Column<SampleRow, String>(
-                new EditTextCell()
+                new EditSuggestCell(null)
         ) {
             @Override
             public String getValue(SampleRow row) {
@@ -317,7 +306,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
             public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
                 efoSuggestService.getTerms(query, term, limit, callback);
             }
-        }));
+        }), sampleColumn.getTemplate().isMandatory());
 
         Column<SampleRow, String> column = new Column<SampleRow, String>(
                 efoSuggestCell

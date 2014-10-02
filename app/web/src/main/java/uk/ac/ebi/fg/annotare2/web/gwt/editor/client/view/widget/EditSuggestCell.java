@@ -31,6 +31,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.BasicSuggestionDisplay;
+import com.google.gwt.user.client.ui.ErrorPopupPanel;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
@@ -40,9 +41,6 @@ import com.google.gwt.user.client.ui.SuggestionDisplay;
 
 import static com.google.gwt.dom.client.BrowserEvents.*;
 
-/**
- * An editable text cell with suggestion popup. Click to edit, escape to cancel, return to commit.
- */
 public class EditSuggestCell extends
         AbstractEditableCell<String, EditSuggestCell.ViewData> {
 
@@ -154,7 +152,7 @@ public class EditSuggestCell extends
         }
 
         public void onSuggestionSelected(Suggestion suggestion) {
-            setNewSelection(context, parent, suggestion, valueUpdater);
+            setNewSelection(context, parent, suggestion, valueUpdater, true);
         }
     }
 
@@ -189,10 +187,11 @@ public class EditSuggestCell extends
     private SuggestOracle oracle;
     private int limit = 20;
     private boolean selectsFirstItem = true;
+    private boolean sctrictlySuggestions = false;
     private final SuggestionDisplay display;
 
     /**
-     * Construct a new EditTextCell that will use a
+     * Construct a new EditSuggestCell that will use a
      * {@link com.google.gwt.text.shared.SimpleSafeHtmlRenderer}.
      */
     public EditSuggestCell(SuggestOracle oracle) {
@@ -200,7 +199,16 @@ public class EditSuggestCell extends
     }
 
     /**
-     * Construct a new EditTextCell that will use a given {@link SafeHtmlRenderer}
+     * Construct a new EditSuggestCell that will use a
+     * {@link com.google.gwt.text.shared.SimpleSafeHtmlRenderer}.
+     */
+    public EditSuggestCell(SuggestOracle oracle, boolean sctrictlySuggestions) {
+        this(SimpleSafeHtmlRenderer.getInstance(), oracle);
+        this.sctrictlySuggestions = sctrictlySuggestions && null != display;
+    }
+
+    /**
+     * Construct a new EditSuggestCell that will use a given {@link SafeHtmlRenderer}
      * to render the value when not in edit mode.
      *
      * @param renderer a {@link SafeHtmlRenderer SafeHtmlRenderer<String>}
@@ -216,9 +224,8 @@ public class EditSuggestCell extends
         }
         this.renderer = renderer;
 
-        this.display = new BasicSuggestionDisplay();
         this.oracle = oracle;
-
+        this.display = null != oracle ? new BasicSuggestionDisplay() : null;
     }
 
     public boolean isAutoSelectEnabled() {
@@ -313,6 +320,19 @@ public class EditSuggestCell extends
         return false;
     }
 
+    public boolean validateInput(String value, int rowIndex) {
+        if (sctrictlySuggestions && null != display) {
+            if (display.isValidSuggestion(value)) {
+                return true;
+            } else {
+                ErrorPopupPanel.message("Value '" + value + "' is not permitted. Please select one of the suggestions provided.");
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Convert the cell to edit mode.
      *
@@ -332,11 +352,19 @@ public class EditSuggestCell extends
      *
      * @param context the context of the cell
      * @param parent the parent Element
-     * @param value the value associated with the cell
+     * @param viewData the {@link ViewData} object
      */
-    private void cancel(Context context, Element parent, String value) {
+    private void cancel(Context context, Element parent, ViewData viewData) {
+
+        String originalText = viewData.getOriginal();
+        if (viewData.isEditingAgain()) {
+            viewData.setText(originalText);
+            viewData.setEditing(false);
+        } else {
+            setViewData(context.getKey(), null);
+        }
         clearInput(getInputElement(parent));
-        setValue(context, parent, value);
+        setValue(context, parent, originalText);
     }
 
     /**
@@ -377,52 +405,63 @@ public class EditSuggestCell extends
         int keyCode = event.getKeyCode();
 
         if (KEYDOWN.equals(type)) {
-            if (display.isSuggestionListShowing() && handleSuggestionKeyDown(context, parent, event, valueUpdater))
+            ErrorPopupPanel.cancel();
+
+            if (KeyCodes.KEY_TAB == keyCode) {
+                event.stopPropagation();
+                event.preventDefault();
+            } else if (null != display && display.isSuggestionListShowing() && handleSuggestionKeyDown(context, parent, event, valueUpdater))
                 return;
 
             if (KeyCodes.KEY_ESCAPE == keyCode) {
                 // Cancel edit mode.
-                String originalText = viewData.getOriginal();
-                if (viewData.isEditingAgain()) {
-                    viewData.setText(originalText);
-                    viewData.setEditing(false);
-                } else {
-                    setViewData(context.getKey(), null);
-                }
-                cancel(context, parent, value);
+                cancel(context, parent, viewData);
             } else {
                 updateViewData(parent, viewData, true);
             }
         } else if (KEYUP.equals(type)) {
-            if (KeyCodes.KEY_ENTER == keyCode) {
-                if (display.isSuggestionListShowing()) {
+            if (KeyCodes.KEY_TAB == keyCode) {
+                if (null != display && display.isSuggestionListShowing()) {
                     Suggestion suggestion = display.getCurrentSelection();
                     if (null == suggestion) {
                         display.hideSuggestions();
                     } else {
-                        setNewSelection(context, parent, suggestion, valueUpdater);
+                        setNewSelection(context, parent, suggestion, valueUpdater, false);
+                    }
+                }
+                event.stopPropagation();
+                event.preventDefault();
+            } else if (KeyCodes.KEY_ENTER == keyCode) {
+                if (null != display && display.isSuggestionListShowing()) {
+                    Suggestion suggestion = display.getCurrentSelection();
+                    if (null == suggestion) {
+                        display.hideSuggestions();
+                    } else {
+                        setNewSelection(context, parent, suggestion, valueUpdater, true);
                     }
                 } else {
-                    // Commit the change.
-                    commit(context, parent, viewData, valueUpdater);
+                    // validate and commit
+                    if (validateInput(viewData.getText(), context.getIndex())) {
+                        commit(context, parent, viewData, valueUpdater);
+                    }
                 }
             } else {
                 String oldText = viewData.getText();
                 String curText = updateViewData(parent, viewData, true);
-                if (!oldText.equals(curText)) {
+                if (null != display && !oldText.equals(curText)) {
                     showSuggestions(context, parent, curText, valueUpdater);
                 }
 
             }
         } else if (BLUR.equals(type)) {
-            if (!display.isSuggestionListShowing()) {
-                // Commit the change. Ensure that we are blurring the input element and
-                // not the parent element itself.
+            if (null == display || !display.isSuggestionListShowing()) {
+                // cancel the change
                 EventTarget eventTarget = event.getEventTarget();
                 if (Element.is(eventTarget)) {
                     Element target = Element.as(eventTarget);
                     if ("input".equals(target.getTagName().toLowerCase())) {
-                        commit(context, parent, viewData, valueUpdater);
+                        // Cancel edit mode.
+                        cancel(context, parent, viewData);
                     }
                 }
             }
@@ -481,16 +520,16 @@ public class EditSuggestCell extends
         }
     }
 
-    private void setNewSelection(Context context, Element parent, Suggestion curSuggestion, ValueUpdater<String> valueUpdater) {
+    private void setNewSelection(Context context, Element parent, Suggestion curSuggestion, ValueUpdater<String> valueUpdater, boolean doCommit) {
         assert curSuggestion != null : "suggestion cannot be null";
         ViewData viewData = getViewData(context.getKey());
         if (null != viewData && viewData.isEditing()) {
             String value = curSuggestion.getReplacementString();
             getInputElement(parent).setValue(value);
             display.hideSuggestions();
-            commit(context, parent, viewData, valueUpdater);
-            //fireSuggestionEvent(curSuggestion);
+            if (doCommit) {
+                commit(context, parent, viewData, valueUpdater);
+            }
         }
     }
 }
-
