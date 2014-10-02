@@ -164,21 +164,20 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
     public void maintainAssociation(DataFile file) throws UnexpectedException {
         try {
             DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
-            if (source.exists()) {
                 if (!source.getName().equals(file.getName())) {
-                    // check md5 to verify the file and rename source file
-                    String digest = source.getDigest();
-                    if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
-                        file.setStatus(MD5_ERROR);
-                        log.error("MD5 mismatch for source file {}", source.getUri());
-                    } else {
-                        log.info("Renamed source file {} to {}", source.getUri(), file.getName());
-                        file.setSourceUri(source.rename(file.getName()).getUri().toString());
+                    if (source.exists()) {
+                        // check md5 to verify the file and rename source file
+                        String digest = source.getDigest();
+                        if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
+                            file.setStatus(MD5_ERROR);
+                            log.error("MD5 mismatch for source file {}", source.getUri());
+                        } else {
+                            log.info("Renamed source file {} to {}", source.getUri(), file.getName());
+                            file.setSourceUri(source.rename(file.getName()).getUri().toString());
+                        }
                     }
-                }
-
-            } else {
-                file.setStatus(FILE_NOT_FOUND_ERROR);
+                } else {
+                    file.setStatus(FILE_NOT_FOUND_ERROR);
             }
             fileDao.save(file);
         } catch (IOException x) {
