@@ -41,8 +41,6 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<ExtractAttributesActivity> extractAttributesActivityProvider;
     private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
     private final Provider<DataUploadAndAssignmentActivity> dataUploadAndAssignmentActivityProvider;
-    //private final Provider<DataFileUploadActivity> dataFilesUploadActivityProvider;
-    //private final Provider<DataAssignmentActivity> dataFilesAssignmentActivityProvider;
     private final Provider<ProtocolsActivity> protocolsActivityProvider;
 
     private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
@@ -59,8 +57,6 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<SamplesActivity> samplesActivityProvider,
             Provider<ExtractAttributesActivity> extractAttributesActivityProvider,
             Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
-            //Provider<DataFilesUploadActivity> dataFilesUploadActivityProvider,
-            //Provider<DataAssignmentActivity> dataFilesAssignmentActivityProvider,
             Provider<DataUploadAndAssignmentActivity> dataUploadAndAssignmentActivityProvider,
             Provider<ProtocolsActivity> protocolsActivityProvider,
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
@@ -74,8 +70,6 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.samplesActivityProvider = samplesActivityProvider;
         this.extractAttributesActivityProvider = extractAttributesActivityProvider;
         this.labeledExtractsActivityProvider = labeledExtractsActivityProvider;
-        //this.dataFilesUploadActivityProvider = dataFilesUploadActivityProvider;
-        //this.dataFilesAssignmentActivityProvider = dataFilesAssignmentActivityProvider;
         this.dataUploadAndAssignmentActivityProvider = dataUploadAndAssignmentActivityProvider;
         this.protocolsActivityProvider = protocolsActivityProvider;
 
