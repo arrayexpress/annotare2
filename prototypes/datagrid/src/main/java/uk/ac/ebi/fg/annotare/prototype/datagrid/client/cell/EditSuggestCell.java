@@ -41,9 +41,6 @@ import com.google.gwt.user.client.ui.SuggestionDisplay;
 
 import static com.google.gwt.dom.client.BrowserEvents.*;
 
-/**
- * An editable text cell. Click to edit, escape to cancel, return to commit.
- */
 public class EditSuggestCell extends
         AbstractEditableCell<String, EditSuggestCell.ViewData> {
 
@@ -155,7 +152,7 @@ public class EditSuggestCell extends
         }
 
         public void onSuggestionSelected(Suggestion suggestion) {
-            setNewSelection(context, parent, suggestion, valueUpdater);
+            setNewSelection(context, parent, suggestion, valueUpdater, true);
         }
     }
 
@@ -395,7 +392,12 @@ public class EditSuggestCell extends
         int keyCode = event.getKeyCode();
 
         if (KEYDOWN.equals(type)) {
-            if (null != display && display.isSuggestionListShowing() && handleSuggestionKeyDown(context, parent, event, valueUpdater))
+            ErrorPopupPanel.cancel();
+
+            if (KeyCodes.KEY_TAB == keyCode) {
+                event.stopPropagation();
+                event.preventDefault();
+            } else if (null != display && display.isSuggestionListShowing() && handleSuggestionKeyDown(context, parent, event, valueUpdater))
                 return;
 
             if (KeyCodes.KEY_ESCAPE == keyCode) {
@@ -405,21 +407,31 @@ public class EditSuggestCell extends
                 updateViewData(parent, viewData, true);
             }
         } else if (KEYUP.equals(type)) {
-            if (KeyCodes.KEY_ENTER == keyCode) {
+            if (KeyCodes.KEY_TAB == keyCode) {
                 if (null != display && display.isSuggestionListShowing()) {
                     Suggestion suggestion = display.getCurrentSelection();
                     if (null == suggestion) {
                         display.hideSuggestions();
                     } else {
-                        setNewSelection(context, parent, suggestion, valueUpdater);
+                        setNewSelection(context, parent, suggestion, valueUpdater, false);
+                    }
+                }
+                event.stopPropagation();
+                event.preventDefault();
+            } else if (KeyCodes.KEY_ENTER == keyCode) {
+                if (null != display && display.isSuggestionListShowing()) {
+                    Suggestion suggestion = display.getCurrentSelection();
+                    if (null == suggestion) {
+                        display.hideSuggestions();
+                    } else {
+                        setNewSelection(context, parent, suggestion, valueUpdater, true);
                     }
                 } else {
-                    if (sctrictlySuggestions) {
-                        Suggestion suggestion = display.getCurrentSelection();
-                        if (null != suggestion && suggestion.getReplacementString().equals(value)) {
+                    if (sctrictlySuggestions && null != display) {
+                        if (display.isValidSuggestion(viewData.getText())) {
                             commit(context, parent, viewData, valueUpdater);
                         } else {
-                            new ErrorPopupPanel("Please select one of the suggestions provided");
+                            ErrorPopupPanel.message("Value '" + viewData.getText() + "' is not permitted. Please select one of the suggestions provided.");
                         }
                     } else {
                         commit(context, parent, viewData, valueUpdater);
@@ -500,15 +512,16 @@ public class EditSuggestCell extends
         }
     }
 
-    private void setNewSelection(Context context, Element parent, Suggestion curSuggestion, ValueUpdater<String> valueUpdater) {
+    private void setNewSelection(Context context, Element parent, Suggestion curSuggestion, ValueUpdater<String> valueUpdater, boolean doCommit) {
         assert curSuggestion != null : "suggestion cannot be null";
         ViewData viewData = getViewData(context.getKey());
         if (null != viewData && viewData.isEditing()) {
             String value = curSuggestion.getReplacementString();
             getInputElement(parent).setValue(value);
             display.hideSuggestions();
-            commit(context, parent, viewData, valueUpdater);
-            //fireSuggestionEvent(curSuggestion);
+            if (doCommit) {
+                commit(context, parent, viewData, valueUpdater);
+            }
         }
     }
 }

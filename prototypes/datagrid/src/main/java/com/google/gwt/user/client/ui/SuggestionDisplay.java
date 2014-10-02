@@ -58,6 +58,11 @@ public abstract class SuggestionDisplay {
     public abstract void moveSelectionUp();
 
     /**
+     * Checks if supplied string is a valid suggestion.
+     */
+    public abstract boolean isValidSuggestion(String suggestionValue);
+
+    /**
      * Set the debug id of widgets used in the SuggestionDisplay.
      *
      * @param suggestBoxBaseID the baseID of the {@link com.google.gwt.user.client.ui.SuggestBox}

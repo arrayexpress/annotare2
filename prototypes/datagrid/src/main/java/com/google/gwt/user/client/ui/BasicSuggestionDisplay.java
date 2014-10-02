@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -49,6 +51,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
 
     private final SuggestionMenu suggestionMenu;
     private final PopupPanel suggestionPopup;
+    private final Set<String> suggestionSet;
 
     /**
      * We need to keep track of the last {@link SuggestBox} because it acts as
@@ -79,6 +82,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         suggestionMenu = new SuggestionMenu();
         suggestionPopup = createPopup();
         suggestionPopup.setWidget(decorateSuggestionList(suggestionMenu));
+        suggestionSet = new HashSet<String>();
     }
 
     @Override
@@ -217,6 +221,11 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         }
     }
 
+    @Override
+    public boolean isValidSuggestion(String suggestionValue) {
+        return suggestionSet.contains(suggestionValue);
+    }
+
     /**
      * <b>Affected Elements:</b>
      * <ul>
@@ -252,6 +261,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         }
 
         suggestionMenu.clearItems();
+        suggestionSet.clear();
 
         for (final Suggestion curSuggestion : suggestions) {
             final SuggestionMenuItem menuItem = new SuggestionMenuItem(
@@ -263,6 +273,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
             });
 
             suggestionMenu.addItem(menuItem);
+            suggestionSet.add(curSuggestion.getReplacementString());
         }
 
         if (isAutoSelectEnabled && anySuggestions) {
@@ -285,7 +296,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
             public void setPosition(int offsetWidth, int offsetHeight) {
                 suggestionPopup.setPopupPosition(inputElement.getAbsoluteLeft(),
                         inputElement.getAbsoluteBottom());
-                suggestionPopup.getElement().getStyle().setProperty("min-width",
+                suggestionPopup.getElement().getStyle().setProperty("minWidth",
                         (inputElement.getAbsoluteRight() - inputElement.getAbsoluteLeft())
                                 + Style.Unit.PX.getType());
             }

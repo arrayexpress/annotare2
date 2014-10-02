@@ -21,30 +21,18 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 public class ErrorPopupPanel extends PopupPanel {
-    private int hideTimeout = 4;
 
-    private static class NoClipResizeAnimation extends ResizeAnimation {
-        private final PopupPanel panel;
+    private int hideTimeout = 5;
 
-        public NoClipResizeAnimation(PopupPanel panel) {
-            super(panel);
-            this.panel = panel;
-        }
-        @Override
-        protected void onComplete() {
-            super.onComplete();
-            panel.getElement().getStyle().clearProperty("clip");
-        }
-    }
-
-    public ErrorPopupPanel(String message) {
+    private ErrorPopupPanel() {
         super(true, false);
         setStyleName("gwt-ErrorPopup");
         PopupPanel.setStyleName(getContainerElement(), "");
+        setAnimationEnabled(false);
+    }
+
+    private void showMessage(String message) {
         getContainerElement().setInnerHTML(message);
-        setAnimationEnabled(true);
-        setAnimationType(AnimationType.ROLL_DOWN);
-        setAnimation(new NoClipResizeAnimation(this));
         setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             public void setPosition(int offsetWidth, int offsetHeight) {
                 int left = (Window.getClientWidth() - offsetWidth) / 2;
@@ -53,6 +41,7 @@ public class ErrorPopupPanel extends PopupPanel {
             }
         });
         setAutoHide();
+
     }
 
     private void setAutoHide() {
@@ -64,6 +53,22 @@ public class ErrorPopupPanel extends PopupPanel {
                 }
             };
             timer.schedule(hideTimeout * 1000);
+        }
+    }
+
+    private static ErrorPopupPanel instance = null;
+
+    public static void message(String message) {
+        if (null == instance) {
+            instance = new ErrorPopupPanel();
+        }
+        cancel();
+        instance.showMessage(message);
+    }
+
+    public static void cancel() {
+        if (null != instance && instance.isAttached()) {
+            instance.hide();
         }
     }
 }
