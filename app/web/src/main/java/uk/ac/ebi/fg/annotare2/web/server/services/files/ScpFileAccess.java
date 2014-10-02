@@ -73,15 +73,19 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
 
     public URI rename(URI file, String newName) throws IOException {
         if (isSupported(file)) {
-            String newPath = getDirFromPath(file.getPath()) + URIEncoderDecoder.encode(newName);
-            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (!(executor.execute(
-                    "ssh " + file.getHost() + " mv " + escapeFilePath(file.getPath()) + " " + escapeFilePath(newPath)
-            ))) {
-                throw new IOException(executor.getErrors());
-            }
             try {
-                return new URI(file.getScheme(), file.getHost(), newPath, null);
+                String newPath = getDirFromPath(file.getPath()) + URIEncoderDecoder.encode(newName);
+                URI newFile = new URI(file.getScheme(), file.getHost(), newPath, null);
+                if (isAccessible(newFile)) {
+                    throw new IOException("Unable to rename file; " + newName + " already exists");
+                }
+                LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+                if (!(executor.execute(
+                        "ssh " + file.getHost() + " mv " + escapeFilePath(file.getPath()) + " " + escapeFilePath(newPath)
+                ))) {
+                    throw new IOException(executor.getErrors());
+                }
+                return newFile;
             } catch (URISyntaxException x) {
                 throw new IOException(x);
             }
