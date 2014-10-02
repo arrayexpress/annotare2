@@ -90,27 +90,28 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
     }
 
     private void periodicRun() throws Exception {
+        FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
         for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
             switch (file.getStatus()) {
                 case TO_BE_STORED:
-                    copyFile(file);
+                    copyFile(file, availabilityChecker);
                     break;
 
                 case TO_BE_ASSOCIATED:
-                    verifyFile(file);
+                    verifyFile(file, availabilityChecker);
                     break;
 
                 case ASSOCIATED:
-                    maintainAssociation(file);
+                    maintainAssociation(file, availabilityChecker);
             }
         }
     }
 
     @Transactional
-    public void copyFile(DataFile file) throws UnexpectedException {
+    public void copyFile(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
         try {
             DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
-            if (source.exists()) {
+            if (availabilityChecker.isAvailable(source)) {
                 String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
                     file.setStatus(MD5_ERROR);
@@ -135,10 +136,10 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
     }
 
     @Transactional
-    public void verifyFile(DataFile file) throws UnexpectedException {
+    public void verifyFile(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
         try {
             DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
-            if (source.exists()) {
+            if (availabilityChecker.isAvailable(source)) {
                 String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
                     file.setStatus(MD5_ERROR);
@@ -161,23 +162,23 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
     }
 
     @Transactional
-    public void maintainAssociation(DataFile file) throws UnexpectedException {
+    public void maintainAssociation(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
         try {
             DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
+            if (availabilityChecker.isAvailable(source)) {
                 if (!source.getName().equals(file.getName())) {
-                    if (source.exists()) {
-                        // check md5 to verify the file and rename source file
-                        String digest = source.getDigest();
-                        if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
-                            file.setStatus(MD5_ERROR);
-                            log.error("MD5 mismatch for source file {}", source.getUri());
-                        } else {
-                            log.info("Renamed source file {} to {}", source.getUri(), file.getName());
-                            file.setSourceUri(source.rename(file.getName()).getUri().toString());
-                        }
+                    // check md5 to verify the file and rename source file
+                    String digest = source.getDigest();
+                    if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
+                        file.setStatus(MD5_ERROR);
+                        log.error("MD5 mismatch for source file {}", source.getUri());
+                    } else {
+                        log.info("Renamed source file {} to {}", source.getUri(), file.getName());
+                        file.setSourceUri(source.rename(file.getName()).getUri().toString());
                     }
-                } else {
-                    file.setStatus(FILE_NOT_FOUND_ERROR);
+                }
+            } else {
+                file.setStatus(FILE_NOT_FOUND_ERROR);
             }
             fileDao.save(file);
         } catch (IOException x) {
