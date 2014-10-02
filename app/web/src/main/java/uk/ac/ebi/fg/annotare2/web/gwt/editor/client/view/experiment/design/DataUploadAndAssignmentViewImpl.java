@@ -20,9 +20,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DataUploadAndAssignmentViewImpl extends Composite implements DataUploadAndAssignmentView {
+public class DataUploadAndAssignmentViewImpl extends Composite implements DataUploadAndAssignmentView, RequiresResize {
 
     @UiField
     DataFilesUploadView dataFilesUploadView;
@@ -52,5 +53,12 @@ public class DataUploadAndAssignmentViewImpl extends Composite implements DataUp
     public void setPresenter(Presenter presenter) {
         dataFilesUploadView.setPresenter(presenter);
         dataAssignmentView.setPresenter(presenter);
+    }
+
+    @Override
+    public void onResize() {
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
+        }
     }
 }

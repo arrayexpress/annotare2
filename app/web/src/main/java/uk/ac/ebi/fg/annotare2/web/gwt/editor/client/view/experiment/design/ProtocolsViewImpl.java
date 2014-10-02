@@ -30,6 +30,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
@@ -41,7 +42,7 @@ import java.util.*;
 /**
  * @author Olga Melnichuk
  */
-public class ProtocolsViewImpl extends Composite implements ProtocolsView {
+public class ProtocolsViewImpl extends Composite implements ProtocolsView, RequiresResize {
 
     private GridView<ProtocolRow> gridView;
     private ValidationMessage errorMessage;
@@ -488,5 +489,12 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView {
 
     private void fillDownValue() {
         gridView.fillDownKeyboardSelectedColumn();
+    }
+
+    @Override
+    public void onResize() {
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
+        }
     }
 }

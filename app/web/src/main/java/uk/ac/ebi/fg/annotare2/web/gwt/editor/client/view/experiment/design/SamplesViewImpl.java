@@ -27,6 +27,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
@@ -38,7 +39,7 @@ import java.util.*;
 /**
  * @author Olga Melnichuk
  */
-public class SamplesViewImpl extends Composite implements SamplesView {
+public class SamplesViewImpl extends Composite implements SamplesView, RequiresResize {
 
     private static final int COLUMN_WIDTH = 200;
 
@@ -360,5 +361,12 @@ public class SamplesViewImpl extends Composite implements SamplesView {
             value = value.replaceAll("([^\\t]*)[\\t].*", "$1").trim();
         }
         return value;
+    }
+
+    @Override
+    public void onResize() {
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
+        }
     }
 }
