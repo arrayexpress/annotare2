@@ -22,10 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -39,7 +36,7 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView {
+public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView, RequiresResize {
 
     @UiField
     DataFilesUploadPanel uploadPanel;
@@ -121,6 +118,13 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @Override
     public void setFtpProperties(String url, String username, String password) {
         ftpUploadDialog.setFtpProperties(url, username, password);
+    }
+
+    @Override
+    public void onResize() {
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
+        }
     }
 }
 

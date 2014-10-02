@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
@@ -38,7 +39,7 @@ import java.util.*;
 /**
  * @author Olga Melnichuk
  */
-public class DataAssignmentViewImpl extends Composite implements DataAssignmentView {
+public class DataAssignmentViewImpl extends Composite implements DataAssignmentView, RequiresResize {
 
     public static final String NONE = "none";
 
@@ -284,6 +285,12 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 });
     }
 
+    @Override
+    public void onResize() {
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
+        }
+    }
 
     private static class ColumnType {
 

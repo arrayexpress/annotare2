@@ -47,14 +47,12 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     private final ListDataProvider<DataFileRow> dataProvider;
     private final MultiSelectionModel<DataFileRow> selectionModel;
     private final CheckboxHeader checkboxHeader;
-    private final LoadingIndicator loadingIndicator;
 
     private final static int MAX_FILES = 40000;
 
     private Presenter presenter;
 
     public DataFileListPanel() {
-        loadingIndicator = new LoadingIndicator();
         grid = new CustomDataGrid<DataFileRow>(MAX_FILES, false);
         grid.addStyleName("gwt-dataGrid");
         grid.setWidth("100%");
@@ -128,6 +126,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         dataProvider = new ListDataProvider<DataFileRow>();
         dataProvider.addDataDisplay(grid);
 
+        grid.setLoadingIndicator(new LoadingIndicator());
         grid.setEmptyTableWidget(new Label("No files uploaded"));
         add(grid);
     }
