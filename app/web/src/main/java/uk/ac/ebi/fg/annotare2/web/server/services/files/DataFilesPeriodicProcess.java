@@ -176,11 +176,12 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                         log.info("Renamed source file {} to {}", source.getUri(), file.getName());
                         file.setSourceUri(source.rename(file.getName()).getUri().toString());
                     }
+                    fileDao.save(file);
                 }
             } else {
                 file.setStatus(FILE_NOT_FOUND_ERROR);
+                fileDao.save(file);
             }
-            fileDao.save(file);
         } catch (IOException x) {
             throw new UnexpectedException(x.getMessage(), x);
         } catch (URISyntaxException x) {
