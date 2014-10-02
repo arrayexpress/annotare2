@@ -49,8 +49,10 @@ public class GridView<R extends HasIdentity> extends Composite {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    @UiField
-    SimpleLayoutPanel gridPanel;
+    //@UiField
+    //SimpleLayoutPanel gridPanel;
+    @UiField(provided=true)
+    CustomDataGrid<R> dataGrid;
 
     @UiField
     HorizontalPanel toolBar;
@@ -58,7 +60,7 @@ public class GridView<R extends HasIdentity> extends Composite {
     @UiField
     HorizontalPanel tools;
 
-    private CustomDataGrid<R> dataGrid;
+    //private CustomDataGrid<R> dataGrid;
     private MultiSelectionModel<R> selectionModel;
     private ColumnSortEvent.ListHandler<R> sortHandler;
     private SimplePager pager;
@@ -69,6 +71,10 @@ public class GridView<R extends HasIdentity> extends Composite {
     private int permanentColumnCount;
 
     public GridView() {
+        dataGrid = new CustomDataGrid<R>(PAGE_SIZE);
+        dataGrid.addStyleName("gwt-dataGrid");
+        dataGrid.setEmptyTableWidget(new Label("No data"));
+
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
@@ -77,15 +83,10 @@ public class GridView<R extends HasIdentity> extends Composite {
     }
 
     public void setRows(List<R> rows) {
-        if (dataGrid != null) {
+        if (null != dataGrid && null != dataProvider) {
             dataProvider.setList(rows);
             return;
         }
-        dataGrid = new CustomDataGrid<R>(PAGE_SIZE);
-        dataGrid.addStyleName("gwt-dataGrid");
-        dataGrid.setWidth("100%");
-        dataGrid.setEmptyTableWidget(new Label("No data"));
-
         selectionModel =
                 new MultiSelectionModel<R>(new ProvidesKey<R>() {
                     @Override
@@ -111,7 +112,7 @@ public class GridView<R extends HasIdentity> extends Composite {
         toolBar.add(pager);
         toolBar.setCellHorizontalAlignment(pager, HasHorizontalAlignment.ALIGN_RIGHT);
 
-        gridPanel.add(dataGrid);
+        //gridPanel.add(dataGrid);
     }
 
     public void clearAllColumns() {
