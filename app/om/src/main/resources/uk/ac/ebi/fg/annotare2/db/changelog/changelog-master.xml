@@ -50,4 +50,9 @@
             ALTER TABLE submissions MODIFY version ENUM('VERSION_1_0', 'VERSION_1_1', 'VERSION_1_2') NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addSubmittedTimeToSubmissions" author="kolais">
+        <sql>
+            ALTER TABLE submissions ADD submitted TIMESTAMP NULL AFTER created;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -56,6 +56,10 @@ public abstract class Submission implements HasEffectiveAcl {
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "submitted", nullable = true)
+    private Date submitted;
+
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated", nullable = false)
     private Date updated;
 
@@ -123,6 +127,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public Date getCreated() {
         return created;
+    }
+
+    public Date getSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(Date submitted) {
+        this.submitted = submitted;
     }
 
     public Date getUpdated() {

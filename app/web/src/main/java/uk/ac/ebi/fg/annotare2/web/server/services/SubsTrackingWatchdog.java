@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -165,6 +166,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         SubmissionOutcome outcome = submitSubmission(submission);
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             submission.setStatus(SubmissionStatus.IN_CURATION);
+            submission.setSubmitted(new Date());
             submissionManager.save(submission);
             sendEmail(
                     EmailSender.INITIAL_SUBMISSION_TEMPLATE,
@@ -221,6 +223,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             // check if the submission has been rejected
             if (!isInCuration(submission.getSubsTrackingId())) {
                 submission.setStatus(SubmissionStatus.IN_PROGRESS);
+                submission.setSubmitted(null);
                 submission.setOwnedBy(submission.getCreatedBy());
                 submissionManager.save(submission);
                 sendEmail(
