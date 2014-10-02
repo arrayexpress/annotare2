@@ -81,7 +81,7 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
                 throw new IOException(executor.getErrors());
             }
             try {
-                return new URI(file.getScheme(), file.getHost(), newPath);
+                return new URI(file.getScheme(), file.getHost(), newPath, null);
             } catch (URISyntaxException x) {
                 throw new IOException(x);
             }
