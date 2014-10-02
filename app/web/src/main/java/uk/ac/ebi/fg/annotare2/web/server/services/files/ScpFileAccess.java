@@ -93,7 +93,7 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute(
-                    "ssh " + file.getHost() + " rm " + escapeFilePath(getDirFromPath(file.getPath()))
+                    "ssh " + file.getHost() + " rm " + escapeFilePath(file.getPath())
                     ))) {
                 throw new IOException(executor.getErrors());
             }
@@ -104,7 +104,7 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute(
-                    "ssh " + file.getHost() + " ls -1 " + escapeFilePath(file.getPath())
+                    "ssh " + file.getHost() + " ls -1 " + escapeFilePath(getDirFromPath(file.getPath()))
             ))) {
                 throw new IOException(executor.getErrors());
             }
