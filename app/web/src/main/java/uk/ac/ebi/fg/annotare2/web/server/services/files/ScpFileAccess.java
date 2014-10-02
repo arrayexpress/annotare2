@@ -18,9 +18,11 @@
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.LinuxShellCommandExecutor;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,11 +71,29 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
         }
     }
 
+    public URI rename(URI file, String newName) throws IOException {
+        if (isSupported(file)) {
+            String newPath = getDirFromPath(file.getPath()) + URIEncoderDecoder.encode(newName);
+            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+            if (!(executor.execute(
+                    "ssh " + file.getHost() + " mv " + escapeFilePath(file.getPath()) + " " + escapeFilePath(newPath)
+            ))) {
+                throw new IOException(executor.getErrors());
+            }
+            try {
+                return new URI(file.getScheme(), file.getHost(), newPath);
+            } catch (URISyntaxException x) {
+                throw new IOException(x);
+            }
+        }
+        return file;
+    }
+
     public void delete(URI file) throws IOException {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute(
-                    "ssh " + file.getHost() + " rm " + escapeFilePath(file.getPath())
+                    "ssh " + file.getHost() + " rm " + escapeFilePath(getDirFromPath(file.getPath()))
                     ))) {
                 throw new IOException(executor.getErrors());
             }
@@ -84,7 +104,7 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute(
-                    "ssh " + file.getHost() + " ls -1 " + escapeFilePath(file.getPath().replaceFirst("(.+/)[^/]*$", "$1"))
+                    "ssh " + file.getHost() + " ls -1 " + escapeFilePath(file.getPath())
             ))) {
                 throw new IOException(executor.getErrors());
             }
@@ -102,6 +122,10 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
+    }
+
+    private String getDirFromPath(String path) {
+        return path.replaceFirst("(.+/)[^/]*$", "$1");
     }
 
     private String escapeFilePath(String path) {

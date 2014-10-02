@@ -31,5 +31,7 @@ public interface RemoteFileAccess {
 
     public void copyTo(URI file, File destination) throws IOException;
 
+    public URI rename(URI file, String newName) throws IOException;
+
     public void delete(URI file) throws IOException;
 }

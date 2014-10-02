@@ -67,6 +67,12 @@ public class LocalFileSource extends DataFileSource implements Serializable {
         Files.copy(file, destination);
     }
 
+    public DataFileSource rename(String newName) throws IOException {
+        File newFile = new File(file.getParentFile(), newName);
+        Files.move(file, newFile);
+        return new LocalFileSource(newFile);
+    }
+
     public void delete() throws IOException {
         if (!file.delete()) {
             throw new IOException("Unable to delete file " + file.getAbsolutePath());

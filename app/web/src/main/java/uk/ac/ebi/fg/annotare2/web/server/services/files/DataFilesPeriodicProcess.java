@@ -90,7 +90,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
     }
 
     private void periodicRun() throws Exception {
-        for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED)) {
+        for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
             switch (file.getStatus()) {
                 case TO_BE_STORED:
                     copyFile(file);
@@ -99,6 +99,9 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                 case TO_BE_ASSOCIATED:
                     verifyFile(file);
                     break;
+
+                case ASSOCIATED:
+                    maintainAssociation(file);
             }
         }
     }
@@ -157,4 +160,31 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
         }
     }
 
+    @Transactional
+    public void maintainAssociation(DataFile file) throws UnexpectedException {
+        try {
+            DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
+            if (source.exists()) {
+                if (!source.getName().equals(file.getName())) {
+                    // check md5 to verify the file and rename source file
+                    String digest = source.getDigest();
+                    if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
+                        file.setStatus(MD5_ERROR);
+                        log.error("MD5 mismatch for source file {}", source.getUri());
+                    } else {
+                        log.info("Renamed source file {} to {}", source.getUri(), file.getName());
+                        file.setSourceUri(source.rename(file.getName()).getUri().toString());
+                    }
+                }
+
+            } else {
+                file.setStatus(FILE_NOT_FOUND_ERROR);
+            }
+            fileDao.save(file);
+        } catch (IOException x) {
+            throw new UnexpectedException(x.getMessage(), x);
+        } catch (URISyntaxException x) {
+            throw new UnexpectedException(x.getMessage(), x);
+        }
+    }
 }

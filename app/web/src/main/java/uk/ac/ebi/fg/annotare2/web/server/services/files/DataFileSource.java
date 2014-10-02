@@ -35,6 +35,8 @@ public abstract class DataFileSource {
 
     public abstract void copyTo(File destination) throws IOException;
 
+    public abstract DataFileSource rename(String newName) throws IOException;
+
     public abstract void delete() throws IOException;
 
     public static DataFileSource createFromUri(URI uri) throws IOException {

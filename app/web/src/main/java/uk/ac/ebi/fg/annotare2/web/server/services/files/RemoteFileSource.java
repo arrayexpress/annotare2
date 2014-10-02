@@ -63,6 +63,10 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
         access.copyTo(uri, destination);
     }
 
+    public DataFileSource rename(String newName) throws IOException {
+        return new RemoteFileSource(access.rename(uri, newName));
+    }
+
     public void delete() throws IOException {
         access.delete(uri);
     }
