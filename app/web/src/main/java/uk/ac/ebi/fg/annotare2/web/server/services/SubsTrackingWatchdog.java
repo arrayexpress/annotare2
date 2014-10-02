@@ -140,10 +140,17 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 , SubmissionStatus.PUBLIC_IN_AE
         );
 
+        // funny hack to submit only one submission per run (to make gaps between submits)
+        // this only applies to processSubmitted() case
+        boolean hasProcessedOneSubmission = false;
+
         for (Submission submission : submissions) {
             switch (submission.getStatus()) {
                 case SUBMITTED:
-                    processSubmitted(submission);
+                    if (!hasProcessedOneSubmission) {
+                        processSubmitted(submission);
+                        hasProcessedOneSubmission = true;
+                    }
                     break;
 
                 case IN_CURATION:
