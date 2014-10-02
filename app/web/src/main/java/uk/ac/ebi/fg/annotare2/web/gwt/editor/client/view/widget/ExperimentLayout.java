@@ -12,7 +12,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEven
 /**
  * @author Olga Melnichuk
  */
-public class ExperimentLayout extends Composite implements EditorLayout {
+public class ExperimentLayout extends Composite implements EditorLayout, RequiresResize {
 
     private static final int DEFAULT_LOG_PANEL_SIZE = 250;
 
@@ -87,5 +87,12 @@ public class ExperimentLayout extends Composite implements EditorLayout {
     @Override
     public HasOneWidget getLogBarDisplay() {
         return logBarDisplay;
+    }
+
+    @Override
+    public void onResize() {
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
+        }
     }
 }
