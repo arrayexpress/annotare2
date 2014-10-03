@@ -14,7 +14,29 @@
     <properties>
         <!-- Convenience property to set the GWT version -->
         <gwtVersion>2.6.1</gwtVersion>
-        <!-- GWT needs at least java 1.5 -->
+
+        <!-- http://colorschemedesigner.com/#3L61Tw0w0w0w0 -->
+        <color.p1>#1240AB</color.p1>
+        <color.p2>#2A4480</color.p2>
+        <color.p3>#06266F</color.p3>
+        <color.p4>#4671D5</color.p4>
+        <color.p5>#6C8CD5</color.p5>
+        <color.a1>#3914AF</color.a1>
+        <color.a2>#412C84</color.a2>
+        <color.a3>#200772</color.a3>
+        <color.a4>#6A48D7</color.a4>
+        <color.a5>#876ED7</color.a5>
+        <color.b1>#009999</color.b1>
+        <color.b2>#1D7373</color.b2>
+        <color.b3>#006363</color.b3>
+        <color.b4>#33CCCC</color.b4>
+        <color.b5>#5CCCCC</color.b5>
+        <color.c1>#FFAA00</color.c1>
+        <color.c2>#BF8F30</color.c2>
+        <color.c3>#A66F00</color.c3>
+        <color.c4>#FFBF40</color.c4>
+        <color.c5>#FFD073</color.c5>
+
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -53,23 +75,8 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
-            <!-- <scope>provided</scope> -->
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-            <classifier>sources</classifier>
-            <scope>compile</scope>
-        </dependency>
-        -->
     </dependencies>
 
     <build>
@@ -116,6 +123,15 @@
                 </executions>
                 <configuration>
                     <webappDirectory>${webappDirectory}</webappDirectory>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp</directory>
+                            <includes>
+                                <include>assets/css/annotare-colours.css</include>
+                            </includes>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>

@@ -1,0 +1,83 @@
+/* Color
+===================================================*/
+
+/* These style rules will over-ride the core EBI styles and apply
+    your custom colour palette in a consistent manner */
+
+/* Links */
+a:link,
+a:visited {
+    color: ${color.a3};
+    border-bottom-color: ${color.a1};
+}
+
+a:hover,
+a:focus,
+a:active {
+    color: ${color.b3};
+    border-bottom: 1px solid ${color.b1};
+}
+
+a.special:hover,
+a.special:focus,
+a.special:active {
+    color: ${color.p1};
+    border-bottom: 3px double ${color.p1};
+}
+
+a.special { background-color: ${color.b5}; }
+
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 { color: #222222; }
+
+h1 { color: ${color.p1}; }
+
+h2 { color: ${color.c2}; }
+
+h1 a:link,
+h2 a:link,
+h3 a:link,
+h4 a:link,
+h5 a:link,
+h6 a:link,
+h1 a:visited,
+h2 a:visited,
+h3 a:visited,
+h4 a:visited,
+h5 a:visited,
+h6 a:visited {
+    border-bottom-color: ${color.p1};
+}
+
+
+/* Table heading cells */
+th { background-color: ${color.b1}; }
+
+
+/* Form submission button */
+form input.submit {
+    /* colours */
+    color: #fff;
+    text-shadow: ${color.p3} 1px 1px;
+    border-top: 1px solid ${color.p5};
+    border-left: 1px solid ${color.p5};
+    border-right: 1px solid ${color.p3};
+    border-bottom: 1px solid ${color.p3};
+
+    background-image: -moz-linear-gradient(top, ${color.p1}, ${color.p2});
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #ccc),color-stop(1, ${color.p2}));
+    background-image: -webkit-linear-gradient(${color.p1}, ${color.p2});
+    background-image: linear-gradient(top, ${color.p1}, ${color.p2});
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='${color.p1}', EndColorStr='${color.p2}');
+}
+
+/* Define the basic colour your local masthead */
+div#local-masthead { background-color: ${color.p5}; }
+
+/* Colour the faux-underline for local menu items */
+div#local-masthead ul li a:hover,
+div#local-masthead ul li a:focus,
+div#local-masthead ul li a:active {
+    border-bottom: 3px solid ${color.p1};
+}
