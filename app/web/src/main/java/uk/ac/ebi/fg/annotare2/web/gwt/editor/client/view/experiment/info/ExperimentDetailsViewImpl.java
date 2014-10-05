@@ -26,12 +26,13 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
@@ -176,27 +177,23 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
         if (presenter == null) {
             return;
         }
-        presenter.getExperimentalDesigns(new AsyncCallback<List<OntologyTermGroup>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //?
-            }
-
-            @Override
-            public void onSuccess(List<OntologyTermGroup> result) {
-                List<OntologyTermGroup> filteredResult = filterExperimentalDesigns(result);
-                if (filteredResult.isEmpty()) {
-                    // nothing to add
-                    return;
-                }
-                (new ExperimentalDesignsDialog(filteredResult, new DialogCallback<List<OntologyTerm>>() {
+        presenter.getExperimentalDesigns(
+                new ReportingAsyncCallback<List<OntologyTermGroup>>(FailureMessage.UNABLE_TO_LOAD_EXPERIMENTAL_DESIGNS) {
                     @Override
-                    public void onOkay(List<OntologyTerm> ontologyTerms) {
-                        addExperimentalDesigns(ontologyTerms);
-                        save();
+                    public void onSuccess(List<OntologyTermGroup> result) {
+                        List<OntologyTermGroup> filteredResult = filterExperimentalDesigns(result);
+                        if (filteredResult.isEmpty()) {
+                            // nothing to add
+                            return;
+                        }
+                        (new ExperimentalDesignsDialog(filteredResult, new DialogCallback<List<OntologyTerm>>() {
+                            @Override
+                            public void onOkay(List<OntologyTerm> ontologyTerms) {
+                                addExperimentalDesigns(ontologyTerms);
+                                save();
+                            }
+                        })).show();
                     }
-                })).show();
-            }
         });
     }
 

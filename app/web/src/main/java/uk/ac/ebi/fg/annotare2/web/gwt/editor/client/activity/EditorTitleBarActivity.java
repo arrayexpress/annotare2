@@ -131,35 +131,38 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void validateSubmission(final EditorTitleBarView.ValidationHandler handler) {
-        validationService.validate(getSubmissionId(), new AsyncCallbackWrapper<ValidationResult>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                handler.onFailure();
-                publishValidationResult(new ValidationResult(throwable));
-                //TODO log exception here
-            }
+        validationService.validate(getSubmissionId(), callbackWrap(
+                new ReportingAsyncCallback<ValidationResult>(FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        handler.onFailure();
+                        publishValidationResult(new ValidationResult(caught));
+                    }
 
-            @Override
-            public void onSuccess(ValidationResult result) {
-                handler.onSuccess(result);
-                publishValidationResult(result);
-            }
-        }.wrap());
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+                        handler.onSuccess(result);
+                        publishValidationResult(result);
+                    }
+                }
+        ));
     }
 
     @Override
     public void submitSubmission(final EditorTitleBarView.SubmissionHandler handler) {
-        submissionService.submitSubmission(getSubmissionId(), new AsyncCallbackWrapper<Void>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                handler.onFailure();
-            }
+        submissionService.submitSubmission(getSubmissionId(), callbackWrap(
+                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        handler.onFailure();
+                    }
 
-            @Override
-            public void onSuccess(Void aVoid) {
-                handler.onSuccess();
-            }
-        }.wrap());
+                    @Override
+                    public void onSuccess(Void result) {
+                        handler.onSuccess();
+                    }
+                }
+        ));
     }
 
     private void publishValidationResult(ValidationResult result) {
