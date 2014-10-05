@@ -492,13 +492,31 @@
 
 .gwt-NotificationPopup {
     max-width: 40%;
-    padding: 20px 40px;
+    padding: 5px;
     background: #efefef;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     border-bottom: 4px solid #a00000;
 }
+
+.gwt-NotificationPopup .container {
+    display: table;
+    width: 100%
+}
+
+.gwt-NotificationPopup .icon {
+    display: table-cell;
+    padding: 0 5px 0 10px;
+    vertical-align: middle;
+}
+
+.gwt-NotificationPopup .message {
+    display: table-cell;
+    padding: 20px 10px 20px 5px;
+    vertical-align: middle;
+}
+
 /* store status */
 
 a.wgt-button {

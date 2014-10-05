@@ -17,31 +17,39 @@
 
 package com.google.gwt.user.client.ui;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 public class NotificationPopupPanel extends PopupPanel {
 
     public static enum Type {
-        INFO("info"), WARNING("warning"), ERROR("error"), FAILURE("failure");
+        INFO("info", "<i class=\"fa fa-info-circle\"></i>"),
+        WARNING("warning", "<i class=\"fa fa-exclamation-circle\"></i>"),
+        ERROR("error", "<i class=\"fa fa-minus-circle\"></i>"),
+        FAILURE("failure", "<i class=\"fa fa-times-circle\"></i>");
 
         private final String styleName;
+        private final String iconHtml;
 
-        Type(String styleName) {
+        Type(String styleName, String iconHtml) {
             this.styleName = styleName;
+            this.iconHtml = iconHtml;
         }
 
         public String getStyleName() {
             return styleName;
         }
+
+        public String getIconHtml() {
+            return iconHtml;
+        }
     }
 
+    private final Element iconElement, messageElement;
     private final Type type;
     private final boolean timedAutoHide;
-
-    private NotificationPopupPanel() {
-        this(Type.INFO, true);
-    }
 
     private NotificationPopupPanel(Type type, boolean timedAutoHide) {
         super(true, false);
@@ -49,12 +57,19 @@ public class NotificationPopupPanel extends PopupPanel {
         this.timedAutoHide = timedAutoHide;
         setStyleName("gwt-NotificationPopup");
         addStyleName(type.getStyleName());
-        PopupPanel.setStyleName(getContainerElement(), "");
+        PopupPanel.setStyleName(getContainerElement(), "container");
+        iconElement = Document.get().createDivElement();
+        PopupPanel.setStyleName(iconElement, "icon");
+        messageElement = Document.get().createDivElement();
+        PopupPanel.setStyleName(messageElement, "message");
+        getContainerElement().appendChild(iconElement);
+        getContainerElement().appendChild(messageElement);
         setAnimationEnabled(false);
     }
 
     private void showMessage(String message) {
-        getContainerElement().setInnerHTML(message);
+        iconElement.setInnerHTML(type.getIconHtml());
+        messageElement.setInnerHTML(message);
         setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             public void setPosition(int offsetWidth, int offsetHeight) {
                 int left = (Window.getClientWidth() - offsetWidth) / 2;
