@@ -1,3 +1,17 @@
 body, table td {
     font-family: Verdana, Sans-Serif !important;
 }
+
+#header, #footer {
+    height: 50px;
+    width: 100%;
+    background-color: #eee;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#content {
+    position: relative;
+    width: 100%;
+    height: 600px;
+}

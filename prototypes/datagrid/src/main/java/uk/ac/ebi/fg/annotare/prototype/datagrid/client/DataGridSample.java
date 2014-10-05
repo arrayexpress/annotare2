@@ -10,10 +10,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ConditonalColumn;
 import com.google.gwt.user.cellview.client.CustomDataGrid;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import uk.ac.ebi.fg.annotare.prototype.datagrid.client.cell.EditSuggestCell;
 
@@ -26,6 +23,9 @@ import java.util.List;
  */
 
 public class DataGridSample implements EntryPoint {
+
+    @UiField
+    LayoutPanel contentPanel;
 
     @UiField(provided=true)
     CustomDataGrid<DataRow> dataGrid;
@@ -87,6 +87,8 @@ public class DataGridSample implements EntryPoint {
     }
 
     public void onModuleLoad() {
+
+
         final DataGridSampleBinder binder = GWT.create(DataGridSampleBinder.class);
         final Widget widget = binder.createAndBindUi(this);
         RootLayoutPanel.get().add(widget);
