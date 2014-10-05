@@ -17,13 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
@@ -142,10 +142,10 @@ public class DataFilesProxy {
     }
 
     public void renameFile(final DataFileRow dataFile, final String newFileName) {
-        submissionServiceAsync.renameDataFile(getSubmissionId(), dataFile.getId(), newFileName, new AsyncCallbackWrapper<ExperimentProfile>() {
+        submissionServiceAsync.renameDataFile(getSubmissionId(), dataFile.getId(), newFileName,new AsyncCallbackWrapper<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Unable to rename file " + dataFile.getName());
+                NotificationPopupPanel.error("Unable to rename file '" + dataFile.getName() + "'", true);
             }
 
             @Override

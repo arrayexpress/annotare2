@@ -21,12 +21,14 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
@@ -72,17 +74,16 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     @Override
     public void onSubmissionCreateClick(SubmissionType type) {
-        AsyncCallback<Long> callback = new AsyncCallbackWrapper<Long>() {
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Unable to create new submission");
-            }
+        AsyncCallback<Long> callback = AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
+                    @Override
+                    public void onSuccess(Long submissionId) {
+                        gotoSubmissionViewPlace(submissionId);
+                        openEditor(editorUrl(submissionId));
+                    }
 
-            public void onSuccess(Long submissionId) {
-                gotoSubmissionViewPlace(submissionId);
-                openEditor(editorUrl(submissionId));
-            }
-        }.wrap();
+                }
+        );
 
         prepareEditor(launcherUrl());
 
@@ -94,8 +95,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                 asyncService.createArrayDesign(callback);
                 return;
             default:
-                //TODO
-                Window.alert("Unknown submission type: " + type);
+                NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
         }
     }
 

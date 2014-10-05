@@ -18,10 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtracts;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractsRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
@@ -59,17 +58,13 @@ public class LabeledExtractsActivity extends AbstractActivity implements Labeled
     }
 
     private void loadAsync() {
-        expData.getLabeledExtractsAsync(new AsyncCallback<LabeledExtracts>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Unable to load a list of labeled extracts");
-            }
-
-            @Override
-            public void onSuccess(LabeledExtracts result) {
-                view.setData(result.getRows(), result.getLabels());
-            }
-        });
+        expData.getLabeledExtractsAsync(
+                new ReportingAsyncCallback<LabeledExtracts>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_LOAD_LABELED_EXTRACTS) {
+                    @Override
+                    public void onSuccess(LabeledExtracts result) {
+                        view.setData(result.getRows(), result.getLabels());
+                    }
+                }
+        );
     }
 }

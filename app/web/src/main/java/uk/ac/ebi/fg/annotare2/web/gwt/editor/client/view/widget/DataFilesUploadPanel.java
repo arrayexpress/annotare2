@@ -19,11 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import gwtupload.client.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 
 import java.util.ArrayList;
@@ -72,24 +74,20 @@ public class DataFilesUploadPanel extends Composite {
                         for (int i = 0; i < uploaded.size(); ++i) {
                             filesInfo.add(new HttpFileInfo(uploaded.get(i).getField(), removeFakePath(fileNames.get(i))));
                         }
-                        presenter.filesUploaded(filesInfo, new AsyncCallback<Map<Integer, String>>() {
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                Window.alert("There was a problem uploading file(s)");
-                            }
-
-                            @Override
-                            public void onSuccess(Map<Integer, String> result) {
-                                if (!result.isEmpty()) {
-                                    String message = "Some files were not uploaded:\n\n";
-                                    for (int i = 0; i < filesInfo.size(); ++i) {
-                                        if (result.containsKey(i)) {
-                                            message += filesInfo.get(i).getFileName() + " - " + result.get(i) + "\n";
+                        presenter.filesUploaded(filesInfo,
+                                new ReportingAsyncCallback<Map<Integer, String>>(FailureMessage.UNABLE_TO_UPLOAD_FILES) {
+                                    @Override
+                                    public void onSuccess(Map<Integer, String> result) {
+                                        if (!result.isEmpty()) {
+                                            String message = "Some files were not uploaded:<br><br>";
+                                            for (int i = 0; i < filesInfo.size(); ++i) {
+                                                if (result.containsKey(i)) {
+                                                    message += filesInfo.get(i).getFileName() + " - " + result.get(i) + "<br>";
+                                                }
+                                            }
+                                            NotificationPopupPanel.error(message, false);
                                         }
                                     }
-                                    Window.alert(message);
-                                }
-                            }
                         });
                     }
                 }

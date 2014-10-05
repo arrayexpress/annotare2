@@ -490,14 +490,14 @@
     color: white;
 }
 
-.gwt-ErrorPopup {
+.gwt-NotificationPopup {
     max-width: 40%;
     padding: 20px 40px;
     background: #efefef;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    border-bottom: 4px solid #800000;
+    border-bottom: 4px solid #a00000;
 }
 /* store status */
 

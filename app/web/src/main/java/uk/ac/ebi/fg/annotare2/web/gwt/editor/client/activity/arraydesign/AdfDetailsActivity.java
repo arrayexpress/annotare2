@@ -18,11 +18,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.arraydesign;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ArrayDesignDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
@@ -77,17 +78,13 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
     }
 
     private void loadAsync() {
-        adfDataProxy.getDetailsAsync(new AsyncCallback<ArrayDesignDetailsDto>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Unable to load ADF data");
-            }
-
-            @Override
-            public void onSuccess(ArrayDesignDetailsDto details) {
-                view.setDetails(details);
-            }
-        });
+        adfDataProxy.getDetailsAsync(
+                new ReportingAsyncCallback<ArrayDesignDetailsDto>(FailureMessage.UNABLE_TO_LOAD_ADF_DATA) {
+                    @Override
+                    public void onSuccess(ArrayDesignDetailsDto details) {
+                        view.setDetails(details);
+                    }
+                }
+        );
     }
 }

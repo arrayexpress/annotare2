@@ -18,10 +18,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
@@ -62,27 +62,22 @@ public class ExtractAttributesActivity extends AbstractActivity implements Extra
     }
 
     private void loadAsync() {
-        expData.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to get experiment details");
-            }
+        expData.getDetailsAsync(
+                new ReportingAsyncCallback<ExperimentDetailsDto>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+                    @Override
+                    public void onSuccess(ExperimentDetailsDto result) {
+                        view.setAeExperimentType(result.getAeExperimentType());
+                    }
+                }
+        );
 
-            @Override
-            public void onSuccess(ExperimentDetailsDto result) {
-                view.setAeExperimentType(result.getAeExperimentType());
-            }
-        });
-        expData.getExtractAttributeRowsAsync(new AsyncCallback<List<ExtractAttributesRow>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load a list of extract attributes");
-            }
-
-            @Override
-            public void onSuccess(List<ExtractAttributesRow> result) {
-               view.setData(result);
-            }
-        });
+        expData.getExtractAttributeRowsAsync(
+                new ReportingAsyncCallback<List<ExtractAttributesRow>>(FailureMessage.UNABLE_TO_LOAD_EXTRACT_ATTRIBUTES) {
+                    @Override
+                    public void onSuccess(List<ExtractAttributesRow> result) {
+                       view.setData(result);
+                    }
+                }
+        );
     }
 }

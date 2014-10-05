@@ -25,9 +25,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,24 +98,25 @@ public class FTPUploadDialog extends DialogBox {
         if (!pastedData.isEmpty() && null != presenter) {
             okButton.setEnabled(false);
             final PopupPanel waiting = new WaitingPopup();
-            presenter.onFtpDataSubmit(pastedData, new AsyncCallback<String>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    waiting.hide();
-                    Window.alert("Unable to send file information, please try again");
-                    okButton.setEnabled(true);
-                }
+            presenter.onFtpDataSubmit(pastedData,
+                    new ReportingAsyncCallback<String>(FailureMessage.UNABLE_TO_UPLOAD_FILES) {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            super.onFailure(caught);
+                            waiting.hide();
+                            okButton.setEnabled(true);
+                        }
 
-                @Override
-                public void onSuccess(String result) {
-                    waiting.hide();
-                    if (null != result && !result.isEmpty()) {
-                        Window.alert("Unable to process FTP files:\n" + result);
-                        okButton.setEnabled(true);
-                    } else {
-                        hide();
-                    }
-                }
+                        @Override
+                        public void onSuccess(String result) {
+                            waiting.hide();
+                            if (null != result && !result.isEmpty()) {
+                                NotificationPopupPanel.error("Unable to process FTP files:<br><br>" + result.replaceAll("\n", "<br>"), false);
+                                okButton.setEnabled(true);
+                            } else {
+                                hide();
+                            }
+                        }
             });
         }
     }

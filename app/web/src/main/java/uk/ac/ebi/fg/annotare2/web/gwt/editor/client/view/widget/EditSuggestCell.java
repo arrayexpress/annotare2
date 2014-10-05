@@ -31,7 +31,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.BasicSuggestionDisplay;
-import com.google.gwt.user.client.ui.ErrorPopupPanel;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
@@ -325,7 +325,7 @@ public class EditSuggestCell extends
             if (display.isValidSuggestion(value)) {
                 return true;
             } else {
-                ErrorPopupPanel.message("Value '" + value + "' is not permitted. Please select one of the suggestions provided.");
+                NotificationPopupPanel.error("Value '" + value + "' is not permitted. Please select one of the suggestions provided.", true);
                 return false;
             }
         } else {
@@ -405,7 +405,7 @@ public class EditSuggestCell extends
         int keyCode = event.getKeyCode();
 
         if (KEYDOWN.equals(type)) {
-            ErrorPopupPanel.cancel();
+            NotificationPopupPanel.cancel();
 
             if (KeyCodes.KEY_TAB == keyCode) {
                 event.stopPropagation();

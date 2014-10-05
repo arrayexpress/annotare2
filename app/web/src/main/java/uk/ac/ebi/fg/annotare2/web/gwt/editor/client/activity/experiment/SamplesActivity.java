@@ -19,12 +19,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
@@ -122,30 +123,22 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     private void loadAsync() {
-        expDataProxy.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load submission type");
-            }
-
-            @Override
-            public void onSuccess(ExperimentProfileType result) {
-                view.setExperimentType(result);
-            }
-        });
-        expDataProxy.getSamplesAsync(new AsyncCallback<SampleRowsAndColumns>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Unable to load a list of samples");
-            }
-
-            @Override
-            public void onSuccess(SampleRowsAndColumns result) {
-                //TODO load column list
-                view.setData(result.getSampleRows(), result.getSampleColumns());
-            }
-        });
+        expDataProxy.getExperimentProfileTypeAsync(
+                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                    @Override
+                    public void onSuccess(ExperimentProfileType result) {
+                        view.setExperimentType(result);
+                    }
+                }
+        );
+        expDataProxy.getSamplesAsync(
+                new ReportingAsyncCallback<SampleRowsAndColumns>(FailureMessage.UNABLE_TO_LOAD_SAMPLES_LIST) {
+                    @Override
+                    public void onSuccess(SampleRowsAndColumns result) {
+                        view.setData(result.getSampleRows(), result.getSampleColumns());
+                    }
+                }
+        );
     }
 
     private SampleAttributeEfoSuggest wrapEfoTerms(final OntologyDataProxy efoTerms) {

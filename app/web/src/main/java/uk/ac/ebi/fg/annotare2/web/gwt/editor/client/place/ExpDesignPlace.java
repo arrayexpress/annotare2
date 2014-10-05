@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.place.TokenBuilder;
@@ -84,8 +84,7 @@ public class ExpDesignPlace extends ExperimentPlace {
                 place.setExpDesignSection(section);
                 return place;
             } catch (TokenReaderException e) {
-                //TODO log
-                Window.alert(e.getMessage());
+                NotificationPopupPanel.failure("Exception caught", e);
                 return null;
             }
         }

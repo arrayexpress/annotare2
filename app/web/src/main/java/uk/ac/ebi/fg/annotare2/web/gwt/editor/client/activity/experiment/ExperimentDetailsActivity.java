@@ -20,11 +20,12 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
@@ -86,47 +87,42 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
     }
 
     private void loadAsync() {
-        experimentDataProxy.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load experiment type");
-            }
-
-            @Override
-            public void onSuccess(ExperimentProfileType result) {
-                loadDetailsAsync(result);
-            }
-        });
-
+        experimentDataProxy.getExperimentProfileTypeAsync(
+                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                    @Override
+                    public void onSuccess(ExperimentProfileType result) {
+                        loadDetailsAsync(result);
+                    }
+                }
+        );
     }
 
     private void loadDetailsAsync(final ExperimentProfileType type) {
-        experimentDataProxy.getDetailsAsync(new AsyncCallback<ExperimentDetailsDto>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load experiment details");
-            }
-
-            @Override
-            public void onSuccess(ExperimentDetailsDto details) {
-                setDetails(type, details);
-            }
-        });
+        experimentDataProxy.getDetailsAsync(
+                new ReportingAsyncCallback<ExperimentDetailsDto>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+                    @Override
+                    public void onSuccess(ExperimentDetailsDto details) {
+                        setDetails(type, details);
+                    }
+                }
+        );
     }
 
     private void setDetails(ExperimentProfileType type, final ExperimentDetailsDto details) {
-        applicationDataProxy.getAeExperimentTypesAsync(type, new AsyncCallback<List<String>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to experiment type options");
-                view.setDetails(details, Collections.<String>emptyList());
-            }
+        applicationDataProxy.getAeExperimentTypesAsync(type,
+                new ReportingAsyncCallback<List<String>>(FailureMessage.UNABLE_TO_LOAD_AE_EXPERIMENT_TYPES) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        super.onFailure(caught);
+                        view.setDetails(details, Collections.<String>emptyList());
+                    }
 
-            @Override
-            public void onSuccess(List<String> result) {
-                view.setDetails(details, result);
-            }
-        });
+                    @Override
+                    public void onSuccess(List<String> result) {
+                        view.setDetails(details, result);
+                    }
+                }
+        );
     }
 
     @Override

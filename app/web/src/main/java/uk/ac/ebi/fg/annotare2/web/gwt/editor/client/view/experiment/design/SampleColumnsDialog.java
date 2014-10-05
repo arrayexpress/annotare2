@@ -27,9 +27,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -264,25 +264,22 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void addColumn(final SampleAttributeTemplate template) {
-        efoSuggest.getSystemEfoTerms(new AsyncCallback<SystemEfoTermMap>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                Window.alert("Unable load the ontology terms to create a column");
-            }
-
-            @Override
-            public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
-                addColumn(template, systemEfoTermMap);
-            }
-        });
+        efoSuggest.getSystemEfoTerms(
+                new ReportingAsyncCallback<SystemEfoTermMap>(FailureMessage.UNABLE_TO_LOAD_EFO) {
+                    @Override
+                    public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
+                        addColumn(template, systemEfoTermMap);
+                    }
+                }
+        );
     }
 
     private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context) {
         SampleColumn column = SampleColumn.create(template, context);
-        if (column == null) {
-            Window.alert("Unable to add an attribute");
+        if (null == column) {
+            NotificationPopupPanel.error("Unable to add an attribute.", true);
         } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
-            Window.alert("Unable to add '" + column.getName() + "': attribute is already defined");
+            NotificationPopupPanel.error("Unable to add '" + column.getName() + "': attribute is already defined.", true);
         } else {
             setColumn(column, true);
         }

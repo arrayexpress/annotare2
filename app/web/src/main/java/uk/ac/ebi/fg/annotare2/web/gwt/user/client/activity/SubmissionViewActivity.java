@@ -20,11 +20,12 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
@@ -66,15 +67,14 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     }
 
     private void loadAsync() {
-        submissionService.getSubmission(submissionId, new AsyncCallbackWrapper<SubmissionDetails>() {
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load submission details");
-            }
-
-            public void onSuccess(SubmissionDetails result) {
-                view.setSubmission(result);
-            }
-        }.wrap());
+        submissionService.getSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+                    @Override
+                    public void onSuccess(SubmissionDetails result) {
+                        view.setSubmission(result);
+                    }
+                }
+        ));
     }
 
     @Override
@@ -87,17 +87,14 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     @Override
     public void deleteSubmission() {
         if (submissionId != null) {
-            submissionService.deleteSubmission(submissionId, new AsyncCallbackWrapper<Void>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    Window.alert("Unable to delete submission");
-                }
-
-                @Override
-                public void onSuccess(Void result) {
-                        goTo(new SubmissionListPlace());
-                }
-            });
+            submissionService.deleteSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(
+                    new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_DELETE_SUBMISSION) {
+                        @Override
+                        public void onSuccess(Void result) {
+                            goTo(new SubmissionListPlace());
+                        }
+                    }
+            ));
         }
     }
 

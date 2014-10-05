@@ -26,7 +26,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
@@ -162,7 +161,7 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
             dateOfPublicRelease.setValue(today, false);
         }
         if (0 == today.compareTo(dateOfPublicRelease.getValue())) {
-            Window.alert("Warning! The submission will be immediately released to public once loaded to ArrayExpress. Please select a date from future if you wish to have the experiment private until that date.");
+            NotificationPopupPanel.warning("The submission will be immediately released to public once loaded to ArrayExpress. Please select different date if you wish to keep the experiment private.", true);
         }
         save();
     }

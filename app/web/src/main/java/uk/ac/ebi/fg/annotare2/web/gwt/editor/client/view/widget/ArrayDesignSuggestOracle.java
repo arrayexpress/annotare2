@@ -1,8 +1,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SuggestOracle;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 
 import java.util.ArrayList;
@@ -29,17 +29,12 @@ public class ArrayDesignSuggestOracle extends SuggestOracle {
 
     @Override
     public void requestSuggestions(final Request request, final Callback callback) {
-        suggestService.suggest(request.getQuery(), request.getLimit(), new AsyncCallback<List<ArrayDesignRef>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //todo log
-                Window.alert(caught.getMessage());
-            }
-
-            @Override
-            public void onSuccess(List<ArrayDesignRef> result) {
-                callback.onSuggestionsReady(request, createResponse(result));
-            }
+        suggestService.suggest(request.getQuery(), request.getLimit(),
+                new ReportingAsyncCallback<List<ArrayDesignRef>>(FailureMessage.UNABLE_TO_LOAD_ARRAYS_LIST) {
+                    @Override
+                    public void onSuccess(List<ArrayDesignRef> result) {
+                        callback.onSuggestionsReady(request, createResponse(result));
+                    }
         });
     }
 

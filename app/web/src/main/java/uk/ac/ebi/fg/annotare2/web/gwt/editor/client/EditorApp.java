@@ -25,11 +25,14 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
@@ -59,26 +62,23 @@ public class EditorApp implements EntryPoint {
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
-                Window.alert("Uncaught Exception: " + e.getMessage());
-                e.printStackTrace();
+                NotificationPopupPanel.failure("Uncaught exception", e);
             }
         });
 
         SubmissionServiceAsync submissionService = injector.getSubmissionService();
         final int subId = getSubmissionId();
-        submissionService.getSubmission(subId, new AsyncCallbackWrapper<SubmissionDetails>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Unable to load submission " + subId);
-            }
-
-            @Override
-            public void onSuccess(SubmissionDetails details) {
-                renameBrowserTab(details);
-                init(root, details);
-            }
-        });
+        submissionService.getSubmission(subId,
+                AsyncCallbackWrapper.callbackWrap(
+                        new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION) {
+                                @Override
+                                public void onSuccess(SubmissionDetails details) {
+                                    renameBrowserTab(details);
+                                    init(root, details);
+                                }
+                        }
+                )
+        );
     }
 
     private void renameBrowserTab(SubmissionDetails details) {

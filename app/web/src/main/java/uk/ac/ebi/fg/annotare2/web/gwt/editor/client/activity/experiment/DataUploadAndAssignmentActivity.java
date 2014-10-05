@@ -22,12 +22,13 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
@@ -114,73 +115,51 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     private void loadAppDataAsync() {
-        appData.getApplicationPropertiesAsync(new AsyncCallback<ApplicationProperties>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load application properties");
-            }
-
-            @Override
-            public void onSuccess(ApplicationProperties result) {
-                view.getUploadView().setFtpProperties(result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword());
-            }
-        });
+        appData.getApplicationPropertiesAsync(
+                new ReportingAsyncCallback<ApplicationProperties>(FailureMessage.UNABLE_TO_LOAD_APP_PROPERTIES) {
+                    @Override
+                    public void onSuccess(ApplicationProperties result) {
+                        view.getUploadView().setFtpProperties(result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword());
+                    }
+                }
+        );
     }
 
     private void loadExpDataAsync() {
-        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load submission type");
-            }
-
-            @Override
-            public void onSuccess(ExperimentProfileType result) {
-                view.getUploadView().setExperimentType(result);
-                view.getAssignmentView().setExperimentType(result);
-            }
-        });
-        expData.getDataAssignmentColumnsAndRowsAsync(new AsyncCallback<DataAssignmentColumnsAndRows>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load data assignment rows");
-            }
-
-            @Override
-            public void onSuccess(DataAssignmentColumnsAndRows result) {
-                view.getAssignmentView().setData(result.getColumns(), result.getRows());
-            }
-        });
+        expData.getExperimentProfileTypeAsync(
+                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                    @Override
+                    public void onSuccess(ExperimentProfileType result) {
+                        view.getUploadView().setExperimentType(result);
+                        view.getAssignmentView().setExperimentType(result);
+                    }
+                }
+        );
+        reloadExpDataAsync();
     }
 
     private void reloadExpDataAsync() {
-        expData.getDataAssignmentColumnsAndRowsAsync(new AsyncCallback<DataAssignmentColumnsAndRows>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load data assignment rows");
-            }
-
-            @Override
-            public void onSuccess(DataAssignmentColumnsAndRows result) {
-                view.getAssignmentView().updateData(result.getColumns(), result.getRows());
-            }
-        });
+        expData.getDataAssignmentColumnsAndRowsAsync(
+                new ReportingAsyncCallback<DataAssignmentColumnsAndRows>(FailureMessage.UNABLE_TO_LOAD_DATA_ASSIGNMENT) {
+                    @Override
+                    public void onSuccess(DataAssignmentColumnsAndRows result) {
+                        view.getAssignmentView().setData(result.getColumns(), result.getRows());
+                    }
+                }
+        );
     }
 
 
     private void loadFilesAsync() {
-        dataFilesProxy.getFilesAsync(new AsyncCallback<List<DataFileRow>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load a list of data files");
-            }
-
-            @Override
-            public void onSuccess(List<DataFileRow> result) {
-                view.getUploadView().setDataFiles(result);
-                view.getAssignmentView().setDataFiles(result);
-            }
-        });
+        dataFilesProxy.getFilesAsync(
+                new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
+                    @Override
+                    public void onSuccess(List<DataFileRow> result) {
+                        view.getUploadView().setDataFiles(result);
+                        view.getAssignmentView().setDataFiles(result);
+                    }
+                }
+        );
     }
 
     @Override

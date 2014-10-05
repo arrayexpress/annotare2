@@ -22,7 +22,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gwtupload.client.IUploadStatus;
 
@@ -150,7 +149,7 @@ public class UploadStatus extends Composite implements IUploadStatus {
     @Override
     public void setError(String error) {
         setStatus(Status.ERROR);
-        Window.alert(error.replaceAll("\\\\n", "\\n"));
+        NotificationPopupPanel.error(error.replaceAll("\\\\n", "<br>"), false);
     }
 
     @Override

@@ -30,7 +30,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
@@ -214,29 +217,26 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
             public void update(int index, ProtocolRow row, String value) {
                 final boolean isRowAssignable = row.isAssignable();
                 final String protocolType = row.getProtocolType().getLabel();
-                presenter.getAssignmentProfileAsync(row.getId(), new AsyncCallback<ProtocolAssignmentProfile>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        Window.alert("Unable to load protocol assignments");
-                    }
-
-                    @Override
-                    public void onSuccess(ProtocolAssignmentProfile result) {
-                        if (!isRowAssignable) {
-                            Window.alert("Protocol \"" + protocolType + "\" is always assigned to all " + result.getProtocolSubjectType() + "s.");
-                            return;
-                        } else if (result.getNames().isEmpty()) {
-                            Window.alert("You do not have any " + result.getProtocolSubjectType() + "s to assign protocols to.");
-                            return;
-                        }
-                        new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
+                presenter.getAssignmentProfileAsync(row.getId(),
+                        new ReportingAsyncCallback<ProtocolAssignmentProfile>(FailureMessage.UNABLE_TO_LOAD_PROTOCOL_ASSIGNMENTS) {
                             @Override
-                            public void onOkay(ProtocolAssignmentProfileUpdates profileUpdates) {
-                                updateProtocolAssignments(profileUpdates);
+                            public void onSuccess(ProtocolAssignmentProfile result) {
+                                if (!isRowAssignable) {
+                                    NotificationPopupPanel.warning("Protocol '" + protocolType + "' is always assigned to all " + result.getProtocolSubjectType() + "s.", true);
+                                    return;
+                                } else if (result.getNames().isEmpty()) {
+                                    NotificationPopupPanel.warning("You do not have any " + result.getProtocolSubjectType() + "s to assign protocols to.", true);
+                                    return;
+                                }
+                                new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
+                                    @Override
+                                    public void onOkay(ProtocolAssignmentProfileUpdates profileUpdates) {
+                                        updateProtocolAssignments(profileUpdates);
+                                    }
+                                }).show();
                             }
-                        }).show();
-                    }
-                });
+                        }
+                );
             }
         });
         gridView.addPermanentColumn("Assign protocols to materials/data files", column, null, 300, Style.Unit.PX);
@@ -454,7 +454,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
     private void removeSelectedProtocols() {
         Set<ProtocolRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            Window.alert("Please select protocols you want to delete first");
+            NotificationPopupPanel.warning("Please select protocols you want to delete.", true);
         } else if (Window.confirm("The selected protocols will no longer be available if you delete. Do you want to continue?")) {
             presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
         }
@@ -477,11 +477,11 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
     private ProtocolRow getSelectedProtocolRowToMove() {
         Set<ProtocolRow> selected = gridView.getSelectedRows();
         if (selected.isEmpty()) {
-            Window.alert("Please select a row to move");
+            NotificationPopupPanel.warning("Please select a row to move.", true);
             return null;
         }
         if (selected.size() > 1) {
-            Window.alert("Unable to move more than one row at a time");
+            NotificationPopupPanel.error("Unable to move more than one row at a time.", true);
             return null;
         }
         return selected.iterator().next();

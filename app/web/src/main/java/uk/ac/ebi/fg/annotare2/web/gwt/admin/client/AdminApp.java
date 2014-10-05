@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.admin.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -30,6 +30,6 @@ public class AdminApp implements EntryPoint {
     }
 
     private void loadModule(RootPanel root) {
-        Window.alert("Hi!");
+        NotificationPopupPanel.message("Hi!", false);
     }
 }

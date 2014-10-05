@@ -19,11 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
@@ -119,17 +120,13 @@ public class ContactListActivity extends AbstractActivity implements ContactList
     }
 
     private void loadAsync() {
-        experimentDataProxy.getContactsAsync(new AsyncCallback<List<ContactDto>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO
-                Window.alert("Unable to load contact list");
-            }
-
-            @Override
-            public void onSuccess(List<ContactDto> result) {
-                view.setContacts(result);
-            }
-        });
+        experimentDataProxy.getContactsAsync(
+                new ReportingAsyncCallback<List<ContactDto>>(FailureMessage.UNABLE_TO_LOAD_CONTACT_LIST) {
+                    @Override
+                    public void onSuccess(List<ContactDto> result) {
+                        view.setContacts(result);
+                    }
+                }
+        );
     }
 }

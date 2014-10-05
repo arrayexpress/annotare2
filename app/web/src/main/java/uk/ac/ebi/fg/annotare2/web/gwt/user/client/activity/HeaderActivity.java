@@ -20,11 +20,12 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.HeaderView;
 
@@ -61,16 +62,13 @@ public class HeaderActivity extends AbstractActivity {
     }
 
     private void initAsync() {
-        userService.me(new AsyncCallbackWrapper<UserDto>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load user details");
-            }
-
-            @Override
-            public void onSuccess(UserDto result) {
-                view.setUserName(result.getName());
-            }
-        }.wrap());
+        userService.me(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
+                    @Override
+                    public void onSuccess(UserDto result) {
+                        view.setUserName(result.getName());
+                    }
+                }
+        ));
     }
 }

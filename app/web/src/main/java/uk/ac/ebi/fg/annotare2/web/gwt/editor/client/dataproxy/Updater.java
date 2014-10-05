@@ -17,8 +17,9 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 
 /**
  * @author Olga Melnichuk
@@ -57,10 +58,10 @@ public abstract class Updater {
             @Override
             public boolean execute() {
                 updateRequests = 0;
-                onAsyncUpdate(new AsyncCallback<Boolean>() {
+                onAsyncUpdate(new ReportingAsyncCallback<Boolean>(FailureMessage.UNABLE_TO_LOAD_UPDATES) {
                     @Override
                     public void onFailure(Throwable caught) {
-                        Window.alert("Unable to load updates");
+                        super.onFailure(caught);
                         stop();
                     }
 

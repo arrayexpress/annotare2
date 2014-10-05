@@ -25,11 +25,12 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
@@ -221,23 +222,20 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
             asyncCallback.onSuccess(null);
             return;
         }
-        efoSuggestService.getTermByLabel(value, new AsyncCallback<OntologyTerm>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("EFO Service is currently unavailable; please try later");
-            }
-
-            @Override
-            public void onSuccess(OntologyTerm term) {
-                if (term == null) {
-                    suggestBox.addStyleName(INVALID_TEXT_BOX_STYLE);
-                    asyncCallback.onSuccess(null);
-                } else {
-                    suggestBox.setValue(term.getLabel(), false);
-                    asyncCallback.onSuccess(term);
+        efoSuggestService.getTermByLabel(value,
+                new ReportingAsyncCallback<OntologyTerm>(FailureMessage.UNABLE_TO_LOAD_EFO) {
+                    @Override
+                    public void onSuccess(OntologyTerm term) {
+                        if (term == null) {
+                            suggestBox.addStyleName(INVALID_TEXT_BOX_STYLE);
+                            asyncCallback.onSuccess(null);
+                        } else {
+                            suggestBox.setValue(term.getLabel(), false);
+                            asyncCallback.onSuccess(term);
+                        }
+                    }
                 }
-            }
-        });
+        );
     }
 
     private void notifyColumnChanged() {

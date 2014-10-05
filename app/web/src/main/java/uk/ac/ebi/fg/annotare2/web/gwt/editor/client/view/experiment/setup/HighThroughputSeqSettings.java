@@ -19,11 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import static com.google.gwt.safehtml.shared.SafeHtmlUtils.fromSafeConstant;
@@ -70,12 +66,12 @@ public class HighThroughputSeqSettings extends Composite implements HasSubmissio
     public boolean areValid() {
         String validationErrors = "";
         if (0 == intValue(numberOfSamples.getValue())) {
-            validationErrors += " - a number of samples must be greater than zero\n";
+            validationErrors += " - a number of samples must be greater than zero<br>";
         } else if (1000 < intValue(numberOfSamples.getValue())) {
-            validationErrors += " - this submission does not support more than 1000 samples\n";
+            validationErrors += " - this submission does not support more than 1000 samples<br>";
         }
         if (!validationErrors.isEmpty()) {
-            Window.alert("Please correct the following:\n\n" + validationErrors);
+            NotificationPopupPanel.error("Please correct the following:<br><br>" + validationErrors, false);
             return false;
         }
         return true;

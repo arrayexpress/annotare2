@@ -26,6 +26,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
@@ -103,12 +105,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             okButton.setEnabled(false);
             final WaitingPopup w = new WaitingPopup();
             presenter.setupNewSubmission(settings.getSettings(),
-                    new AsyncCallback<Void>() {
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            Window.alert("Unable to create submission");
-                        }
-
+                    new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
                         @Override
                         public void onSuccess(Void result) {
                             Window.Location.reload();

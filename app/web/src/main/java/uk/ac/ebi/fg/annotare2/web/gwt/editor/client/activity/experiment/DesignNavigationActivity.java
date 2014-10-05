@@ -20,12 +20,13 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
@@ -80,17 +81,14 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
             }
         });
         loadExperimentSettings(true);
-        getArrayDesigns(null, 999999, new AsyncCallback<List<ArrayDesignRef>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load array designs list");
-            }
-
-            @Override
-            public void onSuccess(List<ArrayDesignRef> result) {
-                view.setArrayDesignList(result);
-            }
-        });
+        getArrayDesigns(null, 999999,
+                new ReportingAsyncCallback<List<ArrayDesignRef>>(FailureMessage.UNABLE_TO_LOAD_ARRAYS_LIST) {
+                    @Override
+                    public void onSuccess(List<ArrayDesignRef> result) {
+                        view.setArrayDesignList(result);
+                    }
+                }
+        );
     }
 
     @Override
@@ -120,13 +118,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
 
     private void loadExperimentSettings(final boolean setSections) {
         expData.getSettingsAsync(
-                new AsyncCallback<ExperimentSettings>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        //TODO
-                        Window.alert("Unable to load submission settings");
-                    }
-
+                new ReportingAsyncCallback<ExperimentSettings>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_SETTINGS) {
                     @Override
                     public void onSuccess(ExperimentSettings result) {
                         if (setSections) {

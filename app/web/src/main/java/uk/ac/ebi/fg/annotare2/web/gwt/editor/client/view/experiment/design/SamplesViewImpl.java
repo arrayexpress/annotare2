@@ -26,7 +26,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ErrorPopupPanel;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
@@ -179,7 +179,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     private void createNewSample() {
         if (maxSamplesLimit == gridView.getRows().size()) {
-            ErrorPopupPanel.message("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples");
+            NotificationPopupPanel.error("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples.", true);
         } else {
             presenter.createSample();
         }
@@ -188,7 +188,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     private void deleteSelectedSamples() {
         Set<SampleRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            ErrorPopupPanel.message("Please select samples you want to delete first");
+            NotificationPopupPanel.warning("Please select samples you want to delete.", true);
         } else if (Window.confirm("The selected samples and all associated information will no longer be available if you delete. Do you want to continue?")) {
             presenter.removeSamples(new ArrayList<SampleRow>(selection));
             gridView.removeSelectedRows();
@@ -213,12 +213,12 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
             @Override
             public boolean validateInput(String value, int rowIndex) {
-                if (value == null || value.trim().isEmpty()) {
-                    ErrorPopupPanel.message("Sample with empty name is not permitted.");
+                if (value == null || trimValue(value).isEmpty()) {
+                    NotificationPopupPanel.error("Sample with empty name is not permitted.", true);
                     return false;
                 }
                 if (isDuplicated(value, rowIndex)) {
-                    ErrorPopupPanel.message("Sample with the name '" + value + "' already exists.");
+                    NotificationPopupPanel.error("Sample with the name '" + value + "' already exists.", true);
                     return false;
                 }
                 return true;

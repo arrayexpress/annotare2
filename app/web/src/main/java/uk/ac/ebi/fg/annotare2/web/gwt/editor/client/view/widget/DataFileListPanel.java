@@ -16,7 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.gwt.cell.client.*;
+import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -29,8 +32,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.view.client.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.ArrayList;
@@ -84,8 +90,27 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(checkboxColumn, checkboxHeader);
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
-        final EditTextCell nameCell = new EditTextCell();
+        final EditSuggestCell nameCell = new EditSuggestCell(null) {
+            @Override
+            public boolean validateInput(String value, int rowIndex) {
+                if (null == value || trimValue(value).isEmpty()) {
+                    NotificationPopupPanel.error("Empty file name is not permitted.", true);
+                    return false;
+                }
+                if (!value.matches("^[_a-zA-Z0-9\\-\\.]+$")) {
+                    NotificationPopupPanel.error("File name should only contain alphanumeric characters, underscores and dots.", true);
+                    return false;
+                }
+                if (isDuplicated(value, rowIndex)) {
+                    NotificationPopupPanel.error("File with the name '" + value + "' already exists.", true);
+                    return false;
+                }
+                return true;
+            }
+        };
+
         Column<DataFileRow, String> nameColumn = new Column<DataFileRow, String>(nameCell) {
+
             @Override
             public String getValue(DataFileRow row) {
                 return row.getName();
@@ -94,12 +119,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         nameColumn.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
             @Override
             public void update(int index, DataFileRow row, String value) {
-                if (isNameValid(value, index)) {
-                    presenter.renameFile(row, value);
-                } else {
-                    nameCell.clearViewData(row);
-                    grid.redraw();
-                }
+                presenter.renameFile(row, trimValue(value));
             }
         });
         grid.addColumn(nameColumn, "Name");
@@ -149,41 +169,18 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     public void deleteSelectedFiles(final AsyncCallback<Void> callback) {
         final Set<DataFileRow> selection = getSelectedRows();
         if (selection.isEmpty()) {
-            Window.alert("Please select files you want to delete first");
+            NotificationPopupPanel.warning("Please select files you would like to delete.", true);
         } else if (Window.confirm("The selected files will no longer be available to assign if you delete. Do you want to continue?")) {
-            presenter.removeFiles(selection, new AsyncCallback<Void>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    Window.alert("Unable to delete files");
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(Void result) {
-                    checkboxHeader.setValue(false);
-                    selectionModel.clear();
-                    callback.onSuccess(result);
-                }
+            presenter.removeFiles(selection,
+                    new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_DELETE_FILES) {
+                        @Override
+                        public void onSuccess(Void result) {
+                            checkboxHeader.setValue(false);
+                            selectionModel.clear();
+                            callback.onSuccess(result);
+                        }
             });
         }
-    }
-
-    private boolean isNameValid(String name, int rowIndex) {
-        if (name == null || name.trim().isEmpty()) {
-            Window.alert("File name should not be empty");
-            return false;
-        }
-
-        if (!name.matches("^[_a-zA-Z0-9\\-\\.]+$")) {
-            Window.alert("File name should only contain alphanumeric characters, underscores and dots");
-            return false;
-        }
-
-        if (isDuplicated(name, rowIndex)) {
-            Window.alert("File with the name '" + name + "' already exists");
-            return false;
-        }
-        return true;
     }
 
     private void selectAllRows(boolean selected) {
@@ -203,6 +200,13 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             i++;
         }
         return false;
+    }
+
+    private String trimValue(String value) {
+        if (null != value) {
+            value = value.replaceAll("([^\\t]*)[\\t].*", "$1").trim();
+        }
+        return value;
     }
 
     public interface Presenter {

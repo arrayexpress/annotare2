@@ -19,11 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
@@ -87,17 +88,14 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
 
     @Override
     public void getProtocolTypes(final AsyncCallback<List<ProtocolType>> callback) {
-        expData.getExperimentProfileTypeAsync(new AsyncCallback<ExperimentProfileType>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load experiment type");
-            }
-
-            @Override
-            public void onSuccess(ExperimentProfileType result) {
-                ontologyDataProxy.getProtocolTypes(result, callback);
-            }
-        });
+        expData.getExperimentProfileTypeAsync(
+                new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
+                    @Override
+                    public void onSuccess(ExperimentProfileType result) {
+                        ontologyDataProxy.getProtocolTypes(result, callback);
+                    }
+                }
+        );
     }
 
     @Override
@@ -141,16 +139,13 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     private void loadAsync() {
-        expData.getProtocolRowsAsync(new AsyncCallback<List<ProtocolRow>>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Unable to load a list of protocols");
-            }
-
-            @Override
-            public void onSuccess(List<ProtocolRow> result) {
-                view.setData(result);
-            }
-        });
+        expData.getProtocolRowsAsync(
+                new ReportingAsyncCallback<List<ProtocolRow>>(FailureMessage.UNABLE_TO_LOAD_PROTOCOLS_LIST) {
+                    @Override
+                    public void onSuccess(List<ProtocolRow> result) {
+                        view.setData(result);
+                    }
+                }
+        );
     }
 }

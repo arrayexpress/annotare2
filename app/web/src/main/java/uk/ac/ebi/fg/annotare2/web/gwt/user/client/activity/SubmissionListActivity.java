@@ -20,12 +20,14 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
@@ -44,10 +46,12 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     private final SubmissionListServiceAsync rpcService;
     private final PlaceController placeController;
     private final CurrentUserAccountServiceAsync userService;
+    private final AsyncCallback<ArrayList<SubmissionRow>> callback;
+
     private SubmissionListFilter filter;
 
     @Inject
-    public SubmissionListActivity(SubmissionListView view,
+    public SubmissionListActivity(final SubmissionListView view,
                                   PlaceController placeController,
                                   SubmissionListServiceAsync rpcService,
                                   CurrentUserAccountServiceAsync userService) {
@@ -55,10 +59,19 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
         this.placeController = placeController;
         this.rpcService = rpcService;
         this.userService = userService;
+        this.callback = AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<ArrayList<SubmissionRow>>(FailureMessage.UNABLE_TO_LOAD_SUBMISSIONS_LIST) {
+                    @Override
+                    public void onSuccess(ArrayList<SubmissionRow> result) {
+                        view.setSubmissions(result);
+                    }
+                }
+        );
+
     }
 
     public SubmissionListActivity withPlace(SubmissionListPlace place) {
-        this.filter = place.getFilter();
+        filter = place.getFilter();
         return this;
     }
 
@@ -70,64 +83,28 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     }
 
     private void loadCurrentUserAsync() {
-        userService.me(new AsyncCallbackWrapper<UserDto>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Window.alert("Error retrieving user");
-            }
-
+        userService.me(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
             @Override
             public void onSuccess(UserDto result) {
                 view.setCurator(result.isCurator());
             }
-        }.wrap());
+        }));
     }
 
     private void loadSubmissionListAsync() {
         switch (filter) {
             case ALL_SUBMISSIONS:
-                rpcService.getAllSubmissions(new AsyncCallbackWrapper<ArrayList<SubmissionRow>>() {
-                    public void onSuccess(ArrayList<SubmissionRow> result) {
-                        view.setSubmissions(result);
-                    }
-
-                    public void onFailure(Throwable caught) {
-                        Window.alert("Unable to load submission list");
-                    }
-
-                }.wrap());
-                return;
+                rpcService.getAllSubmissions(callback);
+                break;
 
             case INCOMPLETE_SUBMISSIONS:
-                rpcService.getIncompleteSubmissions(new AsyncCallbackWrapper<ArrayList<SubmissionRow>>() {
-                    public void onSuccess(ArrayList<SubmissionRow> result) {
-                        view.setSubmissions(result);
-                    }
-
-                    public void onFailure(Throwable caught) {
-                        Window.alert("Unable to load submission list");
-                    }
-
-                }.wrap());
-                return;
+                rpcService.getIncompleteSubmissions(callback);
+                break;
 
             case COMPLETED_SUBMISSIONS:
-                rpcService.getCompletedSubmissions(new AsyncCallbackWrapper<ArrayList<SubmissionRow>>() {
-                    public void onSuccess(ArrayList<SubmissionRow> result) {
-                        view.setSubmissions(result);
-                    }
-
-                    public void onFailure(Throwable caught) {
-                        Window.alert("Unable to load submission list");
-                    }
-
-                }.wrap());
-                return;
-
-            default:
-                Window.alert("Illegal application state..");
+                rpcService.getCompletedSubmissions(callback);
         }
-        //TODO
     }
 
     public void goTo(Place place) {

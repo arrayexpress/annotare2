@@ -21,11 +21,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
@@ -35,7 +40,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.AsyncCallbackWrapper.callbackWrap;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper.callbackWrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -113,19 +118,15 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     private void initAsync() {
-        submissionService.getSubmission(getSubmissionId(), new AsyncCallbackWrapper<SubmissionDetails>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                //TODO add proper logging
-                Window.alert("Unable to load submission details");
-            }
-
-            @Override
-            public void onSuccess(SubmissionDetails result) {
-                view.setTitle(result.getType(), result.getAccession().getText());
-                view.setSubmissionType(result.getType());
-            }
-        }.wrap());
+        submissionService.getSubmission(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+                    @Override
+                    public void onSuccess(SubmissionDetails result) {
+                        view.setTitle(result.getType(), result.getAccession().getText());
+                        view.setSubmissionType(result.getType());
+                    }
+                }
+        ));
     }
 
     @Override

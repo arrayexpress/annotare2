@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 
 /**
  * @author Olga Melnichuk
  */
 public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
 
+
     public void onPermissionDenied() {
-        Window.alert("Sorry, you do not have a permission to proceed with this operation");
+        NotificationPopupPanel.error("There is no permission to proceed with this operation.", true);
     }
 
     public AsyncCallback<T> wrap() {
