@@ -35,12 +35,36 @@
     color: white;
 }
 
-.gwt-ErrorPopup {
-    max-width: 30%;
-    padding: 20px 40px;
+.gwt-NotificationPopup {
+    max-width: 40%;
     background: #efefef;
     box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
-    border-bottom: 3px solid #561c07;
+}
+
+.gwt-NotificationPopup.error {
+    border-bottom: 4px solid #a00000;
+}
+
+.gwt-NotificationPopup.error .icon {
+    color: #a00000;
+}
+
+.gwt-NotificationPopup .container {
+    display: table;
+    width: 100%
+}
+
+.gwt-NotificationPopup  .icon {
+    display: table-cell;
+    font-size: 3em;
+    padding: 0 10px 0 20px;
+    vertical-align: middle;
+}
+
+.gwt-NotificationPopup  .message {
+    display: table-cell;
+    padding: 20px 20px 20px 10px;
+    vertical-align: middle;
 }
