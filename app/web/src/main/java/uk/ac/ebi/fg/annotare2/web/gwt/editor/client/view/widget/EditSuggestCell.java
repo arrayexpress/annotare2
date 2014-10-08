@@ -186,7 +186,7 @@ public class EditSuggestCell extends
 
     private SuggestOracle oracle;
     private int limit = 20;
-    private boolean selectsFirstItem = true;
+    private boolean selectsFirstItem = false;
     private boolean sctrictlySuggestions = false;
     private final SuggestionDisplay display;
 
@@ -432,14 +432,12 @@ public class EditSuggestCell extends
                 event.stopPropagation();
                 event.preventDefault();
             } else if (KeyCodes.KEY_ENTER == keyCode) {
-                if (null != display && display.isSuggestionListShowing()) {
-                    Suggestion suggestion = display.getCurrentSelection();
-                    if (null == suggestion) {
-                        display.hideSuggestions();
-                    } else {
-                        setNewSelection(context, parent, suggestion, valueUpdater, true);
-                    }
+                if (null != display && display.isSuggestionListShowing() && null != display.getCurrentSelection()) {
+                    setNewSelection(context, parent, display.getCurrentSelection(), valueUpdater, true);
                 } else {
+                    if (null != display && display.isSuggestionListShowing()) {
+                        display.hideSuggestions();
+                    }
                     // validate and commit
                     if (validateInput(viewData.getText(), context.getIndex())) {
                         commit(context, parent, viewData, valueUpdater);
