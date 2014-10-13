@@ -359,7 +359,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
 
-            String ftpRoot = properties.getFilePickUpDir();
+            String ftpRoot = properties.getFtpPickUpDir();
             if (ftpRoot.startsWith("/")) {
                 ftpRoot = "file://" + ftpRoot;
             }

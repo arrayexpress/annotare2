@@ -157,6 +157,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     @Override
     public ApplicationProperties getApplicationProperties() {
         return new ApplicationProperties.Builder()
+                .setFtpEnabled(properties.isFtpEnabled())
                 .setFtpUrl(properties.getPublicFtpUrl())
                 .setFtpUsername(properties.getPublicFtpUsername())
                 .setFtpPassword(properties.getPublicFtpPassword())

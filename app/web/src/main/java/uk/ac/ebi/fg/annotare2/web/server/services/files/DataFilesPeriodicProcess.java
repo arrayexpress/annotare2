@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.web.server.UnexpectedException;
+import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
@@ -48,16 +49,19 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
     private final DataFileStore fileStore;
     private final DataFileDao fileDao;
     private final HibernateSessionFactory sessionFactory;
+    private final AnnotareProperties properties;
     private final EmailSender emailer;
 
     @Inject
     public DataFilesPeriodicProcess(DataFileStore fileStore,
                                     DataFileDao fileDao,
                                     HibernateSessionFactory sessionFactory,
+                                    AnnotareProperties properties,
                                     EmailSender emailer) {
         this.fileStore = fileStore;
         this.fileDao = fileDao;
         this.sessionFactory = sessionFactory;
+        this.properties = properties;
         this.emailer = emailer;
 
     }
@@ -92,17 +96,20 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
     private void periodicRun() throws Exception {
         FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
         for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
-            switch (file.getStatus()) {
-                case TO_BE_STORED:
-                    copyFile(file, availabilityChecker);
-                    break;
+            // FTP files will not be processed if FTP is not enabled
+            if (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir())) {
+                switch (file.getStatus()) {
+                    case TO_BE_STORED:
+                        copyFile(file, availabilityChecker);
+                        break;
 
-                case TO_BE_ASSOCIATED:
-                    verifyFile(file, availabilityChecker);
-                    break;
+                    case TO_BE_ASSOCIATED:
+                        verifyFile(file, availabilityChecker);
+                        break;
 
-                case ASSOCIATED:
-                    maintainAssociation(file, availabilityChecker);
+                    case ASSOCIATED:
+                        maintainAssociation(file, availabilityChecker);
+                }
             }
         }
     }

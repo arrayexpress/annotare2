@@ -119,7 +119,10 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 new ReportingAsyncCallback<ApplicationProperties>(FailureMessage.UNABLE_TO_LOAD_APP_PROPERTIES) {
                     @Override
                     public void onSuccess(ApplicationProperties result) {
-                        view.getUploadView().setFtpProperties(result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword());
+                        view.getUploadView().setFtpProperties(
+                                result.isFtpEnabled(),
+                                result.getFtpUrl(), result.getFtpUsername(), result.getFtpPassword()
+                        );
                     }
                 }
         );

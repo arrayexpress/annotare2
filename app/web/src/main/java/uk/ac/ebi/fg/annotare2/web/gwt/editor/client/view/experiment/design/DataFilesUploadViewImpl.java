@@ -116,7 +116,8 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     }
 
     @Override
-    public void setFtpProperties(String url, String username, String password) {
+    public void setFtpProperties(boolean isEnabled, String url, String username, String password) {
+        ftpUploadBtn.setEnabled(isEnabled);
         ftpUploadDialog.setFtpProperties(url, username, password);
     }
 

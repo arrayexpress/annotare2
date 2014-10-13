@@ -80,10 +80,6 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
         return getDirProperty("httpupload.temp.dir");
     }
 
-    public String getFilePickUpDir() {
-        return getProperty("pickup.dir");
-    }
-
     @Override
     public File getDataStoreDir() {
         return getDirProperty("datastore.dir");
@@ -91,6 +87,14 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
 
     public File getExportDir() {
         return getDirProperty("export.dir");
+    }
+
+    public Boolean isFtpEnabled() {
+        return  Boolean.parseBoolean(getProperty("ftp.enabled"));
+    }
+
+    public String getFtpPickUpDir() {
+        return getProperty("ftp.pickup.dir");
     }
 
     public String getPublicFtpUrl() {
