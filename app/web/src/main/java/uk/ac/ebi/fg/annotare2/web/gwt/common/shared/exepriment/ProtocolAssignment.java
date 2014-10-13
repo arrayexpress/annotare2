@@ -34,10 +34,10 @@ public abstract class ProtocolAssignment {
 
         @Override
         public ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
-            Set<Sample> assigned = exp.getSamples(protocol);
+            Set<Sample> assignees = exp.getSamples(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
             for (Sample sample : exp.getSamples()) {
-                assignments.put(new Item(sample.getId(), sample.getName()), assigned.contains(sample));
+                assignments.put(new Item(sample.getId(), sample.getName()), assignees.contains(sample));
             }
             return new ProtocolAssignmentProfile(protocol, assignments);
         }
@@ -62,10 +62,10 @@ public abstract class ProtocolAssignment {
 
         @Override
         protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
-            Set<Extract> assigned = exp.getExtracts(protocol);
+            Set<Extract> assignees = exp.getExtracts(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
             for (Extract extract : exp.getExtracts()) {
-                assignments.put(new Item(extract.getId(), extract.getName()), assigned.contains(extract));
+                assignments.put(new Item(extract.getId(), extract.getName()), assignees.contains(extract));
             }
             return new ProtocolAssignmentProfile(protocol, assignments);
         }
@@ -90,10 +90,10 @@ public abstract class ProtocolAssignment {
 
         @Override
         protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
-            Set<LabeledExtract> assigned = exp.getLabeledExtracts(protocol);
+            Set<LabeledExtract> assignees = exp.getLabeledExtracts(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
             for (LabeledExtract labeledExtract : exp.getLabeledExtracts()) {
-                assignments.put(new Item(labeledExtract.getId(), labeledExtract.getName()), assigned.contains(labeledExtract));
+                assignments.put(new Item(labeledExtract.getId(), labeledExtract.getName()), assignees.contains(labeledExtract));
             }
             return new ProtocolAssignmentProfile(protocol, assignments);
         }
@@ -118,7 +118,7 @@ public abstract class ProtocolAssignment {
 
         @Override
         protected ProtocolAssignmentProfile getProfile(ExperimentProfile exp, Protocol protocol) {
-            Collection<FileRef> assignees = exp.getFileRefs(protocol);
+            Set<FileRef> assignees = exp.getFileRefs(protocol);
             Map<Item, Boolean> assignments = new HashMap<Item, Boolean>();
             for (FileColumn col : exp.getFileColumns()) {
                 if (isAllowed(col.getType())) {

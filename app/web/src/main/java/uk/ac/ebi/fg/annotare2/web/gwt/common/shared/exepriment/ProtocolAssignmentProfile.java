@@ -70,6 +70,8 @@ public class ProtocolAssignmentProfile implements IsSerializable {
     private Map<String, String> names;
     private Map<String, Boolean> assignments;
 
+    private boolean isDefault;
+
     ProtocolAssignmentProfile() {
         /* used by GWT serialization */
     }
@@ -80,9 +82,10 @@ public class ProtocolAssignmentProfile implements IsSerializable {
         target = protocol.getSubjectType().getTitle();
         names = new LinkedHashMap<String, String>();
         assignments = new LinkedHashMap<String, Boolean>();
+        isDefault = !protocolAssignments.values().contains(true);
         for (ProtocolAssignment.Item item : protocolAssignments.keySet()) {
             names.put(item.getId(), item.getName());
-            assignments.put(item.getId(), protocolAssignments.get(item));
+            assignments.put(item.getId(), isDefault || protocolAssignments.get(item));
         }
     }
 
@@ -107,13 +110,6 @@ public class ProtocolAssignmentProfile implements IsSerializable {
     }
 
     public boolean isDefault() {
-        boolean isDefault = true;
-        for(Boolean assigned : assignments.values()) {
-            isDefault = isDefault && !assigned;
-            if (!isDefault) {
-                return false;
-            }
-        }
-        return true;
+        return isDefault;
     }
 }
