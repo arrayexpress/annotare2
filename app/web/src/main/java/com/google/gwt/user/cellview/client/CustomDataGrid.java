@@ -17,7 +17,7 @@
 package com.google.gwt.user.cellview.client;
 
 
-import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.view.client.CellPreviewEvent;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.google.gwt.dom.client.Style.Unit.PX;
 import static java.lang.Math.max;
@@ -346,13 +345,13 @@ public class CustomDataGrid<T> extends DataGrid<T> {
                 int keyCode = nativeEvent.getKeyCode();
                 int newColumn = oldColumn;
                 if (keyCode == keyCodeNext) {
-                    newColumn = oldColumn < table.getColumnCount() - 1 ? oldColumn + 1 : oldColumn;
+                    newColumn = findInteractiveColumn(oldColumn, 1);
                     handledEvent(event);
                 } else if (keyCode == keyCodePrevious) {
-                    newColumn = oldColumn > 0 ? oldColumn - 1 : oldColumn;
+                    newColumn = findInteractiveColumn(oldColumn, -1);
                     handledEvent(event);
                 }
-                if (newColumn != oldColumn && isColumnInteractive(table.getColumn(newColumn))) {
+                if (newColumn != oldColumn) {
                     table.setKeyboardSelectedColumn(newColumn);
                 }
 
@@ -371,7 +370,7 @@ public class CustomDataGrid<T> extends DataGrid<T> {
                 if (((table.getKeyboardSelectedColumn() != col)
                         || (table.getKeyboardSelectedRow() != relRow)
                         || (table.getKeyboardSelectedSubRow() != subrow))
-                            && isColumnInteractive(table.getColumn(col))) {
+                            && isColumnInteractive(col)) {
                     boolean stealFocus = false;
                     if (BrowserEvents.CLICK.equals(eventType)) {
                         // If a natively focusable element was just clicked, then do not
@@ -396,9 +395,20 @@ public class CustomDataGrid<T> extends DataGrid<T> {
             super.onCellPreview(event);
         }
 
-        private boolean isColumnInteractive(HasCell<?, ?> column) {
-            Set<String> consumedEvents = column.getCell().getConsumedEvents();
-            return consumedEvents != null && consumedEvents.size() > 0;
+        private int findInteractiveColumn(int column, int direction) {
+            int newColumn = column;
+            while ((newColumn + direction) >= 0 && (newColumn + direction) < table.getColumnCount()) {
+                newColumn = newColumn + direction;
+                if (isColumnInteractive(newColumn)) {
+                    return newColumn;
+                }
+            }
+            return column;
+        }
+
+        private boolean isColumnInteractive(int column) {
+            return (column >= 0 && column < table.getColumnCount()
+                    && table.getColumn(column).getCell() instanceof AbstractEditableCell);
         }
     }
 }
