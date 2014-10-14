@@ -75,6 +75,19 @@
 }
 /* Dialogs */
 
+.gwt-DialogBox {
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -moz-border-radius: 5px;
+    -ms-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -ms-border-radius: 5px;
+    -o-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -o-border-radius: 5px;
+}
+
 .gwt-DialogBox .Caption {
     background: #48877C;
     padding: 4px 8px 4px 4px;
@@ -110,8 +123,10 @@
 
 .gwt-DialogBox .dialogBottomRight {
     background: white none;
+    /*
     border-right: 1px solid #48877C;
     border-bottom: 1px solid #48877C;
+    */
     border-bottom-right-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
@@ -121,8 +136,10 @@
 
 .gwt-DialogBox .dialogBottomLeft {
     background: white none;
+    /*
     border-left: 1px solid #48877C;
     border-bottom: 1px solid #48877C;
+    */
     border-bottom-left-radius: 5px;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
@@ -132,17 +149,23 @@
 
 .gwt-DialogBox .dialogMiddleLeft {
     background: white none;
+    /*
     border-left: 1px solid #48877C;
+    */
 }
 
 .gwt-DialogBox .dialogMiddleRight {
     background: white none;
+    /*
     border-right: 1px solid #48877C;
+    */
 }
 
 .gwt-DialogBox .dialogBottomCenter {
     background: white none;
+    /*
     border-bottom: 1px solid #48877C;
+    */
 }
 
 .gwt-DialogBox .dialogContent {
