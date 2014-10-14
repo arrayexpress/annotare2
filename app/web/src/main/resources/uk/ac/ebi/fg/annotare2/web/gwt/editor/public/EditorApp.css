@@ -453,6 +453,12 @@
     -moz-box-sizing: border-box;
 }
 
+.gwt-PopupPanelGlass {
+    background-color: #444;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
 .gwt-SuggestionPopup {
     padding: 0;
     overflow: hidden;
