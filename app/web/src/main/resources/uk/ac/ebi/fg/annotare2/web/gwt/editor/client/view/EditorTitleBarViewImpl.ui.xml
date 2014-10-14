@@ -35,9 +35,32 @@
             white-space: nowrap;
         }
 
+        .regularButton {
+            background: none repeat scroll 0 0 #888;
+            border: 1px solid #888;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .regularButton:hover {
+            background-color: #999;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset #999;
+        }
+
         .validateButton {
-            background: none repeat scroll 0 0 #E5A066;
-            border: 1px solid #E5A066;
+            background: none repeat scroll 0 0 #e5a066;
+            border: 1px solid #e5a066;
             color: white;
             font-size: 18px;
             font-weight: bold;
@@ -49,18 +72,18 @@
         }
 
         .validateButton:hover {
-            background-color: #E5A066;
+            background-color: #f4ae67;
             cursor: pointer;
             text-shadow: none;
             -webkit-box-shadow: none;
             -moz-box-shadow: none;
             box-shadow: none;
-            border: 1px outset #E5A066;
+            border: 1px outset #f4ae67;
         }
 
         .submitButton {
-            background: none repeat scroll 0 0 #48877C;
-            border: 1px solid #48877C;
+            background: none repeat scroll 0 0 #48877c;
+            border: 1px solid #48877c;
             color: white;
             font-size: 18px;
             font-weight: bold;
@@ -71,20 +94,24 @@
             border-radius: 3px;
         }
 
-        .submitButton:disabled {
-            background-color: #ffffff;
-            border: 1px solid #cdcdcd;
-            color: #cdcdcd;
+        .submitButton:hover {
+            background-color: #56958a;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset #62aea2;
         }
 
-            /* .globalSuccessMessage {
-                position: relative;
-                bottom: -1px;
-                left: 0;
-                background-color: #afc96c;
-                padding: 2px 5px;
-            }*/
-
+        /* .globalSuccessMessage {
+            position: relative;
+            bottom: -1px;
+            left: 0;
+            background-color: #afc96c;
+            padding: 2px 5px;
+        }*/
+        /*
         a.wiredLink {
             font-size: 20px;
             color: #cdcdcd;
@@ -97,7 +124,7 @@
         a.wiredLink:hover {
             color: #48877C;
         }
-
+        */
         .autoSaveLabel {
             color: #cecece;
             font-size: 14px;
@@ -126,19 +153,33 @@
                     <td>
                         <table style="margin-right: 0; margin-left: auto;">
                             <tr>
+                                <!--
                                 <td>
                                     <g:Anchor addStyleNames="{style.wiredLink}" ui:field="importLink">Import</g:Anchor>
                                 </td>
                                 <td>
                                     <g:Anchor addStyleNames="{style.wiredLink}" ui:field="exportLink">Export</g:Anchor>
                                 </td>
+                                -->
                                 <td>
-                                    <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton">
-                                        Validate
+                                    <g:Button addStyleNames="{style.regularButton}" ui:field="helpButton">
+                                        <i class="fa fa-life-ring"/>Help
                                     </g:Button>
                                 </td>
                                 <td>
-                                    <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton">Submit to ArrayExpress</g:Button>
+                                    <g:Button addStyleNames="{style.regularButton}" ui:field="feedbackButton">
+                                        <i class="fa fa-comments-o"/>Feedback
+                                    </g:Button>
+                                </td>
+                                <td>
+                                    <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton">
+                                        <i class="fa fa-check"/>Validate
+                                    </g:Button>
+                                </td>
+                                <td>
+                                    <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton">
+                                        <i class="fa fa-paper-plane-o"/>Submit to ArrayExpress
+                                    </g:Button>
                                 </td>
                             </tr>
                         </table>

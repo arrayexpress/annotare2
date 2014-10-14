@@ -22,24 +22,22 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ImportFileDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
-
-import static com.google.gwt.user.client.Window.confirm;
 
 /**
  * @author Olga Melnichuk
  */
 public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
 
-    private static final String CONFIRMATION_MESSAGE = "Please note that the all data of the submission will be lost. Do you want to continue?";
+    //private static final String CONFIRMATION_MESSAGE = "Please note that the all data of the submission will be lost. Do you want to continue?";
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
     }
@@ -48,19 +46,25 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     Label accessionLabel;
 
     @UiField
+    Button helpButton;
+
+    @UiField
+    Button feedbackButton;
+
+    @UiField
     Button validateButton;
 
     @UiField
     Button submitButton;
 
     @UiField
-    Anchor importLink;
-
-    @UiField
     AutoSaveLabel autoSaveLabel;
 
-    @UiField
-    Anchor exportLink;
+    //@UiField
+    //Anchor importLink;
+
+    //@UiField
+    //Anchor exportLink;
 
     private Presenter presenter;
 
@@ -85,8 +89,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     public void setSubmissionType(SubmissionType type) {
         boolean isExperimentSubmission = type.isExperimentSubmission();
         validateButton.setVisible(isExperimentSubmission);
-        exportLink.setVisible(isExperimentSubmission);
-        importLink.setVisible(!isExperimentSubmission);
+        //exportLink.setVisible(isExperimentSubmission);
+        //importLink.setVisible(!isExperimentSubmission);
     }
 
     @Override
@@ -119,6 +123,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         if (waiting != null && waiting.isShowing()) {
             waiting.hide();
         }
+    }
+
+    @UiHandler("helpButton")
+    void onHelpButtonClick(ClickEvent event) {
+        Window.open("http://www.ebi.ac.uk/fgpt/annotare_help/", "_blank", "");
     }
 
     @UiHandler("validateButton")
@@ -175,24 +184,24 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         });
     }
 
-    @UiHandler("importLink")
-    void onImportLinkClick(ClickEvent event) {
-        if (confirm(CONFIRMATION_MESSAGE)) {
-            ImportFileDialog importFileDialog = new ImportFileDialog("Array Design Import");
-            importFileDialog.addImportEventHandler(new ImportEventHandler() {
-                @Override
-                public void onImport(AsyncCallback<Void> callback) {
-                    presenter.importFile(callback);
-                }
-            });
-            importFileDialog.show();
-        }
-    }
+    //@UiHandler("importLink")
+    //void onImportLinkClick(ClickEvent event) {
+    //    if (confirm(CONFIRMATION_MESSAGE)) {
+    //        ImportFileDialog importFileDialog = new ImportFileDialog("Array Design Import");
+    //        importFileDialog.addImportEventHandler(new ImportEventHandler() {
+    //            @Override
+    //            public void onImport(AsyncCallback<Void> callback) {
+    //                presenter.importFile(callback);
+    //            }
+    //        });
+    //        importFileDialog.show();
+    //    }
+    //}
 
-    @UiHandler("exportLink")
-    void onExportLinkClick(ClickEvent event) {
-        if (presenter != null) {
-            Window.open(presenter.getSubmissionExportUrl(), "export", "");
-        }
-    }
+    //@UiHandler("exportLink")
+    //void onExportLinkClick(ClickEvent event) {
+    //    if (presenter != null) {
+    //        Window.open(presenter.getSubmissionExportUrl(), "export", "");
+    //    }
+    //}
 }
