@@ -89,6 +89,10 @@ public abstract class Submission implements HasEffectiveAcl {
     @OrderBy("created ASC")
     private Set<DataFile> files;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatesTo")
+    @OrderBy("posted ASC")
+    private Set<SubmissionFeedback> feedback;
+
     @Column(name = "subsTrackingId")
     private Integer subsTrackingId;
 

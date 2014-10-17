@@ -14,15 +14,29 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
+package uk.ac.ebi.fg.annotare2.db.model;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import javax.persistence.*;
+import java.util.Date;
 
-@RemoteServiceRelativePath(FeedbackService.NAME)
-public interface FeedbackService extends RemoteService {
+@Entity
+@Table(name = "submission_feedback")
+public class SubmissionFeedback {
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    public static final String NAME = "feedbackService";
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "posted", nullable = false)
+    private Date posted;
 
-    public void provideGeneralFeedback(String message);
+    @Column(name = "score")
+    private Byte score;
+
+    @Column(name = "comment")
+    private String comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "relatesTo", nullable = false)
+    private Submission relatesTo;
 }

@@ -35,7 +35,7 @@ public class FeedbackServiceImpl extends AuthBasedRemoteService implements Feedb
         this.email = emailSender;
     }
 
-    public void submitFeedback(String message) {
+    public void provideGeneralFeedback(String message) {
         User u = getCurrentUser();
         try {
             email.sendFromTemplate(EmailSender.FEEDBACK_TEMPLATE,

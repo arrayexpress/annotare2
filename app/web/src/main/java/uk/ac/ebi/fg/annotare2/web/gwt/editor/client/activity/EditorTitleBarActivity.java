@@ -191,10 +191,11 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void submitFeedback(String message) {
-        feedbackSerivce.submitFeedback(message, callbackWrap(
+        feedbackSerivce.provideGeneralFeedback(message, callbackWrap(
                 new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
                     @Override
-                    public void onSuccess(Void result) {}
+                    public void onSuccess(Void result) {
+                    }
                 }));
     }
 }

@@ -19,5 +19,5 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface FeedbackServiceAsync {
-    void submitFeedback(String message, AsyncCallback<Void> async);
+    void provideGeneralFeedback(String message, AsyncCallback<Void> async);
 }

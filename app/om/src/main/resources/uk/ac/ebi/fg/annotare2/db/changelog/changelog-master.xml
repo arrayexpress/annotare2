@@ -55,4 +55,20 @@
             ALTER TABLE submissions ADD submitted TIMESTAMP NULL AFTER created;
         </sql>
     </changeSet>
+    <changeSet id="addSubmissionFeedbackTable" author="kolais">
+        <sql>
+            CREATE TABLE submission_feedback (
+            id          BIGINT AUTO_INCREMENT               NOT NULL,
+            posted      TIMESTAMP                           NOT NULL
+                            DEFAULT CURRENT_TIMESTAMP,
+            score       TINYINT                             NOT NULL,
+            comment     VARCHAR(1000),
+            relatesTo   BIGINT                              NOT NULL,
+            PRIMARY KEY (id),
+            CONSTRAINT FOREIGN KEY (relatesTo) REFERENCES submissions (id)
+                ON DELETE CASCADE
+            )
+            ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
