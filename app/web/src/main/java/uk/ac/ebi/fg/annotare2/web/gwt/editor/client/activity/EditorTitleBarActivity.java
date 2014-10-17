@@ -24,10 +24,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -54,6 +51,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     private final SubmissionValidationServiceAsync validationService;
     private final DataServiceAsync dataService;
     private final AdfServiceAsync adfService;
+    private final FeedbackServiceAsync feedbackSerivce;
 
     private EventBus eventBus;
 
@@ -63,13 +61,15 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
                                   SubmissionServiceAsync submissionService,
                                   SubmissionValidationServiceAsync validationService,
                                   DataServiceAsync dataService,
-                                  AdfServiceAsync adfService) {
+                                  AdfServiceAsync adfService,
+                                  FeedbackServiceAsync feedbackSerivce) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
         this.validationService = validationService;
         this.dataService = dataService;
         this.adfService = adfService;
+        this.feedbackSerivce = feedbackSerivce;
     }
 
     public EditorTitleBarActivity withPlace(Place place) {
@@ -187,5 +187,14 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     @Override
     public String getSubmissionExportUrl() {
         return GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "export?submissionId=" + getSubmissionId();
+    }
+
+    @Override
+    public void submitFeedback(String message) {
+        feedbackSerivce.submitFeedback(message, callbackWrap(
+                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onSuccess(Void result) {}
+                }));
     }
 }

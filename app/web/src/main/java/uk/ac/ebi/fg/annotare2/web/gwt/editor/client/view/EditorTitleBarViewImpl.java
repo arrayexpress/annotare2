@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
@@ -68,11 +69,14 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     private Presenter presenter;
 
-    private WaitingPopup waiting;
+    private final FeedbackDialog feedbackDialog;
+    private final WaitingPopup waitingPopup;
 
     public EditorTitleBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
+        feedbackDialog = new FeedbackDialog();
+        waitingPopup = new WaitingPopup();
     }
 
     @Override
@@ -83,6 +87,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        feedbackDialog.setPresenter(presenter);
     }
 
     @Override
@@ -111,23 +116,26 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @Override
     public void criticalUpdateStarted() {
-        if (waiting == null) {
-            waiting = new WaitingPopup();
-        } else if (!waiting.isShowing()) {
-            waiting.show();
+        if (!waitingPopup.isShowing()) {
+            waitingPopup.center();
         }
     }
 
     @Override
     public void criticalUpdateStopped() {
-        if (waiting != null && waiting.isShowing()) {
-            waiting.hide();
+        if (waitingPopup.isShowing()) {
+            waitingPopup.hide();
         }
     }
 
     @UiHandler("helpButton")
     void onHelpButtonClick(ClickEvent event) {
         Window.open("http://www.ebi.ac.uk/fgpt/annotare_help/", "_blank", "");
+    }
+
+    @UiHandler("feedbackButton")
+    void onFeedbackButtonClick(ClickEvent event) {
+        feedbackDialog.center();
     }
 
     @UiHandler("validateButton")

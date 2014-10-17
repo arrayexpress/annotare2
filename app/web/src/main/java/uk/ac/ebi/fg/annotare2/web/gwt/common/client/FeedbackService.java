@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-/**
- * @author Olga Melnichuk
- */
-public class WaitingPopup extends PopupPanel {
+@RemoteServiceRelativePath(FeedbackService.NAME)
+public interface FeedbackService extends RemoteService {
 
-    public WaitingPopup() {
-        super(false, true);
-        setWidget(new LoadingIndicator());
-        setGlassEnabled(true);
+    public static final String NAME = "feedbackService";
 
-    }
+    public void submitFeedback(String message);
 }

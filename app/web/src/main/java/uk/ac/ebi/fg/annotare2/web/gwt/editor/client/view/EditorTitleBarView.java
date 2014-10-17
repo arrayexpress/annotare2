@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
 
 /**
  * @author Olga Melnichuk
@@ -41,7 +42,7 @@ public interface EditorTitleBarView extends IsWidget {
 
     void criticalUpdateStopped();
 
-    public interface Presenter extends SetupExpSubmissionView.Presenter {
+    public interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter {
 
         void validateSubmission(ValidationHandler handler);
 

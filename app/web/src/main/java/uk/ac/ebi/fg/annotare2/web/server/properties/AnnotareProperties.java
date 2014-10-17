@@ -117,8 +117,12 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
         return getProperty("mail.smtp.port");
     }
 
-    public String getEmailFromAddress() {
-        return getProperty("mail.from.address");
+    public String getEmailFromAddress(String templateName) {
+        if (hasProperty("mail.from." + templateName.trim()))
+            return getProperty("mail.from." + templateName.trim());
+        else {
+            return getProperty("mail.from.address");
+        }
     }
 
     public String getEmailBccAddress() {
@@ -254,6 +258,10 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
 
     private String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    private boolean hasProperty(String key) {
+        return properties.containsKey(key);
     }
 
     private Properties load() {

@@ -58,6 +58,7 @@ public class EmailSender {
     public static final String REJECTED_SUBMISSION_TEMPLATE = "rejected-submission";
     public static final String ACCESSION_UPDATE_TEMPLATE = "accession-update-submission";
     public static final String EXCEPTION_REPORT_TEMPLATE = "exception-report";
+    public static final String FEEDBACK_TEMPLATE = "general-feedback";
 
     @Inject
     public EmailSender(AnnotareProperties properties) {
@@ -91,12 +92,14 @@ public class EmailSender {
     public void sendFromTemplate(String template, Map<String, String> parameters)
             throws MessagingException {
         StrSubstitutor sub = new StrSubstitutor(parameters);
+
+        String from = sub.replace(properties.getEmailFromAddress(template));
         String to = sub.replace(properties.getEmailToAddress(template));
         String bcc = properties.getEmailBccAddress();
         String subject = sub.replace(properties.getEmailSubject(template));
         String body = sub.replace(properties.getEmailTemplate(template));
         if (null != to) {
-            send(to, bcc, subject, body, properties.getEmailFromAddress());
+            send(to, bcc, subject, body, from);
         }
     }
 
@@ -133,15 +136,15 @@ public class EmailSender {
     }
 
     InternetAddress[] parseAddresses(String addresses) throws AddressException {
-        InternetAddress[] recips = InternetAddress.parse(addresses, false);
-        for(int i=0; i<recips.length; i++) {
+        InternetAddress[] recipients = InternetAddress.parse(addresses, false);
+        for(int i=0; i<recipients.length; i++) {
             try {
-                recips[i] = new InternetAddress(recips[i].getAddress(), recips[i].getPersonal(), UTF8);
+                recipients[i] = new InternetAddress(recipients[i].getAddress(), recipients[i].getPersonal(), UTF8);
             } catch(UnsupportedEncodingException e) {
                 throw new RuntimeException("Unable to set encoding", e);
             }
         }
-        return recips;
+        return recipients;
     }
 
     private String getStackTrace(Throwable x) {

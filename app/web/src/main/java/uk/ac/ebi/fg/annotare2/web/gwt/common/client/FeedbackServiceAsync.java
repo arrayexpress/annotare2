@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/**
- * @author Olga Melnichuk
- */
-public class WaitingPopup extends PopupPanel {
-
-    public WaitingPopup() {
-        super(false, true);
-        setWidget(new LoadingIndicator());
-        setGlassEnabled(true);
-
-    }
+public interface FeedbackServiceAsync {
+    void submitFeedback(String message, AsyncCallback<Void> async);
 }

@@ -135,6 +135,7 @@ public class FTPUploadDialog extends DialogBox {
             }
         }
     }
+
     private List<String> getPastedData() {
         String pastedRows = values.getValue();
         List<String> result = new ArrayList<String>();
@@ -143,6 +144,7 @@ public class FTPUploadDialog extends DialogBox {
         }
         return result;
     }
+
     public interface Presenter {
         void onFtpDataSubmit(List<String> data, AsyncCallback<String> callback);
     }
