@@ -30,7 +30,7 @@
         }
     </ui:style>
 
-    <g:ResizeLayoutPanel width="540px" height="320px">
+    <g:ResizeLayoutPanel width="480px" height="240px">
         <g:DockLayoutPanel>
             <g:north size="30">
                 <g:Label>We value your feedback. Please leave your comments below:</g:Label>
