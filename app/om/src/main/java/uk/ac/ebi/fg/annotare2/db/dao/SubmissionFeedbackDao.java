@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.db.dao;
 
-/**
- * @author Olga Melnichuk
- */
-public abstract class DialogCallback<T> {
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback;
 
-    public void onCancel() {}
+public interface SubmissionFeedbackDao {
 
-    public abstract void onOkay(T t);
+    SubmissionFeedback create(Byte score, Submission submission);
+
+    void save(SubmissionFeedback feedback);
 }

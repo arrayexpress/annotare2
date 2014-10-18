@@ -61,7 +61,7 @@
             id          BIGINT AUTO_INCREMENT               NOT NULL,
             posted      TIMESTAMP                           NOT NULL
                             DEFAULT CURRENT_TIMESTAMP,
-            score       TINYINT                             NOT NULL,
+            score       TINYINT,
             comment     VARCHAR(1000),
             relatesTo   BIGINT                              NOT NULL,
             PRIMARY KEY (id),

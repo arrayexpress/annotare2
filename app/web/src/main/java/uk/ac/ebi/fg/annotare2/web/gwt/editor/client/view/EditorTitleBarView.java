@@ -42,7 +42,7 @@ public interface EditorTitleBarView extends IsWidget {
 
     void criticalUpdateStopped();
 
-    public interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter {
+    public interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter{
 
         void validateSubmission(ValidationHandler handler);
 

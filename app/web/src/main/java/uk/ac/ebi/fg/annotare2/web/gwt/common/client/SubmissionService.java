@@ -73,4 +73,6 @@ public interface SubmissionService extends RemoteService {
     ExperimentProfile deleteDataFiles(long id, List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException;
 
     void deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
+
+    void postFeedback(long id, Byte score, String comment) throws ResourceNotFoundException, NoPermissionException;
 }

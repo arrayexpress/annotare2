@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
@@ -25,11 +26,9 @@ import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.SDRFGraphWriter;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
-import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.DataFile;
-import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
@@ -63,6 +62,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.annotation.Nullable;
+import javax.mail.MessagingException;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -88,7 +88,9 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
     private final UserDao userDao;
+    private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
+    private final EmailSender email;
 
     private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
 
@@ -98,13 +100,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                                  DataFileManager dataFileManager,
                                  AnnotareProperties properties,
                                  UserDao userDao,
+                                 SubmissionFeedbackDao feedbackDao,
                                  EfoSearch efoSearch,
                                  EmailSender emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.properties = properties;
         this.userDao = userDao;
+        this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
+        this.email = emailSender;
     }
 
     @Transactional
@@ -484,6 +489,38 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         } catch (IOException e) {
             throw unexpected(e);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void postFeedback(long id, Byte score, String comment) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(id, Permission.VIEW);
+            SubmissionFeedback feedback = feedbackDao.create(score, submission);
+            feedback.setComment(comment);
+            feedbackDao.save(feedback);
+            save(submission);
+            sendFeedbackEmail(score, comment);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
+    }
+
+    private void sendFeedbackEmail(Byte score, String comment) {
+        User u = getCurrentUser();
+        try {
+            email.sendFromTemplate(EmailSender.FEEDBACK_TEMPLATE,
+                    ImmutableMap.of(
+                            "from.name", u.getName(),
+                            "from.email", u.getEmail(),
+                            "feedback.rating", null != score ? String.valueOf(score) : "-",
+                            "feedback.comment", comment
+                    ));
+        } catch (MessagingException x) {
+            //
         }
     }
 

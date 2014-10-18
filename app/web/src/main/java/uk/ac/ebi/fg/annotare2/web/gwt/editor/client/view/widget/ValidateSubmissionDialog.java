@@ -16,9 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 
@@ -28,64 +31,157 @@ import com.google.gwt.user.client.ui.*;
  */
 public class ValidateSubmissionDialog extends DialogBox {
 
-    private HTML label = new HTML();
+    interface Binder extends UiBinder<Widget, ValidateSubmissionDialog> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
+    @UiField
+    HTML html;
+
+    @UiField
+    HTMLPanel feedbackPanel;
+
+    @UiField
+    RadioButton rbScore1;
+
+    @UiField
+    RadioButton rbScore2;
+
+    @UiField
+    RadioButton rbScore3;
+
+    @UiField
+    RadioButton rbScore4;
+
+    @UiField
+    RadioButton rbScore5;
+
+    @UiField
+    RadioButton rbScore6;
+
+    @UiField
+    RadioButton rbScore7;
+
+    @UiField
+    RadioButton rbScore8;
+
+    @UiField
+    RadioButton rbScore9;
+
+    @UiField
+    TextArea message;
+
+    @UiField
+    Button cancelButton;
+
+    @UiField
+    Button okButton;
+
+    private DialogCallback<Void> callback;
 
     public ValidateSubmissionDialog() {
+        setModal(true);
         setGlassEnabled(true);
 
-        // label styling
-        label.setHorizontalAlignment(HasAutoHorizontalAlignment.ALIGN_LEFT);
+        setWidget(Binder.BINDER.createAndBindUi(this));
+    }
 
-        // button styling & behaviour
-        Button ok = new Button("OK");
-        ok.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                ValidateSubmissionDialog.this.hide();
-            }
-        });
+    @UiHandler("cancelButton")
+    void cancelButtonClicked(ClickEvent event) {
+        hide();
+        if (null != callback) {
+            callback.onCancel();
+        }
+    }
 
-        // panel styling and behaviour
-        VerticalPanel panel = new VerticalPanel();
-        panel.setSpacing(10);
-        panel.setWidth("400px");
-        panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        panel.add(label);
-        panel.add(ok);
+    @UiHandler("okButton")
+    void okButtonClicked(ClickEvent event) {
+        hide();
+        if (null != callback) {
+            callback.onOkay(null);
+        }
+    }
 
-        setWidget(panel);
-        showValidationInProgressMessage();
+    public Byte getFeedbackScore() {
+        if (rbScore1.getValue()) {
+            return 1;
+        } else if (rbScore2.getValue()) {
+            return 2;
+        } else if (rbScore3.getValue()) {
+            return 3;
+        } else if (rbScore4.getValue()) {
+            return 4;
+        } else if (rbScore5.getValue()) {
+            return 5;
+        } else if (rbScore6.getValue()) {
+            return 6;
+        } else if (rbScore7.getValue()) {
+            return 7;
+        } else if (rbScore8.getValue()) {
+            return 8;
+        } else if (rbScore9.getValue()) {
+            return 9;
+        } else {
+            return null;
+        }
+    }
+
+    public String getFeedbackMessage() {
+        return message.getValue().trim();
     }
 
     private void setTitleAndMessage(String title, String message) {
         setText(title);
-        label.setHTML(message);
+        html.setHTML(message);
         center();
     }
 
-    public void showValidationInProgressMessage() {
-        setTitleAndMessage("Validating...", "Please wait as the submission is being validated");
-    }
 
-    public void showValidationFailureMessage() {
-        setTitleAndMessage("Validation failed", "Validation has failed. Please see the validation log for more information. Errors must be fixed before submission");
-    }
 
-    public void showSubmissionInProgressMessage() {
-        setTitleAndMessage("Submitting...", "Please wait as the submission is being processed");
-    }
-
-    public void showSubmissionFailureMessage() {
-        setTitleAndMessage("Submission failed", "There was a problem submitting experiment to ArrayExpress. Please try again or contact us at annotare@ebi.ac.uk");
-    }
-
-    public void showSubmissionSuccessMessage() {
+    public void showValidationProgressMessage(DialogCallback<Void> callback) {
+        this.callback = callback;
         setTitleAndMessage(
-                "Submission successful",
+                "Validating...",
+                "Please wait while the submission is being validated"
+        );
+    }
+
+    public void showValidationFailureMessage(DialogCallback<Void> callback) {
+        this.callback = callback;
+        setTitleAndMessage(
+                "Validation Failed",
+                "Validation has failed. " +
+                        "Please see the validation log for more information. " +
+                        "Errors must be fixed before submission"
+        );
+    }
+
+    public void showSubmissionProgressMessage(DialogCallback<Void> callback) {
+        this.callback = callback;
+        setTitleAndMessage(
+                "Submitting...",
+                "Please wait as the submission is being processed"
+        );
+    }
+
+    public void showSubmissionFailureMessage(DialogCallback<Void> callback) {
+        this.callback = callback;
+        setTitleAndMessage(
+                "Submission Failed",
+                "There was a problem submitting the experiment to ArrayExpress. " +
+                        "Please try again or contact us at annotare@ebi.ac.uk");
+    }
+
+    public void showSubmissionSuccessMessage(DialogCallback<Void> callback) {
+        this.callback = callback;
+        feedbackPanel.setVisible(true);
+        setTitleAndMessage(
+                "Submission Successful",
                 "<p>The experiment has been successfully submitted to ArrayExpress using Annotare.</p>" +
-                "<p>Our curation team will review your submission and will email you with any questions. " +
-                "Once all the required information is provided we will send you an accession number.</p>" +
-                "<p>In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
-                 "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html</a></p>");
+                        "<p>Our curation team will review your submission and will email you with any questions. " +
+                        "Once all the required information is provided we will send you an accession number.</p>" +
+                        "<p>In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
+                        "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html</a></p>");
     }
 
     @Override
@@ -93,7 +189,7 @@ public class ValidateSubmissionDialog extends DialogBox {
         super.onPreviewNativeEvent(event);
         if (Event.ONKEYDOWN == event.getTypeInt()) {
             if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
-                hide();
+                cancelButtonClicked(null);
             }
         }
     }

@@ -39,4 +39,18 @@ public class SubmissionFeedback {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "relatesTo", nullable = false)
     private Submission relatesTo;
+
+    public SubmissionFeedback() {
+        this(null, null);
+    }
+
+    public SubmissionFeedback(Submission relatesTo, Byte score) {
+        this.posted = new Date();
+        this.relatesTo = relatesTo;
+        this.score = score;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }

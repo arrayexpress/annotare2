@@ -50,4 +50,6 @@ public interface SubmissionServiceAsync {
     void deleteDataFiles(long id, List<Long> files, AsyncCallback<ExperimentProfile> async);
 
     void deleteSubmission(long id, AsyncCallback<Void> async);
+
+    void postFeedback(long id, Byte score, String comment, AsyncCallback<Void> async);
 }

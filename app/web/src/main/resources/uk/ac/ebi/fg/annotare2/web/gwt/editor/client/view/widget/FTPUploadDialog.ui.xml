@@ -21,6 +21,7 @@
 
     <ui:style>
         .text {
+            width: 40em;
             font-family: Arial, Helvetica, sans-serif;
             font-size: small;
             line-height: 150%;
@@ -31,57 +32,37 @@
         .text ol > li {
             margin-bottom: 0.5em;
         }
-        .textarea {
-            height: 100%;
-            width: 100%;
-            position: relative;
-            box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-        }
         .marker {
             color: #E5A066;
             font-weight: bolder;
         }
     </ui:style>
 
-    <g:ResizeLayoutPanel width="540px" height="480px">
-        <g:DockLayoutPanel>
-            <g:north size="250">
-                <g:HTMLPanel addStyleNames="{style.text}">
-                    <ol>
-                        <li>Please calculate <a href="http://en.wikipedia.org/wiki/MD5" target="_blank">MD5 hashes</a> for your files using the following tools:
-                            <ul>
-                                <li><code>md5sum file1 file2 ... fileN</code> on Linux</li>
-                                <li><code>md5 file1 file2 ... fileN</code> on Mac</li>
-                                <li><a href="http://support.microsoft.com/kb/841290" target="_blank">FCIV</a> on Windows</li></ul></li>
-                        <li><a href="http://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html" target="_blank">Upload your data file(s)</a> to our FTP server at
-                            <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}">_ftp_url_</g:InlineLabel>
-                            using the following credentials:
-                            user <g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}">_ftp_username_</g:InlineLabel>,
-                            password <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}">_ftp_password_</g:InlineLabel></li>
-                        <li> Paste file names and MD5 hashes into the area below, one file per line. Recognized formats:
-                            <ul>
-                                <li><code>filename.ext cc43eddbea164ff18047c5e49ec4d61c</code></li>
-                                <li><code>cc43eddbea164ff18047c5e49ec4d61c filename.ext</code></li>
-                                <li><code>MD5 (filename.ext) = cc43eddbea164ff18047c5e49ec4d61c</code></li></ul></li></ol>
-                </g:HTMLPanel>
-            </g:north>
-            <g:center>
-                <g:TextArea ui:field="values" addStyleNames="{style.textarea}"/>
-            </g:center>
-            <g:south size="50">
-                <g:HTMLPanel>
-                    <table style="width:100%;height:100%">
-                        <tr>
-                            <td align="right" valign="bottom">
-                                <g:Button ui:field="cancelButton">Cancel</g:Button>
-                                <g:Button ui:field="okButton">Proceed</g:Button>
-                            </td>
-                        </tr>
-                    </table>
-                </g:HTMLPanel>
-            </g:south>
-        </g:DockLayoutPanel>
-    </g:ResizeLayoutPanel>
+    <g:VerticalPanel>
+        <g:HTMLPanel addStyleNames="{style.text}">
+        <ol>
+            <li>Please calculate <a href="http://en.wikipedia.org/wiki/MD5" target="_blank">MD5 hashes</a> for your files using the following tools:
+                <ul>
+                    <li><code>md5sum file1 file2 ... fileN</code> on Linux</li>
+                    <li><code>md5 file1 file2 ... fileN</code> on Mac</li>
+                    <li><a href="http://support.microsoft.com/kb/841290" target="_blank">FCIV</a> on Windows</li></ul></li>
+            <li><a href="http://www.ebi.ac.uk/arrayexpress/help/ftp_upload.html" target="_blank">Upload your data file(s)</a> to our FTP server at
+                <g:InlineLabel ui:field="ftpUrl" addStyleNames="{style.marker}">_ftp_url_</g:InlineLabel>
+                using the following credentials:
+                user <g:InlineLabel ui:field="ftpUsername" addStyleNames="{style.marker}">_ftp_username_</g:InlineLabel>,
+                password <g:InlineLabel ui:field="ftpPassword" addStyleNames="{style.marker}">_ftp_password_</g:InlineLabel></li>
+            <li> Paste file names and MD5 hashes into the area below, one file per line. Recognized formats:
+                <ul>
+                    <li><code>filename.ext cc43eddbea164ff18047c5e49ec4d61c</code></li>
+                    <li><code>cc43eddbea164ff18047c5e49ec4d61c filename.ext</code></li>
+                    <li><code>MD5 (filename.ext) = cc43eddbea164ff18047c5e49ec4d61c</code></li></ul></li></ol>
+        </g:HTMLPanel>
+        <g:TextArea width="40em" height="20em" ui:field="values"/>
+        <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
+            <g:HTMLPanel>
+                <g:Button ui:field="cancelButton">Cancel</g:Button>
+                <g:Button ui:field="okButton">Proceed</g:Button>
+            </g:HTMLPanel>
+        </g:cell>
+    </g:VerticalPanel>
 </ui:UiBinder>

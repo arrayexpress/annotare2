@@ -28,10 +28,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
 /**
  * @author Olga Melnichuk
@@ -141,17 +138,19 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiHandler("validateButton")
     void onValidateButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
+        dialog.showSubmissionProgressMessage(null);
+
         presenter.validateSubmission(new ValidationHandler() {
 
             @Override
             public void onFailure() {
-                dialog.showValidationFailureMessage();
+                dialog.showValidationFailureMessage(null);
             }
 
             @Override
             public void onSuccess(ValidationResult result) {
                 if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
-                    dialog.showValidationFailureMessage();
+                    dialog.showValidationFailureMessage(null);
                 } else {
                     dialog.hide();
                 }
@@ -166,25 +165,32 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
             @Override
             public void onFailure() {
-                dialog.showValidationFailureMessage();
+                dialog.showValidationFailureMessage(null);
             }
 
             @Override
             public void onSuccess(ValidationResult result) {
                 if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
-                    dialog.showValidationFailureMessage();
+                    dialog.showValidationFailureMessage(null);
                 } else {
-                    dialog.showSubmissionInProgressMessage();
+                    dialog.showSubmissionProgressMessage(null);
                     presenter.submitSubmission(new SubmissionHandler() {
 
                         @Override
                         public void onFailure() {
-                            dialog.showSubmissionFailureMessage();
+                            dialog.showSubmissionFailureMessage(null);
                         }
 
                         @Override
                         public void onSuccess() {
-                            dialog.showSubmissionSuccessMessage();
+                            dialog.showSubmissionSuccessMessage(new DialogCallback<Void>() {
+                                @Override
+                                public void onOkay(Void aVoid) {
+                                    if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
+                                        presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
+                                    }
+                                }
+                            });
                         }
                     });
                 }

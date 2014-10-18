@@ -72,7 +72,7 @@ public class FeedbackDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        presenter.submitFeedback(message.getValue().trim());
+        presenter.postFeedback(null, message.getValue().trim());
         hide();
     }
 
@@ -92,7 +92,7 @@ public class FeedbackDialog extends DialogBox {
     }
 
     public interface Presenter {
-        void submitFeedback(String message);
+        void postFeedback(Byte score, String comment);
     }
 
 }
