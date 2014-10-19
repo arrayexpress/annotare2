@@ -175,6 +175,7 @@ public class ValidateSubmissionDialog extends DialogBox {
     public void showSubmissionSuccessMessage(DialogCallback<Void> callback) {
         this.callback = callback;
         feedbackPanel.setVisible(true);
+        cancelButton.setVisible(true);
         setTitleAndMessage(
                 "Submission Successful",
                 "The experiment has been successfully submitted to ArrayExpress.<br><br>" +
