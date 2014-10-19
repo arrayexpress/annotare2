@@ -19,13 +19,13 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ae-subs-tracking</artifactId>
     <packaging>jar</packaging>
-    <version>0.29</version>
+    <version>0.30-SNAPSHOT</version>
     <name>ArrayExpress Submissions Tracking Integration</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
         <artifactId>annotare2</artifactId>
-        <version>0.29</version>
+        <version>0.30-SNAPSHOT</version>
     </parent>
 
     <properties>
