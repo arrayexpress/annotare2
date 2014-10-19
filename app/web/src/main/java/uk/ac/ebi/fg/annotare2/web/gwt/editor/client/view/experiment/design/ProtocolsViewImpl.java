@@ -48,7 +48,6 @@ import java.util.*;
 public class ProtocolsViewImpl extends Composite implements ProtocolsView, RequiresResize {
 
     private GridView<ProtocolRow> gridView;
-    private ValidationMessage errorMessage;
     private AsyncOptionProvider sequencingHardware;
 
     private Presenter presenter;
@@ -104,8 +103,6 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         });
         gridView.addTool(button);
 
-        errorMessage = new ValidationMessage();
-        gridView.addTool(errorMessage);
         initWidget(gridView);
 
         sequencingHardware = new AsyncOptionProvider() {
@@ -163,7 +160,21 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
     }
 
     private void addNameColumn() {
-        final EditTextCell nameCell = new EditTextCell();
+        final EditSuggestCell nameCell = new EditSuggestCell(null) {
+            @Override
+            public boolean validateInput(String value, int rowIndex) {
+                if (value == null || trimValue(value).isEmpty()) {
+                    NotificationPopupPanel.error("Protocol with empty name is not permitted.", true);
+                    return false;
+                }
+                if (!isNameUnique(value, rowIndex)) {
+                    NotificationPopupPanel.error("Protocol with the name '" + value + "' already exists.", true);
+                    return false;
+                }
+                return true;
+            }
+        };
+
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(nameCell) {
             @Override
             public String getValue(ProtocolRow row) {
@@ -171,18 +182,15 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 return v == null ? "" : v;
             }
         };
+
         column.setFieldUpdater(new FieldUpdater<ProtocolRow, String>() {
             @Override
             public void update(int index, ProtocolRow row, String value) {
-                if (isNameValid(value, index)) {
-                    row.setName(value);
-                    updateRow(row);
-                } else {
-                    nameCell.clearViewData(row);
-                    gridView.redraw();
-                }
+                row.setName(trimValue(value));
+                updateRow(row);
             }
         });
+
         column.setSortable(true);
         Comparator<ProtocolRow> comparator = new Comparator<ProtocolRow>() {
             @Override
@@ -195,6 +203,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 return v1.compareTo(v2);
             }
         };
+
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
@@ -242,33 +251,14 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         gridView.addPermanentColumn("Assign protocols to materials/data files", column, null, 300, Style.Unit.PX);
     }
 
-    private boolean isNameValid(String name, int rowIndex) {
-        if (name == null || name.trim().isEmpty()) {
-            showErrorMessage("Protocol name should not be empty");
-            return false;
-        }
-        if (isDuplicated(name, rowIndex)) {
-            showErrorMessage("Protocol with the name '" + name + "' already exists");
-            return false;
+    private boolean isNameUnique(String name, int rowIndex) {
+        List<ProtocolRow> rows = gridView.getRows();
+        for (int i = 0; i < rows.size(); i++) {
+            if (i != rowIndex && rows.get(i).getName().equals(name)) {
+                return false;
+            }
         }
         return true;
-    }
-
-    private boolean isDuplicated(String name, int rowIndex) {
-        List<ProtocolRow> rows = gridView.getRows();
-        Set<String> names = new HashSet<String>();
-        int i = 0;
-        for (ProtocolRow row : rows) {
-            if (i != rowIndex) {
-                names.add(row.getName());
-            }
-            i++;
-        }
-        return names.contains(name);
-    }
-
-    private void showErrorMessage(String msg) {
-        errorMessage.setMessage(msg);
     }
 
     private void addTypeColumn() {
@@ -489,6 +479,13 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
 
     private void fillDownValue() {
         gridView.fillDownKeyboardSelectedColumn();
+    }
+
+    private String trimValue(String value) {
+        if (null != value) {
+            value = value.replaceAll("([^\\t]*)[\\t].*", "$1").trim();
+        }
+        return value;
     }
 
     @Override

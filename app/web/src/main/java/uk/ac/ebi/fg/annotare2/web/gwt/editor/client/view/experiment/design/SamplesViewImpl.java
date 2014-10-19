@@ -217,7 +217,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                     NotificationPopupPanel.error("Sample with empty name is not permitted.", true);
                     return false;
                 }
-                if (isDuplicated(value, rowIndex)) {
+                if (!isNameUnique(value, rowIndex)) {
                     NotificationPopupPanel.error("Sample with the name '" + value + "' already exists.", true);
                     return false;
                 }
@@ -252,17 +252,14 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
     }
 
-    private boolean isDuplicated(String name, int rowIndex) {
+    private boolean isNameUnique(String name, int rowIndex) {
         List<SampleRow> rows = gridView.getRows();
-        Set<String> names = new HashSet<String>();
-        int i = 0;
-        for (SampleRow row : rows) {
-            if (i != rowIndex) {
-                names.add(row.getName());
+        for (int i = 0; i < rows.size(); i++) {
+            if (i != rowIndex && rows.get(i).getName().equals(name)) {
+                return false;
             }
-            i++;
         }
-        return names.contains(name);
+        return true;
     }
 
     private void addColumn(final SampleColumn sampleColumn) {

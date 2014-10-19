@@ -16,10 +16,11 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.UpdateCommand;
 
 import java.util.ArrayList;
@@ -80,26 +81,27 @@ public class UpdateQueue<C extends UpdateCommand> {
         }
         List<C> commands = new ArrayList<C>(queue);
         final int batchSize = commands.size();
-        transport.sendUpdates(commands, new AsyncCallback<Result>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                GWT.log("unexpected error", caught);
-                handleError("Unable to save changes - unexpected error");
-            }
+        transport.sendUpdates(commands,
+                new ReportingAsyncCallback<Result>(FailureMessage.UNABLE_TO_SEND_UPDATES) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        super.onFailure(caught);
+                        handleError("Unable to save changes - unexpected error");
+                    }
 
-            @Override
-            public void onSuccess(Result result) {
-                switch (result) {
-                    case SUCCESS:
-                        handleSuccess(batchSize);
-                        break;
-                    case NO_PERMISSION:
-                        handleError("You have no permission to save changes to this submission");
-                        break;
-                    default:
-                        handleError("Unsupported result type - " + result);
-                }
-            }
+                    @Override
+                    public void onSuccess(Result result) {
+                        switch (result) {
+                            case SUCCESS:
+                                handleSuccess(batchSize);
+                                break;
+                            case NO_PERMISSION:
+                                handleError("You have no permission to save changes to this submission");
+                                break;
+                            default:
+                                handleError("Unsupported result type - " + result);
+                        }
+                    }
         });
     }
 

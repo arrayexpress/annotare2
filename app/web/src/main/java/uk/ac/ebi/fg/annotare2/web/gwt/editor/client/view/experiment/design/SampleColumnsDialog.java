@@ -74,9 +74,6 @@ public class SampleColumnsDialog extends DialogBox {
     @UiField
     SimpleLayoutPanel columnEditor;
 
-    @UiField
-    Label errorMessage;
-
     private Map<Integer, SampleColumn> columnMap = new HashMap<Integer, SampleColumn>();
 
     private DialogCallback<List<SampleColumn>> callback;
@@ -119,8 +116,6 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("columnList")
     void columnSelected(ChangeEvent event) {
-        clearError();
-
         final int index = columnList.getSelectedIndex();
         SampleColumn column = index < 0 ? null : getColumn(columnList.getValue(index));
 
@@ -142,8 +137,6 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("addButton")
     void addButtonClicked(ClickEvent event) {
-        clearError();
-
         SampleAttributeTemplate template = getSelectedTemplate();
         if (template != null) {
             templateColumnList.removeItem(templateColumnList.getSelectedIndex());
@@ -153,27 +146,23 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("removeButton")
     void removeButtonClicked(ClickEvent event) {
-        clearError();
-
         removeSelectedColumn();
     }
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        clearError();
-
         addColumn(USER_DEFIED_ATTRIBUTE);
     }
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        clearError();
-
-        if (isValid()) {
+        if (areNamesUnique()) {
             hide();
             if (null != callback) {
                 callback.onOkay(getColumns());
             }
+        } else {
+            NotificationPopupPanel.error("There are multiple attributes or experimental variables with the same name.", true);
         }
     }
 
@@ -199,8 +188,6 @@ public class SampleColumnsDialog extends DialogBox {
     }
     @UiHandler("moveUpButton")
     void moveColumnUp(ClickEvent event) {
-        clearError();
-
         int index = columnList.getSelectedIndex();
         if (index <= 0) {
             return;
@@ -210,8 +197,6 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("moveDownButton")
     void moveColumnDown(ClickEvent event) {
-        clearError();
-
         int index = columnList.getSelectedIndex();
         if (index < 0 || index >= columnList.getItemCount() - 1) {
             return;
@@ -289,7 +274,9 @@ public class SampleColumnsDialog extends DialogBox {
         int columnId = parseInt(columnList.getValue(index));
         columnMap.put(columnId, value);
         updateColumnTitles();
-        validate();
+        if (!areNamesUnique()) {
+            NotificationPopupPanel.error("Sample attribute with the name '" + value.getName() + "' already exists.", true);
+        }
     }
 
     private void removeSelectedColumn() {
@@ -298,13 +285,14 @@ public class SampleColumnsDialog extends DialogBox {
             return;
         }
         int columnId = parseInt(columnList.getValue(index));
-        if (!columnMap.get(columnId).getTemplate().isMandatory()) {
+        SampleAttributeTemplate template = columnMap.get(columnId).getTemplate();
+        if (!template.isMandatory()) {
             columnList.removeItem(index);
             columnMap.remove(columnId);
             updateTemplates();
             DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
         } else {
-            showError("Unable to remove this mandatory attribute");
+            NotificationPopupPanel.error("Attribute '" + template.getName() + "' is mandatory and cannot be removed.", true);
         }
     }
 
@@ -362,29 +350,8 @@ public class SampleColumnsDialog extends DialogBox {
                 valueOf(templateColumnList.getValue(index));
     }
 
-    private void checkNamesUnique(List<String> errors) {
-        if (getUserColumnNamesLowerCased().size() != columnMap.size()) {
-            errors.add("Attribute names must be unique");
-        }
-    }
-
-    private void clearError() {
-        showError("");
-    }
-
-    private void showError(String message) {
-        errorMessage.setText(message);
-    }
-
-    private List<String> validate() {
-        List<String> errors = new ArrayList<String>();
-        checkNamesUnique(errors);
-        showError(errors.isEmpty() ? "" : errors.get(0));
-        return errors;
-    }
-
-    private boolean isValid() {
-        return validate().isEmpty();
+    private boolean areNamesUnique() {
+        return getUserColumnNamesLowerCased().size() == columnMap.size();
     }
 
     private int columnIndex() {

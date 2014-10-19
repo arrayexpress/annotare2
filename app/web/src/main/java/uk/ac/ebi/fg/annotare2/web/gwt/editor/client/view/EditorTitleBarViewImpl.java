@@ -22,10 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
@@ -98,16 +95,13 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void autoSaveStarted() {
         autoSaveLabel.show("Saving...");
-        autoSaveLabel.getElement().getStyle().setColor("inherit");
     }
 
     @Override
     public void autoSaveStopped(String errorMessage) {
-        if (errorMessage == null) {
-            autoSaveLabel.hide();
-        } else {
-            autoSaveLabel.show(errorMessage);
-            autoSaveLabel.getElement().getStyle().setColor("red");
+        autoSaveLabel.hide();
+        if (null != errorMessage) {
+            NotificationPopupPanel.error(errorMessage, true);
         }
     }
 
