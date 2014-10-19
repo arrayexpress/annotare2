@@ -132,7 +132,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiHandler("validateButton")
     void onValidateButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
-        dialog.showSubmissionProgressMessage(null);
+        dialog.showValidationProgressMessage(null);
 
         presenter.validateSubmission(new ValidationHandler() {
 
@@ -155,6 +155,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiHandler("submitButton")
     void onSubmitButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
+        dialog.showValidationProgressMessage(null);
+
         presenter.validateSubmission(new ValidationHandler() {
 
             @Override
