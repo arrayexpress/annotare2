@@ -500,7 +500,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             SubmissionFeedback feedback = feedbackDao.create(score, submission);
             feedback.setComment(comment);
             feedbackDao.save(feedback);
-            save(submission);
             sendFeedbackEmail(score, comment);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);

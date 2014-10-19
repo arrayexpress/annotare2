@@ -152,7 +152,7 @@ public class ValidateSubmissionDialog extends DialogBox {
                 "Validation Failed",
                 "Validation has failed. " +
                         "Please see the validation log for more information. " +
-                        "Errors must be fixed before submission"
+                        "Errors must be fixed before submission."
         );
     }
 
@@ -160,7 +160,7 @@ public class ValidateSubmissionDialog extends DialogBox {
         this.callback = callback;
         setTitleAndMessage(
                 "Submitting...",
-                "Please wait as the submission is being processed"
+                "Please wait as the submission is being processed."
         );
     }
 
@@ -169,7 +169,7 @@ public class ValidateSubmissionDialog extends DialogBox {
         setTitleAndMessage(
                 "Submission Failed",
                 "There was a problem submitting the experiment to ArrayExpress. " +
-                        "Please try again or contact us at annotare@ebi.ac.uk");
+                        "Please try again or contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>.");
     }
 
     public void showSubmissionSuccessMessage(DialogCallback<Void> callback) {
@@ -177,11 +177,11 @@ public class ValidateSubmissionDialog extends DialogBox {
         feedbackPanel.setVisible(true);
         setTitleAndMessage(
                 "Submission Successful",
-                "<p>The experiment has been successfully submitted to ArrayExpress using Annotare.</p>" +
-                        "<p>Our curation team will review your submission and will email you with any questions. " +
-                        "Once all the required information is provided we will send you an accession number.</p>" +
-                        "<p>In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
-                        "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html</a></p>");
+                "The experiment has been successfully submitted to ArrayExpress.<br><br>" +
+                        "Our curation team will review your submission and will email you with any questions. " +
+                        "Once all the required information is provided we will send you an accession number.<br><br>" +
+                        "In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
+                        "Further information can be found at <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html\" target=\"_blank\">Annotare help</a>.");
     }
 
     @Override

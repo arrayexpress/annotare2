@@ -20,20 +20,17 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <ui:style>
-        .feedbackPanel hr {
-            border: 0;
-            height: 1px;
-            background: #333;
-            background-image: -webkit-linear-gradient(left, #ccc, #333, #ccc);
-            background-image: -moz-linear-gradient(left, #ccc, #333, #ccc);
-            background-image: -ms-linear-gradient(left, #ccc, #333, #ccc);
-            background-image: -o-linear-gradient(left, #ccc, #333, #ccc);
+        .feedbackPanel {
+            padding: 10px;
+            background-color: #fffee7;
+            margin-top: 10px;
+            border-radius: 5px;
         }
 
         .feedback {
             table-layout: fixed;
             width: 50%;
-            margin: 0 auto 0.5em auto;
+            margin: 1em auto;
         }
 
         .feedback label {
@@ -41,7 +38,7 @@
         }
 
         .feedback i {
-            margin: 0.5em 0 0 0;
+            margin: 0.2em 0 0 0;
             font-size: large;
         }
 
@@ -66,8 +63,8 @@
     <g:VerticalPanel width="480px">
         <g:HTML ui:field="html"/>
         <g:HTMLPanel ui:field="feedbackPanel" addStyleNames="{style.feedbackPanel}" visible="false">
-            <hr/>
-            <g:Label>We value your feedback. Please rate the experience submitting with Annotare:</g:Label>
+            <!-- <hr/> -->
+            <g:Label>We value your feedback. Please rate your experience submitting with Annotare:</g:Label>
             <g:HorizontalPanel addStyleNames="{style.feedback}" horizontalAlignment="ALIGN_CENTER">
                 <g:RadioButton name="fs" ui:field="rbScore1" addStyleNames="{style.rb-1}" ><i class="fa fa-frown-o"/></g:RadioButton>
                 <g:RadioButton name="fs" ui:field="rbScore2"/>
