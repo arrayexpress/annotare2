@@ -121,7 +121,7 @@ public class CustomDataGrid<T> extends DataGrid<T> {
                     return "";
                 }
             };
-            super.insertColumn(0, lastColumn, new MyResizableHeader<T>("", lastColumn, this), null);
+            super.insertColumn(0, lastColumn, (Header<?>)null/*new MyResizableHeader<T>("", lastColumn, this)*/, null);
             beforeIndex = 1;
         }
         if (isResizable && getColumnCount() > 0 && beforeIndex == getColumnCount()) {
@@ -163,15 +163,16 @@ public class CustomDataGrid<T> extends DataGrid<T> {
     }
 
     protected void resizeColumn(Column<T, ?> target, int colWidth) {
-        resizeColumn(getColumnIndex(target), colWidth);
+        setColumnWidth(target, colWidth + "px");
+        //resizeColumn(getColumnIndex(target), colWidth);
     }
 
     public void fix() {
         removeUnusedDataGridColumns();
-        adjustWidth();
+        //adjustWidth();
     }
 
-    // a workaround (for more details see:  http://code.google.com/p/google-web-toolkit/issues/detail?id=6711)
+    // a workaround (for more details see: http://code.google.com/p/google-web-toolkit/issues/detail?id=6711)
     private void removeUnusedDataGridColumns() {
         int columnCount = getColumnCount();
         NodeList<Element> colGroups = getElement().getElementsByTagName("colgroup");

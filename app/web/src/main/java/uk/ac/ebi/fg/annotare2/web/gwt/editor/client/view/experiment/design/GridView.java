@@ -33,10 +33,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -63,13 +60,18 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     private ColumnSortEvent.ListHandler<R> sortHandler;
     private SimplePager pager;
 
-
     private ListDataProvider<R> dataProvider;
 
     private int permanentColumnCount;
+    private boolean isRowSelectionEnabled;
 
     public GridView() {
+        isRowSelectionEnabled = true;
         initWidget(Binder.BINDER.createAndBindUi(this));
+    }
+
+    public void setRowSelectionEnabled(boolean enabled) {
+        isRowSelectionEnabled = enabled;
     }
 
     public void addTool(Widget tool) {
@@ -86,15 +88,17 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
         dataGrid.setWidth("100%");
         dataGrid.setEmptyTableWidget(new Label("No data"));
 
-        selectionModel =
-                new MultiSelectionModel<R>(new ProvidesKey<R>() {
-                    @Override
-                    public Object getKey(R item) {
-                        return item.getIdentity();
-                    }
-                });
+        if (isRowSelectionEnabled) {
+            selectionModel =
+                    new MultiSelectionModel<R>(new ProvidesKey<R>() {
+                        @Override
+                        public Object getKey(R item) {
+                            return item.getIdentity();
+                        }
+                    });
 
-        dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager.<R>createCheckboxManager());
+            dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager.<R>createCheckboxManager());
+        }
 
         dataProvider = new ListDataProvider<R>();
         dataProvider.addDataDisplay(dataGrid);
@@ -103,7 +107,9 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
         sortHandler = new ColumnSortEvent.ListHandler<R>(dataProvider.getList());
         dataGrid.addColumnSortHandler(sortHandler);
         permanentColumnCount = 0;
-        addCheckBoxColumn();
+        if (isRowSelectionEnabled) {
+            addCheckBoxColumn();
+        }
 
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
@@ -115,19 +121,20 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     }
 
     public void clearAllColumns() {
-        if (dataGrid == null) {
-            return;
+        if (null != dataGrid) {
+            int startingColumn = isRowSelectionEnabled ? 1 : 0;
+            clearColumns(startingColumn, dataGrid.getColumnCount() - 1 - startingColumn);
         }
-        /* 2 columns must stay: first checkbox and last buffer column */
-        clearColumns(1, dataGrid.getColumnCount() - 2);
     }
 
     public void clearColumns() {
-        int columnCount = dataGrid.getColumnCount() - permanentColumnCount - 1;
-        if (columnCount <= 0) {
-            return;
+        if (null != dataGrid) {
+            int columnCount = dataGrid.getColumnCount() - permanentColumnCount - 1;
+            if (columnCount <= 0) {
+                return;
+            }
+            clearColumns(permanentColumnCount, columnCount);
         }
-        clearColumns(permanentColumnCount, columnCount);
     }
 
     private void clearColumns(int fromIndex, int count) {
@@ -196,16 +203,18 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     }
 
     private void selectAllRows(boolean selected) {
-        int start = pager.getPageStart();
-        List<R> sublist = dataProvider.getList().subList(
-                start, Math.min(start + pager.getPageSize(), dataProvider.getList().size()));
-        for (R row : sublist) {
-            selectionModel.setSelected(row, selected);
+        if (isRowSelectionEnabled) {
+            int start = pager.getPageStart();
+            List<R> sublist = dataProvider.getList().subList(
+                    start, Math.min(start + pager.getPageSize(), dataProvider.getList().size()));
+            for (R row : sublist) {
+                selectionModel.setSelected(row, selected);
+            }
         }
     }
 
     public Set<R> getSelectedRows() {
-        return selectionModel.getSelectedSet();
+        return isRowSelectionEnabled ? selectionModel.getSelectedSet() : Collections.<R>emptySet();
     }
 
     @SuppressWarnings("unchecked")
