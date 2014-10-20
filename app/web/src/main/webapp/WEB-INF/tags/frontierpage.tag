@@ -29,6 +29,7 @@
     <!-- CSS: implied media=all -->
     <!-- CSS concatenated and minified via ant build script-->
     <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/mini/ebi-fluid-embl.css">
+    <link rel="stylesheet" href="assets/css/annotare.css">
     <link rel="stylesheet" href="assets/css/annotare-colours.css">
     <jsp:invoke fragment="extracss"/>
 
@@ -99,7 +100,7 @@
                          whichever one will show up last...
                          For example: -->
                     <li class="functional last"><a href="./login/" class="icon icon-functional" data-icon="l">Login</a></li>
-                    <li class="functional"><a href="./sign-up/" class="icon icon-functional" data-icon="5">Register</a></li>
+                    <li class="functional"><a href="./sign-up/" class="icon icon-functional" data-icon="7">Register</a></li>
                     <li class="functional"><a href="#" class="icon icon-generic" data-icon="\">Feedback</a></li>
                 </ul>
             </nav>
