@@ -1,6 +1,6 @@
 <%@tag description="Frontier page template" pageEncoding="UTF-8"%>
-<%@attribute name="extracss" fragment="true" %>
-<%@attribute name="extrajs" fragment="true" %>
+<%@attribute name="extracss" fragment="true"%>
+<%@attribute name="extrajs" fragment="true"%>
 <!-- for more info please see http://stackoverflow.com/questions/1296235/jsp-tricks-to-make-templating-easier/3257426#3257426 -->
 <!doctype html>
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
@@ -91,15 +91,15 @@
 
             <nav>
                 <ul class="grid_24" id="local-nav">
-                    <li class="first active"><a href="#">Home</a></li>
-                    <li><a href="#">Register</a></li>
-                    <li><a href="#">Help</a></li>
-                    <li class="last"><a href="#">About Annotare</a></li>
+                    <li class="first active"><a href="./">Home</a></li>
+                    <li><a href="./help/">Help</a></li>
+                    <li class="last"><a href="./about/">About Annotare</a></li>
                     <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
                          add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
                          whichever one will show up last...
                          For example: -->
-                    <li class="functional last"><a href="#" class="icon icon-functional" data-icon="l">Login</a></li>
+                    <li class="functional last"><a href="./login/" class="icon icon-functional" data-icon="l">Login</a></li>
+                    <li class="functional"><a href="./sign-up/" class="icon icon-functional" data-icon="5">Register</a></li>
                     <li class="functional"><a href="#" class="icon icon-generic" data-icon="\">Feedback</a></li>
                 </ul>
             </nav>
@@ -173,9 +173,8 @@
 <!-- TODO: reinstate this
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
 -->
-<!--
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
--->
+
 <!-- end scripts-->
 
 <!-- Google Analytics details... -->
