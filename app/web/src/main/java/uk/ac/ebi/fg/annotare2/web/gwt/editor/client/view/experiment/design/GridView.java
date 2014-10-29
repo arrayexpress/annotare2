@@ -220,7 +220,7 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     @SuppressWarnings("unchecked")
     public void fillDownKeyboardSelectedColumn() {
         int colIndex = dataGrid.getKeyboardSelectedColumn();
-        int rowIndex = dataGrid.getKeyboardSelectedRow();
+        int rowIndex = dataGrid.getKeyboardSelectedRow() + dataGrid.getPageStart();
 
         if (colIndex >= 2 && colIndex < dataGrid.getColumnCount() &&
                 rowIndex >=0 && rowIndex < dataGrid.getRowCount()) {
@@ -247,7 +247,7 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     @SuppressWarnings("unchecked")
     public void importValuesToKeyboardSelectedColumn(List<String> values) {
         int colIndex = dataGrid.getKeyboardSelectedColumn();
-        int rowIndex = dataGrid.getKeyboardSelectedRow();
+        int rowIndex = dataGrid.getKeyboardSelectedRow() + dataGrid.getPageStart();
 
         if (null != values && !values.isEmpty()) {
             if (colIndex >= 2 && colIndex < dataGrid.getColumnCount() &&
