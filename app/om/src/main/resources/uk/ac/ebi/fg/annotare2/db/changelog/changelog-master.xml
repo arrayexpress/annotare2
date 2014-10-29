@@ -71,4 +71,9 @@
             ENGINE = InnoDB DEFAULT CHARSET = UTF8;
         </sql>
     </changeSet>
+    <changeSet id="addResubmittedStateToSubmissions" author="kolais">
+        <sql>
+            ALTER TABLE submissions MODIFY status ENUM('IN_PROGRESS', 'SUBMITTED', 'RESUBMITTED', 'IN_CURATION', 'PRIVATE_IN_AE', 'PUBLIC_IN_AE') NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

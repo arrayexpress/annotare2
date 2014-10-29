@@ -274,10 +274,15 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            storeAssociatedFiles(submission);
-            submission.setStatus(SubmissionStatus.SUBMITTED);
-            submission.setOwnedBy(userDao.getCuratorUser());
-            save(submission);
+            if (submission.getStatus().canSubmit()) {
+                storeAssociatedFiles(submission);
+                submission.setStatus(
+                        SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
+                                SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
+                );
+                submission.setOwnedBy(userDao.getCuratorUser());
+                save(submission);
+            }
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {

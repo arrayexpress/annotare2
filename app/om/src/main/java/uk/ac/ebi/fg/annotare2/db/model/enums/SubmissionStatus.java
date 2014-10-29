@@ -22,6 +22,7 @@ package uk.ac.ebi.fg.annotare2.db.model.enums;
 public enum SubmissionStatus {
     IN_PROGRESS("In Progress"),
     SUBMITTED("Submitted"),
+    RESUBMITTED("Resubmitted"),
     IN_CURATION("In Curation"),
     PRIVATE_IN_AE("Private in ArrayExpress"),
     PUBLIC_IN_AE("Public in ArrayExpress");
@@ -34,5 +35,9 @@ public enum SubmissionStatus {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean canSubmit() {
+        return IN_PROGRESS == this || IN_CURATION == this;
     }
 }

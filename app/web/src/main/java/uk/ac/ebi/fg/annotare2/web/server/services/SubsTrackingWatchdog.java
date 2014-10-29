@@ -135,6 +135,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
     private void periodicRun() throws Exception {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED
+                , SubmissionStatus.RESUBMITTED
                 , SubmissionStatus.IN_CURATION
                 , SubmissionStatus.PRIVATE_IN_AE
                 , SubmissionStatus.PUBLIC_IN_AE
@@ -147,6 +148,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         for (Submission submission : submissions) {
             switch (submission.getStatus()) {
                 case SUBMITTED:
+                case RESUBMITTED:
                     if (!hasProcessedOneSubmission) {
                         processSubmitted(submission);
                         hasProcessedOneSubmission = true;
@@ -172,18 +174,21 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
     public void processSubmitted(Submission submission) throws SubsTrackingException {
         SubmissionOutcome outcome = submitSubmission(submission);
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
+            boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submission.setSubmitted(new Date());
             submissionManager.save(submission);
-            sendEmail(
-                    EmailSender.INITIAL_SUBMISSION_TEMPLATE,
-                    ImmutableMap.of(
-                            "to.name", submission.getCreatedBy().getName(),
-                            "to.email", submission.getCreatedBy().getEmail(),
-                            "submission.title", submission.getTitle(),
-                            "submission.date", submission.getUpdated().toString()
-                    )
-            );
+            if (!hasResubmitted) {
+                sendEmail(
+                        EmailSender.INITIAL_SUBMISSION_TEMPLATE,
+                        ImmutableMap.of(
+                                "to.name", submission.getCreatedBy().getName(),
+                                "to.email", submission.getCreatedBy().getEmail(),
+                                "submission.title", submission.getTitle(),
+                                "submission.date", submission.getUpdated().toString()
+                        )
+                );
+            }
 
             if (properties.isSubsTrackingEnabled()) {
                 String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?

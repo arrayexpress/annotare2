@@ -224,3 +224,55 @@
 
 .wgt-MenuButtonItem .label {
 }
+
+.gwt-NotificationPopup {
+    max-width: 40%;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.gwt-NotificationPopup.error,
+.gwt-NotificationPopup.failure {
+    border-bottom: 4px solid #c40000;
+}
+
+.gwt-NotificationPopup.error .icon,
+.gwt-NotificationPopup.failure .icon {
+    color: #c40000;
+}
+
+.gwt-NotificationPopup.warning {
+    border-bottom: 4px solid #e2aa00;
+}
+
+.gwt-NotificationPopup.warning .icon {
+    color: #e2aa00;
+}
+
+.gwt-NotificationPopup.info {
+    border-bottom: 4px solid #00c400;
+}
+
+.gwt-NotificationPopup.info .icon {
+    color: #00c400;
+}
+
+.gwt-NotificationPopup .container {
+    display: table;
+    width: 100%
+}
+
+.gwt-NotificationPopup .icon {
+    display: table-cell;
+    font-size: 3em;
+    padding: 0 10px 0 20px;
+    vertical-align: middle;
+}
+
+.gwt-NotificationPopup .message {
+    display: table-cell;
+    padding: 20px 20px 20px 10px;
+    vertical-align: middle;
+}

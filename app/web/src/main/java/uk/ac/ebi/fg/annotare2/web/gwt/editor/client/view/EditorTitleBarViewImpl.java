@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
@@ -62,6 +63,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     //Anchor exportLink;
 
     private Presenter presenter;
+    private boolean shouldAllowInstantFeedback;
 
     private final FeedbackDialog feedbackDialog;
     private final WaitingPopup waitingPopup;
@@ -90,6 +92,12 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         validateButton.setVisible(isExperimentSubmission);
         //exportLink.setVisible(isExperimentSubmission);
         //importLink.setVisible(!isExperimentSubmission);
+    }
+
+    @Override
+    public void setSubmissionStatus(SubmissionStatus status) {
+        submitButton.setVisible(status.canSubmit());
+        shouldAllowInstantFeedback = (SubmissionStatus.IN_PROGRESS == status);
     }
 
     @Override
@@ -179,6 +187,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
                         @Override
                         public void onSuccess() {
+                            submitButton.setEnabled(false);
                             dialog.showSubmissionSuccessMessage(new DialogCallback<Void>() {
                                 @Override
                                 public void onOkay(Void aVoid) {
@@ -186,7 +195,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                                         presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
                                     }
                                 }
-                            });
+                            }, shouldAllowInstantFeedback);
                         }
                     });
                 }

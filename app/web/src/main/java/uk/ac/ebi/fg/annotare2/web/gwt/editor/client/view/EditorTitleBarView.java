@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
@@ -33,6 +34,8 @@ public interface EditorTitleBarView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     void setSubmissionType(SubmissionType type);
+
+    void setSubmissionStatus(SubmissionStatus status);
 
     void autoSaveStarted();
 

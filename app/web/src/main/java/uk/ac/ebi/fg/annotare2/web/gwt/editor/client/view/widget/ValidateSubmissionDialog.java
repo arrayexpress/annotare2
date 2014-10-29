@@ -172,10 +172,10 @@ public class ValidateSubmissionDialog extends DialogBox {
                         "Please try again or contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>.");
     }
 
-    public void showSubmissionSuccessMessage(DialogCallback<Void> callback) {
+    public void showSubmissionSuccessMessage(DialogCallback<Void> callback, boolean shouldShowFeedback) {
         this.callback = callback;
-        feedbackPanel.setVisible(true);
-        cancelButton.setVisible(true);
+        feedbackPanel.setVisible(shouldShowFeedback);
+        cancelButton.setVisible(shouldShowFeedback);
         setTitleAndMessage(
                 "Submission Successful",
                 "The experiment has been successfully submitted to ArrayExpress.<br><br>" +

@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 import java.io.UnsupportedEncodingException;
@@ -124,7 +125,7 @@ public class SubsTracking {
                     throw new SubsTrackingException(SubsTrackingException.MISSING_RECORD_EXCEPTION);
                 }
 
-                if (1 == r.getInCuration()) {
+                if (SubmissionStatus.RESUBMITTED != submission.getStatus() && 1 == r.getInCuration()) {
                     throw new SubsTrackingException(SubsTrackingException.IN_CURATION_ON_RESUBMISSION_EXCEPTION);
                 }
 
