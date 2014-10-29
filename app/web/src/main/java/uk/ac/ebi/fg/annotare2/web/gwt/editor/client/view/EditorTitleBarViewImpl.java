@@ -33,8 +33,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
  */
 public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
 
-    //private static final String CONFIRMATION_MESSAGE = "Please note that the all data of the submission will be lost. Do you want to continue?";
-
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
     }
 
@@ -55,9 +53,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiField
     AutoSaveLabel autoSaveLabel;
-
-    //@UiField
-    //Anchor importLink;
 
     //@UiField
     //Anchor exportLink;
@@ -91,7 +86,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         boolean isExperimentSubmission = type.isExperimentSubmission();
         validateButton.setVisible(isExperimentSubmission);
         //exportLink.setVisible(isExperimentSubmission);
-        //importLink.setVisible(!isExperimentSubmission);
     }
 
     @Override
@@ -202,20 +196,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
             }
         });
     }
-
-    //@UiHandler("importLink")
-    //void onImportLinkClick(ClickEvent event) {
-    //    if (confirm(CONFIRMATION_MESSAGE)) {
-    //        ImportFileDialog importFileDialog = new ImportFileDialog("Array Design Import");
-    //        importFileDialog.addImportEventHandler(new ImportEventHandler() {
-    //            @Override
-    //            public void onImport(AsyncCallback<Void> callback) {
-    //                presenter.importFile(callback);
-    //            }
-    //        });
-    //        importFileDialog.show();
-    //    }
-    //}
 
     //@UiHandler("exportLink")
     //void onExportLinkClick(ClickEvent event) {

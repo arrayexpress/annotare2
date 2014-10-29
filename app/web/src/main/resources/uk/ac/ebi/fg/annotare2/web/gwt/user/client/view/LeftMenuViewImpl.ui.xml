@@ -18,13 +18,68 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        xmlns:wgt="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.widgets.client"
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget">
+    <ui:style>
+        .buttonPanel {
+            margin: 0 0 10px 10px;
+        }
+        
+        .importButton {
+            background: none repeat scroll 0 0 #888;
+            border: 1px solid #888;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .importButton:hover {
+            background-color: #999;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset #999;
+        }
+
+        .createButton {
+            background: none repeat scroll 0 0 #e5a066;
+            border: 1px solid #e5a066;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .createButton:hover {
+            background-color: #f4ae67;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset #f4ae67;
+        }
+    </ui:style>
 
     <g:HTMLPanel addStyleNames="app-LeftMenu">
-        <div class="createButton">
-            <wgt:MenuButton text="Create" ui:field="createButton" width="140px"/>
-        </div>
+        <g:HTMLPanel addStyleNames="{style.buttonPanel}">
+            <g:Button addStyleNames="{style.createButton}" ui:field="createButton">
+                <i class="fa fa-plus"/>Create
+            </g:Button>
+            <g:Button addStyleNames="{style.importButton}" ui:field="importButton">
+                <i class="fa fa-arrow-right"/>Import
+            </g:Button>
+        </g:HTMLPanel>
         <my:LeftMenuItem text="All Submissions" ui:field="allSubmissions"/>
         <my:LeftMenuItem text="Completed" ui:field="completed"/>
         <my:LeftMenuItem text="Incomplete" ui:field="incomplete"/>

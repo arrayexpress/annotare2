@@ -18,15 +18,11 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
-import uk.ac.ebi.fg.annotare2.web.gwt.widgets.client.MenuButton;
 
 import java.util.HashMap;
 
@@ -45,7 +41,10 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     private Widget selected;
 
     @UiField
-    MenuButton createButton;
+    Button createButton;
+
+    @UiField
+    Button importButton;
 
     @UiField
     LeftMenuItem allSubmissions;
@@ -61,7 +60,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
-
+        /*
         createButton
                 .addMenuButtonItem(EXPERIMENT.getTitle() + " Submission")
                 .addClickHandler(new ClickHandler() {
@@ -69,7 +68,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
                         presenter.onSubmissionCreateClick(EXPERIMENT);
                     }
                 });
-
+        */
         /*** disabled in first release ***
         createButton
                 .addMenuButtonItem(ARRAY_DESIGN.getTitle() + " Submission")
@@ -87,6 +86,16 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @UiHandler("createButton")
+    public void onCreateButtonClick(ClickEvent event) {
+        presenter.onSubmissionCreateClick(EXPERIMENT);
+    }
+
+    @UiHandler("importButton")
+    public void onImportButtonClick(ClickEvent event) {
+        NotificationPopupPanel.message("This functionality is not available at the moment.", true);
     }
 
     @UiHandler("allSubmissions")

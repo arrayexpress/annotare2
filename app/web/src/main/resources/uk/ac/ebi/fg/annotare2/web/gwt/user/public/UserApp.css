@@ -87,9 +87,7 @@
 
 .app-SubmissionList {
     padding: 0;
-    border-left: 1px solid #898989;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #eee;
     vertical-align: top;
 }
 
