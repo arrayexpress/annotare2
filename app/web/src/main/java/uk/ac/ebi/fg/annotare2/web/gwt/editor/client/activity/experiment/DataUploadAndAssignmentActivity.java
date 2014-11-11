@@ -37,7 +37,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import javax.annotation.Nullable;
@@ -78,12 +81,13 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
         view.setPresenter(this);
         panel.setWidget(view);
 
-        experimentUpdateHandler = eventBus.addHandler(ExperimentUpdateEvent.getType(), new ExperimentUpdateEventHandler() {
-            @Override
-            public void onExperimentUpdate() {
-                reloadExpDataAsync();
-            }
-        });
+        // todo: is this really enough to work this view out
+        //experimentUpdateHandler = eventBus.addHandler(ExperimentUpdateEvent.getType(), new ExperimentUpdateEventHandler() {
+        //    @Override
+        //    public void onExperimentUpdate() {
+        //        reloadExpDataAsync();
+        //    }
+        //});
         criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
             @Override
             public void criticalUpdateStarted(CriticalUpdateEvent event) {
@@ -108,7 +112,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
     @Override
     public void onStop() {
-        experimentUpdateHandler.removeHandler();
+        //experimentUpdateHandler.removeHandler();
         criticalUpdateHandler.removeHandler();
         dataUpdateHandler.removeHandler();
         super.onStop();
