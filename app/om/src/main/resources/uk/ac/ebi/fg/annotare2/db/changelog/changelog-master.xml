@@ -76,4 +76,9 @@
             ALTER TABLE submissions MODIFY status ENUM('IN_PROGRESS', 'SUBMITTED', 'RESUBMITTED', 'IN_CURATION', 'PRIVATE_IN_AE', 'PUBLIC_IN_AE') NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addImportedExperimentTypeToSubmissions" author="kolais">
+        <sql>
+            ALTER TABLE submissions MODIFY type ENUM('EXPERIMENT', 'IMPORTED_EXPERIMENT', 'ARRAY_DESIGN') NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

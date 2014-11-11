@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.db.model;
 
-public enum SubmissionType {
-    EXPERIMENT("Experiment"),
-    IMPORTED_EXPERIMENT("Imported Experiment"),
-    ARRAY_DESIGN("Array Design");
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
-    private final String title;
+@Entity
+@DiscriminatorValue("IMPORTED_EXPERIMENT")
+public class ImportedExperimentSubmission extends Submission {
 
-    private SubmissionType(String title) {
-        this.title = title;
+    public ImportedExperimentSubmission() {
+        this(null);
     }
 
-    public String getTitle() {
-        return title;
+    public ImportedExperimentSubmission(User user) {
+        super(user);
     }
 
-    public boolean isExperimentSubmission() {
-        return this == EXPERIMENT;
+    @Override
+    public boolean hasNoData() {
+        return false;
     }
 }

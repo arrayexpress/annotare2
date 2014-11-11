@@ -91,7 +91,10 @@ public class UIObjectConverter {
                 return SubmissionType.EXPERIMENT;
             else if (submission instanceof ArrayDesignSubmission)
                 return SubmissionType.ARRAY_DESIGN;
-            throw new IllegalStateException("Submission is of unknown type: " + submission.getClass());
+            else if (submission instanceof ImportedExperimentSubmission)
+                return SubmissionType.IMPORTED_EXPERIMENT;
+            else
+                throw new IllegalStateException("Submission is of unknown type: " + submission.getClass());
         }
     };
 

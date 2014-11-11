@@ -100,13 +100,15 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
                     @Override
                     public ImageResource getValue(SubmissionRow object) {
-                        return resourceBundle.editIcon();
+                        return object.getType().isExperimentSubmission() ? resourceBundle.editIcon() : null;
                     }
                 };
 
         editIconColumn.setFieldUpdater(new FieldUpdater<SubmissionRow, ImageResource>() {
             public void update(int index, SubmissionRow row, ImageResource value) {
-                openSubmissionEditor(row.getId());
+                if (row.getType().isExperimentSubmission()) {
+                    openSubmissionEditor(row.getId());
+                }
             }
         });
 
@@ -127,9 +129,10 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             public void onSelectionChange(SelectionChangeEvent event) {
-                long id = selectionModel.getSelectedObject().getId();
-                GWT.log("onSelectionChange(" + id + ")");
-                presenter.onSubmissionSelected(id);
+                SubmissionRow row = selectionModel.getSelectedObject();
+                if (null != row && row.getType().isExperimentSubmission()) {
+                    presenter.onSubmissionSelected(row.getId());
+                }
             }
         });
 

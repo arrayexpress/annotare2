@@ -42,6 +42,7 @@
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.AclEntry" />
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.Submission" />
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission"/>
+        <mapping class="uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission"/>
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission"/>
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback" />
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.DataFile" />

@@ -98,7 +98,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 loadExpDataAsync();
             }
         });
-        this.dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
+        dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
             public void onDataFilesUpdate() {
                 loadFilesAsync();

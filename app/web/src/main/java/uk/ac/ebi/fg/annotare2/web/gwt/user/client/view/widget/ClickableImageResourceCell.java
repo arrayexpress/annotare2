@@ -47,18 +47,18 @@ public class ClickableImageResourceCell extends AbstractCell<ImageResource> {
     public ClickableImageResourceCell() {
         super("click", "keydown");
 
-        if (renderer == null) {
+        if (null == renderer) {
             renderer = new ImageResourceRenderer();
         }
 
-        if (template == null) {
+        if (null == template) {
             template = GWT.create(Template.class);
         }
     }
 
     @Override
     public void render(Context context, ImageResource value, SafeHtmlBuilder sb) {
-        if (value != null) {
+        if (null != value) {
             sb.append(template.span(renderer.render(value)));
         }
     }
@@ -68,7 +68,7 @@ public class ClickableImageResourceCell extends AbstractCell<ImageResource> {
                                NativeEvent event, ValueUpdater<ImageResource> valueUpdater) {
         super.onBrowserEvent(context, parent, value, event, valueUpdater);
 
-        if ("click".equals(event.getType())) {
+        if (null != value && "click".equals(event.getType())) {
             EventTarget eventTarget = event.getEventTarget();
             if (!Element.is(eventTarget)) {
                 return;
@@ -83,7 +83,7 @@ public class ClickableImageResourceCell extends AbstractCell<ImageResource> {
     @Override
     protected void onEnterKeyDown(Cell.Context context, Element parent, ImageResource value,
                                   NativeEvent event, ValueUpdater<ImageResource> valueUpdater) {
-        if (valueUpdater != null) {
+        if (null != value && null != valueUpdater) {
             valueUpdater.update(value);
         }
     }
