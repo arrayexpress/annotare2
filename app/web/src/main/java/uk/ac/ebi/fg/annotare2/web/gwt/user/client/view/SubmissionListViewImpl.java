@@ -23,10 +23,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.DataGrid;
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
@@ -59,8 +56,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
     DataGrid<SubmissionRow> dataGrid;
 
     public SubmissionListViewImpl() {
-        dataGrid = new DataGrid<SubmissionRow>(Integer.MAX_VALUE);
-        dataGrid.setWidth("100%");
+        dataGrid = new CustomDataGrid<SubmissionRow>(Integer.MAX_VALUE, false);
 
         dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override

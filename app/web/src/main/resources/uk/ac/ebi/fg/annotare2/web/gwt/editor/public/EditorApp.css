@@ -123,10 +123,6 @@
 
 .gwt-DialogBox .dialogBottomRight {
     background: white none;
-    /*
-    border-right: 1px solid #48877C;
-    border-bottom: 1px solid #48877C;
-    */
     border-bottom-right-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
@@ -136,10 +132,6 @@
 
 .gwt-DialogBox .dialogBottomLeft {
     background: white none;
-    /*
-    border-left: 1px solid #48877C;
-    border-bottom: 1px solid #48877C;
-    */
     border-bottom-left-radius: 5px;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
@@ -149,23 +141,14 @@
 
 .gwt-DialogBox .dialogMiddleLeft {
     background: white none;
-    /*
-    border-left: 1px solid #48877C;
-    */
 }
 
 .gwt-DialogBox .dialogMiddleRight {
     background: white none;
-    /*
-    border-right: 1px solid #48877C;
-    */
 }
 
 .gwt-DialogBox .dialogBottomCenter {
     background: white none;
-    /*
-    border-bottom: 1px solid #48877C;
-    */
 }
 
 .gwt-DialogBox .dialogContent {

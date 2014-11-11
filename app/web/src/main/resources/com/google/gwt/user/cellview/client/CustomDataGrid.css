@@ -15,48 +15,6 @@
     background: rgba(0,0,0,0.3);
 }
 
-/*
-.dataGridWidget input {
-    font-family: inherit;
-    font-size: inherit;
-    display: block;
-    padding: 0px;
-    margin: 0px;
-    border: 0 none;
-    width: 100%;
-}
-
-.dataGridWidget input:focus {
-    outline: 0 none;
-}
-
-.dataGridWidget .select {
-    background: #f0f0f0 url("data:image/png;base64,R0lGODlhDwAUAIABAAAAAP///yH5BAEAAAEALAAAAAAPABQAAAIXjI+py+0Po5wH2HsXzmw//lHiSJZmUAAAOw==") no-repeat 100% 50%;
-    width: 100%;
-}
-
-.dataGridWidget .select select {
-    font-family: inherit;
-    font-size: inherit;
-    display: block;
-    padding: 0px;
-    margin: 0px;
-    border: 0 none;
-    box-shadow: none;
-    background: transparent;
-    background-image: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    text-indent: 0.01px;
-    text-overflow: '';
-    width: 100%;
-}
-
-.dataGridWidget select:focus {
-    outline: 0 none;
-}
-*/
 .dataGridWidget .col-NoEdit {
     color: #777;
     background: #eee;
@@ -64,11 +22,9 @@
 
 
 .dataGridFirstColumn {
-
 }
 
 .dataGridLastColumn {
-
 }
 
 .dataGridFooter {
@@ -101,19 +57,15 @@
 }
 
 .dataGridFirstColumnFooter {
-
 }
 
 .dataGridFirstColumnHeader {
-
 }
 
 .dataGridLastColumnFooter {
-
 }
 
 .dataGridLastColumnHeader {
-
 }
 
 .dataGridSortableHeader {
@@ -126,11 +78,9 @@
 }
 
 .dataGridSortedHeaderAscending {
-
 }
 
 .dataGridSortedHeaderDescending {
-
 }
 
 .dataGridEvenRow {
@@ -174,4 +124,3 @@
 .dataGridKeyboardSelectedInactiveCell {
     border: 2px solid lightgray;
 }
-
