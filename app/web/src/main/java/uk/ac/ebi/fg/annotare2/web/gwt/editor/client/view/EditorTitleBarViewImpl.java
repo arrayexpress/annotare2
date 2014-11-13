@@ -197,10 +197,12 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         });
     }
 
-    //@UiHandler("exportLink")
-    //void onExportLinkClick(ClickEvent event) {
-    //    if (presenter != null) {
-    //        Window.open(presenter.getSubmissionExportUrl(), "export", "");
-    //    }
-    //}
+    /*
+    @UiHandler("exportLink")
+    void onExportLinkClick(ClickEvent event) {
+        if (presenter != null) {
+            Window.open(presenter.getSubmissionExportUrl(), "export", "");
+        }
+    }
+    */
 }

@@ -25,10 +25,6 @@ import com.google.gwt.user.client.Window;
 public class Utils {
 
     public static void openSubmissionEditor(long submissionId) {
-        /*String url = GWT.getHostPageBaseURL() + "editor/";
-        if (!GWT.isProdMode()) {
-            url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
-        }*/
         Window.open(editorUrl(submissionId), "_blank", "");
     }
 
