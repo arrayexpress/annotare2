@@ -109,6 +109,7 @@ public class AccountManager {
     public User requestChangePassword(final String email) {
         User user = getByEmail(email);
         if (null != user) {
+            user.setPassword("void");
             user.setPasswordChangeRequested(true);
             user.setVerificationToken(generateToken());
             userDao.save(user);

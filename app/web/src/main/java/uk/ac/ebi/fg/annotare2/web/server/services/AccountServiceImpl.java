@@ -203,10 +203,11 @@ public class AccountServiceImpl implements AccountService {
                     log.debug("User '{}' needs email verification", params.getEmail());
                     errors.append(FormParams.TOKEN_PARAM, "Please enter the email verification code");
                 }
+            } else {
+                log.debug("User '{}' logged in", params.getEmail());
+                EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), params.getEmail());
+                LOGGED_IN_SESSION_ATTRIBUTE.set(request.getSession(), true);
             }
-            log.debug("User '{}' logged in", params.getEmail());
-            EMAIL_SESSION_ATTRIBUTE.set(request.getSession(), params.getEmail());
-            LOGGED_IN_SESSION_ATTRIBUTE.set(request.getSession(), true);
         }
         return errors;
     }
