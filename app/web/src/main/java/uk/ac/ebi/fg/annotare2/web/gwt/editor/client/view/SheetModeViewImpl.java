@@ -89,7 +89,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
     private List<IndexedRow> getRows(Table table, boolean hasHeaders) {
         int nRows = table.getHeight();
         List<IndexedRow> rows = new ArrayList<IndexedRow>();
-        int i = 1;
+        int i = hasHeaders ? 2 : 1;
         for (int j = (hasHeaders ? 1 : 0); j < nRows; j++) {
             rows.add(new IndexedRow(table.getRow(j), i++));
         }
@@ -131,7 +131,7 @@ public class SheetModeViewImpl extends Composite implements SheetModeView, Requi
             }
 
             final int colIndex = (i - 1);
-            String title = hasHeaders ? headerRow.getValue(colIndex) : (i + 1) + "";
+            String title = String.valueOf(i) + (hasHeaders ? ": " + headerRow.getValue(colIndex) : "");
             Column<IndexedRow, String> column = new Column<IndexedRow, String>(new TextCell(MultiLineSafeHtmlRenderer.getInstance())) {
                 @Override
                 public String getCellStyleNames(Cell.Context context, IndexedRow row) {

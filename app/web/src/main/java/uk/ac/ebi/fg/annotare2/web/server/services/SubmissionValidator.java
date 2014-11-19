@@ -153,6 +153,7 @@ public class SubmissionValidator {
                 }
             }
         }
+
         return natural().sortedCopy(results);
     }
 
