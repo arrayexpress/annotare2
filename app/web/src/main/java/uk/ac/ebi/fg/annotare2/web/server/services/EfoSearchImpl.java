@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.google.common.base.Joiner.on;
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.transform;
 import static com.google.common.collect.Maps.newHashMap;
@@ -377,20 +378,19 @@ public class EfoSearchImpl implements EfoSearch {
         LABEL_FIELD("label") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getLabel(), YES);
+                return new StringField(name, nullToEmpty(node.getLabel()), YES);
             }
         },
         LABEL_FIELD_LOWERCASE("label_lowercase") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new StringField(name, node.getLabel().toLowerCase(), NO);
+                return new StringField(name, nullToEmpty(node.getLabel()).toLowerCase(), NO);
             }
         },
         DEFINITION_FIELD("definition") {
             @Override
             protected Field create(String name, EfoNode node) {
-                String d = node.getDefinition();
-                return new StringField(name, d == null ? "" : d, YES);
+                return new StringField(name, nullToEmpty(node.getDefinition()), YES);
             }
         },
         ORGANISATIONAL_FLAG_FIELD("organisational_flag") {
@@ -402,7 +402,7 @@ public class EfoSearchImpl implements EfoSearch {
         TEXT_FIELD("text") {
             @Override
             public Field create(String name, EfoNode node) {
-                return new TextField(name, node.getLabel().toLowerCase(), NO);
+                return new TextField(name, nullToEmpty(node.getLabel()).toLowerCase(), NO);
             }
         },
         ASCENDANT_FIELD("ascendant") {
