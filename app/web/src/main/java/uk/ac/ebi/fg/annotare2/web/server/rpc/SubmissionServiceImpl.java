@@ -21,6 +21,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
@@ -83,7 +85,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private static final long serialVersionUID = 6482329782917056447L;
 
-    //private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     private final DataFileManager dataFileManager;
     private final AnnotareProperties properties;
@@ -524,7 +526,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                             "feedback.comment", comment
                     ));
         } catch (MessagingException x) {
-            //
+            log.error("Unable to send feedback email", x);
         }
     }
 

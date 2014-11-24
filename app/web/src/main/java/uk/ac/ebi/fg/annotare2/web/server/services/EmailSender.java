@@ -119,7 +119,7 @@ public class EmailSender {
         MimeMessage msg = new MimeMessage(session);
 
         // set originator (FROM) address
-        InternetAddress addressFrom = new InternetAddress(from);
+        InternetAddress addressFrom = parseAddresses(from)[0];
         msg.setFrom(addressFrom);
 
         // set recipients (TO) address
