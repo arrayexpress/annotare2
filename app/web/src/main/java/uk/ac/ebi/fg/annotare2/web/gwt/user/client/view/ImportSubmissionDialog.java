@@ -17,7 +17,22 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ImportSubmissionDialog extends DialogBox {
+
+    interface Binder extends UiBinder<Widget, ImportSubmissionDialog> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
+    public ImportSubmissionDialog() {
+        setModal(true);
+        setGlassEnabled(true);
+        setText("Import Experiment Submission");
+
+        setWidget(Binder.BINDER.createAndBindUi(this));
+    }
 }
