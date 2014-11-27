@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Constants;
@@ -35,9 +35,6 @@ import java.util.Map;
 
 import static gwtupload.client.IUploadStatus.Status.SUCCESS;
 
-/**
- * @author Olga Melnichuk
- */
 public class DataFilesUploadPanel extends Composite {
 
     private Presenter presenter;

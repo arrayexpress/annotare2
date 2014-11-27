@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
 
 public class DataUploadAndAssignmentViewImpl extends Composite implements DataUploadAndAssignmentView, RequiresResize {
 

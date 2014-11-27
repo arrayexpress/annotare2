@@ -40,7 +40,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Collections2.transform;
@@ -78,7 +77,7 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     }
 
     @Override
-    public List<ArrayDesignRef> getArrayDesignList(String query, int limit) {
+    public ArrayList<ArrayDesignRef> getArrayDesignList(String query, int limit) {
         return newArrayList(Iterables.transform(Iterables.limit(arrayDesignList.getArrayDesigns(query), limit), new Function<ArrayExpress.ArrayDesign, ArrayDesignRef>() {
             @Nullable
             @Override
@@ -89,12 +88,12 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     }
 
     @Override
-    public List<OntologyTerm> getEfoTerms(String query, int limit) {
+    public ArrayList<OntologyTerm> getEfoTerms(String query, int limit) {
         return uiEfoTerms(efoService.suggest(query, limit));
     }
 
     @Override
-    public List<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit) {
+    public ArrayList<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit) {
         return uiEfoTerms(efoService.suggest(query, rootAccession, limit));
     }
 
@@ -125,8 +124,8 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     }
 
     @Override
-    public List<ProtocolType> getProtocolTypes(ExperimentProfileType expType) {
-        List<ProtocolType> types = newArrayList();
+    public ArrayList<ProtocolType> getProtocolTypes(ExperimentProfileType expType) {
+        ArrayList<ProtocolType> types = newArrayList();
         for (ProtocolTypes.Config typeConfig : protocolTypes.filter(expType)) {
             EfoTerm term = efoService.findTermByAccession(typeConfig.getId());
             if (term == null) {
@@ -140,9 +139,9 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     }
 
     @Override
-    public List<OntologyTerm> getContactRoles() {
+    public ArrayList<OntologyTerm> getContactRoles() {
         Collection<String> accessions = properties.getContactRoleAccessions();
-        List<OntologyTerm> terms = new ArrayList<OntologyTerm>();
+        ArrayList<OntologyTerm> terms = newArrayList();
         for (String accession : accessions) {
             EfoTerm term = efoService.findTermByAccession(accession);
             if (term == null) {
@@ -165,33 +164,25 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     }
 
     @Override
-    public List<String> getAeExperimentTypes(ExperimentProfileType type) {
+    public ArrayList<String> getAeExperimentTypes(ExperimentProfileType type) {
         return new ArrayList<String>(experimentTypeList.getExperimentTypes());
     }
 
-    //@Override
-    //public List<String> getAeExperimentTypes(ExperimentProfileType type) {
-    //    Set<String> allTypes = newHashSet(transformed(getDescendantTerms(SystemEfoTerm.AE_EXPERIMENT_TYPE, 100)));
-    //    Set<String> profileSpecificTypes = newHashSet(transformed(getDescendantTerms(type.isMicroarray() ? SystemEfoTerm.ARRAY_ASSAY : SystemEfoTerm.SEQUENCING_ASSAY, 100)));
-    //
-    //    return new ArrayList<String>(sorted(intersection(allTypes, profileSpecificTypes)));
-    //}
-
     @Override
-    public List<String> getMaterialTypes() {
-        return new ArrayList<String>(properties.getMaterialTypes());
+    public ArrayList<String> getMaterialTypes() {
+        return newArrayList(properties.getMaterialTypes());
     }
 
     @Override
-    public List<String> getSequencingHardware() {
-        return new ArrayList<String>(properties.getSequencingHardware());
+    public ArrayList<String> getSequencingHardware() {
+        return newArrayList(properties.getSequencingHardware());
     }
 
     @Override
-    public List<OntologyTermGroup> getExperimentalDesigns() {
+    public ArrayList<OntologyTermGroup> getExperimentalDesigns() {
         Collection<EfoTerm> subTerms = sortedByTermLabel(getChildTerms(SystemEfoTerm.STUDY_DESIGN, 100));
 
-        List<OntologyTermGroup> groups = new ArrayList<OntologyTermGroup>();
+        ArrayList<OntologyTermGroup> groups = newArrayList();
         for (EfoTerm subTerm : subTerms) {
             Collection<EfoTerm> descendants = sortedByTermLabel(efoService.getDescendantTerms(subTerm, 100));
 

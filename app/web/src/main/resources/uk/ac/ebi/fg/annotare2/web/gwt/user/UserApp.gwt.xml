@@ -16,8 +16,6 @@
   -->
 <module rename-to="UserApp">
 
-    <inherits name="com.google.gwt.resources.Resources" />
-
     <inherits name="com.google.gwt.user.User"/>
 
     <inherits name="com.google.gwt.activity.Activity"/>
@@ -34,10 +32,6 @@
     <inherits name="com.google.gwt.inject.Inject"/>
 
     <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp" />
-
-    <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.widgets.CustomWidgets"/>
-
-    <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.widgets.DefaultTheme"/>
 
     <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.user.client.UserApp" />
 

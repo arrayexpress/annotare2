@@ -1,0 +1,195 @@
+/*
+ * Copyright 2009-2014 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.gwt-Button {
+    margin: 0;
+    padding: 5px 7px;
+    text-decoration: none;
+    cursor: pointer;
+    cursor: hand;
+    font-size: small;
+    background: white none;
+    border: 1px solid #48877C;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    color: #000;
+    white-space: nowrap;
+}
+
+.gwt-Button:hover {
+    border: 1px outset #17584d;
+}
+
+.gwt-Button:active {
+    border: 1px inset #48877C;
+}
+
+.gwt-Button[disabled] {
+    cursor: default;
+    color: #999;
+    border: 1px solid #999;
+}
+
+.gwt-Button[disabled]:hover {
+    border: 1px outset #ccc;
+}
+
+.gwt-Button.ok {
+    color: white;
+    background: #48877C none;
+}
+
+.gwt-Button.ok[disabled] {
+    cursor: default;
+    background-color: #eee;
+    color: #999;
+}
+
+.gwt-DialogBox {
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -moz-border-radius: 5px;
+    -ms-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -ms-border-radius: 5px;
+    -o-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -o-border-radius: 5px;
+}
+
+.gwt-DialogBox .Caption {
+    background: #48877C;
+    padding: 4px 8px 4px 4px;
+    cursor: default;
+    font-family: Arial Unicode MS, Arial, sans-serif;
+    font-weight: bold;
+    border-bottom: 1px solid #42655F;
+    border-top: 1px solid #91C3BB;
+    color: white;
+}
+
+.gwt-DialogBox .dialogTopLeft {
+    background: #48877C none;
+    border-bottom: 1px solid #42655F;
+    border-top: 1px solid #91C3BB;
+    border-top-left-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -ms-border-top-left-radius: 5px;
+    -o-border-top-left-radius: 5px;
+}
+
+.gwt-DialogBox .dialogTopRight {
+    background: #48877C none;
+    border-bottom: 1px solid #42655F;
+    border-top: 1px solid #91C3BB;
+    border-top-right-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -ms-border-top-right-radius: 5px;
+    -o-border-top-right-radius: 5px;
+}
+
+.gwt-DialogBox .dialogBottomRight {
+    background: white none;
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -ms-border-bottom-right-radius: 5px;
+    -o-border-bottom-right-radius: 5px;
+}
+
+.gwt-DialogBox .dialogBottomLeft {
+    background: white none;
+    border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -ms-border-bottom-left-radius: 5px;
+    -o-border-bottom-left-radius: 5px;
+}
+
+.gwt-DialogBox .dialogMiddleLeft {
+    background: white none;
+}
+
+.gwt-DialogBox .dialogMiddleRight {
+    background: white none;
+}
+
+.gwt-DialogBox .dialogBottomCenter {
+    background: white none;
+}
+
+.gwt-DialogBox .dialogContent {
+    padding: 10px 0 0 0;
+}
+
+.gwt-NotificationPopup {
+    max-width: 40%;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.gwt-NotificationPopup.error,
+.gwt-NotificationPopup.failure {
+    border-bottom: 4px solid #c40000;
+}
+
+.gwt-NotificationPopup.error .icon,
+.gwt-NotificationPopup.failure .icon {
+    color: #c40000;
+}
+
+.gwt-NotificationPopup.warning {
+    border-bottom: 4px solid #e2aa00;
+}
+
+.gwt-NotificationPopup.warning .icon {
+    color: #e2aa00;
+}
+
+.gwt-NotificationPopup.info {
+    border-bottom: 4px solid #00c400;
+}
+
+.gwt-NotificationPopup.info .icon {
+    color: #00c400;
+}
+
+.gwt-NotificationPopup .container {
+    display: table;
+    width: 100%
+}
+
+.gwt-NotificationPopup .icon {
+    display: table-cell;
+    font-size: 3em;
+    padding: 0 10px 0 20px;
+    vertical-align: middle;
+}
+
+.gwt-NotificationPopup .message {
+    display: table-cell;
+    padding: 20px 20px 20px 10px;
+    vertical-align: middle;
+}

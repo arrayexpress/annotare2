@@ -55,29 +55,14 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     @UiField
     LeftMenuItem incomplete;
 
+    final ImportSubmissionDialog importDialog;
+
     private HashMap<SubmissionListFilter, Widget> filters = new HashMap<SubmissionListFilter, Widget>();
 
     public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
-        /*
-        createButton
-                .addMenuButtonItem(EXPERIMENT.getTitle() + " Submission")
-                .addClickHandler(new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        presenter.onSubmissionCreateClick(EXPERIMENT);
-                    }
-                });
-        */
-        /*** disabled in first release ***
-        createButton
-                .addMenuButtonItem(ARRAY_DESIGN.getTitle() + " Submission")
-                .addClickHandler(new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        presenter.onSubmissionCreateClick(ARRAY_DESIGN);
-                    }
-                });
-         ***/
+        importDialog = new ImportSubmissionDialog();
 
         filters.put(SubmissionListFilter.COMPLETED_SUBMISSIONS, completed);
         filters.put(SubmissionListFilter.INCOMPLETE_SUBMISSIONS, incomplete);
@@ -96,6 +81,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     @UiHandler("importButton")
     public void onImportButtonClick(ClickEvent event) {
         NotificationPopupPanel.message("This functionality is not available at the moment.", true);
+        //importDialog.center();
     }
 
     @UiHandler("allSubmissions")

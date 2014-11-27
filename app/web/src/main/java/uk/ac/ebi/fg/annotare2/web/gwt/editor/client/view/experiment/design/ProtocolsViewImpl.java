@@ -34,11 +34,15 @@ import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.EditSuggestCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AsyncOptionProvider;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditSelectionCell;
 
 import java.util.*;
 

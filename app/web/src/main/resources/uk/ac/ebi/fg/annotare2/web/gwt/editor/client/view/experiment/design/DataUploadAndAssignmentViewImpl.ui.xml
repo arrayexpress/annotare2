@@ -18,11 +18,12 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
+        xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view"
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design">
 
     <g:SplitLayoutPanel>
         <g:west size="400">
-            <my:DataFilesUploadViewImpl ui:field="dataFilesUploadView"/>
+            <c:DataFilesUploadViewImpl ui:field="dataFilesUploadView"/>
         </g:west>
         <g:center>
             <my:DataAssignmentViewImpl ui:field="dataAssignmentView"/>

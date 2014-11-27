@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -34,9 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Olga Melnichuk
- */
 public class FTPUploadDialog extends DialogBox {
 
     interface Binder extends UiBinder<Widget, FTPUploadDialog> {
@@ -97,7 +94,7 @@ public class FTPUploadDialog extends DialogBox {
         List<String> pastedData = getPastedData();
         if (!pastedData.isEmpty() && null != presenter) {
             okButton.setEnabled(false);
-            final PopupPanel waiting = new WaitingPopup();
+            final PopupPanel waiting = new DataFileListPanel.WaitingPopup();
             presenter.onFtpDataSubmit(pastedData,
                     new ReportingAsyncCallback<String>(FailureMessage.UNABLE_TO_UPLOAD_FILES) {
                         @Override

@@ -22,6 +22,12 @@
 
     <inherits name="com.google.gwt.user.User"/>
 
+    <!-- GWTUpload library -->
+    <inherits name="gwtupload.GWTUpload"/>
+    <stylesheet src="GWTUpload.css"/>
+
+    <stylesheet src="CommonApp.css"/>
+
     <source path="client"/>
     <source path="shared"/>
 

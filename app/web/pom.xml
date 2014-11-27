@@ -80,6 +80,7 @@
                             <execution>
                                 <configuration>
                                     <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
+                                    <failOnError>true</failOnError>
                                     <modules>
                                         <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
                                         <module>uk.ac.ebi.fg.annotare2.web.gwt.editor.EditorApp</module>

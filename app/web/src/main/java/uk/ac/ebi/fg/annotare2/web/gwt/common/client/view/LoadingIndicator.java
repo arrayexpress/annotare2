@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources.EDITOR_RESOURCES;
 
 /**
  * @author Olga Melnichuk
  */
-public class WaitingPopup extends PopupPanel {
+public class LoadingIndicator extends Composite {
 
-    public WaitingPopup() {
-        super(false, true);
-        setWidget(new LoadingIndicator());
-        setGlassEnabled(true);
-
+    public LoadingIndicator() {
+        EDITOR_RESOURCES.editorStyles().ensureInjected();
+        SimplePanel panel = new SimplePanel();
+        panel.addStyleName(EDITOR_RESOURCES.editorStyles().loadingIndicator());
+        panel.addStyleName(EDITOR_RESOURCES.editorStyles().center());
+        initWidget(panel);
     }
 }

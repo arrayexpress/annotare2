@@ -214,7 +214,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional
     @Override
-    public List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
+    public ArrayList<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             Collection<DataFile> filesSortedByName = natural().onResultOf(new Function<DataFile, String>() {
@@ -340,10 +340,10 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public Map<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
+    public HashMap<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            Map<Integer, String> errors = new HashMap<Integer, String>();
+            HashMap<Integer, String> errors = new HashMap<Integer, String>();
             int index = 0;
             for (HttpFileInfo info : filesInfo) {
                 File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());

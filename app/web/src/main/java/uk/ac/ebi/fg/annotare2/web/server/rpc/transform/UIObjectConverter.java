@@ -36,7 +36,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Collections2.filter;
@@ -138,7 +137,7 @@ public class UIObjectConverter {
         return USER_TRANSFORM.apply(user);
     }
 
-    public static List<OntologyTerm> uiEfoTerms(Collection<EfoTerm> terms) {
+    public static ArrayList<OntologyTerm> uiEfoTerms(Collection<EfoTerm> terms) {
         return new ArrayList<OntologyTerm>(transform(terms, new Function<EfoTerm, OntologyTerm>() {
             @Nullable
             @Override
@@ -168,7 +167,7 @@ public class UIObjectConverter {
         );
     }
 
-    public static List<DataFileRow> uiDataFileRows(Collection<DataFile> files) {
+    public static ArrayList<DataFileRow> uiDataFileRows(Collection<DataFile> files) {
         return new ArrayList<DataFileRow>(transform(files, DATA_FILE_ROW));
     }
 }

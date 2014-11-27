@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,16 +26,9 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFileListPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DataFilesUploadPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FTPUploadDialog;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.WaitingPopup;
 
 import java.util.List;
 
-/**
- * @author Olga Melnichuk
- */
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView, RequiresResize {
 
     @UiField
@@ -79,7 +72,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @UiHandler("deleteFilesBtn")
     void deleteFilesBtnClicked(ClickEvent event) {
         deleteFilesBtn.setEnabled(false);
-        final PopupPanel waiting = new WaitingPopup();
+        final PopupPanel waiting = new DataFileListPanel.WaitingPopup();
 
         fileListPanel.deleteSelectedFiles(new AsyncCallback<Void>() {
             @Override

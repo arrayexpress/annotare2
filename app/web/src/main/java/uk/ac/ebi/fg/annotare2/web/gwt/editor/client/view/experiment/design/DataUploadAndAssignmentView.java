@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
 
 public interface DataUploadAndAssignmentView extends IsWidget {
 
