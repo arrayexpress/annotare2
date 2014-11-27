@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResources.EDITOR_RESOURCES;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.resources.CommonResources.COMMON_RESOURCES;
 
 /**
  * @author Olga Melnichuk
@@ -27,10 +27,10 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.resources.EditorResou
 public class LoadingIndicator extends Composite {
 
     public LoadingIndicator() {
-        EDITOR_RESOURCES.editorStyles().ensureInjected();
+        COMMON_RESOURCES.styles().ensureInjected();
         SimplePanel panel = new SimplePanel();
-        panel.addStyleName(EDITOR_RESOURCES.editorStyles().loadingIndicator());
-        panel.addStyleName(EDITOR_RESOURCES.editorStyles().center());
+        panel.addStyleName(COMMON_RESOURCES.styles().loadingIndicator());
+        panel.addStyleName(COMMON_RESOURCES.styles().center());
         initWidget(panel);
     }
 }

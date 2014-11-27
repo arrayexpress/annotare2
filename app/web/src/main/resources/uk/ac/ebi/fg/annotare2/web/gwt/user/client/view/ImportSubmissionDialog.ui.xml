@@ -18,7 +18,7 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
+        xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view">
 
     <ui:style>
         .xx {}
@@ -28,6 +28,9 @@
         <g:HTMLPanel width="100px" height="100px">
             <p>Hello, world!</p>
         </g:HTMLPanel>
+        <g:cell width="450px" height="400px">
+            <c:DataFilesUploadViewImpl width="100%" height="100%" ui:field="dataFilesUploadView"/>
+        </g:cell>
         <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
             <g:HTMLPanel>
                 <g:Button ui:field="cancelButton">Cancel</g:Button>

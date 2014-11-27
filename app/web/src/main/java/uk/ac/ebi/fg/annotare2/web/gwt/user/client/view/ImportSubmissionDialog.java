@@ -25,8 +25,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
 
 public class ImportSubmissionDialog extends DialogBox {
+
+    @UiField
+    DataFilesUploadView dataFilesUploadView;
 
     @UiField
     Button cancelButton;

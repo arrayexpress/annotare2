@@ -21,7 +21,13 @@
         xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view"
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design">
 
-    <g:SplitLayoutPanel>
+    <ui:style>
+        .padding {
+            margin-left: 15px;
+        }
+    </ui:style>
+
+    <g:SplitLayoutPanel addStyleNames="{style.padding}">
         <g:west size="400">
             <c:DataFilesUploadViewImpl ui:field="dataFilesUploadView"/>
         </g:west>

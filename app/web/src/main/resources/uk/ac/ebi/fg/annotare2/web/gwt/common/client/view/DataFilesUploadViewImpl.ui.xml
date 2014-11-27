@@ -20,16 +20,14 @@
         xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view">
 
     <ui:style>
-        .padding {
-            margin-left: 15px;
-        }
         .grid {
             border-left: 1px solid #eeeeee;
-            border-top: 1px solid #eeeeee;
+            border-right: 1px solid #eeeeee;
+            border-bottom: 1px solid #eeeeee;
         }
     </ui:style>
 
-    <g:DockLayoutPanel addStyleNames="{style.padding}">
+    <g:DockLayoutPanel>
         <g:north size="40">
             <g:HorizontalPanel spacing="3">
                 <c:DataFilesUploadPanel ui:field="uploadPanel"/>
