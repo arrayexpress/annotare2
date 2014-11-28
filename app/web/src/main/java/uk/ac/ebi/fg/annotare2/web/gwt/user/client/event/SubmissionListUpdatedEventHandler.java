@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
+package uk.ac.ebi.fg.annotare2.web.gwt.user.client.event;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import com.google.gwt.event.shared.EventHandler;
 
-/**
- * @author Olga Melnichuk
- */
-public interface SubmissionView extends IsWidget {
+public interface SubmissionListUpdatedEventHandler extends EventHandler {
 
-    void setPresenter(Presenter presenter);
-
-    void setSubmissionDetails(SubmissionDetails submission);
-
-    public interface Presenter {
-
-        void deleteSubmission();
-    }
+    void onSubmissionListUpdated();
 }

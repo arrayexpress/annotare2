@@ -116,7 +116,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional
     @Override
-    public SubmissionDetails getSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
+    public SubmissionDetails getSubmissionDetails(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission sb = getSubmission(id, Permission.VIEW);
             return uiSubmissionDetails(sb);

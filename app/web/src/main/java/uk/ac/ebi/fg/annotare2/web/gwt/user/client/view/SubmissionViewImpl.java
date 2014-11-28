@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 import static com.google.gwt.user.client.Window.confirm;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.formatDate;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
 
 /**
  * @author Olga Melnichuk
@@ -50,18 +52,20 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     SpanElement created;
 
     @UiField
+    SpanElement lastUpdated;
+
+    @UiField
     SpanElement status;
 
     @UiField
     Button editButton;
 
-    //@UiField
-    //Button submitButton;
-
     @UiField
     Button deleteButton;
 
     private Presenter presenter;
+
+    private Long submissionId;
 
     public SubmissionViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
@@ -71,30 +75,28 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
         this.presenter = presenter;
     }
 
-    public void setSubmission(SubmissionDetails submission) {
-        accession.setInnerText(submission.getAccession().getText());
-        title.setInnerText(submission.getTitle());
-        created.setInnerText(submission.getCreated().toString());
-        status.setInnerText(submission.getStatus().getTitle());
+    public void setSubmissionDetails(SubmissionDetails details) {
+        submissionId = details.getId();
+
+        editButton.setVisible(!details.getType().isImported());
+
+        accession.setInnerText(details.getAccession().getText());
+        title.setInnerText(details.getTitle());
+        created.setInnerText(formatDate(details.getCreated()));
+        lastUpdated.setInnerText(formatDate(details.getUpdated()));
+        status.setInnerText(details.getStatus().getTitle());
     }
 
     @UiHandler("editButton")
     void onViewEditButtonClick(ClickEvent event) {
         if (presenter != null) {
-            presenter.editSubmission();
+            NewWindow.open(getEditorUrl(submissionId), "_blank", null);
         }
     }
 
-    //@UiHandler("submitButton")
-    //void onSubmitButtonClick(ClickEvent event) {
-    //    if (presenter != null) {
-    //        presenter.submit();
-    //    }
-    //}
-
     @UiHandler("deleteButton")
     void onDeleteButtonClick(ClickEvent event) {
-        if (presenter != null && confirm("Are you sure you want to delete submission: " + getTitle() + "?")) {
+        if (presenter != null && confirm("Are you sure you want to delete submission \"" + getTitle() + "\"?")) {
             presenter.deleteSubmission();
         }
     }

@@ -76,6 +76,7 @@ public class UIObjectConverter {
                     submission.getAccession(),
                     submission.getTitle(),
                     submission.getCreated(),
+                    submission.getUpdated(),
                     submission.getStatus(),
                     SUBMISSION_TYPE.apply(submission),
                     submission.hasNoData()

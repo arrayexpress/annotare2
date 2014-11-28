@@ -31,8 +31,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionView;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.openSubmissionEditor;
-
 /**
  * @author Olga Melnichuk
  */
@@ -41,6 +39,7 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     private final SubmissionView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
+
     private Long submissionId;
 
     @Inject
@@ -67,21 +66,14 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     }
 
     private void loadAsync() {
-        submissionService.getSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(
+        submissionService.getSubmissionDetails(submissionId, AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
                     @Override
                     public void onSuccess(SubmissionDetails result) {
-                        view.setSubmission(result);
+                        view.setSubmissionDetails(result);
                     }
                 }
         ));
-    }
-
-    @Override
-    public void editSubmission() {
-        if (submissionId != null) {
-            openSubmissionEditor(submissionId);
-        }
     }
 
     @Override
@@ -95,22 +87,6 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
                         }
                     }
             ));
-        }
-    }
-
-    @Override
-    public void submit() {
-        if (submissionId != null) {
-            submissionService.submitSubmission(submissionId, new AsyncCallbackWrapper<Void>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                }
-
-                @Override
-                public void onSuccess(Void aVoid) {
-                    goTo(new SubmissionListPlace());
-                }
-            }.wrap());
         }
     }
 }

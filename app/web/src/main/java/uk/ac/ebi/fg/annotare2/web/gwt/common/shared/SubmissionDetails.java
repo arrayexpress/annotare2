@@ -34,6 +34,8 @@ public class SubmissionDetails implements IsSerializable {
 
     private Date created;
 
+    private Date updated;
+
     private SubmissionStatus status;
 
     private SubmissionType type;
@@ -47,6 +49,7 @@ public class SubmissionDetails implements IsSerializable {
                              String accession,
                              String title,
                              Date created,
+                             Date updated,
                              SubmissionStatus status,
                              SubmissionType type,
                              boolean isEmpty) {
@@ -54,6 +57,7 @@ public class SubmissionDetails implements IsSerializable {
         this.accession = new Accession(accession);
         this.title = title;
         this.created = created;
+        this.updated = updated;
         this.status = status;
         this.type = type;
         this.isEmpty = isEmpty;
@@ -73,6 +77,10 @@ public class SubmissionDetails implements IsSerializable {
 
     public Date getCreated() {
         return created;
+    }
+
+    public Date getUpdated() {
+        return updated;
     }
 
     public SubmissionStatus getStatus() {

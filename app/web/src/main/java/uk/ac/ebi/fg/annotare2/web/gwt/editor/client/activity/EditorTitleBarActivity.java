@@ -118,7 +118,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     private void initAsync() {
-        submissionService.getSubmission(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
+        submissionService.getSubmissionDetails(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
                     @Override
                     public void onSuccess(SubmissionDetails result) {

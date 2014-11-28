@@ -16,25 +16,24 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import com.google.gwt.core.client.JavaScriptObject;
 
-/**
- * @author Olga Melnichuk
- */
-public interface LeftMenuView extends IsWidget {
-    
-    void setPresenter(Presenter presenter);
+public class NewWindow extends JavaScriptObject {
+    // All types that extend JavaScriptObject must have a protected,
+    // no-args constructor.
+    protected NewWindow() {}
 
-    void setFilter(SubmissionListFilter filter);
+    public static native NewWindow open(String url, String target, String options) /*-{
+        return $wnd.open(url, target, options);
+    }-*/;
 
-    public interface Presenter {
+    public final native void close() /*-{
+        this.close();
+    }-*/;
 
-        void onSubmissionFilterClick(SubmissionListFilter filter);
-
-        void onSubmissionCreateClick(SubmissionType type, AsyncCallback<Long> callback);
-
-        void onSubmissionImportClick(SubmissionType type, AsyncCallback<Long> callback);
-    }
+    public final native void setUrl(String url) /*-{
+        if (this.location) {
+            this.location = url;
+        }
+    }-*/;
 }

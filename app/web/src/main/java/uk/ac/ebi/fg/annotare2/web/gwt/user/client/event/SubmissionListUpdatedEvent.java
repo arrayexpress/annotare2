@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
+package uk.ac.ebi.fg.annotare2.web.gwt.user.client.event;
 
-public enum SubmissionType {
-    EXPERIMENT("Experiment"),
-    IMPORTED_EXPERIMENT("Imported Experiment"),
-    ARRAY_DESIGN("Array Design");
+import com.google.gwt.event.shared.GwtEvent;
 
-    private final String title;
+public class SubmissionListUpdatedEvent extends GwtEvent<SubmissionListUpdatedEventHandler> {
+    private static Type<SubmissionListUpdatedEventHandler> TYPE = new Type<SubmissionListUpdatedEventHandler>();
 
-    private SubmissionType(String title) {
-        this.title = title;
+    @Override
+    public Type<SubmissionListUpdatedEventHandler> getAssociatedType() {
+        return TYPE;
     }
 
-    public String getTitle() {
-        return title;
+    @Override
+    protected void dispatch(SubmissionListUpdatedEventHandler handler) {
+        handler.onSubmissionListUpdated();
     }
 
-    public boolean isExperiment() {
-        return this == EXPERIMENT || this == IMPORTED_EXPERIMENT;
+    public static Type<SubmissionListUpdatedEventHandler> getType() {
+        return TYPE;
     }
 
-    public boolean isImported() {
-        return this == IMPORTED_EXPERIMENT;
-    }
 }

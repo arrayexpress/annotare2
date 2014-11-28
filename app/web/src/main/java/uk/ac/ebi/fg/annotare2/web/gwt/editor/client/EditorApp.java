@@ -68,14 +68,14 @@ public class EditorApp implements EntryPoint {
 
         SubmissionServiceAsync submissionService = injector.getSubmissionService();
         final int subId = getSubmissionId();
-        submissionService.getSubmission(subId,
+        submissionService.getSubmissionDetails(subId,
                 AsyncCallbackWrapper.callbackWrap(
                         new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION) {
-                                @Override
-                                public void onSuccess(SubmissionDetails details) {
-                                    renameBrowserTab(details);
-                                    init(root, details);
-                                }
+                            @Override
+                            public void onSuccess(SubmissionDetails details) {
+                                renameBrowserTab(details);
+                                init(root, details);
+                            }
                         }
                 )
         );

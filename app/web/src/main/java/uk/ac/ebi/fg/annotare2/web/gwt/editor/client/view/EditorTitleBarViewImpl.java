@@ -87,8 +87,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @Override
     public void setSubmissionType(SubmissionType type) {
-        boolean isExperimentSubmission = type.isExperimentSubmission();
-        validateButton.setVisible(isExperimentSubmission);
+        validateButton.setVisible(type.isExperiment());
         //exportLink.setVisible(isExperimentSubmission);
     }
 

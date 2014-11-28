@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -29,13 +28,14 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.resources.ImageResources;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.ClickableImageResourceCell;
 
 import java.util.List;
 
-import static com.google.gwt.i18n.client.DateTimeFormat.getFormat;
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.openSubmissionEditor;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.formatDate;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
 
 /**
  * @author Olga Melnichuk
@@ -61,7 +61,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
-                return getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(object.getCreated());
+                return formatDate(object.getCreated());
             }
         }, new TextHeader("Created on"));
 
@@ -100,14 +100,15 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
                     @Override
                     public ImageResource getValue(SubmissionRow object) {
-                        return object.getType().isExperimentSubmission() ? resourceBundle.editIcon() : null;
+                        return !object.getType().isImported() ? resourceBundle.editIcon() : null;
                     }
                 };
 
         editIconColumn.setFieldUpdater(new FieldUpdater<SubmissionRow, ImageResource>() {
             public void update(int index, SubmissionRow row, ImageResource value) {
-                if (row.getType().isExperimentSubmission()) {
-                    openSubmissionEditor(row.getId());
+                SubmissionType type = row.getType();
+                if (!type.isImported()) {
+                    NewWindow.open(getEditorUrl(row.getId()), "_blank", null);
                 }
             }
         });
@@ -130,7 +131,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             public void onSelectionChange(SelectionChangeEvent event) {
                 SubmissionRow row = selectionModel.getSelectedObject();
-                if (null != row && row.getType().isExperimentSubmission()) {
+                if (null != row) {
                     presenter.onSubmissionSelected(row.getId());
                 }
             }

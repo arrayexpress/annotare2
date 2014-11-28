@@ -21,12 +21,20 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
 
 import java.util.HashMap;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.IMPORTED_EXPERIMENT;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getPlaceholderUrl;
 
 /**
  * @author Olga Melnichuk
@@ -75,13 +83,29 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     @UiHandler("createButton")
     public void onCreateButtonClick(ClickEvent event) {
-        presenter.onSubmissionCreateClick(EXPERIMENT);
+        final NewWindow window = NewWindow.open(getPlaceholderUrl(), "_blank", null);
+        presenter.onSubmissionCreateClick(EXPERIMENT, new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
+            @Override
+            public void onFailure(Throwable x) {
+                super.onFailure(x);
+                window.close();
+            }
+
+            @Override
+            public void onSuccess(final Long result) {
+                window.setUrl(getEditorUrl(result));
+            }
+        });
     }
 
     @UiHandler("importButton")
     public void onImportButtonClick(ClickEvent event) {
-        NotificationPopupPanel.message("This functionality is not available at the moment.", true);
-        //importDialog.center();
+        presenter.onSubmissionImportClick(IMPORTED_EXPERIMENT, new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
+            @Override
+            public void onSuccess(Long result) {
+
+            }
+        });
     }
 
     @UiHandler("allSubmissions")

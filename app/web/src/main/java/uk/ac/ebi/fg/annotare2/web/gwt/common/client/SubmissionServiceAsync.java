@@ -17,7 +17,7 @@ import java.util.Map;
 
 public interface SubmissionServiceAsync {
 
-    void getSubmission(long id, AsyncCallback<SubmissionDetails> async);
+    void getSubmissionDetails(long id, AsyncCallback<SubmissionDetails> async);
 
     void createExperiment(AsyncCallback<Long> async);
 

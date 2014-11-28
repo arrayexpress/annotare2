@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -30,6 +31,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
@@ -48,6 +51,7 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
     private final CurrentUserAccountServiceAsync userService;
     private final AsyncCallback<ArrayList<SubmissionRow>> callback;
 
+    private HandlerRegistration submissionListUpdatedHandler;
     private SubmissionListFilter filter;
 
     @Inject
@@ -75,11 +79,24 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
         return this;
     }
 
+    @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        submissionListUpdatedHandler = eventBus.addHandler(SubmissionListUpdatedEvent.getType(), new SubmissionListUpdatedEventHandler() {
+            @Override
+            public void onSubmissionListUpdated() {
+                loadSubmissionListAsync();
+            }
+        });
         loadCurrentUserAsync();
         loadSubmissionListAsync();
+    }
+
+    @Override
+    public void onStop() {
+        submissionListUpdatedHandler.removeHandler();
+        super.onStop();
     }
 
     private void loadCurrentUserAsync() {
