@@ -26,6 +26,8 @@ import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
@@ -36,14 +38,14 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     private final LeftMenuView view;
     private final PlaceController placeController;
-    private final SubmissionServiceAsync asyncService;
+    private final SubmissionServiceAsync submissionService;
     private EventBus eventBus;
 
     @Inject
-    public LeftMenuActivity(LeftMenuView view, PlaceController placeController, SubmissionServiceAsync asyncService) {
+    public LeftMenuActivity(LeftMenuView view, PlaceController placeController, SubmissionServiceAsync submissionService) {
         this.view = view;
         this.placeController = placeController;
-        this.asyncService = asyncService;
+        this.submissionService = submissionService;
         this.eventBus = null;
     }
 
@@ -69,7 +71,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     public void onSubmissionCreateClick(SubmissionType type, final AsyncCallback<Long> callback) {
         switch (type) {
             case EXPERIMENT:
-                asyncService.createExperiment(new AsyncCallbackWrapper<Long>() {
+                submissionService.createExperiment(new AsyncCallbackWrapper<Long>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         callback.onFailure(caught);
@@ -83,7 +85,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                 }.wrap());
                 return;
             case ARRAY_DESIGN:
-                asyncService.createArrayDesign(new AsyncCallbackWrapper<Long>() {
+                submissionService.createArrayDesign(new AsyncCallbackWrapper<Long>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         callback.onFailure(caught);
@@ -105,7 +107,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     public void onSubmissionImportClick(SubmissionType type, final AsyncCallback<Long> callback) {
         switch (type) {
             case IMPORTED_EXPERIMENT:
-                asyncService.createImportedExperiment( new AsyncCallbackWrapper<Long>() {
+                submissionService.createImportedExperiment(new AsyncCallbackWrapper<Long>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         callback.onFailure(caught);
@@ -123,14 +125,27 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         }
     }
 
+    @Override
+    public void onImportCancelled(Long submissionId) {
+        submissionService.deleteSubmission(submissionId,
+                AsyncCallbackWrapper.callbackWrap(
+                        new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_DELETE_SUBMISSION) {
+                            @Override
+                            public void onSuccess(Void result) {
+                                notifySubmissionListUpdated();
+                            }
+                        }
+                )
+        );
+
+    }
+
     public void goTo(Place place) {
         placeController.goTo(place);
     }
 
     private void notifySubmissionListUpdated() {
-        if (null != eventBus) {
-            eventBus.fireEvent(new SubmissionListUpdatedEvent());
-        }
+        eventBus.fireEvent(new SubmissionListUpdatedEvent());
     }
 
     private void gotoSubmissionListViewPlace(SubmissionListFilter filter) {

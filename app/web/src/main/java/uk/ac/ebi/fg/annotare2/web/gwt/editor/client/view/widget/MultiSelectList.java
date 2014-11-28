@@ -22,6 +22,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 
 import java.util.*;
 

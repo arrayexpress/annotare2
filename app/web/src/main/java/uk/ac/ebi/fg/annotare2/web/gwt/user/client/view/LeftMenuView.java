@@ -29,7 +29,7 @@ public interface LeftMenuView extends IsWidget {
 
     void setFilter(SubmissionListFilter filter);
 
-    public interface Presenter {
+    public interface Presenter extends ImportSubmissionDialog.Presenter {
 
         void onSubmissionFilterClick(SubmissionListFilter filter);
 

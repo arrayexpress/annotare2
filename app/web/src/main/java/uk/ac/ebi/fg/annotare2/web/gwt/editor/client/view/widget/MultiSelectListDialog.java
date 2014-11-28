@@ -33,6 +33,7 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 
 import java.util.ArrayList;
 import java.util.List;

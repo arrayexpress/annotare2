@@ -42,6 +42,10 @@ public class ImportSubmissionDialog extends DialogBox {
         Binder BINDER = GWT.create(Binder.class);
     }
 
+    private Presenter presenter;
+
+    private Long submissionId;
+
     public ImportSubmissionDialog() {
         setModal(true);
         setGlassEnabled(true);
@@ -50,8 +54,22 @@ public class ImportSubmissionDialog extends DialogBox {
         setWidget(Binder.BINDER.createAndBindUi(this));
     }
 
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public void startImport(Long submissionId) {
+        this.submissionId = submissionId;
+        center();
+    }
+
     @UiHandler("cancelButton")
     void setCancelButton(ClickEvent event) {
-        this.hide();
+        hide();
+        presenter.onImportCancelled(submissionId);
+    }
+
+    public interface Presenter {
+        void onImportCancelled(Long submissionId);
     }
 }

@@ -79,6 +79,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        importDialog.setPresenter(presenter);
     }
 
     @UiHandler("createButton")
@@ -103,7 +104,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
         presenter.onSubmissionImportClick(IMPORTED_EXPERIMENT, new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
             @Override
             public void onSuccess(Long result) {
-
+                importDialog.startImport(result);
             }
         });
     }
