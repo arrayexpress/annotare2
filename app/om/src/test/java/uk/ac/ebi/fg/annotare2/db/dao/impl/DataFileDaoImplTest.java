@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 
@@ -89,6 +90,6 @@ public class DataFileDaoImplTest extends DaoTestBase {
     private Submission createSubmission(String prefix) {
         User user = new User("name", "email" + prefix, "password");
         userDao.save(user);
-        return submissionDao.createExperimentSubmission(user);
+        return submissionDao.createSubmission(user, ExperimentSubmission.class);
     }
 }

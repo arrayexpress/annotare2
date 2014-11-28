@@ -16,20 +16,16 @@
 
 package uk.ac.ebi.fg.annotare2.db.dao;
 
-import uk.ac.ebi.fg.annotare2.db.model.*;
+import uk.ac.ebi.fg.annotare2.db.model.Acl;
+import uk.ac.ebi.fg.annotare2.db.model.HasEffectiveAcl;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
 
 import java.util.Collection;
 
-/**
- * @author Olga Melnichuk
- */
 public interface SubmissionDao extends HasEffectiveAcl {
-
-    ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException;
-
-    ArrayDesignSubmission getArrayDesignSubmission(long id) throws RecordNotFoundException;
 
     Collection<Submission> getSubmissions();
 
@@ -43,13 +39,11 @@ public interface SubmissionDao extends HasEffectiveAcl {
 
     void save(Submission submission);
 
-    Submission get(long id) throws RecordNotFoundException;
+    Submission get(long id, boolean isDeletedAllowed) throws RecordNotFoundException;
 
-    Submission get(long id, boolean allowDeleted) throws RecordNotFoundException;
+    <T extends Submission> T get(long id, Class<T> clazz, boolean isDeletedAllowed) throws RecordNotFoundException;
 
-    ExperimentSubmission createExperimentSubmission(User user);
-
-    ArrayDesignSubmission createArrayDesignSubmission(User user);
+    <T extends Submission> T createSubmission(User user, Class<T> clazz);
 
     Acl getAcl();
 

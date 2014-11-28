@@ -252,6 +252,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    @Transactional(rollbackOn = NoPermissionException.class)
+    @Override
+    public long createImportedExperiment() throws NoPermissionException {
+        try {
+            return createImportedExperimentSubmission().getId();
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
+    }
+
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void setupExperiment(final long id, final ExperimentSetupSettings settings)

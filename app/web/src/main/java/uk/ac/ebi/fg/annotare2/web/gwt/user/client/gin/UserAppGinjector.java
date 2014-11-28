@@ -46,5 +46,4 @@ public interface UserAppGinjector extends Ginjector {
     ActivityMapper getContentActivityMapper();
 
     UserAppPlaceFactory getPlaceFactory();
-
 }

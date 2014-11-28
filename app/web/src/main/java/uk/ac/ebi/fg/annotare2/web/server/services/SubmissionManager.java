@@ -19,8 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
@@ -28,9 +26,6 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 
 import java.util.Collection;
 
-/**
- * @author Olga Melnichuk
- */
 public class SubmissionManager {
 
     private final SubmissionDao submissionDao;
@@ -57,36 +52,16 @@ public class SubmissionManager {
                 SubmissionStatus.PUBLIC_IN_AE);
     }
 
-    public Submission getSubmission(User user, long id, Permission permission) throws AccessControlException, RecordNotFoundException {
-        Submission submission = submissionDao.get(id);
-        return withPermission(user, permission, submission);
-    }
-
-    public ExperimentSubmission getExperimentSubmission(User user, long id, Permission permission) throws RecordNotFoundException, AccessControlException {
-        ExperimentSubmission sb = submissionDao.getExperimentSubmission(id);
+    public <T extends Submission> T getSubmission(User user, long id, Class<T> clazz, Permission permission) throws RecordNotFoundException, AccessControlException {
+        T sb = submissionDao.get(id, clazz, false);
         return withPermission(user, permission, sb);
     }
 
-    public ArrayDesignSubmission getArrayDesignSubmission(User user, long id, Permission permission) throws RecordNotFoundException, AccessControlException {
-        ArrayDesignSubmission sb = submissionDao.getArrayDesignSubmission(id);
-        return withPermission(user, permission, sb);
-    }
-
-    public ExperimentSubmission createExperimentSubmission(User user) throws AccessControlException {
+    public <T extends Submission> T createSubmission(User user, Class<T> clazz) throws AccessControlException {
         if (!user.isAllowed(submissionDao, Permission.CREATE)) {
             throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
         }
-        ExperimentSubmission submission = submissionDao.createExperimentSubmission(user);
-        submission.setAcl(submissionDao.getAcl());
-        submissionDao.save(submission);
-        return submission;
-    }
-
-    public ArrayDesignSubmission createArrayDesignSubmission(User user) throws AccessControlException {
-        if (!user.isAllowed(submissionDao, Permission.CREATE)) {
-            throw new AccessControlException("User " + user + " doesn't have a permission to create a submission");
-        }
-        ArrayDesignSubmission submission = submissionDao.createArrayDesignSubmission(user);
+        T submission = submissionDao.createSubmission(user, clazz);
         submission.setAcl(submissionDao.getAcl());
         submissionDao.save(submission);
         return submission;

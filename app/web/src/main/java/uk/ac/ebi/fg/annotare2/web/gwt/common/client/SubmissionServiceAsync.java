@@ -23,6 +23,8 @@ public interface SubmissionServiceAsync {
 
     void createArrayDesign(AsyncCallback<Long> async);
 
+    void createImportedExperiment(AsyncCallback<Long> async);
+
     void setupExperiment(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
 
     void submitSubmission(long id, AsyncCallback<Void> async);

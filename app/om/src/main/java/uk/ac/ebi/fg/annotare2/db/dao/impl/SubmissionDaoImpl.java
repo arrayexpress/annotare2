@@ -22,7 +22,10 @@ import com.google.inject.Inject;
 import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.db.model.*;
+import uk.ac.ebi.fg.annotare2.db.model.Acl;
+import uk.ac.ebi.fg.annotare2.db.model.EffectiveAcl;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.AclType;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
@@ -30,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -37,43 +41,31 @@ import java.util.List;
 import static com.google.common.collect.Collections2.filter;
 import static java.util.Arrays.asList;
 
-/**
- * @author Olga Melnichuk
- */
 public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements SubmissionDao {
-
-    private final ExperimentSubmissionDaoImpl expSmbDao;
-    private final ArrayDesignSubmissionDaoImpl arrayDesignSbmDao;
 
     @Inject
     public SubmissionDaoImpl(HibernateSessionFactory sessionFactory) {
         super(sessionFactory);
-        expSmbDao = new ExperimentSubmissionDaoImpl(sessionFactory);
-        arrayDesignSbmDao = new ArrayDesignSubmissionDaoImpl(sessionFactory);
     }
 
     @Override
-    public Submission get(long id) throws RecordNotFoundException {
-        return get(id, false);
-    }
-
-    @Override
-    public Submission get(long id, boolean allowDeleted) throws RecordNotFoundException {
+    public  Submission get(long id, boolean isDeletedAllowed) throws RecordNotFoundException {
         Submission submission = get(id, Submission.class);
-        if (submission.isDeleted() && !allowDeleted) {
+        if ((submission.isDeleted() && !isDeletedAllowed)) {
             throw new RecordNotFoundException("Object of class=" + Submission.class + " with id=" + id + " was not found");
         }
         return submission;
     }
 
-    @Override
-    public ExperimentSubmission getExperimentSubmission(long id) throws RecordNotFoundException {
-        return expSmbDao.get(id);
-    }
 
     @Override
-    public ArrayDesignSubmission getArrayDesignSubmission(long id) throws RecordNotFoundException {
-        return arrayDesignSbmDao.get(id);
+    @SuppressWarnings("unchecked")
+    public <T extends Submission> T get(long id, Class<T> clazz, boolean isDeletedAllowed) throws RecordNotFoundException {
+        Submission submission = get(id, Submission.class);
+        if (!clazz.isInstance(submission) || (submission.isDeleted() && !isDeletedAllowed)) {
+            throw new RecordNotFoundException("Object of class=" + clazz + " with id=" + id + " was not found");
+        }
+        return (T)submission;
     }
 
     @Override
@@ -121,18 +113,22 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
     }
 
     @Override
-    public ExperimentSubmission createExperimentSubmission(User user) {
-        ExperimentSubmission submission = new ExperimentSubmission(user);
-        save(submission);
-        return submission;
+    public <T extends Submission> T createSubmission(User user, Class<T> clazz) {
+        try {
+            T submission = clazz.getDeclaredConstructor(User.class).newInstance(user);
+            save(submission);
+            return submission;
+        } catch (NoSuchMethodException x) {
+            throw new Error(x);
+        } catch (IllegalAccessException x) {
+            throw new Error(x);
+        } catch (InvocationTargetException x) {
+            throw new Error(x);
+        } catch (InstantiationException x) {
+            throw new Error(x);
+        }
     }
 
-    @Override
-    public ArrayDesignSubmission createArrayDesignSubmission(User user) {
-        ArrayDesignSubmission submission = new ArrayDesignSubmission(user);
-        save(submission);
-        return submission;
-    }
 
     @Override
     public void softDelete(Submission submission) {

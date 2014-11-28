@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
@@ -50,23 +51,27 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
     }
 
     protected Submission getSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
-        return submissionManager.getSubmission(getCurrentUser(), id, permission);
+        return submissionManager.getSubmission(getCurrentUser(), id, Submission.class, permission);
     }
 
     protected ExperimentSubmission getExperimentSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
-        return submissionManager.getExperimentSubmission(getCurrentUser(), id, permission);
+        return submissionManager.getSubmission(getCurrentUser(), id, ExperimentSubmission.class, permission);
     }
 
     protected ArrayDesignSubmission getArrayDesignSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
-        return submissionManager.getArrayDesignSubmission(getCurrentUser(), id, permission);
+        return submissionManager.getSubmission(getCurrentUser(), id, ArrayDesignSubmission.class, permission);
     }
 
     protected ExperimentSubmission createExperimentSubmission() throws AccessControlException {
-        return submissionManager.createExperimentSubmission(getCurrentUser());
+        return submissionManager.createSubmission(getCurrentUser(), ExperimentSubmission.class);
     }
 
     protected ArrayDesignSubmission createArrayDesignSubmission() throws AccessControlException {
-        return submissionManager.createArrayDesignSubmission(getCurrentUser());
+        return submissionManager.createSubmission(getCurrentUser(), ArrayDesignSubmission.class);
+    }
+
+    protected ImportedExperimentSubmission createImportedExperimentSubmission() throws AccessControlException {
+        return submissionManager.createSubmission(getCurrentUser(), ImportedExperimentSubmission.class);
     }
 
     protected void save(Submission submission) {

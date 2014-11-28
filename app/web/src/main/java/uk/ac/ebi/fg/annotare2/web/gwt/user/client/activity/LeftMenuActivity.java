@@ -47,8 +47,6 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     private final PlaceController placeController;
     private final SubmissionServiceAsync asyncService;
 
-    private JavaScriptObject editorWindow;
-
     @Inject
     public LeftMenuActivity(LeftMenuView view, PlaceController placeController, SubmissionServiceAsync asyncService) {
         this.view = view;
@@ -81,7 +79,6 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                         gotoSubmissionViewPlace(submissionId);
                         openEditor(editorUrl(submissionId));
                     }
-
                 }
         );
 
@@ -114,6 +111,8 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         place.setSubmissionId(id);
         goTo(place);
     }
+
+    private JavaScriptObject editorWindow;
 
     private native void prepareEditor(String url) /*-{
         var wnd = $wnd.open(url, "_blank", "");

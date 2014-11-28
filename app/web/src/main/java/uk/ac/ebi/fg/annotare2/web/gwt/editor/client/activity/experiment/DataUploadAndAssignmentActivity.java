@@ -57,7 +57,6 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     private final ApplicationDataProxy appData;
     private final ExperimentDataProxy expData;
     private final DataFilesProxy dataFilesProxy;
-    private HandlerRegistration experimentUpdateHandler;
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
 
@@ -81,13 +80,6 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
         view.setPresenter(this);
         panel.setWidget(view);
 
-        // todo: is this really enough to work this view out
-        //experimentUpdateHandler = eventBus.addHandler(ExperimentUpdateEvent.getType(), new ExperimentUpdateEventHandler() {
-        //    @Override
-        //    public void onExperimentUpdate() {
-        //        reloadExpDataAsync();
-        //    }
-        //});
         criticalUpdateHandler = eventBus.addHandler(CriticalUpdateEvent.getType(), new CriticalUpdateEventHandler() {
             @Override
             public void criticalUpdateStarted(CriticalUpdateEvent event) {
@@ -112,7 +104,6 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
     @Override
     public void onStop() {
-        //experimentUpdateHandler.removeHandler();
         criticalUpdateHandler.removeHandler();
         dataUpdateHandler.removeHandler();
         super.onStop();

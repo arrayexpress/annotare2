@@ -206,7 +206,8 @@ public class SubmissionValidator {
 
                     try {
                         Submission submission = submissionDao.get(
-                                Long.valueOf(url.getFile().replaceAll("^/(\\d+)/(.+)$", "$1"))
+                                Long.valueOf(url.getFile().replaceAll("^/(\\d+)/(.+)$", "$1")),
+                                false
                         );
 
                         Set<DataFile> files = submission.getFiles();

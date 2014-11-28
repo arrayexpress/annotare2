@@ -100,7 +100,7 @@ public class ExportServlet extends HttpServlet {
     private ExperimentSubmission getSubmission(HttpServletRequest request) throws ServletException {
         try {
             User currentUser = accountService.getCurrentUser(request.getSession());
-            return submissionManager.getExperimentSubmission(currentUser, getSubmissionId(request), Permission.VIEW);
+            return submissionManager.getSubmission(currentUser, getSubmissionId(request), ExperimentSubmission.class, Permission.VIEW);
         } catch (RecordNotFoundException e) {
             throw servletException(e);
         } catch (AccessControlException e) {

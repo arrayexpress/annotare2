@@ -32,7 +32,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 public class ContentActivityMapper implements ActivityMapper {
 
     private final Provider<SubmissionListActivity> listActivityProvider;
-    
     private final Provider<SubmissionViewActivity> viewActivityProvider;
 
     @Inject
@@ -43,9 +42,9 @@ public class ContentActivityMapper implements ActivityMapper {
     }
     
     public Activity getActivity(Place place) {
-        if (place instanceof SubmissionListPlace){
+        if (place instanceof SubmissionListPlace) {
             return listActivityProvider.get().withPlace((SubmissionListPlace) place);
-        } else if (place instanceof SubmissionViewPlace){
+        } else if (place instanceof SubmissionViewPlace) {
             return viewActivityProvider.get().withPlace((SubmissionViewPlace) place);
         }
         //TODO
