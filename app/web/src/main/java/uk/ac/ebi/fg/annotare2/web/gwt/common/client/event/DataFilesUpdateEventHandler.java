@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.event;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Olga Melnichuk
  */
-public class DataFilesUpdateEvent extends GwtEvent<DataFilesUpdateEventHandler> {
+public interface DataFilesUpdateEventHandler extends EventHandler {
 
-    private static Type<DataFilesUpdateEventHandler> TYPE = new Type<DataFilesUpdateEventHandler>();
-
-    @Override
-    public Type<DataFilesUpdateEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(DataFilesUpdateEventHandler handler) {
-        handler.onDataFilesUpdate();
-    }
-
-    public static Type<DataFilesUpdateEventHandler> getType() {
-        return TYPE;
-    }
+    void onDataFilesUpdate();
 }

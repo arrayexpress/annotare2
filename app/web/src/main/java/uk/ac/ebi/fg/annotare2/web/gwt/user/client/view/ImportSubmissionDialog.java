@@ -26,6 +26,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+
+import java.util.List;
 
 public class ImportSubmissionDialog extends DialogBox {
 
@@ -56,10 +59,17 @@ public class ImportSubmissionDialog extends DialogBox {
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        dataFilesUploadView.setPresenter(presenter);
     }
 
-    public void startImport(Long submissionId) {
+    public void setDataFiles(List<DataFileRow> files) {
+        dataFilesUploadView.setDataFiles(files);
+    }
+
+    public void startImport(long submissionId) {
         this.submissionId = submissionId;
+
+        presenter.onImportStarted(submissionId);
         center();
     }
 
@@ -69,7 +79,9 @@ public class ImportSubmissionDialog extends DialogBox {
         presenter.onImportCancelled(submissionId);
     }
 
-    public interface Presenter {
-        void onImportCancelled(Long submissionId);
+    public interface Presenter extends DataFilesUploadView.Presenter {
+        void onImportStarted(long submissionId);
+
+        void onImportCancelled(long submissionId);
     }
 }

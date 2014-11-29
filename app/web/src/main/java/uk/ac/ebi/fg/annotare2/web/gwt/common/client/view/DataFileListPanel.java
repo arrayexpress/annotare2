@@ -30,7 +30,10 @@ import com.google.gwt.user.cellview.client.CustomDataGrid;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.NotificationPopupPanel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -152,6 +155,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     public Set<DataFileRow> getSelectedRows() {
         return selectionModel.getSelectedSet();
     }
+
     public void setRows(List<DataFileRow> rows) {
         dataProvider.setList(new ArrayList<DataFileRow>(rows));
     }
@@ -204,20 +208,9 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     }
 
     public interface Presenter {
+
         void renameFile(DataFileRow dataFileRow, String newFileName);
+
         void removeFiles(Set<DataFileRow> dataFileRow, AsyncCallback<Void> callback);
-    }
-
-    /**
-     * @author Olga Melnichuk
-     */
-    public static class WaitingPopup extends PopupPanel {
-
-        public WaitingPopup() {
-            super(false, true);
-            setWidget(new LoadingIndicator());
-            setGlassEnabled(true);
-
-        }
     }
 }

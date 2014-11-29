@@ -71,7 +71,7 @@ public class DataFilesUploadPanel extends Composite {
                         for (int i = 0; i < uploaded.size(); ++i) {
                             filesInfo.add(new HttpFileInfo(uploaded.get(i).getField(), removeFakePath(fileNames.get(i))));
                         }
-                        presenter.filesUploaded(filesInfo,
+                        presenter.onFilesUploaded(filesInfo,
                                 new ReportingAsyncCallback<Map<Integer, String>>(FailureMessage.UNABLE_TO_UPLOAD_FILES) {
                                     @Override
                                     public void onSuccess(Map<Integer, String> result) {
@@ -85,7 +85,7 @@ public class DataFilesUploadPanel extends Composite {
                                             NotificationPopupPanel.error(message, false);
                                         }
                                     }
-                        });
+                                });
                     }
                 }
             }
@@ -128,7 +128,7 @@ public class DataFilesUploadPanel extends Composite {
     }
 
     public interface Presenter {
-        void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
+        void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
     }
 
     private String removeFakePath(String fileName) {

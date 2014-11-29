@@ -216,7 +216,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     @Override
     public ArrayList<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
+            Submission submission = getSubmission(id, Permission.VIEW);
             Collection<DataFile> filesSortedByName = natural().onResultOf(new Function<DataFile, String>() {
                 @Nullable
                 @Override
@@ -352,7 +352,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     @Override
     public HashMap<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
+            Submission submission = getSubmission(id, Permission.UPDATE);
             HashMap<Integer, String> errors = new HashMap<Integer, String>();
             int index = 0;
             for (HttpFileInfo info : filesInfo) {
@@ -379,7 +379,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     @Override
     public String registerFtpFiles(long id, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
+            Submission submission = getSubmission(id, Permission.UPDATE);
 
             String ftpRoot = properties.getFtpPickUpDir();
             if (ftpRoot.startsWith("/")) {
@@ -438,12 +438,17 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     @Override
     public ExperimentProfile renameDataFile(final long id, final long fileId, final String fileName) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            ExperimentProfile experiment = submission.getExperimentProfile();
+            Submission submission = getSubmission(id, Permission.UPDATE);
+            ExperimentSubmission experimentSubmission = submission instanceof ExperimentSubmission ?
+                    (ExperimentSubmission)submission : null;
+            ExperimentProfile experiment = submission instanceof ExperimentSubmission ?
+                    experimentSubmission.getExperimentProfile() : null;
             DataFile dataFile = dataFileManager.get(fileId);
             if (submission.getFiles().contains(dataFile) && dataFile.getStatus().isFinal()) {
-                experiment.renameFile(new FileRef(dataFile.getName(), dataFile.getDigest()), fileName);
-                submission.setExperimentProfile(experiment);
+                if (null != experiment) {
+                    experiment.renameFile(new FileRef(dataFile.getName(), dataFile.getDigest()), fileName);
+                    experimentSubmission.setExperimentProfile(experiment);
+                }
                 dataFileManager.renameDataFile(dataFile, fileName);
 
                 save(submission);
@@ -463,15 +468,18 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     @Override
     public ExperimentProfile deleteDataFiles(final long id, final List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException {
         try {
-            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            ExperimentProfile experiment = submission.getExperimentProfile();
+            Submission submission = getSubmission(id, Permission.UPDATE);
+            ExperimentSubmission experimentSubmission = submission instanceof ExperimentSubmission ?
+                    (ExperimentSubmission)submission : null;
+            ExperimentProfile experiment = submission instanceof ExperimentSubmission ?
+                    experimentSubmission.getExperimentProfile() : null;
             for (Long fileId : fileIds) {
                 DataFile dataFile = dataFileManager.get(fileId);
                 if (submission.getFiles().contains(dataFile)) {
-
-
-                    experiment.removeFile(new FileRef(dataFile.getName(), dataFile.getDigest()));
-                    submission.setExperimentProfile(experiment);
+                    if (null != experiment) {
+                        experiment.removeFile(new FileRef(dataFile.getName(), dataFile.getDigest()));
+                        experimentSubmission.setExperimentProfile(experiment);
+                    }
 
                     submission.getFiles().remove(dataFile);
                     dataFileManager.deleteDataFile(dataFile);
@@ -569,7 +577,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         return null;
     }
 
-    private boolean checkFileExists(final ExperimentSubmission submission, final String fileName) {
+    private boolean checkFileExists(final Submission submission, final String fileName) {
         Set<DataFile> files = submission.getFiles();
         for (DataFile dataFile : files) {
             if (fileName.equals(dataFile.getName())) {
@@ -579,11 +587,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         return false;
     }
 
-    private void saveFile(final DataFileSource source, final String md5, final ExperimentSubmission submission)
+    private void saveFile(final DataFileSource source, final String md5, final Submission submission)
             throws DataSerializationException, IOException {
 
         boolean shouldStore = !(source instanceof RemoteFileSource &&
-                submission.getExperimentProfile().getType().isSequencing());
+                submission instanceof ExperimentSubmission &&
+                ((ExperimentSubmission)submission).getExperimentProfile().getType().isSequencing());
+
+        if (submission instanceof ImportedExperimentSubmission) {
+            shouldStore = false;
+        }
 
         dataFileManager.addFile(source, md5, submission, shouldStore);
         save(submission);

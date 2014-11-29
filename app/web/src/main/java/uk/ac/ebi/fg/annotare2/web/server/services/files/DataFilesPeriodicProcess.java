@@ -132,7 +132,8 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                     file.setSourceUri(null);
                 }
             } else {
-                throw new IOException("Unable to find source file " + source.getUri() + "");
+                file.setStatus(FILE_NOT_FOUND_ERROR);
+                log.error("Unable to find source file {}", source.getUri());
             }
             fileDao.save(file);
         } catch (IOException x) {

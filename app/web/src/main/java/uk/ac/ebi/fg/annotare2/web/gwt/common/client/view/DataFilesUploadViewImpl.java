@@ -72,18 +72,19 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @UiHandler("deleteFilesBtn")
     void deleteFilesBtnClicked(ClickEvent event) {
         deleteFilesBtn.setEnabled(false);
-        final PopupPanel waiting = new DataFileListPanel.WaitingPopup();
+        final PopupPanel w = new WaitingPopup();
+        w.center();
 
         fileListPanel.deleteSelectedFiles(new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable caught) {
-                waiting.hide();
+                w.hide();
                 deleteFilesBtn.setEnabled(true);
             }
 
             @Override
             public void onSuccess(Void result) {
-                waiting.hide();
+                w.hide();
                 deleteFilesBtn.setEnabled(true);
             }
         });

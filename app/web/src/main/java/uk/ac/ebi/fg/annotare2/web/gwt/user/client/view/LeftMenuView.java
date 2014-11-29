@@ -19,6 +19,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -28,6 +31,8 @@ public interface LeftMenuView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     void setFilter(SubmissionListFilter filter);
+
+    void setDataFiles(List<DataFileRow> files);
 
     public interface Presenter extends ImportSubmissionDialog.Presenter {
 

@@ -24,8 +24,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFileListPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
@@ -65,13 +65,13 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     private boolean shouldAllowInstantFeedback;
 
     private final FeedbackDialog feedbackDialog;
-    private final DataFileListPanel.WaitingPopup waitingPopup;
+    private final WaitingPopup waitingPopup;
 
     public EditorTitleBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
         feedbackDialog = new FeedbackDialog();
-        waitingPopup = new DataFileListPanel.WaitingPopup();
+        waitingPopup = new WaitingPopup();
     }
 
     @Override

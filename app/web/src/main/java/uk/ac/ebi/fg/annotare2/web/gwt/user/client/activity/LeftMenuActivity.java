@@ -16,8 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity;
 
+import com.google.common.base.Function;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,28 +27,48 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.google.common.collect.Collections2.transform;
 
 public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.Presenter {
 
     private final LeftMenuView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
+    private final DataFilesProxy dataFilesService;
+
+    private HandlerRegistration dataUpdateHandler;
     private EventBus eventBus;
 
     @Inject
-    public LeftMenuActivity(LeftMenuView view, PlaceController placeController, SubmissionServiceAsync submissionService) {
+    public LeftMenuActivity(
+            LeftMenuView view,
+            PlaceController placeController,
+            SubmissionServiceAsync submissionService,
+            DataFilesProxy dataFilesService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
-        this.eventBus = null;
+        this.dataFilesService = dataFilesService;
     }
 
     public LeftMenuActivity withPlace(Place place) {
@@ -126,7 +148,27 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     }
 
     @Override
-    public void onImportCancelled(Long submissionId) {
+    public void onImportStarted(long submissionId) {
+        dataFilesService.setSubmissionId(submissionId);
+        dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
+            @Override
+            public void onDataFilesUpdate() {
+                dataFilesService.getFilesAsync(
+                        new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
+                            @Override
+                            public void onSuccess(List<DataFileRow> result) {
+                                view.setDataFiles(result);
+
+                            }
+                        }
+                );
+            }
+        });
+    }
+
+    @Override
+    public void onImportCancelled(long submissionId) {
+        dataFilesService.setSubmissionId(null);
         submissionService.deleteSubmission(submissionId,
                 AsyncCallbackWrapper.callbackWrap(
                         new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_DELETE_SUBMISSION) {
@@ -137,7 +179,30 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                         }
                 )
         );
+    }
 
+    @Override
+    public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+        dataFilesService.registerHttpFilesAsync(filesInfo, callback);
+    }
+
+    @Override
+    public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
+        dataFilesService.registerFtpFilesAsync(filesInfo, callback);
+    }
+
+    @Override
+    public void renameFile(DataFileRow dataFile, String newFileName) {
+        dataFilesService.renameFile(dataFile, newFileName);
+    }
+
+    @Override
+    public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
+        dataFilesService.removeFiles(new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
+            public Long apply(@Nullable DataFileRow input) {
+                return null != input ? input.getId() : null;
+            }
+        })), callback);
     }
 
     public void goTo(Place place) {

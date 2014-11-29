@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFileListPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
@@ -103,11 +103,19 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         HasSubmissionSettings settings = (HasSubmissionSettings) templateDetails.getWidget();
         if (settings.areValid()) {
             okButton.setEnabled(false);
-            final DataFileListPanel.WaitingPopup w = new DataFileListPanel.WaitingPopup();
+            final WaitingPopup w = new WaitingPopup();
+            w.center();
             presenter.setupNewSubmission(settings.getSettings(),
                     new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
                         @Override
+                        public void onFailure(Throwable caught) {
+                            w.hide();
+                            super.onFailure(caught);
+                        }
+
+                        @Override
                         public void onSuccess(Void result) {
+                            w.hide();
                             Window.Location.reload();
                         }
                     });

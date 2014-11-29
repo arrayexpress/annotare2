@@ -81,6 +81,7 @@ public class FTPUploadDialog extends DialogBox {
     @Override
     public void show() {
         values.setValue("");
+        okButton.setEnabled(true);
         super.show();
         Scheduler.get().scheduleDeferred(new Command() {
             public void execute() {
@@ -94,19 +95,20 @@ public class FTPUploadDialog extends DialogBox {
         List<String> pastedData = getPastedData();
         if (!pastedData.isEmpty() && null != presenter) {
             okButton.setEnabled(false);
-            final PopupPanel waiting = new DataFileListPanel.WaitingPopup();
+            final PopupPanel w = new WaitingPopup();
+            w.center();
             presenter.onFtpDataSubmit(pastedData,
                     new ReportingAsyncCallback<String>(FailureMessage.UNABLE_TO_UPLOAD_FILES) {
                         @Override
                         public void onFailure(Throwable caught) {
                             super.onFailure(caught);
-                            waiting.hide();
+                            w.hide();
                             okButton.setEnabled(true);
                         }
 
                         @Override
                         public void onSuccess(String result) {
-                            waiting.hide();
+                            w.hide();
                             if (null != result && !result.isEmpty()) {
                                 NotificationPopupPanel.error("Unable to process FTP files:<br><br>" + result.replaceAll("\n", "<br>"), false);
                                 okButton.setEnabled(true);

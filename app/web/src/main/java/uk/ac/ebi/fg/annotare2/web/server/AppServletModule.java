@@ -133,7 +133,7 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "UserApp", "EditorApp");
         serveAndBindRpcService(AdfService.NAME, AdfServiceImpl.class, "EditorApp");
         serveAndBindRpcService(SubmissionValidationService.NAME, SubmissionValidationServiceImpl.class, "EditorApp");
-        serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "EditorApp");
+        serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "UserApp", "EditorApp");
 
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
         bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);

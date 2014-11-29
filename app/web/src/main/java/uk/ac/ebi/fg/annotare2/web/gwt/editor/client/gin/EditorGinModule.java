@@ -75,7 +75,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ExperimentDataProxy.class).in(Singleton.class);
         bind(ArrayDesignDataProxy.class).in(Singleton.class);
         bind(OntologyDataProxy.class).in(Singleton.class);
-        bind(DataFilesProxy.class).in(Singleton.class);
+        bind(ExperimentDataFilesProxy.class).in(Singleton.class);
         bind(ApplicationDataProxy.class).in(Singleton.class);
     }
 

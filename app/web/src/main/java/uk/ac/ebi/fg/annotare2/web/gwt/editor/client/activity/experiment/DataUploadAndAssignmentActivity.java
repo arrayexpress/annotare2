@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
@@ -35,12 +37,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentCol
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.DataFilesProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import javax.annotation.Nullable;
@@ -56,7 +56,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     private final DataUploadAndAssignmentView view;
     private final ApplicationDataProxy appData;
     private final ExperimentDataProxy expData;
-    private final DataFilesProxy dataFilesProxy;
+    private final ExperimentDataFilesProxy dataFilesProxy;
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
 
@@ -64,7 +64,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     public DataUploadAndAssignmentActivity(DataUploadAndAssignmentView view,
                                            ApplicationDataProxy appData,
                                            ExperimentDataProxy expData,
-                                           DataFilesProxy dataFilesProxy) {
+                                           ExperimentDataFilesProxy dataFilesProxy) {
         this.view = view;
         this.appData = appData;
         this.expData = expData;
@@ -176,7 +176,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     @Override
-    public void filesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+    public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
         dataFilesProxy.registerHttpFilesAsync(filesInfo, callback);
     }
 

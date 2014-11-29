@@ -23,10 +23,11 @@ import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.Updater;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFilesUpdateEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 /**
  * @author Olga Melnichuk
  */
-public class DataFilesProxy {
+public class ExperimentDataFilesProxy {
 
     private final SubmissionServiceAsync submissionServiceAsync;
     private final EventBus eventBus;
@@ -48,9 +49,9 @@ public class DataFilesProxy {
     private final Updater updater;
 
     @Inject
-    public DataFilesProxy(EventBus eventBus,
-                          SubmissionServiceAsync submissionServiceAsync,
-                          ExperimentDataProxy expDataProxy) {
+    public ExperimentDataFilesProxy(EventBus eventBus,
+                                    SubmissionServiceAsync submissionServiceAsync,
+                                    ExperimentDataProxy expDataProxy) {
         this.submissionServiceAsync = submissionServiceAsync;
         this.eventBus = eventBus;
         this.expDataProxy = expDataProxy;
@@ -104,7 +105,7 @@ public class DataFilesProxy {
     }
 
     private void update(List<DataFileRow> newFileRows) {
-        boolean fireEvent = fileRows != null && !fileRows.equals(newFileRows);
+        boolean fireEvent = null == fileRows || !fileRows.equals(newFileRows);
         fileRows = new ArrayList<DataFileRow>(newFileRows);
         if (fireEvent) {
             eventBus.fireEvent(new DataFilesUpdateEvent());
