@@ -37,7 +37,7 @@ public class SubmissionViewPlace extends Place {
         this.submissionId = submissionId;
     }
 
-    @Prefix("submView")
+    @Prefix("view")
     public static class Tokenizer implements PlaceTokenizer<SubmissionViewPlace> {
 
         private final Provider<SubmissionViewPlace> placeProvider;

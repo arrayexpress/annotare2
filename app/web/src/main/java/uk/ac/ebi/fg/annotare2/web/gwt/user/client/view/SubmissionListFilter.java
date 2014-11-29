@@ -20,19 +20,30 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
  * @author Olga Melnichuk
  */
 public enum SubmissionListFilter {
+    ALL_SUBMISSIONS("all"),
+    COMPLETED_SUBMISSIONS("completed"),
+    INCOMPLETE_SUBMISSIONS("incomplete");
 
-    ALL_SUBMISSIONS,
+    private final String token;
 
-    COMPLETED_SUBMISSIONS,
+    SubmissionListFilter(String prefix) {
+        this.token = prefix;
+    }
 
-    INCOMPLETE_SUBMISSIONS;
+    public String getToken() {
+        return token;
+    }
+
+    private boolean matches(String token) {
+        return token.equalsIgnoreCase(token);
+    }
 
     public static SubmissionListFilter getIfPresent(String token) {
-        if (token == null || token.isEmpty()) {
+        if (null == token || token.isEmpty()) {
             return null;
         }
         for (SubmissionListFilter f : values()) {
-            if (f.name().equals(token)) {
+            if (f.matches(token)) {
                 return f;
             }
         }

@@ -49,7 +49,7 @@ public class SubmissionListPlace extends Place {
         this.filter = filter == null ? defaultFilter : filter;
     }
 
-    @Prefix("submList")
+    @Prefix("list")
     public static class Tokenizer implements PlaceTokenizer<SubmissionListPlace> {
 
         private final Provider<SubmissionListPlace> placeProvider;
@@ -60,13 +60,13 @@ public class SubmissionListPlace extends Place {
         }
 
         public String getToken(SubmissionListPlace place) {
-            return place.getFilter().name();
+            return place.getFilter().getToken();
         }
 
         public SubmissionListPlace getPlace(String token) {
             SubmissionListPlace place = placeProvider.get();
             SubmissionListFilter filter = SubmissionListFilter.getIfPresent(token);
-            if (filter == null) {
+            if (null == filter) {
                 return null;
             }
             place.setFilter(filter);
