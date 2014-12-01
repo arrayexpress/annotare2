@@ -48,11 +48,11 @@ public class UserAppGinModule extends AbstractGinModule {
         bind(ActivityMapper.class).annotatedWith(LeftMenuDisplay.class).to(LeftMenuActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(ContentDisplay.class).to(ContentActivityMapper.class).in(Singleton.class);
 
-        bind(HeaderView.class).to(HeaderViewImpl.class);
-        bind(LeftMenuView.class).to(LeftMenuViewImpl.class);
-        bind(SubmissionView.class).to(SubmissionViewImpl.class);
-        bind(SubmissionListView.class).to(SubmissionListViewImpl.class);
-        bind(ImportSubmissionView.class).to(ImportSubmissionViewImpl.class);
+        bind(HeaderView.class).to(HeaderViewImpl.class).in(Singleton.class);
+        bind(LeftMenuView.class).to(LeftMenuViewImpl.class).in(Singleton.class);
+        bind(SubmissionView.class).to(SubmissionViewImpl.class).in(Singleton.class);
+        bind(SubmissionListView.class).to(SubmissionListViewImpl.class).in(Singleton.class);
+        bind(ImportSubmissionView.class).to(ImportSubmissionViewImpl.class).in(Singleton.class);
 
         bind(ImageResources.class).in(Singleton.class);
         bind(DataFilesProxy.class).in(Singleton.class);

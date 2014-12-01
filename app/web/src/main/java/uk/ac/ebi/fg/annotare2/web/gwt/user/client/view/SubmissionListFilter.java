@@ -35,7 +35,7 @@ public enum SubmissionListFilter {
     }
 
     private boolean matches(String token) {
-        return token.equalsIgnoreCase(token);
+        return this.token.equalsIgnoreCase(token);
     }
 
     public static SubmissionListFilter getIfPresent(String token) {

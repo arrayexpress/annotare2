@@ -24,6 +24,8 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace.ImportStage;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.ImportSubmissionView;
 
 public class ImportSubmissionActivity extends AbstractActivity implements ImportSubmissionView.Presenter {
@@ -49,6 +51,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
         return this;
     }
 
+    @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
@@ -60,6 +63,30 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
         placeController.goTo(place);
     }
 
+    @Override
+    public void onImportStarted() {
+    }
+
+    @Override
+    public void onImportCancelled() {
+        goTo(new SubmissionListPlace());
+    }
+
+    @Override
+    public void onImportValidate() {
+        ImportSubmissionPlace place = new ImportSubmissionPlace();
+        place.setSubmissionId(submissionId);
+        place.setImportStage(ImportStage.VALIDATE);
+        goTo(place);
+    }
+
+    @Override
+    public void onImportSubmit() {
+        ImportSubmissionPlace place = new ImportSubmissionPlace();
+        place.setSubmissionId(submissionId);
+        place.setImportStage(ImportStage.SUBMIT);
+        goTo(place);
+    }
     /*
     private void loadAsync() {
         submissionService.getSubmissionDetails(submissionId, AsyncCallbackWrapper.callbackWrap(

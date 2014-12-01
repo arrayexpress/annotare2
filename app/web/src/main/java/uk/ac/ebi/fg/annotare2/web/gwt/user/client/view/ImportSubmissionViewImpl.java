@@ -16,6 +16,7 @@ public class ImportSubmissionViewImpl extends SimplePanel implements ImportSubmi
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        dialog.setPresenter(presenter);
     }
 
     @Override

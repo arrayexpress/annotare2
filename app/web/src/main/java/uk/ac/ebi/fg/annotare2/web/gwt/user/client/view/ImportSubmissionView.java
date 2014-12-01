@@ -27,7 +27,7 @@ public interface ImportSubmissionView extends IsWidget {
 
     void startImport();
 
-    public interface Presenter {
+    public interface Presenter extends ImportSubmissionDialog.Presenter {
 
     }
 }

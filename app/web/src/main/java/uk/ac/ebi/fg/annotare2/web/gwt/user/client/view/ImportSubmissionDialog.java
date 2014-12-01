@@ -22,11 +22,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
 
 public class ImportSubmissionDialog extends DialogBox {
 
@@ -35,12 +33,6 @@ public class ImportSubmissionDialog extends DialogBox {
 
     @UiField
     DeckLayoutPanel deckPanel;
-
-    @UiField
-    Button cancelButton;
-
-    @UiField
-    Button nextButton;
 
     interface Binder extends UiBinder<Widget, ImportSubmissionDialog> {
         Binder BINDER = GWT.create(Binder.class);
@@ -74,19 +66,49 @@ public class ImportSubmissionDialog extends DialogBox {
     public void startImport(long submissionId) {
         this.submissionId = submissionId;
 
-        //presenter.onImportStarted(submissionId);
+        presenter.onImportStarted();
         center();
     }
 
-    @UiHandler("cancelButton")
-    void setCancelButton(ClickEvent event) {
+    @UiHandler("cancel1Button")
+    void onCancelClick(ClickEvent event) {
         hide();
-        //presenter.onImportCancelled(submissionId);
+        presenter.onImportCancelled();
     }
 
-    public interface Presenter extends DataFilesUploadView.Presenter {
-        void onImportStarted(long submissionId);
+    @UiHandler("cancel2Button")
+    void onCancel2Click(ClickEvent event) {
+        onCancelClick(event);
+    }
 
-        void onImportCancelled(long submissionId);
+    @UiHandler("cancel3Button")
+    void onCancel3Click(ClickEvent event) {
+        onCancelClick(event);
+    }
+
+    @UiHandler("validateButton")
+    void onValidateClick(ClickEvent event) {
+        presenter.onImportValidate();
+    }
+
+    @UiHandler("submitButton")
+    void onSubmitClick(ClickEvent event) {
+        presenter.onImportSubmit();
+    }
+
+    @UiHandler("closeButton")
+    void onCloseClick(ClickEvent event) {
+        hide();
+        presenter.onImportCancelled();
+    }
+
+    public interface Presenter /*extends DataFilesUploadView.Presenter*/ {
+        void onImportStarted();
+
+        void onImportCancelled();
+
+        void onImportValidate();
+
+        void onImportSubmit();
     }
 }

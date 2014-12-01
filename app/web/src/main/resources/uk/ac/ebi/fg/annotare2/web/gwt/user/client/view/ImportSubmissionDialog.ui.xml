@@ -18,35 +18,109 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
+        xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view">
+    <ui:style>
+        .feedbackPanel {
+            padding: 10px;
+            background-color: #fffee7;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
 
-    <g:DeckLayoutPanel width="400px" height="300px" ui:field="deckPanel">
+        .feedback {
+            table-layout: fixed;
+            width: 50%;
+            margin: 1em auto;
+        }
+
+        .feedback label {
+            display: block;
+        }
+
+        .feedback i {
+            margin: 0.2em 0 0 0;
+            font-size: large;
+        }
+
+        .rb-1 {
+            color: #a00000;
+        }
+
+        .rb-5 {
+            color: #777777;
+        }
+
+        .rb-9 {
+            color: #008000;
+        }
+
+        .message {
+            width: 100%;
+            height: 14em;
+            box-sizing: border-box;
+        }
+    </ui:style>
+    <g:DeckLayoutPanel width="500px" height="500px" ui:field="deckPanel">
         <g:VerticalPanel width="100%" height="100%">
             <g:HTMLPanel>
                 <p>Please upload files:</p>
             </g:HTMLPanel>
+            <g:cell width="100%" height="100%">
+                <c:DataFilesUploadViewImpl width="100%" height="100%" ui:field="dataFilesUploadView"/>
+            </g:cell>
             <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
                 <g:HTMLPanel>
-                    <g:Button ui:field="cancelButton">Cancel</g:Button>
-                    <g:Button ui:field="nextButton">Next</g:Button>
+                    <g:Button ui:field="cancel1Button">Cancel</g:Button>
+                    <g:Button ui:field="validateButton">Validate</g:Button>
                 </g:HTMLPanel>
             </g:cell>
         </g:VerticalPanel>
-        <g:VerticalPanel>
-            <g:HTMLPanel ui:field="validatePanel" width="400px" height="100px">
-                <p>Please validate your submission:</p>
+        <g:VerticalPanel width="100%" height="100%">
+            <g:HTMLPanel>
+                <p></p>
             </g:HTMLPanel>
+            <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
+                <g:HTMLPanel>
+                    <g:Button ui:field="cancel2Button">Cancel</g:Button>
+                    <g:Button ui:field="backButton">Back</g:Button>
+                    <g:Button ui:field="submitButton">Submit</g:Button>
+                </g:HTMLPanel>
+            </g:cell>
         </g:VerticalPanel>
-        <g:VerticalPanel>
-            <g:HTMLPanel ui:field="submitPanel" width="400px" height="100px">
-                <p>Please submit:</p>
+        <g:VerticalPanel width="100%" height="100%">
+            <g:HTMLPanel>
+                The experiment has been successfully submitted to ArrayExpress.<br/><br/>
+                Our curation team will review your submission and will email you with any questions.
+                Once all the required information is provided we will send you an accession number.<br/><br/>
+                In the meantime, please contact <a href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a> with any questions.
+                Further information can be found at <a href="http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html" target="_blank">Annotare help</a>.
             </g:HTMLPanel>
+            <g:cell width="100%" height="100%">
+                <g:HTMLPanel ui:field="feedbackPanel" addStyleNames="{style.feedbackPanel}">
+                    <!-- <hr/> -->
+                    <g:Label>We value your feedback. Please rate your experience submitting with Annotare:</g:Label>
+                    <g:HorizontalPanel addStyleNames="{style.feedback}" horizontalAlignment="ALIGN_CENTER">
+                        <g:RadioButton name="fs" ui:field="rbScore1" addStyleNames="{style.rb-1}" ><i class="fa fa-frown-o"/></g:RadioButton>
+                        <g:RadioButton name="fs" ui:field="rbScore2"/>
+                        <g:RadioButton name="fs" ui:field="rbScore3"/>
+                        <g:RadioButton name="fs" ui:field="rbScore4"/>
+                        <g:RadioButton name="fs" ui:field="rbScore5" addStyleNames="{style.rb-5}"><i class="fa fa-meh-o"/></g:RadioButton>
+                        <g:RadioButton name="fs" ui:field="rbScore6"/>
+                        <g:RadioButton name="fs" ui:field="rbScore7"/>
+                        <g:RadioButton name="fs" ui:field="rbScore8"/>
+                        <g:RadioButton name="fs" ui:field="rbScore9" addStyleNames="{style.rb-9}"><i class="fa fa-smile-o"/></g:RadioButton>
+                    </g:HorizontalPanel>
+                    <g:Label>If you wish please leave a comment below:</g:Label>
+                    <g:TextArea ui:field="message" addStyleNames="{style.message}"/>
+                </g:HTMLPanel>
+            </g:cell>
+            <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
+                <g:HTMLPanel>
+                    <g:Button ui:field="cancel3Button">Cancel</g:Button>
+                    <g:Button ui:field="closeButton">OK</g:Button>
+                </g:HTMLPanel>
+            </g:cell>
         </g:VerticalPanel>
     </g:DeckLayoutPanel>
 
-        <!--
-        <g:cell width="450px" height="400px">
-            <c:DataFilesUploadViewImpl width="100%" height="100%" ui:field="dataFilesUploadView"/>
-        </g:cell>
-        -->
 </ui:UiBinder>

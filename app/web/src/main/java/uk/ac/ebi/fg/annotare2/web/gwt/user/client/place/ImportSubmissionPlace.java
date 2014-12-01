@@ -42,7 +42,7 @@ public class ImportSubmissionPlace extends Place {
         }
 
         private boolean matches(String token) {
-            return token.equalsIgnoreCase(token);
+            return this.token.equalsIgnoreCase(token);
         }
 
         public static ImportStage getDefault() {
@@ -80,6 +80,18 @@ public class ImportSubmissionPlace extends Place {
         this.importStage = importStage;
     }
 
+    @Override
+    public boolean equals(Object place) {
+        if (place instanceof ImportSubmissionPlace) {
+            ImportSubmissionPlace importSubmissionPlace = (ImportSubmissionPlace)place;
+            if ((null == submissionId && null == importSubmissionPlace.submissionId) ||
+                    (null != submissionId && submissionId.equals(importSubmissionPlace.submissionId))) {
+                return importStage.equals(importSubmissionPlace.importStage);
+            }
+        }
+        return false;
+    }
+
     @Prefix("import")
     public static class Tokenizer implements PlaceTokenizer<ImportSubmissionPlace> {
 
@@ -102,5 +114,4 @@ public class ImportSubmissionPlace extends Place {
             return place;
         }
     }
-
 }
