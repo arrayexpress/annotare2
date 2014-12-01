@@ -52,6 +52,7 @@ public class UserAppGinModule extends AbstractGinModule {
         bind(LeftMenuView.class).to(LeftMenuViewImpl.class);
         bind(SubmissionView.class).to(SubmissionViewImpl.class);
         bind(SubmissionListView.class).to(SubmissionListViewImpl.class);
+        bind(ImportSubmissionView.class).to(ImportSubmissionViewImpl.class);
 
         bind(ImageResources.class).in(Singleton.class);
         bind(DataFilesProxy.class).in(Singleton.class);

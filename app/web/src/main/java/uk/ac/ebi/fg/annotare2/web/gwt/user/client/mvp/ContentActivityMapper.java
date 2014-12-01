@@ -21,8 +21,10 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity.ImportSubmissionActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity.SubmissionListActivity;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity.SubmissionViewActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 
@@ -33,12 +35,15 @@ public class ContentActivityMapper implements ActivityMapper {
 
     private final Provider<SubmissionListActivity> listActivityProvider;
     private final Provider<SubmissionViewActivity> viewActivityProvider;
+    private final Provider<ImportSubmissionActivity> importActivityProvider;
 
     @Inject
     public ContentActivityMapper(Provider<SubmissionListActivity> listActivityProvider,
-                                 Provider<SubmissionViewActivity> viewActivityProvider) {
+                                 Provider<SubmissionViewActivity> viewActivityProvider,
+                                 Provider<ImportSubmissionActivity> importActivityProvider) {
         this.listActivityProvider = listActivityProvider;
         this.viewActivityProvider = viewActivityProvider;
+        this.importActivityProvider = importActivityProvider;
     }
     
     public Activity getActivity(Place place) {
@@ -46,6 +51,8 @@ public class ContentActivityMapper implements ActivityMapper {
             return listActivityProvider.get().withPlace((SubmissionListPlace) place);
         } else if (place instanceof SubmissionViewPlace) {
             return viewActivityProvider.get().withPlace((SubmissionViewPlace) place);
+        } else if (place instanceof ImportSubmissionPlace) {
+            return importActivityProvider.get().withPlace((ImportSubmissionPlace) place);
         }
         //TODO
         return null;

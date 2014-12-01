@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 
@@ -28,8 +29,12 @@ public class UserAppPlaceFactory {
 
     @Inject
     SubmissionViewPlace.Tokenizer sbmViewPlaceTokenizer;
+
     @Inject
     SubmissionListPlace.Tokenizer sbmListPlaceTokenizer;
+
+    @Inject
+    ImportSubmissionPlace.Tokenizer importSbmPlaceTokenizer;
 
     @Inject
     Provider<SubmissionListPlace> sbmListPlaceProvider;
@@ -40,6 +45,10 @@ public class UserAppPlaceFactory {
 
     public SubmissionListPlace.Tokenizer getSubmissionListPlaceTokenizer() {
         return sbmListPlaceTokenizer;
+    }
+
+    public ImportSubmissionPlace.Tokenizer getImportSubmissionPlaceTokenizer() {
+        return importSbmPlaceTokenizer;
     }
 
     public SubmissionListPlace getSubmissionListPlace() {

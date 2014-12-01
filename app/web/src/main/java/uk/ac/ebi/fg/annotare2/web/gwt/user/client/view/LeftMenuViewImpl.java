@@ -27,14 +27,11 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
 
 import java.util.HashMap;
-import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.IMPORTED_EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
 import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getPlaceholderUrl;
 
@@ -65,14 +62,11 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     @UiField
     LeftMenuItem incomplete;
 
-    final ImportSubmissionDialog importDialog;
-
     private HashMap<SubmissionListFilter, Widget> filters = new HashMap<SubmissionListFilter, Widget>();
 
     public LeftMenuViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
-        importDialog = new ImportSubmissionDialog();
 
         filters.put(SubmissionListFilter.COMPLETED_SUBMISSIONS, completed);
         filters.put(SubmissionListFilter.INCOMPLETE_SUBMISSIONS, incomplete);
@@ -82,12 +76,6 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-        importDialog.setPresenter(presenter);
-    }
-
-    @Override
-    public void setDataFiles(List<DataFileRow> files) {
-        importDialog.setDataFiles(files);
     }
 
     @UiHandler("createButton")
@@ -109,12 +97,13 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     @UiHandler("importButton")
     public void onImportButtonClick(ClickEvent event) {
-        presenter.onSubmissionImportClick(IMPORTED_EXPERIMENT, new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
-            @Override
-            public void onSuccess(Long result) {
-                importDialog.startImport(result);
-            }
-        });
+        presenter.onSubmissionImport();
+        //presenter.onSubmissionImportClick(IMPORTED_EXPERIMENT, new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
+        //    @Override
+        //    public void onSuccess(Long result) {
+        //        importDialog.startImport(result);
+        //    }
+        //});
     }
 
     @UiHandler("allSubmissions")

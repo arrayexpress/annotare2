@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity;
 
-import com.google.common.base.Function;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -27,27 +26,14 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static com.google.common.collect.Collections2.transform;
 
 public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.Presenter {
 
@@ -124,7 +110,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                 NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
         }
     }
-
+    /*
     @Override
     public void onSubmissionImportClick(SubmissionType type, final AsyncCallback<Long> callback) {
         switch (type) {
@@ -146,7 +132,15 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
                 NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
         }
     }
+    */
+    @Override
+    public void onSubmissionImport() {
+        ImportSubmissionPlace place = new ImportSubmissionPlace();
+        place.setSubmissionId(23);
+        goTo(place);
+    }
 
+    /*
     @Override
     public void onImportStarted(long submissionId) {
         dataFilesService.setSubmissionId(submissionId);
@@ -204,7 +198,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
             }
         })), callback);
     }
-
+    */
     public void goTo(Place place) {
         placeController.goTo(place);
     }

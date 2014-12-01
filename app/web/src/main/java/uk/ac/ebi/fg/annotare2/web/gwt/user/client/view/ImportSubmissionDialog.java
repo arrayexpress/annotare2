@@ -23,17 +23,18 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-
-import java.util.List;
 
 public class ImportSubmissionDialog extends DialogBox {
 
+    //@UiField
+    //DataFilesUploadView dataFilesUploadView;
+
     @UiField
-    DataFilesUploadView dataFilesUploadView;
+    DeckLayoutPanel deckPanel;
 
     @UiField
     Button cancelButton;
@@ -59,24 +60,28 @@ public class ImportSubmissionDialog extends DialogBox {
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-        dataFilesUploadView.setPresenter(presenter);
+        //dataFilesUploadView.setPresenter(presenter);
     }
 
-    public void setDataFiles(List<DataFileRow> files) {
-        dataFilesUploadView.setDataFiles(files);
+    //public void setDataFiles(List<DataFileRow> files) {
+    //    dataFilesUploadView.setDataFiles(files);
+    //}
+
+    public void setImportStage(int stage) {
+        deckPanel.showWidget(stage);
     }
 
     public void startImport(long submissionId) {
         this.submissionId = submissionId;
 
-        presenter.onImportStarted(submissionId);
+        //presenter.onImportStarted(submissionId);
         center();
     }
 
     @UiHandler("cancelButton")
     void setCancelButton(ClickEvent event) {
         hide();
-        presenter.onImportCancelled(submissionId);
+        //presenter.onImportCancelled(submissionId);
     }
 
     public interface Presenter extends DataFilesUploadView.Presenter {

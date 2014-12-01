@@ -16,25 +16,18 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 
-/**
- * @author Olga Melnichuk
- */
-public interface LeftMenuView extends IsWidget {
-    
+public interface ImportSubmissionView extends IsWidget {
+
     void setPresenter(Presenter presenter);
 
-    void setFilter(SubmissionListFilter filter);
+    void setImportStage(ImportSubmissionPlace.ImportStage importStage);
+
+    void startImport();
 
     public interface Presenter {
 
-        void onSubmissionFilterClick(SubmissionListFilter filter);
-
-        void onSubmissionCreateClick(SubmissionType type, AsyncCallback<Long> callback);
-
-        void onSubmissionImport();
     }
 }
