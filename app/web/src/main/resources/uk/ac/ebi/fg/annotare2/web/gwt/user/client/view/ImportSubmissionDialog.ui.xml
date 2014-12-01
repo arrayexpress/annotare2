@@ -20,6 +20,10 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view">
     <ui:style>
+        .logPanel {
+            border: 1px solid #ccc;
+        }
+
         .feedbackPanel {
             padding: 10px;
             background-color: #fffee7;
@@ -60,7 +64,7 @@
             box-sizing: border-box;
         }
     </ui:style>
-    <g:DeckLayoutPanel width="500px" height="500px" ui:field="deckPanel">
+    <g:DeckLayoutPanel width="600px" height="450px" ui:field="deckPanel">
         <g:VerticalPanel width="100%" height="100%">
             <g:HTMLPanel>
                 <p>Please upload files:</p>
@@ -76,9 +80,65 @@
             </g:cell>
         </g:VerticalPanel>
         <g:VerticalPanel width="100%" height="100%">
-            <g:HTMLPanel>
-                <p></p>
-            </g:HTMLPanel>
+            <g:cell>
+                <g:HTML>Validation failed with 23 errors:</g:HTML>
+                <!--  (for help fixing errors please go to <a href="http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html" target="_blank">Annotare Help</a>) -->
+            </g:cell>
+            <g:cell width="100%" height="100%">
+                <g:LayoutPanel width="100%" height="100%">
+                    <g:layer>
+                        <g:ScrollPanel addStyleNames="{style.logPanel}">
+                            <g:HTML>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                                <br/>
+                                Validation has been successful
+                            </g:HTML>
+                        </g:ScrollPanel>
+                    </g:layer>
+                </g:LayoutPanel>
+            </g:cell>
             <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
                 <g:HTMLPanel>
                     <g:Button ui:field="cancel2Button">Cancel</g:Button>
@@ -96,23 +156,33 @@
                 Further information can be found at <a href="http://www.ebi.ac.uk/fgpt/annotare_help/submit_exp.html" target="_blank">Annotare help</a>.
             </g:HTMLPanel>
             <g:cell width="100%" height="100%">
-                <g:HTMLPanel ui:field="feedbackPanel" addStyleNames="{style.feedbackPanel}">
-                    <!-- <hr/> -->
-                    <g:Label>We value your feedback. Please rate your experience submitting with Annotare:</g:Label>
-                    <g:HorizontalPanel addStyleNames="{style.feedback}" horizontalAlignment="ALIGN_CENTER">
-                        <g:RadioButton name="fs" ui:field="rbScore1" addStyleNames="{style.rb-1}" ><i class="fa fa-frown-o"/></g:RadioButton>
-                        <g:RadioButton name="fs" ui:field="rbScore2"/>
-                        <g:RadioButton name="fs" ui:field="rbScore3"/>
-                        <g:RadioButton name="fs" ui:field="rbScore4"/>
-                        <g:RadioButton name="fs" ui:field="rbScore5" addStyleNames="{style.rb-5}"><i class="fa fa-meh-o"/></g:RadioButton>
-                        <g:RadioButton name="fs" ui:field="rbScore6"/>
-                        <g:RadioButton name="fs" ui:field="rbScore7"/>
-                        <g:RadioButton name="fs" ui:field="rbScore8"/>
-                        <g:RadioButton name="fs" ui:field="rbScore9" addStyleNames="{style.rb-9}"><i class="fa fa-smile-o"/></g:RadioButton>
-                    </g:HorizontalPanel>
-                    <g:Label>If you wish please leave a comment below:</g:Label>
-                    <g:TextArea ui:field="message" addStyleNames="{style.message}"/>
-                </g:HTMLPanel>
+                <g:LayoutPanel width="100%" height="100%">
+                    <g:layer>
+                        <g:VerticalPanel width="100%" height="100%" ui:field="feedbackPanel" addStyleNames="{style.feedbackPanel}">
+                            <!-- <hr/> -->
+                            <g:cell height="1.2em">
+                                <g:Label>We value your feedback. Please rate your experience submitting with Annotare:</g:Label>
+                            </g:cell>
+                            <g:cell height="3em">
+                                <g:HorizontalPanel addStyleNames="{style.feedback}" horizontalAlignment="ALIGN_CENTER">
+                                    <g:RadioButton name="fs" ui:field="rbScore1" addStyleNames="{style.rb-1}" ><i class="fa fa-frown-o"/></g:RadioButton>
+                                    <g:RadioButton name="fs" ui:field="rbScore2"/>
+                                    <g:RadioButton name="fs" ui:field="rbScore3"/>
+                                    <g:RadioButton name="fs" ui:field="rbScore4"/>
+                                    <g:RadioButton name="fs" ui:field="rbScore5" addStyleNames="{style.rb-5}"><i class="fa fa-meh-o"/></g:RadioButton>
+                                    <g:RadioButton name="fs" ui:field="rbScore6"/>
+                                    <g:RadioButton name="fs" ui:field="rbScore7"/>
+                                    <g:RadioButton name="fs" ui:field="rbScore8"/>
+                                    <g:RadioButton name="fs" ui:field="rbScore9" addStyleNames="{style.rb-9}"><i class="fa fa-smile-o"/></g:RadioButton>
+                                </g:HorizontalPanel>
+                            </g:cell>
+                            <g:cell height="1.2em">
+                                <g:Label>If you wish please leave a comment below:</g:Label>
+                            </g:cell>
+                            <g:TextArea width="100%" height="100%" ui:field="message" addStyleNames="{style.message}"/>
+                        </g:VerticalPanel>
+                    </g:layer>
+                </g:LayoutPanel>
             </g:cell>
             <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
                 <g:HTMLPanel>
