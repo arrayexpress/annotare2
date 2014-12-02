@@ -51,10 +51,14 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
     private ListDataProvider<SubmissionRow> dataProvider;
 
+    private boolean isCurator;
+
     @UiField(provided = true)
     DataGrid<SubmissionRow> dataGrid;
 
     public SubmissionListViewImpl() {
+        isCurator = false;
+
         dataGrid = new CustomDataGrid<SubmissionRow>(Integer.MAX_VALUE, false);
 
         dataGrid.addColumn(new TextColumn<SubmissionRow>() {
@@ -155,7 +159,8 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
     }
 
     public void setCurator(boolean isCurator) {
-        if (isCurator) {
+        if (!this.isCurator && isCurator) {
+            this.isCurator = isCurator;
             dataGrid.insertColumn(0, new TextColumn<SubmissionRow>() {
                 @Override
                 public String getValue(SubmissionRow object) {
