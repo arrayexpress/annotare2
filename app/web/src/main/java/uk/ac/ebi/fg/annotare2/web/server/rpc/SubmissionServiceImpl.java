@@ -59,7 +59,6 @@ import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
@@ -590,12 +589,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private void saveFile(final DataFileSource source, final String md5, final Submission submission)
             throws DataSerializationException, IOException {
 
-        boolean shouldStore = !(source instanceof RemoteFileSource &&
-                submission instanceof ExperimentSubmission &&
-                ((ExperimentSubmission)submission).getExperimentProfile().getType().isSequencing());
-
-        if (source instanceof RemoteFileSource && submission instanceof ImportedExperimentSubmission) {
-            shouldStore = false;
+        boolean shouldStore = source instanceof LocalFileSource;
+        if (!shouldStore) {
+            if (submission instanceof ExperimentSubmission) {
+                shouldStore = !((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing();
+            } else if (submission instanceof ImportedExperimentSubmission) {
+                shouldStore = source.getName().matches("(?i)^.*[.]?(idf|sdrf)[.]txt$");
+            }
         }
 
         dataFileManager.addFile(source, md5, submission, shouldStore);

@@ -48,4 +48,8 @@ public enum DataFileStatus {
     public boolean isOk() {
         return STORED == this || ASSOCIATED == this;
     }
+
+    public boolean isLocal() {
+        return STORED == this;
+    }
 }

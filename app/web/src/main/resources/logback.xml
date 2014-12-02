@@ -56,7 +56,7 @@
     <logger name="uk.ac.ebi.fg.annotare2.web.server" level="INFO"/>
     <logger name="org.hibernate" level="INFO"/>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="${appender}"/>
     </root>
 </configuration>

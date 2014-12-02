@@ -28,6 +28,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
@@ -93,15 +94,20 @@ public class ImportSubmissionDialog extends DialogBox {
 
     @UiHandler("submitButton")
     void onSubmitClick(ClickEvent event) {
+        final PopupPanel w = new WaitingPopup();
+        w.center();
+
         presenter.onImportSubmit(
                 new ReportingAsyncCallback<ValidationResult>(ReportingAsyncCallback.FailureMessage.GENERIC_FAILURE) {
                     @Override
                     public void onFailure(Throwable caught) {
+                        w.hide();
                         showValidationResult(new ValidationResult(caught));
                     }
 
                     @Override
                     public void onSuccess(ValidationResult result) {
+                        w.hide();
                         showValidationResult(result);
                     }
                 }

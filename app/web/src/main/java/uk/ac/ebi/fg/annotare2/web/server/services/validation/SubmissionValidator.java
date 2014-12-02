@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services;
+package uk.ac.ebi.fg.annotare2.web.server.services.validation;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -22,10 +22,7 @@ import com.google.inject.Inject;
 import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
-import uk.ac.ebi.arrayexpress2.magetab.listener.ErrorItemListener;
 import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
-import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
@@ -37,17 +34,15 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.GenerateOption;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.EfoSearch;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -56,27 +51,24 @@ import java.util.Set;
 import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Ordering.natural;
 
-/**
- * @author Olga Melnichuk
- */
 public class SubmissionValidator {
 
     private final MageTabChecker checker;
-    private final SubmissionDao submissionDao;
     private final DataFileManager dataFileManager;
+    private final ValidatedDataFileConnector dataFileConnector;
     private final EfoSearch efoSearch;
 
     @Inject
     public SubmissionValidator(MageTabChecker checker,
-                               SubmissionDao submissionDao,
                                DataFileManager dataFileManager,
+                               //DataFileStore dataFileStore,
+                               ValidatedDataFileConnector dataFileConnector,
                                EfoSearch efoSearch) {
         this.checker = checker;
-        this.submissionDao = submissionDao;
         this.dataFileManager = dataFileManager;
+        //this.dataFileStore = dataFileStore;
+        this.dataFileConnector = dataFileConnector;
         this.efoSearch = efoSearch;
-
-        registerAnnotareURLScheme();
     }
 
     public Collection<CheckResult> validate(Submission submission) throws IOException,
@@ -102,9 +94,14 @@ public class SubmissionValidator {
         mageTab.SDRF.setLocation(new URL("annotare:/" + submission.getId() + "/sdrf.txt"));
         mageTab.SDRF.getLayout().calculateLocations(mageTab.SDRF);
 
+        Set<DataFile> allFiles = submission.getFiles();
+
+        dataFileConnector.addDataFiles(submission.getId(), allFiles);
+        dataFileConnector.addFile(submission.getId(), "idf.txt");
+        dataFileConnector.addFile(submission.getId(), "sdrf.txt");
+
         Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF), type);
 
-        Set<DataFile> allFiles = submission.getFiles();
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
 
         if (null == allFiles || 0 == allFiles.size()) {
@@ -153,24 +150,39 @@ public class SubmissionValidator {
 
         final List<ErrorItem> parserErrors = new ArrayList<ErrorItem>();
         MAGETABParser parser = new MAGETABParser();
-        parser.addErrorItemListener(new ErrorItemListener() {
+        //parser.addErrorItemListener(new ErrorItemListener() {
 
-            @Override
-            public void errorOccurred(ErrorItem item) {
-                parserErrors.add(item);
-            }
-        });
+        //    @Override
+        //    public void errorOccurred(ErrorItem item) {
+        //        parserErrors.add(item);
+        //    }
+        //});
 
         Collection<CheckResult> results = new ArrayList<CheckResult>();
 
+        try {
+            dataFileConnector.addDataFiles(submission.getId(), submission.getFiles());
 
-        Collection<DataFile> idfFile = submission.getIdfFiles();
-        if (0 == idfFile.size()) {
-            addError(results, "IDF file has not been uploaded");
+            Collection<DataFile> idfFiles = submission.getIdfFiles();
+            if (0 == idfFiles.size()) {
+                addError(results, "IDF file has not been uploaded");
+            } else if (idfFiles.size() > 1) {
+                addError(results, "More than one IDF file has been uploaded (" + fileNames(idfFiles) + ")");
+            } else {
+                DataFile idfFile = idfFiles.iterator().next();
+                MAGETABInvestigation mageTab = parser.parse(new URL("annotare:/" + submission.getId() + "/" + idfFile.getName()));
+                if (!parserErrors.isEmpty()) {
+                    for (ErrorItem error : parserErrors) {
+                        addError(results, error.reportString());
+                    }
+                } else {
+                    results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF));
+                }
+            }
+        } catch (Exception x) {
+            addError(results, x.getMessage());
         }
-        else if (idfFile.size() > 1) {
-            addError(results, "More than one IDF file has been uploaded (" + fileNames(idfFile) + ")");
-        }
+
         return results;
     }
 
@@ -193,95 +205,5 @@ public class SubmissionValidator {
                         }
                 })
         );
-    }
-
-    private void registerAnnotareURLScheme() {
-        try {
-            for (final Field field : URL.class.getDeclaredFields()) {
-                if ("factory".equalsIgnoreCase(field.getName()) ) {
-                    field.setAccessible(true);
-                    field.set(
-                            null,
-                            new AnnotareURLStreamHandlerFactory(
-                                    (URLStreamHandlerFactory) field.get(null),
-                                    submissionDao
-                            )
-                    );
-                }
-            }
-        } catch (Throwable e) {
-        }
-    }
-
-
-    private static class AnnotareURLConnection extends URLConnection {
-
-        protected AnnotareURLConnection(URL url) {
-            super(url);
-        }
-
-        public void connect() throws IOException {
-        }
-    }
-
-    private class AnnotareURLStreamHandler extends URLStreamHandler {
-
-        private final SubmissionDao submissionDao;
-
-        protected AnnotareURLStreamHandler(SubmissionDao submissionDao) {
-            this.submissionDao = submissionDao;
-        }
-
-        @Override
-        protected URLConnection openConnection(URL url) throws IOException {
-            if (null != url) {
-                if (null != url.getFile()) {
-
-                    String fileName = url.getFile().replaceAll("^/(\\d+)/(.+)$", "$2");
-                    if ("sdrf.txt".equals(fileName) || "idf.txt".equals(fileName)) {
-                        return new AnnotareURLConnection(url);
-                    }
-
-                    try {
-                        Submission submission = submissionDao.get(
-                                Long.valueOf(url.getFile().replaceAll("^/(\\d+)/(.+)$", "$1")),
-                                false
-                        );
-
-                        Set<DataFile> files = submission.getFiles();
-                        for (DataFile file : files) {
-                            if (file.getName().equals(fileName)) {
-                                return new AnnotareURLConnection(url);
-                            }
-                        }
-                    } catch (RecordNotFoundException x) {
-
-                    }
-                }
-            }
-            return null;
-        }
-    }
-
-    private class AnnotareURLStreamHandlerFactory implements URLStreamHandlerFactory {
-
-        private final URLStreamHandlerFactory chainFactory;
-        private final SubmissionDao submissionDao;
-
-        protected AnnotareURLStreamHandlerFactory(URLStreamHandlerFactory chainFactory, SubmissionDao submissionDao) {
-            this.chainFactory = chainFactory;
-            this.submissionDao = submissionDao;
-        }
-
-        @Override
-        public URLStreamHandler createURLStreamHandler(String protocol) {
-            if ("annotare".equals(protocol)) {
-                return new AnnotareURLStreamHandler(submissionDao);
-            } else if (null != chainFactory) {
-                return chainFactory.createURLStreamHandler(protocol);
-            }
-
-            return null;
-        }
     }
 }

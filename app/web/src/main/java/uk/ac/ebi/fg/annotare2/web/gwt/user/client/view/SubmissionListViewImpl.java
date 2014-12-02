@@ -160,7 +160,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
     public void setCurator(boolean isCurator) {
         if (!this.isCurator && isCurator) {
-            this.isCurator = isCurator;
+            this.isCurator = true;
             dataGrid.insertColumn(0, new TextColumn<SubmissionRow>() {
                 @Override
                 public String getValue(SubmissionRow object) {
