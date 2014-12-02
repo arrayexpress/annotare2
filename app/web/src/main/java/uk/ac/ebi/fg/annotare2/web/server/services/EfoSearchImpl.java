@@ -127,7 +127,7 @@ public class EfoSearchImpl implements EfoSearch {
                 parser
                 , LABEL_FIELD_LOWERCASE.matchesPhrase(label.toLowerCase())
                         + " AND ("
-                        + ASCENDANT_FIELD.matchesPhrase(branchAccession)
+                        + ASCENDANT_FIELD.matchesPhrase(branchAccession.toLowerCase())
                         + " OR "
                         + ACCESSION_FIELD_LOWERCASE.matchesPhrase(branchAccession.toLowerCase())
                         + ")"
