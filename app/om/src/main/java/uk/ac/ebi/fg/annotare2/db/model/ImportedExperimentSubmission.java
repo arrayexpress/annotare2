@@ -16,8 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.db.model;
 
+import com.google.common.base.Predicate;
+
+import javax.annotation.Nullable;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import java.util.Collection;
+
+import static com.google.common.collect.Collections2.filter;
 
 @Entity
 @DiscriminatorValue("IMPORTED_EXPERIMENT")
@@ -34,5 +40,21 @@ public class ImportedExperimentSubmission extends Submission {
     @Override
     public boolean hasNoData() {
         return false;
+    }
+
+    public Collection<DataFile> getIdfFiles() {
+        return filterFiles("(?i)^.*idf[.]txt$");
+    }
+
+    public Collection<DataFile> getSdrfFiles() {
+        return filterFiles("(?i)^.*sdrf[.]txt$");
+    }
+
+    private Collection<DataFile> filterFiles(final String nameRegex) {
+        return filter(getFiles(), new Predicate<DataFile>() {
+            public boolean apply(@Nullable DataFile input) {
+                return input != null && input.getName().matches(nameRegex);
+            }
+        });
     }
 }

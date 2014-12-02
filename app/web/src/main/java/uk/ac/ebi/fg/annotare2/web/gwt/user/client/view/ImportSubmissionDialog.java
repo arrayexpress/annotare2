@@ -24,10 +24,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.DeckLayoutPanel;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
@@ -39,6 +40,12 @@ public class ImportSubmissionDialog extends DialogBox {
 
     @UiField
     DeckLayoutPanel deckPanel;
+
+    @UiField
+    Label validationOutcomeLabel;
+
+    @UiField
+    HTML validationLogHtml;
 
     interface Binder extends UiBinder<Widget, ImportSubmissionDialog> {
         Binder BINDER = GWT.create(Binder.class);
@@ -86,7 +93,24 @@ public class ImportSubmissionDialog extends DialogBox {
 
     @UiHandler("submitButton")
     void onSubmitClick(ClickEvent event) {
-        presenter.onImportSubmit();
+        presenter.onImportSubmit(
+                new ReportingAsyncCallback<ValidationResult>(ReportingAsyncCallback.FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        showValidationResult(new ValidationResult(caught));
+                    }
+
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+                        showValidationResult(result);
+                    }
+                }
+        );
+    }
+
+    @UiHandler("backButton")
+    void onBackButton(ClickEvent event) {
+        deckPanel.showWidget(0);
     }
 
     @UiHandler("closeButton")
@@ -104,10 +128,34 @@ public class ImportSubmissionDialog extends DialogBox {
             }
         }
     }
+
+    private void showValidationResult(ValidationResult result) {
+        validationOutcomeLabel.setText("");
+        if (result.getFailures().isEmpty()) {
+            if (result.getErrors().isEmpty()) {
+                validationOutcomeLabel.setText("Validation has been successful.");
+            } else {
+                validationOutcomeLabel.setText(("Validation failed with " + result.getErrors().size() + " errors:"));
+                showValidationLog(result.getErrors());
+            }
+        } else {
+            validationOutcomeLabel.setText("There was a software problem validating this submission.");
+        }
+        deckPanel.showWidget(1);
+    }
+
+    private void showValidationLog(List<String> list) {
+        StringBuilder html = new StringBuilder();
+        for (String item : list) {
+            html.append(item).append("<br/>");
+        }
+        validationLogHtml.setHTML(html.toString());
+    }
+
     public interface Presenter extends DataFilesUploadView.Presenter {
 
         void onImportCancelled();
 
-        void onImportSubmit();
+        void onImportSubmit(AsyncCallback<ValidationResult> callback);
     }
 }

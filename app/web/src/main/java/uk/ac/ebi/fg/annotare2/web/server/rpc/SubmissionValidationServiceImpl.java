@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
@@ -59,13 +59,13 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
 
     @Transactional
     @Override
-    public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException {
+    public ValidationResult validate(long submissionId) throws ResourceNotFoundException, NoPermissionException {
         List<String> failures = newArrayList();
         List<String> errors = newArrayList();
         List<String> warnings = newArrayList();
 
         try {
-            ExperimentSubmission subm = getExperimentSubmission(submissionId, Permission.VIEW);
+            Submission subm = getSubmission(submissionId, Permission.VIEW);
             Collection<CheckResult> results = validator.validate(subm);
             for (CheckResult cr : results) {
                 switch (cr.getStatus()) {

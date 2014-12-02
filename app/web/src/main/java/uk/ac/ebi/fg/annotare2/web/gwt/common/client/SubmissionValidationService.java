@@ -28,6 +28,6 @@ public interface SubmissionValidationService extends RemoteService {
 
     public static final String NAME = "validationService";
 
-    public ValidationResult validate(int submissionId) throws ResourceNotFoundException, NoPermissionException;
+    public ValidationResult validate(long submissionId) throws ResourceNotFoundException, NoPermissionException;
 
 }

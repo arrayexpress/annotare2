@@ -20,5 +20,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 
 public interface SubmissionValidationServiceAsync {
-    void validate(int submissionId, AsyncCallback<ValidationResult> async);
+    void validate(long submissionId, AsyncCallback<ValidationResult> async);
 }

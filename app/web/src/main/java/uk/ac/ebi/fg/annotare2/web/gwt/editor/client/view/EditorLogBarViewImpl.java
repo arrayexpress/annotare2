@@ -58,6 +58,4 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
             panel.add(new Label(item));
         }
     }
-
-
 }

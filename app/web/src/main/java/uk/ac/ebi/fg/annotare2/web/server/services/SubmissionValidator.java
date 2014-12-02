@@ -16,13 +16,19 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.arrayexpress2.magetab.listener.ErrorItemListener;
+import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabChecker;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.*;
@@ -35,15 +41,19 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Ordering.natural;
 
 /**
@@ -69,7 +79,17 @@ public class SubmissionValidator {
         registerAnnotareURLScheme();
     }
 
-    public Collection<CheckResult> validate(ExperimentSubmission submission) throws IOException,
+    public Collection<CheckResult> validate(Submission submission) throws IOException,
+            ParseException, UknownExperimentTypeException, DataSerializationException {
+
+        if (submission instanceof ExperimentSubmission) {
+            return validateExperimentSubmission((ExperimentSubmission)submission);
+        } else if (submission instanceof ImportedExperimentSubmission) {
+            return validateImportedExperimentSubmission((ImportedExperimentSubmission)submission);
+        } else throw new IllegalArgumentException("Unable to validate a submission of " + submission.getClass().getName() + " type");
+    }
+
+    private Collection<CheckResult> validateExperimentSubmission(ExperimentSubmission submission) throws IOException,
             ParseException, UknownExperimentTypeException, DataSerializationException {
 
         ExperimentProfile exp = submission.getExperimentProfile();
@@ -88,23 +108,9 @@ public class SubmissionValidator {
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
 
         if (null == allFiles || 0 == allFiles.size()) {
-            results.add(
-                    CheckResult.checkFailed(
-                            "At least one data file must be uploaded and assigned"
-                            , CheckModality.ERROR
-                            , CheckPosition.undefinedPosition()
-                            ,null
-                    )
-            );
+            addError(results, "At least one data file must be uploaded and assigned");
         } else if (null == assignedFiles || 0 == assignedFiles.size()) {
-            results.add(
-                    CheckResult.checkFailed(
-                            "At least one uploaded data file must be assigned"
-                            , CheckModality.ERROR
-                            , CheckPosition.undefinedPosition()
-                            ,null
-                    )
-            );
+            addError(results, "At least one uploaded data file must be assigned");
         } else {
             for (DataFile dataFile : allFiles) {
                 if (!dataFile.getStatus().isOk()) {
@@ -117,22 +123,14 @@ public class SubmissionValidator {
                             cause = " (file not found)";
                             break;
                     }
-                    results.add(
-                            CheckResult.checkFailed(
-                                    "File " + dataFile.getName()
-                                            + " uploaded with an error" + cause
-                                    , CheckModality.ERROR
-                                    , CheckPosition.undefinedPosition()
-                                    ,null
-                            )
-                    );
+                    addError(results, "File " + dataFile.getName() + " uploaded with an error" + cause);
                 } else if (!assignedFiles.contains(dataFile)) {
                     results.add(
                             CheckResult.checkFailed(
                                     "File " + dataFile.getName() + " should be assigned to at least one labeled extract"
                                     , CheckModality.WARNING
                                     , CheckPosition.undefinedPosition()
-                                    ,null
+                                    , null
                             )
                     );
                 }
@@ -141,20 +139,60 @@ public class SubmissionValidator {
             for (DataFile dataFile : assignedFiles) {
                 DataFileSource source = dataFileManager.getFileSource(dataFile);
                 if (null == source || !fileChecker.isAvailable(source)) {
-                    results.add(
-                            CheckResult.checkFailed(
-                                    "File " + dataFile.getName() + " is not accessible"
-                                            + ((source instanceof RemoteFileSource) ? " on FTP" : "")
-                                    , CheckModality.ERROR
-                                    , CheckPosition.undefinedPosition()
-                                    ,null
-                            )
-                    );
+                    addError(results, "File " + dataFile.getName() + " is not accessible"
+                            + ((source instanceof RemoteFileSource) ? " on FTP" : ""));
                 }
             }
         }
 
         return natural().sortedCopy(results);
+    }
+
+    private Collection<CheckResult> validateImportedExperimentSubmission(ImportedExperimentSubmission submission)
+            throws IOException, ParseException, UknownExperimentTypeException, DataSerializationException {
+
+        final List<ErrorItem> parserErrors = new ArrayList<ErrorItem>();
+        MAGETABParser parser = new MAGETABParser();
+        parser.addErrorItemListener(new ErrorItemListener() {
+
+            @Override
+            public void errorOccurred(ErrorItem item) {
+                parserErrors.add(item);
+            }
+        });
+
+        Collection<CheckResult> results = new ArrayList<CheckResult>();
+
+
+        Collection<DataFile> idfFile = submission.getIdfFiles();
+        if (0 == idfFile.size()) {
+            addError(results, "IDF file has not been uploaded");
+        }
+        else if (idfFile.size() > 1) {
+            addError(results, "More than one IDF file has been uploaded (" + fileNames(idfFile) + ")");
+        }
+        return results;
+    }
+
+    private void addError(Collection<CheckResult> results, String errorMessage) {
+        results.add(CheckResult.checkFailed(
+                errorMessage
+                , CheckModality.ERROR
+                , CheckPosition.undefinedPosition()
+                , null
+        ));
+    }
+
+    private String fileNames(Collection<DataFile> files) {
+        return Joiner.on(", ").join(
+                transform(files, new Function<DataFile, String>() {
+                        @Nullable
+                        @Override
+                        public String apply(@Nullable DataFile input) {
+                            return null == input ? null : input.getName();
+                        }
+                })
+        );
     }
 
     private void registerAnnotareURLScheme() {

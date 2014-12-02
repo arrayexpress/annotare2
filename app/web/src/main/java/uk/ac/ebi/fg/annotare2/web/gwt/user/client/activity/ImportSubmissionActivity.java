@@ -26,9 +26,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.dataproxy.DataFilesProxy;
@@ -49,10 +52,11 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     private final ImportSubmissionView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
+    private final SubmissionValidationServiceAsync validationService;
     private final DataFilesProxy dataFilesService;
 
     private HandlerRegistration dataUpdateHandler;
-    private EventBus eventBus;
+    //private EventBus eventBus;
 
     private Long submissionId;
 
@@ -60,10 +64,12 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     public ImportSubmissionActivity(ImportSubmissionView view,
                                     PlaceController placeController,
                                     SubmissionServiceAsync submissionService,
+                                    SubmissionValidationServiceAsync validationService,
                                     DataFilesProxy dataFilesService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
+        this.validationService = validationService;
         this.dataFilesService = dataFilesService;
     }
 
@@ -76,7 +82,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
-        this.eventBus = eventBus;
+        //this.eventBus = eventBus;
 
         dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
@@ -118,7 +124,8 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void onImportSubmit() {
+    public void onImportSubmit(AsyncCallback<ValidationResult> callback) {
+        validationService.validate(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
     }
 
     @Override
