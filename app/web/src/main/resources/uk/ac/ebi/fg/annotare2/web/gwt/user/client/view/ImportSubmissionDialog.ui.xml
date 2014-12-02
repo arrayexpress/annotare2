@@ -88,53 +88,7 @@
                 <g:LayoutPanel width="100%" height="100%">
                     <g:layer>
                         <g:ScrollPanel addStyleNames="{style.logPanel}">
-                            <g:HTML>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                                <br/>
-                                Validation has been successful
-                            </g:HTML>
+                            <g:HTML ui:field="logHtml"/>
                         </g:ScrollPanel>
                     </g:layer>
                 </g:LayoutPanel>
