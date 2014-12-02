@@ -37,113 +37,103 @@ public class DataFilesProxy {
     private final SubmissionServiceAsync submissionServiceAsync;
     private final EventBus eventBus;
 
-    private Long submissionId;
     private List<DataFileRow> fileRows;
 
-    private final Updater updater;
+    private final DataFilesUpdater updater;
 
     @Inject
     public DataFilesProxy(EventBus eventBus, SubmissionServiceAsync submissionServiceAsync) {
         this.submissionServiceAsync = submissionServiceAsync;
         this.eventBus = eventBus;
-        updater = new DataFilesUpdater();
+        this.updater = new DataFilesUpdater();
     }
 
-    public void setSubmissionId(Long submissionId) {
-        this.submissionId = submissionId;
-        fileRows = null;
-    }
+    public void getFilesAsync(long submissionId, AsyncCallback<List<DataFileRow>> callback) {
+        if (null == updater.getSubmissionId() || !updater.getSubmissionId().equals(submissionId)) {
+            updater.setSubmissionId(submissionId);
+            fileRows = null;
+        }
 
-    public void getFilesAsync(AsyncCallback<List<DataFileRow>> callback) {
         if (fileRows != null) {
             callback.onSuccess(new ArrayList<DataFileRow>(fileRows));
-            return;
+        } else {
+            load(submissionId, callback);
         }
-        load(callback);
+
     }
 
-    public void registerHttpFilesAsync(List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {
-        if (null != submissionId) {
-            submissionServiceAsync.registerHttpFiles(submissionId, filesInfo, new AsyncCallbackWrapper<Map<Integer, String>>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
+    public void registerHttpFilesAsync(long submissionId, List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {
+        submissionServiceAsync.registerHttpFiles(submissionId, filesInfo, new AsyncCallbackWrapper<Map<Integer, String>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-                @Override
-                public void onSuccess(Map<Integer, String> result) {
-                    updater.update();
-                    callback.onSuccess(result);
-                }
-            }.wrap());
-        }
+            @Override
+            public void onSuccess(Map<Integer, String> result) {
+                updater.update();
+                callback.onSuccess(result);
+            }
+        }.wrap());
     }
 
-    public void registerFtpFilesAsync(List<String> details, final AsyncCallback<String> callback) {
-        if (null != submissionId) {
-            submissionServiceAsync.registerFtpFiles(submissionId, details, new AsyncCallbackWrapper<String>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
+    public void registerFtpFilesAsync(long submissionId, List<String> details, final AsyncCallback<String> callback) {
+        submissionServiceAsync.registerFtpFiles(submissionId, details, new AsyncCallbackWrapper<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-                @Override
-                public void onSuccess(String result) {
-                    updater.update();
-                    callback.onSuccess(result);
-                }
-            }.wrap());
-        }
+            @Override
+            public void onSuccess(String result) {
+                updater.update();
+                callback.onSuccess(result);
+            }
+        }.wrap());
     }
 
-    public void renameFile(final DataFileRow dataFile, final String newFileName) {
-        if (null != submissionId) {
-            submissionServiceAsync.renameDataFile(submissionId, dataFile.getId(), newFileName, new AsyncCallbackWrapper<ExperimentProfile>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    NotificationPopupPanel.error("Unable to rename file '" + dataFile.getName() + "'", true);
-                }
+    public void renameFile(long submissionId, final DataFileRow dataFile, final String newFileName) {
+        submissionServiceAsync.renameDataFile(submissionId, dataFile.getId(), newFileName, new AsyncCallbackWrapper<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                NotificationPopupPanel.error("Unable to rename file '" + dataFile.getName() + "'", true);
+            }
 
-                @Override
-                public void onSuccess(ExperimentProfile experiment) {
-                    updater.update();
-                }
-            }.wrap());
-        }
+            @Override
+            public void onSuccess(ExperimentProfile experiment) {
+                updater.update();
+            }
+        }.wrap());
     }
 
-    public void removeFiles(final List<Long> dataFiles, final AsyncCallback<Void> callback) {
-        if (null != submissionId) {
-            submissionServiceAsync.deleteDataFiles(submissionId, dataFiles, new AsyncCallbackWrapper<ExperimentProfile>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
+    public void removeFiles(long submissionId, final List<Long> dataFiles, final AsyncCallback<Void> callback) {
+        submissionServiceAsync.deleteDataFiles(submissionId, dataFiles, new AsyncCallbackWrapper<ExperimentProfile>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-                @Override
-                public void onSuccess(ExperimentProfile experiment) {
-                    updater.update();
-                    callback.onSuccess(null);
-                }
-            }.wrap());
-        }
+            @Override
+            public void onSuccess(ExperimentProfile experiment) {
+                updater.update();
+                callback.onSuccess(null);
+            }
+        }.wrap());
     }
 
-    private void load(final AsyncCallback<List<DataFileRow>> callback) {
-        if (null != submissionId) {
-            submissionServiceAsync.loadDataFiles(submissionId, new AsyncCallbackWrapper<List<DataFileRow>>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
+    private void load(long submissionId, final AsyncCallback<List<DataFileRow>> callback) {
+        submissionServiceAsync.loadDataFiles(submissionId, new AsyncCallbackWrapper<List<DataFileRow>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
 
-                @Override
-                public void onSuccess(List<DataFileRow> result) {
-                    update(result);
-                    callback.onSuccess(result);
-                }
-            }.wrap());
-        }
+            @Override
+            public void onSuccess(List<DataFileRow> result) {
+                update(result);
+                callback.onSuccess(result);
+            }
+        }.wrap());
     }
 
     private void update(List<DataFileRow> newFileRows) {
@@ -156,28 +146,41 @@ public class DataFilesProxy {
 
     private class DataFilesUpdater extends Updater {
 
+        private Long submissionId;
+
         public DataFilesUpdater() {
             super(5000);
+            submissionId = null;
+        }
+
+        public Long getSubmissionId() {
+            return submissionId;
+        }
+
+        public void setSubmissionId(long submissionId) {
+            this.submissionId = submissionId;
         }
 
         public void onAsyncUpdate(final AsyncCallback<Boolean> callback) {
-            load(new AsyncCallback<List<DataFileRow>>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(List<DataFileRow> result) {
-                    for (DataFileRow row : result) {
-                        if (!row.getStatus().isFinal()) {
-                            callback.onSuccess(true);
-                            break;
-                        }
+            if (null != submissionId) {
+                load(submissionId, new AsyncCallback<List<DataFileRow>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        callback.onFailure(caught);
                     }
-                    callback.onSuccess(false);
-                }
-            });
+
+                    @Override
+                    public void onSuccess(List<DataFileRow> result) {
+                        for (DataFileRow row : result) {
+                            if (!row.getStatus().isFinal()) {
+                                callback.onSuccess(true);
+                                break;
+                            }
+                        }
+                        callback.onSuccess(false);
+                    }
+                });
+            }
         }
     }
 }

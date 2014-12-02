@@ -17,13 +17,15 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+
+import java.util.List;
 
 public interface ImportSubmissionView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    void setImportStage(ImportSubmissionPlace.ImportStage importStage);
+    void setDataFiles(List<DataFileRow> files);
 
     void startImport();
 

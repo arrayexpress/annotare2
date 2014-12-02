@@ -32,7 +32,12 @@ public interface SubmissionListView extends IsWidget {
 
     void setCurator(boolean isCurator);
 
-    public interface Presenter  {
-        void onSubmissionSelected(long id);
+    public interface Presenter {
+
+        void onSubmissionSelected(long submissionId);
+
+        void onEditSubmission(long submissionId);
+
+        void onImportSubmission(long submissionId);
     }
 }

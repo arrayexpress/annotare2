@@ -35,7 +35,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.ClickableImageReso
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.formatDate;
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
 
 /**
  * @author Olga Melnichuk
@@ -84,6 +83,9 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         dataGrid.addColumn(new TextColumn<SubmissionRow>() {
             @Override
             public String getValue(SubmissionRow object) {
+                if (object.getType().isImported() && null == object.getTitle()) {
+                    return "UNPROCESSED IMPORTED SUBMISSION";
+                }
                 return object.getTitle();
             }
         }, new TextHeader("Title"));
@@ -100,15 +102,17 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
                     @Override
                     public ImageResource getValue(SubmissionRow object) {
-                        return !object.getType().isImported() ? resourceBundle.editIcon() : null;
+                        return resourceBundle.editIcon();
                     }
                 };
 
         editIconColumn.setFieldUpdater(new FieldUpdater<SubmissionRow, ImageResource>() {
             public void update(int index, SubmissionRow row, ImageResource value) {
                 SubmissionType type = row.getType();
-                if (!type.isImported()) {
-                    NewWindow.open(getEditorUrl(row.getId()), "_blank", null);
+                if (type.isImported()) {
+                    presenter.onImportSubmission(row.getId());
+                } else {
+                    presenter.onEditSubmission(row.getId());
                 }
             }
         });

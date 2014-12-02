@@ -594,7 +594,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 submission instanceof ExperimentSubmission &&
                 ((ExperimentSubmission)submission).getExperimentProfile().getType().isSequencing());
 
-        if (submission instanceof ImportedExperimentSubmission) {
+        if (source instanceof RemoteFileSource && submission instanceof ImportedExperimentSubmission) {
             shouldStore = false;
         }
 

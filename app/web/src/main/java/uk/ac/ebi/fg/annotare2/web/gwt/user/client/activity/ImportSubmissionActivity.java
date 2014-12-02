@@ -16,38 +16,59 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity;
 
+import com.google.common.base.Function;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace.ImportStage;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.ImportSubmissionView;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.google.common.collect.Collections2.transform;
 
 public class ImportSubmissionActivity extends AbstractActivity implements ImportSubmissionView.Presenter {
 
     private final ImportSubmissionView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
+    private final DataFilesProxy dataFilesService;
+
+    private HandlerRegistration dataUpdateHandler;
+    private EventBus eventBus;
 
     private Long submissionId;
-    private ImportSubmissionPlace.ImportStage importStage;
 
     @Inject
-    public ImportSubmissionActivity(ImportSubmissionView view, PlaceController placeController,
-                                  SubmissionServiceAsync submissionService) {
+    public ImportSubmissionActivity(ImportSubmissionView view,
+                                    PlaceController placeController,
+                                    SubmissionServiceAsync submissionService,
+                                    DataFilesProxy dataFilesService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
+        this.dataFilesService = dataFilesService;
     }
 
     public ImportSubmissionActivity withPlace(ImportSubmissionPlace place) {
         submissionId = place.getSubmissionId();
-        view.setImportStage(place.getImportStage());
         return this;
     }
 
@@ -55,16 +76,40 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        this.eventBus = eventBus;
+
+        dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
+            @Override
+            public void onDataFilesUpdate() {
+                loadFilesAsync();
+            }
+        });
+        loadFilesAsync();
+
         view.startImport();
-        //loadAsync();
+    }
+
+    @Override
+    public void onStop() {
+        dataUpdateHandler.removeHandler();
+        super.onStop();
     }
 
     public void goTo(Place place) {
         placeController.goTo(place);
     }
 
-    @Override
-    public void onImportStarted() {
+    private void loadFilesAsync() {
+        dataFilesService.getFilesAsync(
+                submissionId,
+                new ReportingAsyncCallback<List<DataFileRow>>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
+                    @Override
+                    public void onSuccess(List<DataFileRow> result) {
+                        view.setDataFiles(result);
+
+                    }
+                }
+        );
     }
 
     @Override
@@ -73,30 +118,30 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void onImportValidate() {
-        ImportSubmissionPlace place = new ImportSubmissionPlace();
-        place.setSubmissionId(submissionId);
-        place.setImportStage(ImportStage.VALIDATE);
-        goTo(place);
+    public void onImportSubmit() {
     }
 
     @Override
-    public void onImportSubmit() {
-        ImportSubmissionPlace place = new ImportSubmissionPlace();
-        place.setSubmissionId(submissionId);
-        place.setImportStage(ImportStage.SUBMIT);
-        goTo(place);
+    public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+        dataFilesService.registerHttpFilesAsync(submissionId, filesInfo, callback);
     }
-    /*
-    private void loadAsync() {
-        submissionService.getSubmissionDetails(submissionId, AsyncCallbackWrapper.callbackWrap(
-                new ReportingAsyncCallback<SubmissionDetails>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
-                    @Override
-                    public void onSuccess(SubmissionDetails result) {
-                        view.setSubmissionDetails(result);
-                    }
-                }
-        ));
+
+    @Override
+    public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
+        dataFilesService.registerFtpFilesAsync(submissionId, filesInfo, callback);
     }
-    */
+
+    @Override
+    public void renameFile(DataFileRow dataFile, String newFileName) {
+        dataFilesService.renameFile(submissionId, dataFile, newFileName);
+    }
+
+    @Override
+    public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
+        dataFilesService.removeFiles(submissionId, new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
+            public Long apply(@Nullable DataFileRow input) {
+                return null != input ? input.getId() : null;
+            }
+        })), callback);
+    }
 }

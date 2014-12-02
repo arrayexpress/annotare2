@@ -28,10 +28,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 
 import static com.google.gwt.user.client.Window.confirm;
 import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.formatDate;
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
 
 /**
  * @author Olga Melnichuk
@@ -65,7 +65,7 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
 
     private Presenter presenter;
 
-    private Long submissionId;
+    private SubmissionType submissionType;
 
     public SubmissionViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
@@ -76,9 +76,9 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     }
 
     public void setSubmissionDetails(SubmissionDetails details) {
-        submissionId = details.getId();
+        submissionType = details.getType();
 
-        editButton.setVisible(!details.getType().isImported());
+        editButton.setText(submissionType.isImported() ? "Import" : "Edit");
 
         accession.setInnerText(details.getAccession().getText());
         title.setInnerText(details.getTitle());
@@ -89,15 +89,19 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
 
     @UiHandler("editButton")
     void onViewEditButtonClick(ClickEvent event) {
-        if (presenter != null) {
-            NewWindow.open(getEditorUrl(submissionId), "_blank", null);
+        if (null != presenter) {
+            if (submissionType.isImported()) {
+                presenter.onImportSubmission();
+            } else {
+                presenter.onEditSubmission();
+            }
         }
     }
 
     @UiHandler("deleteButton")
     void onDeleteButtonClick(ClickEvent event) {
-        if (presenter != null && confirm("Are you sure you want to delete submission \"" + getTitle() + "\"?")) {
-            presenter.deleteSubmission();
+        if (null != presenter && confirm("Are you sure you want to delete submission \"" + getTitle() + "\"?")) {
+            presenter.onDeleteSubmission();
         }
     }
 }

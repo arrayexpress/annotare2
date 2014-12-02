@@ -1,7 +1,10 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.user.client.ui.SimplePanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
+
+import java.util.List;
 
 public class ImportSubmissionViewImpl extends SimplePanel implements ImportSubmissionView {
 
@@ -20,12 +23,12 @@ public class ImportSubmissionViewImpl extends SimplePanel implements ImportSubmi
     }
 
     @Override
-    public void setImportStage(ImportSubmissionPlace.ImportStage importStage) {
-        dialog.setImportStage(importStage.ordinal());
+    public void startImport() {
+        dialog.startImport();
     }
 
     @Override
-    public void startImport() {
-        dialog.startImport(23);
+    public void setDataFiles(List<DataFileRow> files) {
+        dialog.setDataFiles(files);
     }
 }

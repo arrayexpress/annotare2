@@ -18,7 +18,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.activity;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -27,34 +26,35 @@ import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.NewWindow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getPlaceholderUrl;
 
 public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.Presenter {
 
     private final LeftMenuView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
-    private final DataFilesProxy dataFilesService;
 
-    private HandlerRegistration dataUpdateHandler;
     private EventBus eventBus;
 
     @Inject
     public LeftMenuActivity(
             LeftMenuView view,
             PlaceController placeController,
-            SubmissionServiceAsync submissionService,
-            DataFilesProxy dataFilesService) {
+            SubmissionServiceAsync submissionService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
-        this.dataFilesService = dataFilesService;
     }
 
     public LeftMenuActivity withPlace(Place place) {
@@ -71,72 +71,69 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         this.eventBus = eventBus;
     }
 
-    public void onSubmissionFilterClick(SubmissionListFilter filter) {
+    @Override
+    public void onSubmissionFilter(SubmissionListFilter filter) {
         gotoSubmissionListViewPlace(filter);
     }
 
     @Override
-    public void onSubmissionCreateClick(SubmissionType type, final AsyncCallback<Long> callback) {
+    public void onSubmissionCreate(SubmissionType type) {
+        final NewWindow window = NewWindow.open(getPlaceholderUrl(), "_blank", null);
+        final AsyncCallback<Long> callback = AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
+                    @Override
+                    public void onFailure(Throwable x) {
+                        super.onFailure(x);
+                        window.close();
+                    }
+
+                    @Override
+                    public void onSuccess(final Long result) {
+                        window.setUrl(getEditorUrl(result));
+                        notifySubmissionListUpdated();
+                    }
+                });
+
         switch (type) {
             case EXPERIMENT:
-                submissionService.createExperiment(new AsyncCallbackWrapper<Long>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(Long result) {
-                        callback.onSuccess(result);
-                        notifySubmissionListUpdated();
-                    }
-                }.wrap());
+                submissionService.createExperiment(callback);
                 return;
             case ARRAY_DESIGN:
-                submissionService.createArrayDesign(new AsyncCallbackWrapper<Long>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(Long result) {
-                        callback.onSuccess(result);
-                        notifySubmissionListUpdated();
-                    }
-                }.wrap());
+                submissionService.createArrayDesign(callback);
                 return;
             default:
                 NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
         }
     }
-    /*
+
+    private void notifySubmissionListUpdated() {
+        eventBus.fireEvent(new SubmissionListUpdatedEvent());
+    }
+
     @Override
-    public void onSubmissionImportClick(SubmissionType type, final AsyncCallback<Long> callback) {
+    public void onSubmissionImport(SubmissionType type) {
         switch (type) {
             case IMPORTED_EXPERIMENT:
-                submissionService.createImportedExperiment(new AsyncCallbackWrapper<Long>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        callback.onFailure(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(Long result) {
-                        callback.onSuccess(result);
-                        notifySubmissionListUpdated();
-                    }
-                }.wrap());
+                submissionService.createImportedExperiment(
+                        AsyncCallbackWrapper.callbackWrap(
+                                new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
+                                    @Override
+                                    public void onSuccess(Long result) {
+                                        gotoSubmissionImport(result);
+                                        notifySubmissionListUpdated();
+                                    }
+                                }
+                        )
+                );
                 return;
             default:
                 NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
         }
     }
-    */
-    @Override
-    public void onSubmissionImport() {
+
+    private void gotoSubmissionImport(Long submissionId) {
         ImportSubmissionPlace place = new ImportSubmissionPlace();
-        place.setSubmissionId(23);
+        place.setSubmissionId(submissionId);
         goTo(place);
     }
 
@@ -201,10 +198,6 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     */
     public void goTo(Place place) {
         placeController.goTo(place);
-    }
-
-    private void notifySubmissionListUpdated() {
-        eventBus.fireEvent(new SubmissionListUpdatedEvent());
     }
 
     private void gotoSubmissionListViewPlace(SubmissionListFilter filter) {

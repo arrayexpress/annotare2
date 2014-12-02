@@ -27,9 +27,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.NewWindow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionView;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
 
 /**
  * @author Olga Melnichuk
@@ -77,7 +81,19 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     }
 
     @Override
-    public void deleteSubmission() {
+    public void onImportSubmission() {
+        ImportSubmissionPlace place = new ImportSubmissionPlace();
+        place.setSubmissionId(submissionId);
+        goTo(place);
+    }
+
+    @Override
+    public void onEditSubmission() {
+        NewWindow.open(getEditorUrl(submissionId), "_blank", null);
+    }
+
+    @Override
+    public void onDeleteSubmission() {
         if (submissionId != null) {
             submissionService.deleteSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(
                     new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_DELETE_SUBMISSION) {

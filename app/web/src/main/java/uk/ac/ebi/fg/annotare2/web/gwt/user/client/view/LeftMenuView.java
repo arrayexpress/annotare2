@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 
@@ -31,10 +30,10 @@ public interface LeftMenuView extends IsWidget {
 
     public interface Presenter {
 
-        void onSubmissionFilterClick(SubmissionListFilter filter);
+        void onSubmissionFilter(SubmissionListFilter filter);
 
-        void onSubmissionCreateClick(SubmissionType type, AsyncCallback<Long> callback);
+        void onSubmissionCreate(SubmissionType type);
 
-        void onSubmissionImport();
+        void onSubmissionImport(SubmissionType type);
     }
 }

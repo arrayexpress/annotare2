@@ -26,70 +26,12 @@ public class ImportSubmissionPlace extends Place {
 
     private Long submissionId;
 
-    public enum ImportStage {
-        FILE_UPLOAD("upload"),
-        VALIDATE("validate"),
-        SUBMIT("submit");
-
-        private final String token;
-
-        ImportStage(String token) {
-            this.token = token;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        private boolean matches(String token) {
-            return this.token.equalsIgnoreCase(token);
-        }
-
-        public static ImportStage getDefault() {
-            return FILE_UPLOAD;
-        }
-
-        public static ImportStage getFromToken(String token) {
-            if (null == token || token.isEmpty()) {
-                return getDefault();
-            }
-            for (ImportStage f : values()) {
-                if (f.matches(token)) {
-                    return f;
-                }
-            }
-            return getDefault();
-        }
-    }
-
-    private ImportStage importStage = ImportStage.getDefault();
-
     public Long getSubmissionId() {
         return submissionId;
     }
 
     public void setSubmissionId(long submissionId) {
         this.submissionId = submissionId;
-    }
-
-    public ImportStage getImportStage() {
-        return importStage;
-    }
-
-    public void setImportStage(ImportStage importStage) {
-        this.importStage = importStage;
-    }
-
-    @Override
-    public boolean equals(Object place) {
-        if (place instanceof ImportSubmissionPlace) {
-            ImportSubmissionPlace importSubmissionPlace = (ImportSubmissionPlace)place;
-            if ((null == submissionId && null == importSubmissionPlace.submissionId) ||
-                    (null != submissionId && submissionId.equals(importSubmissionPlace.submissionId))) {
-                return importStage.equals(importSubmissionPlace.importStage);
-            }
-        }
-        return false;
     }
 
     @Prefix("import")
@@ -103,14 +45,12 @@ public class ImportSubmissionPlace extends Place {
         }
 
         public String getToken(ImportSubmissionPlace place) {
-            return String.valueOf(place.getSubmissionId()) + ':' + place.getImportStage().getToken();
+            return String.valueOf(place.getSubmissionId());
         }
 
         public ImportSubmissionPlace getPlace(String token) {
             ImportSubmissionPlace place = placeProvider.get();
-            String[] tokens = token.split("[:]");
-            place.setSubmissionId(Integer.valueOf(tokens[0]));
-            place.setImportStage(ImportStage.getFromToken(tokens[1]));
+            place.setSubmissionId(Integer.valueOf(token));
             return place;
         }
     }

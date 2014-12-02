@@ -75,13 +75,13 @@
             <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
                 <g:HTMLPanel>
                     <g:Button ui:field="cancel1Button">Cancel</g:Button>
-                    <g:Button ui:field="validateButton">Validate</g:Button>
+                    <g:Button ui:field="submitButton">Submit</g:Button>
                 </g:HTMLPanel>
             </g:cell>
         </g:VerticalPanel>
         <g:VerticalPanel width="100%" height="100%">
             <g:cell>
-                <g:HTML>Validation failed with 23 errors:</g:HTML>
+                <g:HTMLPanel>Validation failed with <g:InlineLabel ui:field="errorsLabel">N</g:InlineLabel> errors:</g:HTMLPanel>
                 <!--  (for help fixing errors please go to <a href="http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html" target="_blank">Annotare Help</a>) -->
             </g:cell>
             <g:cell width="100%" height="100%">
@@ -95,9 +95,8 @@
             </g:cell>
             <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
                 <g:HTMLPanel>
-                    <g:Button ui:field="cancel2Button">Cancel</g:Button>
                     <g:Button ui:field="backButton">Back</g:Button>
-                    <g:Button ui:field="submitButton">Submit</g:Button>
+                    <g:Button ui:field="cancel2Button">Cancel</g:Button>
                 </g:HTMLPanel>
             </g:cell>
         </g:VerticalPanel>

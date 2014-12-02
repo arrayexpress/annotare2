@@ -30,6 +30,10 @@ public interface SubmissionView extends IsWidget {
 
     public interface Presenter {
 
-        void deleteSubmission();
+        void onImportSubmission();
+
+        void onEditSubmission();
+
+        void onDeleteSubmission();
     }
 }

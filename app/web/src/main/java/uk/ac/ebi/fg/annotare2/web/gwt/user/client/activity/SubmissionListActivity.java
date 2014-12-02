@@ -33,12 +33,16 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.NewWindow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListView;
 
 import java.util.ArrayList;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
 
 /**
  * @author Olga Melnichuk
@@ -128,9 +132,22 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
         placeController.goTo(place);
     }
 
-    public void onSubmissionSelected(long id) {
+    @Override
+    public void onSubmissionSelected(long submissionId) {
         SubmissionViewPlace place = new SubmissionViewPlace();
-        place.setSubmissionId(id);
+        place.setSubmissionId(submissionId);
         goTo(place);
+    }
+
+    @Override
+    public void onImportSubmission(long submissionId) {
+        ImportSubmissionPlace place = new ImportSubmissionPlace();
+        place.setSubmissionId(submissionId);
+        goTo(place);
+    }
+
+    @Override
+    public void onEditSubmission(long submissionId) {
+        NewWindow.open(getEditorUrl(submissionId), "_blank", null);
     }
 }

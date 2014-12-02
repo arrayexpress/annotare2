@@ -25,14 +25,12 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.LeftMenuItem;
 
 import java.util.HashMap;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.IMPORTED_EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getPlaceholderUrl;
 
 /**
@@ -81,29 +79,12 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
     @UiHandler("createButton")
     public void onCreateButtonClick(ClickEvent event) {
         final NewWindow window = NewWindow.open(getPlaceholderUrl(), "_blank", null);
-        presenter.onSubmissionCreateClick(EXPERIMENT, new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
-            @Override
-            public void onFailure(Throwable x) {
-                super.onFailure(x);
-                window.close();
-            }
-
-            @Override
-            public void onSuccess(final Long result) {
-                window.setUrl(getEditorUrl(result));
-            }
-        });
+        presenter.onSubmissionCreate(EXPERIMENT);
     }
 
     @UiHandler("importButton")
     public void onImportButtonClick(ClickEvent event) {
-        presenter.onSubmissionImport();
-        //presenter.onSubmissionImportClick(IMPORTED_EXPERIMENT, new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
-        //    @Override
-        //    public void onSuccess(Long result) {
-        //        importDialog.startImport(result);
-        //    }
-        //});
+        presenter.onSubmissionImport(IMPORTED_EXPERIMENT);
     }
 
     @UiHandler("allSubmissions")
@@ -123,7 +104,7 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     private void filterClick(SubmissionListFilter filter) {
         selectItem(filters.get(filter));
-        presenter.onSubmissionFilterClick(filter);
+        presenter.onSubmissionFilter(filter);
     }
 
     public void setFilter(SubmissionListFilter filter) {

@@ -25,11 +25,15 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+
+import java.util.List;
 
 public class ImportSubmissionDialog extends DialogBox {
 
-    //@UiField
-    //DataFilesUploadView dataFilesUploadView;
+    @UiField
+    DataFilesUploadView dataFilesUploadView;
 
     @UiField
     DeckLayoutPanel deckPanel;
@@ -39,8 +43,6 @@ public class ImportSubmissionDialog extends DialogBox {
     }
 
     private Presenter presenter;
-
-    private Long submissionId;
 
     public ImportSubmissionDialog() {
         setModal(true);
@@ -52,21 +54,15 @@ public class ImportSubmissionDialog extends DialogBox {
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-        //dataFilesUploadView.setPresenter(presenter);
+        dataFilesUploadView.setPresenter(presenter);
     }
 
-    //public void setDataFiles(List<DataFileRow> files) {
-    //    dataFilesUploadView.setDataFiles(files);
-    //}
-
-    public void setImportStage(int stage) {
-        deckPanel.showWidget(stage);
+    public void setDataFiles(List<DataFileRow> files) {
+        dataFilesUploadView.setDataFiles(files);
     }
 
-    public void startImport(long submissionId) {
-        this.submissionId = submissionId;
-
-        presenter.onImportStarted();
+    public void startImport() {
+        deckPanel.showWidget(0);
         center();
     }
 
@@ -86,11 +82,6 @@ public class ImportSubmissionDialog extends DialogBox {
         onCancelClick(event);
     }
 
-    @UiHandler("validateButton")
-    void onValidateClick(ClickEvent event) {
-        presenter.onImportValidate();
-    }
-
     @UiHandler("submitButton")
     void onSubmitClick(ClickEvent event) {
         presenter.onImportSubmit();
@@ -102,12 +93,9 @@ public class ImportSubmissionDialog extends DialogBox {
         presenter.onImportCancelled();
     }
 
-    public interface Presenter /*extends DataFilesUploadView.Presenter*/ {
-        void onImportStarted();
+    public interface Presenter extends DataFilesUploadView.Presenter {
 
         void onImportCancelled();
-
-        void onImportValidate();
 
         void onImportSubmit();
     }

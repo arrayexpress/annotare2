@@ -97,9 +97,7 @@
                                                 </span>
                                             </td>
                                             <td style="border-left: 1px solid #ddd;">
-                                                <g:Button ui:field="editButton" visible="false" addStyleNames="{style.editButton}">View /
-                                                    Edit
-                                                </g:Button>
+                                                <g:Button ui:field="editButton" addStyleNames="{style.editButton}"/>
                                             </td>
                                         </tr>
                                     </tbody>
