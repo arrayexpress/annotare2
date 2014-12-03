@@ -25,6 +25,7 @@
             font-family: Arial, Helvetica, sans-serif;
             font-size: small;
             line-height: 150%;
+            padding: 0 1em;
         }
 
         .text p {
@@ -35,6 +36,7 @@
         .text ol {
             counter-reset:item;
             list-style-type: none;
+            padding-left: 1.5em;
         }
 
         .text ol > li:before {
