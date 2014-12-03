@@ -59,6 +59,10 @@ public class ValidatedDataFileConnector {
         fileMap.put(submissionId, new ValidatedDataFile(name, null));
     }
 
+    public boolean containsFile(Long submissionId, String name) {
+        return fileMap.containsFile(submissionId, name);
+    }
+
     public ValidatedDataFile getFile(Long submissionId, String name) {
         return fileMap.get(submissionId, name);
     }

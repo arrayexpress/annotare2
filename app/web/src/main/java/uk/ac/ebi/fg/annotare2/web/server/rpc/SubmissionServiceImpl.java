@@ -80,7 +80,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.ex
 /**
  * @author Olga Melnichuk
  */
-public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
+public class    SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
 
     private static final long serialVersionUID = 6482329782917056447L;
 

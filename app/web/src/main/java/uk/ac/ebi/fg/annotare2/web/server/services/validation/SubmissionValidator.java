@@ -22,7 +22,8 @@ import com.google.inject.Inject;
 import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
-import uk.ac.ebi.arrayexpress2.magetab.parser.MAGETABParser;
+import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
+import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
@@ -42,6 +43,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +51,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Collections2.transform;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Ordering.natural;
 
 public class SubmissionValidator {
@@ -84,62 +87,68 @@ public class SubmissionValidator {
     private Collection<CheckResult> validateExperimentSubmission(ExperimentSubmission submission) throws IOException,
             ParseException, UknownExperimentTypeException, DataSerializationException {
 
-        ExperimentProfile exp = submission.getExperimentProfile();
-        ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
+        Collection<CheckResult> results = newArrayList();
 
-        MAGETABInvestigation mageTab = (new MageTabGenerator(exp, efoSearch, GenerateOption.REPLACE_NEWLINES_WITH_SPACES)).generate();
-        mageTab.IDF.setLocation(new URL("annotare:/" + submission.getId() + "/idf.txt"));
-        mageTab.IDF.sdrfFile.add("sdrf.txt");
-        mageTab.IDF.getLayout().calculateLocations(mageTab.IDF);
-        mageTab.SDRF.setLocation(new URL("annotare:/" + submission.getId() + "/sdrf.txt"));
-        mageTab.SDRF.getLayout().calculateLocations(mageTab.SDRF);
+        try {
+            ExperimentProfile exp = submission.getExperimentProfile();
+            ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
 
-        Set<DataFile> allFiles = submission.getFiles();
+            MAGETABInvestigation mageTab = (new MageTabGenerator(exp, efoSearch, GenerateOption.REPLACE_NEWLINES_WITH_SPACES)).generate();
+            mageTab.IDF.setLocation(new URL("annotare:/" + submission.getId() + "/idf.txt"));
+            mageTab.IDF.sdrfFile.add("sdrf.txt");
+            mageTab.IDF.getLayout().calculateLocations(mageTab.IDF);
+            mageTab.SDRF.setLocation(new URL("annotare:/" + submission.getId() + "/sdrf.txt"));
+            mageTab.SDRF.getLayout().calculateLocations(mageTab.SDRF);
 
-        dataFileConnector.addDataFiles(submission.getId(), allFiles);
-        dataFileConnector.addFile(submission.getId(), "idf.txt");
-        dataFileConnector.addFile(submission.getId(), "sdrf.txt");
+            Set<DataFile> allFiles = submission.getFiles();
 
-        Collection<CheckResult> results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF), type);
+            dataFileConnector.addDataFiles(submission.getId(), allFiles);
+            dataFileConnector.addFile(submission.getId(), "idf.txt");
+            dataFileConnector.addFile(submission.getId(), "sdrf.txt");
 
-        Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
+            results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF), type);
 
-        if (null == allFiles || 0 == allFiles.size()) {
-            addError(results, "At least one data file must be uploaded and assigned");
-        } else if (null == assignedFiles || 0 == assignedFiles.size()) {
-            addError(results, "At least one uploaded data file must be assigned");
-        } else {
-            for (DataFile dataFile : allFiles) {
-                if (!dataFile.getStatus().isOk()) {
-                    String cause = "";
-                    switch (dataFile.getStatus()) {
-                        case MD5_ERROR:
-                            cause = " (MD5 check failed)";
-                            break;
-                        case FILE_NOT_FOUND_ERROR:
-                            cause = " (file not found)";
-                            break;
+            Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
+
+            if (null == allFiles || 0 == allFiles.size()) {
+                addError(results, "At least one data file must be uploaded and assigned");
+            } else if (null == assignedFiles || 0 == assignedFiles.size()) {
+                addError(results, "At least one uploaded data file must be assigned");
+            } else {
+                for (DataFile dataFile : allFiles) {
+                    if (!dataFile.getStatus().isOk()) {
+                        String cause = "";
+                        switch (dataFile.getStatus()) {
+                            case MD5_ERROR:
+                                cause = " (MD5 check failed)";
+                                break;
+                            case FILE_NOT_FOUND_ERROR:
+                                cause = " (file not found)";
+                                break;
+                        }
+                        addError(results, "File " + dataFile.getName() + " uploaded with an error" + cause);
+                    } else if (!assignedFiles.contains(dataFile)) {
+                        results.add(
+                                CheckResult.checkFailed(
+                                        "File " + dataFile.getName() + " should be assigned to at least one labeled extract"
+                                        , CheckModality.WARNING
+                                        , CheckPosition.undefinedPosition()
+                                        , null
+                                )
+                        );
                     }
-                    addError(results, "File " + dataFile.getName() + " uploaded with an error" + cause);
-                } else if (!assignedFiles.contains(dataFile)) {
-                    results.add(
-                            CheckResult.checkFailed(
-                                    "File " + dataFile.getName() + " should be assigned to at least one labeled extract"
-                                    , CheckModality.WARNING
-                                    , CheckPosition.undefinedPosition()
-                                    , null
-                            )
-                    );
+                }
+                FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
+                for (DataFile dataFile : assignedFiles) {
+                    DataFileSource source = dataFileManager.getFileSource(dataFile);
+                    if (null == source || !fileChecker.isAvailable(source)) {
+                        addError(results, "File " + dataFile.getName() + " is not accessible"
+                                + ((source instanceof RemoteFileSource) ? " on FTP" : ""));
+                    }
                 }
             }
-            FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
-            for (DataFile dataFile : assignedFiles) {
-                DataFileSource source = dataFileManager.getFileSource(dataFile);
-                if (null == source || !fileChecker.isAvailable(source)) {
-                    addError(results, "File " + dataFile.getName() + " is not accessible"
-                            + ((source instanceof RemoteFileSource) ? " on FTP" : ""));
-                }
-            }
+        } finally {
+            dataFileConnector.removeFiles(submission.getId());
         }
 
         return natural().sortedCopy(results);
@@ -149,7 +158,7 @@ public class SubmissionValidator {
             throws IOException, ParseException, UknownExperimentTypeException, DataSerializationException {
 
         final List<ErrorItem> parserErrors = new ArrayList<ErrorItem>();
-        MAGETABParser parser = new MAGETABParser();
+        //MAGETABParser parser = new MAGETABParser();
         //parser.addErrorItemListener(new ErrorItemListener() {
 
         //    @Override
@@ -170,7 +179,7 @@ public class SubmissionValidator {
                 addError(results, "More than one IDF file has been uploaded (" + fileNames(idfFiles) + ")");
             } else {
                 DataFile idfFile = idfFiles.iterator().next();
-                MAGETABInvestigation mageTab = parser.parse(new URL("annotare:/" + submission.getId() + "/" + idfFile.getName()));
+                MAGETABInvestigation mageTab = parseMageTab(submission.getId(), idfFile.getName());
                 if (!parserErrors.isEmpty()) {
                     for (ErrorItem error : parserErrors) {
                         addError(results, error.reportString());
@@ -181,9 +190,33 @@ public class SubmissionValidator {
             }
         } catch (Exception x) {
             addError(results, x.getMessage());
+        } finally {
+            dataFileConnector.removeFiles(submission.getId());
         }
 
-        return results;
+        return natural().sortedCopy(results);
+    }
+
+    private MAGETABInvestigation parseMageTab(Long submissionId, String idfName) throws IOException, ParseException {
+        MAGETABInvestigation mageTab = new MAGETABInvestigation();
+
+        if (dataFileConnector.containsFile(submissionId, idfName)) {
+            URL idfLocation = getAnnotareURL(submissionId, idfName);
+            mageTab.IDF.setLocation(idfLocation);
+            new IDFParser().parse(idfLocation.openStream(), mageTab.IDF);
+            for (String sdrfName : mageTab.IDF.sdrfFile) {
+                if (dataFileConnector.containsFile(submissionId, sdrfName)) {
+                    URL sdrfLocation = getAnnotareURL(submissionId, sdrfName);
+                    mageTab.SDRF.setLocation(sdrfLocation);
+                    new SDRFParser().parse(sdrfLocation.openStream(), mageTab.SDRF);
+                }
+            }
+        }
+        return mageTab;
+    }
+
+    private URL getAnnotareURL(Long submissionId, String fileName) throws MalformedURLException {
+        return new URL("annotare:/" + submissionId + "/" + fileName);
     }
 
     private void addError(Collection<CheckResult> results, String errorMessage) {
