@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
@@ -350,7 +351,9 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             }
 
             if (submission instanceof ExperimentSubmission) {
-                exportSubmissionFiles(subsTrackingConnection, (ExperimentSubmission)submission, exportDir);
+                exportExperimentSubmissionFiles(subsTrackingConnection, (ExperimentSubmission) submission, exportDir);
+            } else if (submission instanceof ImportedExperimentSubmission) {
+                exportImportedExperimentSubmissionFiles(subsTrackingConnection, (ImportedExperimentSubmission) submission, exportDir);
             }
 
             if (properties.isSubsTrackingEnabled()) {
@@ -375,7 +378,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         }
     }
 
-    private void exportSubmissionFiles(Connection connection, ExperimentSubmission submission, File exportDirectory)
+    private void exportExperimentSubmissionFiles(Connection connection, ExperimentSubmission submission, File exportDirectory)
             throws SubsTrackingException {
         try {
             ExperimentProfile exp = submission.getExperimentProfile();
@@ -433,6 +436,90 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                             if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
                                 log.info(isNullOrEmpty(
                                         executor.getOutput()) ?
+                                                "Ran post-processing script on " + f.getName() : executor.getOutput()
+                                );
+                            } else {
+                                log.error("Data file post-processing script returned an error: {}", executor.getErrors());
+                            }
+                        }
+                    } else if (!dataFile.getStatus().isOk()) {
+                        throw new IOException("Unable to process data file " + dataFile.getName() + ": " + dataFile.getStatus().getTitle());
+                    }
+                    if (properties.isSubsTrackingEnabled()) {
+                        subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new SubsTrackingException(e);
+        }
+    }
+
+    private void exportImportedExperimentSubmissionFiles(Connection connection, ImportedExperimentSubmission submission, File exportDirectory)
+            throws SubsTrackingException {
+        try {
+            Integer subsTrackingId = submission.getSubsTrackingId();
+            String fileName = submission.getAccession();
+            if (null == fileName) {
+                fileName = "submission" + submission.getId() + "_annotare";
+            }
+            if (properties.isSubsTrackingEnabled()) {
+                int version = 1;
+                while (subsTracking.hasMageTabFileAdded(
+                        connection,
+                        subsTrackingId,
+                        fileName + "_v" + version + ".idf.txt")) {
+                    version++;
+                }
+                fileName = fileName + "_v" + version;
+            }
+            String idfName = fileName + "idf.txt";
+            String sdrfName = fileName + "sdrf.txt";
+
+            Collection<DataFile> idfFiles = submission.getIdfFiles();
+            Collection<DataFile> sdrfFiles = submission.getSdrfFiles();
+            if (1 != idfFiles.size() && 1 != sdrfFiles.size()) {
+                throw new IOException("Imported submission must have one IDF and one SDRF file uploaded");
+            }
+
+            File exportedIdfFile = new File(exportDirectory, idfName);
+            DataFileSource idfSource = dataFileManager.getFileSource(idfFiles.iterator().next());
+            idfSource.copyTo(exportedIdfFile);
+            exportedIdfFile.setWritable(true, false);
+
+            String dataFilesPostProcessingScript = null;
+            if (properties.isSubsTrackingEnabled()) {
+                subsTracking.deleteFiles(connection, subsTrackingId);
+                subsTracking.addMageTabFile(connection, subsTrackingId, idfName);
+                dataFilesPostProcessingScript = properties.getSubsTrackingDataFilesPostProcessingScript();
+            }
+
+            exportDirectory = new File(exportDirectory, "unpacked");
+            if (!exportDirectory.exists()) {
+                exportDirectory.mkdir();
+                exportDirectory.setWritable(true, false);
+            }
+
+            // move sdrf file
+            File exportedSdrfFile = new File(exportDirectory, sdrfName);
+            DataFileSource sdrfSource = dataFileManager.getFileSource(sdrfFiles.iterator().next());
+            sdrfSource.copyTo(exportedSdrfFile);
+            exportedSdrfFile.setWritable(true, false);
+
+            // copy data files
+            Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
+            if (dataFiles.size() > 0) {
+                for (DataFile dataFile : dataFiles) {
+                    if (DataFileStatus.STORED == dataFile.getStatus()) {
+                        File f = new File(exportDirectory, dataFile.getName());
+                        DataFileSource source = dataFileManager.getFileSource(dataFile);
+                        source.copyTo(f);
+                        f.setWritable(true, false);
+                        if (!isNullOrEmpty(dataFilesPostProcessingScript)) {
+                            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+                            if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
+                                log.info(isNullOrEmpty(
+                                                executor.getOutput()) ?
                                                 "Ran post-processing script on " + f.getName() : executor.getOutput()
                                 );
                             } else {

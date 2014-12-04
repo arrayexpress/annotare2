@@ -124,7 +124,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void onImportSubmit(AsyncCallback<ValidationResult> callback) {
+    public void onImportValidate(AsyncCallback<ValidationResult> callback) {
         validationService.validate(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
     }
 

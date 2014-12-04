@@ -173,7 +173,7 @@
                             <g:cell height="1.2em">
                                 <g:Label>If you wish please leave a comment below:</g:Label>
                             </g:cell>
-                            <g:TextArea width="100%" height="100%" ui:field="message" addStyleNames="{style.message}"/>
+                            <g:TextArea width="100%" height="100%" ui:field="feedbackMessage" addStyleNames="{style.message}"/>
                         </g:VerticalPanel>
                     </g:layer>
                 </g:LayoutPanel>
@@ -181,7 +181,7 @@
             <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
                 <g:HTMLPanel>
                     <g:Button ui:field="cancel3Button">Cancel</g:Button>
-                    <g:Button ui:field="closeButton">OK</g:Button>
+                    <g:Button ui:field="okButton">OK</g:Button>
                 </g:HTMLPanel>
             </g:cell>
         </g:VerticalPanel>

@@ -77,10 +77,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderF
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
-/**
- * @author Olga Melnichuk
- */
-public class    SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
+public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
 
     private static final long serialVersionUID = 6482329782917056447L;
 
@@ -281,34 +278,6 @@ public class    SubmissionServiceImpl extends SubmissionBasedRemoteService imple
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void submitSubmission(final long id)
-            throws ResourceNotFoundException, NoPermissionException {
-        try {
-            ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
-            if (submission.getStatus().canSubmit()) {
-                storeAssociatedFiles(submission);
-                submission.setStatus(
-                        SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
-                                SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
-                );
-                submission.setOwnedBy(userDao.getCuratorUser());
-                save(submission);
-            }
-        } catch (RecordNotFoundException e) {
-            throw noSuchRecord(e);
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        } catch (URISyntaxException e) {
-            throw unexpected(e);
-        } catch (IOException e) {
-            throw unexpected(e);
-        }
-    }
-
-    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
-    @Override
     public ExperimentProfile updateExperiment(final long id, final List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.UPDATE);
@@ -343,6 +312,34 @@ public class    SubmissionServiceImpl extends SubmissionBasedRemoteService imple
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (DataSerializationException e) {
+            throw unexpected(e);
+        }
+    }
+
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
+    @Override
+    public void submitSubmission(final long id)
+            throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(id, Permission.UPDATE);
+            if (submission.getStatus().canSubmit()) {
+                storeAssociatedFiles(submission);
+                submission.setStatus(
+                        SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
+                                SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
+                );
+                submission.setOwnedBy(userDao.getCuratorUser());
+                save(submission);
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        } catch (URISyntaxException e) {
+            throw unexpected(e);
+        } catch (IOException e) {
             throw unexpected(e);
         }
     }
@@ -435,7 +432,7 @@ public class    SubmissionServiceImpl extends SubmissionBasedRemoteService imple
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public ExperimentProfile renameDataFile(final long id, final long fileId, final String fileName) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentProfile renameDataFile(long id, long fileId, String fileName) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(id, Permission.UPDATE);
             ExperimentSubmission experimentSubmission = submission instanceof ExperimentSubmission ?
@@ -465,7 +462,7 @@ public class    SubmissionServiceImpl extends SubmissionBasedRemoteService imple
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public ExperimentProfile deleteDataFiles(final long id, final List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException {
+    public ExperimentProfile deleteDataFiles(long id, List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(id, Permission.UPDATE);
             ExperimentSubmission experimentSubmission = submission instanceof ExperimentSubmission ?
@@ -602,7 +599,7 @@ public class    SubmissionServiceImpl extends SubmissionBasedRemoteService imple
         save(submission);
     }
 
-    private void storeAssociatedFiles(ExperimentSubmission submission)
+    private void storeAssociatedFiles(Submission submission)
             throws DataSerializationException, URISyntaxException, IOException {
 
         Set<DataFile> files = dataFileManager.getAssignedFiles(

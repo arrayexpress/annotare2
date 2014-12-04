@@ -171,7 +171,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
             @Override
             public void onSuccess(ValidationResult result) {
-                if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
+                if (!result.canSubmit()) {
                     dialog.showValidationFailureMessage(null);
                 } else {
                     dialog.showSubmissionProgressMessage(null);

@@ -61,4 +61,8 @@ public class ValidationResult implements IsSerializable {
     public List<String> getFailures() {
         return failures;
     }
+
+    public boolean canSubmit() {
+        return failures.isEmpty() && errors.isEmpty();
+    }
 }

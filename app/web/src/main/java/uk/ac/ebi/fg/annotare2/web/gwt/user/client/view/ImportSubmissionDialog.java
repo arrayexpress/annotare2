@@ -28,6 +28,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
@@ -49,6 +50,38 @@ public class ImportSubmissionDialog extends DialogBox {
     @UiField
     HTML validationLogHtml;
 
+    @UiField
+    RadioButton rbScore1;
+
+    @UiField
+    RadioButton rbScore2;
+
+    @UiField
+    RadioButton rbScore3;
+
+    @UiField
+    RadioButton rbScore4;
+
+    @UiField
+    RadioButton rbScore5;
+
+    @UiField
+    RadioButton rbScore6;
+
+    @UiField
+    RadioButton rbScore7;
+
+    @UiField
+    RadioButton rbScore8;
+
+    @UiField
+    RadioButton rbScore9;
+
+    @UiField
+    TextArea feedbackMessage;
+
+    final WaitingPopup waitingPopup;
+
     interface Binder extends UiBinder<Widget, ImportSubmissionDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
@@ -56,6 +89,8 @@ public class ImportSubmissionDialog extends DialogBox {
     private Presenter presenter;
 
     public ImportSubmissionDialog() {
+        waitingPopup = new WaitingPopup();
+
         setModal(true);
         setGlassEnabled(true);
         setText("Import Experiment Submission");
@@ -97,24 +132,7 @@ public class ImportSubmissionDialog extends DialogBox {
 
     @UiHandler("submitButton")
     void onSubmitClick(ClickEvent event) {
-        final PopupPanel w = new WaitingPopup();
-        w.center();
-
-        presenter.onImportSubmit(
-                new ReportingAsyncCallback<ValidationResult>(ReportingAsyncCallback.FailureMessage.GENERIC_FAILURE) {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        w.hide();
-                        showValidationResult(new ValidationResult(caught));
-                    }
-
-                    @Override
-                    public void onSuccess(ValidationResult result) {
-                        w.hide();
-                        showValidationResult(result);
-                    }
-                }
-        );
+        validateAndSubmit();
     }
 
     @UiHandler("backButton")
@@ -122,10 +140,39 @@ public class ImportSubmissionDialog extends DialogBox {
         deckPanel.showWidget(0);
     }
 
-    @UiHandler("closeButton")
-    void onCloseClick(ClickEvent event) {
-        hide();
-        presenter.onImportCancelled();
+    @UiHandler("okButton")
+    void onOkButton(ClickEvent event) {
+        if (null != getFeedbackScore() || !getFeedbackMessage().isEmpty()) {
+            presenter.onPostFeedback(getFeedbackScore(), getFeedbackMessage());
+        }
+    }
+
+    public Byte getFeedbackScore() {
+        if (rbScore1.getValue()) {
+            return 1;
+        } else if (rbScore2.getValue()) {
+            return 2;
+        } else if (rbScore3.getValue()) {
+            return 3;
+        } else if (rbScore4.getValue()) {
+            return 4;
+        } else if (rbScore5.getValue()) {
+            return 5;
+        } else if (rbScore6.getValue()) {
+            return 6;
+        } else if (rbScore7.getValue()) {
+            return 7;
+        } else if (rbScore8.getValue()) {
+            return 8;
+        } else if (rbScore9.getValue()) {
+            return 9;
+        } else {
+            return null;
+        }
+    }
+
+    public String getFeedbackMessage() {
+        return feedbackMessage.getValue().trim();
     }
 
     @Override
@@ -136,6 +183,47 @@ public class ImportSubmissionDialog extends DialogBox {
                 onCancelClick(null);
             }
         }
+    }
+
+    private void validateAndSubmit() {
+        waitingPopup.center();
+
+        presenter.onImportValidate(
+                new ReportingAsyncCallback<ValidationResult>(ReportingAsyncCallback.FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        waitingPopup.hide();
+                        showValidationResult(new ValidationResult(caught));
+                    }
+
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+                        if (result.canSubmit()) {
+                            submit();
+                        } else {
+                            waitingPopup.hide();
+                            showValidationResult(result);
+                        }
+                    }
+                }
+        );
+    }
+
+    private void submit() {
+        presenter.onImportSubmit(
+                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        waitingPopup.hide();
+                    }
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        waitingPopup.hide();
+                        deckPanel.showWidget(2);
+                    }
+                });
     }
 
     private void showValidationResult(ValidationResult result) {
@@ -165,6 +253,11 @@ public class ImportSubmissionDialog extends DialogBox {
 
         void onImportCancelled();
 
-        void onImportSubmit(AsyncCallback<ValidationResult> callback);
+        void onImportValidate(AsyncCallback<ValidationResult> callback);
+
+        void onImportSubmit(AsyncCallback<Void> callback);
+
+        void onPostFeedback(Byte score, String comment);
+
     }
 }
