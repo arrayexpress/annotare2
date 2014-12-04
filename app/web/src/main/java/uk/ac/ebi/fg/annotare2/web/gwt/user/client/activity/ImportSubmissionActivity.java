@@ -31,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
@@ -126,6 +127,25 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     @Override
     public void onImportValidate(AsyncCallback<ValidationResult> callback) {
         validationService.validate(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
+    }
+
+    @Override
+    public void onImportSubmit(AsyncCallback<Void> callback) {
+        submissionService.submitSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
+    }
+
+    @Override
+    public void onPostFeedback(Byte score, String comment) {
+        submissionService.postFeedback(submissionId, score, comment,
+                AsyncCallbackWrapper.callbackWrap(
+                        new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+
+                            @Override
+                            public void onSuccess(Void result) {
+                            }
+                        }
+                )
+        );
     }
 
     @Override

@@ -258,6 +258,5 @@ public class ImportSubmissionDialog extends DialogBox {
         void onImportSubmit(AsyncCallback<Void> callback);
 
         void onPostFeedback(Byte score, String comment);
-
     }
 }
