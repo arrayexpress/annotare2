@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -73,6 +74,8 @@ public class ImportSubmissionDialog extends DialogBox {
 
     public void startImport() {
         deckPanel.showWidget(0);
+        deckPanel.setWidth(Math.floor(Window.getClientWidth() * 0.8) + "px");
+        deckPanel.setHeight(Math.floor(Window.getClientHeight() * 0.8) + "px");
         center();
     }
 
