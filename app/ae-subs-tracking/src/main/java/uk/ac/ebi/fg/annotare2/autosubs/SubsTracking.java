@@ -18,8 +18,8 @@
 package uk.ac.ebi.fg.annotare2.autosubs;
 
 import com.google.inject.Inject;
-import com.jolbox.bonecp.BoneCP;
-import com.jolbox.bonecp.BoneCPConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.pool.HikariPool;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -46,7 +46,7 @@ import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 
 public class SubsTracking {
     private final SubsTrackingProperties properties;
-    private BoneCP connectionPool;
+    private HikariPool connectionPool;
 
     private final static String STATUS_PENDING = "Waiting";
 
@@ -334,26 +334,28 @@ public class SubsTracking {
                 throw new SubsTrackingException(message);
             }
 
-            BoneCPConfig cpConf = new BoneCPConfig();
+            HikariConfig cpConf = new HikariConfig();
             cpConf.setJdbcUrl(properties.getSubsTrackingConnectionURL());
             cpConf.setUsername(properties.getSubsTrackingConnectionUser());
             cpConf.setPassword(properties.getSubsTrackingConnectionPassword());
-            cpConf.setConnectionTestStatement("SELECT 1 FROM EXPERIMENTS LIMIT 1");
-            cpConf.setMinConnectionsPerPartition(2);
-            cpConf.setMaxConnectionsPerPartition(2);
-            cpConf.setPartitionCount(1);
+            cpConf.setConnectionTestQuery("SELECT 1 FROM EXPERIMENTS LIMIT 1");
+            cpConf.addDataSourceProperty("dataSource.cachePrepStmts", "true");
+            cpConf.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
+            cpConf.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+            cpConf.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
-            try {
-                this.connectionPool = new BoneCP(cpConf);
-            } catch (SQLException e) {
-                throw new SubsTrackingException(e);
-            }
+
+            this.connectionPool = new HikariPool(cpConf);
         }
     }
 
     public void terminate() throws SubsTrackingException {
         if (null != connectionPool) {
-            connectionPool.shutdown();
+            try {
+                connectionPool.shutdown();
+            } catch (InterruptedException x) {
+                throw new SubsTrackingException(x);
+            }
         }
     }
 

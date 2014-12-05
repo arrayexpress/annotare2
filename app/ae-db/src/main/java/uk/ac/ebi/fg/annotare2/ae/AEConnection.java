@@ -18,8 +18,8 @@
 package uk.ac.ebi.fg.annotare2.ae;
 
 import com.google.inject.Inject;
-import com.jolbox.bonecp.BoneCP;
-import com.jolbox.bonecp.BoneCPConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.pool.HikariPool;
 import org.jooq.DSLContext;
 import org.jooq.Record2;
 import org.jooq.SQLDialect;
@@ -39,7 +39,7 @@ public class AEConnection {
 
     private final AEConnectionProperties connectionProperties;
 
-    private BoneCP connectionPool;
+    private HikariPool connectionPool;
 
     public enum SubmissionState {
         NOT_LOADED,
@@ -140,26 +140,23 @@ public class AEConnection {
                 throw new AEConnectionException(message);
             }
 
-            BoneCPConfig cpConf = new BoneCPConfig();
+            HikariConfig cpConf = new HikariConfig();
             cpConf.setJdbcUrl(connectionProperties.getAeConnectionURL());
             cpConf.setUsername(connectionProperties.getAeConnectionUser());
             cpConf.setPassword(connectionProperties.getAeConnectionPassword());
-            cpConf.setConnectionTestStatement("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
-            cpConf.setMinConnectionsPerPartition(2);
-            cpConf.setMaxConnectionsPerPartition(2);
-            cpConf.setPartitionCount(1);
+            cpConf.setConnectionTestQuery("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
 
-            try {
-                this.connectionPool = new BoneCP(cpConf);
-            } catch (SQLException e) {
-                throw new AEConnectionException(e);
-            }
+            this.connectionPool = new HikariPool(cpConf);
         }
     }
 
     public void terminate() throws AEConnectionException {
         if (null != connectionPool) {
-            connectionPool.shutdown();
+            try {
+                connectionPool.shutdown();
+            } catch (InterruptedException x) {
+                throw new AEConnectionException(x);
+            }
         }
     }
 }

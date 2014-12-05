@@ -16,7 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
-import com.jolbox.bonecp.BoneCPDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -96,11 +96,10 @@ public class DaoTestBase {
                 "org.apache.naming");
         initialContext = new InitialContext();
 
-        BoneCPDataSource ds = new BoneCPDataSource();
+        HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(getTestDbUrl());
         ds.setUsername(getTestDbUser());
         ds.setPassword(getTestDbPassword());
-        ds.setPartitionCount(1);
 
         initialContext.bind("annotareDb", ds);
     }

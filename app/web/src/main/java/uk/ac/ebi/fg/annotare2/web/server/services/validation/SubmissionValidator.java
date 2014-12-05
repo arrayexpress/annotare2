@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
+import uk.ac.ebi.arrayexpress2.magetab.listener.ErrorItemListener;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
@@ -158,14 +159,13 @@ public class SubmissionValidator {
             throws IOException, ParseException, UknownExperimentTypeException, DataSerializationException {
 
         final List<ErrorItem> parserErrors = new ArrayList<ErrorItem>();
-        //MAGETABParser parser = new MAGETABParser();
-        //parser.addErrorItemListener(new ErrorItemListener() {
+        ErrorItemListener parserListener = new ErrorItemListener() {
 
-        //    @Override
-        //    public void errorOccurred(ErrorItem item) {
-        //        parserErrors.add(item);
-        //    }
-        //});
+            @Override
+            public void errorOccurred(ErrorItem item) {
+                parserErrors.add(item);
+            }
+        };
 
         Collection<CheckResult> results = new ArrayList<CheckResult>();
 
@@ -179,7 +179,7 @@ public class SubmissionValidator {
                 addError(results, "More than one IDF file has been uploaded (" + fileNames(idfFiles) + ")");
             } else {
                 DataFile idfFile = idfFiles.iterator().next();
-                MAGETABInvestigation mageTab = parseMageTab(submission.getId(), idfFile.getName());
+                MAGETABInvestigation mageTab = parseMageTab(submission.getId(), idfFile.getName(), parserListener);
                 if (!parserErrors.isEmpty()) {
                     for (ErrorItem error : parserErrors) {
                         addError(results, error.reportString());
@@ -197,13 +197,15 @@ public class SubmissionValidator {
         return natural().sortedCopy(results);
     }
 
-    private MAGETABInvestigation parseMageTab(Long submissionId, String idfName) throws IOException, ParseException {
+    private MAGETABInvestigation parseMageTab(Long submissionId, String idfName, ErrorItemListener errorItemListener) throws IOException, ParseException {
         MAGETABInvestigation mageTab = new MAGETABInvestigation();
 
         if (dataFileConnector.containsFile(submissionId, idfName)) {
             URL idfLocation = getAnnotareURL(submissionId, idfName);
             mageTab.IDF.setLocation(idfLocation);
-            new IDFParser().parse(idfLocation.openStream(), mageTab.IDF);
+            IDFParser parser = new IDFParser();
+            parser.addErrorItemListener(errorItemListener);
+            parser.parse(idfLocation.openStream(), mageTab.IDF);
             for (String sdrfName : mageTab.IDF.sdrfFile) {
                 if (dataFileConnector.containsFile(submissionId, sdrfName)) {
                     URL sdrfLocation = getAnnotareURL(submissionId, sdrfName);

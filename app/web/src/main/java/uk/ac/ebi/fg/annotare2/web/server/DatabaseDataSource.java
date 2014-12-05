@@ -17,7 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server;
 
 import com.google.inject.Inject;
-import com.jolbox.bonecp.BoneCPDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -36,23 +36,22 @@ import java.sql.Connection;
 
 public class DatabaseDataSource {
 
-    private BoneCPDataSource ds;
+    private HikariDataSource ds;
 
     @Inject
     public DatabaseDataSource(AnnotareProperties properties) throws NamingException {
         Context context = new InitialContext();
 
-        this.ds = new BoneCPDataSource();
-        this.ds.setDriverClass(properties.getDbConnectionDriver());
+        this.ds = new HikariDataSource();
+        this.ds.setDriverClassName(properties.getDbConnectionDriver());
         this.ds.setJdbcUrl(properties.getDbConnectionURL());
         this.ds.setUsername(properties.getDbConnectionUser());
         this.ds.setPassword(properties.getDbConnectionPassword());
-        this.ds.setPartitionCount(1);
-        this.ds.setIdleMaxAgeInMinutes(10);
-        this.ds.setIdleConnectionTestPeriodInMinutes(1);
-        this.ds.setMinConnectionsPerPartition(20);
-        this.ds.setMaxConnectionsPerPartition(100);
-        this.ds.setConnectionTestStatement("SELECT 1");
+        this.ds.setConnectionTestQuery("SELECT 1");
+        this.ds.addDataSourceProperty("dataSource.cachePrepStmts", "true");
+        this.ds.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
+        this.ds.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+        this.ds.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
         // register data source in the naming context so hibernate can find it
         context.bind("annotareDb", this.ds);
@@ -66,7 +65,7 @@ public class DatabaseDataSource {
     }
 
     public void shutDown() {
-        this.ds.getPool().shutdown();
+        this.ds.shutdown();
         this.ds = null;
     }
 
