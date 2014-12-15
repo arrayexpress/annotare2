@@ -200,6 +200,9 @@ public class SubmissionValidator {
                 if (null != url.getFile()) {
 
                     String fileName = url.getFile().replaceAll("^/(\\d+)/(.+)$", "$2");
+                    if (fileName.matches("^____(.*)____\\d+____$")) {
+                        fileName = fileName.replaceFirst("^____(.*)____\\d+____$", "$1");
+                    }
                     if ("sdrf.txt".equals(fileName) || "idf.txt".equals(fileName)) {
                         return new AnnotareURLConnection(url);
                     }
