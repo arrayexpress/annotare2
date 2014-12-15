@@ -18,8 +18,7 @@
 package uk.ac.ebi.fg.annotare2.ae;
 
 import com.google.inject.Inject;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.pool.HikariPool;
+import com.zaxxer.hikari.HikariDataSource;
 import org.jooq.DSLContext;
 import org.jooq.Record2;
 import org.jooq.SQLDialect;
@@ -39,7 +38,7 @@ public class AEConnection {
 
     private final AEConnectionProperties connectionProperties;
 
-    private HikariPool connectionPool;
+    private HikariDataSource dataSource;
 
     public enum SubmissionState {
         NOT_LOADED,
@@ -50,7 +49,7 @@ public class AEConnection {
     @Inject
     public AEConnection(AEConnectionProperties properties) throws AEConnectionException {
         this.connectionProperties = properties;
-        this.connectionPool = null;
+        this.dataSource = null;
     }
 
     public SubmissionState getSubmissionState(String accession) throws AEConnectionException {
@@ -95,11 +94,11 @@ public class AEConnection {
     }
 
     private Connection getConnection() throws AEConnectionException {
-        if (null == connectionPool) {
+        if (null == dataSource) {
             throw new AEConnectionException("Unable to obtain a connection; pool has not been initialized");
         }
         try {
-            return connectionPool.getConnection();
+            return dataSource.getConnection();
         } catch (SQLException e) {
             throw new AEConnectionException(e);
         }
@@ -126,7 +125,7 @@ public class AEConnection {
     }
 
     public void initialize() throws AEConnectionException {
-        if (null != connectionPool) {
+        if (null != dataSource) {
             throw new AEConnectionException("Illegal repeat initialization of AEConnection");
         }
 
@@ -140,23 +139,18 @@ public class AEConnection {
                 throw new AEConnectionException(message);
             }
 
-            HikariConfig cpConf = new HikariConfig();
-            cpConf.setJdbcUrl(connectionProperties.getAeConnectionURL());
-            cpConf.setUsername(connectionProperties.getAeConnectionUser());
-            cpConf.setPassword(connectionProperties.getAeConnectionPassword());
-            cpConf.setConnectionTestQuery("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
-
-            this.connectionPool = new HikariPool(cpConf);
+            dataSource = new HikariDataSource();
+            dataSource.setJdbcUrl(connectionProperties.getAeConnectionURL());
+            dataSource.setUsername(connectionProperties.getAeConnectionUser());
+            dataSource.setPassword(connectionProperties.getAeConnectionPassword());
+            dataSource.setConnectionTestQuery("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
         }
     }
 
     public void terminate() throws AEConnectionException {
-        if (null != connectionPool) {
-            try {
-                connectionPool.shutdown();
-            } catch (InterruptedException x) {
-                throw new AEConnectionException(x);
-            }
+        if (null != dataSource) {
+            dataSource.shutdown();
+            dataSource = null;
         }
     }
 }

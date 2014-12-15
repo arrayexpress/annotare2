@@ -18,8 +18,7 @@
 package uk.ac.ebi.fg.annotare2.autosubs;
 
 import com.google.inject.Inject;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.pool.HikariPool;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -46,22 +45,22 @@ import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 
 public class SubsTracking {
     private final SubsTrackingProperties properties;
-    private HikariPool connectionPool;
+    private HikariDataSource dataSource;
 
     private final static String STATUS_PENDING = "Waiting";
 
     @Inject
     public SubsTracking( SubsTrackingProperties properties ) {
         this.properties = properties;
-        this.connectionPool = null;
+        dataSource = null;
     }
 
     public Connection getConnection() throws SubsTrackingException {
-        if (null == connectionPool) {
+        if (null == dataSource) {
             throw new SubsTrackingException("Unable to obtain a connection; pool has not been initialized");
         }
         try {
-            return connectionPool.getConnection();
+            return dataSource.getConnection();
         } catch (SQLException e) {
             throw new SubsTrackingException(e);
         }
@@ -320,7 +319,7 @@ public class SubsTracking {
     }
 
     public void initialize() throws SubsTrackingException {
-        if (null != connectionPool) {
+        if (null != dataSource) {
             throw new SubsTrackingException(SubsTrackingException.ILLEGAL_REPEAT_INITIALIZATION);
         }
 
@@ -330,33 +329,41 @@ public class SubsTracking {
             } catch (ClassNotFoundException x) {
                 String message = "Unable to load driver [" +
                         properties.getSubsTrackingConnectionDriverClass() +
-                        "] for AEConnection";
+                        "] for subs tracking DB";
                 throw new SubsTrackingException(message);
             }
 
-            HikariConfig cpConf = new HikariConfig();
-            cpConf.setJdbcUrl(properties.getSubsTrackingConnectionURL());
-            cpConf.setUsername(properties.getSubsTrackingConnectionUser());
-            cpConf.setPassword(properties.getSubsTrackingConnectionPassword());
-            cpConf.setConnectionTestQuery("SELECT 1 FROM EXPERIMENTS LIMIT 1");
-            cpConf.addDataSourceProperty("dataSource.cachePrepStmts", "true");
-            cpConf.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
-            cpConf.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
-            cpConf.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
+            dataSource = new HikariDataSource();
+            dataSource.setDriverClassName(properties.getSubsTrackingConnectionDriverClass());
+            dataSource.setJdbcUrl(properties.getSubsTrackingConnectionURL());
+            dataSource.setUsername(properties.getSubsTrackingConnectionUser());
+            dataSource.setPassword(properties.getSubsTrackingConnectionPassword());
+            dataSource.setConnectionTestQuery("SELECT 1");
+            dataSource.addDataSourceProperty("dataSource.cachePrepStmts", "true");
+            dataSource.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
+            dataSource.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+            dataSource.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
-
-            this.connectionPool = new HikariPool(cpConf);
+            Connection test = null;
+            try {
+                test = dataSource.getConnection();
+            } catch (SQLException x) {
+                throw new SubsTrackingException("Unable o establish a connection to subs tracking DB", x);
+            } finally {
+                if (null != test) {
+                    try {
+                        test.close();
+                    } catch (SQLException x) {
+                        //
+                    }
+                }
+            }
         }
     }
 
     public void terminate() throws SubsTrackingException {
-        if (null != connectionPool) {
-            try {
-                connectionPool.shutdown();
-            } catch (InterruptedException x) {
-                throw new SubsTrackingException(x);
-            }
-        }
+        dataSource.shutdown();
+        dataSource = null;
     }
 
     private String asciiCompliantString(String s) {

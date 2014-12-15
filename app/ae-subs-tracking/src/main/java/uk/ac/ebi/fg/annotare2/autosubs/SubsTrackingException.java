@@ -32,6 +32,10 @@ public class SubsTrackingException extends Exception {
     }
 
     public SubsTrackingException(Throwable cause) {
-        super(CAUGHT_EXCEPTION, cause);
+        this(CAUGHT_EXCEPTION, cause);
+    }
+
+    public SubsTrackingException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
