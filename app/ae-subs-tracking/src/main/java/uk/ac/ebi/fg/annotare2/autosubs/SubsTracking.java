@@ -30,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.SpreadsheetsRecord;
 import uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.UsersRecord;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
@@ -105,6 +106,26 @@ public class SubsTracking {
             } catch (DataSerializationException e) {
                 throw new SubsTrackingException(e);
             }
+        } else if (submission instanceof ImportedExperimentSubmission) {
+            Integer userId = getAnnotareUserId(context);
+            ExperimentsRecord r =
+                    context.insertInto(EXPERIMENTS)
+                            .set(EXPERIMENTS.IS_DELETED, 0)
+                            .set(EXPERIMENTS.IN_CURATION, 0)
+                            .set(EXPERIMENTS.USER_ID, userId)
+                            .set(EXPERIMENTS.DATE_SUBMITTED, new Timestamp(new Date().getTime()))
+                            .set(EXPERIMENTS.ACCESSION, submission.getAccession())
+                            .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()))
+                            .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(""))
+                            .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
+                            .set(EXPERIMENTS.IS_UHTS, 0)
+                            .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
+                            .returning(EXPERIMENTS.ID)
+                            .fetchOne();
+            if (null != r) {
+                subsTrackingId = r.getId();
+            }
+
         } else {
             throw new SubsTrackingException(SubsTrackingException.NOT_IMPLEMENTED_EXCEPTION);
         }
