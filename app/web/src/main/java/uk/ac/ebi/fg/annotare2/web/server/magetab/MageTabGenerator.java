@@ -42,9 +42,6 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 
-/**
- * @author Olga Melnichuk
- */
 public class MageTabGenerator {
 
     private static class UnassignedValue {

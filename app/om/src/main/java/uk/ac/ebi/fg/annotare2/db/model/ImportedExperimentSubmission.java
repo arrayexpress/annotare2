@@ -17,17 +17,25 @@
 package uk.ac.ebi.fg.annotare2.db.model;
 
 import com.google.common.base.Predicate;
+import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.util.Collection;
 
 import static com.google.common.collect.Collections2.filter;
+import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.readImportedExperiment;
+import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.writeImportedExperiment;
 
 @Entity
 @DiscriminatorValue("IMPORTED_EXPERIMENT")
 public class ImportedExperimentSubmission extends Submission {
+
+    @Column(name = "experiment")
+    private String experimentString;
 
     public ImportedExperimentSubmission() {
         this(null);
@@ -35,6 +43,14 @@ public class ImportedExperimentSubmission extends Submission {
 
     public ImportedExperimentSubmission(User user) {
         super(user);
+    }
+
+    public ImportedExperimentProfile getExperimentProfile() throws DataSerializationException {
+        return readImportedExperiment(experimentString, getVersion());
+    }
+
+    public void setExperimentProfile(ImportedExperimentProfile exp) throws DataSerializationException {
+        this.experimentString = writeImportedExperiment(exp, getVersion());
     }
 
     @Override

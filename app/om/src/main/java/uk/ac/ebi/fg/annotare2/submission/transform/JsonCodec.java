@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
 
 import java.io.IOException;
 
@@ -53,6 +54,21 @@ public class JsonCodec {
         }
     }
 
+    public static ImportedExperimentProfile readImportedExperiment(String jsonString, ModelVersion version) throws DataSerializationException {
+        if (isNullOrEmpty(jsonString)) {
+            return null;
+        }
+        try {
+            return createMapper(version).readValue(jsonString, ImportedExperimentProfile.class);
+        } catch (JsonGenerationException e) {
+            throw new DataSerializationException(e);
+        } catch (JsonMappingException e) {
+            throw new DataSerializationException(e);
+        } catch (IOException e) {
+            throw new DataSerializationException(e);
+        }
+    }
+
     public static ArrayDesignHeader readArrayDesign(String jsonString, ModelVersion version) throws DataSerializationException {
         if (isNullOrEmpty(jsonString)) {
             return null;
@@ -69,6 +85,18 @@ public class JsonCodec {
     }
 
     public static String writeExperiment(ExperimentProfile exp, ModelVersion version) throws DataSerializationException {
+        try {
+            return createMapper(version).writeValueAsString(exp);
+        } catch (JsonGenerationException e) {
+            throw new DataSerializationException(e);
+        } catch (JsonMappingException e) {
+            throw new DataSerializationException(e);
+        } catch (IOException e) {
+            throw new DataSerializationException(e);
+        }
+    }
+
+    public static String writeImportedExperiment(ImportedExperimentProfile exp, ModelVersion version) throws DataSerializationException {
         try {
             return createMapper(version).writeValueAsString(exp);
         } catch (JsonGenerationException e) {

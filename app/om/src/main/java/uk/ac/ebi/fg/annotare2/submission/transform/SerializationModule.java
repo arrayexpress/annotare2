@@ -122,6 +122,8 @@ public class SerializationModule extends SimpleModule {
                 deserializers.addDeserializer(PrintingProtocol.class, new PrintingProtocolDeserializer10());
                 serializers.addSerializer(Label.class, new LabelSerializer10());
                 deserializers.addDeserializer(Label.class, new LabelDeserializer10());
+                serializers.addSerializer(ImportedExperimentProfile.class, new ImportedExperimentProfileSerializer12());
+                deserializers.addDeserializer(ImportedExperimentProfile.class, new ImportedExperimentProfileDeserializer12());
                 break;
             default:
                 throw new IllegalStateException();
