@@ -24,7 +24,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionCreateServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionImportServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -43,7 +44,8 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     private final LeftMenuView view;
     private final PlaceController placeController;
-    private final SubmissionServiceAsync submissionService;
+    private final SubmissionCreateServiceAsync createService;
+    private final SubmissionImportServiceAsync importService;
 
     private EventBus eventBus;
 
@@ -51,10 +53,12 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     public LeftMenuActivity(
             LeftMenuView view,
             PlaceController placeController,
-            SubmissionServiceAsync submissionService) {
+            SubmissionCreateServiceAsync createService,
+            SubmissionImportServiceAsync importService) {
         this.view = view;
         this.placeController = placeController;
-        this.submissionService = submissionService;
+        this.createService = createService;
+        this.importService = importService;
     }
 
     public LeftMenuActivity withPlace(Place place) {
@@ -96,11 +100,12 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
         switch (type) {
             case EXPERIMENT:
-                submissionService.createExperiment(callback);
+                createService.createExperiment(callback);
                 return;
-            case ARRAY_DESIGN:
-                submissionService.createArrayDesign(callback);
-                return;
+            //TODO:
+            //case ARRAY_DESIGN:
+            //    createService.createArrayDesign(callback);
+            //    return;
             default:
                 NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
         }
@@ -114,7 +119,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     public void onSubmissionImport(SubmissionType type) {
         switch (type) {
             case IMPORTED_EXPERIMENT:
-                submissionService.createImportedExperiment(
+                importService.createImportedExperiment(
                         AsyncCallbackWrapper.callbackWrap(
                                 new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
                                     @Override

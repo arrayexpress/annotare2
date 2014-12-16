@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -42,12 +42,12 @@ public class SetupActivity extends AbstractActivity implements StartView.Present
 
     private final StartView view;
     private final SubmissionServiceAsync submissionService;
-    private final DataServiceAsync dataService;
+    private final ApplicationDataServiceAsync dataService;
 
     @Inject
     public SetupActivity(StartView view,
                          SubmissionServiceAsync submissionService,
-                         DataServiceAsync dataService) {
+                         ApplicationDataServiceAsync dataService) {
         this.view = view;
         this.submissionService = submissionService;
         this.dataService = dataService;

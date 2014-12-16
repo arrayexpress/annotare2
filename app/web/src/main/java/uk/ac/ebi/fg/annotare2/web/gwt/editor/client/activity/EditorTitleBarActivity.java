@@ -25,9 +25,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -51,8 +50,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     private final EditorTitleBarView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
-    private final SubmissionValidationServiceAsync validationService;
-    private final DataServiceAsync dataService;
+    private final ApplicationDataServiceAsync dataService;
     private final AdfServiceAsync adfService;
 
     private EventBus eventBus;
@@ -61,13 +59,11 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     public EditorTitleBarActivity(EditorTitleBarView view,
                                   PlaceController placeController,
                                   SubmissionServiceAsync submissionService,
-                                  SubmissionValidationServiceAsync validationService,
-                                  DataServiceAsync dataService,
+                                  ApplicationDataServiceAsync dataService,
                                   AdfServiceAsync adfService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
-        this.validationService = validationService;
         this.dataService = dataService;
         this.adfService = adfService;
     }
@@ -132,7 +128,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     @Override
     public void validateSubmission(final EditorTitleBarView.ValidationHandler handler) {
-        validationService.validate(getSubmissionId(), callbackWrap(
+        submissionService.validateSubmission(getSubmissionId(), callbackWrap(
                 new ReportingAsyncCallback<ValidationResult>(FailureMessage.GENERIC_FAILURE) {
                     @Override
                     public void onFailure(Throwable caught) {

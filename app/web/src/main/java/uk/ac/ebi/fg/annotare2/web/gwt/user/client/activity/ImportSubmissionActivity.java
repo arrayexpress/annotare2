@@ -26,16 +26,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionValidationServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.dataproxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.ImportSubmissionView;
@@ -53,7 +52,6 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     private final ImportSubmissionView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
-    private final SubmissionValidationServiceAsync validationService;
     private final DataFilesProxy dataFilesService;
 
     private HandlerRegistration dataUpdateHandler;
@@ -65,12 +63,10 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     public ImportSubmissionActivity(ImportSubmissionView view,
                                     PlaceController placeController,
                                     SubmissionServiceAsync submissionService,
-                                    SubmissionValidationServiceAsync validationService,
                                     DataFilesProxy dataFilesService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
-        this.validationService = validationService;
         this.dataFilesService = dataFilesService;
     }
 
@@ -126,7 +122,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
 
     @Override
     public void onImportValidate(AsyncCallback<ValidationResult> callback) {
-        validationService.validate(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
+        submissionService.validateSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
     }
 
     @Override

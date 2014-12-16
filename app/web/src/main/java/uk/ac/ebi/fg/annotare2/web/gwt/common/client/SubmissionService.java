@@ -20,17 +20,15 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -48,13 +46,9 @@ public interface SubmissionService extends RemoteService {
 
     Table getSdrfTable(long id) throws NoPermissionException, ResourceNotFoundException;
 
-    long createExperiment() throws NoPermissionException;
-
-    long createArrayDesign() throws NoPermissionException;
-
-    long createImportedExperiment() throws NoPermissionException;
-
     void setupExperiment(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
+
+    ValidationResult validateSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 
     void submitSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 
@@ -63,16 +57,6 @@ public interface SubmissionService extends RemoteService {
     ExperimentProfile loadExperiment(long id) throws ResourceNotFoundException, NoPermissionException;
 
     ExperimentProfile updateExperiment(long id, List<ExperimentUpdateCommand> commands) throws ResourceNotFoundException, NoPermissionException;
-
-    List<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException;
-
-    Map<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
-
-    String registerFtpFiles(long id, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException;
-
-    ExperimentProfile renameDataFile(long id, long fileId, String fileName) throws ResourceNotFoundException, NoPermissionException;
-
-    ExperimentProfile deleteDataFiles(long id, List<Long> fileIds) throws ResourceNotFoundException, NoPermissionException;
 
     void deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 

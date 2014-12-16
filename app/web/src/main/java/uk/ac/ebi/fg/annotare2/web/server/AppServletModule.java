@@ -128,12 +128,17 @@ public class AppServletModule extends ServletModule {
         bind(ChangePasswordServlet.class).in(SINGLETON);
         bind(UncaughtExceptionServlet.class).in(SINGLETON);
 
+        // shared services
+        serveAndBindRpcService(ApplicationDataService.NAME, ApplicationDataServiceImpl.class, "UserApp", "EditorApp");
         serveAndBindRpcService(CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class, "UserApp", "EditorApp");
+        serveAndBindRpcService(DataFilesService.NAME, DataFilesServiceImpl.class, "UserApp", "EditorApp");
+        // user app services
         serveAndBindRpcService(SubmissionListService.NAME, SubmissionListServiceImpl.class, "UserApp");
-        serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "UserApp", "EditorApp");
+        serveAndBindRpcService(SubmissionCreateService.NAME, SubmissionCreateServiceImpl.class, "UserApp");
+        serveAndBindRpcService(SubmissionImportService.NAME, SubmissionImportServiceImpl.class, "UserApp");
+        // editor app services
+        serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "EditorApp");
         serveAndBindRpcService(AdfService.NAME, AdfServiceImpl.class, "EditorApp");
-        serveAndBindRpcService(SubmissionValidationService.NAME, SubmissionValidationServiceImpl.class, "UserApp", "EditorApp");
-        serveAndBindRpcService(DataService.NAME, DataServiceImpl.class, "UserApp", "EditorApp");
 
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();
         bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);

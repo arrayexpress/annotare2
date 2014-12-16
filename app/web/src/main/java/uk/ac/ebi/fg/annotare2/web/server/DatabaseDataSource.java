@@ -42,16 +42,17 @@ public class DatabaseDataSource {
     public DatabaseDataSource(AnnotareProperties properties) throws NamingException {
         Context context = new InitialContext();
 
-        this.ds = new HikariDataSource();
-        this.ds.setDriverClassName(properties.getDbConnectionDriver());
-        this.ds.setJdbcUrl(properties.getDbConnectionURL());
-        this.ds.setUsername(properties.getDbConnectionUser());
-        this.ds.setPassword(properties.getDbConnectionPassword());
-        this.ds.setConnectionTestQuery("SELECT 1");
-        this.ds.addDataSourceProperty("dataSource.cachePrepStmts", "true");
-        this.ds.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
-        this.ds.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
-        this.ds.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
+        ds = new HikariDataSource();
+        ds.setPoolName("AnnotareDB-Pool");
+        ds.setDriverClassName(properties.getDbConnectionDriver());
+        ds.setJdbcUrl(properties.getDbConnectionURL());
+        ds.setUsername(properties.getDbConnectionUser());
+        ds.setPassword(properties.getDbConnectionPassword());
+        ds.setConnectionTestQuery("SELECT 1");
+        ds.addDataSourceProperty("dataSource.cachePrepStmts", "true");
+        ds.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
+        ds.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+        ds.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
         // register data source in the naming context so hibernate can find it
         context.bind("annotareDb", this.ds);
@@ -65,8 +66,8 @@ public class DatabaseDataSource {
     }
 
     public void shutDown() {
-        this.ds.shutdown();
-        this.ds = null;
+        ds.shutdown();
+        ds = null;
     }
 
     private void updateDatabase() {

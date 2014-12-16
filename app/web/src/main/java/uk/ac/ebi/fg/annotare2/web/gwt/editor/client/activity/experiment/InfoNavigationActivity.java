@@ -23,7 +23,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -48,14 +48,14 @@ public class InfoNavigationActivity extends AbstractActivity implements LeftNavi
     private ExpInfoSection section;
 
     private final ExperimentDataProxy expData;
-    private final DataServiceAsync dataService;
+    private final ApplicationDataServiceAsync dataService;
     private HandlerRegistration experimentUpdateHandler;
 
     @Inject
     public InfoNavigationActivity(LeftNavigationView view,
                                   PlaceController placeController,
                                   ExperimentDataProxy expData,
-                                  DataServiceAsync dataService) {
+                                  ApplicationDataServiceAsync dataService) {
         this.view = view;
         this.placeController = placeController;
         this.expData = expData;

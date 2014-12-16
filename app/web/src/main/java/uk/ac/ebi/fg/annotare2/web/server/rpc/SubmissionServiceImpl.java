@@ -17,10 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
@@ -31,50 +29,42 @@ import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.model.*;
-import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
-import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
+import uk.ac.ebi.fg.annotare2.web.server.services.validation.SubmissionValidator;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
-import javax.annotation.Nullable;
 import javax.mail.MessagingException;
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.List;
 
-import static com.google.common.collect.Ordering.natural;
+import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.restoreOriginalNameValues;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
-import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.*;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiArrayDesignDetails;
+import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiSubmissionDetails;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.experimentUpdater;
 
 public class SubmissionServiceImpl extends SubmissionBasedRemoteService implements SubmissionService {
@@ -84,26 +74,28 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     private final DataFileManager dataFileManager;
-    private final AnnotareProperties properties;
+    //private final AnnotareProperties properties;
+    private final SubmissionValidator validator;
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
     private final EmailSender email;
 
-    private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
+    //private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
 
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
                                  SubmissionManager submissionManager,
                                  DataFileManager dataFileManager,
-                                 AnnotareProperties properties,
+                                 SubmissionValidator validator,
+                                 //AnnotareProperties properties,
                                  UserDao userDao,
                                  SubmissionFeedbackDao feedbackDao,
                                  EfoSearch efoSearch,
                                  EmailSender emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
-        this.properties = properties;
+        this.validator = validator;
         this.userDao = userDao;
         this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
@@ -208,6 +200,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    /*
     @Transactional
     @Override
     public ArrayList<DataFileRow> loadDataFiles(long id) throws ResourceNotFoundException, NoPermissionException {
@@ -227,36 +220,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         }
     }
-
-    @Transactional(rollbackOn = NoPermissionException.class)
-    @Override
-    public long createExperiment() throws NoPermissionException {
-        try {
-            return createExperimentSubmission().getId();
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
-    }
-
-    @Transactional(rollbackOn = NoPermissionException.class)
-    @Override
-    public long createArrayDesign() throws NoPermissionException {
-        try {
-            return createArrayDesignSubmission().getId();
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
-    }
-
-    @Transactional(rollbackOn = NoPermissionException.class)
-    @Override
-    public long createImportedExperiment() throws NoPermissionException {
-        try {
-            return createImportedExperimentSubmission().getId();
-        } catch (AccessControlException e) {
-            throw noPermission(e);
-        }
-    }
+    */
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
@@ -316,6 +280,45 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    @Transactional
+    @Override
+    public ValidationResult validateSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
+        List<String> failures = newArrayList();
+        List<String> errors = newArrayList();
+        List<String> warnings = newArrayList();
+
+        try {
+            Submission submission = getSubmission(id, Permission.VIEW);
+            Collection<CheckResult> results = validator.validate(submission);
+            for (CheckResult cr : results) {
+                switch (cr.getStatus()) {
+                    case WARNING:
+                        warnings.add(cr.asString());
+                        break;
+                    case ERROR:
+                        errors.add(cr.asString());
+                        break;
+                    case FAILURE:
+                        errors.add(cr.asString());
+                        break;
+                }
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (IOException e) {
+            throw unexpected(e);
+        } catch (ParseException e) {
+            throw unexpected(e);
+        } catch (UknownExperimentTypeException e) {
+            throw unexpected(e);
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        }
+        return new ValidationResult(errors, warnings, failures);
+    }
+
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void submitSubmission(final long id)
@@ -323,7 +326,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             Submission submission = getSubmission(id, Permission.UPDATE);
             if (submission.getStatus().canSubmit()) {
-                storeAssociatedFiles(submission);
+                //storeAssociatedFiles(submission);
                 submission.setStatus(
                         SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
                                 SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
@@ -335,15 +338,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        } catch (URISyntaxException e) {
-            throw unexpected(e);
-        } catch (IOException e) {
-            throw unexpected(e);
+        //} catch (DataSerializationException e) {
+        //    throw unexpected(e);
+        //} catch (URISyntaxException e) {
+        //    throw unexpected(e);
+        //} catch (IOException e) {
+        //    throw unexpected(e);
         }
     }
 
+    /*
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public HashMap<Integer, String> registerHttpFiles(long id, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException {
@@ -494,7 +498,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         }
     }
-
+    */
     @Transactional
     @Override
     public void deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
@@ -544,6 +548,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    /*
     private final Pattern md5Pattern1 = Pattern.compile("^\\s*[mM][dD]5\\s+\\((.+)\\)\\s*=\\s*([0-9a-fA-F]{32})\\s*$");
     private final Pattern md5Pattern2 = Pattern.compile("^\\s*([0-9a-fA-F]{32})\\s+(.+)\\s*$");
     private final Pattern md5Pattern3 = Pattern.compile("^\\s*(.+\\S)\\s+([0-9a-fA-F]{32})\\s*$");
@@ -615,4 +620,5 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             }
         }
     }
+    */
 }

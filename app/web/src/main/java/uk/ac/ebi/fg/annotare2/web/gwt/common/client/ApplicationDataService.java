@@ -31,10 +31,10 @@ import java.util.List;
 /**
  * @author Olga Melnichuk
  */
-@RemoteServiceRelativePath(DataService.NAME)
-public interface DataService extends RemoteService {
+@RemoteServiceRelativePath(ApplicationDataService.NAME)
+public interface ApplicationDataService extends RemoteService {
 
-    public static final String NAME = "dataService";
+    public static final String NAME = "appDataService";
 
     SystemEfoTermMap getSystemEfoTerms();
 

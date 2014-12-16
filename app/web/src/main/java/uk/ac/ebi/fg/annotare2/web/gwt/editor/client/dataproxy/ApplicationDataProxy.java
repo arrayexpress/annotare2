@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 
@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class ApplicationDataProxy {
 
-    private final DataServiceAsync dataService;
+    private final ApplicationDataServiceAsync dataService;
 
     private ApplicationProperties properties;
     private Map<ExperimentProfileType,List<String>> aeExperimentTypes;
@@ -41,7 +41,7 @@ public class ApplicationDataProxy {
     private List<String> sequencingHardware;
 
     @Inject
-    public ApplicationDataProxy(DataServiceAsync dataService) {
+    public ApplicationDataProxy(ApplicationDataServiceAsync dataService) {
         this.dataService = dataService;
         this.aeExperimentTypes = new HashMap<ExperimentProfileType, List<String>>();
     }

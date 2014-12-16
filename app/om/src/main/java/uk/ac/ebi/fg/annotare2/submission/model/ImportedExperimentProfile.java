@@ -28,13 +28,24 @@ public class ImportedExperimentProfile implements Serializable {
 
     private static final long serialVersionUID = -6077425344898508542L;
 
+    private ExperimentProfileType type;
+
     private String description;
 
     private Set<String> aeExperimentTypes;
 
     @SuppressWarnings("unused")
     ImportedExperimentProfile() {
+        this(null);
+    }
+
+    public ImportedExperimentProfile(ExperimentProfileType type) {
+        this.type = type;
         aeExperimentTypes = newHashSet();
+    }
+
+    public ExperimentProfileType getType() {
+        return type;
     }
 
     public String getDescription() {

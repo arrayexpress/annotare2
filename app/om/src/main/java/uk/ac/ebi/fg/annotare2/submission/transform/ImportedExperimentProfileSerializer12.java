@@ -31,6 +31,7 @@ import static uk.ac.ebi.fg.annotare2.submission.transform.util.JsonUtilities.gen
 public class ImportedExperimentProfileSerializer12 extends JsonSerializer<ImportedExperimentProfile> {
 
     static final List<String> IMPORTED_EXPERIMENT_PROFILE_JSON_FIELDS = asList(
+            "type",
             "description",
             "aeExperimentTypes"
     );

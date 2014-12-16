@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.server.ProtocolTypes;
@@ -50,9 +50,9 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.
 /**
  * @author Olga Melnichuk
  */
-public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implements DataService {
+public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServlet implements ApplicationDataService {
 
-    private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ApplicationDataServiceImpl.class);
 
     private final ArrayExpressArrayDesignList arrayDesignList;
     private final ArrayExpressExperimentTypeList experimentTypeList;
@@ -62,12 +62,12 @@ public class DataServiceImpl extends ErrorReportingRemoteServiceServlet implemen
     private final ProtocolTypes protocolTypes;
 
     @Inject
-    public DataServiceImpl(ArrayExpressArrayDesignList arrayDesignList,
-                           ArrayExpressExperimentTypeList experimentTypeList,
-                           ProtocolTypes protocolTypes,
-                           AnnotareEfoService efoService,
-                           AnnotareProperties properties,
-                           EmailSender emailSender) {
+    public ApplicationDataServiceImpl(ArrayExpressArrayDesignList arrayDesignList,
+                                      ArrayExpressExperimentTypeList experimentTypeList,
+                                      ProtocolTypes protocolTypes,
+                                      AnnotareEfoService efoService,
+                                      AnnotareProperties properties,
+                                      EmailSender emailSender) {
         super(emailSender);
         this.arrayDesignList = arrayDesignList;
         this.experimentTypeList = experimentTypeList;

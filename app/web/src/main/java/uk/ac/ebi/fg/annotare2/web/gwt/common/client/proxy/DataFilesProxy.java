@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.user.client.dataproxy;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataFilesServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.Updater;
@@ -34,7 +33,7 @@ import java.util.Map;
 
 public class DataFilesProxy {
 
-    private final SubmissionServiceAsync submissionServiceAsync;
+    private final DataFilesServiceAsync filesService;
     private final EventBus eventBus;
 
     private List<DataFileRow> fileRows;
@@ -42,8 +41,8 @@ public class DataFilesProxy {
     private final DataFilesUpdater updater;
 
     @Inject
-    public DataFilesProxy(EventBus eventBus, SubmissionServiceAsync submissionServiceAsync) {
-        this.submissionServiceAsync = submissionServiceAsync;
+    public DataFilesProxy(EventBus eventBus, DataFilesServiceAsync filesService) {
+        this.filesService = filesService;
         this.eventBus = eventBus;
         this.updater = new DataFilesUpdater();
     }
@@ -63,7 +62,7 @@ public class DataFilesProxy {
     }
 
     public void registerHttpFilesAsync(long submissionId, List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {
-        submissionServiceAsync.registerHttpFiles(submissionId, filesInfo, new AsyncCallbackWrapper<Map<Integer, String>>() {
+        filesService.registerHttpFiles(submissionId, filesInfo, new AsyncCallbackWrapper<Map<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
@@ -78,7 +77,7 @@ public class DataFilesProxy {
     }
 
     public void registerFtpFilesAsync(long submissionId, List<String> details, final AsyncCallback<String> callback) {
-        submissionServiceAsync.registerFtpFiles(submissionId, details, new AsyncCallbackWrapper<String>() {
+        filesService.registerFtpFiles(submissionId, details, new AsyncCallbackWrapper<String>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
@@ -93,36 +92,36 @@ public class DataFilesProxy {
     }
 
     public void renameFile(long submissionId, final DataFileRow dataFile, final String newFileName) {
-        submissionServiceAsync.renameDataFile(submissionId, dataFile.getId(), newFileName, new AsyncCallbackWrapper<ExperimentProfile>() {
+        filesService.renameFile(submissionId, dataFile.getId(), newFileName, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 NotificationPopupPanel.error("Unable to rename file '" + dataFile.getName() + "'", true);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile experiment) {
+            public void onSuccess(Void aVoid) {
                 updater.update();
             }
         }.wrap());
     }
 
     public void removeFiles(long submissionId, final List<Long> dataFiles, final AsyncCallback<Void> callback) {
-        submissionServiceAsync.deleteDataFiles(submissionId, dataFiles, new AsyncCallbackWrapper<ExperimentProfile>() {
+        filesService.deleteFiles(submissionId, dataFiles, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(ExperimentProfile experiment) {
+            public void onSuccess(Void aVoid) {
                 updater.update();
-                callback.onSuccess(null);
+                callback.onSuccess(aVoid);
             }
         }.wrap());
     }
 
     private void load(long submissionId, final AsyncCallback<List<DataFileRow>> callback) {
-        submissionServiceAsync.loadDataFiles(submissionId, new AsyncCallbackWrapper<List<DataFileRow>>() {
+        filesService.getFiles(submissionId, new AsyncCallbackWrapper<List<DataFileRow>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);

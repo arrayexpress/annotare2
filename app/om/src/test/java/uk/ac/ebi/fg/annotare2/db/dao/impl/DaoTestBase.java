@@ -97,6 +97,7 @@ public class DaoTestBase {
         initialContext = new InitialContext();
 
         HikariDataSource ds = new HikariDataSource();
+        ds.setPoolName("AnnotareDB-Test-Pool");
         ds.setJdbcUrl(getTestDbUrl());
         ds.setUsername(getTestDbUser());
         ds.setPassword(getTestDbPassword());

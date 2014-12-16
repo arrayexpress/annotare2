@@ -46,22 +46,22 @@ import static uk.ac.ebi.fg.annotare2.autosubs.jooq.Tables.*;
 
 public class SubsTracking {
     private final SubsTrackingProperties properties;
-    private HikariDataSource dataSource;
+    private HikariDataSource ds;
 
     private final static String STATUS_PENDING = "Waiting";
 
     @Inject
     public SubsTracking( SubsTrackingProperties properties ) {
         this.properties = properties;
-        dataSource = null;
+        ds = null;
     }
 
     public Connection getConnection() throws SubsTrackingException {
-        if (null == dataSource) {
+        if (null == ds) {
             throw new SubsTrackingException("Unable to obtain a connection; pool has not been initialized");
         }
         try {
-            return dataSource.getConnection();
+            return ds.getConnection();
         } catch (SQLException e) {
             throw new SubsTrackingException(e);
         }
@@ -340,7 +340,7 @@ public class SubsTracking {
     }
 
     public void initialize() throws SubsTrackingException {
-        if (null != dataSource) {
+        if (null != ds) {
             throw new SubsTrackingException(SubsTrackingException.ILLEGAL_REPEAT_INITIALIZATION);
         }
 
@@ -350,24 +350,25 @@ public class SubsTracking {
             } catch (ClassNotFoundException x) {
                 String message = "Unable to load driver [" +
                         properties.getSubsTrackingConnectionDriverClass() +
-                        "] for subs tracking DB";
+                        "] for SubsTrackingDB";
                 throw new SubsTrackingException(message);
             }
 
-            dataSource = new HikariDataSource();
-            dataSource.setDriverClassName(properties.getSubsTrackingConnectionDriverClass());
-            dataSource.setJdbcUrl(properties.getSubsTrackingConnectionURL());
-            dataSource.setUsername(properties.getSubsTrackingConnectionUser());
-            dataSource.setPassword(properties.getSubsTrackingConnectionPassword());
-            dataSource.setConnectionTestQuery("SELECT 1");
-            dataSource.addDataSourceProperty("dataSource.cachePrepStmts", "true");
-            dataSource.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
-            dataSource.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
-            dataSource.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
+            ds = new HikariDataSource();
+            ds.setPoolName("SubsTrackingDB-Pool");
+            ds.setDriverClassName(properties.getSubsTrackingConnectionDriverClass());
+            ds.setJdbcUrl(properties.getSubsTrackingConnectionURL());
+            ds.setUsername(properties.getSubsTrackingConnectionUser());
+            ds.setPassword(properties.getSubsTrackingConnectionPassword());
+            ds.setConnectionTestQuery("SELECT 1");
+            ds.addDataSourceProperty("ds.cachePrepStmts", "true");
+            ds.addDataSourceProperty("ds.prepStmtCacheSize", "250");
+            ds.addDataSourceProperty("ds.prepStmtCacheSqlLimit", "2048");
+            ds.addDataSourceProperty("ds.useServerPrepStmts", "true");
 
             Connection test = null;
             try {
-                test = dataSource.getConnection();
+                test = ds.getConnection();
             } catch (SQLException x) {
                 throw new SubsTrackingException("Unable o establish a connection to subs tracking DB", x);
             } finally {
@@ -383,8 +384,8 @@ public class SubsTracking {
     }
 
     public void terminate() throws SubsTrackingException {
-        dataSource.shutdown();
-        dataSource = null;
+        ds.shutdown();
+        ds = null;
     }
 
     private String asciiCompliantString(String s) {

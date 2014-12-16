@@ -38,7 +38,7 @@ public class AEConnection {
 
     private final AEConnectionProperties connectionProperties;
 
-    private HikariDataSource dataSource;
+    private HikariDataSource ds;
 
     public enum SubmissionState {
         NOT_LOADED,
@@ -49,7 +49,7 @@ public class AEConnection {
     @Inject
     public AEConnection(AEConnectionProperties properties) throws AEConnectionException {
         this.connectionProperties = properties;
-        this.dataSource = null;
+        this.ds = null;
     }
 
     public SubmissionState getSubmissionState(String accession) throws AEConnectionException {
@@ -94,11 +94,11 @@ public class AEConnection {
     }
 
     private Connection getConnection() throws AEConnectionException {
-        if (null == dataSource) {
+        if (null == ds) {
             throw new AEConnectionException("Unable to obtain a connection; pool has not been initialized");
         }
         try {
-            return dataSource.getConnection();
+            return ds.getConnection();
         } catch (SQLException e) {
             throw new AEConnectionException(e);
         }
@@ -125,7 +125,7 @@ public class AEConnection {
     }
 
     public void initialize() throws AEConnectionException {
-        if (null != dataSource) {
+        if (null != ds) {
             throw new AEConnectionException("Illegal repeat initialization of AEConnection");
         }
 
@@ -135,22 +135,23 @@ public class AEConnection {
             } catch (ClassNotFoundException x) {
                 String message = "Unable to load driver [" +
                         connectionProperties.getAeConnectionDriverClass() +
-                        "] for AEConnection";
+                        "] for AEConnectionDB";
                 throw new AEConnectionException(message);
             }
 
-            dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl(connectionProperties.getAeConnectionURL());
-            dataSource.setUsername(connectionProperties.getAeConnectionUser());
-            dataSource.setPassword(connectionProperties.getAeConnectionPassword());
-            dataSource.setConnectionTestQuery("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
+            ds = new HikariDataSource();
+            ds.setPoolName("AEConnectionDB-Pool");
+            ds.setJdbcUrl(connectionProperties.getAeConnectionURL());
+            ds.setUsername(connectionProperties.getAeConnectionUser());
+            ds.setPassword(connectionProperties.getAeConnectionPassword());
+            ds.setConnectionTestQuery("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
         }
     }
 
     public void terminate() throws AEConnectionException {
-        if (null != dataSource) {
-            dataSource.shutdown();
-            dataSource = null;
+        if (null != ds) {
+            ds.shutdown();
+            ds = null;
         }
     }
 }

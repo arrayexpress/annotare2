@@ -27,7 +27,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.List;
 
-public interface DataServiceAsync {
+public interface ApplicationDataServiceAsync {
+
     void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> async);
 
     void getArrayDesignList(String query, int limit, AsyncCallback<List<ArrayDesignRef>> async);
