@@ -115,7 +115,7 @@ public class SubsTracking {
                             .set(EXPERIMENTS.USER_ID, userId)
                             .set(EXPERIMENTS.DATE_SUBMITTED, new Timestamp(new Date().getTime()))
                             .set(EXPERIMENTS.ACCESSION, submission.getAccession())
-                            .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()))
+                            .set(EXPERIMENTS.NAME, asciiCompliantString(""))
                             .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(""))
                             .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
                             .set(EXPERIMENTS.IS_UHTS, 0)
