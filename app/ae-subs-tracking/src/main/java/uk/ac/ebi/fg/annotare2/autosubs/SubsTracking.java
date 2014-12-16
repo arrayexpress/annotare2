@@ -389,8 +389,10 @@ public class SubsTracking {
 
     private String asciiCompliantString(String s) {
         try {
-            byte[] b = s.getBytes("US-ASCII");
-            return new String(b, "US-ASCII");
+            if (null != s) {
+                byte[] b = s.getBytes("US-ASCII");
+                return new String(b, "US-ASCII");
+            }
         } catch (UnsupportedEncodingException x) {
             //
         }
