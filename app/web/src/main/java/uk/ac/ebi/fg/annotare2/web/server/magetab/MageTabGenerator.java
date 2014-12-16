@@ -155,7 +155,7 @@ public class MageTabGenerator {
         idf.experimentDescription = convertToIdfFriendly(exp.getDescription(), newLine);
         idf.publicReleaseDate = convertToIdfFriendly(formatDate(exp.getPublicReleaseDate()), newLine);
         idf.dateOfExperiment = convertToIdfFriendly(formatDate(exp.getExperimentDate()), newLine);
-        idf.accession = convertToIdfFriendly(exp.getAccession(), newLine);
+        //TODO: idf.accession = convertToIdfFriendly(exp.getAccession(), newLine);
 
         for (OntologyTerm term : exp.getExperimentalDesigns()) {
             idf.experimentalDesign.add(convertToIdfFriendly(term.getLabel(), newLine));

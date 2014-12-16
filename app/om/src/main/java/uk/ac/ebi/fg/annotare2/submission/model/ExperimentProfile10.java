@@ -34,8 +34,6 @@ public class ExperimentProfile10 {
 
     private ExperimentProfileType type;
 
-    private String accession;
-
     private String title;
 
     private String description;
@@ -111,17 +109,5 @@ public class ExperimentProfile10 {
         protocol2Samples = new MultiSets<Protocol, Sample>();
         protocol2Extracts = new MultiSets<Protocol, Extract>();
         protocol2LabeledExtracts = new MultiSets<Protocol, LabeledExtract>();
-    }
-
-
-    public ExperimentProfile toExperimentProfile() {
-        ExperimentProfile profile = new ExperimentProfile(type);
-        profile.nextId = nextId;
-        profile.setTitle(title);
-        profile.setDescription(description);
-        profile.setExperimentDate(experimentDate);
-        //profile.set
-
-        return profile;
     }
 }

@@ -43,8 +43,6 @@ public class ExperimentProfile implements Serializable {
 
     private ExperimentProfileType type;
 
-    private String accession;
-
     private String title;
 
     private String description;
@@ -128,14 +126,6 @@ public class ExperimentProfile implements Serializable {
 
     public ExperimentProfileType getType() {
         return type;
-    }
-
-    public String getAccession() {
-        return accession;
-    }
-
-    public void setAccession(String accession) {
-        this.accession = accession;
     }
 
     public String getTitle() {
