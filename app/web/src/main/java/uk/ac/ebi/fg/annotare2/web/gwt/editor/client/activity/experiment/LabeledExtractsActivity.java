@@ -23,8 +23,8 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtracts;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractsRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.LabeledExtractsView;
 
 /**

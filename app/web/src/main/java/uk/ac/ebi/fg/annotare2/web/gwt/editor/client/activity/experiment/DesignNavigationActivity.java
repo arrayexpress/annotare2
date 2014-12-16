@@ -29,10 +29,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
 

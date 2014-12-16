@@ -29,6 +29,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
@@ -36,11 +37,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentCol
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataFilesProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import javax.annotation.Nullable;
@@ -50,25 +50,26 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.Collections2.transform;
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 public class DataUploadAndAssignmentActivity extends AbstractActivity implements DataUploadAndAssignmentView.Presenter {
 
     private final DataUploadAndAssignmentView view;
-    private final ApplicationDataProxy appData;
-    private final ExperimentDataProxy expData;
-    private final ExperimentDataFilesProxy dataFilesProxy;
+    private final ApplicationDataProxy appDataService;
+    private final ExperimentDataProxy expDataService;
+    private final DataFilesProxy filesService;
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
 
     @Inject
     public DataUploadAndAssignmentActivity(DataUploadAndAssignmentView view,
-                                           ApplicationDataProxy appData,
-                                           ExperimentDataProxy expData,
-                                           ExperimentDataFilesProxy dataFilesProxy) {
+                                           ApplicationDataProxy appDataService,
+                                           ExperimentDataProxy expDataService,
+                                           DataFilesProxy filesService) {
         this.view = view;
-        this.appData = appData;
-        this.expData = expData;
-        this.dataFilesProxy = dataFilesProxy;
+        this.appDataService = appDataService;
+        this.expDataService = expDataService;
+        this.filesService = filesService;
     }
 
     public Activity withPlace(Place place) {
@@ -110,7 +111,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     private void loadAppDataAsync() {
-        appData.getApplicationPropertiesAsync(
+        appDataService.getApplicationPropertiesAsync(
                 new ReportingAsyncCallback<ApplicationProperties>(FailureMessage.UNABLE_TO_LOAD_APP_PROPERTIES) {
                     @Override
                     public void onSuccess(ApplicationProperties result) {
@@ -124,7 +125,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     private void loadExpDataAsync() {
-        expData.getExperimentProfileTypeAsync(
+        expDataService.getExperimentProfileTypeAsync(
                 new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override
                     public void onSuccess(ExperimentProfileType result) {
@@ -137,7 +138,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     private void reloadExpDataAsync() {
-        expData.getDataAssignmentColumnsAndRowsAsync(
+        expDataService.getDataAssignmentColumnsAndRowsAsync(
                 new ReportingAsyncCallback<DataAssignmentColumnsAndRows>(FailureMessage.UNABLE_TO_LOAD_DATA_ASSIGNMENT) {
                     @Override
                     public void onSuccess(DataAssignmentColumnsAndRows result) {
@@ -149,7 +150,8 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
 
     private void loadFilesAsync() {
-        dataFilesProxy.getFilesAsync(
+        filesService.getFiles(
+                getSubmissionId(),
                 new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
                     @Override
                     public void onSuccess(List<DataFileRow> result) {
@@ -162,37 +164,37 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
     @Override
     public void createColumn(FileType type) {
-        expData.createDataAssignmentColumn(type);
+        expDataService.createDataAssignmentColumn(type);
     }
 
     @Override
     public void removeColumns(List<Integer> indices) {
-        expData.removeDataAssignmentColumns(indices);
+        expDataService.removeDataAssignmentColumns(indices);
     }
 
     @Override
     public void updateColumn(DataAssignmentColumn column) {
-        expData.updateDataAssignmentColumn(column);
+        expDataService.updateDataAssignmentColumn(column);
     }
 
     @Override
     public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
-        dataFilesProxy.registerHttpFilesAsync(filesInfo, callback);
+        filesService.registerHttpFiles(getSubmissionId(), filesInfo, callback);
     }
 
     @Override
     public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
-        dataFilesProxy.registerFtpFilesAsync(filesInfo, callback);
+        filesService.registerFtpFiles(getSubmissionId(), filesInfo, callback);
     }
 
     @Override
     public void renameFile(DataFileRow dataFile, String newFileName) {
-        dataFilesProxy.renameFile(dataFile, newFileName);
+        filesService.renameFile(getSubmissionId(), dataFile, newFileName);
     }
 
     @Override
     public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
-        dataFilesProxy.removeFiles(new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
+        filesService.deleteFiles(getSubmissionId(), new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
             public Long apply(@Nullable DataFileRow input) {
                 return null != input ? input.getId() : null;
             }

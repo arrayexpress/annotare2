@@ -25,9 +25,9 @@ import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ArrayDesignDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.AdHeaderPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ArrayDesignDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
 import java.util.List;

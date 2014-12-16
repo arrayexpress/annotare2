@@ -149,7 +149,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
             public void onDataFilesUpdate() {
-                dataFilesService.getFilesAsync(
+                dataFilesService.getFiles(
                         new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
                             @Override
                             public void onSuccess(List<DataFileRow> result) {
@@ -179,12 +179,12 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     @Override
     public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
-        dataFilesService.registerHttpFilesAsync(filesInfo, callback);
+        dataFilesService.registerHttpFiles(filesInfo, callback);
     }
 
     @Override
     public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
-        dataFilesService.registerFtpFilesAsync(filesInfo, callback);
+        dataFilesService.registerFtpFiles(filesInfo, callback);
     }
 
     @Override
@@ -193,8 +193,8 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     }
 
     @Override
-    public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
-        dataFilesService.removeFiles(new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
+    public void deleteFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
+        dataFilesService.deleteFiles(new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
             public Long apply(@Nullable DataFileRow input) {
                 return null != input ? input.getId() : null;
             }

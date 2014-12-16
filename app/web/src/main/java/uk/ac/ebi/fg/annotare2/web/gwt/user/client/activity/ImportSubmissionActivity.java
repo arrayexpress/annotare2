@@ -103,7 +103,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     private void loadFilesAsync() {
-        dataFilesService.getFilesAsync(
+        dataFilesService.getFiles(
                 submissionId,
                 new ReportingAsyncCallback<List<DataFileRow>>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
                     @Override
@@ -146,12 +146,12 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
 
     @Override
     public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
-        dataFilesService.registerHttpFilesAsync(submissionId, filesInfo, callback);
+        dataFilesService.registerHttpFiles(submissionId, filesInfo, callback);
     }
 
     @Override
     public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
-        dataFilesService.registerFtpFilesAsync(submissionId, filesInfo, callback);
+        dataFilesService.registerFtpFiles(submissionId, filesInfo, callback);
     }
 
     @Override
@@ -161,7 +161,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
 
     @Override
     public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
-        dataFilesService.removeFiles(submissionId, new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
+        dataFilesService.deleteFiles(submissionId, new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
             public Long apply(@Nullable DataFileRow input) {
                 return null != input ? input.getId() : null;
             }

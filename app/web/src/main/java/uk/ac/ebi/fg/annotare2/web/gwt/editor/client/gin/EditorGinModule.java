@@ -24,9 +24,13 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy.DataFilesProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ArrayDesignDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsViewImpl;
@@ -75,7 +79,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ExperimentDataProxy.class).in(Singleton.class);
         bind(ArrayDesignDataProxy.class).in(Singleton.class);
         bind(OntologyDataProxy.class).in(Singleton.class);
-        bind(ExperimentDataFilesProxy.class).in(Singleton.class);
+        bind(DataFilesProxy.class).in(Singleton.class);
         bind(ApplicationDataProxy.class).in(Singleton.class);
     }
 

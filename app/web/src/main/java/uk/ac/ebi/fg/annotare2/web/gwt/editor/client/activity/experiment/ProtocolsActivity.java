@@ -29,12 +29,12 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmen
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
 
 import java.util.ArrayList;

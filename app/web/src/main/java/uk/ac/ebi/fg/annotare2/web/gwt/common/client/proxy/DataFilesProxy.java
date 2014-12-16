@@ -47,7 +47,7 @@ public class DataFilesProxy {
         this.updater = new DataFilesUpdater();
     }
 
-    public void getFilesAsync(long submissionId, AsyncCallback<List<DataFileRow>> callback) {
+    public void getFiles(long submissionId, AsyncCallback<List<DataFileRow>> callback) {
         if (null == updater.getSubmissionId() || !updater.getSubmissionId().equals(submissionId)) {
             updater.setSubmissionId(submissionId);
             fileRows = null;
@@ -61,7 +61,7 @@ public class DataFilesProxy {
 
     }
 
-    public void registerHttpFilesAsync(long submissionId, List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {
+    public void registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {
         filesService.registerHttpFiles(submissionId, filesInfo, new AsyncCallbackWrapper<Map<Integer, String>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -76,7 +76,7 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void registerFtpFilesAsync(long submissionId, List<String> details, final AsyncCallback<String> callback) {
+    public void registerFtpFiles(long submissionId, List<String> details, final AsyncCallback<String> callback) {
         filesService.registerFtpFiles(submissionId, details, new AsyncCallbackWrapper<String>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -105,7 +105,7 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void removeFiles(long submissionId, final List<Long> dataFiles, final AsyncCallback<Void> callback) {
+    public void deleteFiles(long submissionId, final List<Long> dataFiles, final AsyncCallback<Void> callback) {
         filesService.deleteFiles(submissionId, dataFiles, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {

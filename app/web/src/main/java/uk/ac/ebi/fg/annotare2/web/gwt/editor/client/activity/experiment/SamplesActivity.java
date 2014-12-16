@@ -30,12 +30,12 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ApplicationDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.ExperimentDataProxy;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.dataproxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SampleAttributeEfoSuggest;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
