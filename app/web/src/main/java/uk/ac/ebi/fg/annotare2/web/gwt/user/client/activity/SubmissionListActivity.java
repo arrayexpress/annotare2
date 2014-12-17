@@ -42,7 +42,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListView;
 
 import java.util.ArrayList;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls.getEditorUrl;
 
 /**
  * @author Olga Melnichuk

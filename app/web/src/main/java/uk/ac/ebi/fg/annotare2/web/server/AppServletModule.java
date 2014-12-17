@@ -132,12 +132,14 @@ public class AppServletModule extends ServletModule {
         serveAndBindRpcService(ApplicationDataService.NAME, ApplicationDataServiceImpl.class, "UserApp", "EditorApp");
         serveAndBindRpcService(CurrentUserAccountService.NAME, CurrentUserAccountServiceImpl.class, "UserApp", "EditorApp");
         serveAndBindRpcService(DataFilesService.NAME, DataFilesServiceImpl.class, "UserApp", "EditorApp");
+        serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "UserApp", "EditorApp");
+        // remote logging
+        serveAndBindRpcService("remote_logging", RemoteLoggingServiceImpl.class, "UserApp", "EditorApp");
         // user app services
         serveAndBindRpcService(SubmissionListService.NAME, SubmissionListServiceImpl.class, "UserApp");
         serveAndBindRpcService(SubmissionCreateService.NAME, SubmissionCreateServiceImpl.class, "UserApp");
         serveAndBindRpcService(SubmissionImportService.NAME, SubmissionImportServiceImpl.class, "UserApp");
         // editor app services
-        serveAndBindRpcService(SubmissionService.NAME, SubmissionServiceImpl.class, "EditorApp");
         serveAndBindRpcService(AdfService.NAME, AdfServiceImpl.class, "EditorApp");
 
         bind(HibernateSessionFactoryProvider.class).asEagerSingleton();

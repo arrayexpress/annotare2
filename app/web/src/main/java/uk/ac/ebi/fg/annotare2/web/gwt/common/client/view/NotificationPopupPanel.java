@@ -15,15 +15,20 @@
  *
  */
 
-package com.google.gwt.user.client.ui;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NotificationPopupPanel extends PopupPanel {
+
+    private final static Logger logger = Logger.getLogger("NotificationPopupPanel");
 
     public static enum Type {
         INFO("info", "<i class=\"fa fa-info-circle\"></i>"),
@@ -99,7 +104,8 @@ public class NotificationPopupPanel extends PopupPanel {
         if (null != instance) {
             cancel();
         }
-        GWT.log(message, exception);
+        logger.log(Level.SEVERE, message, exception);
+
         instance = new NotificationPopupPanel(Type.FAILURE, true);
         instance.showMessage(message);
     }

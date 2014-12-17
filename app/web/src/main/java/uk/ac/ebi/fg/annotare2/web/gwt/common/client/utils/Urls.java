@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client.util;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 
-/**
- * @author Olga Melnichuk
- */
 public class Urls {
 
-    public static String logoutUrl() {
-        String url = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "logout");
-        if (!GWT.isProdMode()) {
-            url += "?gwt.codesvr=" + Window.Location.getParameter("gwt.codesvr");
-        }
-        return url;
+    public static String getContextUrl() {
+        return GWT.getModuleBaseURL().replaceFirst(GWT.getModuleName() + ".+", "");
+    }
+
+    public static String getLogoutUrl() {
+        return getContextUrl() + "logout";
+    }
+
+    public static String getLauncherUrl() {
+        return getContextUrl() + "launcher.jsp";
+    }
+    public static String getEditorUrl(long submissionId) {
+        return getContextUrl() + "edit/" + submissionId + "/";
     }
 }

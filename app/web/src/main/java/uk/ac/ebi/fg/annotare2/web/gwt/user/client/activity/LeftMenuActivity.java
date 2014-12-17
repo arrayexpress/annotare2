@@ -22,13 +22,13 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionCreateServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionImportServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.event.SubmissionListUpdatedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
@@ -37,8 +37,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.LeftMenuView;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.NewWindow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionListFilter;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getPlaceholderUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls.getEditorUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls.getLauncherUrl;
 
 public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.Presenter {
 
@@ -82,7 +82,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     @Override
     public void onSubmissionCreate(SubmissionType type) {
-        final NewWindow window = NewWindow.open(getPlaceholderUrl(), "_blank", null);
+        final NewWindow window = NewWindow.open(getLauncherUrl(), "_blank", null);
         final AsyncCallback<Long> callback = AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
                     @Override
@@ -142,65 +142,6 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
         goTo(place);
     }
 
-    /*
-    @Override
-    public void onImportStarted(long submissionId) {
-        dataFilesService.setSubmissionId(submissionId);
-        dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
-            @Override
-            public void onDataFilesUpdate() {
-                dataFilesService.getFiles(
-                        new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
-                            @Override
-                            public void onSuccess(List<DataFileRow> result) {
-                                view.setDataFiles(result);
-
-                            }
-                        }
-                );
-            }
-        });
-    }
-
-    @Override
-    public void onImportCancelled(long submissionId) {
-        dataFilesService.setSubmissionId(null);
-        submissionService.deleteSubmission(submissionId,
-                AsyncCallbackWrapper.callbackWrap(
-                        new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_DELETE_SUBMISSION) {
-                            @Override
-                            public void onSuccess(Void result) {
-                                notifySubmissionListUpdated();
-                            }
-                        }
-                )
-        );
-    }
-
-    @Override
-    public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
-        dataFilesService.registerHttpFiles(filesInfo, callback);
-    }
-
-    @Override
-    public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
-        dataFilesService.registerFtpFiles(filesInfo, callback);
-    }
-
-    @Override
-    public void renameFile(DataFileRow dataFile, String newFileName) {
-        dataFilesService.renameFile(dataFile, newFileName);
-    }
-
-    @Override
-    public void deleteFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
-        dataFilesService.deleteFiles(new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
-            public Long apply(@Nullable DataFileRow input) {
-                return null != input ? input.getId() : null;
-            }
-        })), callback);
-    }
-    */
     public void goTo(Place place) {
         placeController.goTo(place);
     }

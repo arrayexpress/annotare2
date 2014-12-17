@@ -17,8 +17,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.admin.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 
 /**
  * @author Olga Melnichuk

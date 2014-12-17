@@ -34,7 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.ClickableImageReso
 
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.formatDate;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Strings.formatDate;
 
 /**
  * @author Olga Melnichuk

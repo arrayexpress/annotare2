@@ -19,8 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
-import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 
 /**
  * @author Olga Melnichuk

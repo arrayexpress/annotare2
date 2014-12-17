@@ -22,13 +22,26 @@
 
     <inherits name="com.google.gwt.user.User"/>
 
+    <inherits name="com.google.gwt.logging.Logging"/>
+    <set-property name="gwt.logging.consoleHandler" value="DISABLED" />
+    <set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
+    <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
+    <set-property name="gwt.logging.systemHandler" value="DISABLED" />
+    <set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED"/>
+
+    <set-property name="compiler.stackMode" value="emulated" />
+    <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
+    <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+
     <!-- GWTUpload library -->
     <inherits name="gwtupload.GWTUpload"/>
     <stylesheet src="GWTUpload.css"/>
 
     <stylesheet src="CommonApp.css"/>
+    <stylesheet src="CommonApp-bundled.css"/>
 
     <source path="client"/>
     <source path="shared"/>
+
 
 </module>

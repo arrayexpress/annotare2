@@ -22,7 +22,6 @@ import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubsTrackingWatchdog;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
@@ -58,8 +57,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        SLF4JBridgeHandler.install();
-
         findMageTabCheckAnnotationPackages();
 
         lookupPropertiesInContext();
@@ -74,8 +71,6 @@ public class AppServletContextListener extends GuiceServletContextListener {
         stopServices();
 
         unregisterJdbc();
-
-        SLF4JBridgeHandler.uninstall();
 
         super.contextDestroyed(servletContextEvent);
     }

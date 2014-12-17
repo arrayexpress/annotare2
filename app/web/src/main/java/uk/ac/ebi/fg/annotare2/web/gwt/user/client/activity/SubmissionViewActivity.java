@@ -33,7 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.NewWindow;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.SubmissionView;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getEditorUrl;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls.getEditorUrl;
 
 /**
  * @author Olga Melnichuk

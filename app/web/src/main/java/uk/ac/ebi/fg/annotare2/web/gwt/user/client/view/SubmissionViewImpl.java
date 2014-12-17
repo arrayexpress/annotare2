@@ -31,7 +31,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 
 import static com.google.gwt.user.client.Window.confirm;
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.formatDate;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Strings.formatDate;
 
 /**
  * @author Olga Melnichuk

@@ -31,7 +31,6 @@ import java.util.HashMap;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.IMPORTED_EXPERIMENT;
-import static uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.Utils.getPlaceholderUrl;
 
 /**
  * @author Olga Melnichuk
@@ -78,7 +77,6 @@ public class LeftMenuViewImpl extends Composite implements LeftMenuView {
 
     @UiHandler("createButton")
     public void onCreateButtonClick(ClickEvent event) {
-        final NewWindow window = NewWindow.open(getPlaceholderUrl(), "_blank", null);
         presenter.onSubmissionCreate(EXPERIMENT);
     }
 
