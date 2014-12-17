@@ -22,6 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -80,5 +81,20 @@ public class UserApp implements EntryPoint {
         root.add(appWidget);
 
         historyHandler.handleCurrentHistory();
+
+        showHolidayNotice();
+    }
+
+    private final static String HOLIDAY_NOTICE_COOKIE = "HolidayNoticeShown";
+
+    private void showHolidayNotice() {
+        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(HOLIDAY_NOTICE_COOKIE))) {
+            NotificationPopupPanel.message(
+                    "<span style=\"font-size:large\">Due to reduced staffing levels over the holiday period (22 Dec 2014 - 5 Jan 2015), " +
+                            "please allow extra time for your submission to be processed." +
+                            "<br><br><b>Happy Holidays!</b></span>",
+                    false);
+            Cookies.setCookie(HOLIDAY_NOTICE_COOKIE, "YEZ");
+        }
     }
 }
