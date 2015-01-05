@@ -42,6 +42,6 @@
 
     <source path="client"/>
     <source path="shared"/>
-
+    <source path="public"/>
 
 </module>
