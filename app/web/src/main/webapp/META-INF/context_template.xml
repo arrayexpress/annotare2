@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="${contextPath}" allowLinking="false" cookies="true" swallowOutput="true" unpackWAR="true">
-
+<Context path="${contextPath}" allowLinking="false" cookies="true" swallowOutput="false" unpackWAR="true">
+    <Manager className="org.apache.catalina.session.PersistentManager"
+             maxIdleBackup="10">
+        <Store className="org.apache.catalina.session.JDBCStore"
+               connectionURL="jdbc:mysql://mysql-annotare-dev.ebi.ac.uk:4420/tomcat"
+               connectionName="annotare"
+               connectionPassword="rYampvbhwFmR24d"
+               driverName="com.mysql.jdbc.Driver"
+               sessionAppCol="app_name"
+               sessionDataCol="session_data"
+               sessionIdCol="session_id"
+               sessionLastAccessedCol="last_access"
+               sessionMaxInactiveCol="max_inactive"
+               sessionTable="tomcat_sessions"
+               sessionValidCol="valid_session" />
+    </Manager>
     <% if (annotareProperties != null) { %>
     <Environment name="annotareProperties" value="${annotareProperties}"
                  type="java.lang.String" override="false"/>
     <% } %>
-
     <% if (mageTabCheckProperties != null) { %>
     <Environment name="mageTabCheckProperties" value="${mageTabCheckProperties}"
                  type="java.lang.String" override="false"/>
     <% } %>
-
 </Context>

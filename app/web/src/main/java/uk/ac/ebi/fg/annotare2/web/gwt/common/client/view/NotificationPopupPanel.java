@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 public class NotificationPopupPanel extends PopupPanel {
 
-    private final static Logger logger = Logger.getLogger("NotificationPopupPanel");
+    private final static Logger logger = Logger.getLogger("gwt.client.NotificationPopupPanel");
 
     public static enum Type {
         INFO("info", "<i class=\"fa fa-info-circle\"></i>"),

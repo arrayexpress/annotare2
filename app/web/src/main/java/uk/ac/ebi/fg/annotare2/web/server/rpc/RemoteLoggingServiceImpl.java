@@ -26,15 +26,17 @@ import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import static com.google.common.collect.Maps.newHashMap;
 
 public class RemoteLoggingServiceImpl extends RemoteServiceServlet implements RemoteLoggingService {
 
-    private static Logger logger = LoggerFactory.getLogger(RemoteServiceServlet.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(RemoteServiceServlet.class);
 
     private final Map<String, StackTraceDeobfuscator> deobfuscators = newHashMap();
+
     public final String logOnServer(LogRecord lr) {
 
         String modulePath = getRequestModuleBasePath();
@@ -50,7 +52,7 @@ public class RemoteLoggingServiceImpl extends RemoteServiceServlet implements Re
                 );
             }
 
-            RemoteLoggingServiceUtil.logOnServer(
+            logOnServer(
                     lr, strongName, deobfuscators.get(modulePath), null);
         } catch (RemoteLoggingException e) {
             logger.error("Remote logging failed", e);
@@ -60,5 +62,34 @@ public class RemoteLoggingServiceImpl extends RemoteServiceServlet implements Re
             return "Remote logging failed, check stack trace for details.";
         }
         return null;
+    }
+
+    private void logOnServer(LogRecord lr, String strongName, StackTraceDeobfuscator deobfuscator, String loggerNameOverride) throws RemoteLoggingServiceUtil.RemoteLoggingException {
+        if (deobfuscator != null) {
+            lr = deobfuscateLogRecord(deobfuscator, lr, strongName);
+        }
+
+        String loggerName = (null == loggerNameOverride) ? lr.getLoggerName() : loggerNameOverride;
+        Logger logger = LoggerFactory.getLogger(loggerName);
+        int julLevelValue = lr.getLevel().intValue();
+        if (julLevelValue <= Level.FINEST.intValue()) {
+            logger.trace(lr.getMessage(), lr.getThrown());
+        } else if (julLevelValue <= Level.FINE.intValue()) {
+            logger.debug(lr.getMessage(), lr.getThrown());
+        } else if (julLevelValue <= Level.INFO.intValue()) {
+            logger.info(lr.getMessage(), lr.getThrown());
+        } else if (julLevelValue <= Level.WARNING.intValue()) {
+            logger.warn(lr.getMessage(), lr.getThrown());
+        } else {
+            logger.error(lr.getMessage(), lr.getThrown());
+        }
+    }
+
+    private LogRecord deobfuscateLogRecord(StackTraceDeobfuscator deobfuscator, LogRecord lr, String strongName) {
+        if (lr.getThrown() != null && strongName != null) {
+            deobfuscator.deobfuscateStackTrace(lr.getThrown(), strongName);
+        }
+
+        return lr;
     }
 }

@@ -26,6 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
@@ -39,6 +40,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEvent;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
@@ -48,6 +51,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.google.common.collect.Collections2.transform;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -58,8 +63,13 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     private final ApplicationDataProxy appDataService;
     private final ExperimentDataProxy expDataService;
     private final DataFilesProxy filesService;
+
+    private EventBus eventBus;
     private HandlerRegistration criticalUpdateHandler;
     private HandlerRegistration dataUpdateHandler;
+    private HandlerRegistration dataFileRenamedHandler;
+
+    private final static Logger logger = Logger.getLogger("gwt.client.DataUploadAndAssignmentActivity");
 
     @Inject
     public DataUploadAndAssignmentActivity(DataUploadAndAssignmentView view,
@@ -78,6 +88,8 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        this.eventBus = eventBus;
+
         view.setPresenter(this);
         panel.setWidget(view);
 
@@ -88,9 +100,17 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
 
             @Override
             public void criticalUpdateFinished(CriticalUpdateEvent event) {
-                loadExpDataAsync();
+                reloadExpDataAsync();
             }
         });
+
+        dataFileRenamedHandler = eventBus.addHandler(DataFileRenamedEvent.getType(), new DataFileRenamedEventHandler() {
+            @Override
+            public void onRename(DataFileRenamedEvent event) {
+                reloadExpDataAsync();
+            }
+        });
+
         dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
             public void onDataFilesUpdate() {
@@ -106,6 +126,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     @Override
     public void onStop() {
         criticalUpdateHandler.removeHandler();
+        dataFileRenamedHandler.removeHandler();
         dataUpdateHandler.removeHandler();
         super.onStop();
     }
@@ -142,6 +163,11 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 new ReportingAsyncCallback<DataAssignmentColumnsAndRows>(FailureMessage.UNABLE_TO_LOAD_DATA_ASSIGNMENT) {
                     @Override
                     public void onSuccess(DataAssignmentColumnsAndRows result) {
+                        for (DataAssignmentColumn column : result.getColumns()) {
+                            for (FileRef file : column.getFileRefs()) {
+                                logger.log(Level.SEVERE, file.getName());
+                            }
+                        }
                         view.getAssignmentView().setData(result.getColumns(), result.getRows());
                     }
                 }
@@ -190,6 +216,8 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     @Override
     public void renameFile(DataFileRow dataFile, String newFileName) {
         filesService.renameFile(getSubmissionId(), dataFile, newFileName);
+        expDataService.invalidate();
+        eventBus.fireEvent(new DataFileRenamedEvent());
     }
 
     @Override

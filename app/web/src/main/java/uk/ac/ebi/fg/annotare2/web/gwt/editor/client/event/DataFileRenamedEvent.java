@@ -1,5 +1,3 @@
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
-
 /*
  * Copyright 2009-2014 European Molecular Biology Laboratory
  *
@@ -17,5 +15,32 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
  *
  */
 
-public class DataFileRenamedEvent {
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
+
+import com.google.gwt.event.shared.GwtEvent;
+
+public class DataFileRenamedEvent extends GwtEvent<DataFileRenamedEventHandler> {
+
+    private static Type<DataFileRenamedEventHandler> TYPE = new Type<DataFileRenamedEventHandler>();
+
+    @Override
+    public Type<DataFileRenamedEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(DataFileRenamedEventHandler handler) {
+        handler.onRename(this);
+    }
+
+    public static void fire(HasDeleteEventHandlers source) {
+        if (TYPE != null) {
+            DataFileRenamedEvent event = new DataFileRenamedEvent();
+            source.fireEvent(event);
+        }
+    }
+
+    public static Type<DataFileRenamedEventHandler> getType() {
+        return TYPE;
+    }
 }

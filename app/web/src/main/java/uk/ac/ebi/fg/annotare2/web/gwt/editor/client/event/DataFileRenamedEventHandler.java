@@ -1,5 +1,3 @@
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
-
 /*
  * Copyright 2009-2014 European Molecular Biology Laboratory
  *
@@ -17,5 +15,11 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
  *
  */
 
-public class DataFileRenamedEventHandler {
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event;
+
+import com.google.gwt.event.shared.EventHandler;
+
+public interface DataFileRenamedEventHandler extends EventHandler {
+
+    void onRename(DataFileRenamedEvent event);
 }
