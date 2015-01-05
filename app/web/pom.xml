@@ -432,7 +432,10 @@
                                 def binding = [
                                                  'annotareProperties': project.properties['annotare.properties.path'],
                                                  'mageTabCheckProperties': project.properties['magetabcheck.properties.path'],
-                                                 'contextPath': project.properties['annotare.contextPath']
+                                                 'contextPath': project.properties['annotare.contextPath'],
+                                                 'jdbcTomcatPersistenceConnectionUrl': project.properties['annotare.tomcat.jdbc.persistence.connection.url'],
+                                                 'jdbcTomcatPersistenceConnectionName': project.properties['annotare.tomcat.jdbc.persistence.connection.name'],
+                                                 'jdbcTomcatPersistenceConnectionPassword': project.properties['annotare.tomcat.jdbc.persistence.connection.password']
                                 ]
 
                                 for(file in templateFiles) {
