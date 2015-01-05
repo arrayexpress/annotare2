@@ -30,7 +30,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ExperimentUpdateEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -46,8 +45,6 @@ public class ExperimentDataProxy {
 
     private ExperimentProfile exp;
     private EventBus eventBus;
-
-    private final static Logger logger = Logger.getLogger("gwt.client.ExperimentDataProxy");
 
     @Inject
     public ExperimentDataProxy(EventBus eventBus,
@@ -84,7 +81,6 @@ public class ExperimentDataProxy {
 
     public void invalidate() {
         this.exp = null;
-        logger.info("Invalidating proxied experiment");
     }
 
     private void notifyExperimentUpdated() {
@@ -93,11 +89,9 @@ public class ExperimentDataProxy {
 
     private void getExperiment(final AsyncCallback<ExperimentProfile> callback) {
         if (exp != null) {
-            logger.info("Getting experiment from proxy");
             callback.onSuccess(exp);
             return;
         }
-        logger.info("Getting experiment from network");
         submissionService.loadExperiment(getSubmissionId(), new AsyncCallbackWrapper<ExperimentProfile>() {
             @Override
             public void onFailure(Throwable caught) {

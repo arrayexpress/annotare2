@@ -33,7 +33,7 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UnknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
@@ -89,7 +89,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                                  SubmissionManager submissionManager,
                                  DataFileManager dataFileManager,
                                  SubmissionValidator validator,
-                                 //AnnotareProperties properties,
                                  UserDao userDao,
                                  SubmissionFeedbackDao feedbackDao,
                                  EfoSearch efoSearch,
@@ -290,7 +289,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw unexpected(e);
         } catch (ParseException e) {
             throw unexpected(e);
-        } catch (UknownExperimentTypeException e) {
+        } catch (UnknownExperimentTypeException e) {
             throw unexpected(e);
         } catch (DataSerializationException e) {
             throw unexpected(e);

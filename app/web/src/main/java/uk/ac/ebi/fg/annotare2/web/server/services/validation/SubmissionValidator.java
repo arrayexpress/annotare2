@@ -76,7 +76,7 @@ public class SubmissionValidator {
     }
 
     public Collection<CheckResult> validate(Submission submission) throws IOException,
-            ParseException, UknownExperimentTypeException, DataSerializationException {
+            ParseException, UnknownExperimentTypeException, DataSerializationException {
 
         if (submission instanceof ExperimentSubmission) {
             return validateExperimentSubmission((ExperimentSubmission)submission);
@@ -86,7 +86,7 @@ public class SubmissionValidator {
     }
 
     private Collection<CheckResult> validateExperimentSubmission(ExperimentSubmission submission) throws IOException,
-            ParseException, UknownExperimentTypeException, DataSerializationException {
+            ParseException, UnknownExperimentTypeException, DataSerializationException {
 
         Collection<CheckResult> results = newArrayList();
 
@@ -156,7 +156,7 @@ public class SubmissionValidator {
     }
 
     private Collection<CheckResult> validateImportedExperimentSubmission(ImportedExperimentSubmission submission)
-            throws IOException, ParseException, UknownExperimentTypeException, DataSerializationException {
+            throws IOException, ParseException, UnknownExperimentTypeException, DataSerializationException {
 
         final List<ErrorItem> parserErrors = new ArrayList<ErrorItem>();
         ErrorItemListener parserListener = new ErrorItemListener() {
