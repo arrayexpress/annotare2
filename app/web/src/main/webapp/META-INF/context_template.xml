@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="${contextPath}" allowLinking="false" cookies="true" swallowOutput="false" unpackWAR="true">
+    <% if (jdbcTomcatPersistenceConnectionUrl != null) { %>
     <Manager className="org.apache.catalina.session.PersistentManager"
              maxIdleBackup="10">
         <Store className="org.apache.catalina.session.JDBCStore"
-               connectionURL="jdbc:mysql://mysql-annotare-dev.ebi.ac.uk:4420/tomcat"
-               connectionName="annotare"
-               connectionPassword="rYampvbhwFmR24d"
+               connectionURL="${jdbcTomcatPersistenceConnectionUrl}"
+               connectionName="${jdbcTomcatPersistenceConnectionName}"
+               connectionPassword="${jdbcTomcatPersistenceConnectionPassword}"
                driverName="com.mysql.jdbc.Driver"
                sessionAppCol="app_name"
                sessionDataCol="session_data"
@@ -15,6 +16,7 @@
                sessionTable="tomcat_sessions"
                sessionValidCol="valid_session" />
     </Manager>
+    <% } %>
     <% if (annotareProperties != null) { %>
     <Environment name="annotareProperties" value="${annotareProperties}"
                  type="java.lang.String" override="false"/>
