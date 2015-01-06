@@ -16,12 +16,12 @@
                sessionTable="tomcat_sessions"
                sessionValidCol="valid_session" />
     </Manager>
-    <% } %>
-    <% if (annotareProperties != null) { %>
+    <% }
+    if (annotareProperties != null) { %>
     <Environment name="annotareProperties" value="${annotareProperties}"
                  type="java.lang.String" override="false"/>
-    <% } %>
-    <% if (mageTabCheckProperties != null) { %>
+    <% }
+    if (mageTabCheckProperties != null) { %>
     <Environment name="mageTabCheckProperties" value="${mageTabCheckProperties}"
                  type="java.lang.String" override="false"/>
     <% } %>

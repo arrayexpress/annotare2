@@ -115,7 +115,19 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         nameColumn.setFieldUpdater(new FieldUpdater<DataFileRow, String>() {
             @Override
             public void update(int index, DataFileRow row, String value) {
-                presenter.renameFile(row, trimValue(value));
+                final String oldName = row.getName();
+                String newName = trimValue(value);
+                presenter.renameFile(row, newName, new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        NotificationPopupPanel.error("Unable to rename file '" + oldName + "'", true);
+                    }
+
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                });
             }
         });
         grid.addColumn(nameColumn, "Name");
@@ -208,7 +220,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
     public interface Presenter {
 
-        void renameFile(DataFileRow dataFileRow, String newFileName);
+        void renameFile(DataFileRow dataFileRow, String newFileName, AsyncCallback<Void> callback);
 
         void removeFiles(Set<DataFileRow> dataFileRow, AsyncCallback<Void> callback);
     }

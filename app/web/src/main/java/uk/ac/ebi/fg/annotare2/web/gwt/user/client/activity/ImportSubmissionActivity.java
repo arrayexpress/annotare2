@@ -155,8 +155,8 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void renameFile(DataFileRow dataFile, String newFileName) {
-        dataFilesService.renameFile(submissionId, dataFile, newFileName);
+    public void renameFile(DataFileRow dataFile, String newFileName, AsyncCallback<Void> callback) {
+        dataFilesService.renameFile(submissionId, dataFile, newFileName, callback);
     }
 
     @Override

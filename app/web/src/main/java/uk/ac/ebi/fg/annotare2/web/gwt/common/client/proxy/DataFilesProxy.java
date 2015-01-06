@@ -23,7 +23,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataFilesServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.Updater;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 
@@ -91,16 +90,17 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void renameFile(long submissionId, final DataFileRow dataFile, final String newFileName) {
+    public void renameFile(long submissionId, final DataFileRow dataFile, final String newFileName, final AsyncCallback<Void> callback) {
         filesService.renameFile(submissionId, dataFile.getId(), newFileName, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
-                NotificationPopupPanel.error("Unable to rename file '" + dataFile.getName() + "'", true);
+                callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(Void aVoid) {
                 updater.update();
+                callback.onSuccess(aVoid);
             }
         }.wrap());
     }
