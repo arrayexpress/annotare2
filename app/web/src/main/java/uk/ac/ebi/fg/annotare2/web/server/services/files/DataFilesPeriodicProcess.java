@@ -108,7 +108,9 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                         break;
 
                     case ASSOCIATED:
+                    case FILE_NOT_FOUND_ERROR:
                         maintainAssociation(file, availabilityChecker);
+                        break;
                 }
             }
         }
