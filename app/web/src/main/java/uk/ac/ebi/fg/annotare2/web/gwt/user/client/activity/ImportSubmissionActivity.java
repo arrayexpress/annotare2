@@ -25,7 +25,8 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
+import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ImportSubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy.DataFilesProxy;
@@ -51,22 +52,21 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
 
     private final ImportSubmissionView view;
     private final PlaceController placeController;
-    private final SubmissionServiceAsync submissionService;
+    private final ImportSubmissionServiceAsync importService;
     private final DataFilesProxy dataFilesService;
 
     private HandlerRegistration dataUpdateHandler;
-    //private EventBus eventBus;
 
     private Long submissionId;
 
     @Inject
     public ImportSubmissionActivity(ImportSubmissionView view,
                                     PlaceController placeController,
-                                    SubmissionServiceAsync submissionService,
+                                    ImportSubmissionServiceAsync importService,
                                     DataFilesProxy dataFilesService) {
         this.view = view;
         this.placeController = placeController;
-        this.submissionService = submissionService;
+        this.importService = importService;
         this.dataFilesService = dataFilesService;
     }
 
@@ -79,7 +79,6 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
-        //this.eventBus = eventBus;
 
         dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
@@ -116,23 +115,28 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void onImportCancelled() {
+    public void cancelImport() {
         goTo(new SubmissionListPlace());
     }
 
     @Override
-    public void onImportValidate(AsyncCallback<ValidationResult> callback) {
-        submissionService.validateSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
+    public void getSubmissionProfile(AsyncCallback<ImportedExperimentProfile> callback) {
+        importService.getExperimentProfile(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
     }
 
     @Override
-    public void onImportSubmit(AsyncCallback<Void> callback) {
-        submissionService.submitSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
+    public void validateImport(AsyncCallback<ValidationResult> callback) {
+        importService.validateSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
     }
 
     @Override
-    public void onPostFeedback(Byte score, String comment) {
-        submissionService.postFeedback(submissionId, score, comment,
+    public void submitImport(AsyncCallback<Void> callback) {
+        importService.submitSubmission(submissionId, AsyncCallbackWrapper.callbackWrap(callback));
+    }
+
+    @Override
+    public void postFeedback(Byte score, String comment) {
+        importService.postFeedback(submissionId, score, comment,
                 AsyncCallbackWrapper.callbackWrap(
                         new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
 

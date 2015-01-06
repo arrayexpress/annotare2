@@ -52,7 +52,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateComma
 import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
-import uk.ac.ebi.fg.annotare2.web.server.services.validation.SubmissionValidator;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.mail.MessagingException;

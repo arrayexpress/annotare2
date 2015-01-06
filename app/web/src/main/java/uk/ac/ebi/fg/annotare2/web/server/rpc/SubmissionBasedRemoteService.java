@@ -62,6 +62,10 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
         return submissionManager.getSubmission(getCurrentUser(), id, ArrayDesignSubmission.class, permission);
     }
 
+    protected ImportedExperimentSubmission getImportedExperimentSubmission(long id, Permission permission) throws RecordNotFoundException, AccessControlException {
+        return submissionManager.getSubmission(getCurrentUser(), id, ImportedExperimentSubmission.class, permission);
+    }
+
     protected ExperimentSubmission createExperimentSubmission() throws AccessControlException {
         return submissionManager.createSubmission(getCurrentUser(), ExperimentSubmission.class);
     }

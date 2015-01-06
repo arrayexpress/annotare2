@@ -47,7 +47,7 @@ public class DataFileManager {
     private final DataFileStore fileStore;
 
     @Inject
-    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao/*, FileCopyMessageQueue messageQueue*/) {
+    public DataFileManager(DataFileStore fileStore, DataFileDao dataFileDao) {
         this.dataFileDao = dataFileDao;
         this.fileStore = fileStore;
     }

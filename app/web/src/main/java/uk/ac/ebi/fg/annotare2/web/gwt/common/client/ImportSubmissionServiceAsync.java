@@ -21,19 +21,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 
-public interface SubmissionImportServiceAsync {
+public interface ImportSubmissionServiceAsync {
 
     void createImportedExperiment(AsyncCallback<Long> async);
 
-    void getExperimentProfile(long id, AsyncCallback<ImportedExperimentProfile> async) throws ResourceNotFoundException, NoPermissionException;
+    void getExperimentProfile(long id, AsyncCallback<ImportedExperimentProfile> async);
 
-    void updateExperimentProfile(long id, ImportedExperimentProfile profile, AsyncCallback<Void> async) throws ResourceNotFoundException, NoPermissionException;
+    void updateExperimentProfile(long id, ImportedExperimentProfile profile, AsyncCallback<Void> async);
 
-    void validateSubmission(long id, AsyncCallback<ValidationResult> async) throws ResourceNotFoundException, NoPermissionException;
+    void validateSubmission(long id, AsyncCallback<ValidationResult> async);
 
-    void submitSubmission(long id, AsyncCallback<Void> async) throws ResourceNotFoundException, NoPermissionException;
+    void submitSubmission(long id, AsyncCallback<Void> async);
 
-    void deleteSubmission(long id, AsyncCallback<Void> async) throws ResourceNotFoundException, NoPermissionException;
+    void deleteSubmission(long id, AsyncCallback<Void> async);
 
-    void postFeedback(long id, Byte score, String comment, AsyncCallback<Void> async) throws ResourceNotFoundException, NoPermissionException;
+    void postFeedback(long id, Byte score, String comment, AsyncCallback<Void> async);
 }

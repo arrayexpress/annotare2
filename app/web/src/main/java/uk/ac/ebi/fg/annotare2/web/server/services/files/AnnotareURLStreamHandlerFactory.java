@@ -15,7 +15,7 @@
  *
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services.validation;
+package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
@@ -23,10 +23,10 @@ import java.net.URLStreamHandlerFactory;
 public class AnnotareURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
     private final URLStreamHandlerFactory chainFactory;
-    private final ValidatedDataFileConnector fileConnector;
+    private final DataFileConnector fileConnector;
 
     protected AnnotareURLStreamHandlerFactory(URLStreamHandlerFactory chainFactory,
-                                              ValidatedDataFileConnector fileConnector) {
+                                              DataFileConnector fileConnector) {
         this.chainFactory = chainFactory;
         this.fileConnector = fileConnector;
     }

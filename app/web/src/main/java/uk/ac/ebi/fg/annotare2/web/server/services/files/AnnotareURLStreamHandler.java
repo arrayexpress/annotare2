@@ -15,7 +15,7 @@
  *
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services.validation;
+package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,13 +23,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class AnnotareURLStreamHandler extends URLStreamHandler {
 
-    private final ValidatedDataFileConnector fileConnector;
+    private final DataFileConnector fileConnector;
 
-    protected AnnotareURLStreamHandler(ValidatedDataFileConnector fileConnector) {
+    protected AnnotareURLStreamHandler(DataFileConnector fileConnector) {
         this.fileConnector = fileConnector;
     }
 
@@ -38,12 +39,15 @@ public class AnnotareURLStreamHandler extends URLStreamHandler {
         if (null != url) {
             String location = url.getFile();
             if (null != location) {
-                Long submissionId = Long.valueOf(location.replaceFirst("^/(\\d+)/(.+)$", "$1"));
-                String name = location.replaceFirst("^/(\\d+)/(.+)$", "$2");
+                Long userId = Long.valueOf(location.replaceFirst("^/(\\d+)/(\\d+)/(.+)$", "$1"));
+                Long submissionId = Long.valueOf(location.replaceFirst("^/(\\d+)/(\\d+)/(.+)$", "$2"));
+                String name = location.replaceFirst("^/(\\d+)/(\\d+)/(.+)$", "$3");
 
-                ValidatedDataFile file = fileConnector.getFile(submissionId, name);
+                Path file = fileConnector.getFilePath(userId, submissionId, name);
                 if (null != file) {
                     return new AnnotareURLConnection(url, file);
+                } else if ("idf.txt".equals(name) || "sdrf.txt".equals(name)) {
+                    return new AnnotareURLConnection(url, null);
                 }
             }
         }
@@ -52,9 +56,9 @@ public class AnnotareURLStreamHandler extends URLStreamHandler {
 
     private class AnnotareURLConnection extends URLConnection {
 
-        private final ValidatedDataFile file;
+        private final Path file;
 
-        public AnnotareURLConnection(URL url, ValidatedDataFile file) {
+        public AnnotareURLConnection(URL url, Path file) {
             super(url);
             this.file = file;
         }
@@ -63,10 +67,10 @@ public class AnnotareURLStreamHandler extends URLStreamHandler {
         }
 
         public InputStream getInputStream() throws IOException {
-            if (null == file || null == file.getPath()) {
+            if (null == file) {
                 throw new IOException("Unable to get input stream for this file");
             } else {
-                return Files.newInputStream(file.getPath(), StandardOpenOption.READ);
+                return Files.newInputStream(file, StandardOpenOption.READ);
             }
         }
     }

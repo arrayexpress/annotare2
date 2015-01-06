@@ -33,8 +33,6 @@ public class DataFileStore {
 
     private static final Logger log = LoggerFactory.getLogger(DataFileStore.class);
 
-    //private static final int BUFFER = 8192;
-
     private final File root;
 
     @Inject
@@ -47,7 +45,7 @@ public class DataFileStore {
         File destination = new File(dir(md5, true), md5);
 
         if (destination.exists()) {
-            log.debug("file already in the repository and will not be overwritten");
+            log.warn("File {} already exists in the repository and will not be overwritten", source.getName());
             return md5;
         }
 
@@ -69,7 +67,8 @@ public class DataFileStore {
         }
 
         if (!file.delete()) {
-            throw new IOException("Unable to remove file " + file);
+            log.error("Unable to delete file {}", file);
+            throw new IOException("Unable to delete file " + file);
         }
         log.debug("File {} removed", file.getName());
     }

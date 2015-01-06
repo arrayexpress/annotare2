@@ -41,6 +41,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressProperties;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFilesPeriodicProcess;
 import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
@@ -138,7 +139,7 @@ public class AppServletModule extends ServletModule {
         // user app services
         serveAndBindRpcService(SubmissionListService.NAME, SubmissionListServiceImpl.class, "UserApp");
         serveAndBindRpcService(SubmissionCreateService.NAME, SubmissionCreateServiceImpl.class, "UserApp");
-        serveAndBindRpcService(SubmissionImportService.NAME, SubmissionImportServiceImpl.class, "UserApp");
+        serveAndBindRpcService(ImportSubmissionService.NAME, ImportSubmissionServiceImpl.class, "UserApp");
         // editor app services
         serveAndBindRpcService(AdfService.NAME, AdfServiceImpl.class, "EditorApp");
 
@@ -158,6 +159,7 @@ public class AppServletModule extends ServletModule {
         bind(AccountManager.class).in(SINGLETON);
         bind(SubmissionManager.class).in(SINGLETON);
         bind(DataFileManager.class).in(SINGLETON);
+        bind(DataFileConnector.class).in(SINGLETON);
         bind(EmailSender.class).in(SINGLETON);
 
         bind(SubsTracking.class).in(SINGLETON);

@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserRoleDao;
 import uk.ac.ebi.fg.annotare2.db.model.User;
@@ -71,6 +72,9 @@ public class AccountManager {
         return null != user && nullToEmpty(user.getVerificationToken()).equals(token);
     }
 
+    public User getById(final Long id) throws RecordNotFoundException {
+        return userDao.get(id);
+    }
 
     public User getByEmail(final String email) {
         return userDao.getUserByEmail(email);

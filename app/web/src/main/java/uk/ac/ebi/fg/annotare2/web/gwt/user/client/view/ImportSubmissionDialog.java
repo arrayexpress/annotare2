@@ -27,6 +27,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
@@ -108,16 +109,16 @@ public class ImportSubmissionDialog extends DialogBox {
     }
 
     public void startImport() {
-        deckPanel.showWidget(0);
-        deckPanel.setWidth(Math.floor(Window.getClientWidth() * 0.8) + "px");
-        deckPanel.setHeight(Math.floor(Window.getClientHeight() * 0.8) + "px");
+        showDeckPanel(Panels.FILE_UPLOAD);
+        deckPanel.setWidth(Math.floor(Window.getClientWidth() * 0.7) + "px");
+        deckPanel.setHeight(Math.floor(Window.getClientHeight() * 0.7) + "px");
         center();
     }
 
     @UiHandler("cancel1Button")
     void onCancelClick(ClickEvent event) {
         hide();
-        presenter.onImportCancelled();
+        presenter.cancelImport();
     }
 
     @UiHandler("cancel2Button")
@@ -130,24 +131,125 @@ public class ImportSubmissionDialog extends DialogBox {
         onCancelClick(event);
     }
 
+    @UiHandler("proceedButton")
+    void onProceedClick(ClickEvent event) {
+        getSubmissionProfile();
+    }
+
     @UiHandler("submitButton")
     void onSubmitClick(ClickEvent event) {
         validateAndSubmit();
     }
 
-    @UiHandler("backButton")
-    void onBackButton(ClickEvent event) {
-        deckPanel.showWidget(0);
+    @UiHandler("back1Button")
+    void onBack1Button(ClickEvent event) {
+        showDeckPanel(Panels.FILE_UPLOAD);
+    }
+
+    @UiHandler("back2Button")
+    void onBack2Button(ClickEvent event) {
+        showDeckPanel(Panels.SUBMISSION_DETAILS);
     }
 
     @UiHandler("okButton")
     void onOkButton(ClickEvent event) {
         if (null != getFeedbackScore() || !getFeedbackMessage().isEmpty()) {
-            presenter.onPostFeedback(getFeedbackScore(), getFeedbackMessage());
+            presenter.postFeedback(getFeedbackScore(), getFeedbackMessage());
         }
     }
 
-    public Byte getFeedbackScore() {
+    @Override
+    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
+        super.onPreviewNativeEvent(event);
+        if (Event.ONKEYDOWN == event.getTypeInt()) {
+            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
+                onCancelClick(null);
+            }
+        }
+    }
+
+    private void getSubmissionProfile() {
+        waitingPopup.center();
+        presenter.getSubmissionProfile(
+                new ReportingAsyncCallback<ImportedExperimentProfile>(FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        waitingPopup.hide();
+                    }
+
+                    @Override
+                    public void onSuccess(ImportedExperimentProfile result) {
+                       waitingPopup.hide();
+                    }
+                }
+        );
+    }
+
+    private void validateAndSubmit() {
+        waitingPopup.center();
+
+        presenter.validateImport(
+                new ReportingAsyncCallback<ValidationResult>(FailureMessage.GENERIC_FAILURE) {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        waitingPopup.hide();
+                        showValidationResult(new ValidationResult(caught));
+                    }
+
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+                        if (result.canSubmit()) {
+                            submit();
+                        } else {
+                            waitingPopup.hide();
+                            showValidationResult(result);
+                        }
+                    }
+                }
+        );
+    }
+
+    private void submit() {
+        presenter.submitImport(
+                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        waitingPopup.hide();
+                    }
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        waitingPopup.hide();
+                        showDeckPanel(Panels.SUBMISSION_CONFIRMATION);
+                    }
+                });
+    }
+
+    private void showValidationResult(ValidationResult result) {
+        validationOutcomeLabel.setText("");
+        if (result.getFailures().isEmpty()) {
+            if (result.getErrors().isEmpty()) {
+                validationOutcomeLabel.setText("Validation has been successful.");
+            } else {
+                validationOutcomeLabel.setText(("Validation failed with " + result.getErrors().size() + " errors:"));
+                showValidationLog(result.getErrors());
+            }
+        } else {
+            validationOutcomeLabel.setText("There was a software problem validating this submission.");
+        }
+        showDeckPanel(Panels.VALIDATION_ERRORS);
+    }
+
+    private void showValidationLog(List<String> list) {
+        StringBuilder html = new StringBuilder();
+        for (String item : list) {
+            html.append(item).append("<br/>");
+        }
+        validationLogHtml.setHTML(html.toString());
+    }
+
+    private Byte getFeedbackScore() {
         if (rbScore1.getValue()) {
             return 1;
         } else if (rbScore2.getValue()) {
@@ -171,92 +273,28 @@ public class ImportSubmissionDialog extends DialogBox {
         }
     }
 
-    public String getFeedbackMessage() {
+    private String getFeedbackMessage() {
         return feedbackMessage.getValue().trim();
     }
 
-    @Override
-    protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-        super.onPreviewNativeEvent(event);
-        if (Event.ONKEYDOWN == event.getTypeInt()) {
-            if (KeyCodes.KEY_ESCAPE == event.getNativeEvent().getKeyCode()) {
-                onCancelClick(null);
-            }
-        }
+    enum Panels {
+        FILE_UPLOAD, SUBMISSION_DETAILS, VALIDATION_ERRORS, SUBMISSION_CONFIRMATION
     }
 
-    private void validateAndSubmit() {
-        waitingPopup.center();
-
-        presenter.onImportValidate(
-                new ReportingAsyncCallback<ValidationResult>(ReportingAsyncCallback.FailureMessage.GENERIC_FAILURE) {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        waitingPopup.hide();
-                        showValidationResult(new ValidationResult(caught));
-                    }
-
-                    @Override
-                    public void onSuccess(ValidationResult result) {
-                        if (result.canSubmit()) {
-                            submit();
-                        } else {
-                            waitingPopup.hide();
-                            showValidationResult(result);
-                        }
-                    }
-                }
-        );
-    }
-
-    private void submit() {
-        presenter.onImportSubmit(
-                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        waitingPopup.hide();
-                    }
-
-                    @Override
-                    public void onSuccess(Void result) {
-                        waitingPopup.hide();
-                        deckPanel.showWidget(2);
-                    }
-                });
-    }
-
-    private void showValidationResult(ValidationResult result) {
-        validationOutcomeLabel.setText("");
-        if (result.getFailures().isEmpty()) {
-            if (result.getErrors().isEmpty()) {
-                validationOutcomeLabel.setText("Validation has been successful.");
-            } else {
-                validationOutcomeLabel.setText(("Validation failed with " + result.getErrors().size() + " errors:"));
-                showValidationLog(result.getErrors());
-            }
-        } else {
-            validationOutcomeLabel.setText("There was a software problem validating this submission.");
-        }
-        deckPanel.showWidget(1);
-    }
-
-    private void showValidationLog(List<String> list) {
-        StringBuilder html = new StringBuilder();
-        for (String item : list) {
-            html.append(item).append("<br/>");
-        }
-        validationLogHtml.setHTML(html.toString());
+    private void showDeckPanel(Panels panel) {
+        deckPanel.showWidget(panel.ordinal());
     }
 
     public interface Presenter extends DataFilesUploadView.Presenter {
 
-        void onImportCancelled();
+        void cancelImport();
 
-        void onImportValidate(AsyncCallback<ValidationResult> callback);
+        void getSubmissionProfile(AsyncCallback<ImportedExperimentProfile> callback);
 
-        void onImportSubmit(AsyncCallback<Void> callback);
+        void validateImport(AsyncCallback<ValidationResult> callback);
 
-        void onPostFeedback(Byte score, String comment);
+        void submitImport(AsyncCallback<Void> callback);
+
+        void postFeedback(Byte score, String comment);
     }
 }

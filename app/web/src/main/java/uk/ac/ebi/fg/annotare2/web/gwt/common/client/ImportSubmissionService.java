@@ -22,8 +22,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 
-@RemoteServiceRelativePath(SubmissionImportService.NAME)
-public interface SubmissionImportService extends RemoteService {
+@RemoteServiceRelativePath(ImportSubmissionService.NAME)
+public interface ImportSubmissionService extends RemoteService {
 
     public static final String NAME = "importService";
 

@@ -26,6 +26,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.util.Collection;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Collections2.filter;
 import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.readImportedExperiment;
 import static uk.ac.ebi.fg.annotare2.submission.transform.JsonCodec.writeImportedExperiment;
@@ -55,7 +56,7 @@ public class ImportedExperimentSubmission extends Submission {
 
     @Override
     public boolean hasNoData() {
-        return false;
+        return isNullOrEmpty(experimentString);
     }
 
     public Collection<DataFile> getIdfFiles() {

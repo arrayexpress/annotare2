@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -28,24 +29,22 @@ public class ImportedExperimentProfile implements Serializable {
 
     private static final long serialVersionUID = -6077425344898508542L;
 
-    private ExperimentProfileType type;
+    private String title;
 
     private String description;
 
     private Set<String> aeExperimentTypes;
 
-    @SuppressWarnings("unused")
-    ImportedExperimentProfile() {
-        this(null);
-    }
-
-    public ImportedExperimentProfile(ExperimentProfileType type) {
-        this.type = type;
+    public ImportedExperimentProfile() {
         aeExperimentTypes = newHashSet();
     }
 
-    public ExperimentProfileType getType() {
-        return type;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -62,5 +61,17 @@ public class ImportedExperimentProfile implements Serializable {
 
     public void setAeExperimentTypes(Set<String> aeExperimentTypes) {
         this.aeExperimentTypes = aeExperimentTypes;
+    }
+
+    public void populate(ImportedExperimentProfile profile) {
+        if (!isNullOrEmpty(profile.title)) {
+            title = profile.title;
+        }
+        if (!isNullOrEmpty(profile.description)) {
+            description = profile.description;
+        }
+        if (!profile.aeExperimentTypes.isEmpty()) {
+            aeExperimentTypes = profile.aeExperimentTypes;
+        }
     }
 }

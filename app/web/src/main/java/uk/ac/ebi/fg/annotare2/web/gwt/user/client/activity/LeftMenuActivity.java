@@ -23,8 +23,8 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ImportSubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionCreateServiceAsync;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionImportServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -45,7 +45,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
     private final LeftMenuView view;
     private final PlaceController placeController;
     private final SubmissionCreateServiceAsync createService;
-    private final SubmissionImportServiceAsync importService;
+    private final ImportSubmissionServiceAsync importService;
 
     private EventBus eventBus;
 
@@ -54,7 +54,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
             LeftMenuView view,
             PlaceController placeController,
             SubmissionCreateServiceAsync createService,
-            SubmissionImportServiceAsync importService) {
+            ImportSubmissionServiceAsync importService) {
         this.view = view;
         this.placeController = placeController;
         this.createService = createService;
