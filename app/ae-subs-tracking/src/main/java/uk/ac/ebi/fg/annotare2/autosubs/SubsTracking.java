@@ -384,8 +384,10 @@ public class SubsTracking {
     }
 
     public void terminate() throws SubsTrackingException {
-        ds.shutdown();
-        ds = null;
+        if (null != ds) {
+            ds.shutdown();
+            ds = null;
+        }
     }
 
     private String asciiCompliantString(String s) {
