@@ -31,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -131,7 +132,7 @@ public class ImportSubmissionDialog extends DialogBox {
         onCancelClick(event);
     }
 
-    @UiHandler("proceedButton")
+    @UiHandler("startImportButton")
     void onProceedClick(ClickEvent event) {
         getSubmissionProfile();
     }
@@ -171,15 +172,17 @@ public class ImportSubmissionDialog extends DialogBox {
     private void getSubmissionProfile() {
         waitingPopup.center();
         presenter.getSubmissionProfile(
-                new ReportingAsyncCallback<ImportedExperimentProfile>(FailureMessage.GENERIC_FAILURE) {
+                new AsyncCallback<ImportedExperimentProfile>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         waitingPopup.hide();
+                        NotificationPopupPanel.error(caught.getMessage(), false);
                     }
 
                     @Override
                     public void onSuccess(ImportedExperimentProfile result) {
-                       waitingPopup.hide();
+                        waitingPopup.hide();
+                        showDeckPanel(Panels.SUBMISSION_DETAILS);
                     }
                 }
         );

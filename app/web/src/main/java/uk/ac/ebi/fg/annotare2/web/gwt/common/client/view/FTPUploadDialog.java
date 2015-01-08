@@ -97,7 +97,7 @@ public class FTPUploadDialog extends DialogBox {
             okButton.setEnabled(false);
             final PopupPanel w = new WaitingPopup();
             w.center();
-            presenter.onFtpDataSubmit(pastedData,
+            presenter.uploadFtpFiles(pastedData,
                     new ReportingAsyncCallback<String>(FailureMessage.UNABLE_TO_UPLOAD_FILES) {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -116,7 +116,7 @@ public class FTPUploadDialog extends DialogBox {
                                 hide();
                             }
                         }
-            });
+                    });
         }
     }
 
@@ -145,6 +145,6 @@ public class FTPUploadDialog extends DialogBox {
     }
 
     public interface Presenter {
-        void onFtpDataSubmit(List<String> data, AsyncCallback<String> callback);
+        void uploadFtpFiles(List<String> data, AsyncCallback<String> callback);
     }
 }

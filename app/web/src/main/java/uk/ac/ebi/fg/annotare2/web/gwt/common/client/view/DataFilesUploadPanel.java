@@ -38,7 +38,7 @@ public class DataFilesUploadPanel extends Composite {
 
     private Presenter presenter;
 
-    private final MultiUploader uploader;
+    private final Uploader uploader;
 
     private static class CustomModalUploadStatus extends ModalUploadStatus {
         @Override
@@ -70,7 +70,7 @@ public class DataFilesUploadPanel extends Composite {
                         for (int i = 0; i < uploaded.size(); ++i) {
                             filesInfo.add(new HttpFileInfo(uploaded.get(i).getField(), removeFakePath(fileNames.get(i))));
                         }
-                        presenter.onFilesUploaded(filesInfo,
+                        presenter.uploadFiles(filesInfo,
                                 new ReportingAsyncCallback<Map<Integer, String>>(FailureMessage.UNABLE_TO_UPLOAD_FILES) {
                                     @Override
                                     public void onSuccess(Map<Integer, String> result) {
@@ -109,7 +109,7 @@ public class DataFilesUploadPanel extends Composite {
                         IUploadStatus.CancelBehavior.STOP_CURRENT
                 )
         );
-        uploader = new MultiUploader(IFileInput.FileInputType.BUTTON);
+        uploader = new Uploader(IFileInput.FileInputType.BUTTON);
         uploader.setStatusWidget(status);
         uploader.setStyleName("customUpload");
         uploader.setI18Constants(I18N_CONSTANTS);
@@ -127,7 +127,7 @@ public class DataFilesUploadPanel extends Composite {
     }
 
     public interface Presenter {
-        void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
+        void uploadFiles(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
     }
 
     private String removeFakePath(String fileName) {

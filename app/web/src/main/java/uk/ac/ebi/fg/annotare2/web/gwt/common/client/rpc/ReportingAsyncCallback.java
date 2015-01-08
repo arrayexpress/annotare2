@@ -24,7 +24,7 @@ public abstract class ReportingAsyncCallback<T> implements AsyncCallback<T> {
     private final FailureMessage failureMessage;
 
     public ReportingAsyncCallback() {
-        this(FailureMessage.GENERIC_FAILURE);
+        this(null);
     }
 
     public ReportingAsyncCallback(FailureMessage failureMessage) {
@@ -33,7 +33,9 @@ public abstract class ReportingAsyncCallback<T> implements AsyncCallback<T> {
 
     @Override
     public void onFailure(Throwable caught) {
-        NotificationPopupPanel.failure(failureMessage.getMessage(), caught);
+        NotificationPopupPanel.failure(
+                null != failureMessage ? failureMessage.getMessage() : caught.getMessage(),
+                caught);
     }
 
     public enum FailureMessage {

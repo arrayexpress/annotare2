@@ -149,12 +149,12 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void onFilesUploaded(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
+    public void uploadFiles(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
         dataFilesService.registerHttpFiles(submissionId, filesInfo, callback);
     }
 
     @Override
-    public void onFtpDataSubmit(List<String> filesInfo, AsyncCallback<String> callback) {
+    public void uploadFtpFiles(List<String> filesInfo, AsyncCallback<String> callback) {
         dataFilesService.registerFtpFiles(submissionId, filesInfo, callback);
     }
 

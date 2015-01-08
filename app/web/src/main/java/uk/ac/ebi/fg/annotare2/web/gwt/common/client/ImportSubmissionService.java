@@ -29,7 +29,7 @@ public interface ImportSubmissionService extends RemoteService {
 
     long createImportedExperiment() throws NoPermissionException;
 
-    ImportedExperimentProfile getExperimentProfile(long id) throws ResourceNotFoundException, NoPermissionException;
+    ImportedExperimentProfile getExperimentProfile(long id) throws ResourceNotFoundException, NoPermissionException, DataImportException;
 
     void updateExperimentProfile(long id, ImportedExperimentProfile profile) throws ResourceNotFoundException, NoPermissionException;
 

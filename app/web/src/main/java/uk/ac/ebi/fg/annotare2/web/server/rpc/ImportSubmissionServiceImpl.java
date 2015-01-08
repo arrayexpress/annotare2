@@ -31,6 +31,7 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ImportSubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -90,7 +91,7 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
     @Transactional
     @Override
     public ImportedExperimentProfile getExperimentProfile(long id)
-            throws ResourceNotFoundException, NoPermissionException  {
+            throws ResourceNotFoundException, NoPermissionException, DataImportException {
 
         try {
             ImportedExperimentSubmission submission = getImportedExperimentSubmission(id, Permission.VIEW);
@@ -104,6 +105,8 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
                 } else {
                     profile = readProfile;
                 }
+            } else {
+                throw new DataImportException("IDF file was not found. Please ensure IDF file (*.idf.txt or idf.txt) was uploaded.");
             }
             return profile;
         } catch (DataSerializationException e) {
