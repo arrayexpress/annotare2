@@ -26,11 +26,11 @@ public class SampleUploadServlet extends UploadAction {
 
     private static final long serialVersionUID = 123L;
 
-    Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
+    Hashtable<String, String> receivedContentTypes = new Hashtable<>();
     /**
      * Maintain a list with received files and their content types.
      */
-    Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
+    Hashtable<String, File> receivedFiles = new Hashtable<>();
 
     /**
      * Override executeAction to save the received files in a custom place
@@ -40,7 +40,7 @@ public class SampleUploadServlet extends UploadAction {
     public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException {
         String response = "";
         for (FileItem item : sessionFiles) {
-            if (false == item.isFormField()) {
+            if (!item.isFormField()) {
                 try {
                     /// Create a new file based on the remote file name in the client
                     // String saveName = item.getName().replaceAll("[\\\\/><\\|\\s\"'{}()\\[\\]]+", "_");
@@ -98,7 +98,9 @@ public class SampleUploadServlet extends UploadAction {
         receivedFiles.remove(fieldName);
         receivedContentTypes.remove(fieldName);
         if (file != null) {
-            file.delete();
+            if (!file.delete()) {
+                System.err.println("Unable to delete " + file.getName());
+            }
         }
     }
 }

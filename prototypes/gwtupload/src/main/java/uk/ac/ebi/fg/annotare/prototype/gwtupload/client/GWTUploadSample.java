@@ -1,15 +1,11 @@
 package uk.ac.ebi.fg.annotare.prototype.gwtupload.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.RootPanel;
 import gwtupload.client.IFileInput;
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
 import gwtupload.client.MultiUploader;
-
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.RootPanel;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,8 +16,8 @@ import java.util.logging.Logger;
  */
 
 public class GWTUploadSample implements EntryPoint {
-    interface GWTUploadSampleBinder extends UiBinder<Widget, GWTUploadSample> { //
-    }
+    //interface GWTUploadSampleBinder extends UiBinder<Widget, GWTUploadSample> { //
+    //}
 
     private final static Logger logger = Logger.getLogger("GWTUploadSample");
 
