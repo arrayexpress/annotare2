@@ -5,7 +5,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import gwtupload.client.IFileInput;
 import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
-import gwtupload.client.MultiUploader;
+import gwtupload.client.ModalUploadStatus;
+import gwtupload.client.SingleUploader;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,7 +28,8 @@ public class GWTUploadSample implements EntryPoint {
         //final Widget widget = binder.createAndBindUi(this);
 
         // Create a new uploader panel and attach it to the document
-        MultiUploader defaultUploader = new MultiUploader(IFileInput.FileInputType.LABEL);
+        SingleUploader defaultUploader = new SingleUploader(IFileInput.FileInputType.BUTTON, new ModalUploadStatus());
+        defaultUploader.setAutoSubmit(true);
         //widget.add
         RootPanel.get().add(defaultUploader);
 
@@ -50,6 +52,7 @@ public class GWTUploadSample implements EntryPoint {
                 for (IUploader.UploadedInfo info : infos) {
                     logger.info("Uploaded file name [" + info.getFileName() + "], field name [" + info.getField() + "]");
                 }
+                uploader.reset();
             }
         }
     };

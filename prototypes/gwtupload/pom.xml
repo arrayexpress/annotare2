@@ -13,7 +13,7 @@
 
     <properties>
         <!-- Convenience property to set the GWT version -->
-        <gwtVersion>2.6.1</gwtVersion>
+        <gwtVersion>2.7.0</gwtVersion>
         <!-- GWT needs at least java 1.5 -->
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,6 +24,13 @@
         <repository>
             <id>artifactory-repo</id>
             <url>http://bar.ebi.ac.uk:8081/artifactory/repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -56,7 +63,7 @@
         <dependency>
             <groupId>com.googlecode.gwtupload</groupId>
             <artifactId>gwtupload</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>

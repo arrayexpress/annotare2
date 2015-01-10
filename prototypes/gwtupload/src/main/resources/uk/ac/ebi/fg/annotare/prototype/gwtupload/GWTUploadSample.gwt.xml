@@ -1,4 +1,4 @@
-<module>
+<module rename-to="GWTUploadSample">
 	<inherits name="com.google.gwt.user.User"/>
 	<inherits name="com.google.gwt.user.theme.clean.Clean"/>
 
@@ -10,9 +10,9 @@
 
     <set-property name="gwt.logging.consoleHandler" value="DISABLED" />
     <set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
-    <set-property name="gwt.logging.firebugHandler" value="DISABLED" />
+    <!-- <set-property name="gwt.logging.firebugHandler" value="DISABLED" /> -->
     <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
-    <set-property name="gwt.logging.popupHandler" value="DISABLED" />
+    <!-- <set-property name="gwt.logging.popupHandler" value="DISABLED" /> -->
     <set-property name="gwt.logging.systemHandler" value="DISABLED" />
     <set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED"/>
 
@@ -20,5 +20,7 @@
     <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
     <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
 
-	<entry-point class="uk.ac.ebi.fg.annotare.prototype.gwtupload.client.GWTUploadSample"/>
+	<entry-point class="uk.ac.ebi.fg.annotare.prototype.gwtupload.client.GWTUploadSample" />
+
+    <source path="client" />
 </module>

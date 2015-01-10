@@ -1,11 +1,11 @@
 package gwtupload.client;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Utility class.
@@ -76,7 +76,7 @@ public final class Utils {
             return false;
         }
 
-        boolean valid = validExtensions == null || validExtensions.isEmpty() ? true : false;
+        boolean valid = validExtensions == null || validExtensions.isEmpty();
         if (!valid) for (String regx : validExtensions) {
             if (fileName.toLowerCase().matches(regx)) {
                 valid = true;
