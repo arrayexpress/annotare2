@@ -27,11 +27,12 @@ import java.util.List;
  */
 public class UploadedFiles {
 
-    private static final String GWTUPLOAD_ATTRIBUTE_NAME = "FILES";
+    private static final String GWTUPLOAD_FILES_ATTRIBUTE = "FILES";
+    private static final String GWTUPLOAD_LAST_FILES_ATTRIBUTE = "LAST_FILES";
 
     @SuppressWarnings("unchecked")
     public static FileItem get(HttpSession session, String fieldName) throws FileNotFoundException {
-        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_FILES_ATTRIBUTE);
         for (FileItem item : items) {
             if (item.getFieldName().equals(fieldName)) {
                 return item;
@@ -42,7 +43,7 @@ public class UploadedFiles {
 
     @SuppressWarnings("unchecked")
     public static FileItem getFirst(HttpSession session) throws FileNotFoundException {
-        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_FILES_ATTRIBUTE);
         if (items.size() > 0) {
             return items.get(0);
         }
@@ -51,13 +52,14 @@ public class UploadedFiles {
 
     @SuppressWarnings("unchecked")
     public static void removeSessionFiles(HttpSession session) {
-        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_FILES_ATTRIBUTE);
         for (FileItem item : items) {
             if (null != item && !item.isFormField()) {
                 item.delete();
             }
         }
-        session.removeAttribute(GWTUPLOAD_ATTRIBUTE_NAME);
+        session.removeAttribute(GWTUPLOAD_FILES_ATTRIBUTE);
+        session.removeAttribute(GWTUPLOAD_LAST_FILES_ATTRIBUTE);
     }
 
 }

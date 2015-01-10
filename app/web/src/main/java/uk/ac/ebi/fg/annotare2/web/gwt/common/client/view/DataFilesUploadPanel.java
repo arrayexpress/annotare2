@@ -38,7 +38,7 @@ public class DataFilesUploadPanel extends Composite {
 
     private Presenter presenter;
 
-    private final Uploader uploader;
+    private final MultiUploader uploader;
 
     private static class CustomModalUploadStatus extends ModalUploadStatus {
         @Override
@@ -109,7 +109,7 @@ public class DataFilesUploadPanel extends Composite {
                         IUploadStatus.CancelBehavior.STOP_CURRENT
                 )
         );
-        uploader = new Uploader(IFileInput.FileInputType.BUTTON);
+        uploader = new MultiUploader(IFileInput.FileInputType.BUTTON);
         uploader.setStatusWidget(status);
         uploader.setStyleName("customUpload");
         uploader.setI18Constants(I18N_CONSTANTS);
