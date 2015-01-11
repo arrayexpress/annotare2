@@ -38,8 +38,6 @@ public class DataFilesUploadPanel extends Composite {
 
     private Presenter presenter;
 
-    private final MultiUploader uploader;
-
     private static class CustomModalUploadStatus extends ModalUploadStatus {
         @Override
         public IUploadStatus newInstance() {
@@ -59,14 +57,13 @@ public class DataFilesUploadPanel extends Composite {
                 }
             }.schedule(2000);
 
-            uploader.asWidget().removeFromParent();
             if (uploader.getStatus() == SUCCESS) {
                 if (presenter != null) {
                     IFileInput input = uploader.getFileInput();
                     List<String> fileNames = input.getFilenames();
                     List<IUploader.UploadedInfo> uploaded = uploader.getServerMessage().getUploadedInfos();
                     if (uploaded.size() == fileNames.size()) {
-                        final List<HttpFileInfo> filesInfo = new ArrayList<HttpFileInfo>(uploaded.size());
+                        final List<HttpFileInfo> filesInfo = new ArrayList<>(uploaded.size());
                         for (int i = 0; i < uploaded.size(); ++i) {
                             filesInfo.add(new HttpFileInfo(uploaded.get(i).getField(), removeFakePath(fileNames.get(i))));
                         }
@@ -109,7 +106,9 @@ public class DataFilesUploadPanel extends Composite {
                         IUploadStatus.CancelBehavior.STOP_CURRENT
                 )
         );
-        uploader = new MultiUploader(IFileInput.FileInputType.BUTTON);
+        SingleUploader uploader = new SingleUploader(IFileInput.FileInputType.BUTTON);
+        uploader.setMultipleSelection(true);
+        uploader.setAutoSubmit(true);
         uploader.setStatusWidget(status);
         uploader.setStyleName("customUpload");
         uploader.setI18Constants(I18N_CONSTANTS);
