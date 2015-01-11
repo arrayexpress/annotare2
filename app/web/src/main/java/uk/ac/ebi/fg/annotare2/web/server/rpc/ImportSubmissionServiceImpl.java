@@ -17,6 +17,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,15 +101,32 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
             ImportedExperimentProfile profile = submission.getExperimentProfile();
 
             Collection<DataFile> idfFiles = submission.getIdfFiles();
-            if (!idfFiles.isEmpty()) {
+            if (idfFiles.isEmpty()) {
+                throw new DataImportException(
+                        "IDF file was not found. Please ensure to have one IDF file (*.idf.txt or idf.txt)" +
+                        " uploaded before proceeding.");
+            } else if (idfFiles.size() > 1) {
+                throw new DataImportException(
+                        "Multiple IDF files found (" +
+                                Joiner.on(", ").join(
+                                        Collections2.transform(
+                                                idfFiles,
+                                                new Function<DataFile, String>() {
+                                                        @Override
+                                                        public String apply(DataFile f) {
+                                                            return f.getName();
+                                                        }
+                                                }
+                                        )
+                                )
+                        + "). Please ensure to have just one IDF file (*.idf.txt or idf.txt) uploaded before proceeding.");
+            } else {
                 ImportedExperimentProfile readProfile = readProfileFromIdf(submission, idfFiles.iterator().next());
                 if (null != profile) {
                     profile.populate(readProfile);
                 } else {
                     profile = readProfile;
                 }
-            } else {
-                throw new DataImportException("IDF file was not found. Please ensure IDF file (*.idf.txt or idf.txt) was uploaded.");
             }
             return profile;
         } catch (DataSerializationException e) {

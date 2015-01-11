@@ -24,9 +24,9 @@ import com.google.common.annotations.GwtCompatible;
 @GwtCompatible
 public enum DataFileStatus {
     TO_BE_STORED("processing..."),
-    STORED("stored"),
+    STORED("uploaded"),
     TO_BE_ASSOCIATED("verifying..."),
-    ASSOCIATED("associated"),
+    ASSOCIATED("uploaded (FTP)"),
     MD5_ERROR("MD5 check error"),
     FILE_NOT_FOUND_ERROR("file not found"),
     ERROR("error");
