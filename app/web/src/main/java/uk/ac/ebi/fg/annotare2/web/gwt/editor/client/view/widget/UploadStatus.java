@@ -143,6 +143,11 @@ public class UploadStatus extends Composite implements IUploadStatus {
     }
 
     @Override
+    public Set<CancelBehavior> getCancelConfiguration() {
+        return cancelCfg;
+    }
+
+    @Override
     public void setCancelConfiguration(Set<CancelBehavior> config) {
         cancelCfg = config;
     }
