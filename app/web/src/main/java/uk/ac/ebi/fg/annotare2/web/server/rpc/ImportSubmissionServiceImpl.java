@@ -191,7 +191,9 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
 
             profile.setTitle(idf.investigationTitle);
             profile.setDescription(idf.experimentDescription);
-            profile.setAeExperimentTypes(idf.getComments().get("AEExperimentType"));
+            if (null != idf.getComments().get("AEExperimentType")) {
+                profile.setAeExperimentType(idf.getComments().get("AEExperimentType").iterator().next());
+            }
         } catch (Exception x) {
             //
         }

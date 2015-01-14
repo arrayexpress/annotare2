@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
@@ -35,13 +34,5 @@ public class EditorUtils {
             return null;
         }
         return Integer.parseInt(res.getGroup(1));
-    }
-
-    public static DateTimeFormat dateTimeFormat() {
-        return DateTimeFormat.getFormat("yyyy-MM-dd");
-    }
-
-    public static String dateTimeFormatPlaceholder() {
-        return "YYYY-MM-DD";
     }
 }

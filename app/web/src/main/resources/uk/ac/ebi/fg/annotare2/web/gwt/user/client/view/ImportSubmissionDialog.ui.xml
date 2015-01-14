@@ -156,7 +156,7 @@
                         <tr><td class="{style.title}">Title</td><td class="{style.field}"><g:TextArea visibleLines="2" ui:field="title"/></td></tr>
                         <tr><td class="{style.title}">Description</td><td class="{style.field}"><g:TextArea visibleLines="4" ui:field="description"/></td></tr>
                         <tr><td class="{style.title}">ArrayExpress Experiment Type</td><td class="{style.field}"><g:ListBox width="300px" ui:field="aeExperimentType"/></td></tr>
-                        <tr><td class="{style.title}">Release Date</td><td class="{style.field}"><dp:DateBox width="200px" ui:field="dateOfPublicRelease"/></td></tr>
+                        <tr><td class="{style.title}">Release Date</td><td class="{style.field}"><dp:DateBox width="200px" ui:field="releaseDate"/></td></tr>
                     </table>
                 </g:HTMLPanel>
             </g:cell>

@@ -41,8 +41,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetails
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormat;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormatPlaceholder;
 
 /**
  * @author Olga Melnichuk
@@ -83,7 +83,7 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     @Inject
     public ExperimentDetailsViewImpl() {
-        experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
+        experimentalDesigns = new LinkedHashMap<>();
 
         experimentalDesignList = new ListBox(true);
         initWidget(Binder.BINDER.createAndBindUi(this));
