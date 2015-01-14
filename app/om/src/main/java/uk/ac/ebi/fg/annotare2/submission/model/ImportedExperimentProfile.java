@@ -18,6 +18,7 @@
 package uk.ac.ebi.fg.annotare2.submission.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -30,6 +31,8 @@ public class ImportedExperimentProfile implements Serializable {
     private String description;
 
     private String aeExperimentType;
+
+    private Date publicReleaseDate;
 
     public ImportedExperimentProfile() {
     }
@@ -58,6 +61,14 @@ public class ImportedExperimentProfile implements Serializable {
         this.aeExperimentType = aeExperimentType;
     }
 
+    public Date getPublicReleaseDate() {
+        return publicReleaseDate;
+    }
+
+    public void setPublicReleaseDate(Date publicReleaseDate) {
+        this.publicReleaseDate = publicReleaseDate;
+    }
+
     public void populate(ImportedExperimentProfile profile) {
         if (!isNullOrEmpty(profile.title)) {
             title = profile.title;
@@ -67,6 +78,9 @@ public class ImportedExperimentProfile implements Serializable {
         }
         if (!isNullOrEmpty(profile.aeExperimentType)) {
             aeExperimentType = profile.aeExperimentType;
+        }
+        if (null != profile.publicReleaseDate) {
+            publicReleaseDate = profile.publicReleaseDate;
         }
     }
 }
