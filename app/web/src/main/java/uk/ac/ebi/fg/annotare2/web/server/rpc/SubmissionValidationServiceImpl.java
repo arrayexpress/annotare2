@@ -24,7 +24,7 @@ import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UknownExperimentTypeException;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UnknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -90,7 +90,7 @@ public class SubmissionValidationServiceImpl extends SubmissionBasedRemoteServic
         } catch (ParseException e) {
             log.error("Validation failure", e);
             failures.add("Failure: " + e.getMessage());
-        } catch (UknownExperimentTypeException e) {
+        } catch (UnknownExperimentTypeException e) {
             log.error("Validation failure", e);
             failures.add("Failure: " + e.getMessage());
         } catch (DataSerializationException e) {

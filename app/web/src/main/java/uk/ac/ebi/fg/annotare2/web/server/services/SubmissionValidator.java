@@ -70,7 +70,7 @@ public class SubmissionValidator {
     }
 
     public Collection<CheckResult> validate(ExperimentSubmission submission) throws IOException,
-            ParseException, UknownExperimentTypeException, DataSerializationException {
+            ParseException, UnknownExperimentTypeException, DataSerializationException {
 
         ExperimentProfile exp = submission.getExperimentProfile();
         ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
