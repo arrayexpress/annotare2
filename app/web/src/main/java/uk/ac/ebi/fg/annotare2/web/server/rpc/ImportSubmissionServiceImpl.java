@@ -45,6 +45,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService implements ImportSubmissionService {
@@ -179,7 +180,8 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
 
     }
 
-    private ImportedExperimentProfile readProfileFromIdf(Submission submission, DataFile idfFile) {
+    private ImportedExperimentProfile readProfileFromIdf(Submission submission, DataFile idfFile)
+            throws DataImportException {
 
         ImportedExperimentProfile profile = new ImportedExperimentProfile();
         try {
@@ -191,9 +193,14 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
 
             profile.setTitle(idf.investigationTitle);
             profile.setDescription(idf.experimentDescription);
-            profile.setAeExperimentTypes(idf.getComments().get("AEExperimentType"));
+            if (null != idf.getComments().get("AEExperimentType")) {
+                profile.setAeExperimentType(idf.getComments().get("AEExperimentType").iterator().next());
+            }
+            if (null != idf.publicReleaseDate) {
+                profile.setPublicReleaseDate(new SimpleDateFormat("yyyy-MM-dd").parse(idf.publicReleaseDate));
+            }
         } catch (Exception x) {
-            //
+            throw new DataImportException("There was an error processing IDF: " + x.getMessage());
         }
         return profile;
     }

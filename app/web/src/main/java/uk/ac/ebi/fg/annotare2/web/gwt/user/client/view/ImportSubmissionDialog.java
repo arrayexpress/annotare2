@@ -20,6 +20,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.ShowRangeEvent;
+import com.google.gwt.event.logical.shared.ShowRangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -27,6 +29,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
+import com.google.gwt.user.datepicker.client.DateBox;
 import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
@@ -36,7 +40,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
+import java.util.Date;
 import java.util.List;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormat;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormatPlaceholder;
 
 public class ImportSubmissionDialog extends DialogBox {
 
@@ -45,6 +53,18 @@ public class ImportSubmissionDialog extends DialogBox {
 
     @UiField
     DeckLayoutPanel deckPanel;
+
+    @UiField
+    TextArea title;
+
+    @UiField
+    TextArea description;
+
+    @UiField
+    ListBox aeExperimentType;
+
+    @UiField
+    DateBox releaseDate;
 
     @UiField
     Label validationOutcomeLabel;
@@ -98,6 +118,26 @@ public class ImportSubmissionDialog extends DialogBox {
         setText("Import Experiment Submission");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
+
+        DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
+
+        releaseDate.setFormat(format);
+        releaseDate.getElement().setPropertyString("placeholder", dateTimeFormatPlaceholder());
+        releaseDate.getDatePicker().addShowRangeHandler(new ShowRangeHandler<Date>()
+        {
+            @Override
+            public void onShowRange(final ShowRangeEvent<Date> event)
+            {
+                final Date today = today();
+                Date d = zeroTime(event.getStart());
+                final long endTime = event.getEnd().getTime();
+                while (d.before(today) && d.getTime() <= endTime)
+                {
+                    releaseDate.getDatePicker().setTransientEnabledOnDates(false, d);
+                    d = nextDay(d);
+                }
+            }
+        });
     }
 
     public void setPresenter(Presenter presenter) {
@@ -182,6 +222,7 @@ public class ImportSubmissionDialog extends DialogBox {
                     @Override
                     public void onSuccess(ImportedExperimentProfile result) {
                         waitingPopup.hide();
+                        populateSubmissionDetails(result);
                         showDeckPanel(Panels.SUBMISSION_DETAILS);
                     }
                 }
@@ -227,6 +268,12 @@ public class ImportSubmissionDialog extends DialogBox {
                         showDeckPanel(Panels.SUBMISSION_CONFIRMATION);
                     }
                 });
+    }
+
+    private void populateSubmissionDetails(ImportedExperimentProfile details) {
+        title.setValue(details.getTitle());
+        description.setValue(details.getDescription());
+        aeExperimentType.setValue(0, details.getAeExperimentType());
     }
 
     private void showValidationResult(ValidationResult result) {
@@ -278,6 +325,22 @@ public class ImportSubmissionDialog extends DialogBox {
 
     private String getFeedbackMessage() {
         return feedbackMessage.getValue().trim();
+    }
+
+    private static Date today()
+    {
+        return zeroTime(new Date());
+    }
+
+    private static Date zeroTime(final Date date)
+    {
+        return new Date(date.getYear(),date.getMonth(),date.getDate());
+    }
+
+    private static Date nextDay(final Date date)
+    {
+        CalendarUtil.addDaysToDate(date, 1);
+        return date;
     }
 
     enum Panels {

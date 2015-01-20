@@ -25,13 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static com.google.gwt.user.client.rpc.RpcRequestBuilder.MODULE_BASE_HEADER;
 
 public class RemoteLoggingServiceImpl extends RemoteServiceServlet implements RemoteLoggingService {
 
@@ -93,22 +91,5 @@ public class RemoteLoggingServiceImpl extends RemoteServiceServlet implements Re
         }
 
         return lr;
-    }
-
-    private String getRequestModuleBasePath() {
-        try {
-            String header = getThreadLocalRequest().getHeader(MODULE_BASE_HEADER);
-            if (header == null) {
-                return null;
-            }
-            String path = new URL(header).getPath();
-            String contextPath = getThreadLocalRequest().getContextPath();
-            if (!path.startsWith(contextPath)) {
-                return null;
-            }
-            return path.substring(contextPath.length());
-        } catch (MalformedURLException e) {
-            return null;
-        }
     }
 }

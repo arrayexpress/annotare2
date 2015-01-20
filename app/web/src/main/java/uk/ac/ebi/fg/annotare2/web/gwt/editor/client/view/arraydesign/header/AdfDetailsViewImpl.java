@@ -41,8 +41,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 import java.util.Date;
 import java.util.List;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormat;
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.dateTimeFormatPlaceholder;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormat;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormatPlaceholder;
 
 /**
  * @author Olga Melnichuk

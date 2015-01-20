@@ -18,12 +18,9 @@
 package uk.ac.ebi.fg.annotare2.submission.model;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Set;
+import java.util.Date;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.unmodifiableCollection;
 
 public class ImportedExperimentProfile implements Serializable {
 
@@ -33,10 +30,11 @@ public class ImportedExperimentProfile implements Serializable {
 
     private String description;
 
-    private Set<String> aeExperimentTypes;
+    private String aeExperimentType;
+
+    private Date publicReleaseDate;
 
     public ImportedExperimentProfile() {
-        aeExperimentTypes = newHashSet();
     }
 
     public String getTitle() {
@@ -55,12 +53,20 @@ public class ImportedExperimentProfile implements Serializable {
         this.description = description;
     }
 
-    public Collection<String> getAeExperimentTypes() {
-        return unmodifiableCollection(aeExperimentTypes);
+    public String getAeExperimentType() {
+        return aeExperimentType;
     }
 
-    public void setAeExperimentTypes(Set<String> aeExperimentTypes) {
-        this.aeExperimentTypes = aeExperimentTypes;
+    public void setAeExperimentType(String aeExperimentType) {
+        this.aeExperimentType = aeExperimentType;
+    }
+
+    public Date getPublicReleaseDate() {
+        return publicReleaseDate;
+    }
+
+    public void setPublicReleaseDate(Date publicReleaseDate) {
+        this.publicReleaseDate = publicReleaseDate;
     }
 
     public void populate(ImportedExperimentProfile profile) {
@@ -70,8 +76,11 @@ public class ImportedExperimentProfile implements Serializable {
         if (!isNullOrEmpty(profile.description)) {
             description = profile.description;
         }
-        if (!profile.aeExperimentTypes.isEmpty()) {
-            aeExperimentTypes = profile.aeExperimentTypes;
+        if (!isNullOrEmpty(profile.aeExperimentType)) {
+            aeExperimentType = profile.aeExperimentType;
+        }
+        if (null != profile.publicReleaseDate) {
+            publicReleaseDate = profile.publicReleaseDate;
         }
     }
 }
