@@ -149,6 +149,14 @@ public class ImportSubmissionDialog extends DialogBox {
         dataFilesUploadView.setDataFiles(files);
     }
 
+    public void setAeExperimentTypeOptions(List<String> options) {
+        aeExperimentType.clear();
+        aeExperimentType.addItem("");
+        for (String option : options) {
+            aeExperimentType.addItem(option);
+        }
+    }
+
     public void startImport() {
         showDeckPanel(Panels.FILE_UPLOAD);
         deckPanel.setWidth(Math.floor(Window.getClientWidth() * 0.7) + "px");
@@ -211,6 +219,7 @@ public class ImportSubmissionDialog extends DialogBox {
 
     private void getSubmissionProfile() {
         waitingPopup.center();
+
         presenter.getSubmissionProfile(
                 new AsyncCallback<ImportedExperimentProfile>() {
                     @Override
@@ -273,7 +282,26 @@ public class ImportSubmissionDialog extends DialogBox {
     private void populateSubmissionDetails(ImportedExperimentProfile details) {
         title.setValue(details.getTitle());
         description.setValue(details.getDescription());
-        aeExperimentType.setValue(0, details.getAeExperimentType());
+        setAeExperimentType(details.getAeExperimentType());
+        releaseDate.setValue(details.getPublicReleaseDate());
+    }
+
+    private String getAeExperimentType() {
+        int index = aeExperimentType.getSelectedIndex();
+        if (index == 0) {
+            return null;
+        }
+        return aeExperimentType.getValue(index);
+    }
+
+    private void setAeExperimentType(String type) {
+        for (int i = 0; i < aeExperimentType.getItemCount(); i++) {
+            String value = aeExperimentType.getValue(i);
+            if (value.equals(type)) {
+                aeExperimentType.setSelectedIndex(i);
+                return;
+            }
+        }
     }
 
     private void showValidationResult(ValidationResult result) {

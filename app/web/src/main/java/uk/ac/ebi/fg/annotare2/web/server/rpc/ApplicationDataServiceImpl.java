@@ -165,7 +165,7 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
 
     @Override
     public ArrayList<String> getAeExperimentTypes(ExperimentProfileType type) {
-        return new ArrayList<String>(experimentTypeList.getExperimentTypes());
+        return new ArrayList<>(experimentTypeList.getExperimentTypes());
     }
 
     @Override

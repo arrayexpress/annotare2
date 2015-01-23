@@ -25,6 +25,8 @@ public interface ImportSubmissionView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
+    void setAeExperimentTypeOptions(List<String> aeExperimentTypeOptions);
+
     void setDataFiles(List<DataFileRow> files);
 
     void startImport();

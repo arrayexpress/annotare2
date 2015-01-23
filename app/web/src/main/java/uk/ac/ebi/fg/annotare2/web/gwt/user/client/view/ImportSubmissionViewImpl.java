@@ -2,7 +2,6 @@ package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 
 import java.util.List;
 
@@ -30,5 +29,10 @@ public class ImportSubmissionViewImpl extends SimplePanel implements ImportSubmi
     @Override
     public void setDataFiles(List<DataFileRow> files) {
         dialog.setDataFiles(files);
+    }
+
+    @Override
+    public void setAeExperimentTypeOptions(List<String> aeExperimentTypeOptions) {
+        dialog.setAeExperimentTypeOptions(aeExperimentTypeOptions);
     }
 }

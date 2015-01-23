@@ -108,17 +108,17 @@
         }
 
         .details td {
-            padding-bottom: 10px
+            padding-bottom: 10px;
+            vertical-align: top;
         }
 
         .title {
             text-align: right;
-            vertical-align: top;
-            width: 20%
+            width: 120px;
+            padding: 0 10px
         }
 
         .field {
-            width: 80%
         }
 
         .details input, .details textarea {

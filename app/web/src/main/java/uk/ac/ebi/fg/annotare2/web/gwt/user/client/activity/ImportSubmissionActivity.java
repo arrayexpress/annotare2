@@ -26,6 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ImportedExperimentProfile;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ImportSubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEventHandler;
@@ -52,6 +53,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
 
     private final ImportSubmissionView view;
     private final PlaceController placeController;
+    private final ApplicationDataServiceAsync appDataService;
     private final ImportSubmissionServiceAsync importService;
     private final DataFilesProxy dataFilesService;
 
@@ -62,11 +64,13 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     @Inject
     public ImportSubmissionActivity(ImportSubmissionView view,
                                     PlaceController placeController,
+                                    ApplicationDataServiceAsync appDataService,
                                     ImportSubmissionServiceAsync importService,
                                     DataFilesProxy dataFilesService) {
         this.view = view;
         this.placeController = placeController;
         this.importService = importService;
+        this.appDataService = appDataService;
         this.dataFilesService = dataFilesService;
     }
 
@@ -79,6 +83,8 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+
+        loadAeExperimentTypesAsync();
 
         dataUpdateHandler = eventBus.addHandler(DataFilesUpdateEvent.getType(), new DataFilesUpdateEventHandler() {
             @Override
@@ -101,10 +107,21 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
         placeController.goTo(place);
     }
 
+    private void loadAeExperimentTypesAsync() {
+        appDataService.getAeExperimentTypes(null,
+                new ReportingAsyncCallback<List<String>>(FailureMessage.UNABLE_TO_LOAD_AE_EXPERIMENT_TYPES) {
+                    @Override
+                    public void onSuccess(List<String> result) {
+                        view.setAeExperimentTypeOptions(result);
+                    }
+                }
+        );
+    }
+
     private void loadFilesAsync() {
         dataFilesService.getFiles(
                 submissionId,
-                new ReportingAsyncCallback<List<DataFileRow>>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
+                new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
                     @Override
                     public void onSuccess(List<DataFileRow> result) {
                         view.setDataFiles(result);
@@ -165,7 +182,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
 
     @Override
     public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
-        dataFilesService.deleteFiles(submissionId, new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
+        dataFilesService.deleteFiles(submissionId, new ArrayList<>(transform(dataFiles, new Function<DataFileRow, Long>() {
             public Long apply(@Nullable DataFileRow input) {
                 return null != input ? input.getId() : null;
             }

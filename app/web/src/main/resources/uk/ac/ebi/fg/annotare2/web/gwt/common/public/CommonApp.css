@@ -62,6 +62,10 @@
     color: #999;
 }
 
+.gwt-ListBox {
+    border: 1px solid #bbbbbb;
+}
+
 .gwt-DialogBox {
     box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     border-radius: 5px;
