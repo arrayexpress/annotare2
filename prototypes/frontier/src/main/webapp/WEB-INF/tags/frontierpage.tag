@@ -29,8 +29,9 @@
     <!-- CSS: implied media=all -->
     <!-- CSS concatenated and minified via ant build script-->
     <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/mini/ebi-fluid-embl.css">
-    <link rel="stylesheet" href="assets/css/annotare.css">
-    <link rel="stylesheet" href="assets/css/annotare-colours.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/annotare.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/annotare-colours.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
     <jsp:invoke fragment="extracss"/>
 
     <!-- end CSS-->
@@ -82,7 +83,7 @@
             <!-- local-title -->
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
-            <div id="local-title" class="logo-title"><img class="svg" src="assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href=./" title="Back to Annotare homepage">Annotare</a></h1></span></div>
+            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href=./" title="Back to Annotare homepage">Annotare</a></h1></span></div>
 
             <!-- /local-title -->
 
