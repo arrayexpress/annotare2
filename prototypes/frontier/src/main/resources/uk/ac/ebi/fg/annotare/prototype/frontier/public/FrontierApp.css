@@ -8,6 +8,7 @@
 
 .gwt-NotificationPopup.error,
 .gwt-NotificationPopup.failure {
+    border: 0 none;
     border-bottom: 4px solid #c40000;
 }
 
@@ -17,6 +18,7 @@
 }
 
 .gwt-NotificationPopup.warning {
+    border: 0 none;
     border-bottom: 4px solid #e2aa00;
 }
 
@@ -25,6 +27,7 @@
 }
 
 .gwt-NotificationPopup.info {
+    border: 0 none;
     border-bottom: 4px solid #00c400;
 }
 
