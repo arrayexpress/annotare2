@@ -1,0 +1,20 @@
+<module rename-to="frontier.gwt">
+	<inherits name="com.google.gwt.user.User"/>
+
+    <inherits name="com.google.gwt.logging.Logging"/>
+    <set-property name="gwt.logging.logLevel" value="INFO"/>
+    <set-property name="gwt.logging.enabled" value="TRUE"/>
+
+    <set-property name="gwt.logging.consoleHandler" value="ENABLED" />
+    <set-property name="gwt.logging.developmentModeHandler" value="ENABLED" />
+    <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
+    <set-property name="gwt.logging.systemHandler" value="DISABLED" />
+    <set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED"/>
+
+    <stylesheet src="FrontierApp.css"/>
+
+    <source path="client"/>
+    <source path="public"/>
+
+	<entry-point class="uk.ac.ebi.fg.annotare.prototype.frontier.client.FrontierApp"/>
+</module>
