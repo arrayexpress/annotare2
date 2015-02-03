@@ -35,7 +35,7 @@
         <webapp.log.appender.ref>server-log</webapp.log.appender.ref>
         <webapp.webxml.security.transport.guarantee>NONE</webapp.webxml.security.transport.guarantee>
 
-        <!-- http://colorschemedesigner.com/#3L61Tw0w0w0w0 -->
+        <!-- http://colorschemedesigner.com/csd-3.5/#3L61Tw0w0w0w0 -->
         <color.p1>#1240AB</color.p1>
         <color.p2>#2A4480</color.p2>
         <color.p3>#06266F</color.p3>

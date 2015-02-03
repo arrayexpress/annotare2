@@ -82,9 +82,7 @@
             <!-- local-title -->
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
-            <div id="local-title">
-                <h1><a href="//www.ebi.ac.uk/fg/annotare/" title="Back to Annotare homepage">Annotare</a></h1>
-            </div>
+            <div id="local-title" class="logo-title"><img class="svg" src="assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href=./" title="Back to Annotare homepage">Annotare</a></h1></span></div>
 
             <!-- /local-title -->
 

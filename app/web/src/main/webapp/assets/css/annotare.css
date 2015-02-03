@@ -1,6 +1,20 @@
 /*
  * Annotare custom stylesheet
  */
-#local-title h1 {
-    margin:20px 0 10px 0;
+
+.logo-title {
+    display: inline-block
+}
+
+#global-footer ul {
+    padding: 0 0 0 5px;
+}
+
+#global-footer ul li a, #ebi-footer-meta p a {
+    padding: 2px 4px;
+}
+
+#ebi-footer-meta p a {
+    margin-left: -4px;
+    margin-right:-4px;
 }
