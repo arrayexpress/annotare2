@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 16.0.4, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="64px"
-	 height="64px" viewBox="0 0 640 640" enable-background="new 0 0 640 640" xml:space="preserve">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="640px" height="640px" viewBox="0 0 640 640" enable-background="new 0 0 640 640" xml:space="preserve">
 <g id="background">
-     	<g id="outer">
-     		<circle fill="#4A5C86" cx="320" cy="320" r="316"/>
-     	</g>
-     	<g id="inner">
-     		<circle fill="#EDF2F8" cx="320" cy="320" r="284"/>
-     	</g>
-     </g>
-<g id="annotare_logo">
-	<path fill="#434242" stroke="#434242" stroke-width="15" stroke-linejoin="round" d="M188.7212,526.4297l-74.4067-76.2949
-		c-7.0859-7.2656-7.0859-19.376,0-26.6426l237.3916-243.4175L502.8799,128l-50.7852,155.0122L214.7046,526.4297
-		C207.6177,533.6963,195.8071,533.6963,188.7212,526.4297z"/>
-	<polygon fill="#979798" points="159.9951,376.832 260.1934,479.5723 243.564,496.624 143.3667,393.8818 	"/>
-	<polygon fill="#CDCDCE" points="452.0947,283.0122 351.7061,180.0747 502.8799,128 	"/>
-	<polygon fill="#FFD073" points="193.3984,411.084 160.0015,376.8389 352.0508,179.9136 385.4482,214.1597 	"/>
-	<polygon fill="#FFBF40" points="226.8042,445.3398 193.4048,411.0938 385.4561,214.1665 418.8555,248.4131 	"/>
-	<polygon fill="#BF8F30" points="260.2104,479.5928 226.8086,445.3438 418.8594,248.418 452.2607,282.6665 	"/>
-	<path fill="#434242" stroke="#434242" stroke-width="5" d="M502.8799,128L423.75,155.8535
-		c4.7236,12.1108,10.6299,23.0098,20.0771,32.6982c9.4492,9.6885,20.0791,15.7432,31.8887,20.5874L502.8799,128z"/>
+    <g id="outer">
+        <circle fill="#4A5C86" cx="320" cy="320" r="316"/>
+    </g>
+    <g id="inner">
+        <circle fill="#EDF2F8" cx="320" cy="320" r="284"/>
+    </g>
 </g>
+<g id="annotare_logo">
+	<rect x="180" y="281" fill="#BF8F30" width="280" height="162"/>
+	<polygon fill="#FFD073" points="175.3574,283 319,100 462.6426,283  "/>
+	<path fill="none" stroke="#06266F" stroke-width="33" stroke-miterlimit="10" d="M460.6875,505.2334   c-3.6016,3.8418-8.4941,6.2666-13.5938,6.2666H193.8945c-10.585,0-19.1738-9.3633-19.1997-20.624l-0.4888-207.3442   c-0.0112-4.8174,1.5771-9.5171,4.4854-13.2075L305.291,110.1938c3.6494-4.6294,9.0361-6.6938,14.7148-6.6938   c0.002,0,0.002,0,0.0039,0c5.6816,0,11.0684,2.0356,14.7148,6.667l126.5986,160.4194c2.8838,3.6641,4.4697,8.1562,4.4814,12.9341   l0.4893,207.1689C466.3066,496.1143,464.2891,501.3916,460.6875,505.2334z"/>
+	<polygon fill="#06266F" points="250.23,196 319,107.3008 387.7705,196  "/>
+	<rect x="185" y="434" fill="#06266F" width="270" height="69"/>
+	
+		<line fill="none" stroke="#06266F" stroke-width="36" stroke-linecap="round" stroke-miterlimit="10" x1="372" y1="449" x2="372" y2="286"/>
+	
+		<line fill="none" stroke="#06266F" stroke-width="36" stroke-linecap="round" stroke-miterlimit="10" x1="268" y1="449" x2="268" y2="286"/>
+</g>
+
 </svg>
