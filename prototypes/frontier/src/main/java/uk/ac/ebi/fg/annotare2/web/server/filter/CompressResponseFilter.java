@@ -17,6 +17,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.filter;
 
+import com.googlecode.htmlcompressor.compressor.ClosureJavaScriptCompressor;
 import com.googlecode.htmlcompressor.compressor.YuiCssCompressor;
 
 import javax.servlet.*;
@@ -26,11 +27,12 @@ import java.io.IOException;
 
 @WebFilter(
         filterName = "CompressResponseFilter",
-        urlPatterns = { "/assets/xxx/*" }
+        urlPatterns = { "*.css", "*.js" }
 )
 public class CompressResponseFilter implements Filter {
 
-    private YuiCssCompressor compressor;
+    private YuiCssCompressor cssCompressor;
+    private ClosureJavaScriptCompressor jsCompressor;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp,
@@ -41,13 +43,22 @@ public class CompressResponseFilter implements Filter {
 
         chain.doFilter(req, responseWrapper);
 
-        String servletResponse = new String(responseWrapper.toString());
-        resp.getWriter().write(compressor.compress(servletResponse));
+        String compressed;
+        String contentType = resp.getContentType();
+        if (null != contentType && contentType.contains("/css")) {
+            compressed = cssCompressor.compress(responseWrapper.toString());
+        } else if (null != contentType && resp.getContentType().contains("/javascript")) {
+            compressed = jsCompressor.compress(responseWrapper.toString());
+        } else {
+            compressed = responseWrapper.toString();
+        }
+        resp.getWriter().write(compressed);
     }
 
     @Override
     public void init(FilterConfig config) throws ServletException {
-        compressor = new YuiCssCompressor();
+        cssCompressor = new YuiCssCompressor();
+        jsCompressor = new ClosureJavaScriptCompressor();
     }
 
     @Override

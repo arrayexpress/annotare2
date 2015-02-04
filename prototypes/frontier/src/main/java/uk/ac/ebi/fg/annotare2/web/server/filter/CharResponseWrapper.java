@@ -17,19 +17,19 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.filter;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.CharArrayWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 
 public class CharResponseWrapper extends HttpServletResponseWrapper {
 
-    private final CharArrayWriter output;
+    private static final String CONTENT_LENGTH_HEADER = "Content-Length";
 
-    @Override
-    public String toString() {
-        return output.toString();
-    }
+    private final CharArrayWriter output;
 
     public CharResponseWrapper(HttpServletResponse response) {
         super(response);
@@ -37,8 +37,43 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
     }
 
     @Override
+    public String toString() {
+        return output.toString();
+    }
+
+    @Override
     public PrintWriter getWriter() {
         return new PrintWriter(output);
     }
 
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+        return new OutputStreamToWriter(output);
+    }
+
+    @Override
+    public void setContentLength(int contentLength) {
+        // do just nothing
+    }
+
+    public static class OutputStreamToWriter extends ServletOutputStream {
+
+        private final Writer writer;
+
+        public OutputStreamToWriter(Writer writer) {
+            this.writer = writer;
+        }
+
+        public void close() throws IOException {
+            writer.close();
+        }
+
+        public void flush() throws IOException {
+            writer.flush();
+        }
+
+        public void write(int b) throws IOException {
+            writer.write(b);
+        }
+    }
 }
