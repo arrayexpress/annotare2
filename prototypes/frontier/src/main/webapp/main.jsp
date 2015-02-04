@@ -8,6 +8,8 @@
         <jsp:attribute name="extrajs">
             <script type="text/javascript" src="${pageContext.request.contextPath}/frontier.gwt/frontier.gwt.nocache.js"></script>
         </jsp:attribute>
-        <jsp:body/>
+        <jsp:body>
+            <jsp:include page="/static/pages/${param.pageName}"/>
+        </jsp:body>
     </t:frontierpage>
 </compress:html>

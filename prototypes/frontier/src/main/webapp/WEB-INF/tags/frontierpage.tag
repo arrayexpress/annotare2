@@ -83,7 +83,7 @@
             <!-- local-title -->
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
-            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href=./" title="Back to Annotare homepage">Annotare</a></h1></span></div>
+            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href=${pageContext.request.contextPath}/" title="Back to Annotare homepage">Annotare</a></h1></span></div>
 
             <!-- /local-title -->
 
@@ -91,15 +91,15 @@
 
             <nav>
                 <ul class="grid_24" id="local-nav">
-                    <li class="first active"><a href="./">Home</a></li>
-                    <li><a href="./help/">Help</a></li>
-                    <li class="last"><a href="./about/">About Annotare</a></li>
+                    <li class="first active"><a href="${pageContext.request.contextPath}/">Home</a></li>
+                    <li><a href="${pageContext.request.contextPath}/help/">Help</a></li>
+                    <li class="last"><a href="${pageContext.request.contextPath}/about/">About Annotare</a></li>
                     <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
                          add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
                          whichever one will show up last...
                          For example: -->
-                    <li class="functional last"><a href="./login/" class="icon icon-functional" data-icon="l">Login</a></li>
-                    <li class="functional"><a href="./sign-up/" class="icon icon-functional" data-icon="7">Register</a></li>
+                    <li class="functional last"><a href="#" class="icon icon-functional" data-icon="l">Login</a></li>
+                    <li class="functional"><a href="#" class="icon icon-functional" data-icon="7">Register</a></li>
                     <li class="functional"><a href="#" class="icon icon-generic" data-icon="\">Feedback</a></li>
                 </ul>
             </nav>

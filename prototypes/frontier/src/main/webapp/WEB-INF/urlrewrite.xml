@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite
+        PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite>
+    <!-- skip all requests for assets -->
+    <rule>
+        <from>^(/(assets|frontier[.]gwt)/.*)$</from>
+        <to last="true">$1</to>
+    </rule>
+
+    <!-- global rule to set original request uri as a parameter -->
+    <rule>
+        <from>.*</from>
+        <set type="parameter" name="originalRequestUri">%{request-uri}</set>
+    </rule>
+
+    <rule>
+        <from>^/about([.]html?|/?)$</from>
+        <set type="parameter" name="pageName">about.html</set>
+        <to type="forward" last="true">/main.jsp</to>
+    </rule>
+    <rule>
+        <from>^/help/?$</from>
+        <to type="redirect" last="true">%{context-path}/help/index.html</to>
+    </rule>
+    <rule>
+        <from>^/help/(.+)[.]html?$</from>
+        <set type="parameter" name="pageName">help/${lower:$1}.html</set>
+        <to type="forward" last="true">/main.jsp</to>
+    </rule>
+</urlrewrite>
