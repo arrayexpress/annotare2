@@ -6,6 +6,10 @@
     display: inline-block
 }
 
+.ie8 .logo-title {
+    display: inline;
+}
+
 #global-footer ul {
     padding: 0 0 0 6px;
 }

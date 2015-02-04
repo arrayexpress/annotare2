@@ -1,4 +1,4 @@
-package uk.ac.ebi.fg.annotare.prototype.frontier.client;
+package uk.ac.ebi.fg.annotare2.prototype.frontier.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
