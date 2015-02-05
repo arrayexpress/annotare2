@@ -16,6 +16,7 @@
 <%@tag description="Frontier page template" pageEncoding="UTF-8"%>
 <%@attribute name="extracss" fragment="true"%>
 <%@attribute name="extrajs" fragment="true"%>
+<%@attribute name="extradeferjs" fragment="true"%>
 <!DOCTYPE html>
 <!-- for more info please see http://stackoverflow.com/questions/1296235/jsp-tricks-to-make-templating-easier/3257426#3257426 -->
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
@@ -113,9 +114,21 @@
                          add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
                          whichever one will show up last...
                          For example: -->
-                    <li class="functional last"><a href="#" class="icon icon-functional" data-icon="l">Login</a></li>
-                    <li class="functional"><a href="#" class="icon icon-functional" data-icon="7">Register</a></li>
-                    <li class="functional"><a href="#" class="icon icon-generic" data-icon="\">Feedback</a></li>
+                    <%
+                        Boolean isLoggedIn = (Boolean)session.getAttribute("isLoggedIn");
+                        if (null != isLoggedIn && isLoggedIn) {
+                    %>
+                    <li class="functional last"><a href="#" class="icon icon-functional login" data-icon="l">Logout</a></li>
+                    <li class="functional"><a href="#" class="icon icon-generic account" data-icon="M">${sessionScope.userName}</a></li>
+                    <%
+                        } else {
+                    %>
+                    <li class="functional last"><a href="#" class="icon icon-functional login" data-icon="l">Login</a></li>
+                    <li class="functional"><a href="#" class="icon icon-functional register" data-icon="7">Register</a></li>
+                    <%
+                        }
+                    %>
+                    <li class="functional"><a href="#" class="icon icon-generic feedback" data-icon="\">Feedback</a></li>
                 </ul>
             </nav>
 
@@ -189,7 +202,7 @@
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
 -->
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
-
+<jsp:invoke fragment="extradeferjs"/>
 <!-- end scripts-->
 
 <!-- Google Analytics details... -->

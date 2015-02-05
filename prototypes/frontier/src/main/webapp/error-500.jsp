@@ -21,10 +21,8 @@
         request.setAttribute("exceptionMessage", exception.getMessage());
     %>
     <t:frontierpage>
-        <jsp:attribute name="extracss">
-        </jsp:attribute>
-        <jsp:attribute name="extrajs">
-            <script type="text/javascript" src="${pageContext.request.contextPath}/frontier.gwt/frontier.gwt.nocache.js"></script>
+        <jsp:attribute name="extradeferjs">
+            <script defer="defer" type="text/javascript" src="${pageContext.request.contextPath}/frontier.gwt/frontier.gwt.nocache.js"></script>
         </jsp:attribute>
         <jsp:body>
             <section>
