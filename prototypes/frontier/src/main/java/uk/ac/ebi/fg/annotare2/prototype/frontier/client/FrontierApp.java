@@ -20,6 +20,7 @@ package uk.ac.ebi.fg.annotare2.prototype.frontier.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -41,7 +42,13 @@ public class FrontierApp implements EntryPoint {
         helloLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                NotificationPopupPanel.warning("Hello again!", false);
+                DialogBox box = new DialogBox();
+                box.setGlassEnabled(true);
+                box.setHTML("Hello Dialog<a href=\"#\" class=\"icon icon-functional Close\" data-icon=\"x\"></a>");
+                box.setWidth("250px");
+                box.setWidget(new Label("Hello again!!!"));
+                box.center();
+                box.show();
             }
         });
 

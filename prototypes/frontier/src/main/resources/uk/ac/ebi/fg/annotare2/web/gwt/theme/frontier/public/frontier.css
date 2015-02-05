@@ -101,60 +101,114 @@
     background: url(images/circles.png) no-repeat -5px -11px;
 }
 
+.gwt-DialogBox {
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -moz-border-radius: 5px;
+    -ms-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -ms-border-radius: 5px;
+    -o-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -o-border-radius: 5px;
+}
+
+.gwt-DialogBox {
+    background-color: #eee;
+}
+
+.gwt-DialogBox table {
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+    background-color: transparent;
+    width: auto;
+    table-layout: fixed;
+}
+
+.gwt-DialogBox td, .gwt-DialogBox th  {
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+    vertical-align: bottom;
+    font-size: 100%;
+}
+
 .gwt-DialogBox .Caption {
-    background: #F1F1F1;
-    padding: 4px 8px 4px 4px;
+    color: black;
+    padding: 7px 0 2px;
     cursor: default;
-    font-family: Arial Unicode MS, Arial, sans-serif;
-    font-weight: bold;
-    border-bottom: 1px solid #bbbbbb;
-    border-top: 1px solid #D2D2D2;
+    align: left;
+    white-space: nowrap;
+    font-family: 'HelveticaNeueLT Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size: 123.1%;
+    line-height: 1.2;
 }
+
+.gwt-DialogBox .Caption .Close {
+    float: right;
+    font-size: 87%;
+    border-bottom-style: none
+}
+
 .gwt-DialogBox .dialogContent {
+    padding: 5px;
 }
-.gwt-DialogBox .dialogMiddleCenter {
-    padding: 3px;
-    background: white;
-}
-.gwt-DialogBox .dialogBottomCenter {
-    background: url(images/hborder.png) repeat-x 0px -2945px;
-}
-.gwt-DialogBox .dialogMiddleLeft {
-    background: url(images/vborder.png) repeat-y -31px 0px;
-}
-.gwt-DialogBox .dialogMiddleRight {
-    background: url(images/vborder.png) repeat-y -32px 0px;
-}
-.gwt-DialogBox .dialogTopLeftInner {
-    width: 10px;
-    height: 8px;
-    zoom: 1;
-}
-.gwt-DialogBox .dialogTopRightInner {
-    width: 12px;
-    zoom: 1;
-}
-.gwt-DialogBox .dialogBottomLeftInner {
-    width: 10px;
-    height: 12px;
-    zoom: 1;
-}
-.gwt-DialogBox .dialogBottomRightInner {
-    width: 12px;
-    height: 12px;
-    zoom: 1;
-}
-.gwt-DialogBox .dialogTopLeft {
-    background: url(images/circles.png) no-repeat -20px 0px;
-}
+
+.gwt-DialogBox .dialogTopLeft,
+.gwt-DialogBox .dialogTopCenter,
 .gwt-DialogBox .dialogTopRight {
-    background: url(images/circles.png) no-repeat -28px 0px;
+    background-color: rgba(0, 0, 0, 0.1);
 }
-.gwt-DialogBox .dialogBottomLeft {
-    background: url(images/circles.png) no-repeat 0px -36px;
-}
+
+.gwt-DialogBox .dialogMiddleLeft,
+.gwt-DialogBox .dialogMiddleCenter,
+.gwt-DialogBox .dialogMiddleRight,
+.gwt-DialogBox .dialogBottomLeft,
+.gwt-DialogBox .dialogBottomCenter,
 .gwt-DialogBox .dialogBottomRight {
-    background: url(images/circles.png) no-repeat -8px -36px;
+
+}
+
+.gwt-DialogBox .dialogTopLeft,
+.gwt-DialogBox .dialogTopRight,
+.gwt-DialogBox .dialogBottomLeft,
+.gwt-DialogBox .dialogBottomRight {
+    width: 5px;
+    height: 5px;    
+}
+
+.gwt-DialogBox .dialogTopLeft {
+    border-top-left-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -ms-border-top-left-radius: 5px;
+    -o-border-top-left-radius: 5px;
+}
+
+.gwt-DialogBox .dialogTopRight {
+    border-top-right-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -ms-border-top-right-radius: 5px;
+    -o-border-top-right-radius: 5px;
+}
+
+.gwt-DialogBox .dialogBottomLeft {
+    border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -ms-border-bottom-left-radius: 5px;
+    -o-border-bottom-left-radius: 5px;
+}
+
+.gwt-DialogBox .dialogBottomRight {
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -ms-border-bottom-right-radius: 5px;
+    -o-border-bottom-right-radius: 5px;
 }
 
 .gwt-DisclosurePanel {
