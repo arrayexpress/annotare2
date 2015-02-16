@@ -40,6 +40,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Collections.emptyMap;
 import static uk.ac.ebi.fg.annotare2.submission.model.ProtocolSubjectType.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.TermSource.EFO_TERM_SOURCE;
+import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.fixDate;
 import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabUtils.formatDate;
 
 /**
@@ -156,8 +157,8 @@ public class MageTabGenerator {
 
         idf.investigationTitle = convertToIdfFriendly(exp.getTitle(), newLine);
         idf.experimentDescription = convertToIdfFriendly(exp.getDescription(), newLine);
-        idf.publicReleaseDate = convertToIdfFriendly(formatDate(exp.getPublicReleaseDate()), newLine);
-        idf.dateOfExperiment = convertToIdfFriendly(formatDate(exp.getExperimentDate()), newLine);
+        idf.publicReleaseDate = convertToIdfFriendly(formatDate(fixDate(exp.getPublicReleaseDate())), newLine);
+        idf.dateOfExperiment = convertToIdfFriendly(formatDate(fixDate(exp.getExperimentDate())), newLine);
         idf.accession = convertToIdfFriendly(exp.getAccession(), newLine);
 
         for (OntologyTerm term : exp.getExperimentalDesigns()) {
