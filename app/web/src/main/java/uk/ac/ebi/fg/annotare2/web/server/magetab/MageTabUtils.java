@@ -32,8 +32,11 @@ public class MageTabUtils {
     }
     
     // fix date that's entered in a different time zone (by aligning it to a closer midnight GMT
-    // will work incorrectly for those living in  GMT-12 and GMT+13,+14
+    // will work incorrectly for those living in GMT-12 and GMT+13,+14
     public static Date fixDate(Date date) {
+        if (null == date) {
+            return null;
+        }
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int hours = cal.get(Calendar.HOUR_OF_DAY);
