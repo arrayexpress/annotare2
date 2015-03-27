@@ -34,5 +34,6 @@
     </div>
 </noscript>
 
+<object id="aspera-web" type="application/x-aspera-web" width="0" height="0"></object>
 </body>
 </html>
