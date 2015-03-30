@@ -24,14 +24,15 @@
 }
 
 #global-footer ul {
-    padding: 0 0 0 6px;
+    padding: 0 0 0 5px;
 }
 
 #global-footer ul li a, #ebi-footer-meta p a {
-    padding: 2px 3px;
+    padding: 0 4px;
+    display: inline-block;
 }
 
 #ebi-footer-meta p a {
-    margin-left: -3px;
-    margin-right: -3px;
+    margin-left: -4px;
+    margin-right: -4px;
 }

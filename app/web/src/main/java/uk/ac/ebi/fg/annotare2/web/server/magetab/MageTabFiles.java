@@ -125,7 +125,7 @@ public class MageTabFiles {
     public static MageTabFiles createMageTabFiles(ExperimentProfile exp, EfoSearch efoSearch, boolean sanitize) throws IOException, ParseException {
         File tmp = Files.createTempDir();
         tmp.deleteOnExit();
-        return (new MageTabFiles(new File(tmp, "idf.csv"), new File(tmp, "sdrf.csv"), sanitize)).init(exp, efoSearch);
+        return (new MageTabFiles(new File(tmp, "idf.tsv"), new File(tmp, "sdrf.tsv"), sanitize)).init(exp, efoSearch);
     }
 
     public static MageTabFiles createMageTabFiles(ExperimentProfile exp, EfoSearch efoSearch, File directory, String idfFileName,
