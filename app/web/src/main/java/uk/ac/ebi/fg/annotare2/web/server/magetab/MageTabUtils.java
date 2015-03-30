@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.magetab;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -28,5 +29,26 @@ public class MageTabUtils {
 
     public static String formatDate(Date date) {
         return date == null ? "" : DATE_FORMAT.format(date);
+    }
+    
+    // fix date that's entered in a different time zone (by aligning it to a closer midnight GMT
+    // will work incorrectly for those living in GMT-12 and GMT+13,+14
+    public static Date fixDate(Date date) {
+        if (null == date) {
+            return null;
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int hours = cal.get(Calendar.HOUR_OF_DAY);
+        if (0 == hours) {
+            return date;
+        } else if (hours < 12) {
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            return cal.getTime();
+        } else {
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.add(Calendar.DATE, 1);
+            return cal.getTime();
+        }
     }
 }

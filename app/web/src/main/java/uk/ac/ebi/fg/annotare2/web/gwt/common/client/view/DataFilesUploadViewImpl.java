@@ -25,6 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.util.AsperaConnect;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
@@ -33,6 +34,9 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @UiField
     DataFilesUploadPanel uploadPanel;
+
+    @UiField
+    Button asperaUploadBtn;
 
     @UiField
     Button ftpUploadBtn;
@@ -53,6 +57,10 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         initWidget(Binder.BINDER.createAndBindUi(this));
         ftpUploadDialog = new FTPUploadDialog();
 
+        if (!AsperaConnect.isInstalled()) {
+            asperaUploadBtn.setVisible(false);
+        }
+
         deleteFilesBtn.setEnabled(false);
         fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
@@ -66,6 +74,12 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @UiHandler("ftpUploadBtn")
     void ftpUploadBtClicked(ClickEvent event) {
         ftpUploadDialog.center();
+    }
+
+    @SuppressWarnings("unused")
+    @UiHandler("asperaUploadBtn")
+    void asperaUploadBtClicked(ClickEvent event) {
+        AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/");
     }
 
     @SuppressWarnings("unused")
