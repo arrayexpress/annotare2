@@ -79,6 +79,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @SuppressWarnings("unused")
     @UiHandler("asperaUploadBtn")
     void asperaUploadBtClicked(ClickEvent event) {
+        AsperaConnect.addAsperaObject();
         AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/");
     }
 

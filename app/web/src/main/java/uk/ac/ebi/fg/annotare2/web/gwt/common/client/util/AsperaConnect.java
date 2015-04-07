@@ -17,7 +17,24 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client.util;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.ObjectElement;
+
 public class AsperaConnect {
+    private final static String ASPERA_OBJECT_ID = "aspera-web";
+
+    public static void addAsperaObject() {
+        if (null == Document.get().getElementById(ASPERA_OBJECT_ID)) {
+            ObjectElement asperaObject = Document.get().createObjectElement();
+            asperaObject.setId(ASPERA_OBJECT_ID);
+            asperaObject.setType("application/x-aspera-web");
+            asperaObject.setWidth("0px");
+            asperaObject.setHeight("0px");
+            Document.get().getBody().appendChild(asperaObject);
+        }
+    }
+
+
     public static native boolean isInstalled() /*-{
         if ($wnd.navigator.userAgent.indexOf('MSIE') != -1) {
             try {
