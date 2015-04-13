@@ -16,14 +16,17 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.*;
 import com.google.gwt.user.cellview.client.CheckboxHeader;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.CustomDataGrid;
@@ -35,6 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.NotificationPopupPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.view.client.*;
+import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -44,9 +48,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author Olga Melnichuk
- */
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
+
 public class DataFileListPanel extends SimpleLayoutPanel {
 
     private final DataGrid<DataFileRow> grid;
@@ -133,10 +136,10 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(dateColumn, "Date");
         grid.setColumnWidth(dateColumn, 110, Style.Unit.PX);
 
-        Column<DataFileRow, String> statusText = new Column<DataFileRow, String>(new TextCell()) {
+        Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell()) {
             @Override
-            public String getValue(DataFileRow object) {
-                return object.getStatus().getTitle();
+            public DataFileRow getValue(DataFileRow object) {
+                return object;
             }
         };
         statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -212,5 +215,37 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     public interface Presenter {
         void renameFile(DataFileRow dataFileRow, String newFileName);
         void removeFiles(Set<DataFileRow> dataFileRow, AsyncCallback<Void> callback);
+    }
+
+    static class DownloadLinkStatusCell extends AbstractCell<DataFileRow> {
+
+        interface Templates extends SafeHtmlTemplates {
+            @SafeHtmlTemplates.Template(
+                    "<a href=\"{1}\">{0}</a>")
+            SafeHtml item(SafeHtml label, SafeUri url);
+        }
+
+        private static Templates templates = GWT.create(Templates.class);
+
+        private final String fileDownloadUrl;
+
+        DownloadLinkStatusCell() {
+            //super("click");
+            fileDownloadUrl = GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "download?submissionId=" + getSubmissionId();
+        }
+
+        @Override
+        public void render(Context context, DataFileRow fileRow, SafeHtmlBuilder sb) {
+            sb.appendHtmlConstant("<div>");
+            if (null != fileRow && fileRow.getStatus() == DataFileStatus.STORED) {
+                sb.append(templates.item(
+                        SafeHtmlUtils.fromString(fileRow.getStatus().getTitle()),
+                        UriUtils.fromString(fileDownloadUrl + "&fileId=" + fileRow.getId())
+                ));
+            } else {
+                sb.append(SafeHtmlUtils.fromString(null != fileRow ? fileRow.getStatus().getTitle() : ""));
+            }
+            sb.appendHtmlConstant("</div>");
+        }
     }
 }

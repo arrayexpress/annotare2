@@ -85,6 +85,7 @@ public class AppServletModule extends ServletModule {
         filter("/login",
                 "/logout",
                 "/export",
+                "/download",
                 "/sign-up",
                 "/verify-email",
                 "/change-password",
@@ -95,7 +96,8 @@ public class AppServletModule extends ServletModule {
                 "/",
                 "/EditorApp/*",
                 "/edit/*",
-                "/export").through(SecurityFilter.class);
+                "/export",
+                "/download").through(SecurityFilter.class);
 
         serveRegex("^/status/?").with(StatusServlet.class);
 
@@ -109,6 +111,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("/verify-email" + JSESSIONID).with(VerifyEmailServlet.class);
         serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
         serve("/export").with(ExportServlet.class);
+        serve("/download").with(DownloadServlet.class);
         serve("/error").with(UncaughtExceptionServlet.class);
 
         bind(ExpiresNowFilter.class).in(SINGLETON);
@@ -123,6 +126,7 @@ public class AppServletModule extends ServletModule {
         bind(WelcomeServlet.class).in(SINGLETON);
         bind(UploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
+        bind(DownloadServlet.class).in(SINGLETON);
         bind(SignUpServlet.class).in(SINGLETON);
         bind(VerifyEmailServlet.class).in(SINGLETON);
         bind(ChangePasswordServlet.class).in(SINGLETON);
