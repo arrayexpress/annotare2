@@ -47,8 +47,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
-
 public class DataFileListPanel extends SimpleLayoutPanel {
 
     private final DataGrid<DataFileRow> grid;
@@ -58,6 +56,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
     private final static int MAX_FILES = 40000;
 
+    private long submissionId;
     private Presenter presenter;
 
     public DataFileListPanel() {
@@ -147,7 +146,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(dateColumn, "Date");
         grid.setColumnWidth(dateColumn, 110, Style.Unit.PX);
 
-        Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell()) {
+        Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell(submissionId)) {
             @Override
             public DataFileRow getValue(DataFileRow object) {
                 return object;
@@ -171,6 +170,10 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
     public Set<DataFileRow> getSelectedRows() {
         return selectionModel.getSelectedSet();
+    }
+
+    public void setSubmissionId(long submissionId) {
+        this.submissionId = submissionId;
     }
 
     public void setRows(List<DataFileRow> rows) {
@@ -243,9 +246,9 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
         private final String fileDownloadUrl;
 
-        DownloadLinkStatusCell() {
+        DownloadLinkStatusCell(long submissionId) {
             //super("click");
-            fileDownloadUrl = GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "download?submissionId=" + getSubmissionId();
+            fileDownloadUrl = GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "download?submissionId=" + submissionId;
         }
 
         @Override
