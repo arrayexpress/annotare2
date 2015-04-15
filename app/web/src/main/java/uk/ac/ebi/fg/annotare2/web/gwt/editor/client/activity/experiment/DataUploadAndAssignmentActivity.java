@@ -171,6 +171,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
                     @Override
                     public void onSuccess(List<DataFileRow> result) {
+                        view.getUploadView().setSubmissionId(getSubmissionId());
                         view.getUploadView().setDataFiles(result);
                         view.getAssignmentView().setDataFiles(result);
                     }

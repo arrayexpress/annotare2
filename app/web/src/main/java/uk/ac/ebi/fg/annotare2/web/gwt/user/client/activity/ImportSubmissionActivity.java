@@ -94,7 +94,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
         });
         loadFilesAsync();
 
-        view.startImport();
+        view.startImport(submissionId);
     }
 
     @Override

@@ -157,7 +157,8 @@ public class ImportSubmissionDialog extends DialogBox {
         }
     }
 
-    public void startImport() {
+    public void startImport(long submissionId) {
+        dataFilesUploadView.setSubmissionId(submissionId);
         showDeckPanel(Panels.FILE_UPLOAD);
         deckPanel.setWidth(Math.floor(Window.getClientWidth() * 0.7) + "px");
         deckPanel.setHeight(Math.floor(Window.getClientHeight() * 0.7) + "px");

@@ -29,7 +29,7 @@ public interface ImportSubmissionView extends IsWidget {
 
     void setDataFiles(List<DataFileRow> files);
 
-    void startImport();
+    void startImport(long submissionId);
 
     public interface Presenter extends ImportSubmissionDialog.Presenter {
 

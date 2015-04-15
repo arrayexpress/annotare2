@@ -22,8 +22,8 @@ public class ImportSubmissionViewImpl extends SimplePanel implements ImportSubmi
     }
 
     @Override
-    public void startImport() {
-        dialog.startImport();
+    public void startImport(long submissionId) {
+        dialog.startImport(submissionId);
     }
 
     @Override

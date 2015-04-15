@@ -146,7 +146,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(dateColumn, "Date");
         grid.setColumnWidth(dateColumn, 110, Style.Unit.PX);
 
-        Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell(submissionId)) {
+        Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell(this)) {
             @Override
             public DataFileRow getValue(DataFileRow object) {
                 return object;
@@ -244,11 +244,12 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
         private static Templates templates = GWT.create(Templates.class);
 
+        private final DataFileListPanel panel;
         private final String fileDownloadUrl;
 
-        DownloadLinkStatusCell(long submissionId) {
-            //super("click");
-            fileDownloadUrl = GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "download?submissionId=" + submissionId;
+        DownloadLinkStatusCell(DataFileListPanel panel) {
+            this.panel = panel;
+            fileDownloadUrl = GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "") + "download";
         }
 
         @Override
@@ -257,7 +258,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             if (null != fileRow && fileRow.getStatus() == DataFileStatus.STORED) {
                 sb.append(templates.item(
                         SafeHtmlUtils.fromString(fileRow.getStatus().getTitle()),
-                        UriUtils.fromString(fileDownloadUrl + "&fileId=" + fileRow.getId())
+                        UriUtils.fromString(fileDownloadUrl + "?submissionId=" + panel.submissionId + "&fileId=" + fileRow.getId())
                 ));
             } else {
                 sb.append(SafeHtmlUtils.fromString(null != fileRow ? fileRow.getStatus().getTitle() : ""));

@@ -102,7 +102,7 @@ public class DownloadServlet extends HttpServlet {
     private ExperimentSubmission getSubmission(HttpServletRequest request) throws ServletException {
         try {
             User currentUser = accountService.getCurrentUser(request.getSession());
-            return submissionManager.getExperimentSubmission(currentUser, getId(request, "submissionId"), Permission.VIEW);
+            return submissionManager.getSubmission(currentUser, getId(request, "submissionId"), ExperimentSubmission.class, Permission.VIEW);
         } catch (RecordNotFoundException e) {
             throw servletException(e);
         } catch (AccessControlException e) {

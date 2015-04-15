@@ -106,6 +106,11 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     }
 
     @Override
+    public void setSubmissionId(long submissionId) {
+        fileListPanel.setSubmissionId(submissionId);
+    }
+
+    @Override
     public void setDataFiles(List<DataFileRow> rows) {
         fileListPanel.setRows(rows);
     }
