@@ -34,7 +34,7 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
         this.digest = null;
         this.uri = uri;
         if (null != uri && "scp".equals(uri.getScheme())) {
-            this.access = new ScpFileAccess();
+            this.access = new SshFileAccess();
         } else {
             throw new IOException("Remote access is unavailable for " + uri);
         }

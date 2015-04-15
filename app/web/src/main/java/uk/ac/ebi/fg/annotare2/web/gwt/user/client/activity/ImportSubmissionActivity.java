@@ -171,6 +171,11 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
+    public void getSubmissionFtpDirectory(AsyncCallback<String> callback) {
+        dataFilesService.getSubmissionFtpDirectory(submissionId, callback);
+    }
+
+    @Override
     public void uploadFtpFiles(List<String> filesInfo, AsyncCallback<String> callback) {
         dataFilesService.registerFtpFiles(submissionId, filesInfo, callback);
     }

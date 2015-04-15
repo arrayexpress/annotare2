@@ -21,8 +21,6 @@ import com.google.common.base.Function;
 import com.google.inject.Inject;
 import org.apache.commons.fileupload.FileItem;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
-import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
@@ -41,13 +39,13 @@ import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -65,28 +63,20 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
     private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
 
     private final DataFileManager dataFileManager;
+    private final FtpManager ftpManager;
     private final AnnotareProperties properties;
-    private final UserDao userDao;
-    private final SubmissionFeedbackDao feedbackDao;
-    private final EfoSearch efoSearch;
-    private final EmailSender email;
 
     @Inject
     public DataFilesServiceImpl(AccountService accountService,
                                 SubmissionManager submissionManager,
                                 DataFileManager dataFileManager,
+                                FtpManager ftpManager,
                                 AnnotareProperties properties,
-                                UserDao userDao,
-                                SubmissionFeedbackDao feedbackDao,
-                                EfoSearch efoSearch,
                                 EmailSender emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
+        this.ftpManager = ftpManager;
         this.properties = properties;
-        this.userDao = userDao;
-        this.feedbackDao = feedbackDao;
-        this.efoSearch = efoSearch;
-        this.email = emailSender;
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
@@ -110,13 +100,22 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         }
     }
 
+    @Override
+    public String getSubmissionFtpDirectory(long submissionId) {
+        String submissionDirectory = "submission_" + submissionId;
+        if (!ftpManager.doesExist(submissionDirectory)) {
+            ftpManager.createDirectory(submissionDirectory);
+        }
+        return submissionDirectory;
+    }
+
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public Map<Integer, String> registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo)
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
-            HashMap<Integer, String> errors = new HashMap<Integer, String>();
+            HashMap<Integer, String> errors = new HashMap<>();
             int index = 0;
             for (HttpFileInfo info : filesInfo) {
                 File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
@@ -144,17 +143,10 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
-
-            String ftpRoot = properties.getFtpPickUpDir();
-            if (ftpRoot.startsWith("/")) {
-                ftpRoot = "file://" + ftpRoot;
-            }
-            if (!ftpRoot.endsWith("/")) {
-                ftpRoot = ftpRoot + "/";
-            }
+            String ftpRoot = ftpManager.getRoot();
 
             StringBuilder errors = new StringBuilder();
-            Map<String,DataFileSource> files = new HashMap<String, DataFileSource>();
+            Map<String,DataFileSource> files = new HashMap<>();
             FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
@@ -183,18 +175,12 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 }
             }
             return errors.toString();
-        } catch (URISyntaxException e) {
-            throw unexpected(e);
-        } catch (FileNotFoundException e) {
-            throw unexpected(e);
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException | DataSerializationException e) {
             throw unexpected(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
         }
     }
 
@@ -254,9 +240,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
-        } catch (IOException e) {
-            throw unexpected(e);
-        } catch (DataSerializationException e) {
+        } catch (IOException | DataSerializationException e) {
             throw unexpected(e);
         }
     }

@@ -57,7 +57,21 @@ public class DataFilesProxy {
         } else {
             load(submissionId, callback);
         }
+    }
 
+    public void getSubmissionFtpDirectory(long submissionId, final AsyncCallback<String> callback) {
+        filesService.getSubmissionFtpDirectory(submissionId, new AsyncCallbackWrapper<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                updater.update();
+                callback.onSuccess(result);
+            }
+        }.wrap());
     }
 
     public void registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {

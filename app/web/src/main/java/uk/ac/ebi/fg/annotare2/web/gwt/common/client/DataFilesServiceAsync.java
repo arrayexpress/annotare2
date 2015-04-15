@@ -28,6 +28,8 @@ public interface DataFilesServiceAsync {
 
     void getFiles(long submissionId, AsyncCallback<List<DataFileRow>> async);
 
+    void getSubmissionFtpDirectory(long submissionId, AsyncCallback<String> async);
+
     void registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
 
     void registerFtpFiles(long submissionId, List<String> filesInfo, AsyncCallback<String> async);

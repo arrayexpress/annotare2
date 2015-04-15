@@ -27,11 +27,11 @@ public class FileAvailabilityChecker {
 
     private final Map<String, List<String>> filesCache;
 
-    private final ScpFileAccess access;
+    private final SshFileAccess access;
 
     public FileAvailabilityChecker() {
-        this.filesCache = new HashMap<String, List<String>>();
-        this.access = new ScpFileAccess();
+        this.filesCache = new HashMap<>();
+        this.access = new SshFileAccess();
     }
 
     public boolean isAvailable(DataFileSource source) throws IOException {

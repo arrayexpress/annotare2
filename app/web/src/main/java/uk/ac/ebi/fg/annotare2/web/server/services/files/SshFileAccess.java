@@ -26,14 +26,13 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
-public class ScpFileAccess implements RemoteFileAccess, Serializable {
+public class SshFileAccess implements RemoteFileAccess, Serializable {
 
     private static final long serialVersionUID = 752647115562277616L;
 
     public boolean isSupported(URI file) {
         return null != file && "scp".equals(file.getScheme());
     }
-
 
     public boolean isAccessible(URI file) throws IOException {
         return (isSupported(file) &&
@@ -99,6 +98,17 @@ public class ScpFileAccess implements RemoteFileAccess, Serializable {
             if (!(executor.execute(
                     "ssh " + file.getHost() + " rm " + escapeFilePath(file.getPath())
                     ))) {
+                throw new IOException(executor.getErrors());
+            }
+        }
+    }
+
+    public void createDirectory(URI directory) throws IOException {
+        if (isSupported(directory)) {
+            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+            if (!(executor.execute(
+                    "ssh " + directory.getHost() + " mkdir " + escapeFilePath(directory.getPath())
+            ))) {
                 throw new IOException(executor.getErrors());
             }
         }

@@ -32,6 +32,8 @@ public interface DataFilesService extends RemoteService {
 
     List<DataFileRow> getFiles(long submissionId) throws ResourceNotFoundException, NoPermissionException;
 
+    String getSubmissionFtpDirectory(long submissionId);
+
     Map<Integer, String> registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 
     String registerFtpFiles(long submissionId, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException;

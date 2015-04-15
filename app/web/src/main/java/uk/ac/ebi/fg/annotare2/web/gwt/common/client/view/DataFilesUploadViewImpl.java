@@ -25,6 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.util.AsperaConnect;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
@@ -48,6 +49,8 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     DataFileListPanel fileListPanel;
 
     private final FTPUploadDialog ftpUploadDialog;
+
+    private Presenter presenter;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -79,8 +82,14 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @SuppressWarnings("unused")
     @UiHandler("asperaUploadBtn")
     void asperaUploadBtClicked(ClickEvent event) {
-        AsperaConnect.addAsperaObject();
-        AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/");
+        presenter.getSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
+            @Override
+            public void onSuccess(String submissionDir) {
+                AsperaConnect.addAsperaObject();
+                AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/" + submissionDir);
+            }
+        });
+
     }
 
     @SuppressWarnings("unused")
@@ -124,6 +133,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
         uploadPanel.setPresenter(presenter);
         fileListPanel.setPresenter(presenter);
         ftpUploadDialog.setPresenter(presenter);
