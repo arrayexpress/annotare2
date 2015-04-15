@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
-import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
@@ -89,7 +89,7 @@ public class DownloadServlet extends HttpServlet {
 
     private DataFile getDataFile(HttpServletRequest request) throws ServletException {
         long fileId = getId(request, "fileId");
-        ExperimentSubmission submission = getSubmission(request);
+        Submission submission = getSubmission(request);
         Set<DataFile> files = submission.getFiles();
         for (DataFile file : files) {
             if (file.getId() == fileId) {
@@ -99,10 +99,10 @@ public class DownloadServlet extends HttpServlet {
         return null;
     }
 
-    private ExperimentSubmission getSubmission(HttpServletRequest request) throws ServletException {
+    private Submission getSubmission(HttpServletRequest request) throws ServletException {
         try {
             User currentUser = accountService.getCurrentUser(request.getSession());
-            return submissionManager.getSubmission(currentUser, getId(request, "submissionId"), ExperimentSubmission.class, Permission.VIEW);
+            return submissionManager.getSubmission(currentUser, getId(request, "submissionId"), Submission.class, Permission.VIEW);
         } catch (RecordNotFoundException e) {
             throw servletException(e);
         } catch (AccessControlException e) {
