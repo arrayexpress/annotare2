@@ -17,21 +17,17 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FTPUploadDialog extends DialogBox {
@@ -49,8 +45,8 @@ public class FTPUploadDialog extends DialogBox {
     @UiField
     InlineLabel ftpUrl;
 
-    @UiField
-    TextArea values;
+    //@UiField
+    //TextArea values;
 
     @UiField
     Button cancelButton;
@@ -80,14 +76,14 @@ public class FTPUploadDialog extends DialogBox {
 
     @Override
     public void show() {
-        values.setValue("");
+        //values.setValue("");
         okButton.setEnabled(true);
         super.show();
-        Scheduler.get().scheduleDeferred(new Command() {
-            public void execute() {
-                values.setFocus(true);
-            }
-        });
+        //Scheduler.get().scheduleDeferred(new Command() {
+        //    public void execute() {
+        //        values.setFocus(true);
+        //    }
+        //});
     }
 
     @UiHandler("okButton")
@@ -136,12 +132,13 @@ public class FTPUploadDialog extends DialogBox {
     }
 
     private List<String> getPastedData() {
-        String pastedRows = values.getValue();
-        List<String> result = new ArrayList<String>();
-        if (null != pastedRows && !pastedRows.isEmpty()) {
-            result.addAll(Arrays.asList(pastedRows.split("\\r\\n|[\\r\\n]")));
-        }
-        return result;
+        //String pastedRows = values.getValue();
+        //List<String> result = new ArrayList<String>();
+        //if (null != pastedRows && !pastedRows.isEmpty()) {
+        //    result.addAll(Arrays.asList(pastedRows.split("\\r\\n|[\\r\\n]")));
+        //}
+        //return result;
+        return null;
     }
 
     public interface Presenter {

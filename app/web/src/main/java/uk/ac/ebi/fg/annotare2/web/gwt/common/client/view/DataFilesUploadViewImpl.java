@@ -27,6 +27,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.util.AsperaConnect;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
@@ -51,6 +52,8 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     private final FTPUploadDialog ftpUploadDialog;
 
     private Presenter presenter;
+
+    private String asperaUrl;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -86,7 +89,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             @Override
             public void onSuccess(String submissionDir) {
                 AsperaConnect.addAsperaObject();
-                AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/" + submissionDir);
+                AsperaConnect.uploadFilesTo(asperaUrl + "/" + submissionDir);
             }
         });
 
@@ -140,9 +143,15 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     }
 
     @Override
-    public void setFtpProperties(boolean isEnabled, String url, String username, String password) {
-        ftpUploadBtn.setEnabled(isEnabled);
-        ftpUploadDialog.setFtpProperties(url, username, password);
+    public void setApplicationProperties(ApplicationProperties properties) {
+        ftpUploadBtn.setEnabled(properties.isFtpEnabled());
+        asperaUploadBtn.setEnabled(properties.isAsperaEnabled());
+        asperaUrl = properties.getAsperaUrl();
+        ftpUploadDialog.setFtpProperties(
+                properties.getFtpUrl(),
+                properties.getFtpUsername(),
+                properties.getFtpPassword()
+        );
     }
 
     @Override

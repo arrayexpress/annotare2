@@ -109,6 +109,18 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
         return getProperty("ftp.public.password");
     }
 
+    public Boolean isAsperaEnabled() {
+        return  Boolean.parseBoolean(getProperty("aspera.enabled"));
+    }
+
+    public String getAsperaPickUpDir() {
+        return getProperty("aspera.pickup.dir");
+    }
+
+    public String getPublicAsperaUrl() {
+        return getProperty("aspera.public.url");
+    }
+
     public String getEmailSmtpHost() {
         return getProperty("mail.smtp.host");
     }

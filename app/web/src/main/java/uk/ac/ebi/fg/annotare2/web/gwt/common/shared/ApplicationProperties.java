@@ -27,15 +27,19 @@ public class ApplicationProperties implements IsSerializable {
     private String ftpUrl;
     private String ftpUsername;
     private String ftpPassword;
+    private boolean isAsperaEnabled;
+    private String asperaUrl;
 
     ApplicationProperties() {
     }
 
     private ApplicationProperties(ApplicationProperties other) {
         this.isFtpEnabled = other.isFtpEnabled;
-        this.ftpUrl = other.getFtpUrl();
-        this.ftpUsername = other.getFtpUsername();
-        this.ftpPassword = other.getFtpPassword();
+        this.ftpUrl = other.ftpUrl;
+        this.ftpUsername = other.ftpUsername;
+        this.ftpPassword = other.ftpPassword;
+        this.isAsperaEnabled = other.isAsperaEnabled;
+        this.asperaUrl = other.asperaUrl;
     }
 
     public boolean isFtpEnabled() {
@@ -52,6 +56,14 @@ public class ApplicationProperties implements IsSerializable {
 
     public String getFtpPassword() {
         return ftpPassword;
+    }
+
+    public boolean isAsperaEnabled() {
+        return isAsperaEnabled;
+    }
+
+    public String getAsperaUrl() {
+        return asperaUrl;
     }
 
     public static class Builder {
@@ -78,6 +90,16 @@ public class ApplicationProperties implements IsSerializable {
 
         public Builder setFtpPassword(String password) {
             properties.ftpPassword = password;
+            return this;
+        }
+
+        public Builder setAsperaEnabled(boolean isEnabled) {
+            properties.isAsperaEnabled = isEnabled;
+            return this;
+        }
+
+        public Builder setAsperaUrl(String url) {
+            properties.asperaUrl = url;
             return this;
         }
 

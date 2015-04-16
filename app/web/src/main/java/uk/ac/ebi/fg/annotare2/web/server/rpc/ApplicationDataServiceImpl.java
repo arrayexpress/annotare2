@@ -160,6 +160,8 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
                 .setFtpUrl(properties.getPublicFtpUrl())
                 .setFtpUsername(properties.getPublicFtpUsername())
                 .setFtpPassword(properties.getPublicFtpPassword())
+                .setAsperaEnabled(properties.isAsperaEnabled())
+                .setAsperaUrl(properties.getPublicAsperaUrl())
                 .build();
     }
 
