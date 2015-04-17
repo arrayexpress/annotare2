@@ -78,7 +78,7 @@ public class AsperaConnect {
             pathArray.push(string);
 
             return pathArray;
-            }
+        }
 
         var plugin = $doc.getElementById("aspera-web");
         var pathSet = plugin.runOpenFileDialog(false, true);

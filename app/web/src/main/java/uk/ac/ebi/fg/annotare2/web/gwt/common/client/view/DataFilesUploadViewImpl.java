@@ -31,8 +31,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView, RequiresResize {
+
+    private final static Logger logger = Logger.getLogger("gwt.client.DataFilesUploadViewImpl");
 
     @UiField
     DataFilesUploadPanel uploadPanel;
@@ -89,7 +92,9 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             @Override
             public void onSuccess(String submissionDir) {
                 AsperaConnect.addAsperaObject();
-                AsperaConnect.uploadFilesTo(asperaUrl + "/" + submissionDir);
+                String url = asperaUrl + "/" + submissionDir + "/";
+                logger.info("Aspera Connect will send files to " + url);
+                AsperaConnect.uploadFilesTo(url);
             }
         });
 
