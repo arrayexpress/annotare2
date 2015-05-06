@@ -20,7 +20,7 @@ public class RemoteLoggingServiceImpl extends RemoteServiceServlet implements Re
 
     private final Map<String, StackTraceDeobfuscator> deobfuscators = new HashMap<>();
 
-    private final Logger log = Logger.getLogger("RemoteLogggingService");
+    private final Logger log = Logger.getLogger("RemoteLoggingService");
 
     public final String logOnServer(LogRecord lr) {
 
