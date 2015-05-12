@@ -438,20 +438,24 @@ public class MageTabGenerator {
 
             for (FileType fileType : fileTypesInOrder) {
                 Set<SDRFNode> sourceNodes = nextLayer.get(extractId);
-                nextLayer.remove(extractId);
-                for (FileColumn fileColumn : exp.getFileColumns(fileType)) {
-                    FileRef fileRef = fileColumn.getFileRef(String.valueOf(extractId));
+                Collection<FileColumn> fileColumns = exp.getFileColumns(fileType);
+                if (!fileColumns.isEmpty()) {
+                    nextLayer.remove(extractId);
+                    for (Iterator<FileColumn> it = fileColumns.iterator(); it.hasNext();) {
+                        FileColumn fileColumn = it.next();
+                        FileRef fileRef = fileColumn.getFileRef(String.valueOf(extractId));
 
-                    if (!fileType.isRaw() || null != fileRef || nextLayer.get(extractId).isEmpty()) {
-                        Collection<Protocol> protocols = null != fileRef ?
-                                exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE) :
-                                Collections.<Protocol>emptyList();
+                        if (!fileType.isRaw() || null != fileRef || nextLayer.get(extractId).isEmpty()) {
+                            Collection<Protocol> protocols = null != fileRef ?
+                                    exp.getProtocols(fileRef, fileColumn.getType().isRaw() ? RAW_FILE : PROCESSED_FILE) :
+                                    Collections.<Protocol>emptyList();
 
-                        SDRFNode fileNode = createFileNode(sourceNodes, fileColumn.getType(), fileRef, protocols);
-                        nextLayer.put(extractId, fileNode);
-                        if (!fileType.isRaw()) {
-                            sourceNodes = nextLayer.get(extractId);
-                            nextLayer.remove(extractId);
+                            SDRFNode fileNode = createFileNode(sourceNodes, fileColumn.getType(), fileRef, protocols);
+                            nextLayer.put(extractId, fileNode);
+                            if (!fileType.isRaw() && it.hasNext()) {
+                                sourceNodes = nextLayer.get(extractId);
+                                nextLayer.remove(extractId);
+                            }
                         }
                     }
                 }
