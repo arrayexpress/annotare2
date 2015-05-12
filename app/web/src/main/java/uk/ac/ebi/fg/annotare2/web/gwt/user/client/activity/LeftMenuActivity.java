@@ -117,23 +117,25 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     @Override
     public void onSubmissionImport(SubmissionType type) {
-        switch (type) {
-            case IMPORTED_EXPERIMENT:
-                importService.createImportedExperiment(
-                        AsyncCallbackWrapper.callbackWrap(
-                                new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
-                                    @Override
-                                    public void onSuccess(Long result) {
-                                        gotoSubmissionImport(result);
-                                        notifySubmissionListUpdated();
-                                    }
-                                }
-                        )
-                );
-                return;
-            default:
-                NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
-        }
+        NotificationPopupPanel.warning("This functionality is not available at the moment", false);
+
+//        switch (type) {
+//            case IMPORTED_EXPERIMENT:
+//                importService.createImportedExperiment(
+//                        AsyncCallbackWrapper.callbackWrap(
+//                                new ReportingAsyncCallback<Long>(FailureMessage.UNABLE_TO_CREATE_SUBMISSION) {
+//                                    @Override
+//                                    public void onSuccess(Long result) {
+//                                        gotoSubmissionImport(result);
+//                                        notifySubmissionListUpdated();
+//                                    }
+//                                }
+//                        )
+//                );
+//                return;
+//            default:
+//                NotificationPopupPanel.failure("Unknown submission type + " + type.getTitle(), null);
+//        }
     }
 
     private void gotoSubmissionImport(Long submissionId) {
