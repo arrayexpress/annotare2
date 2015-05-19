@@ -21,7 +21,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 public class NewWindow extends JavaScriptObject {
     // All types that extend JavaScriptObject must have a protected,
     // no-args constructor.
-    protected NewWindow() {}
+    protected NewWindow() {
+    }
 
     public static native NewWindow open(String url, String target, String options) /*-{
         return $wnd.open(url, target, options);
