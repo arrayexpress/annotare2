@@ -6,6 +6,7 @@ import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class AnnotareCheckListProvider implements Provider<List<CheckDefinition>
         Reflections reflections = new Reflections(
                 new ConfigurationBuilder()
                         .setUrls(libPaths)
-                        .setScanners(new TypeAnnotationsScanner(), new MethodAnnotationsScanner())
+                        .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner(), new MethodAnnotationsScanner())
         );
 
         Set<Class<?>> classBasedChecks = reflections.getTypesAnnotatedWith(MageTabCheck.class);
