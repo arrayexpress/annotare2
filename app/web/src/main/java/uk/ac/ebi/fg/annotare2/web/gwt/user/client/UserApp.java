@@ -82,7 +82,7 @@ public class UserApp implements EntryPoint {
 
         historyHandler.handleCurrentHistory();
 
-        showNotice();
+        //showNotice();
     }
 
     private final static String NOTICE_COOKIE = "HolidayNoticeShown";
