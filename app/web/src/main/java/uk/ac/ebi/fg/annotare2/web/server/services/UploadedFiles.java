@@ -52,14 +52,16 @@ public class UploadedFiles {
 
     @SuppressWarnings("unchecked")
     public static void removeSessionFiles(HttpSession session) {
-        session.removeAttribute(GWTUPLOAD_LAST_FILES_ATTRIBUTE);
         List<FileItem> items = (List<FileItem>) session.getAttribute(GWTUPLOAD_FILES_ATTRIBUTE);
-        session.removeAttribute(GWTUPLOAD_FILES_ATTRIBUTE);
-        for (FileItem item : items) {
-            if (null != item && !item.isFormField()) {
-                item.delete();
+        if (null != items) {
+            for (FileItem item : items) {
+                if (null != item && !item.isFormField()) {
+                    item.delete();
+                }
             }
         }
+        session.removeAttribute(GWTUPLOAD_FILES_ATTRIBUTE);
+        session.removeAttribute(GWTUPLOAD_LAST_FILES_ATTRIBUTE);
     }
 
 }
