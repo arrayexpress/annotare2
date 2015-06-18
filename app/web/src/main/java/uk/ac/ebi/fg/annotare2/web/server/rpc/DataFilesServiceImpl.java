@@ -154,7 +154,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             }
 
             StringBuilder errors = new StringBuilder();
-            Map<String,DataFileSource> files = new HashMap<String, DataFileSource>();
+            Map<String,DataFileSource> files = new HashMap<>();
             FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
@@ -163,12 +163,13 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 
                     if (fileChecker.isAvailable(fileSource)) {
+                        String digest = info.getMd5().toLowerCase();
                         if (checkFileExists(submission, info.getFileName())) {
                             errors.append(" - file \"").append(info.getFileName()).append("\" already exists").append("\n");
-                        } else if (EMPTY_FILE_MD5.equals(info.getMd5())) {
+                        } else if (EMPTY_FILE_MD5.equals(digest)) {
                             errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
                         } else {
-                            files.put(info.getMd5(), fileSource);
+                            files.put(digest, fileSource);
                         }
                     } else {
                         errors.append(" - file \"").append(info.getFileName()).append("\" not found").append("\n");
