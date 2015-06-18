@@ -56,7 +56,7 @@ public class AsperaConnect {
         return false;
     }-*/;
 
-    public static native boolean checkIfEnabled() /*-{
+    public static native boolean isEnabled() /*-{
         var plugin = $doc.getElementById("aspera-web");
         return null != plugin && plugin.runOpenFileDialog;
     }-*/;
