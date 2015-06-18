@@ -56,6 +56,11 @@ public class AsperaConnect {
         return false;
     }-*/;
 
+    public static native boolean checkIfEnabled() /*-{
+        var plugin = $doc.getElementById("aspera-web");
+        return null != plugin && plugin.runOpenFileDialog;
+    }-*/;
+
     public static native void uploadFilesTo(String url) /*-{
         function unescapePathSet(string) {
             var pathArray = new Array();
