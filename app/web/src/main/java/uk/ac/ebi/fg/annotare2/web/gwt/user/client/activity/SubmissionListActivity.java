@@ -148,6 +148,6 @@ public class SubmissionListActivity extends AbstractActivity implements Submissi
 
     @Override
     public void onEditSubmission(long submissionId) {
-        NewWindow.open(getEditorUrl(submissionId), "_blank", null);
+        NewWindow.open(getEditorUrl(submissionId), "_blank", "");
     }
 }

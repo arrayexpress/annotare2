@@ -88,16 +88,12 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @SuppressWarnings("unused")
     @UiHandler("asperaUploadBtn")
     void asperaUploadBtClicked(ClickEvent event) {
-        presenter.getSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
-            @Override
-            public void onSuccess(String submissionDir) {
-                AsperaConnect.addAsperaObject();
-                String url = asperaUrl + "/" + submissionDir + "/";
-                logger.info("Aspera Connect will send files to " + url);
-                AsperaConnect.uploadFilesTo(url);
-            }
-        });
-
+        AsperaConnect.addAsperaObject();
+        if (AsperaConnect.isEnabled()) {
+            AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/");
+        } else {
+            NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false);
+        }
     }
 
     @SuppressWarnings("unused")

@@ -22,6 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -80,5 +81,19 @@ public class UserApp implements EntryPoint {
         root.add(appWidget);
 
         historyHandler.handleCurrentHistory();
+
+        //showNotice();
+    }
+
+    private final static String NOTICE_COOKIE = "HolidayNoticeShown";
+
+    private void showNotice() {
+        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE))) {
+            NotificationPopupPanel.message(
+                    "<strong>On 21 May 2015 (Thursday this week), Annotare will be unavailable due to essential maintenance.</strong><br><br>"
+                        + "Processing of submitted experiments will also be halted. Please allow extra 2-3 days when preparing your submission.",
+                    false);
+            Cookies.setCookie(NOTICE_COOKIE, "YEZ");
+        }
     }
 }

@@ -144,6 +144,9 @@ public class AEConnection {
             ds.setJdbcUrl(connectionProperties.getAeConnectionURL());
             ds.setUsername(connectionProperties.getAeConnectionUser());
             ds.setPassword(connectionProperties.getAeConnectionPassword());
+            ds.setConnectionTimeout(5000L);
+            ds.setIdleTimeout(30000L);
+            ds.setMaxLifetime(300000L);
             ds.setConnectionTestQuery("SELECT 1 FROM STUDY WHERE ROWNUM = 1");
         }
     }
