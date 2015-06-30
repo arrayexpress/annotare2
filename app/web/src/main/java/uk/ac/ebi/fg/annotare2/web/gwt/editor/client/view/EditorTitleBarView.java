@@ -16,7 +16,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
@@ -29,13 +28,19 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
  */
 public interface EditorTitleBarView extends IsWidget {
 
-    void setTitle(SubmissionType type, String accession);
+    void reloadSubmission();
 
     void setPresenter(Presenter presenter);
+
+    void setTitle(SubmissionType type, String accession);
+
+    void setCurator(boolean isCurator);
 
     void setSubmissionType(SubmissionType type);
 
     void setSubmissionStatus(SubmissionStatus status);
+
+    void setOwnedByCreator(boolean isOwnedbyCreator);
 
     void autoSaveStarted();
 
@@ -45,25 +50,27 @@ public interface EditorTitleBarView extends IsWidget {
 
     void criticalUpdateStopped();
 
-    public interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter{
+    interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter {
+
+        void assignSubmissionToMe();
+
+        void assignSubmissionToCreator();
 
         void validateSubmission(ValidationHandler handler);
 
         void submitSubmission(SubmissionHandler handler);
 
-        void importFile(AsyncCallback<Void> callback);
-
         String getSubmissionExportUrl();
     }
 
-    public interface ValidationHandler {
+    interface ValidationHandler {
 
         void onSuccess(ValidationResult result);
 
         void onFailure();
     }
 
-    public interface SubmissionHandler {
+    interface SubmissionHandler {
 
         void onSuccess();
 

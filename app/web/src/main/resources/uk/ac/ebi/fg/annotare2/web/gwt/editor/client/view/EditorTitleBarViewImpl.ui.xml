@@ -35,6 +35,11 @@
             white-space: nowrap;
         }
 
+        .buttonPanel {
+            text-align: right;
+            padding-right: 5px;
+        }
+
         .regularButton {
             background: none repeat scroll 0 0 #888;
             border: 1px solid #888;
@@ -50,6 +55,29 @@
 
         .regularButton:hover {
             background-color: #999;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset #999;
+        }
+
+        .helpButton {
+            background: none repeat scroll 0 0 #498fcd;
+            border: 1px solid #498fcd;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .helpButton:hover {
+            background-color: #4b9cdc;
             cursor: pointer;
             text-shadow: none;
             -webkit-box-shadow: none;
@@ -129,36 +157,14 @@
                             </tr>
                         </table>
                     </td>
-                    <td>
-                        <table style="margin-right: 0; margin-left: auto;">
-                            <tr>
-                                <!--
-                                <td>
-                                    <g:Anchor addStyleNames="{style.wiredLink}" ui:field="exportLink">Export</g:Anchor>
-                                </td>
-                                -->
-                                <td>
-                                    <g:Button addStyleNames="{style.regularButton}" ui:field="helpButton">
-                                        <i class="fa fa-life-ring"/>Help
-                                    </g:Button>
-                                </td>
-                                <td>
-                                    <g:Button addStyleNames="{style.regularButton}" ui:field="feedbackButton">
-                                        <i class="fa fa-comments-o"/>Feedback
-                                    </g:Button>
-                                </td>
-                                <td>
-                                    <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton">
-                                        <i class="fa fa-check"/>Validate
-                                    </g:Button>
-                                </td>
-                                <td>
-                                    <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton">
-                                        <i class="fa fa-paper-plane-o"/>Submit to ArrayExpress
-                                    </g:Button>
-                                </td>
-                            </tr>
-                        </table>
+                    <td class="{style.buttonPanel}">
+                        <g:Button addStyleNames="{style.helpButton}" ui:field="helpButton"><i class="fa fa-life-ring"/>Help</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="feedbackButton"><i class="fa fa-comments-o"/>Contact us</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="editButton" visible="false"><i class="fa fa-pencil"/>Curator's Edit</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="releaseButton" visible="false"><i class="fa fa-repeat"/>Re-assign to Submitter</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="exportButton"><i class="fa fa-arrow-circle-down"/>Export MAGE-TAB</g:Button>
+                        <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton"><i class="fa fa-check"/>Validate</g:Button>
+                        <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton"><i class="fa fa-paper-plane-o"/>Submit to ArrayExpress</g:Button>
                     </td>
                 </tr>
             </table>

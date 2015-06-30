@@ -36,17 +36,21 @@ import java.util.List;
 @RemoteServiceRelativePath(SubmissionService.NAME)
 public interface SubmissionService extends RemoteService {
 
-    public static final String NAME = "submissionService";
+    String NAME = "submissionService";
 
     SubmissionDetails getSubmissionDetails(long id) throws ResourceNotFoundException, NoPermissionException;
 
     ArrayDesignDetailsDto getArrayDesignDetails(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    Table getIdfTable(long id) throws NoPermissionException, ResourceNotFoundException;
+    Table getIdfTable(long id) throws ResourceNotFoundException, NoPermissionException;
 
-    Table getSdrfTable(long id) throws NoPermissionException, ResourceNotFoundException;
+    Table getSdrfTable(long id) throws ResourceNotFoundException, NoPermissionException;
 
     void setupExperiment(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
+
+    void assignSubmissionToMe(long id) throws ResourceNotFoundException, NoPermissionException;
+
+    void assignSubmissionToCreator(long id) throws ResourceNotFoundException, NoPermissionException;
 
     ValidationResult validateSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 

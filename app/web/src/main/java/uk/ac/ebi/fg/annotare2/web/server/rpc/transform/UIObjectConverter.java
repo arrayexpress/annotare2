@@ -79,7 +79,8 @@ public class UIObjectConverter {
                     submission.getUpdated(),
                     submission.getStatus(),
                     SUBMISSION_TYPE.apply(submission),
-                    submission.hasNoData()
+                    submission.hasNoData(),
+                    submission.getOwnedBy().equals(submission.getCreatedBy())
             );
         }
     };

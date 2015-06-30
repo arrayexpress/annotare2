@@ -29,7 +29,7 @@ public enum SubmissionStatus {
 
     private final String title;
 
-    private SubmissionStatus(String title) {
+    SubmissionStatus(String title) {
         this.title = title;
     }
 
@@ -39,5 +39,9 @@ public enum SubmissionStatus {
 
     public boolean canSubmit() {
         return IN_PROGRESS == this || IN_CURATION == this;
+    }
+
+    public boolean canAssign() {
+        return IN_PROGRESS == this;
     }
 }

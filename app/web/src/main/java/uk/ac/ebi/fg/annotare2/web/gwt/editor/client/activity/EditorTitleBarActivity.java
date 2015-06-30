@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -33,6 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.F
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
@@ -49,6 +51,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
 
     private final EditorTitleBarView view;
     private final PlaceController placeController;
+    private final CurrentUserAccountServiceAsync userService;
     private final SubmissionServiceAsync submissionService;
     private final ApplicationDataServiceAsync dataService;
     private final AdfServiceAsync adfService;
@@ -58,11 +61,13 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     @Inject
     public EditorTitleBarActivity(EditorTitleBarView view,
                                   PlaceController placeController,
+                                  CurrentUserAccountServiceAsync userService,
                                   SubmissionServiceAsync submissionService,
                                   ApplicationDataServiceAsync dataService,
                                   AdfServiceAsync adfService) {
         this.view = view;
         this.placeController = placeController;
+        this.userService = userService;
         this.submissionService = submissionService;
         this.dataService = dataService;
         this.adfService = adfService;
@@ -114,6 +119,14 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     private void initAsync() {
+        userService.me(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION) {
+                    @Override
+                    public void onSuccess(UserDto result) {
+                        view.setCurator(result.isCurator());
+                    }
+                }
+        ));
         submissionService.getSubmissionDetails(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
                     @Override
@@ -121,6 +134,33 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
                         view.setTitle(result.getType(), result.getAccession().getText());
                         view.setSubmissionType(result.getType());
                         view.setSubmissionStatus(result.getStatus());
+                        view.setOwnedByCreator(result.isOwnedByCreator());
+                    }
+                }
+        ));
+    }
+
+    @Override
+    public void assignSubmissionToMe() {
+        submissionService.assignSubmissionToMe(getSubmissionId(), callbackWrap(
+                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        view.reloadSubmission();
+                    }
+                }
+        ));
+    }
+
+    @Override
+    public void assignSubmissionToCreator() {
+        submissionService.assignSubmissionToCreator(getSubmissionId(), callbackWrap(
+                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        view.reloadSubmission();
                     }
                 }
         ));
@@ -176,10 +216,10 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
         dataService.getArrayDesignList(query, limit, callbackWrap(callback));
     }
 
-    @Override
-    public void importFile(AsyncCallback<Void> callback) {
-        adfService.importBodyData(getSubmissionId(), callbackWrap(callback));
-    }
+//    @Override
+//    public void importFile(AsyncCallback<Void> callback) {
+//        adfService.importBodyData(getSubmissionId(), callbackWrap(callback));
+//    }
 
     @Override
     public String getSubmissionExportUrl() {

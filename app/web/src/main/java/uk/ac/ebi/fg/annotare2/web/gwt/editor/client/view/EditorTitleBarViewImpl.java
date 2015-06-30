@@ -48,10 +48,16 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     Label accessionLabel;
 
     @UiField
-    Button helpButton;
+    Button feedbackButton;
 
     @UiField
-    Button feedbackButton;
+    Button editButton;
+
+    @UiField
+    Button releaseButton;
+
+    @UiField
+    Button exportButton;
 
     @UiField
     Button validateButton;
@@ -61,9 +67,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiField
     AutoSaveLabel autoSaveLabel;
-
-    //@UiField
-    //Anchor exportLink;
 
     private Presenter presenter;
     private boolean shouldAllowInstantFeedback;
@@ -79,8 +82,22 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
+    public void reloadSubmission() {
+        Window.Location.reload();
+    }
+
+    @Override
     public void setTitle(SubmissionType type, String accession) {
         accessionLabel.setText(type.getTitle() + ": " + accession);
+    }
+
+    @Override
+    public void setCurator(boolean isCurator) {
+        if (isCurator) {
+            feedbackButton.setVisible(false);
+            editButton.setVisible(true);
+            releaseButton.setVisible(true);
+        }
     }
 
     @Override
@@ -92,13 +109,21 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void setSubmissionType(SubmissionType type) {
         validateButton.setVisible(type.isExperiment());
-        //exportLink.setVisible(isExperimentSubmission);
+        exportButton.setVisible(type.isExperiment());
     }
 
     @Override
     public void setSubmissionStatus(SubmissionStatus status) {
         submitButton.setVisible(status.canSubmit());
+        editButton.setVisible(editButton.isVisible() && status.canAssign());
+        releaseButton.setVisible(releaseButton.isVisible() && status.canAssign());
         shouldAllowInstantFeedback = (SubmissionStatus.IN_PROGRESS == status);
+    }
+
+    @Override
+    public void setOwnedByCreator(boolean isOwnedByCreator) {
+        editButton.setVisible(editButton.isVisible() && isOwnedByCreator);
+        releaseButton.setVisible(releaseButton.isVisible() && !isOwnedByCreator);
     }
 
     @Override
@@ -136,6 +161,23 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiHandler("feedbackButton")
     void onFeedbackButtonClick(ClickEvent event) {
         feedbackDialog.center();
+    }
+
+    @UiHandler("exportButton")
+    void onExportLinkClick(ClickEvent event) {
+        if (presenter != null) {
+            Window.open(presenter.getSubmissionExportUrl(), "_blank", "");
+        }
+    }
+
+    @UiHandler("editButton")
+    void onEditButtonClick(ClickEvent event) {
+        presenter.assignSubmissionToMe();
+    }
+
+    @UiHandler("releaseButton")
+    void onReleaseButtonClick(ClickEvent event) {
+        presenter.assignSubmissionToCreator();
     }
 
     @UiHandler("validateButton")
@@ -203,13 +245,4 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
             }
         });
     }
-
-    /*
-    @UiHandler("exportLink")
-    void onExportLinkClick(ClickEvent event) {
-        if (presenter != null) {
-            Window.open(presenter.getSubmissionExportUrl(), "export", "");
-        }
-    }
-    */
 }

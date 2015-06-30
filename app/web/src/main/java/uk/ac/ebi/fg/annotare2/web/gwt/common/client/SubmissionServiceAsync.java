@@ -19,6 +19,10 @@ public interface SubmissionServiceAsync {
 
     void setupExperiment(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
 
+    void assignSubmissionToMe(long id, AsyncCallback<Void> async);
+
+    void assignSubmissionToCreator(long id, AsyncCallback<Void> async);
+
     void validateSubmission(long id, AsyncCallback<ValidationResult> async);
 
     void submitSubmission(long id, AsyncCallback<Void> async);

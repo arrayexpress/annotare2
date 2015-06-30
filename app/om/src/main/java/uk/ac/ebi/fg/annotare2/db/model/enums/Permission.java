@@ -22,5 +22,6 @@ package uk.ac.ebi.fg.annotare2.db.model.enums;
 public enum Permission {
     CREATE,
     UPDATE,
-    VIEW
+    VIEW,
+    ASSIGN
 }

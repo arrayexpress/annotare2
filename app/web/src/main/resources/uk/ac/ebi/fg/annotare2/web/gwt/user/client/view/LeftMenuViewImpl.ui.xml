@@ -77,7 +77,7 @@
                 <i class="fa fa-plus"/>Create
             </g:Button>
             <g:Button addStyleNames="{style.importButton}" ui:field="importButton">
-                <i class="fa fa-arrow-right"/>Import
+                <i class="fa fa-arrow-circle-right"/>Import
             </g:Button>
         </g:HTMLPanel>
         <my:LeftMenuItem text="All Submissions" ui:field="allSubmissions"/>

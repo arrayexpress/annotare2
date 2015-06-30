@@ -81,4 +81,11 @@
             ALTER TABLE submissions MODIFY type ENUM('EXPERIMENT', 'IMPORTED_EXPERIMENT', 'ARRAY_DESIGN') NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addAssignPermissionToCurator" author="kolais">
+        <sql>
+            ALTER TABLE acl_entries MODIFY permission ENUM('CREATE', 'UPDATE', 'VIEW', 'ASSIGN') NOT NULL;
+            SELECT @aclId := id FROM acl WHERE aclType = 'SUBMISSION';
+            INSERT INTO acl_entries (acl, role, permission) VALUES (@aclId, 'CURATOR', 'ASSIGN');
+        </sql>
+    </changeSet>
 </databaseChangeLog>

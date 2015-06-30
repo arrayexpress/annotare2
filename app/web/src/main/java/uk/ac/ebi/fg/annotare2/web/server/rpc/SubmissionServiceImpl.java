@@ -259,6 +259,46 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional
     @Override
+    public void assignSubmissionToMe(final long id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(id, Permission.ASSIGN);
+            if (SubmissionStatus.IN_PROGRESS == submission.getStatus()) {
+                submission.setOwnedBy(getCurrentUser());
+                save(submission);
+            } else {
+                throw new IllegalStateException("Submission has to have IN_PROGRESS state");
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (IllegalStateException e) {
+            throw unexpected(e);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void assignSubmissionToCreator(long id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(id, Permission.ASSIGN);
+            if (SubmissionStatus.IN_PROGRESS == submission.getStatus()) {
+                submission.setOwnedBy(submission.getCreatedBy());
+                save(submission);
+            } else {
+                throw new IllegalStateException("Submission has to have IN_PROGRESS state");
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (IllegalStateException e) {
+            throw unexpected(e);
+        }
+    }
+
+    @Transactional
+    @Override
     public ValidationResult validateSubmission(long id) throws ResourceNotFoundException, NoPermissionException {
         List<String> failures = newArrayList();
         List<String> errors = newArrayList();
