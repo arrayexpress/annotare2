@@ -15,7 +15,7 @@
  *
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.client.util;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ObjectElement;
