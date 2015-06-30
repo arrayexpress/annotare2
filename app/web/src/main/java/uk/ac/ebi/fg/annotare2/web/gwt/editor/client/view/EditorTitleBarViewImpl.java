@@ -96,9 +96,10 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     public void setCurator(boolean isCurator) {
         shouldAllowOverruleValidation = isCurator;
         if (isCurator) {
-            feedbackButton.setVisible(false);
             editButton.setVisible(true);
             releaseButton.setVisible(true);
+        } else {
+            feedbackButton.setVisible(true);
         }
     }
 
