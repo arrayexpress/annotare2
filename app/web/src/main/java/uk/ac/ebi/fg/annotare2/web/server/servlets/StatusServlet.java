@@ -31,15 +31,11 @@ public class StatusServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
+
+        String appRevision = request.getServletContext().getInitParameter("appRevision");
+        try (PrintWriter out = response.getWriter()) {
             out.println("OK");
-        } finally {
-            if (null != out) {
-                out.flush();
-                out.close();
-            }
+            out.println(appRevision);
         }
     }
 }

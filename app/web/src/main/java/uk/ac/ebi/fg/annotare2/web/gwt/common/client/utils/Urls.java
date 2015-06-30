@@ -31,6 +31,7 @@ public class Urls {
     public static String getLauncherUrl() {
         return getContextUrl() + "launcher.jsp";
     }
+
     public static String getEditorUrl(long submissionId) {
         return getContextUrl() + "edit/" + submissionId + "/";
     }
