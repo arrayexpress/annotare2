@@ -70,6 +70,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     private Presenter presenter;
     private boolean shouldAllowInstantFeedback;
+    private boolean shouldAllowOverruleValidation;
 
     private final FeedbackDialog feedbackDialog;
     private final WaitingPopup waitingPopup;
@@ -93,6 +94,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @Override
     public void setCurator(boolean isCurator) {
+        shouldAllowOverruleValidation = isCurator;
         if (isCurator) {
             feedbackButton.setVisible(false);
             editButton.setVisible(true);
@@ -209,39 +211,59 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         dialog.showValidationProgressMessage(null);
 
         presenter.validateSubmission(new ValidationHandler() {
-
             @Override
             public void onFailure() {
-                dialog.showValidationFailureMessage(null);
+                onValidationFailure(dialog);
             }
 
             @Override
             public void onSuccess(ValidationResult result) {
                 if (!result.canSubmit()) {
-                    dialog.showValidationFailureMessage(null);
+                    onValidationFailure(dialog);
                 } else {
-                    dialog.showSubmissionProgressMessage(null);
-                    presenter.submitSubmission(new SubmissionHandler() {
-
-                        @Override
-                        public void onFailure() {
-                            dialog.showSubmissionFailureMessage(null);
-                        }
-
-                        @Override
-                        public void onSuccess() {
-                            submitButton.setEnabled(false);
-                            dialog.showSubmissionSuccessMessage(new DialogCallback<Void>() {
-                                @Override
-                                public void onOkay(Void aVoid) {
-                                    if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
-                                        presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
-                                    }
-                                }
-                            }, shouldAllowInstantFeedback);
-                        }
-                    });
+                    processSubmission(dialog, shouldAllowInstantFeedback);
                 }
+            }
+        });
+    }
+
+    void onValidationFailure(final ValidateSubmissionDialog dialog) {
+        if (shouldAllowOverruleValidation) {
+            dialog.showValidationFailureWarning(new DialogCallback<Void>() {
+                @Override
+                public void onOkay(Void aVoid) {
+                    processSubmission(dialog, false);
+                }
+            });
+        } else {
+            dialog.showValidationFailureMessage(null);
+        }
+    }
+
+    void processSubmission(final ValidateSubmissionDialog dialog, final boolean doFeedback) {
+        dialog.showSubmissionProgressMessage(null);
+        presenter.submitSubmission(new SubmissionHandler() {
+            @Override
+            public void onFailure() {
+                dialog.showSubmissionFailureMessage(null);
+            }
+
+            @Override
+            public void onSuccess() {
+                submitButton.setEnabled(false);
+                dialog.showSubmissionSuccessMessage(new DialogCallback<Void>() {
+                    @Override
+                    public void onCancel() {
+                        reloadSubmission();
+                    }
+                    @Override
+                    public void onOkay(Void aVoid) {
+                        if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
+                            presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
+                        }
+                        reloadSubmission();
+                    }
+                }, doFeedback);
             }
         });
     }

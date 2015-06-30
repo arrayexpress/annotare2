@@ -157,6 +157,17 @@ public class ValidateSubmissionDialog extends DialogBox {
         );
     }
 
+    public void showValidationFailureWarning(DialogCallback<Void> callback) {
+        this.callback = callback;
+        cancelButton.setVisible(true);
+        setTitleAndMessage(
+                "Validation Failed",
+                "Validation has failed. " +
+                        "As a curator you can press <b>OK</b> if you wish to submit," +
+                        " or <b>Cancel</b> if you wish to review validation logs and amend the submission."
+        );
+    }
+
     public void showSubmissionProgressMessage(DialogCallback<Void> callback) {
         this.callback = callback;
         setTitleAndMessage(
