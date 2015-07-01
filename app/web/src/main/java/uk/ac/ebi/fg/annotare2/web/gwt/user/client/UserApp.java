@@ -20,16 +20,13 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.http.client.*;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.UserAppGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceFactory;
@@ -37,7 +34,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppLayout;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -91,7 +87,7 @@ public class UserApp implements EntryPoint {
 
         historyHandler.handleCurrentHistory();
 
-        //startWatchdog();
+        ServerWatchdog.start();
         //showNotice();
     }
 
@@ -105,45 +101,5 @@ public class UserApp implements EntryPoint {
                     false);
             Cookies.setCookie(NOTICE_COOKIE, "YEZ");
         }
-    }
-
-    private void startWatchdog() {
-        Scheduler.get().scheduleFixedPeriod(new Scheduler.RepeatingCommand() {
-            @Override
-            public boolean execute() {
-                try {
-                    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, Urls.getContextUrl() + "status");
-                    builder.setTimeoutMillis(2000);
-                    builder.sendRequest(null, new RequestCallback() {
-                        @Override
-                        public void onResponseReceived(Request request, Response response) {
-                            if (200 == response.getStatusCode()) {
-                                String[] status = response.getText().split("\\n");
-                                if (null != status && 2 == status.length && status[0].equals("OK")) {
-                                    String revision = RootPanel.getBodyElement().getAttribute("revision");
-                                    if (null != revision && revision.equals(status[1])) {
-                                        logger.log(Level.INFO, "OK, ping received & recognised");
-                                    } else {
-                                        logger.log(Level.SEVERE, "Error, revision mismatch, expected " + revision + ", received " + status[1]);
-                                    }
-                                } else {
-                                    logger.log(Level.SEVERE, "Error, unexpected response: " + response.getText());
-                                }
-                            } else {
-                                logger.log(Level.SEVERE, "Error, HTTP code [" + response.getStatusCode() + "]");
-                            }
-                        }
-
-                        @Override
-                        public void onError(Request request, Throwable caught) {
-                            logger.log(Level.SEVERE, "Exception caught: ", caught);
-                        }
-                    });
-                } catch (RequestException caught) {
-                    logger.log(Level.SEVERE, "Exception caught: ", caught);
-                }
-            return true;
-            }
-        }, 5000);
     }
 }

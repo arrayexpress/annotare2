@@ -95,15 +95,15 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             @Override
             public boolean validateInput(String value, int rowIndex) {
                 if (null == value || trimValue(value).isEmpty()) {
-                    NotificationPopupPanel.error("Empty file name is not permitted.", true);
+                    NotificationPopupPanel.error("Empty file name is not permitted.", true, false);
                     return false;
                 }
                 if (!value.matches("^[_a-zA-Z0-9\\-\\.]+$")) {
-                    NotificationPopupPanel.error("File name should only contain alphanumeric characters, underscores and dots.", true);
+                    NotificationPopupPanel.error("File name should only contain alphanumeric characters, underscores and dots.", true, false);
                     return false;
                 }
                 if (isDuplicated(value, rowIndex)) {
-                    NotificationPopupPanel.error("File with the name '" + value + "' already exists.", true);
+                    NotificationPopupPanel.error("File with the name '" + value + "' already exists.", true, false);
                     return false;
                 }
                 return true;
@@ -125,7 +125,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 presenter.renameFile(row, newName, new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable throwable) {
-                        NotificationPopupPanel.error("Unable to rename file '" + oldName + "'", true);
+                        NotificationPopupPanel.error("Unable to rename file '" + oldName + "'", true, false);
                     }
 
                     @Override
@@ -187,7 +187,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     public void deleteSelectedFiles(final AsyncCallback<Void> callback) {
         final Set<DataFileRow> selection = getSelectedRows();
         if (selection.isEmpty()) {
-            NotificationPopupPanel.warning("Please select files you would like to delete.", true);
+            NotificationPopupPanel.warning("Please select files you would like to delete.", true, false);
         } else if (Window.confirm("The selected files will no longer be available to assign if you delete. Do you want to continue?")) {
             presenter.removeFiles(selection,
                     new ReportingAsyncCallback<Void>(FailureMessage.UNABLE_TO_DELETE_FILES) {

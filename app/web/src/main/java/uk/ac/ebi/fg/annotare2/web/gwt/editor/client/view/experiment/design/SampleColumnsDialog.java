@@ -163,7 +163,7 @@ public class SampleColumnsDialog extends DialogBox {
                 callback.onOkay(getColumns());
             }
         } else {
-            NotificationPopupPanel.error("There are multiple attributes or experimental variables with the same name.", true);
+            NotificationPopupPanel.error("There are multiple attributes or experimental variables with the same name.", true, false);
         }
     }
 
@@ -263,9 +263,9 @@ public class SampleColumnsDialog extends DialogBox {
     private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context) {
         SampleColumn column = SampleColumn.create(template, context);
         if (null == column) {
-            NotificationPopupPanel.error("Unable to add an attribute.", true);
+            NotificationPopupPanel.error("Unable to add an attribute.", true, false);
         } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
-            NotificationPopupPanel.error("Unable to add '" + column.getName() + "': attribute is already defined.", true);
+            NotificationPopupPanel.error("Unable to add '" + column.getName() + "': attribute is already defined.", true, false);
         } else {
             setColumn(column, true);
         }
@@ -276,7 +276,7 @@ public class SampleColumnsDialog extends DialogBox {
         columnMap.put(columnId, value);
         updateColumnTitles();
         if (!areNamesUnique()) {
-            NotificationPopupPanel.error("Sample attribute with the name '" + value.getName() + "' already exists.", true);
+            NotificationPopupPanel.error("Sample attribute with the name '" + value.getName() + "' already exists.", true, false);
         }
     }
 
@@ -293,7 +293,7 @@ public class SampleColumnsDialog extends DialogBox {
             updateTemplates();
             DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
         } else {
-            NotificationPopupPanel.error("Attribute '" + template.getName() + "' is mandatory and cannot be removed.", true);
+            NotificationPopupPanel.error("Attribute '" + template.getName() + "' is mandatory and cannot be removed.", true, false);
         }
     }
 

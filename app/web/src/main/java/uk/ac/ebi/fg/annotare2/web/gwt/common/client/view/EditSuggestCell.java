@@ -324,7 +324,7 @@ public class EditSuggestCell extends
             if (display.isValidSuggestion(value)) {
                 return true;
             } else {
-                NotificationPopupPanel.error("Value '" + value + "' is not permitted. Please select one of the suggestions provided.", true);
+                NotificationPopupPanel.error("Value '" + value + "' is not permitted. Please select one of the suggestions provided.", true, false);
                 return false;
             }
         } else {

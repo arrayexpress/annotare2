@@ -78,7 +78,7 @@ public class DataFilesUploadPanel extends Composite {
                                                     message += filesInfo.get(i).getFileName() + " - " + result.get(i) + "<br>";
                                                 }
                                             }
-                                            NotificationPopupPanel.error(message, false);
+                                            NotificationPopupPanel.error(message, false, false);
                                         }
                                     }
                                 });

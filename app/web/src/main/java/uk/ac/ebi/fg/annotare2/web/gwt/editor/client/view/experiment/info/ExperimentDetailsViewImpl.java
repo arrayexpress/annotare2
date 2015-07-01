@@ -163,7 +163,7 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
             dateOfPublicRelease.setValue(today, false);
         }
         if (0 == today.compareTo(dateOfPublicRelease.getValue())) {
-            NotificationPopupPanel.warning("The submission will be immediately released to public once loaded to ArrayExpress. Please select different date if you wish to keep the experiment private.", true);
+            NotificationPopupPanel.warning("The submission will be immediately released to public once loaded to ArrayExpress. Please select different date if you wish to keep the experiment private.", true, false);
         }
         save();
     }

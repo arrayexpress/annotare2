@@ -226,7 +226,7 @@ public class ImportSubmissionDialog extends DialogBox {
                     @Override
                     public void onFailure(Throwable caught) {
                         waitingPopup.hide();
-                        NotificationPopupPanel.error(caught.getMessage(), false);
+                        NotificationPopupPanel.error(caught.getMessage(), false, false);
                     }
 
                     @Override

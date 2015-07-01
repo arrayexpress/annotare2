@@ -168,11 +168,11 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
             @Override
             public boolean validateInput(String value, int rowIndex) {
                 if (value == null || trimValue(value).isEmpty()) {
-                    NotificationPopupPanel.error("Protocol with empty name is not permitted.", true);
+                    NotificationPopupPanel.error("Protocol with empty name is not permitted.", true, false);
                     return false;
                 }
                 if (!isNameUnique(value, rowIndex)) {
-                    NotificationPopupPanel.error("Protocol with the name '" + value + "' already exists.", true);
+                    NotificationPopupPanel.error("Protocol with the name '" + value + "' already exists.", true, false);
                     return false;
                 }
                 return true;
@@ -235,10 +235,10 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                             @Override
                             public void onSuccess(ProtocolAssignmentProfile result) {
                                 if (!isRowAssignable) {
-                                    NotificationPopupPanel.warning("Protocol '" + protocolType + "' is always assigned to all " + result.getProtocolSubjectType() + "s.", true);
+                                    NotificationPopupPanel.warning("Protocol '" + protocolType + "' is always assigned to all " + result.getProtocolSubjectType() + "s.", true, false);
                                     return;
                                 } else if (result.getNames().isEmpty()) {
-                                    NotificationPopupPanel.warning("You do not have any " + result.getProtocolSubjectType() + "s to assign protocols to.", true);
+                                    NotificationPopupPanel.warning("You do not have any " + result.getProtocolSubjectType() + "s to assign protocols to.", true, false);
                                     return;
                                 }
                                 new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
@@ -448,7 +448,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
     private void removeSelectedProtocols() {
         Set<ProtocolRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            NotificationPopupPanel.warning("Please select protocols you want to delete.", true);
+            NotificationPopupPanel.warning("Please select protocols you want to delete.", true, false);
         } else if (Window.confirm("The selected protocols will no longer be available if you delete. Do you want to continue?")) {
             presenter.removeProtocols(new ArrayList<ProtocolRow>(selection));
         }
@@ -471,11 +471,11 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
     private ProtocolRow getSelectedProtocolRowToMove() {
         Set<ProtocolRow> selected = gridView.getSelectedRows();
         if (selected.isEmpty()) {
-            NotificationPopupPanel.warning("Please select a row to move.", true);
+            NotificationPopupPanel.warning("Please select a row to move.", true, false);
             return null;
         }
         if (selected.size() > 1) {
-            NotificationPopupPanel.error("Unable to move more than one row at a time.", true);
+            NotificationPopupPanel.error("Unable to move more than one row at a time.", true, false);
             return null;
         }
         return selected.iterator().next();

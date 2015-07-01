@@ -83,7 +83,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         if (AsperaConnect.isEnabled()) {
             AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/");
         } else {
-            NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false);
+            NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false, false);
         }
     }
 

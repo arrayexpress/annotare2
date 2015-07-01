@@ -138,7 +138,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     public void autoSaveStopped(String errorMessage) {
         autoSaveLabel.hide();
         if (null != errorMessage) {
-            NotificationPopupPanel.error(errorMessage, true);
+            NotificationPopupPanel.error(errorMessage, true, false);
         }
     }
 

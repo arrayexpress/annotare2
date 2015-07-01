@@ -184,7 +184,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     private void createNewSample() {
         if (maxSamplesLimit == gridView.getRows().size()) {
-            NotificationPopupPanel.error("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples.", true);
+            NotificationPopupPanel.error("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples.", true, false);
         } else {
             presenter.createSample();
         }
@@ -193,7 +193,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     private void deleteSelectedSamples() {
         Set<SampleRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            NotificationPopupPanel.warning("Please select samples you want to delete.", true);
+            NotificationPopupPanel.warning("Please select samples you want to delete.", true, false);
         } else if (Window.confirm("The selected samples and all associated information will no longer be available if you delete. Do you want to continue?")) {
             presenter.removeSamples(new ArrayList<SampleRow>(selection));
             gridView.removeSelectedRows();
@@ -219,11 +219,11 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
             @Override
             public boolean validateInput(String value, int rowIndex) {
                 if (value == null || trimValue(value).isEmpty()) {
-                    NotificationPopupPanel.error("Sample with empty name is not permitted.", true);
+                    NotificationPopupPanel.error("Sample with empty name is not permitted.", true, false);
                     return false;
                 }
                 if (!isNameUnique(value, rowIndex)) {
-                    NotificationPopupPanel.error("Sample with the name '" + value + "' already exists.", true);
+                    NotificationPopupPanel.error("Sample with the name '" + value + "' already exists.", true, false);
                     return false;
                 }
                 return true;
