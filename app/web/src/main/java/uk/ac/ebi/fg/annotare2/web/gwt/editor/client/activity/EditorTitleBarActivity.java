@@ -141,29 +141,13 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
-    public void assignSubmissionToMe() {
-        submissionService.assignSubmissionToMe(getSubmissionId(), callbackWrap(
-                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
-
-                    @Override
-                    public void onSuccess(Void result) {
-                        view.reloadSubmission();
-                    }
-                }
-        ));
+    public void assignSubmissionToMe(final AsyncCallback<Void> callback) {
+        submissionService.assignSubmissionToMe(getSubmissionId(), callbackWrap(callback));
     }
 
     @Override
-    public void assignSubmissionToCreator() {
-        submissionService.assignSubmissionToCreator(getSubmissionId(), callbackWrap(
-                new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
-
-                    @Override
-                    public void onSuccess(Void result) {
-                        view.reloadSubmission();
-                    }
-                }
-        ));
+    public void assignSubmissionToCreator(final AsyncCallback<Void> callback) {
+        submissionService.assignSubmissionToCreator(getSubmissionId(), callbackWrap(callback));
     }
 
     @Override
@@ -172,6 +156,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
                 new ReportingAsyncCallback<ValidationResult>(FailureMessage.GENERIC_FAILURE) {
                     @Override
                     public void onFailure(Throwable caught) {
+                        super.onFailure(caught);
                         handler.onFailure();
                         publishValidationResult(new ValidationResult(caught));
                     }

@@ -38,6 +38,7 @@
         .buttonPanel {
             text-align: right;
             padding-right: 5px;
+            white-space: nowrap;
         }
 
         .regularButton {

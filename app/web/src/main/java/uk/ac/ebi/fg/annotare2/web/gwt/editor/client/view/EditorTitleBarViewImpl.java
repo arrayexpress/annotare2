@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
@@ -69,8 +70,10 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     AutoSaveLabel autoSaveLabel;
 
     private Presenter presenter;
+
     private boolean shouldAllowInstantFeedback;
-    private boolean shouldAllowOverruleValidation;
+    private boolean isCurator;
+    private boolean isOwnedByCreator;
 
     private final FeedbackDialog feedbackDialog;
     private final WaitingPopup waitingPopup;
@@ -82,19 +85,18 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         waitingPopup = new WaitingPopup();
     }
 
-    @Override
     public void reloadSubmission() {
         Window.Location.reload();
     }
 
     @Override
     public void setTitle(SubmissionType type, String accession) {
-        accessionLabel.setText(type.getTitle() + ": " + accession);
+        accessionLabel.setText(accession);
     }
 
     @Override
     public void setCurator(boolean isCurator) {
-        shouldAllowOverruleValidation = isCurator;
+        this.isCurator = isCurator;
         if (isCurator) {
             editButton.setVisible(true);
             releaseButton.setVisible(true);
@@ -125,6 +127,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @Override
     public void setOwnedByCreator(boolean isOwnedByCreator) {
+        this.isOwnedByCreator = isOwnedByCreator;
         editButton.setVisible(editButton.isVisible() && isOwnedByCreator);
         releaseButton.setVisible(releaseButton.isVisible() && !isOwnedByCreator);
     }
@@ -175,12 +178,22 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("editButton")
     void onEditButtonClick(ClickEvent event) {
-        presenter.assignSubmissionToMe();
+        presenter.assignSubmissionToMe(new ReportingAsyncCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                reloadSubmission();
+            }
+        });
     }
 
     @UiHandler("releaseButton")
     void onReleaseButtonClick(ClickEvent event) {
-        presenter.assignSubmissionToCreator();
+        presenter.assignSubmissionToCreator(new ReportingAsyncCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                reloadSubmission();
+            }
+        });
     }
 
     @UiHandler("validateButton")
@@ -229,11 +242,19 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     void onValidationFailure(final ValidateSubmissionDialog dialog) {
-        if (shouldAllowOverruleValidation) {
+        if (isCurator) {
             dialog.showValidationFailureWarning(new DialogCallback<Void>() {
                 @Override
                 public void onOkay(Void aVoid) {
-                    processSubmission(dialog, false);
+                    if (isOwnedByCreator) {
+                        presenter.assignSubmissionToMe(new ReportingAsyncCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void result) {
+                                processSubmission(dialog, false);
+                            }
+                        });
+                    }
+
                 }
             });
         } else {

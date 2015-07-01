@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
@@ -27,8 +28,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
  * @author Olga Melnichuk
  */
 public interface EditorTitleBarView extends IsWidget {
-
-    void reloadSubmission();
 
     void setPresenter(Presenter presenter);
 
@@ -52,9 +51,9 @@ public interface EditorTitleBarView extends IsWidget {
 
     interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter {
 
-        void assignSubmissionToMe();
+        void assignSubmissionToMe(AsyncCallback<Void> callback);
 
-        void assignSubmissionToCreator();
+        void assignSubmissionToCreator(AsyncCallback<Void> callback);
 
         void validateSubmission(ValidationHandler handler);
 
