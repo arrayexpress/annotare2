@@ -30,9 +30,9 @@ public class ServerWatchdog {
             "Thank you for your patience.<br><br>";
 
     private final static String SERVER_UPGRADED = "To improve your submission experience, the Annotare software has just been updated. " +
-            "Please refresh this page in your browser to continue editing your the submission.<br>" +
+            "Please refresh this page in your browser to continue editing your the submission.<br><br>" +
             "Should you experience any problems after this update, please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>. " +
-            "Thank you.<br><br>";
+            "Thank you.";
 
     private static boolean isOnline;
 
