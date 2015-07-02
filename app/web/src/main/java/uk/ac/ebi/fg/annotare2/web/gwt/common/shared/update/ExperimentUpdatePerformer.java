@@ -46,7 +46,7 @@ public interface ExperimentUpdatePerformer {
 
     void updateSample(SampleRow row);
 
-    void createSample();
+    void createSamples(int numOfSamples, String namingPattern);
 
     void removeSamples(List<SampleRow> row);
 

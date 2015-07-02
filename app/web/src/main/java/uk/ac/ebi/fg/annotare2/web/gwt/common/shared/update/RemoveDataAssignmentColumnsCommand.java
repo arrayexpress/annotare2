@@ -26,6 +26,7 @@ public class RemoveDataAssignmentColumnsCommand implements ExperimentUpdateComma
 
     private List<Integer> indices;
 
+    @SuppressWarnings("unused")
     RemoveDataAssignmentColumnsCommand() {
         /* used by GWT serialization */
     }

@@ -28,12 +28,13 @@ public class RemovePublicationsCommand implements ExperimentUpdateCommand {
 
     private List<PublicationDto> publications;
 
+    @SuppressWarnings("unused")
     RemovePublicationsCommand() {
         /*used by GWT serialization only */
     }
 
     public RemovePublicationsCommand(List<PublicationDto> publications) {
-        this.publications = new ArrayList<PublicationDto>(publications);
+        this.publications = new ArrayList<>(publications);
     }
 
     @Override

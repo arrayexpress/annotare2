@@ -25,6 +25,7 @@ public class UpdateExtractAttributesRowCommand implements ExperimentUpdateComman
 
     private ExtractAttributesRow row;
 
+    @SuppressWarnings("unused")
     UpdateExtractAttributesRowCommand() {
         /* used by GWT serialization */
     }

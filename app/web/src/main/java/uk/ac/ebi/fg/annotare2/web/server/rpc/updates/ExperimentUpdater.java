@@ -148,12 +148,19 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
-    public void createSample() {
-        createAndReturnSample();
+    public void createSamples(int numOfSamples, String namingPattern) {
+        createSample(getNewSampleName());
     }
 
-    protected final Sample createAndReturnSample() {
-        Collection<String> existedNames = Collections2.transform(
+    protected Sample createSample(String name) {
+        Sample sample = exp.createSample();
+        sample.setName(name);
+        return sample;
+    }
+
+
+    private final String getNewSampleName() {
+        Collection<String> existingNames = Collections2.transform(
                 exp.getSamples(),
                 new Function<Sample, String>() {
                     @Nullable
@@ -164,9 +171,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 }
         );
 
-        Sample sample = exp.createSample();
-        sample.setName(newName("Sample", existedNames));
-        return sample;
+        return newName("Sample", existingNames);
     }
 
     @Override
@@ -191,8 +196,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             return;
         }
         Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
-        Set<String> newLabels = new HashSet<String>(row.getLabels());
-        Set<String> existedLabels = new HashSet<String>();
+        Set<String> newLabels = new HashSet<>(row.getLabels());
+        Set<String> existedLabels = new HashSet<>();
         for (LabeledExtract labeledExtract : labeledExtracts) {
             if (!newLabels.contains(labeledExtract.getLabel().getName())) {
                 exp.removeLabeledExtract(labeledExtract.getId());
@@ -215,7 +220,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                     @Nullable
                     @Override
                     public String apply(@Nullable Protocol input) {
-                        return input.getName();
+                        return null != input ? input.getName() : null;
                     }
                 }
         );

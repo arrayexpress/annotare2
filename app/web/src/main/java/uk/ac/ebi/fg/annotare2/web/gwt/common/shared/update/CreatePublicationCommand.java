@@ -20,6 +20,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
  * @author Olga Melnichuk
  */
 public class CreatePublicationCommand implements ExperimentUpdateCommand {
+
     public CreatePublicationCommand() {
     }
 

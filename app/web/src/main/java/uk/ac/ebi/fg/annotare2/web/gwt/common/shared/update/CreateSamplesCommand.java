@@ -19,14 +19,25 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 /**
  * @author Olga Melnichuk
  */
-public class CreateSampleCommand implements ExperimentUpdateCommand {
+public class CreateSamplesCommand implements ExperimentUpdateCommand {
 
-    public CreateSampleCommand() {
+    private int numOfSamples;
+
+    private String namingPattern;
+
+    @SuppressWarnings("unused")
+    CreateSamplesCommand() {
+        /*Used by GWT serialization*/
+    }
+
+    public CreateSamplesCommand(int numOfSamples, String namingPattern) {
+        this.numOfSamples = numOfSamples;
+        this.namingPattern = namingPattern;
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.createSample();
+        performer.createSamples(numOfSamples, namingPattern);
     }
 
     @Override

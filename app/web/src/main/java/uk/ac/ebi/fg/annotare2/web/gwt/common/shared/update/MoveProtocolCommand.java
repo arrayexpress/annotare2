@@ -23,7 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
  */
 public class MoveProtocolCommand implements ExperimentUpdateCommand {
 
-    static enum Direction {
+    enum Direction {
         UP {
             @Override
             void apply(ExperimentUpdatePerformer performer, ProtocolRow row) {
@@ -44,6 +44,7 @@ public class MoveProtocolCommand implements ExperimentUpdateCommand {
 
     private ProtocolRow row;
 
+    @SuppressWarnings("unused")
     MoveProtocolCommand() {
         /*Used by GWT serialization*/
     }

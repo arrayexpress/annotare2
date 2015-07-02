@@ -25,6 +25,7 @@ public class UpdateProtocolAssignmentsCommand implements ExperimentUpdateCommand
 
     private ProtocolAssignmentProfileUpdates updates;
 
+    @SuppressWarnings("unused")
     UpdateProtocolAssignmentsCommand() {
         /*used by GWT serialization */
     }

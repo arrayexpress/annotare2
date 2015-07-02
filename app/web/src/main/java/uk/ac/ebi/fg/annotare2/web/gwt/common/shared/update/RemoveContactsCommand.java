@@ -28,6 +28,7 @@ public class RemoveContactsCommand implements ExperimentUpdateCommand {
 
     private List<ContactDto> contacts;
 
+    @SuppressWarnings("unused")
     RemoveContactsCommand() {
         /*used by GWT serialization only*/
     }

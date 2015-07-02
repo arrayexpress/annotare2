@@ -36,17 +36,14 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater.ex
  */
 public class ExperimentBuilderFactory {
 
-    private static enum Builder {
+    private enum Builder {
         ONE_COLOR_EXPERIMENT_BUILDER(ONE_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
                 ExperimentProfile exp = new ExperimentProfile(ONE_COLOR_MICROARRAY);
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
-                int n = settings.getNumberOfHybs();
-                for (int i = 0; i < n; i++) {
-                    updater.createSample();
-                }
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #");
                 exp.setAeExperimentType("transcription profiling by array");
                 return exp;
             }
@@ -60,10 +57,7 @@ public class ExperimentBuilderFactory {
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
-                int n = settings.getNumberOfHybs();
-                for (int i = 0; i < n; i++) {
-                    updater.createSample();
-                }
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #");
                 exp.setAeExperimentType("transcription profiling by array");
                 return exp;
             }
@@ -75,10 +69,7 @@ public class ExperimentBuilderFactory {
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
-                int n = settings.getNumberOfHybs();
-                for (int i = 0; i < n; i++) {
-                    updater.createSample();
-                }
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #");
                 exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }
@@ -94,7 +85,7 @@ public class ExperimentBuilderFactory {
 
         private ExperimentProfileType type;
 
-        private Builder(ExperimentProfileType type) {
+        Builder(ExperimentProfileType type) {
             this.type = type;
         }
 

@@ -76,11 +76,11 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         });
         gridView.addTool(button);
 
-        button = new Button("Add Sample");
+        button = new Button("Add Samples");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                createNewSample();
+                createSamples();
             }
         });
         gridView.addTool(button);
@@ -182,12 +182,14 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         presenter.updateRow(row.copy());
     }
 
-    private void createNewSample() {
-        if (maxSamplesLimit == gridView.getRows().size()) {
-            NotificationPopupPanel.error("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples.", true, false);
-        } else {
-            presenter.createSample();
-        }
+    private void createSamples() {
+//        new AddSamplesDialog(new DialogCallback<AddSamplesDialog.Results>() {
+//            @Override
+//            public void onOkay(AddSamplesDialog.Results results) {
+//                presenter.createSamples(results.numOfSamples, results.namingPattern);
+//            }
+//        });
+        presenter.createSamples(0, null);
     }
 
     private void deleteSelectedSamples() {
@@ -195,7 +197,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         if (selection.isEmpty()) {
             NotificationPopupPanel.warning("Please select samples you want to delete.", true, false);
         } else if (Window.confirm("The selected samples and all associated information will no longer be available if you delete. Do you want to continue?")) {
-            presenter.removeSamples(new ArrayList<SampleRow>(selection));
+            presenter.removeSamples(new ArrayList<>(selection));
             gridView.removeSelectedRows();
         }
     }

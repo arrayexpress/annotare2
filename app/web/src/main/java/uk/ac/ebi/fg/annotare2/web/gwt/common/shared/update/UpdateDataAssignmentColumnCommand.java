@@ -25,6 +25,7 @@ public class UpdateDataAssignmentColumnCommand implements ExperimentUpdateComman
 
     private DataAssignmentColumn column;
 
+    @SuppressWarnings("unused")
     UpdateDataAssignmentColumnCommand() {
     /*used by GWT serialization */
     }

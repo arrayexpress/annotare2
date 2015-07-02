@@ -25,6 +25,7 @@ public class UpdateExperimentDetailsCommand implements ExperimentUpdateCommand {
 
     private ExperimentDetailsDto details;
 
+    @SuppressWarnings("unused")
     UpdateExperimentDetailsCommand() {
         /*used by GWT serialization only*/
     }
