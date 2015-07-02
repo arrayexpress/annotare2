@@ -253,6 +253,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                                 processSubmission(dialog, false);
                             }
                         });
+                    } else {
+                        processSubmission(dialog, false);
                     }
 
                 }
