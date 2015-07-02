@@ -108,8 +108,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public void createSamples(int numOfSamples, String namingPattern) {
-        expDataProxy.createSamples(numOfSamples, namingPattern);
+    public void createSamples(int numOfSamples, String namingPattern, int startingIndex) {
+        expDataProxy.createSamples(numOfSamples, namingPattern, startingIndex);
     }
 
     @Override

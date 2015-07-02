@@ -43,7 +43,7 @@ public interface SamplesView extends IsWidget {
 
         void updateRow(SampleRow row);
 
-        void createSamples(int numOfSamples, String namingPattern);
+        void createSamples(int numOfSamples, String namingPattern, int startingIndex);
 
         void removeSamples(List<SampleRow> rows);
 

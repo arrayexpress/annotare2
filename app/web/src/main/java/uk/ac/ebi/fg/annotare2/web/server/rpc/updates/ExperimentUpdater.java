@@ -148,30 +148,24 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
-    public void createSamples(int numOfSamples, String namingPattern) {
-        createSample(getNewSampleName());
+    public void createSamples(int numOfSamples, String namingPattern, int startingIndex) {
+        String format = convertNamingPattern(namingPattern);
+
+        int index = startingIndex;
+        for (int i = 0; i < numOfSamples; ++i) {
+            String name;
+            do {
+                name = String.format(format, index++);
+            } while (null != exp.getSampleByName(name));
+
+            createSample(name);
+        }
     }
 
     protected Sample createSample(String name) {
         Sample sample = exp.createSample();
         sample.setName(name);
         return sample;
-    }
-
-
-    private final String getNewSampleName() {
-        Collection<String> existingNames = Collections2.transform(
-                exp.getSamples(),
-                new Function<Sample, String>() {
-                    @Nullable
-                    @Override
-                    public String apply(@Nullable Sample input) {
-                        return input.getName();
-                    }
-                }
-        );
-
-        return newName("Sample", existingNames);
     }
 
     @Override
@@ -227,6 +221,47 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
         Protocol protocol = exp.createProtocol(protocolType.getTerm(), protocolType.getSubjectType());
         protocol.setName(newName("Protocol", existedNames));
+    }
+
+    private String convertNamingPattern(String namingPattern) {
+        // should convert single # to %1$d and multiple ##s to %1$0Nd where N is a number of ##s
+        StringBuilder format = new StringBuilder();
+
+        boolean isPrevCharSharp = false, hasFoundSharp = false;
+        int sharpsCount = 0;
+
+        char c;
+        for (int i = 0; i <= namingPattern.length(); ++i) {
+            c = i < namingPattern.length() ? namingPattern.charAt(i) : 0;
+            if ('#' == c) {
+                hasFoundSharp = true;
+                if (isPrevCharSharp) {
+                    sharpsCount++;
+                } else {
+                    isPrevCharSharp = true;
+                    sharpsCount = 1;
+                }
+            } else {
+                if (isPrevCharSharp) {
+                    isPrevCharSharp = false;
+                    if (1 == sharpsCount) {
+                        format.append("%1$d");
+                    } else {
+                        format.append("%1$0" + sharpsCount + "d");
+                    }
+                } else {
+                    if (0 != c) {
+                        format.append(c);
+                    }
+                }
+            }
+        }
+
+        if (!hasFoundSharp) {
+            format.append("%d");
+        }
+
+        return format.toString();
     }
 
     private String newName(String prefix, Collection<String> existedNames) {

@@ -25,19 +25,22 @@ public class CreateSamplesCommand implements ExperimentUpdateCommand {
 
     private String namingPattern;
 
+    private int startingIndex;
+
     @SuppressWarnings("unused")
     CreateSamplesCommand() {
         /*Used by GWT serialization*/
     }
 
-    public CreateSamplesCommand(int numOfSamples, String namingPattern) {
+    public CreateSamplesCommand(int numOfSamples, String namingPattern, int startingIndex) {
         this.numOfSamples = numOfSamples;
         this.namingPattern = namingPattern;
+        this.startingIndex = startingIndex;
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.createSamples(numOfSamples, namingPattern);
+        performer.createSamples(numOfSamples, namingPattern, startingIndex);
     }
 
     @Override

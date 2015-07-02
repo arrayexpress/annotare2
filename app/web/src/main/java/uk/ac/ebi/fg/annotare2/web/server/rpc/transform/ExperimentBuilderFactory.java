@@ -43,7 +43,7 @@ public class ExperimentBuilderFactory {
                 ExperimentProfile exp = new ExperimentProfile(ONE_COLOR_MICROARRAY);
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
-                updater.createSamples(settings.getNumberOfHybs(), "Sample #");
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
                 exp.setAeExperimentType("transcription profiling by array");
                 return exp;
             }
@@ -57,7 +57,7 @@ public class ExperimentBuilderFactory {
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
-                updater.createSamples(settings.getNumberOfHybs(), "Sample #");
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
                 exp.setAeExperimentType("transcription profiling by array");
                 return exp;
             }
@@ -69,7 +69,7 @@ public class ExperimentBuilderFactory {
 
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
-                updater.createSamples(settings.getNumberOfHybs(), "Sample #");
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
                 exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }

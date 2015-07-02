@@ -439,8 +439,8 @@ public class ExperimentDataProxy {
         updateQueue.add(new RemovePublicationsCommand(toBeRemoved));
     }
 
-    public void createSamples(int numOfSamples, String namingPattern) {
-        updateQueue.add(new CreateSamplesCommand(numOfSamples, namingPattern));
+    public void createSamples(int numOfSamples, String namingPattern, int startingIndex) {
+        updateQueue.add(new CreateSamplesCommand(numOfSamples, namingPattern, startingIndex));
     }
 
     public void updateSampleColumns(List<SampleColumn> columns) {

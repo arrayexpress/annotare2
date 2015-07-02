@@ -189,7 +189,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 //                presenter.createSamples(results.numOfSamples, results.namingPattern);
 //            }
 //        });
-        presenter.createSamples(0, null);
+        presenter.createSamples(1, "Sample #", 1);
     }
 
     private void deleteSelectedSamples() {
