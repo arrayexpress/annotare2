@@ -36,7 +36,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleCol
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EfoSuggestOracle;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -76,14 +76,14 @@ public class SampleColumnEditor extends Composite implements HasValueChangeHandl
 
         termSuggest = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
-            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void suggest(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 efoSuggestService.getTerms(query, limit, callback);
             }
         }));
 
         unitsSuggest = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
-            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void suggest(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 efoSuggestService.getUnits(query, limit, callback);
             }
         }));

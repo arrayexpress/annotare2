@@ -26,7 +26,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -34,29 +34,31 @@ import java.util.List;
 @RemoteServiceRelativePath(ApplicationDataService.NAME)
 public interface ApplicationDataService extends RemoteService {
 
-    public static final String NAME = "appDataService";
+    String NAME = "appDataService";
 
     SystemEfoTermMap getSystemEfoTerms();
 
-    List<ArrayDesignRef> getArrayDesignList(String query, int limit);
+    ArrayList<ArrayDesignRef> getArrayDesignList(String query, int limit);
 
-    List<OntologyTerm> getEfoTerms(String query, int limit);
+    ArrayList<OntologyTerm> getEfoTerms(String query, int limit);
 
-    List<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit);
+    ArrayList<OntologyTerm> getEfoTerms(String query, String rootAccession, int limit);
 
     OntologyTerm getEfoTermByLabel(String label);
 
-    List<ProtocolType> getProtocolTypes(ExperimentProfileType type);
+    ArrayList<ProtocolType> getProtocolTypes(ExperimentProfileType type);
 
-    List<OntologyTerm> getContactRoles();
+    ArrayList<OntologyTerm> getContactRoles();
 
-    List<OntologyTermGroup> getExperimentalDesigns();
+    ArrayList<OntologyTermGroup> getExperimentalDesigns();
 
     ApplicationProperties getApplicationProperties();
 
-    List<String> getAeExperimentTypes(ExperimentProfileType type);
+    ArrayList<String> getAeExperimentTypes(ExperimentProfileType type);
 
-    List<String> getMaterialTypes();
+    ArrayList<String> getMaterialTypes();
 
-    List<String> getSequencingHardware();
+    ArrayList<String> getSequencingHardware();
+
+    ArrayList<String> getGeneratedNames(int numOfNames, String namingPattern, int startingNumber, boolean getOnlyFirstAndLast);
 }

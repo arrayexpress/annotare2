@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.server;
+package uk.ac.ebi.fg.annotare2.web.server.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.server.UnexpectedException;
 
 /**
  * @author Olga Melnichuk

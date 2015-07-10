@@ -22,6 +22,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public interface SamplesView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    public interface Presenter {
+    interface Presenter extends AddSamplesDialog.Presenter {
 
         SampleAttributeEfoSuggest getEfoTerms();
 
@@ -43,10 +44,10 @@ public interface SamplesView extends IsWidget {
 
         void updateRow(SampleRow row);
 
-        void createSamples(int numOfSamples, String namingPattern, int startingIndex);
+        void createSamples(int numOfSamples, String namingPattern, int startingNumber);
 
-        void removeSamples(List<SampleRow> rows);
+        void removeSamples(ArrayList<SampleRow> rows);
 
-        void getMaterialTypesAsync(AsyncCallback<List<String>> callback);
+        void getMaterialTypesAsync(AsyncCallback<ArrayList<String>> callback);
     }
 }

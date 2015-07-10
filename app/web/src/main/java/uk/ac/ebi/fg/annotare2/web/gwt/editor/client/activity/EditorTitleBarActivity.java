@@ -39,7 +39,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSe
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper.callbackWrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -197,7 +197,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
-    public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+    public void getArrayDesigns(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback) {
         dataService.getArrayDesignList(query, limit, callbackWrap(callback));
     }
 

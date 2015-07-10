@@ -18,12 +18,13 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
  */
 public interface SuggestService<T> {
 
-    void suggest(String query, int limit, AsyncCallback<List<T>> callback);
+    void suggest(String query, int limit, AsyncCallback<ArrayList<T>> callback);
 }
+

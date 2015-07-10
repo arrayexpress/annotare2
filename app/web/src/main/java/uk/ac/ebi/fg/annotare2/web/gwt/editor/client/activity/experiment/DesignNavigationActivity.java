@@ -36,6 +36,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ExpDesignSection.experimentDesignSectionsFor;
@@ -82,9 +83,9 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
         });
         loadExperimentSettings(true);
         getArrayDesigns(null, 999999,
-                new ReportingAsyncCallback<List<ArrayDesignRef>>(FailureMessage.UNABLE_TO_LOAD_ARRAYS_LIST) {
+                new ReportingAsyncCallback<ArrayList<ArrayDesignRef>>(FailureMessage.UNABLE_TO_LOAD_ARRAYS_LIST) {
                     @Override
-                    public void onSuccess(List<ArrayDesignRef> result) {
+                    public void onSuccess(ArrayList<ArrayDesignRef> result) {
                         view.setArrayDesignList(result);
                     }
                 }
@@ -108,7 +109,7 @@ public class DesignNavigationActivity extends AbstractActivity implements LeftNa
     }
 
     @Override
-    public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+    public void getArrayDesigns(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback) {
         dataService.getArrayDesignList(query, limit, AsyncCallbackWrapper.callbackWrap(callback));
     }
 

@@ -17,16 +17,24 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
+
+import java.util.ArrayList;
+
+import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 public class AddSamplesDialog extends DialogBox {
 
@@ -34,14 +42,38 @@ public class AddSamplesDialog extends DialogBox {
         Binder BINDER = GWT.create(Binder.class);
     }
 
-    class Results {
-        int numOfSamples;
-        String namingPattern;
+    public interface Presenter {
+        void getGeneratedSampleNamesAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<ArrayList<String>> callback);
     }
 
-    private DialogCallback<Results> callback;
+    class Result {
 
-    private Results results;
+        public Result(int numOfSamples, String namingPattern, int startingNumber) {
+            this.numOfSamples = numOfSamples;
+            this.namingPattern = namingPattern;
+            this.startingNumber = startingNumber;
+        }
+
+        int numOfSamples;
+        String namingPattern;
+        int startingNumber;
+    }
+
+    private DialogCallback<Result> callback;
+
+    private Presenter presenter;
+
+    @UiField
+    TextBox numOfSamples;
+
+    @UiField
+    TextBox namingPattern;
+
+    @UiField
+    TextBox startingNumber;
+
+    @UiField
+    HTML preview;
 
     @UiField
     Button okButton;
@@ -49,20 +81,40 @@ public class AddSamplesDialog extends DialogBox {
     @UiField
     Button cancelButton;
 
-    public AddSamplesDialog(DialogCallback<Results> callback) {
+    public AddSamplesDialog(DialogCallback<Result> callback, Presenter presenter) {
         this.callback = callback;
+        this.presenter = presenter;
+
         setModal(true);
         setGlassEnabled(true);
         setText("Add Samples");
         setWidget(Binder.BINDER.createAndBindUi(this));
+
+        integerValuesOnly(numOfSamples);
+        integerValuesOnly(startingNumber);
+
+        setDefaultValues();
+        updatePreview();
+        addHandlers();
+
         center();
+        Scheduler.get().scheduleDeferred(new Command() {
+            public void execute() {
+                numOfSamples.setFocus(true);
+            }
+        });
     }
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
         hide();
-        if (null != callback) {
-            callback.onOkay(results);
+
+        Integer numOfSamples = intValue(this.numOfSamples.getValue());
+        String namingPattern = this.namingPattern.getValue();
+        Integer startingNumber = intValue(this.startingNumber.getValue());
+
+        if (null != callback && null != numOfSamples && null != namingPattern && null != startingNumber) {
+            callback.onOkay(new Result(numOfSamples, namingPattern, startingNumber));
         }
     }
 
@@ -84,6 +136,59 @@ public class AddSamplesDialog extends DialogBox {
                     callback.onCancel();
                 }
             }
+        }
+    }
+
+    private void setDefaultValues() {
+        numOfSamples.setValue("1");
+        namingPattern.setValue("Sample #");
+        startingNumber.setValue("1");
+    }
+
+    private void addHandlers() {
+        final KeyUpHandler handler = new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                updatePreview();
+            }
+        };
+
+        numOfSamples.addKeyUpHandler(handler);
+        namingPattern.addKeyUpHandler(handler);
+        startingNumber.addKeyUpHandler(handler);
+    }
+
+    private void updatePreview() {
+        Integer numOfSamples = intValue(this.numOfSamples.getValue());
+        String namingPattern = this.namingPattern.getValue();
+        Integer startingNumber = intValue(this.startingNumber.getValue());
+        if (null != numOfSamples && null != namingPattern && null != startingNumber) {
+            presenter.getGeneratedSampleNamesAsync(numOfSamples, namingPattern, startingNumber, new ReportingAsyncCallback<ArrayList<String>>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    super.onFailure(caught);
+                    preview.setHTML("");
+                }
+
+                @Override
+                public void onSuccess(ArrayList<String> result) {
+                    if (null != result && result.size() > 0) {
+                        preview.setHTML("Will create <b>" + result.get(0) + (result.size() > 1 ? " ... " + result.get(1) : "") + "</b>");
+                    }
+                }
+            });
+        }
+        preview.setHTML("");
+    }
+
+    private Integer intValue(String value) {
+        if (null == value) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 }

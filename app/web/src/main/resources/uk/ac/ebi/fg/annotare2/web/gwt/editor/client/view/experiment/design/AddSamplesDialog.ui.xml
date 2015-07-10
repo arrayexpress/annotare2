@@ -18,10 +18,53 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
-    <g:ResizeLayoutPanel height="150px" width="300px">
+    <ui:style>
+        .table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .table td > i {
+            margin-left: 6px;
+            color: #888;
+        }
+
+        .table td > i:hover {
+            color: #3e6397;
+        }
+
+        .preview {
+            margin-top: 10px;
+            border-top: 1px solid #ccc;
+        }
+    </ui:style>
+
+    <g:ResizeLayoutPanel height="200px" width="350px">
         <g:DockLayoutPanel>
             <g:center>
-                <g:HTML>Hello there</g:HTML>
+                <g:HTMLPanel>
+                    <table class="{style.table}">
+                        <tr>
+                            <td>Number of samples<i class="fa fa-info-circle"></i></td>
+                            <td width="175px">
+                                <g:TextBox ui:field="numOfSamples" width="50px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Naming pattern<i class="fa fa-info-circle"></i></td>
+                            <td>
+                                <g:TextBox ui:field="namingPattern" width="100%"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Starting number<i class="fa fa-info-circle"></i></td>
+                            <td>
+                                <g:TextBox ui:field="startingNumber" width="50px"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <g:HTML addStyleNames="{style.preview}" ui:field="preview"/>
+                </g:HTMLPanel>
             </g:center>
             <g:south size="50">
                 <g:HTMLPanel>

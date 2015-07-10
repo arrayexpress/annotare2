@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
+import uk.ac.ebi.fg.annotare2.web.server.utils.NamingPatternUtil;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -148,10 +149,10 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
-    public void createSamples(int numOfSamples, String namingPattern, int startingIndex) {
-        String format = convertNamingPattern(namingPattern);
+    public void createSamples(int numOfSamples, String namingPattern, int startingNumber) {
+        String format = NamingPatternUtil.convert(namingPattern);
 
-        int index = startingIndex;
+        int index = startingNumber;
         for (int i = 0; i < numOfSamples; ++i) {
             String name;
             do {
@@ -223,46 +224,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         protocol.setName(newName("Protocol", existedNames));
     }
 
-    private String convertNamingPattern(String namingPattern) {
-        // should convert single # to %1$d and multiple ##s to %1$0Nd where N is a number of ##s
-        StringBuilder format = new StringBuilder();
 
-        boolean isPrevCharSharp = false, hasFoundSharp = false;
-        int sharpsCount = 0;
-
-        char c;
-        for (int i = 0; i <= namingPattern.length(); ++i) {
-            c = i < namingPattern.length() ? namingPattern.charAt(i) : 0;
-            if ('#' == c) {
-                hasFoundSharp = true;
-                if (isPrevCharSharp) {
-                    sharpsCount++;
-                } else {
-                    isPrevCharSharp = true;
-                    sharpsCount = 1;
-                }
-            } else {
-                if (isPrevCharSharp) {
-                    isPrevCharSharp = false;
-                    if (1 == sharpsCount) {
-                        format.append("%1$d");
-                    } else {
-                        format.append("%1$0" + sharpsCount + "d");
-                    }
-                } else {
-                    if (0 != c) {
-                        format.append(c);
-                    }
-                }
-            }
-        }
-
-        if (!hasFoundSharp) {
-            format.append("%d");
-        }
-
-        return format.toString();
-    }
 
     private String newName(String prefix, Collection<String> existedNames) {
         Set<String> names = newHashSet(existedNames);

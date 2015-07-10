@@ -30,7 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ArrayDesignDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.arraydesign.header.AdfDetailsView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -68,7 +68,7 @@ public class AdfDetailsActivity extends AbstractActivity implements AdfDetailsVi
     }
 
     @Override
-    public void getOrganisms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+    public void getOrganisms(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
         efoTerms.getOrganisms(query, limit, callback);
     }
 

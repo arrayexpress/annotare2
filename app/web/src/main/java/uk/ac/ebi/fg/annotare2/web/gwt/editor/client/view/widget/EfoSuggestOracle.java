@@ -22,9 +22,9 @@ public class EfoSuggestOracle extends SuggestOracle {
     @Override
     public void requestSuggestions(final Request request, final Callback callback) {
         suggestService.suggest(request.getQuery(), request.getLimit(),
-                new ReportingAsyncCallback<List<OntologyTerm>>(FailureMessage.UNABLE_TO_LOAD_EFO) {
+                new ReportingAsyncCallback<ArrayList<OntologyTerm>>(FailureMessage.UNABLE_TO_LOAD_EFO) {
                     @Override
-                    public void onSuccess(List<OntologyTerm> result) {
+                    public void onSuccess(ArrayList<OntologyTerm> result) {
                         callback.onSuggestionsReady(request, createResponse(result));
                     }
         });

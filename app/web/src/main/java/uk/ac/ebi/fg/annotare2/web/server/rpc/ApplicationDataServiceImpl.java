@@ -35,6 +35,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpress;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
+import uk.ac.ebi.fg.annotare2.web.server.utils.NamingPatternUtil;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -196,6 +197,21 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
             groups.add(group);
         }
         return groups;
+    }
+
+    @Override
+    public ArrayList<String> getGeneratedNames(int numOfNames, String namingPattern, int startingNumber, boolean getOnlyFirstAndLast) {
+        ArrayList<String> names = new ArrayList<>();
+        String format = NamingPatternUtil.convert(namingPattern);
+        int number = startingNumber;
+        for (int i = 0; i < numOfNames; ++i) {
+            if (!getOnlyFirstAndLast || 0 == i || i + 1 == numOfNames) {
+                String name = String.format(format, number);
+                names.add(name);
+            }
+            number++;
+        }
+        return names;
     }
 
     private Collection<EfoTerm> sortedByTermLabel(Collection<EfoTerm> terms) {

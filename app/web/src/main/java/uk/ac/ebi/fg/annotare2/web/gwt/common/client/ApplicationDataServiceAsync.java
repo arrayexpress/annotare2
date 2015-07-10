@@ -25,31 +25,33 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface ApplicationDataServiceAsync {
 
     void getSystemEfoTerms(AsyncCallback<SystemEfoTermMap> async);
 
-    void getArrayDesignList(String query, int limit, AsyncCallback<List<ArrayDesignRef>> async);
+    void getArrayDesignList(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> async);
 
-    void getEfoTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> async);
+    void getEfoTerms(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> async);
 
-    void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<List<OntologyTerm>> async);
+    void getEfoTerms(String query, String rootAccession, int limit, AsyncCallback<ArrayList<OntologyTerm>> async);
 
     void getEfoTermByLabel(String label, AsyncCallback<OntologyTerm> async);
 
-    void getProtocolTypes(ExperimentProfileType type, AsyncCallback<List<ProtocolType>> async);
+    void getProtocolTypes(ExperimentProfileType type, AsyncCallback<ArrayList<ProtocolType>> async);
 
     void getApplicationProperties(AsyncCallback<ApplicationProperties> async);
 
-    void getContactRoles(AsyncCallback<List<OntologyTerm>> async);
+    void getContactRoles(AsyncCallback<ArrayList<OntologyTerm>> async);
 
-    void getExperimentalDesigns(AsyncCallback<List<OntologyTermGroup>> async);
+    void getExperimentalDesigns(AsyncCallback<ArrayList<OntologyTermGroup>> async);
 
-    void getAeExperimentTypes(ExperimentProfileType type, AsyncCallback<List<String>> async);
+    void getAeExperimentTypes(ExperimentProfileType type, AsyncCallback<ArrayList<String>> async);
 
-    void getMaterialTypes(AsyncCallback<List<String>> async);
+    void getMaterialTypes(AsyncCallback<ArrayList<String>> async);
 
-    void getSequencingHardware(AsyncCallback<List<String>> async);
+    void getSequencingHardware(AsyncCallback<ArrayList<String>> async);
+
+    void getGeneratedNames(int numOfNames, String namingPattern, int startingNumber, boolean getOnlyFirstAndLast, AsyncCallback<ArrayList<String>> async);
 }

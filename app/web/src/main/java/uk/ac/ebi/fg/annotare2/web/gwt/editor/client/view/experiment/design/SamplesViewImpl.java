@@ -50,7 +50,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     private final GridView<SampleRow> gridView;
 
-    private List<SampleColumn> columns = new ArrayList<SampleColumn>();
+    private List<SampleColumn> columns = new ArrayList<>();
     private AsyncOptionProvider materialTypes;
     private int maxSamplesLimit;
 
@@ -59,7 +59,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     public SamplesViewImpl() {
         maxSamplesLimit = 1000;
 
-        gridView = new GridView<SampleRow>();
+        gridView = new GridView<>();
         Button button = new Button("Sample Attributes and Variables...");
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -115,20 +115,20 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         initWidget(gridView);
 
         materialTypes = new AsyncOptionProvider() {
-            private List<String> options = new ArrayList<String>();
+            private List<String> options = new ArrayList<>();
 
             @Override
             public void update(final Callback callback) {
                 if (presenter != null) {
                     if (options.isEmpty()) {
-                        presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
+                        presenter.getMaterialTypesAsync(new AsyncCallback<ArrayList<String>>() {
                             @Override
                             public void onFailure(Throwable caught) {
                                 callback.setOptions(Collections.<String>emptyList());
                             }
 
                             @Override
-                            public void onSuccess(List<String> result) {
+                            public void onSuccess(ArrayList<String> result) {
                                 if (!result.isEmpty()) {
                                     options.clear();
                                     options.add("");
@@ -167,7 +167,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     }
 
     private void setColumns(List<SampleColumn> columns) {
-        this.columns = new ArrayList<SampleColumn>(columns);
+        this.columns = new ArrayList<>(columns);
         addNameColumn();
         for (SampleColumn column : columns) {
             addColumn(column);
@@ -183,13 +183,12 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     }
 
     private void createSamples() {
-//        new AddSamplesDialog(new DialogCallback<AddSamplesDialog.Results>() {
-//            @Override
-//            public void onOkay(AddSamplesDialog.Results results) {
-//                presenter.createSamples(results.numOfSamples, results.namingPattern);
-//            }
-//        });
-        presenter.createSamples(1, "Sample #", 1);
+        new AddSamplesDialog(new DialogCallback<AddSamplesDialog.Result>() {
+            @Override
+            public void onOkay(AddSamplesDialog.Result result) {
+                presenter.createSamples(result.numOfSamples, result.namingPattern, result.startingNumber);
+            }
+        }, presenter);
     }
 
     private void deleteSelectedSamples() {
@@ -307,7 +306,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
         Cell<String> efoSuggestCell = new EditSuggestCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
-            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void suggest(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 efoSuggestService.getTerms(query, term, limit, callback);
             }
         }), sampleColumn.getTemplate().isMandatory());

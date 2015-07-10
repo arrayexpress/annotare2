@@ -35,7 +35,7 @@ public interface ProtocolsView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    public interface Presenter extends AddProtocolDialog.Presenter {
+    interface Presenter extends AddProtocolDialog.Presenter {
 
         void createProtocol(ProtocolType protocolType);
 
@@ -51,6 +51,6 @@ public interface ProtocolsView extends IsWidget {
 
         void moveProtocolUp(ProtocolRow row);
 
-        void getSequencingHardwareAsync(AsyncCallback<List<String>> callback);
+        void getSequencingHardwareAsync(AsyncCallback<ArrayList<String>> callback);
     }
 }

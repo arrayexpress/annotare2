@@ -117,16 +117,16 @@ public class AddProtocolDialog extends DialogBox {
             return;
         }
         presenter.getProtocolTypes(
-                new ReportingAsyncCallback<List<ProtocolType>>(FailureMessage.UNABLE_TO_LOAD_PROTOCOL_TYPES) {
+                new ReportingAsyncCallback<ArrayList<ProtocolType>>(FailureMessage.UNABLE_TO_LOAD_PROTOCOL_TYPES) {
                     @Override
-                    public void onSuccess(List<ProtocolType> types) {
+                    public void onSuccess(ArrayList<ProtocolType> types) {
                         showProtocolTypes(types);
                     }
         });
     }
 
     private void showProtocolTypes(List<ProtocolType> types) {
-        protocolTypes = new ArrayList<ProtocolType>(types);
+        protocolTypes = new ArrayList<>(types);
         protocolTypeList.clear();
         for (ProtocolType type : types) {
             protocolTypeList.addItem(type.getTerm().getLabel());
@@ -146,7 +146,7 @@ public class AddProtocolDialog extends DialogBox {
         protocolTypeDefinition.setText(type == null ? "" : type.getDefinition());
     }
 
-    public static interface Presenter {
-        void getProtocolTypes(AsyncCallback<List<ProtocolType>> callback);
+    public interface Presenter {
+        void getProtocolTypes(AsyncCallback<ArrayList<ProtocolType>> callback);
     }
 }

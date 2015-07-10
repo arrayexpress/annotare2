@@ -116,14 +116,14 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
             public void update(final Callback callback) {
                 if (presenter != null) {
                     if (options.isEmpty()) {
-                        presenter.getSequencingHardwareAsync(new AsyncCallback<List<String>>() {
+                        presenter.getSequencingHardwareAsync(new AsyncCallback<ArrayList<String>>() {
                             @Override
                             public void onFailure(Throwable caught) {
                                 callback.setOptions(Collections.<String>emptyList());
                             }
 
                             @Override
-                            public void onSuccess(List<String> result) {
+                            public void onSuccess(ArrayList<String> result) {
                                 if (!result.isEmpty()) {
                                     options.clear();
                                     options.add("");
