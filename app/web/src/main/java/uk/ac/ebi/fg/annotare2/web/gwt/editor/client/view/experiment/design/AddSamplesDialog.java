@@ -73,7 +73,7 @@ public class AddSamplesDialog extends DialogBox {
     TextBox startingNumber;
 
     @UiField
-    HTML preview;
+    InlineLabel preview;
 
     @UiField
     Button okButton;
@@ -167,18 +167,18 @@ public class AddSamplesDialog extends DialogBox {
                 @Override
                 public void onFailure(Throwable caught) {
                     super.onFailure(caught);
-                    preview.setHTML("");
+                    preview.setText("");
                 }
 
                 @Override
                 public void onSuccess(ArrayList<String> result) {
                     if (null != result && result.size() > 0) {
-                        preview.setHTML("Will create <b>" + result.get(0) + (result.size() > 1 ? " ... " + result.get(1) : "") + "</b>");
+                        preview.setText(result.get(0) + (result.size() > 1 ? " ... " + result.get(1) : ""));
                     }
                 }
             });
         }
-        preview.setHTML("");
+        preview.setText("");
     }
 
     private Integer intValue(String value) {

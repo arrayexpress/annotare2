@@ -35,11 +35,16 @@
 
         .preview {
             margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px solid #ccc;
+        }
+
+        .preview-span {
+            font-weight: bold;
         }
     </ui:style>
 
-    <g:ResizeLayoutPanel height="200px" width="350px">
+    <g:ResizeLayoutPanel height="240px" width="350px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:HTMLPanel>
@@ -63,7 +68,9 @@
                             </td>
                         </tr>
                     </table>
-                    <g:HTML addStyleNames="{style.preview}" ui:field="preview"/>
+                    <g:HTMLPanel addStyleNames="{style.preview}">Preview (subject to availability):<br/>
+                        <g:InlineLabel ui:field="preview" addStyleNames="{style.preview-span}"/>
+                    </g:HTMLPanel>
                 </g:HTMLPanel>
             </g:center>
             <g:south size="50">
