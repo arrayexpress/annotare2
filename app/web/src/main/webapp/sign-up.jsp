@@ -30,10 +30,10 @@
     }
 
     String[] values = request.getParameterValues("name");
-    pageContext.setAttribute("name", values == null ? "" : values[0]);
+    pageContext.setAttribute("userName", values == null ? "" : values[0]);
 
     values = request.getParameterValues("email");
-    pageContext.setAttribute("email", values == null ? "" : values[0]);
+    pageContext.setAttribute("userEmail", values == null ? "" : values[0]);
 %>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie6"><![endif]-->
@@ -65,7 +65,7 @@
                     </tr>
                     <tr class="row right">
                         <td>Full name</td>
-                        <td><input type="text" name="name" value="${name}" style="width:98%"/></td>
+                        <td><input type="text" name="name" value="${pageScope.userName}" style="width:98%"/></td>
                     </tr>
                     <tr class="error">
                         <td></td>
@@ -73,7 +73,7 @@
                     </tr>
                     <tr class="row right">
                         <td>Email address</td>
-                        <td><input type="text" name="email" value="${email}" style="width:98%"/></td>
+                        <td><input type="text" name="email" value="${pageScope.userEmail}" style="width:98%"/></td>
                     </tr>
                     <tr class="error">
                         <td></td>

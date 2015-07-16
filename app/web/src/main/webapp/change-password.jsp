@@ -31,7 +31,7 @@
     if (null == email) {
         email = (String)session.getAttribute("email");
     }
-    pageContext.setAttribute("email", email == null ? "" : email);
+    pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie6"><![endif]-->
@@ -66,16 +66,16 @@
                         <td>${dummyErrors}</td>
                     </tr>
                     <c:choose>
-                        <c:when test="${phase == 'email'}">
+                        <c:when test="${requestScope.phase == 'email'}">
                             <tr class="row right">
                                 <td>Email</td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${email == ''}">
+                                        <c:when test="${pageScope.userEmail == ''}">
                                             <input type="text" name="email" style="width:98%" autofocus="autofocus"/>
                                         </c:when>
                                         <c:otherwise>
-                                            <input type="text" name="email" value="${email}" style="width:98%"/>
+                                            <input type="text" name="email" value="${pageScope.userEmail}" style="width:98%"/>
                                         </c:otherwise>
                                     </c:choose>
 
@@ -86,11 +86,11 @@
                                 <td>${emailErrors}</td>
                             </tr>
                         </c:when>
-                        <c:when test="${phase == 'token'}">
+                        <c:when test="${requestScope.phase == 'token'}">
                             <tr class="row right">
                                 <td>Code</td>
                                 <td>
-                                    <input type="hidden" name="email" value="${email}"/>
+                                    <input type="hidden" name="email" value="${pageScope.userEmail}"/>
                                     <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
                                 </td>
                             </tr>
@@ -103,7 +103,7 @@
                             <tr class="row right">
                                 <td>Password</td>
                                 <td>
-                                    <input type="hidden" name="email" value="${email}"/>
+                                    <input type="hidden" name="email" value="${pageScope.userEmail}"/>
                                     <input type="hidden" name="token" value="${param.token}"/>
                                     <input type="password" name="password" style="width:98%" autofocus="autofocus"/>
                                 </td>
@@ -127,7 +127,7 @@
                         <td></td>
                         <td>
                             <c:choose>
-                                <c:when test="${phase == 'email' && email != ''}">
+                                <c:when test="${requestScope.phase == 'email' && pageScope.userEmail != ''}">
                                     <button name="changePassword" autofocus="autofocus">Send</button>
                                 </c:when>
                                 <c:otherwise>
