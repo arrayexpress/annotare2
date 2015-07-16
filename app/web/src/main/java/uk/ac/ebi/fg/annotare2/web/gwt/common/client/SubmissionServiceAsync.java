@@ -31,6 +31,8 @@ public interface SubmissionServiceAsync {
 
     void getSdrfTable(long id, AsyncCallback<Table> async);
 
+    void getGeneratedSamplesPreview(long id, int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<String> async);
+
     void getArrayDesignDetails(long id, AsyncCallback<ArrayDesignDetailsDto> async);
 
     void updateArrayDesign(long id, List<ArrayDesignUpdateCommand> commands, AsyncCallback<ArrayDesignUpdateResult> async);

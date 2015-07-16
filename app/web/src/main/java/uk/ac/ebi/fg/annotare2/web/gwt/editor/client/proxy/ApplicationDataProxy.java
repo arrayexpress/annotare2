@@ -123,8 +123,4 @@ public class ApplicationDataProxy {
             }
         }.wrap());
     }
-
-    public void getGeneratedNamesAsync(int numOfNames, String namingPattern, int startingNumber, boolean getOnlyFirstAndLast, AsyncCallback<ArrayList<String>> callback) {
-        dataService.getGeneratedNames(numOfNames, namingPattern, startingNumber, getOnlyFirstAndLast, callback);
-    }
 }

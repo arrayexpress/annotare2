@@ -45,10 +45,9 @@ public class NamingPatternUtil {
                     } else {
                         format.append("%1$0" + sharpsCount + "d");
                     }
-                } else {
-                    if (0 != c) {
-                        format.append(c);
-                    }
+                }
+                if (0 != c) {
+                    format.append(c);
                 }
             }
         }

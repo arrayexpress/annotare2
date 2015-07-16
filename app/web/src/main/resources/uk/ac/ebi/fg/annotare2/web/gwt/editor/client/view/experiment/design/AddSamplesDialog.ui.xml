@@ -39,37 +39,40 @@
             border-top: 1px solid #ccc;
         }
 
-        .preview-span {
+        .preview-scroll {
             font-weight: bold;
+            overflow: auto;
+            height: 55px;
         }
     </ui:style>
 
-    <g:ResizeLayoutPanel height="240px" width="350px">
+    <g:ResizeLayoutPanel height="260px" width="400px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:HTMLPanel>
                     <table class="{style.table}">
                         <tr>
-                            <td>Number of samples<i class="fa fa-info-circle"></i></td>
+                            <td>Number of samples</td>
                             <td width="175px">
                                 <g:TextBox ui:field="numOfSamples" width="50px"/>
                             </td>
                         </tr>
                         <tr>
-                            <td>Naming pattern<i class="fa fa-info-circle"></i></td>
+                            <td>Naming pattern</td>
                             <td>
                                 <g:TextBox ui:field="namingPattern" width="100%"/>
                             </td>
                         </tr>
                         <tr>
-                            <td>Starting number<i class="fa fa-info-circle"></i></td>
+                            <td>Starting number</td>
                             <td>
                                 <g:TextBox ui:field="startingNumber" width="50px"/>
                             </td>
                         </tr>
                     </table>
-                    <g:HTMLPanel addStyleNames="{style.preview}">Preview (subject to availability):<br/>
-                        <g:InlineLabel ui:field="preview" addStyleNames="{style.preview-span}"/>
+                    <g:HTMLPanel addStyleNames="{style.preview}">Will create samples named:</g:HTMLPanel>
+                    <g:HTMLPanel addStyleNames="{style.preview-scroll}">
+                        <g:InlineLabel ui:field="preview"/>
                     </g:HTMLPanel>
                 </g:HTMLPanel>
             </g:center>

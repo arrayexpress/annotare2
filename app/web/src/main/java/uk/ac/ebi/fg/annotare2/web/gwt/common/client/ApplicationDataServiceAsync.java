@@ -52,6 +52,4 @@ public interface ApplicationDataServiceAsync {
     void getMaterialTypes(AsyncCallback<ArrayList<String>> async);
 
     void getSequencingHardware(AsyncCallback<ArrayList<String>> async);
-
-    void getGeneratedNames(int numOfNames, String namingPattern, int startingNumber, boolean getOnlyFirstAndLast, AsyncCallback<ArrayList<String>> async);
 }

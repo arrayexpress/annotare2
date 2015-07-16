@@ -32,8 +32,6 @@ import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 
-import java.util.ArrayList;
-
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 public class AddSamplesDialog extends DialogBox {
@@ -43,7 +41,7 @@ public class AddSamplesDialog extends DialogBox {
     }
 
     public interface Presenter {
-        void getGeneratedSampleNamesAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<ArrayList<String>> callback);
+        void getGeneratedSampleNamesAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<String> callback);
     }
 
     class Result {
@@ -163,7 +161,7 @@ public class AddSamplesDialog extends DialogBox {
         String namingPattern = this.namingPattern.getValue();
         Integer startingNumber = intValue(this.startingNumber.getValue());
         if (null != numOfSamples && null != namingPattern && null != startingNumber) {
-            presenter.getGeneratedSampleNamesAsync(numOfSamples, namingPattern, startingNumber, new ReportingAsyncCallback<ArrayList<String>>() {
+            presenter.getGeneratedSampleNamesAsync(numOfSamples, namingPattern, startingNumber, new ReportingAsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     super.onFailure(caught);
@@ -171,9 +169,9 @@ public class AddSamplesDialog extends DialogBox {
                 }
 
                 @Override
-                public void onSuccess(ArrayList<String> result) {
-                    if (null != result && result.size() > 0) {
-                        preview.setText(result.get(0) + (result.size() > 1 ? " ... " + result.get(1) : ""));
+                public void onSuccess(String result) {
+                    if (null != result) {
+                        preview.setText(result);
                     }
                 }
             });

@@ -109,8 +109,8 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public void getGeneratedSampleNamesAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<ArrayList<String>> callback) {
-        appDataProxy.getGeneratedNamesAsync(numOfSamples, namingPattern, startingNumber, true, callback);
+    public void getGeneratedSampleNamesAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<String> callback) {
+        expDataProxy.getSampleNamesPreviewAsync(numOfSamples, namingPattern, startingNumber, callback);
     }
 
     @Override

@@ -46,6 +46,8 @@ public interface SubmissionService extends RemoteService {
 
     Table getSdrfTable(long id) throws ResourceNotFoundException, NoPermissionException;
 
+    String getGeneratedSamplesPreview(long id, int numOfSamples, String namingPattern, int startingNumber) throws ResourceNotFoundException, NoPermissionException;
+
     void setupExperiment(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
 
     void assignSubmissionToMe(long id) throws ResourceNotFoundException, NoPermissionException;

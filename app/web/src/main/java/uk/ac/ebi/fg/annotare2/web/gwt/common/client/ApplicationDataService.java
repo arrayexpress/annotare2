@@ -59,6 +59,4 @@ public interface ApplicationDataService extends RemoteService {
     ArrayList<String> getMaterialTypes();
 
     ArrayList<String> getSequencingHardware();
-
-    ArrayList<String> getGeneratedNames(int numOfNames, String namingPattern, int startingNumber, boolean getOnlyFirstAndLast);
 }

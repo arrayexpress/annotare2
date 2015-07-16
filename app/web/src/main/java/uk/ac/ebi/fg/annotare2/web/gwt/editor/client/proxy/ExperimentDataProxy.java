@@ -53,7 +53,7 @@ public class ExperimentDataProxy {
         this.eventBus = eventBus;
 
         updateQueue =
-                new UpdateQueue<ExperimentUpdateCommand>(eventBus,
+                new UpdateQueue<>(eventBus,
                         new UpdateQueue.Transport<ExperimentUpdateCommand>() {
                             @Override
                             public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<UpdateQueue.Result> callback) {
@@ -311,6 +311,10 @@ public class ExperimentDataProxy {
                 callback.onSuccess(getSampleRowsAndColumns(result));
             }
         });
+    }
+
+    public void getSampleNamesPreviewAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<String> callback) {
+        submissionService.getGeneratedSamplesPreview(getSubmissionId(), numOfSamples, namingPattern, startingNumber, callback);
     }
 
     public void getExtractAttributeRowsAsync(final AsyncCallback<List<ExtractAttributesRow>> callback) {
