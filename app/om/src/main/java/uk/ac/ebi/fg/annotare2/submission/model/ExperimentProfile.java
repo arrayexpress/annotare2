@@ -55,6 +55,8 @@ public class ExperimentProfile implements Serializable {
 
     private String aeExperimentType;
 
+    private Boolean anonymousReview;
+
     private List<OntologyTerm> experimentalDesigns;
 
     private Map<Integer, Label> labelMap;
@@ -113,15 +115,15 @@ public class ExperimentProfile implements Serializable {
         extractMap = newLinkedHashMap();
         labelMap = newLinkedHashMap();
 
-        sample2Extracts = new MultiSets<Sample, Extract>();
+        sample2Extracts = new MultiSets<>();
 
         labeledExtractMap = newLinkedHashMap();
         fileColumns = newArrayList();
 
-        protocol2Samples = new MultiSets<Protocol, Sample>();
-        protocol2Extracts = new MultiSets<Protocol, Extract>();
-        protocol2LabeledExtracts = new MultiSets<Protocol, LabeledExtract>();
-        protocol2FileRefs = new MultiSets<Protocol, FileRef>();
+        protocol2Samples = new MultiSets<>();
+        protocol2Extracts = new MultiSets<>();
+        protocol2LabeledExtracts = new MultiSets<>();
+        protocol2FileRefs = new MultiSets<>();
     }
 
     public ExperimentProfileType getType() {
@@ -174,6 +176,14 @@ public class ExperimentProfile implements Serializable {
 
     public void setAeExperimentType(String aeExperimentType) {
         this.aeExperimentType = aeExperimentType;
+    }
+
+    public boolean getAnonymousReview() {
+        return null != anonymousReview && anonymousReview;
+    }
+
+    public void setAnonymousReview(boolean anonymousReview) {
+        this.anonymousReview = anonymousReview;
     }
 
     public Collection<OntologyTerm> getExperimentalDesigns() {

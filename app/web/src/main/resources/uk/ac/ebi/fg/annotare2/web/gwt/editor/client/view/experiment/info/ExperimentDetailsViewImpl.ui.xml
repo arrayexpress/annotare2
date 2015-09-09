@@ -117,6 +117,14 @@
                             <dp:DateBox width="200px" ui:field="dateOfPublicRelease"/>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="{style.title}">
+                            Hide my identity<br/>from reviewers
+                        </td>
+                        <td>
+                            <g:CheckBox width="200px" ui:field="anonymousReview"/>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </g:HTMLPanel>

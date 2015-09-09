@@ -107,6 +107,8 @@ public class SubmissionSerializationTest {
         fileColumn.setFileRef(le3.getId(), file1);
         fileColumn.setFileRef(le4.getId(), file1);
 
+        profileIn.setAnonymousReview(true);
+
         String jsonString = JsonCodec.writeExperiment(profileIn, ModelVersion.CURRENT_VERSION);
         log.debug("experimentProfile=" + jsonString);
         assertNotNull(jsonString);

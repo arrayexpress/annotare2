@@ -53,7 +53,8 @@ public class ExperimentProfileSerializer12  extends JsonSerializer<ExperimentPro
             "protocolId2SampleIds",
             "protocolId2ExtractIds",
             "protocolId2LabeledExtractIds",
-            "protocolId2FileRefs"
+            "protocolId2FileRefs",
+            "anonymousReview"
     );
 
     @Override
@@ -176,6 +177,12 @@ public class ExperimentProfileSerializer12  extends JsonSerializer<ExperimentPro
                             map.put(protocol.getId(), fileRefs);
                         }
                         return map;
+                    }
+                },
+                new ValueGetter<ExperimentProfile>("anonymousReview") {
+                    @Override
+                    public Object getValue(ExperimentProfile obj) {
+                        return obj.getAnonymousReview();
                     }
                 }
         );

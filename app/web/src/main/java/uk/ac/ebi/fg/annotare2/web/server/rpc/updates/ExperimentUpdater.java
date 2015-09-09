@@ -66,6 +66,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         exp.setExperimentDate(details.getExperimentDate());
         exp.setAeExperimentType(details.getAeExperimentType());
         exp.setExperimentalDesigns(details.getExperimentalDesigns());
+        exp.setAnonymousReview(details.isAnonymousReviewEnabled());
     }
 
     @Override

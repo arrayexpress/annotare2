@@ -113,7 +113,8 @@ public class ExperimentDataProxy {
                 exp.getExperimentDate(),
                 exp.getPublicReleaseDate(),
                 exp.getAeExperimentType(),
-                exp.getExperimentalDesigns()
+                exp.getExperimentalDesigns(),
+                exp.getAnonymousReview()
         );
     }
 

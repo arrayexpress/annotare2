@@ -152,6 +152,10 @@ public class MageTabGenerator {
             idf.addComment("AEExperimentType", exp.getAeExperimentType());
         }
 
+        if (exp.getAnonymousReview()) {
+            idf.addComment("AEAnonymousReview", "yes");
+        }
+
         idf.investigationTitle = convertToIdfFriendly(exp.getTitle(), newLine);
         idf.experimentDescription = convertToIdfFriendly(exp.getDescription(), newLine);
         idf.publicReleaseDate = convertToIdfFriendly(formatDate(fixDate(exp.getPublicReleaseDate())), newLine);
