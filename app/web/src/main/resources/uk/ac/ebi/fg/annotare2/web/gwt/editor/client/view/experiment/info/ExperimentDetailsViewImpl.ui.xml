@@ -119,7 +119,7 @@
                     </tr>
                     <tr>
                         <td class="{style.title}">
-                            Hide my identity<br/>from reviewers
+                            Hide my <a href="http://www.ebi.ac.uk/fgpt/annotare_help/describe_exp.htm#remain_anonymous" title="Click to learn more about this option" target="_blank">identity</a><br/>from reviewers
                         </td>
                         <td>
                             <g:CheckBox width="200px" ui:field="anonymousReview"/>
