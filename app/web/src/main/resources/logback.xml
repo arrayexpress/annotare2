@@ -57,7 +57,7 @@
         </else>
     </if>
 
-    <logger name="uk.ac.ebi.fg.annotare2.web.server" level="INFO"/>
+    <logger name="uk.ac.ebi.fg.annotare2.web.server" level="DEBUG"/>
     <logger name="org.hibernate" level="INFO"/>
     <logger name="org.reflections.Reflections" level="ERROR"/>
 
