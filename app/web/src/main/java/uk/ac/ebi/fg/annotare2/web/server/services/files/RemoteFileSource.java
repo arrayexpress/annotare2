@@ -18,6 +18,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import org.apache.commons.io.FilenameUtils;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 
 import java.io.*;
 import java.net.URI;
@@ -44,8 +45,12 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
         return access.isAccessible(uri);
     }
 
-    public String getName() {
-        return FilenameUtils.getName(uri.getPath());
+    public String getDirectory() throws IOException {
+        return URIEncoderDecoder.decode(FilenameUtils.getPath(uri.getPath()));
+    }
+
+    public String getName() throws IOException {
+        return URIEncoderDecoder.decode(FilenameUtils.getName(uri.getPath()));
     }
 
     public URI getUri() {
