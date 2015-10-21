@@ -30,7 +30,7 @@ public class FileAvailabilityChecker {
     private final ScpFileAccess access;
 
     public FileAvailabilityChecker() {
-        this.filesCache = new HashMap<String, List<String>>();
+        this.filesCache = new HashMap<>();
         this.access = new ScpFileAccess();
     }
 
@@ -38,9 +38,9 @@ public class FileAvailabilityChecker {
         if (source instanceof RemoteFileSource) {
             URI uri = source.getUri();
             if (null != uri && access.isSupported(uri)) {
-                String path = uri.toString();
-                String dir = path.replaceFirst("(.+/)[^/]*$", "$1");
-                String name = path.replaceFirst(".+/([^/]*)$", "$1");
+                //String path = uri.toString();
+                String dir =  ((RemoteFileSource)source).getDirectory();
+                String name = source.getName();
                 if (filesCache.containsKey(dir)) {
                     return filesCache.get(dir).contains(name);
                 } else {

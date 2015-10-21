@@ -27,7 +27,7 @@ public abstract class DataFileSource {
 
     public abstract boolean exists() throws IOException;
 
-    public abstract String getName();
+    public abstract String getName() throws IOException;
 
     public abstract URI getUri();
 
