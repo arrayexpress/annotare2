@@ -34,52 +34,58 @@ public class ServerWatchdog {
             "Should you experience any problems after this update, please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>. " +
             "Thank you.";
 
-    private static boolean isOnline;
+    private static boolean isPaused;
 
     public static void start() {
+        isPaused = false;
         Scheduler.get().scheduleFixedPeriod(new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
-                try {
-                    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, Urls.getContextUrl() + "status");
-                    builder.setTimeoutMillis(2000);
-                    builder.sendRequest(null, new RequestCallback() {
-                        @Override
-                        public void onResponseReceived(Request request, Response response) {
-                            if (200 == response.getStatusCode()) {
-                                String[] status = response.getText().split("\\n");
-                                if (null != status && 2 == status.length && status[0].equals("OK")) {
-                                    String revision = RootPanel.getBodyElement().getAttribute("revision");
-                                    if (null != revision && revision.equals(status[1])) {
-                                        isOnline = true;
-                                        NotificationPopupPanel.cancel();
+                if (!isPaused) {
+                    try {
+                        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, Urls.getContextUrl() + "status");
+                        builder.setTimeoutMillis(2000);
+                        builder.sendRequest(null, new RequestCallback() {
+                            @Override
+                            public void onResponseReceived(Request request, Response response) {
+                                if (200 == response.getStatusCode()) {
+                                    String[] status = response.getText().split("\\n");
+                                    if (null != status && 2 == status.length && status[0].equals("OK")) {
+                                        String revision = RootPanel.getBodyElement().getAttribute("revision");
+                                        if (null != revision && revision.equals(status[1])) {
+                                            NotificationPopupPanel.cancel();
+                                        } else {
+                                            NotificationPopupPanel.warning(SERVER_UPGRADED, false, true);
+                                        }
                                     } else {
-                                        isOnline = false;
-                                        NotificationPopupPanel.warning(SERVER_UPGRADED, false, true);
+                                        NotificationPopupPanel.error(SERVER_DOWN + "<i>Incorrect status response: " + response.getText() + "</i>", false, true);
+
                                     }
                                 } else {
-                                    isOnline = false;
-                                    NotificationPopupPanel.error(SERVER_DOWN + "<i>Incorrect status response: " + response.getText() + "</i>", false, true);
-
+                                    NotificationPopupPanel.error(SERVER_DOWN + "<i>HTTP status code: " + response.getStatusCode() + "</i>", false, true);
                                 }
-                            } else {
-                                isOnline = false;
-                                NotificationPopupPanel.error(SERVER_DOWN + "<i>HTTP status code: " + response.getStatusCode() + "</i>", false, true);
                             }
-                        }
 
-                        @Override
-                        public void onError(Request request, Throwable caught) {
-                            isOnline = false;
-                            NotificationPopupPanel.error(SERVER_DOWN + "<i>Exception caught: " + caught.getMessage() + "</i>", false, true);
-                        }
-                    });
-                } catch (RequestException caught) {
-                    isOnline = false;
-                    NotificationPopupPanel.error(SERVER_DOWN + "<i>Exception caught: " + caught.getMessage() + "</i>", false, true);
+                            @Override
+                            public void onError(Request request, Throwable caught) {
+                                NotificationPopupPanel.error(SERVER_DOWN + "<i>Exception caught: " + caught.getMessage() + "</i>", false, true);
+                            }
+                        });
+
+                    } catch (RequestException caught) {
+                        NotificationPopupPanel.error(SERVER_DOWN + "<i>Exception caught: " + caught.getMessage() + "</i>", false, true);
+                    }
                 }
                 return true;
             }
         }, 5000);
+    }
+
+    public static void pause() {
+        isPaused = true;
+    }
+
+    public static void resume() {
+        isPaused = false;
     }
 }
