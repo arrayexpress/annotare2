@@ -27,6 +27,10 @@
         <param-value>0</param-value>
     </context-param>
     <context-param>
+        <param-name>corsDomainsRegex</param-name>
+        <param-value>^.*$</param-value>
+    </context-param>
+    <context-param>
         <param-name>appRevision</param-name>
         <param-value>${buildNumber}</param-value>
     </context-param>
