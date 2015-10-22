@@ -93,6 +93,9 @@ public abstract class Submission implements HasEffectiveAcl {
     @OrderBy("posted ASC")
     private Set<SubmissionFeedback> feedback;
 
+    @Column(name = "ftpSubDirectory")
+    private String ftpSubDirectory;
+
     @Column(name = "subsTrackingId")
     private Integer subsTrackingId;
 
@@ -191,6 +194,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setAcl(Acl acl) {
         this.acl = acl;
+    }
+
+    public String getFtpSubDirectory() {
+        return ftpSubDirectory;
+    }
+
+    public void setFtpSubDirectory(String ftpSubDirectory) {
+        this.ftpSubDirectory = ftpSubDirectory;
     }
 
     public Integer getSubsTrackingId() {

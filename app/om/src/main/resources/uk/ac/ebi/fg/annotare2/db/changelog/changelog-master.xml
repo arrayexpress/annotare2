@@ -88,4 +88,9 @@
             INSERT INTO acl_entries (acl, role, permission) VALUES (@aclId, 'CURATOR', 'ASSIGN');
         </sql>
     </changeSet>
+    <changeSet id="addFTPSubDirectory" author="kolais">
+        <sql>
+            ALTER TABLE submissions ADD ftpSubDirectory VARCHAR(32) AFTER arrayDesignBody;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
