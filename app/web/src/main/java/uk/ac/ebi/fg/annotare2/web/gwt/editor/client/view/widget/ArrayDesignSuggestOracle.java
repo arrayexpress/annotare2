@@ -30,9 +30,9 @@ public class ArrayDesignSuggestOracle extends SuggestOracle {
     @Override
     public void requestSuggestions(final Request request, final Callback callback) {
         suggestService.suggest(request.getQuery(), request.getLimit(),
-                new ReportingAsyncCallback<List<ArrayDesignRef>>(FailureMessage.UNABLE_TO_LOAD_ARRAYS_LIST) {
+                new ReportingAsyncCallback<ArrayList<ArrayDesignRef>>(FailureMessage.UNABLE_TO_LOAD_ARRAYS_LIST) {
                     @Override
-                    public void onSuccess(List<ArrayDesignRef> result) {
+                    public void onSuccess(ArrayList<ArrayDesignRef> result) {
                         callback.onSuggestionsReady(request, createResponse(result));
                     }
         });

@@ -53,6 +53,7 @@ import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.utils.NamingPatternUtil;
 
 import javax.mail.MessagingException;
 import java.io.ByteArrayInputStream;
@@ -186,6 +187,51 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional
     @Override
+    public String getGeneratedSamplesPreview(long id, int numOfSamples, String namingPattern, int startingNumber)
+            throws ResourceNotFoundException, NoPermissionException {
+        try {
+            ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
+            ExperimentProfile exp = submission.getExperimentProfile();
+            String format = NamingPatternUtil.convert(namingPattern);
+
+            int index = startingNumber, skipCount, lastIndex = 0;
+            String name, prevName = "";
+            StringBuilder preview = new StringBuilder();
+
+            for (int i = 0; i < numOfSamples; ++i) {
+                skipCount = 0;
+                do {
+                    name = String.format(format, index++);
+                    skipCount++;
+                } while (null != exp.getSampleByName(name));
+                if (0 == i) {
+                    preview.append(name);
+                    prevName = "";
+                } else {
+                    if (skipCount > 1) {
+                        preview.append(prevName).append(",").append(name);
+                        lastIndex = i;
+                    } else if (i == numOfSamples - 1) {
+                        preview.append((lastIndex + 1 >= i) ? "," : "..");
+                        preview.append(name);
+                    }
+                    prevName = ((lastIndex + 1 >= i) ? "," : "..") + name;
+                }
+            }
+
+            return preview.toString();
+        } catch (DataSerializationException e) {
+            throw unexpected(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        }
+    }
+
+
+    @Transactional
+    @Override
     public ExperimentProfile loadExperiment(long id) throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
@@ -253,6 +299,46 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (DataSerializationException e) {
+            throw unexpected(e);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void assignSubmissionToMe(final long id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(id, Permission.ASSIGN);
+            if (SubmissionStatus.IN_PROGRESS == submission.getStatus()) {
+                submission.setOwnedBy(getCurrentUser());
+                save(submission);
+            } else {
+                throw new IllegalStateException("Submission has to have IN_PROGRESS state");
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (IllegalStateException e) {
+            throw unexpected(e);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void assignSubmissionToCreator(long id) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(id, Permission.ASSIGN);
+            if (SubmissionStatus.IN_PROGRESS == submission.getStatus()) {
+                submission.setOwnedBy(submission.getCreatedBy());
+                save(submission);
+            } else {
+                throw new IllegalStateException("Submission has to have IN_PROGRESS state");
+            }
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (IllegalStateException e) {
             throw unexpected(e);
         }
     }

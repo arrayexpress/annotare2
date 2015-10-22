@@ -25,6 +25,7 @@ public class UpdateExperimentSettingsCommand implements ExperimentUpdateCommand 
 
     private ExperimentSettings settings;
 
+    @SuppressWarnings("unused")
     UpdateExperimentSettingsCommand() {
         /* used by GWT serialization */
     }

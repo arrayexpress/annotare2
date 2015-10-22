@@ -22,7 +22,7 @@
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/EditorApp/EditorApp.nocache.js"></script>
 </head>
-<body>
+<body revision="${buildNumber}">
 <!-- OPTIONAL: include this if you want history support -->
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
 

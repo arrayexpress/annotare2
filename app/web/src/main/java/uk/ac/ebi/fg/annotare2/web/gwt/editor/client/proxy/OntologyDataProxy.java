@@ -68,38 +68,38 @@ public class OntologyDataProxy {
         }.wrap());
     }
 
-    public void getPublicationStatuses(final AsyncCallback<List<OntologyTerm>> callback) {
+    public void getPublicationStatuses(final AsyncCallback<ArrayList<OntologyTerm>> callback) {
         if (publicationStatuses != null && !publicationStatuses.isEmpty()) {
-            callback.onSuccess(new ArrayList<OntologyTerm>(publicationStatuses));
+            callback.onSuccess(new ArrayList<>(publicationStatuses));
             return;
         }
-        getTerms(new TermSuggest(PUBLICATION_STATUS), "", 20, new AsyncCallbackWrapper<List<OntologyTerm>>() {
+        getTerms(new TermSuggest(PUBLICATION_STATUS), "", 20, new AsyncCallbackWrapper<ArrayList<OntologyTerm>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(List<OntologyTerm> result) {
+            public void onSuccess(ArrayList<OntologyTerm> result) {
                 publicationStatuses = new ArrayList<OntologyTerm>(result);
                 callback.onSuccess(result);
             }
         });
     }
 
-    public void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+    public void getUnits(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
         getTerms(new TermSuggest(UNIT), query, limit, callback);
     }
 
-    public void getOrganisms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+    public void getOrganisms(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
         getTerms(new TermSuggest(ORGANISM), query, limit, callback);
     }
 
-    public void getEfoTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+    public void getEfoTerms(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
         getTerms(query, null, limit, callback);
     }
 
-    public void getEfoTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+    public void getEfoTerms(String query, OntologyTerm root, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
         getTerms(query, root, limit, callback);
     }
 
@@ -107,7 +107,7 @@ public class OntologyDataProxy {
         dataService.getEfoTermByLabel(label, callback);
     }
 
-    private void getTerms(final TermSuggest term, final String query, final int limit, final AsyncCallback<List<OntologyTerm>> callback) {
+    private void getTerms(final TermSuggest term, final String query, final int limit, final AsyncCallback<ArrayList<OntologyTerm>> callback) {
         getSystemEfoTerms(new AsyncCallback<SystemEfoTermMap>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -121,7 +121,7 @@ public class OntologyDataProxy {
         });
     }
 
-    private void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+    private void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
         if (root == null) {
             dataService.getEfoTerms(query, limit, callback);
         } else {
@@ -129,7 +129,7 @@ public class OntologyDataProxy {
         }
     }
 
-    public void getProtocolTypes(ExperimentProfileType expType, final AsyncCallback<List<ProtocolType>> callback) {
+    public void getProtocolTypes(ExperimentProfileType expType, final AsyncCallback<ArrayList<ProtocolType>> callback) {
         dataService.getProtocolTypes(expType, callbackWrap(callback));
     }
 
@@ -138,14 +138,14 @@ public class OntologyDataProxy {
             callback.onSuccess(new ArrayList<OntologyTerm>(contactRoles));
             return;
         }
-        dataService.getContactRoles(new AsyncCallbackWrapper<List<OntologyTerm>>() {
+        dataService.getContactRoles(new AsyncCallbackWrapper<ArrayList<OntologyTerm>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(List<OntologyTerm> result) {
+            public void onSuccess(ArrayList<OntologyTerm> result) {
                 contactRoles = new ArrayList<OntologyTerm>(result);
                 callback.onSuccess(result);
             }
@@ -157,14 +157,14 @@ public class OntologyDataProxy {
             callback.onSuccess(new ArrayList<OntologyTermGroup>(experimentalDesigns));
             return;
         }
-        dataService.getExperimentalDesigns(new AsyncCallbackWrapper<List<OntologyTermGroup>>() {
+        dataService.getExperimentalDesigns(new AsyncCallbackWrapper<ArrayList<OntologyTermGroup>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(List<OntologyTermGroup> result) {
+            public void onSuccess(ArrayList<OntologyTermGroup> result) {
                 experimentalDesigns = new ArrayList<OntologyTermGroup>(result);
                 callback.onSuccess(result);
             }

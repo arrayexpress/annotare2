@@ -39,6 +39,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SampleAttributeEfoSuggest;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -108,17 +109,22 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     }
 
     @Override
-    public void createSample() {
-        expDataProxy.createSample();
+    public void getGeneratedSampleNamesAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<String> callback) {
+        expDataProxy.getSampleNamesPreviewAsync(numOfSamples, namingPattern, startingNumber, callback);
     }
 
     @Override
-    public void removeSamples(List<SampleRow> rows) {
+    public void createSamples(int numOfSamples, String namingPattern, int startingNumber) {
+        expDataProxy.createSamples(numOfSamples, namingPattern, startingNumber);
+    }
+
+    @Override
+    public void removeSamples(ArrayList<SampleRow> rows) {
         expDataProxy.removeSamples(rows);
     }
 
     @Override
-    public void getMaterialTypesAsync(AsyncCallback<List<String>> callback) {
+    public void getMaterialTypesAsync(AsyncCallback<ArrayList<String>> callback) {
         appDataProxy.getMaterialTypesAsync(callback);
     }
 
@@ -144,17 +150,17 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     private SampleAttributeEfoSuggest wrapEfoTerms(final OntologyDataProxy efoTerms) {
         return new SampleAttributeEfoSuggest() {
             @Override
-            public void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void getUnits(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 efoTerms.getUnits(query, limit, callback);
             }
 
             @Override
-            public void getTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void getTerms(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 efoTerms.getEfoTerms(query, limit, callback);
             }
 
             @Override
-            public void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 efoTerms.getEfoTerms(query, root, limit, callback);
             }
 

@@ -96,7 +96,7 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
         }
 
         if (!validationErrors.isEmpty()) {
-            NotificationPopupPanel.error("Please correct the following:<br><br>" + validationErrors, false);
+            NotificationPopupPanel.error("Please correct the following:<br><br>" + validationErrors, false, false);
             return false;
         }
         return true;

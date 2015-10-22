@@ -106,7 +106,7 @@ public class FTPUploadDialog extends DialogBox {
                         public void onSuccess(String result) {
                             w.hide();
                             if (null != result && !result.isEmpty()) {
-                                NotificationPopupPanel.error("Unable to process FTP files:<br><br>" + result.replaceAll("\n", "<br>"), false);
+                                NotificationPopupPanel.error("Unable to process FTP files:<br><br>" + result.replaceAll("\n", "<br>"), false, false);
                                 okButton.setEnabled(true);
                             } else {
                                 hide();

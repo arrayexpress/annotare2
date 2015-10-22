@@ -53,7 +53,7 @@ public class ExperimentDataProxy {
         this.eventBus = eventBus;
 
         updateQueue =
-                new UpdateQueue<ExperimentUpdateCommand>(eventBus,
+                new UpdateQueue<>(eventBus,
                         new UpdateQueue.Transport<ExperimentUpdateCommand>() {
                             @Override
                             public void sendUpdates(List<ExperimentUpdateCommand> commands, final AsyncCallback<UpdateQueue.Result> callback) {
@@ -113,7 +113,8 @@ public class ExperimentDataProxy {
                 exp.getExperimentDate(),
                 exp.getPublicReleaseDate(),
                 exp.getAeExperimentType(),
-                exp.getExperimentalDesigns()
+                exp.getExperimentalDesigns(),
+                exp.getAnonymousReview()
         );
     }
 
@@ -313,6 +314,10 @@ public class ExperimentDataProxy {
         });
     }
 
+    public void getSampleNamesPreviewAsync(int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<String> callback) {
+        submissionService.getGeneratedSamplesPreview(getSubmissionId(), numOfSamples, namingPattern, startingNumber, callback);
+    }
+
     public void getExtractAttributeRowsAsync(final AsyncCallback<List<ExtractAttributesRow>> callback) {
         getExperiment(new AsyncCallback<ExperimentProfile>() {
             @Override
@@ -439,8 +444,8 @@ public class ExperimentDataProxy {
         updateQueue.add(new RemovePublicationsCommand(toBeRemoved));
     }
 
-    public void createSample() {
-        updateQueue.add(new CreateSampleCommand());
+    public void createSamples(int numOfSamples, String namingPattern, int startingIndex) {
+        updateQueue.add(new CreateSamplesCommand(numOfSamples, namingPattern, startingIndex));
     }
 
     public void updateSampleColumns(List<SampleColumn> columns) {

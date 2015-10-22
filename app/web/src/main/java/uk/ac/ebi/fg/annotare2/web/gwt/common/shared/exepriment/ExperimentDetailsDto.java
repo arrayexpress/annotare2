@@ -27,18 +27,26 @@ public class ExperimentDetailsDto implements IsSerializable {
 
     private List<OntologyTerm> experimentalDesigns;
 
+    private boolean isAnonymousReviewEnabled;
+
     ExperimentDetailsDto() {
         /*used by GWT serialization*/
     }
 
-    public ExperimentDetailsDto(String title, String description, Date experimentDate, Date publicReleaseDate,
-                                String aeExperimentType, Collection<OntologyTerm> experimentalDesigns) {
+    public ExperimentDetailsDto(String title,
+                                String description,
+                                Date experimentDate,
+                                Date publicReleaseDate,
+                                String aeExperimentType,
+                                Collection<OntologyTerm> experimentalDesigns,
+                                boolean isAnonymousReviewEnabled) {
         this.title = title;
         this.description = description;
         this.experimentDate = experimentDate;
         this.publicReleaseDate = publicReleaseDate;
         this.aeExperimentType = aeExperimentType;
-        this.experimentalDesigns = new ArrayList<OntologyTerm>(experimentalDesigns);
+        this.experimentalDesigns = new ArrayList<>(experimentalDesigns);
+        this.isAnonymousReviewEnabled = isAnonymousReviewEnabled;
     }
 
     public String getDescription() {
@@ -63,5 +71,9 @@ public class ExperimentDetailsDto implements IsSerializable {
 
     public Collection<OntologyTerm> getExperimentalDesigns() {
         return unmodifiableCollection(experimentalDesigns);
+    }
+
+    public boolean isAnonymousReviewEnabled() {
+        return isAnonymousReviewEnabled;
     }
 }

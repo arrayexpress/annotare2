@@ -28,12 +28,13 @@ public class UpdateSampleColumnsCommand implements ExperimentUpdateCommand {
 
     private List<SampleColumn> columns;
 
+    @SuppressWarnings("unused")
     UpdateSampleColumnsCommand() {
         /* used by GWT serializer only */
     }
 
     public UpdateSampleColumnsCommand(List<SampleColumn> columns) {
-        this.columns = new ArrayList<SampleColumn>(columns);
+        this.columns = new ArrayList<>(columns);
     }
 
     @Override

@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.PublicationListView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
 
     private void setPublications(final List<PublicationDto> publications) {
         ontologyDataProxy.getPublicationStatuses(
-                new ReportingAsyncCallback<List<OntologyTerm>>(FailureMessage.UNABLE_TO_LOAD_PUBLICATION_STATUS_LIST) {
+                new ReportingAsyncCallback<ArrayList<OntologyTerm>>(FailureMessage.UNABLE_TO_LOAD_PUBLICATION_STATUS_LIST) {
                     @Override
                     public void onFailure(Throwable caught) {
                         super.onFailure(caught);
@@ -117,7 +118,7 @@ public class PublicationListActivity extends AbstractActivity implements Publica
                     }
 
                     @Override
-                    public void onSuccess(List<OntologyTerm> result) {
+                    public void onSuccess(ArrayList<OntologyTerm> result) {
                         view.setPublications(publications, result);
                     }
                 }

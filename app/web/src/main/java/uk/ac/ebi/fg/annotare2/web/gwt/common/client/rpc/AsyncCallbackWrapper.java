@@ -29,7 +29,7 @@ public abstract class AsyncCallbackWrapper<T> implements AsyncCallback<T> {
 
 
     public void onPermissionDenied() {
-        NotificationPopupPanel.error("There is no permission to proceed with this operation.", true);
+        NotificationPopupPanel.error("There is no permission to proceed with this operation.", true, false);
     }
 
     public AsyncCallback<T> wrap() {

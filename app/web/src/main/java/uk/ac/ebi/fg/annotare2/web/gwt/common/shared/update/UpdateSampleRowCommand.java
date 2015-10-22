@@ -25,6 +25,7 @@ public class UpdateSampleRowCommand implements ExperimentUpdateCommand {
 
     private SampleRow row;
 
+    @SuppressWarnings("unused")
     UpdateSampleRowCommand() {
         /* used by GWT serialization only */
     }

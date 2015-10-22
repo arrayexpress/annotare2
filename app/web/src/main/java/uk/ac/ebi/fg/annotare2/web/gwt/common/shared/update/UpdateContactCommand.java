@@ -25,6 +25,7 @@ public class UpdateContactCommand implements ExperimentUpdateCommand {
 
     private ContactDto contact;
 
+    @SuppressWarnings("unused")
     UpdateContactCommand() {
         /*used by GWT serialization only*/
     }

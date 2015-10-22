@@ -24,6 +24,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
+import uk.ac.ebi.fg.annotare2.web.server.utils.NamingPatternUtil;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -65,6 +66,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         exp.setExperimentDate(details.getExperimentDate());
         exp.setAeExperimentType(details.getAeExperimentType());
         exp.setExperimentalDesigns(details.getExperimentalDesigns());
+        exp.setAnonymousReview(details.isAnonymousReviewEnabled());
     }
 
     @Override
@@ -148,24 +150,23 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
-    public void createSample() {
-        createAndReturnSample();
+    public void createSamples(int numOfSamples, String namingPattern, int startingNumber) {
+        String format = NamingPatternUtil.convert(namingPattern);
+
+        int index = startingNumber;
+        for (int i = 0; i < numOfSamples; ++i) {
+            String name;
+            do {
+                name = String.format(format, index++);
+            } while (null != exp.getSampleByName(name));
+
+            createSample(name);
+        }
     }
 
-    protected final Sample createAndReturnSample() {
-        Collection<String> existedNames = Collections2.transform(
-                exp.getSamples(),
-                new Function<Sample, String>() {
-                    @Nullable
-                    @Override
-                    public String apply(@Nullable Sample input) {
-                        return input.getName();
-                    }
-                }
-        );
-
+    protected Sample createSample(String name) {
         Sample sample = exp.createSample();
-        sample.setName(newName("Sample", existedNames));
+        sample.setName(name);
         return sample;
     }
 
@@ -191,8 +192,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             return;
         }
         Collection<LabeledExtract> labeledExtracts = exp.getLabeledExtracts(extract);
-        Set<String> newLabels = new HashSet<String>(row.getLabels());
-        Set<String> existedLabels = new HashSet<String>();
+        Set<String> newLabels = new HashSet<>(row.getLabels());
+        Set<String> existedLabels = new HashSet<>();
         for (LabeledExtract labeledExtract : labeledExtracts) {
             if (!newLabels.contains(labeledExtract.getLabel().getName())) {
                 exp.removeLabeledExtract(labeledExtract.getId());
@@ -215,7 +216,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                     @Nullable
                     @Override
                     public String apply(@Nullable Protocol input) {
-                        return input.getName();
+                        return null != input ? input.getName() : null;
                     }
                 }
         );
@@ -223,6 +224,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         Protocol protocol = exp.createProtocol(protocolType.getTerm(), protocolType.getSubjectType());
         protocol.setName(newName("Protocol", existedNames));
     }
+
+
 
     private String newName(String prefix, Collection<String> existedNames) {
         Set<String> names = newHashSet(existedNames);

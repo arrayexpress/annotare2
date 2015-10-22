@@ -42,6 +42,8 @@ public class SubmissionDetails implements IsSerializable {
 
     private boolean isEmpty;
 
+    private boolean isOwnedByCreator;
+
     public SubmissionDetails() {
     }
 
@@ -52,7 +54,8 @@ public class SubmissionDetails implements IsSerializable {
                              Date updated,
                              SubmissionStatus status,
                              SubmissionType type,
-                             boolean isEmpty) {
+                             boolean isEmpty,
+                             boolean isOwnedByCreator) {
         this.id = id;
         this.accession = new Accession(accession);
         this.title = title;
@@ -61,6 +64,7 @@ public class SubmissionDetails implements IsSerializable {
         this.status = status;
         this.type = type;
         this.isEmpty = isEmpty;
+        this.isOwnedByCreator = isOwnedByCreator;
     }
 
     public long getId() {
@@ -93,5 +97,9 @@ public class SubmissionDetails implements IsSerializable {
 
     public boolean isEmpty() {
         return isEmpty;
+    }
+
+    public boolean isOwnedByCreator() {
+        return isOwnedByCreator;
     }
 }

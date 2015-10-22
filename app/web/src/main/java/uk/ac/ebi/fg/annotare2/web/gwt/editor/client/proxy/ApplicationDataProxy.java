@@ -25,7 +25,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,14 +35,14 @@ public class ApplicationDataProxy {
     private final ApplicationDataServiceAsync dataService;
 
     private ApplicationProperties properties;
-    private Map<ExperimentProfileType,List<String>> aeExperimentTypes;
-    private List<String> materialTypes;
-    private List<String> sequencingHardware;
+    private Map<ExperimentProfileType,ArrayList<String>> aeExperimentTypes;
+    private ArrayList<String> materialTypes;
+    private ArrayList<String> sequencingHardware;
 
     @Inject
     public ApplicationDataProxy(ApplicationDataServiceAsync dataService) {
         this.dataService = dataService;
-        this.aeExperimentTypes = new HashMap<ExperimentProfileType, List<String>>();
+        this.aeExperimentTypes = new HashMap<>();
     }
 
     public void getApplicationPropertiesAsync(final AsyncCallback<ApplicationProperties> callback) {
@@ -66,18 +65,18 @@ public class ApplicationDataProxy {
         }.wrap());
     }
 
-    public void getAeExperimentTypesAsync(final ExperimentProfileType type, final AsyncCallback<List<String>> callback) {
+    public void getAeExperimentTypesAsync(final ExperimentProfileType type, final AsyncCallback<ArrayList<String>> callback) {
         if (aeExperimentTypes.containsKey(type)) {
             callback.onSuccess(aeExperimentTypes.get(type));
         } else {
-            dataService.getAeExperimentTypes(type, new AsyncCallbackWrapper<List<String>>() {
+            dataService.getAeExperimentTypes(type, new AsyncCallbackWrapper<ArrayList<String>>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     callback.onFailure(caught);
                 }
 
                 @Override
-                public void onSuccess(List<String> result) {
+                public void onSuccess(ArrayList<String> result) {
                     aeExperimentTypes.put(type, result);
                     callback.onSuccess(result);
                 }
@@ -85,41 +84,41 @@ public class ApplicationDataProxy {
         }
     }
 
-    public void getMaterialTypesAsync(final AsyncCallback<List<String>> callback) {
+    public void getMaterialTypesAsync(final AsyncCallback<ArrayList<String>> callback) {
         if (null != materialTypes && !materialTypes.isEmpty()) {
-            callback.onSuccess(new ArrayList<String>(materialTypes));
+            callback.onSuccess(materialTypes);
             return;
         }
 
-        dataService.getMaterialTypes(new AsyncCallbackWrapper<List<String>>() {
+        dataService.getMaterialTypes(new AsyncCallbackWrapper<ArrayList<String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(List<String> result) {
-                materialTypes = new ArrayList<String>(result);
+            public void onSuccess(ArrayList<String> result) {
+                materialTypes = result;
                 callback.onSuccess(result);
             }
         }.wrap());
     }
 
-    public void getSequencingHardwareAsync(final AsyncCallback<List<String>> callback) {
+    public void getSequencingHardwareAsync(final AsyncCallback<ArrayList<String>> callback) {
         if (null != sequencingHardware && !sequencingHardware.isEmpty()) {
-            callback.onSuccess(new ArrayList<String>(sequencingHardware));
+            callback.onSuccess(sequencingHardware);
             return;
         }
 
-        dataService.getSequencingHardware(new AsyncCallbackWrapper<List<String>>() {
+        dataService.getSequencingHardware(new AsyncCallbackWrapper<ArrayList<String>>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(List<String> result) {
-                sequencingHardware = new ArrayList<String>(result);
+            public void onSuccess(ArrayList<String> result) {
+                sequencingHardware = result;
                 callback.onSuccess(result);
             }
         }.wrap());

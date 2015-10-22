@@ -9,6 +9,7 @@ public class UpdateArrayDesignDetailsCommand implements ArrayDesignUpdateCommand
 
     private ArrayDesignDetailsDto details;
 
+    @SuppressWarnings("unused")
     UpdateArrayDesignDetailsCommand() {
      /*used By GWT serialization */
     }

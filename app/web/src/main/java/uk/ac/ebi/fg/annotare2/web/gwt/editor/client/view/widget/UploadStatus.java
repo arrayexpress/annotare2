@@ -155,7 +155,7 @@ public class UploadStatus extends Composite implements IUploadStatus {
     @Override
     public void setError(String error) {
         setStatus(Status.ERROR);
-        NotificationPopupPanel.error(error.replaceAll("\\\\n", "<br>"), false);
+        NotificationPopupPanel.error(error.replaceAll("\\\\n", "<br>"), false, false);
     }
 
     @Override

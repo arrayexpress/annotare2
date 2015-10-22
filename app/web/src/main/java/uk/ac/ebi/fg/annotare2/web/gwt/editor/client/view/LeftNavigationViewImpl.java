@@ -94,7 +94,7 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
         settingsPanel = new ExperimentSettingsPanel(settings);
         settingsPanel.setPresenter(new ExperimentSettingsPanel.Presenter() {
             @Override
-            public void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+            public void getArrayDesigns(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback) {
                 if (presenter != null) {
                     presenter.getArrayDesigns(query, limit, callback);
                 }

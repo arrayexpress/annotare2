@@ -23,9 +23,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.LabeledExtractsRo
  */
 public class UpdateExtractLabelsRowCommand implements ExperimentUpdateCommand {
 
-
     private LabeledExtractsRow row;
 
+    @SuppressWarnings("unused")
     UpdateExtractLabelsRowCommand() {
         /* used by GWT serialization */
     }

@@ -117,7 +117,7 @@ public class LeftMenuActivity extends AbstractActivity implements LeftMenuView.P
 
     @Override
     public void onSubmissionImport(SubmissionType type) {
-        NotificationPopupPanel.warning("This functionality is not available at the moment", false);
+        NotificationPopupPanel.warning("This functionality is not available at the moment", false, false);
 
 //        switch (type) {
 //            case IMPORTED_EXPERIMENT:

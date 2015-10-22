@@ -25,6 +25,7 @@ public class UpdatePublicationCommand implements ExperimentUpdateCommand {
 
     private PublicationDto publication;
 
+    @SuppressWarnings("unused")
     UpdatePublicationCommand() {
         /*used by GWT serialization only*/
     }

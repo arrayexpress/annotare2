@@ -25,8 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.util.AsperaConnect;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.AsperaConnect;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
@@ -91,7 +90,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         if (AsperaConnect.isEnabled()) {
             AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/");
         } else {
-            NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false);
+            NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false, false);
         }
     }
 

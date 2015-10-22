@@ -29,10 +29,6 @@
         .newAttribute:hover {
             background-color: #eeeeee;
         }
-        .errorMessage {
-            color: red;
-            font-size: 12px;
-        }
     </ui:style>
     <g:ResizeLayoutPanel height="625px" width="700px">
         <g:DockLayoutPanel>

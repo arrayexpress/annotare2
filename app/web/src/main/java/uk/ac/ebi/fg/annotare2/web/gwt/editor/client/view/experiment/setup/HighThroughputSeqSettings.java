@@ -75,7 +75,7 @@ public class HighThroughputSeqSettings extends Composite implements HasSubmissio
             validationErrors += " - this submission does not support more than 1000 samples<br>";
         }
         if (!validationErrors.isEmpty()) {
-            NotificationPopupPanel.error("Please correct the following:<br><br>" + validationErrors, false);
+            NotificationPopupPanel.error("Please correct the following:<br><br>" + validationErrors, false, false);
             return false;
         }
         return true;

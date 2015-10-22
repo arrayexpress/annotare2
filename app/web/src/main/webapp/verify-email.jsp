@@ -29,7 +29,7 @@
     if (null == email) {
         email = (String)session.getAttribute("email");
     }
-    pageContext.setAttribute("email", email == null ? "" : email);
+    pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie6"><![endif]-->
@@ -66,7 +66,7 @@
                     <tr class="row right">
                         <td>Code</td>
                         <td>
-                            <input type="hidden" name="email" value="${email}"/>
+                            <input type="hidden" name="email" value="${pageScope.userEmail}"/>
                             <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
                         </td>
                     </tr>

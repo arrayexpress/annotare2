@@ -38,8 +38,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextAreaExte
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.RichTextToolbar;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormat;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormatPlaceholder;
@@ -89,8 +89,9 @@ public class AdfDetailsViewImpl extends Composite implements AdfDetailsView {
     public AdfDetailsViewImpl() {
         species = new SuggestBox(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
-            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void suggest(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 presenter.getOrganisms(query, limit, callback);
+
             }
         }));
         species.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {

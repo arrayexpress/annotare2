@@ -58,9 +58,9 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
     private Presenter presenter;
 
-    private final Map<ExperimentProfileType, HasSubmissionSettings> widgets = new HashMap<ExperimentProfileType, HasSubmissionSettings>();
+    private final Map<ExperimentProfileType, HasSubmissionSettings> widgets = new HashMap<>();
 
-    private final Set<String> arrayDesignAccessions = new HashSet<String>();
+    private final Set<String> arrayDesignAccessions = new HashSet<>();
 
     public SetupExpSubmissionView() {
         this(null);
@@ -123,7 +123,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     }
 
     @Override
-    public void suggest(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+    public void suggest(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback) {
         if (null != presenter) {
             presenter.getArrayDesigns(query, limit, callback);
         }
@@ -172,6 +172,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
 
         void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback);
 
-        void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback);
+        void getArrayDesigns(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback);
     }
 }

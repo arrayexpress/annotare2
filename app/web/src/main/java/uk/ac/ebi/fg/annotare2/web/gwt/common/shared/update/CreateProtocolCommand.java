@@ -25,6 +25,7 @@ public class CreateProtocolCommand implements ExperimentUpdateCommand {
 
     private ProtocolType protocolType;
 
+    @SuppressWarnings("unused")
     CreateProtocolCommand() {
         /* used by GWT serialization*/
     }

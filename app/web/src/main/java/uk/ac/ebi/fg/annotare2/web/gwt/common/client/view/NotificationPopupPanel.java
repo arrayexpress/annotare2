@@ -30,7 +30,7 @@ public class NotificationPopupPanel extends PopupPanel {
 
     private final static Logger logger = Logger.getLogger("gwt.client.NotificationPopupPanel");
 
-    public static enum Type {
+    public enum Type {
         INFO("info", "<i class=\"fa fa-info-circle\"></i>"),
         WARNING("warning", "<i class=\"fa fa-exclamation-circle\"></i>"),
         ERROR("error", "<i class=\"fa fa-minus-circle\"></i>"),
@@ -55,12 +55,12 @@ public class NotificationPopupPanel extends PopupPanel {
 
     private final Element iconElement, messageElement;
     private final Type type;
-    private final boolean timedAutoHide;
+    private final boolean shouldAutoHide;
 
-    private NotificationPopupPanel(Type type, boolean timedAutoHide) {
-        super(true, false);
+    private NotificationPopupPanel(Type type, boolean shouldAutoHide, boolean isModal) {
+        super(!isModal, isModal);
         this.type = type;
-        this.timedAutoHide = timedAutoHide;
+        this.shouldAutoHide = shouldAutoHide;
         setStyleName("gwt-NotificationPopup");
         addStyleName(type.getStyleName());
         PopupPanel.setStyleName(getContainerElement(), "container");
@@ -71,6 +71,9 @@ public class NotificationPopupPanel extends PopupPanel {
         getContainerElement().appendChild(iconElement);
         getContainerElement().appendChild(messageElement);
         setAnimationEnabled(false);
+        if (isModal) {
+            setGlassEnabled(true);
+        }
     }
 
     private void showMessage(String message) {
@@ -83,7 +86,7 @@ public class NotificationPopupPanel extends PopupPanel {
                 setPopupPosition(left, top);
             }
         });
-        if (timedAutoHide) {
+        if (shouldAutoHide) {
             scheduleAutoHide();
         }
     }
@@ -106,31 +109,31 @@ public class NotificationPopupPanel extends PopupPanel {
         }
         logger.log(Level.SEVERE, message, exception);
 
-        instance = new NotificationPopupPanel(Type.FAILURE, true);
+        instance = new NotificationPopupPanel(Type.FAILURE, true, false);
         instance.showMessage(message);
     }
 
-    public static void error(String message, boolean autoHide) {
+    public static void error(String message, boolean shouldAutoHide, boolean isModal) {
         if (null != instance) {
             cancel();
         }
-        instance = new NotificationPopupPanel(Type.ERROR, autoHide);
+        instance = new NotificationPopupPanel(Type.ERROR, shouldAutoHide, isModal);
         instance.showMessage(message);
     }
 
-    public static void warning(String message, boolean autoHide) {
+    public static void warning(String message, boolean shouldAutoHide, boolean isModal) {
         if (null != instance) {
             cancel();
         }
-        instance = new NotificationPopupPanel(Type.WARNING, autoHide);
+        instance = new NotificationPopupPanel(Type.WARNING, shouldAutoHide, isModal);
         instance.showMessage(message);
     }
 
-    public static void message(String message, boolean autoHide) {
+    public static void message(String message, boolean shouldAutoHide) {
         if (null != instance) {
             cancel();
         }
-        instance = new NotificationPopupPanel(Type.INFO, autoHide);
+        instance = new NotificationPopupPanel(Type.INFO, shouldAutoHide, false);
         instance.showMessage(message);
     }
 

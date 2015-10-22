@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
@@ -34,9 +34,9 @@ public interface AdfDetailsView extends IsWidget {
 
     ArrayDesignDetailsDto getDetails();
 
-    public interface Presenter {
+    interface Presenter {
 
-        void getOrganisms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
+        void getOrganisms(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback);
 
         void updateDetails(ArrayDesignDetailsDto details);
     }

@@ -30,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -135,7 +136,7 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
     }
 
     @Override
-    public void suggest(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback) {
+    public void suggest(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback) {
         if (presenter != null) {
             presenter.getArrayDesigns(query, limit, callback);
         }
@@ -154,7 +155,7 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
 
     public interface Presenter {
 
-        void getArrayDesigns(String query, int limit, AsyncCallback<List<ArrayDesignRef>> callback);
+        void getArrayDesigns(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback);
 
         void saveSettings(ExperimentSettings settings);
     }

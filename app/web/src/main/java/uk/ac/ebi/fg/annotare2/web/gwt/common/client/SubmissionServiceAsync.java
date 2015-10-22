@@ -19,6 +19,10 @@ public interface SubmissionServiceAsync {
 
     void setupExperiment(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
 
+    void assignSubmissionToMe(long id, AsyncCallback<Void> async);
+
+    void assignSubmissionToCreator(long id, AsyncCallback<Void> async);
+
     void validateSubmission(long id, AsyncCallback<ValidationResult> async);
 
     void submitSubmission(long id, AsyncCallback<Void> async);
@@ -26,6 +30,8 @@ public interface SubmissionServiceAsync {
     void getIdfTable(long id, AsyncCallback<Table> async);
 
     void getSdrfTable(long id, AsyncCallback<Table> async);
+
+    void getGeneratedSamplesPreview(long id, int numOfSamples, String namingPattern, int startingNumber, AsyncCallback<String> async);
 
     void getArrayDesignDetails(long id, AsyncCallback<ArrayDesignDetailsDto> async);
 

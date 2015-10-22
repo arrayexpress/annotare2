@@ -38,8 +38,8 @@ public class OneColorMicroarrayUpdater extends BasicExperimentUpdater {
     }
 
     @Override
-    public void createSample() {
-        Sample sample = createAndReturnSample();
+    protected Sample createSample(String name) {
+        Sample sample = super.createSample(name);
 
         Extract extract = exp().createExtract(sample);
         extract.setName(sample.getName());
@@ -47,6 +47,7 @@ public class OneColorMicroarrayUpdater extends BasicExperimentUpdater {
         for (String label : exp().getLabelNames()) {
             exp().createLabeledExtract(extract, label);
         }
+        return sample;
     }
 
     @Override

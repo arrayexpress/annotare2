@@ -50,7 +50,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     private final GridView<SampleRow> gridView;
 
-    private List<SampleColumn> columns = new ArrayList<SampleColumn>();
+    private List<SampleColumn> columns = new ArrayList<>();
     private AsyncOptionProvider materialTypes;
     private int maxSamplesLimit;
 
@@ -59,7 +59,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     public SamplesViewImpl() {
         maxSamplesLimit = 1000;
 
-        gridView = new GridView<SampleRow>();
+        gridView = new GridView<>();
         Button button = new Button("Sample Attributes and Variables...");
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -76,11 +76,11 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         });
         gridView.addTool(button);
 
-        button = new Button("Add Sample");
+        button = new Button("Add Samples");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                createNewSample();
+                createSamples();
             }
         });
         gridView.addTool(button);
@@ -115,20 +115,20 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         initWidget(gridView);
 
         materialTypes = new AsyncOptionProvider() {
-            private List<String> options = new ArrayList<String>();
+            private List<String> options = new ArrayList<>();
 
             @Override
             public void update(final Callback callback) {
                 if (presenter != null) {
                     if (options.isEmpty()) {
-                        presenter.getMaterialTypesAsync(new AsyncCallback<List<String>>() {
+                        presenter.getMaterialTypesAsync(new AsyncCallback<ArrayList<String>>() {
                             @Override
                             public void onFailure(Throwable caught) {
                                 callback.setOptions(Collections.<String>emptyList());
                             }
 
                             @Override
-                            public void onSuccess(List<String> result) {
+                            public void onSuccess(ArrayList<String> result) {
                                 if (!result.isEmpty()) {
                                     options.clear();
                                     options.add("");
@@ -167,7 +167,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     }
 
     private void setColumns(List<SampleColumn> columns) {
-        this.columns = new ArrayList<SampleColumn>(columns);
+        this.columns = new ArrayList<>(columns);
         addNameColumn();
         for (SampleColumn column : columns) {
             addColumn(column);
@@ -182,20 +182,21 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         presenter.updateRow(row.copy());
     }
 
-    private void createNewSample() {
-        if (maxSamplesLimit == gridView.getRows().size()) {
-            NotificationPopupPanel.error("This submission does not support more than " + (1000 == maxSamplesLimit ? " a " : "") + maxSamplesLimit + " samples.", true);
-        } else {
-            presenter.createSample();
-        }
+    private void createSamples() {
+        new AddSamplesDialog(new DialogCallback<AddSamplesDialog.Result>() {
+            @Override
+            public void onOkay(AddSamplesDialog.Result result) {
+                presenter.createSamples(result.numOfSamples, result.namingPattern, result.startingNumber);
+            }
+        }, presenter);
     }
 
     private void deleteSelectedSamples() {
         Set<SampleRow> selection = gridView.getSelectedRows();
         if (selection.isEmpty()) {
-            NotificationPopupPanel.warning("Please select samples you want to delete.", true);
+            NotificationPopupPanel.warning("Please select samples you want to delete.", true, false);
         } else if (Window.confirm("The selected samples and all associated information will no longer be available if you delete. Do you want to continue?")) {
-            presenter.removeSamples(new ArrayList<SampleRow>(selection));
+            presenter.removeSamples(new ArrayList<>(selection));
             gridView.removeSelectedRows();
         }
     }
@@ -219,11 +220,11 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
             @Override
             public boolean validateInput(String value, int rowIndex) {
                 if (value == null || trimValue(value).isEmpty()) {
-                    NotificationPopupPanel.error("Sample with empty name is not permitted.", true);
+                    NotificationPopupPanel.error("Sample with empty name is not permitted.", true, false);
                     return false;
                 }
                 if (!isNameUnique(value, rowIndex)) {
-                    NotificationPopupPanel.error("Sample with the name '" + value + "' already exists.", true);
+                    NotificationPopupPanel.error("Sample with the name '" + value + "' already exists.", true, false);
                     return false;
                 }
                 return true;
@@ -305,7 +306,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
         Cell<String> efoSuggestCell = new EditSuggestCell(new EfoSuggestOracle(new SuggestService<OntologyTerm>() {
             @Override
-            public void suggest(String query, int limit, AsyncCallback<List<OntologyTerm>> callback) {
+            public void suggest(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback) {
                 efoSuggestService.getTerms(query, term, limit, callback);
             }
         }), sampleColumn.getTemplate().isMandatory());

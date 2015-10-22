@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.UserAppGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceFactory;
@@ -33,12 +34,16 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppLayout;
 
+import java.util.logging.Logger;
+
 /**
  * @author Olga Melnichuk
  */
 public class UserApp implements EntryPoint {
 
     private final UserAppGinjector injector = GWT.create(UserAppGinjector.class);
+
+    private final static Logger logger = Logger.getLogger("gwt.client.annotare.UserApp");
 
     private AppLayout appWidget = new AppLayout();
 
@@ -82,6 +87,7 @@ public class UserApp implements EntryPoint {
 
         historyHandler.handleCurrentHistory();
 
+        ServerWatchdog.start();
         //showNotice();
     }
 

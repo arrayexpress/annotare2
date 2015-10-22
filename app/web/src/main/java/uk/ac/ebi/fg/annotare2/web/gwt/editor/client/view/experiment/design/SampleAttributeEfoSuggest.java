@@ -20,18 +20,18 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author Olga Melnichuk
  */
 public interface SampleAttributeEfoSuggest {
 
-    void getUnits(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
+    void getUnits(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback);
 
-    void getTerms(String query, int limit, AsyncCallback<List<OntologyTerm>> callback);
+    void getTerms(String query, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback);
 
-    void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<List<OntologyTerm>> callback);
+    void getTerms(String query, OntologyTerm root, int limit, AsyncCallback<ArrayList<OntologyTerm>> callback);
 
     void getTermByLabel(String label, AsyncCallback<OntologyTerm> callback);
 

@@ -25,6 +25,7 @@ public class UpdateProtocolCommand implements ExperimentUpdateCommand {
 
     private ProtocolRow protocolRow;
 
+    @SuppressWarnings("unused")
     UpdateProtocolCommand() {
         /*used by GWT serialization*/
     }

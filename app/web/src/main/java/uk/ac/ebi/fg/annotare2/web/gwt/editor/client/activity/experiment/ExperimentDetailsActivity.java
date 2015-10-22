@@ -34,6 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info.ExperimentDetailsView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
 
     private void setDetails(ExperimentProfileType type, final ExperimentDetailsDto details) {
         applicationDataProxy.getAeExperimentTypesAsync(type,
-                new ReportingAsyncCallback<List<String>>(FailureMessage.UNABLE_TO_LOAD_AE_EXPERIMENT_TYPES) {
+                new ReportingAsyncCallback<ArrayList<String>>(FailureMessage.UNABLE_TO_LOAD_AE_EXPERIMENT_TYPES) {
                     @Override
                     public void onFailure(Throwable caught) {
                         super.onFailure(caught);
@@ -118,7 +119,7 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
                     }
 
                     @Override
-                    public void onSuccess(List<String> result) {
+                    public void onSuccess(ArrayList<String> result) {
                         view.setDetails(details, result);
                     }
                 }

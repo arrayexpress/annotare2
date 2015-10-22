@@ -109,9 +109,9 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
 
     private void loadAeExperimentTypesAsync() {
         appDataService.getAeExperimentTypes(null,
-                new ReportingAsyncCallback<List<String>>(FailureMessage.UNABLE_TO_LOAD_AE_EXPERIMENT_TYPES) {
+                new ReportingAsyncCallback<ArrayList<String>>(FailureMessage.UNABLE_TO_LOAD_AE_EXPERIMENT_TYPES) {
                     @Override
-                    public void onSuccess(List<String> result) {
+                    public void onSuccess(ArrayList<String> result) {
                         view.setAeExperimentTypeOptions(result);
                     }
                 }

@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import gwtupload.client.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class DataFilesUploadPanel extends Composite {
     private class OnFinishUploaderHandler implements IUploader.OnFinishUploaderHandler {
         @Override
         public void onFinish(IUploader uploader) {
+            ServerWatchdog.resume();
+
             final IUploadStatus status = uploader.getStatusWidget();
             new Timer() {
                 public void run() {
@@ -78,7 +81,7 @@ public class DataFilesUploadPanel extends Composite {
                                                     message += filesInfo.get(i).getFileName() + " - " + result.get(i) + "<br>";
                                                 }
                                             }
-                                            NotificationPopupPanel.error(message, false);
+                                            NotificationPopupPanel.error(message, false, false);
                                         }
                                     }
                                 });
@@ -113,6 +116,12 @@ public class DataFilesUploadPanel extends Composite {
         uploader.setStyleName("customUpload");
         uploader.setI18Constants(I18N_CONSTANTS);
         uploader.avoidRepeatFiles(false);
+        uploader.addOnStartUploadHandler(new IUploader.OnStartUploaderHandler() {
+            @Override
+            public void onStart(IUploader iUploader) {
+                ServerWatchdog.pause();
+            }
+        });
         uploader.addOnFinishUploadHandler(new OnFinishUploaderHandler());
         panel.add(uploader);
     }

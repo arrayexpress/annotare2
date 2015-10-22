@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
+package uk.ac.ebi.fg.annotare2.web.server.utils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.server.UnexpectedException;
 
 /**
  * @author Olga Melnichuk
  */
-public class CreateSampleCommand implements ExperimentUpdateCommand {
+public class LogUtil {
 
-    public CreateSampleCommand() {
+    private static final Logger log = LoggerFactory.getLogger(LogUtil.class);
+
+    private LogUtil() {
     }
 
-    @Override
-    public void execute(ExperimentUpdatePerformer performer) {
-        performer.createSample();
-    }
-
-    @Override
-    public boolean isCritical() {
-        return true;
+    public static UnexpectedException logUnexpected(String message, Throwable e) {
+        log.error(message, e);
+        return new UnexpectedException(message, e);
     }
 }

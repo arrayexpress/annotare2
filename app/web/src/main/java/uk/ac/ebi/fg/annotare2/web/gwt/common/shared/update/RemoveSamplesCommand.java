@@ -28,12 +28,13 @@ public class RemoveSamplesCommand implements ExperimentUpdateCommand {
 
     private List<SampleRow> rows;
 
+    @SuppressWarnings("unused")
     RemoveSamplesCommand() {
         /*used by GWT serialization only */
     }
 
     public RemoveSamplesCommand(List<SampleRow> rows) {
-        this.rows = new ArrayList<SampleRow>(rows);
+        this.rows = new ArrayList<>(rows);
     }
 
     @Override

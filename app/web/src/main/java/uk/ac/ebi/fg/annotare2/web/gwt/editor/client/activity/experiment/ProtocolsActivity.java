@@ -87,7 +87,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public void getProtocolTypes(final AsyncCallback<List<ProtocolType>> callback) {
+    public void getProtocolTypes(final AsyncCallback<ArrayList<ProtocolType>> callback) {
         expData.getExperimentProfileTypeAsync(
                 new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override
@@ -134,7 +134,7 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public void getSequencingHardwareAsync(AsyncCallback<List<String>> callback) {
+    public void getSequencingHardwareAsync(AsyncCallback<ArrayList<String>> callback) {
         appData.getSequencingHardwareAsync(callback);
     }
 

@@ -77,6 +77,9 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
     @UiField
     ListBox aeExperimentType;
 
+    @UiField
+    CheckBox anonymousReview;
+
     private Presenter presenter;
 
     private Map<String, OntologyTerm> experimentalDesigns;
@@ -126,8 +129,10 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
         dateOfPublicRelease.setValue(details.getPublicReleaseDate());
         setAeExperimentType(details.getAeExperimentType());
 
-        experimentalDesigns = new LinkedHashMap<String, OntologyTerm>();
+        experimentalDesigns = new LinkedHashMap<>();
         addExperimentalDesigns(details.getExperimentalDesigns());
+
+        anonymousReview.setValue(details.isAnonymousReviewEnabled());
     }
 
     @Override
@@ -163,7 +168,7 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
             dateOfPublicRelease.setValue(today, false);
         }
         if (0 == today.compareTo(dateOfPublicRelease.getValue())) {
-            NotificationPopupPanel.warning("The submission will be immediately released to public once loaded to ArrayExpress. Please select different date if you wish to keep the experiment private.", true);
+            NotificationPopupPanel.warning("The submission will be immediately released to public once loaded to ArrayExpress. Please select different date if you wish to keep the experiment private.", true, false);
         }
         save();
     }
@@ -270,7 +275,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                 dateOfExperiment.getValue(),
                 dateOfPublicRelease.getValue(),
                 getAeExperimentType(),
-                experimentalDesigns.values());
+                experimentalDesigns.values(),
+                anonymousReview.getValue());
     }
 
     private static Date today()

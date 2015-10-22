@@ -26,6 +26,14 @@
         <param-name>slowUploads</param-name>
         <param-value>0</param-value>
     </context-param>
+    <context-param>
+        <param-name>corsDomainsRegex</param-name>
+        <param-value>^.*$</param-value>
+    </context-param>
+    <context-param>
+        <param-name>appRevision</param-name>
+        <param-value>${buildNumber}</param-value>
+    </context-param>
     <filter>
         <filter-name>banFilter</filter-name>
         <filter-class>org.apache.catalina.filters.RemoteAddrFilter</filter-class>
@@ -77,6 +85,7 @@
         </user-data-constraint>
     </security-constraint>
 
+    <!--
     <servlet>
         <servlet-name>jsp</servlet-name>
         <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
@@ -85,6 +94,7 @@
             <param-value>javac1.5</param-value>
         </init-param>
     </servlet>
+    -->
 
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>

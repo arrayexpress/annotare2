@@ -42,7 +42,7 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<Contact> contacts = (Collection<Contact>) value;
-                        Map<Integer, Contact> map = new LinkedHashMap<Integer, Contact>();
+                        Map<Integer, Contact> map = new LinkedHashMap<>();
                         for (Contact contact : contacts) {
                             map.put(contact.getId(), contact);
                         }
@@ -55,7 +55,7 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<Publication> publications = (Collection<Publication>) value;
-                        Map<Integer, Publication> map = new LinkedHashMap<Integer, Publication>();
+                        Map<Integer, Publication> map = new LinkedHashMap<>();
                         for (Publication publication : publications) {
                             map.put(publication.getId(), publication);
                         }
@@ -68,8 +68,8 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<Protocol> protocols = (Collection<Protocol>) value;
-                        List<Integer> order = new ArrayList<Integer>();
-                        Map<Integer, Protocol> map = new HashMap<Integer, Protocol>();
+                        List<Integer> order = new ArrayList<>();
+                        Map<Integer, Protocol> map = new HashMap<>();
                         for (Protocol protocol : protocols) {
                             map.put(protocol.getId(), protocol);
                             order.add(protocol.getId());
@@ -84,8 +84,8 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<SampleAttribute> sampleAttributes = (Collection<SampleAttribute>) value;
-                        List<Integer> order = new ArrayList<Integer>();
-                        Map<Integer, SampleAttribute> map = new HashMap<Integer, SampleAttribute>();
+                        List<Integer> order = new ArrayList<>();
+                        Map<Integer, SampleAttribute> map = new HashMap<>();
                         for (SampleAttribute attr : sampleAttributes) {
                             map.put(attr.getId(), attr);
                             order.add(attr.getId());
@@ -100,7 +100,7 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<Sample> samples = (Collection<Sample>) value;
-                        Map<Integer, Sample> map = new LinkedHashMap<Integer, Sample>();
+                        Map<Integer, Sample> map = new LinkedHashMap<>();
                         for (Sample sample : samples) {
                             map.put(sample.getId(), sample);
                         }
@@ -113,7 +113,7 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<Extract> extracts = (Collection<Extract>) value;
-                        Map<Integer, Extract> map = new LinkedHashMap<Integer, Extract>();
+                        Map<Integer, Extract> map = new LinkedHashMap<>();
                         for (Extract extract : extracts) {
                             map.put(extract.getId(), extract);
                         }
@@ -126,7 +126,7 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<LabeledExtract> labeledExtracts = (Collection<LabeledExtract>) value;
-                        Map<String, LabeledExtract> map = new LinkedHashMap<String, LabeledExtract>();
+                        Map<String, LabeledExtract> map = new LinkedHashMap<>();
                         for (LabeledExtract labeledExtract : labeledExtracts) {
                             map.put(labeledExtract.getId(), labeledExtract);
                         }
@@ -139,11 +139,18 @@ class ExperimentProfileDeserializer12 extends JsonDeserializer<ExperimentProfile
                     @Override
                     public void setValue(ExperimentProfile obj, Object value) {
                         Collection<Label> labels = (Collection<Label>) value;
-                        Map<Integer, Label> map = new LinkedHashMap<Integer, Label>();
+                        Map<Integer, Label> map = new LinkedHashMap<>();
                         for (Label label : labels) {
                             map.put(label.getId(), label);
                         }
                         setFieldValue(obj, "labelMap", map);
+                    }
+                },
+                new ValueSetter<ExperimentProfile>("anonymousReview", new TypeReference<Boolean>() {
+                }) {
+                    @Override
+                    public void setValue(ExperimentProfile obj, Object value) {
+                        obj.setAnonymousReview(null != value && (Boolean)value);
                     }
                 }
         );

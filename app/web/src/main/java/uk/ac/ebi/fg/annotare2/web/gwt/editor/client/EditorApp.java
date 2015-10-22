@@ -32,6 +32,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
@@ -116,6 +117,8 @@ public class EditorApp implements EntryPoint {
         root.add(layout);
 
         historyHandler.handleCurrentHistory();
+
+        ServerWatchdog.start();
     }
 
     private Widget initStartLayout(EventBus eventBus) {

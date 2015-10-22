@@ -30,12 +30,13 @@ public class SequencingUpdater extends BasicExperimentUpdater {
     }
 
     @Override
-    public void createSample() {
-        Sample sample  = createAndReturnSample();
+    protected Sample createSample(String name) {
+        Sample sample  = super.createSample(name);
 
         Extract extract = exp().createExtract(sample);
         extract.setName(sample.getName());
 
         exp().createLabeledExtract(extract, null);
+        return sample;
     }
 }

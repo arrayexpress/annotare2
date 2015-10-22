@@ -25,6 +25,7 @@ public class CreateDataAssignmentColumnCommand implements ExperimentUpdateComman
 
     private FileType fileType;
 
+    @SuppressWarnings("unused")
     CreateDataAssignmentColumnCommand() {
         /* used by GWT serialization */
     }

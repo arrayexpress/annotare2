@@ -21,7 +21,7 @@ import com.google.common.base.Charsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import static uk.ac.ebi.fg.annotare2.web.server.LogUtil.logUnexpected;
+import static uk.ac.ebi.fg.annotare2.web.server.utils.LogUtil.logUnexpected;
 
 
 /**

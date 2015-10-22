@@ -65,8 +65,8 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
     }
 
     @Override
-    public List<PublicationDto> getPublications() {
-        List<PublicationDto> publications = new ArrayList<PublicationDto>();
+    public ArrayList<PublicationDto> getPublications() {
+        ArrayList<PublicationDto> publications = new ArrayList<>();
         for (DisclosureListItem item : getItems()) {
             PublicationView view = (PublicationView) item.getContent();
             publications.add(view.getPublication());
@@ -95,7 +95,7 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
             return;
         }
 
-        List<PublicationDto> publications = new ArrayList<PublicationDto>();
+        ArrayList<PublicationDto> publications = new ArrayList<>();
         for (Integer index : selected) {
             DisclosureListItem item = getItem(index);
             PublicationView view = (PublicationView) item.getContent();

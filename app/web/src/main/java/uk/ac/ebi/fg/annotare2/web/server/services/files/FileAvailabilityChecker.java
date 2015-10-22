@@ -31,16 +31,16 @@ public class FileAvailabilityChecker {
 
     public FileAvailabilityChecker() {
         this.filesCache = new HashMap<>();
-        this.access = new SshFileAccess();
+        this.access = new ScpFileAccess();
     }
 
     public boolean isAvailable(DataFileSource source) throws IOException {
         if (source instanceof RemoteFileSource) {
             URI uri = source.getUri();
             if (null != uri && access.isSupported(uri)) {
-                String path = uri.toString();
-                String dir = path.replaceFirst("(.+/)[^/]*$", "$1");
-                String name = path.replaceFirst(".+/([^/]*)$", "$1");
+                //String path = uri.toString();
+                String dir =  ((RemoteFileSource)source).getDirectory();
+                String name = source.getName();
                 if (filesCache.containsKey(dir)) {
                     return filesCache.get(dir).contains(name);
                 } else {

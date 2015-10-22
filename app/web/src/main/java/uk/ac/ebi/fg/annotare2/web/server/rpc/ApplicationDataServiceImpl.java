@@ -227,6 +227,7 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
             }
         });
     }
+
     private OntologyTerm loadSystemTerm(String accession) {
         return uiEfoTerm(efoService.findTermByAccession(accession));
     }

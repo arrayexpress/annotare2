@@ -29,13 +29,17 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
  */
 public interface EditorTitleBarView extends IsWidget {
 
+    void setPresenter(Presenter presenter);
+
     void setTitle(SubmissionType type, String accession);
 
-    void setPresenter(Presenter presenter);
+    void setCurator(boolean isCurator);
 
     void setSubmissionType(SubmissionType type);
 
     void setSubmissionStatus(SubmissionStatus status);
+
+    void setOwnedByCreator(boolean isOwnedbyCreator);
 
     void autoSaveStarted();
 
@@ -45,25 +49,27 @@ public interface EditorTitleBarView extends IsWidget {
 
     void criticalUpdateStopped();
 
-    public interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter{
+    interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter {
+
+        void assignSubmissionToMe(AsyncCallback<Void> callback);
+
+        void assignSubmissionToCreator(AsyncCallback<Void> callback);
 
         void validateSubmission(ValidationHandler handler);
 
         void submitSubmission(SubmissionHandler handler);
 
-        void importFile(AsyncCallback<Void> callback);
-
         String getSubmissionExportUrl();
     }
 
-    public interface ValidationHandler {
+    interface ValidationHandler {
 
         void onSuccess(ValidationResult result);
 
         void onFailure();
     }
 
-    public interface SubmissionHandler {
+    interface SubmissionHandler {
 
         void onSuccess();
 

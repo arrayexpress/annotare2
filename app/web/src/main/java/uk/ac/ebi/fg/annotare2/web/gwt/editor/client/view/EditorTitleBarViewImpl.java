@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
@@ -48,10 +49,16 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     Label accessionLabel;
 
     @UiField
-    Button helpButton;
+    Button feedbackButton;
 
     @UiField
-    Button feedbackButton;
+    Button editButton;
+
+    @UiField
+    Button releaseButton;
+
+    @UiField
+    Button exportButton;
 
     @UiField
     Button validateButton;
@@ -62,11 +69,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiField
     AutoSaveLabel autoSaveLabel;
 
-    //@UiField
-    //Anchor exportLink;
-
     private Presenter presenter;
+
     private boolean shouldAllowInstantFeedback;
+    private boolean isCurator;
+    private boolean isOwnedByCreator;
 
     private final FeedbackDialog feedbackDialog;
     private final WaitingPopup waitingPopup;
@@ -78,9 +85,24 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         waitingPopup = new WaitingPopup();
     }
 
+    public void reloadSubmission() {
+        Window.Location.reload();
+    }
+
     @Override
     public void setTitle(SubmissionType type, String accession) {
-        accessionLabel.setText(type.getTitle() + ": " + accession);
+        accessionLabel.setText(accession);
+    }
+
+    @Override
+    public void setCurator(boolean isCurator) {
+        this.isCurator = isCurator;
+        if (isCurator) {
+            editButton.setVisible(true);
+            releaseButton.setVisible(true);
+        } else {
+            feedbackButton.setVisible(true);
+        }
     }
 
     @Override
@@ -92,13 +114,22 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void setSubmissionType(SubmissionType type) {
         validateButton.setVisible(type.isExperiment());
-        //exportLink.setVisible(isExperimentSubmission);
+        exportButton.setVisible(type.isExperiment());
     }
 
     @Override
     public void setSubmissionStatus(SubmissionStatus status) {
         submitButton.setVisible(status.canSubmit());
+        editButton.setVisible(editButton.isVisible() && status.canAssign());
+        releaseButton.setVisible(releaseButton.isVisible() && status.canAssign());
         shouldAllowInstantFeedback = (SubmissionStatus.IN_PROGRESS == status);
+    }
+
+    @Override
+    public void setOwnedByCreator(boolean isOwnedByCreator) {
+        this.isOwnedByCreator = isOwnedByCreator;
+        editButton.setVisible(editButton.isVisible() && isOwnedByCreator);
+        releaseButton.setVisible(releaseButton.isVisible() && !isOwnedByCreator);
     }
 
     @Override
@@ -110,7 +141,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     public void autoSaveStopped(String errorMessage) {
         autoSaveLabel.hide();
         if (null != errorMessage) {
-            NotificationPopupPanel.error(errorMessage, true);
+            NotificationPopupPanel.error(errorMessage, true, false);
         }
     }
 
@@ -136,6 +167,33 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @UiHandler("feedbackButton")
     void onFeedbackButtonClick(ClickEvent event) {
         feedbackDialog.center();
+    }
+
+    @UiHandler("exportButton")
+    void onExportLinkClick(ClickEvent event) {
+        if (presenter != null) {
+            Window.open(presenter.getSubmissionExportUrl(), "_blank", "");
+        }
+    }
+
+    @UiHandler("editButton")
+    void onEditButtonClick(ClickEvent event) {
+        presenter.assignSubmissionToMe(new ReportingAsyncCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                reloadSubmission();
+            }
+        });
+    }
+
+    @UiHandler("releaseButton")
+    void onReleaseButtonClick(ClickEvent event) {
+        presenter.assignSubmissionToCreator(new ReportingAsyncCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                reloadSubmission();
+            }
+        });
     }
 
     @UiHandler("validateButton")
@@ -167,49 +225,70 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         dialog.showValidationProgressMessage(null);
 
         presenter.validateSubmission(new ValidationHandler() {
-
             @Override
             public void onFailure() {
-                dialog.showValidationFailureMessage(null);
+                onValidationFailure(dialog);
             }
 
             @Override
             public void onSuccess(ValidationResult result) {
                 if (!result.canSubmit()) {
-                    dialog.showValidationFailureMessage(null);
+                    onValidationFailure(dialog);
                 } else {
-                    dialog.showSubmissionProgressMessage(null);
-                    presenter.submitSubmission(new SubmissionHandler() {
-
-                        @Override
-                        public void onFailure() {
-                            dialog.showSubmissionFailureMessage(null);
-                        }
-
-                        @Override
-                        public void onSuccess() {
-                            submitButton.setEnabled(false);
-                            dialog.showSubmissionSuccessMessage(new DialogCallback<Void>() {
-                                @Override
-                                public void onOkay(Void aVoid) {
-                                    if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
-                                        presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
-                                    }
-                                }
-                            }, shouldAllowInstantFeedback);
-                        }
-                    });
+                    processSubmission(dialog, shouldAllowInstantFeedback);
                 }
             }
         });
     }
 
-    /*
-    @UiHandler("exportLink")
-    void onExportLinkClick(ClickEvent event) {
-        if (presenter != null) {
-            Window.open(presenter.getSubmissionExportUrl(), "export", "");
+    void onValidationFailure(final ValidateSubmissionDialog dialog) {
+        if (isCurator) {
+            dialog.showValidationFailureWarning(new DialogCallback<Void>() {
+                @Override
+                public void onOkay(Void aVoid) {
+                    if (isOwnedByCreator) {
+                        presenter.assignSubmissionToMe(new ReportingAsyncCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void result) {
+                                processSubmission(dialog, false);
+                            }
+                        });
+                    } else {
+                        processSubmission(dialog, false);
+                    }
+
+                }
+            });
+        } else {
+            dialog.showValidationFailureMessage(null);
         }
     }
-    */
+
+    void processSubmission(final ValidateSubmissionDialog dialog, final boolean doFeedback) {
+        dialog.showSubmissionProgressMessage(null);
+        presenter.submitSubmission(new SubmissionHandler() {
+            @Override
+            public void onFailure() {
+                dialog.showSubmissionFailureMessage(null);
+            }
+
+            @Override
+            public void onSuccess() {
+                submitButton.setEnabled(false);
+                dialog.showSubmissionSuccessMessage(new DialogCallback<Void>() {
+                    @Override
+                    public void onCancel() {
+                        reloadSubmission();
+                    }
+                    @Override
+                    public void onOkay(Void aVoid) {
+                        if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
+                            presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
+                        }
+                        reloadSubmission();
+                    }
+                }, doFeedback);
+            }
+        });
+    }
 }

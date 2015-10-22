@@ -24,7 +24,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
@@ -41,12 +44,6 @@ public class AddProtocolDialog extends DialogBox {
     interface Binder extends UiBinder<Widget, AddProtocolDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
-
-    @UiField
-    Button cancelButton;
-
-    @UiField
-    Button okButton;
 
     @UiField
     ListBox protocolTypeList;
@@ -117,16 +114,16 @@ public class AddProtocolDialog extends DialogBox {
             return;
         }
         presenter.getProtocolTypes(
-                new ReportingAsyncCallback<List<ProtocolType>>(FailureMessage.UNABLE_TO_LOAD_PROTOCOL_TYPES) {
+                new ReportingAsyncCallback<ArrayList<ProtocolType>>(FailureMessage.UNABLE_TO_LOAD_PROTOCOL_TYPES) {
                     @Override
-                    public void onSuccess(List<ProtocolType> types) {
+                    public void onSuccess(ArrayList<ProtocolType> types) {
                         showProtocolTypes(types);
                     }
         });
     }
 
     private void showProtocolTypes(List<ProtocolType> types) {
-        protocolTypes = new ArrayList<ProtocolType>(types);
+        protocolTypes = new ArrayList<>(types);
         protocolTypeList.clear();
         for (ProtocolType type : types) {
             protocolTypeList.addItem(type.getTerm().getLabel());
@@ -146,7 +143,7 @@ public class AddProtocolDialog extends DialogBox {
         protocolTypeDefinition.setText(type == null ? "" : type.getDefinition());
     }
 
-    public static interface Presenter {
-        void getProtocolTypes(AsyncCallback<List<ProtocolType>> callback);
+    public interface Presenter {
+        void getProtocolTypes(AsyncCallback<ArrayList<ProtocolType>> callback);
     }
 }
