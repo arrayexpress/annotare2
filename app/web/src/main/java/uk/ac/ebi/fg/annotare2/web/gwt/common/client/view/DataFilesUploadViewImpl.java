@@ -26,14 +26,15 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.AsperaConnect;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 
 import java.util.List;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView, RequiresResize {
 
-    private final static Logger logger = Logger.getLogger("gwt.client.DataFilesUploadViewImpl");
+    //private final static Logger logger = Logger.getLogger("gwt.client.DataFilesUploadViewImpl");
 
     @UiField
     DataFilesUploadPanel uploadPanel;
@@ -52,9 +53,9 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     private final FTPUploadDialog ftpUploadDialog;
 
-    private Presenter presenter;
+    //private Presenter presenter;
 
-    private String asperaUrl;
+    //private String asperaUrl;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -135,7 +136,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
+        //this.presenter = presenter;
         uploadPanel.setPresenter(presenter);
         fileListPanel.setPresenter(presenter);
         ftpUploadDialog.setPresenter(presenter);
@@ -145,7 +146,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     public void setApplicationProperties(ApplicationProperties properties) {
         ftpUploadBtn.setEnabled(properties.isFtpEnabled());
         asperaUploadBtn.setEnabled(properties.isAsperaEnabled());
-        asperaUrl = properties.getAsperaUrl();
+        //asperaUrl = properties.getAsperaUrl();
         ftpUploadDialog.setFtpProperties(
                 properties.getFtpUrl(),
                 properties.getFtpUsername(),

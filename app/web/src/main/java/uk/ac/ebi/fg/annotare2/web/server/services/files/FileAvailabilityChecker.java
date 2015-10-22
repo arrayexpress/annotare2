@@ -31,7 +31,7 @@ public class FileAvailabilityChecker {
 
     public FileAvailabilityChecker() {
         this.filesCache = new HashMap<>();
-        this.access = new ScpFileAccess();
+        this.access = new SshFileAccess();
     }
 
     public boolean isAvailable(DataFileSource source) throws IOException {
