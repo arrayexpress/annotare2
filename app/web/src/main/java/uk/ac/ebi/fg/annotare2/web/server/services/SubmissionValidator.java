@@ -21,6 +21,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
+import uk.ac.ebi.arrayexpress2.magetab.datamodel.SDRF;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.listener.ErrorItemListener;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
@@ -96,10 +97,14 @@ public class SubmissionValidator {
         mageTab.IDF.setLocation(dataFileConnector.getFileUrl(userId, submissionId, "idf.txt"));
         mageTab.IDF.sdrfFile.add("sdrf.txt");
         mageTab.IDF.getLayout().calculateLocations(mageTab.IDF);
-        mageTab.SDRF.setLocation(dataFileConnector.getFileUrl(userId, submissionId, "sdrf.txt"));
-        mageTab.SDRF.getLayout().calculateLocations(mageTab.SDRF);
+        if (mageTab.SDRFs.size() > 1) {
+            throw new IllegalArgumentException("Unable to validate sumbission with no or multiple SDRFs");
+        }
+        SDRF sdrf = mageTab.SDRFs.values().iterator().next();
+        sdrf.setLocation(dataFileConnector.getFileUrl(userId, submissionId, "sdrf.txt"));
+        sdrf.getLayout().calculateLocations(sdrf);
 
-        results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF), type);
+        results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRFs), type);
 
         Set<DataFile> allFiles = submission.getFiles();
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
@@ -173,7 +178,7 @@ public class SubmissionValidator {
                         addError(results, error.reportString());
                     }
                 } else {
-                    results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRF));
+                    results = checker.check(new LimpopoBasedExperiment(mageTab.IDF, mageTab.SDRFs));
                 }
             }
         } catch (Exception x) {
@@ -198,8 +203,10 @@ public class SubmissionValidator {
             for (String sdrfName : mageTab.IDF.sdrfFile) {
                 if (dataFileConnector.containsFile(userId, submissionId, sdrfName)) {
                     URL sdrfLocation = dataFileConnector.getFileUrl(userId, submissionId, sdrfName);
-                    mageTab.SDRF.setLocation(sdrfLocation);
-                    new SDRFParser().parse(sdrfLocation.openStream(), mageTab.SDRF);
+                    SDRF sdrf = new SDRF();
+                    sdrf.setLocation(sdrfLocation);
+                    new SDRFParser().parse(sdrfLocation.openStream(), sdrf);
+                    mageTab.SDRFs.put(sdrf.getLocation().getFile(), sdrf);
                 }
             }
         }

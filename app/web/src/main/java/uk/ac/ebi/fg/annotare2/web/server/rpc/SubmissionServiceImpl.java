@@ -180,7 +180,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private Table asSdrfTable(ExperimentProfile exp) throws IOException, ParseException {
         MAGETABInvestigation mageTab = (new MageTabGenerator(exp, efoSearch)).generate();
         StringWriter out = new StringWriter();
-        new SDRFGraphWriter(out).write(mageTab.SDRF);
+        new SDRFGraphWriter(out).write(mageTab.SDRFs.values().iterator().next());
         String sdrf = restoreOriginalNameValues(out.toString());
         return new TsvParser().parse(new ByteArrayInputStream(sdrf.getBytes(Charsets.UTF_8)));
     }

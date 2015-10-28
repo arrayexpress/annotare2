@@ -80,7 +80,7 @@ public class MageTabFiles {
             close(idfWriter, true);
         }
 
-        if (generated.SDRF.getRootNodes().isEmpty()) {
+        if (0 == generated.SDRFs.size()) {
             /* Limpopo MAGE-TAB parser has a bug in reading and writing empty files. We have to create an empty file and
              * an empty SDRF as workaround */
             sdrfFile.createNewFile();
@@ -91,7 +91,7 @@ public class MageTabFiles {
             SDRFWriter sdrfWriter = null;
             try {
                 sdrfWriter = new SDRFWriter(new FileWriter(sdrfFile));
-                sdrfWriter.write(generated.SDRF);
+                sdrfWriter.write(generated.SDRFs.values().iterator().next());
             } finally {
                 close(sdrfWriter, true);
             }
@@ -99,7 +99,7 @@ public class MageTabFiles {
             MAGETABParser parser = new MAGETABParser();
             MAGETABInvestigation inv = parser.parse(idfFile);
             idf = inv.IDF;
-            sdrf = inv.SDRF;
+            sdrf = inv.SDRFs.values().iterator().next();
 
             sanitize(sdrfFile, sanitize);
         }

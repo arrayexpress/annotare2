@@ -122,7 +122,7 @@ public class MageTabGenerator {
             protocolTypes = ProtocolTypes.create();
         }
 
-        this.options = new HashSet<GenerateOption>(Arrays.asList(options));
+        this.options = new HashSet<>(Arrays.asList(options));
         if (this.options.contains(GenerateOption.REPLACE_NEWLINES_WITH_SPACES)) {
             newLine = " ";
         } else {
@@ -141,7 +141,9 @@ public class MageTabGenerator {
         MAGETABInvestigation inv = new MAGETABInvestigation();
 
         generateIdf(inv.IDF);
-        generateSdrf(inv.SDRF);
+        SDRF sdrf = new SDRF();
+        generateSdrf(sdrf);
+        inv.SDRFs.put("sdrf", sdrf);
         addTermSources(inv.IDF);
 
         return inv;
