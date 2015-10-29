@@ -35,9 +35,9 @@ import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex
  */
 public class AccountManager {
 
-    private UserDao userDao;
-    private UserRoleDao userRoleDao;
-    private SecureRandom random;
+    private final UserDao userDao;
+    private final UserRoleDao userRoleDao;
+    private final SecureRandom random;
 
     @Inject
     public AccountManager(UserDao userDao, UserRoleDao userRoleDao) {

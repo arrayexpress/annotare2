@@ -40,6 +40,8 @@ public class SubmissionDetails implements IsSerializable {
 
     private SubmissionType type;
 
+    private String ftpSubDirectory;
+
     private boolean isEmpty;
 
     private boolean isOwnedByCreator;
@@ -54,6 +56,7 @@ public class SubmissionDetails implements IsSerializable {
                              Date updated,
                              SubmissionStatus status,
                              SubmissionType type,
+                             String ftpSubDirectory,
                              boolean isEmpty,
                              boolean isOwnedByCreator) {
         this.id = id;
@@ -63,6 +66,7 @@ public class SubmissionDetails implements IsSerializable {
         this.updated = updated;
         this.status = status;
         this.type = type;
+        this.ftpSubDirectory = ftpSubDirectory;
         this.isEmpty = isEmpty;
         this.isOwnedByCreator = isOwnedByCreator;
     }
@@ -93,6 +97,10 @@ public class SubmissionDetails implements IsSerializable {
 
     public SubmissionType getType() {
         return type;
+    }
+
+    public String getFtpSubDirectory() {
+        return ftpSubDirectory;
     }
 
     public boolean isEmpty() {
