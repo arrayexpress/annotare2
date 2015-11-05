@@ -53,6 +53,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiDataFileRows;
 
@@ -100,13 +101,22 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public String getSubmissionFtpDirectory(long submissionId) {
-        String submissionDirectory = "submission_" + submissionId;
-        if (!ftpManager.doesExist(submissionDirectory)) {
-            ftpManager.createDirectory(submissionDirectory);
+    public String initSubmissionFtpDirectory(long submissionId)
+            throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(submissionId, Permission.VIEW);
+            String submissionDirectory = submission.getFtpSubDirectory();
+            if (!isNullOrEmpty(submissionDirectory) && !ftpManager.doesExist(submissionDirectory)) {
+                ftpManager.createDirectory(submissionDirectory);
+            }
+            return submissionDirectory;
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
         }
-        return submissionDirectory;
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})

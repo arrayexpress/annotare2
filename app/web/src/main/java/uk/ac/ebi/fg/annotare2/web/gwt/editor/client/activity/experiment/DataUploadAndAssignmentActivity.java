@@ -192,8 +192,8 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     @Override
-    public void getSubmissionFtpDirectory(AsyncCallback<String> callback) {
-        filesService.getSubmissionFtpDirectory(getSubmissionId(), callback);
+    public void initSubmissionFtpDirectory(AsyncCallback<String> callback) {
+        filesService.initSubmissionFtpDirectory(getSubmissionId(), callback);
     }
 
     @Override

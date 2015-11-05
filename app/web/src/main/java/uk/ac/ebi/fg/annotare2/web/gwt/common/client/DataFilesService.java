@@ -28,11 +28,11 @@ import java.util.Map;
 @RemoteServiceRelativePath(DataFilesService.NAME)
 public interface DataFilesService extends RemoteService {
 
-    public static final String NAME = "dataFileService";
+    String NAME = "dataFileService";
 
     List<DataFileRow> getFiles(long submissionId) throws ResourceNotFoundException, NoPermissionException;
 
-    String getSubmissionFtpDirectory(long submissionId);
+    String initSubmissionFtpDirectory(long submissionId) throws ResourceNotFoundException, NoPermissionException;
 
     Map<Integer, String> registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 

@@ -17,11 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -43,10 +45,10 @@ public class FTPUploadDialog extends DialogBox {
     InlineLabel ftpPassword;
 
     @UiField
-    InlineLabel ftpUrl;
+    Anchor ftpUrl;
 
-    //@UiField
-    //TextArea values;
+    @UiField
+    TextArea values;
 
     @UiField
     Button cancelButton;
@@ -55,6 +57,8 @@ public class FTPUploadDialog extends DialogBox {
     Button okButton;
 
     private Presenter presenter;
+
+    private String ftpBaseUrl;
 
     public FTPUploadDialog() {
         setModal(true);
@@ -69,21 +73,22 @@ public class FTPUploadDialog extends DialogBox {
     }
 
     public void setFtpProperties(String url, String username, String password) {
-        ftpUrl.setText(url);
+        ftpBaseUrl = url;
+        ftpUrl.setHref(url);
         ftpUsername.setText(username);
         ftpPassword.setText(password);
     }
 
     @Override
     public void show() {
-        //values.setValue("");
+        values.setValue("");
         okButton.setEnabled(true);
         super.show();
-        //Scheduler.get().scheduleDeferred(new Command() {
-        //    public void execute() {
-        //        values.setFocus(true);
-        //    }
-        //});
+        Scheduler.get().scheduleDeferred(new Command() {
+            public void execute() {
+                values.setFocus(true);
+            }
+        });
     }
 
     @UiHandler("okButton")

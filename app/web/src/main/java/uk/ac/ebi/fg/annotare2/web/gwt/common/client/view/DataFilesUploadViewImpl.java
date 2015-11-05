@@ -81,6 +81,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @SuppressWarnings("unused")
     @UiHandler("ftpUploadBtn")
     void ftpUploadBtClicked(ClickEvent event) {
+
         ftpUploadDialog.center();
     }
 

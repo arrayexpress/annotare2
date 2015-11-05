@@ -59,8 +59,8 @@ public class DataFilesProxy {
         }
     }
 
-    public void getSubmissionFtpDirectory(long submissionId, final AsyncCallback<String> callback) {
-        filesService.getSubmissionFtpDirectory(submissionId, new AsyncCallbackWrapper<String>() {
+    public void initSubmissionFtpDirectory(long submissionId, final AsyncCallback<String> callback) {
+        filesService.initSubmissionFtpDirectory(submissionId, new AsyncCallbackWrapper<String>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
