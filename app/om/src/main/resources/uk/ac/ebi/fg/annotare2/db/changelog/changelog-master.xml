@@ -93,4 +93,9 @@
             ALTER TABLE submissions ADD ftpSubDirectory VARCHAR(32) AFTER arrayDesignBody;
         </sql>
     </changeSet>
+    <changeSet id="makeFTPSubDirectoryUnique" author="kolais">
+        <sql>
+            ALTER TABLE submissions ADD UNIQUE (ftpSubDirectory);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

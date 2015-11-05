@@ -24,15 +24,20 @@ import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Collection;
+import java.util.Date;
 
 public class SubmissionManager {
 
     private final SubmissionDao submissionDao;
+    private final SecureRandom random;
 
     @Inject
     public SubmissionManager(SubmissionDao submissionDao) {
         this.submissionDao = submissionDao;
+        random = new SecureRandom();
     }
 
     public Collection<Submission> getAllSubmissions(User user) {
@@ -63,6 +68,7 @@ public class SubmissionManager {
         }
         T submission = submissionDao.createSubmission(user, clazz);
         submission.setAcl(submissionDao.getAcl());
+        submission.setFtpSubDirectory(generateUniqueName(submission.getCreated()));
         submissionDao.save(submission);
         return submission;
     }
@@ -80,5 +86,9 @@ public class SubmissionManager {
 
     public void deleteSubmissionSoftly(Submission submission) {
         submissionDao.softDelete(submission);
+    }
+
+    private String generateUniqueName(Date creationDate) {
+        return (BigInteger.valueOf(creationDate.getTime()).toString(36) + "-" +  new BigInteger(64, random).toString(36)).toLowerCase();
     }
 }

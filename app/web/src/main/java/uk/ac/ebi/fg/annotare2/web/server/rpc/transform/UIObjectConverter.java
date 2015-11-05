@@ -79,6 +79,7 @@ public class UIObjectConverter {
                     submission.getUpdated(),
                     submission.getStatus(),
                     SUBMISSION_TYPE.apply(submission),
+                    submission.getFtpSubDirectory(),
                     submission.hasNoData(),
                     submission.getOwnedBy().equals(submission.getCreatedBy())
             );
@@ -127,7 +128,7 @@ public class UIObjectConverter {
     }
 
     public static ArrayList<SubmissionRow> uiSubmissionRows(Collection<Submission> submissions) {
-        return new ArrayList<SubmissionRow>(filter(
+        return new ArrayList<>(filter(
                 transform(submissions, SUBMISSION_ROW), Predicates.notNull()));
     }
 
@@ -140,7 +141,7 @@ public class UIObjectConverter {
     }
 
     public static ArrayList<OntologyTerm> uiEfoTerms(Collection<EfoTerm> terms) {
-        return new ArrayList<OntologyTerm>(transform(terms, new Function<EfoTerm, OntologyTerm>() {
+        return new ArrayList<>(transform(terms, new Function<EfoTerm, OntologyTerm>() {
             @Nullable
             @Override
             public OntologyTerm apply(@Nullable EfoTerm input) {
@@ -170,6 +171,6 @@ public class UIObjectConverter {
     }
 
     public static ArrayList<DataFileRow> uiDataFileRows(Collection<DataFile> files) {
-        return new ArrayList<DataFileRow>(transform(files, DATA_FILE_ROW));
+        return new ArrayList<>(transform(files, DATA_FILE_ROW));
     }
 }
