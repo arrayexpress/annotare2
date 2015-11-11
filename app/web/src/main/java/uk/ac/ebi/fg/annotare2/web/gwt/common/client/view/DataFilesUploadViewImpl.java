@@ -56,7 +56,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     private Presenter presenter;
 
-    //private String asperaUrl;
+    private String asperaUrl;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -95,7 +95,12 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     void asperaUploadBtClicked(ClickEvent event) {
         AsperaConnect.addAsperaObject();
         if (AsperaConnect.isEnabled()) {
-            AsperaConnect.uploadFilesTo("fasp://aexpress:aexpress1@fasp.ebi.ac.uk/");
+            presenter.initSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    AsperaConnect.uploadFilesTo(asperaUrl + result + "/");
+                }
+            });
         } else {
             NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false, false);
         }
@@ -152,7 +157,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     public void setApplicationProperties(ApplicationProperties properties) {
         ftpUploadBtn.setEnabled(properties.isFtpEnabled());
         asperaUploadBtn.setEnabled(properties.isAsperaEnabled());
-        //asperaUrl = properties.getAsperaUrl();
+        asperaUrl = properties.getAsperaUrl();
         ftpUploadDialog.setApplicationProperties(properties);
     }
 
