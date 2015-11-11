@@ -53,7 +53,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiDataFileRows;
 
@@ -107,8 +107,8 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.VIEW);
-            String submissionDirectory = submission.getFtpSubDirectory();
-            if (!isNullOrEmpty(submissionDirectory) && !ftpManager.doesExist(submissionDirectory)) {
+            String submissionDirectory = nullToEmpty(submission.getFtpSubDirectory());
+            if (!submissionDirectory.isEmpty() && !ftpManager.doesExist(submissionDirectory)) {
                 ftpManager.createDirectory(submissionDirectory);
             }
             return submissionDirectory;
@@ -161,7 +161,11 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
                 if (null != info) {
-                    URI fileUri = new URI(ftpRoot + URIEncoderDecoder.encode(info.getFileName()));
+                    URI fileUri = new URI(
+                            ftpRoot + "/"
+                                    + nullToEmpty(submission.getFtpSubDirectory()) + "/"
+                                    + URIEncoderDecoder.encode(info.getFileName())
+                    );
                     DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
 
                     if (fileChecker.isAvailable(fileSource)) {

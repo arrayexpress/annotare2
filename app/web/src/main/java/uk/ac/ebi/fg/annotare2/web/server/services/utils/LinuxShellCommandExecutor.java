@@ -17,6 +17,9 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +33,8 @@ public class LinuxShellCommandExecutor {
 
     private final static String EOL = System.getProperty("line.separator");
 
+    private static final Logger log = LoggerFactory.getLogger(LinuxShellCommandExecutor.class);
+
     private String output;
     private String errors;
 
@@ -39,7 +44,9 @@ public class LinuxShellCommandExecutor {
     }
 
     public boolean execute(String command) throws IOException {
-        List<String> commandParams = new ArrayList<String>();
+        log.debug("Executing {}", command);
+
+        List<String> commandParams = new ArrayList<>();
         commandParams.add("/bin/sh");
         commandParams.add("-c");
         commandParams.add(command);

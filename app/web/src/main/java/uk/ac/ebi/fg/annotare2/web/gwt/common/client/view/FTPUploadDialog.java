@@ -31,6 +31,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FTPUploadDialog extends DialogBox {
@@ -86,8 +88,8 @@ public class FTPUploadDialog extends DialogBox {
     }
 
     public void setSubmissionDirectory(String ftpDirectory) {
-        ftpUrl.setText(ftpBasePath + ftpDirectory);
-        ftpUrl.setHref(ftpBaseUrl + ftpDirectory);
+        ftpUrl.setText(ftpBasePath + ftpDirectory + "/");
+        ftpUrl.setHref(ftpBaseUrl + ftpDirectory + "/");
     }
 
     @Override
@@ -148,13 +150,12 @@ public class FTPUploadDialog extends DialogBox {
     }
 
     private List<String> getPastedData() {
-        //String pastedRows = values.getValue();
-        //List<String> result = new ArrayList<String>();
-        //if (null != pastedRows && !pastedRows.isEmpty()) {
-        //    result.addAll(Arrays.asList(pastedRows.split("\\r\\n|[\\r\\n]")));
-        //}
-        //return result;
-        return null;
+        String pastedRows = values.getValue();
+        List<String> result = new ArrayList<>();
+        if (null != pastedRows && !pastedRows.isEmpty()) {
+            result.addAll(Arrays.asList(pastedRows.split("\\r\\n|[\\r\\n]")));
+        }
+        return result;
     }
 
     public interface Presenter {

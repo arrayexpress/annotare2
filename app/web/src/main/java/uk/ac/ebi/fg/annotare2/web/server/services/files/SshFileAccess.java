@@ -107,7 +107,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         if (isSupported(directory)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!(executor.execute(
-                    "ssh " + directory.getHost() + " umask 002; mkdir " + escapeFilePath(directory.getPath())
+                    "ssh " + directory.getHost() + " \"umask 002; mkdir " + escapeFilePath(directory.getPath()) + "\""
             ))) {
                 throw new IOException(executor.getErrors());
             }
@@ -143,6 +143,6 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     }
 
     private String escapeFilePath(String path) {
-        return null != path ? "\"'" + path.replaceAll("[']", "\'").replaceAll("[\"]", "\\\\\"") + "'\"" : null;
+        return null != path ? "'" + path.replaceAll("[']", "\'").replaceAll("[\"]", "\\\\\"") + "'" : null;
     }
 }
