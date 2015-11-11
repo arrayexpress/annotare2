@@ -29,6 +29,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 
 import java.util.List;
 
@@ -60,6 +61,8 @@ public class FTPUploadDialog extends DialogBox {
 
     private String ftpBaseUrl;
 
+    private String ftpBasePath;
+
     public FTPUploadDialog() {
         setModal(true);
         setGlassEnabled(true);
@@ -72,11 +75,19 @@ public class FTPUploadDialog extends DialogBox {
         this.presenter = presenter;
     }
 
-    public void setFtpProperties(String url, String username, String password) {
-        ftpBaseUrl = url;
-        ftpUrl.setHref(url);
-        ftpUsername.setText(username);
-        ftpPassword.setText(password);
+    public void setApplicationProperties(ApplicationProperties properties) {
+        ftpBasePath = properties.getFtpHostname() + properties.getFtpPath();
+        ftpBaseUrl = "ftp://" + properties.getFtpUsername() + ":" + properties.getFtpPassword() + "@" + ftpBasePath;
+
+        ftpUsername.setText(properties.getFtpUsername());
+        ftpPassword.setText(properties.getFtpPassword());
+        ftpUrl.setText(ftpBasePath);
+        ftpUrl.setHref(ftpBaseUrl);
+    }
+
+    public void setSubmissionDirectory(String ftpDirectory) {
+        ftpUrl.setText(ftpBasePath + ftpDirectory);
+        ftpUrl.setHref(ftpBaseUrl + ftpDirectory);
     }
 
     @Override

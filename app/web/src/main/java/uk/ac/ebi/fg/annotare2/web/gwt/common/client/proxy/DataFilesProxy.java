@@ -53,7 +53,7 @@ public class DataFilesProxy {
         }
 
         if (fileRows != null) {
-            callback.onSuccess(new ArrayList<DataFileRow>(fileRows));
+            callback.onSuccess(new ArrayList<>(fileRows));
         } else {
             load(submissionId, callback);
         }

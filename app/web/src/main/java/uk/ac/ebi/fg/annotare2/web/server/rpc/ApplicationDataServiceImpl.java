@@ -157,7 +157,8 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
     public ApplicationProperties getApplicationProperties() {
         return new ApplicationProperties.Builder()
                 .setFtpEnabled(properties.isFtpEnabled())
-                .setFtpUrl(properties.getPublicFtpUrl())
+                .setFtpHostname(properties.getPublicFtpHostname())
+                .setFtpPath(properties.getPublicFtpPath())
                 .setFtpUsername(properties.getPublicFtpUsername())
                 .setFtpPassword(properties.getPublicFtpPassword())
                 .setAsperaEnabled(properties.isAsperaEnabled())

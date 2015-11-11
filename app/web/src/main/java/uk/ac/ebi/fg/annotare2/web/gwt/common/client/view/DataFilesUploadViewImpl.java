@@ -25,6 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.AsperaConnect;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -53,7 +54,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     private final FTPUploadDialog ftpUploadDialog;
 
-    //private Presenter presenter;
+    private Presenter presenter;
 
     //private String asperaUrl;
 
@@ -69,7 +70,6 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
             asperaUploadBtn.setVisible(false);
         }
 
-        deleteFilesBtn.setEnabled(false);
         fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
@@ -81,8 +81,13 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @SuppressWarnings("unused")
     @UiHandler("ftpUploadBtn")
     void ftpUploadBtClicked(ClickEvent event) {
-
-        ftpUploadDialog.center();
+        presenter.initSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ftpUploadDialog.setSubmissionDirectory(result);
+                ftpUploadDialog.center();
+            }
+        });
     }
 
     @SuppressWarnings("unused")
@@ -137,7 +142,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setPresenter(Presenter presenter) {
-        //this.presenter = presenter;
+        this.presenter = presenter;
         uploadPanel.setPresenter(presenter);
         fileListPanel.setPresenter(presenter);
         ftpUploadDialog.setPresenter(presenter);
@@ -148,11 +153,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         ftpUploadBtn.setEnabled(properties.isFtpEnabled());
         asperaUploadBtn.setEnabled(properties.isAsperaEnabled());
         //asperaUrl = properties.getAsperaUrl();
-        ftpUploadDialog.setFtpProperties(
-                properties.getFtpUrl(),
-                properties.getFtpUsername(),
-                properties.getFtpPassword()
-        );
+        ftpUploadDialog.setApplicationProperties(properties);
     }
 
     @Override

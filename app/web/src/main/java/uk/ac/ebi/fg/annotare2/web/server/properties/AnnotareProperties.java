@@ -97,8 +97,12 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
         return getProperty("ftp.pickup.dir");
     }
 
-    public String getPublicFtpUrl() {
-        return getProperty("ftp.public.url");
+    public String getPublicFtpHostname() {
+        return getProperty("ftp.public.hostname");
+    }
+
+    public String getPublicFtpPath() {
+        return getProperty("ftp.public.path");
     }
 
     public String getPublicFtpUsername() {

@@ -24,7 +24,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class ApplicationProperties implements IsSerializable {
 
     private boolean isFtpEnabled;
-    private String ftpUrl;
+    private String ftpHostname;
+    private String ftpPath;
     private String ftpUsername;
     private String ftpPassword;
     private boolean isAsperaEnabled;
@@ -35,7 +36,8 @@ public class ApplicationProperties implements IsSerializable {
 
     private ApplicationProperties(ApplicationProperties other) {
         this.isFtpEnabled = other.isFtpEnabled;
-        this.ftpUrl = other.ftpUrl;
+        this.ftpHostname = other.ftpHostname;
+        this.ftpPath = other.ftpPath;
         this.ftpUsername = other.ftpUsername;
         this.ftpPassword = other.ftpPassword;
         this.isAsperaEnabled = other.isAsperaEnabled;
@@ -46,8 +48,12 @@ public class ApplicationProperties implements IsSerializable {
         return isFtpEnabled;
     }
 
-    public String getFtpUrl() {
-        return ftpUrl;
+    public String getFtpHostname() {
+        return ftpHostname;
+    }
+
+    public String getFtpPath() {
+        return ftpPath;
     }
 
     public String getFtpUsername() {
@@ -78,8 +84,13 @@ public class ApplicationProperties implements IsSerializable {
             return this;
         }
 
-        public Builder setFtpUrl(String url) {
-            properties.ftpUrl = url;
+        public Builder setFtpHostname(String hostname) {
+            properties.ftpHostname = hostname;
+            return this;
+        }
+
+        public Builder setFtpPath(String path) {
+            properties.ftpPath = path;
             return this;
         }
 
