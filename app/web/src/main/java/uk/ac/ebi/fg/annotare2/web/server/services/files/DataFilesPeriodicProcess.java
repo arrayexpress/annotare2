@@ -95,7 +95,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
 
     private void periodicRun() throws Exception {
         FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
-        for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
+        for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED, FILE_NOT_FOUND_ERROR)) {
             // FTP files will not be processed if FTP is not enabled
             if (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir())) {
                 switch (file.getStatus()) {

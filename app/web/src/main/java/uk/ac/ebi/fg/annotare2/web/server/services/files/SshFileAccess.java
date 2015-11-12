@@ -36,6 +36,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
 
     public boolean isAccessible(URI file) throws IOException {
         return (isSupported(file) && executeSshCommand(
+                new LinuxShellCommandExecutor(),
                 file.getHost(),
                 "test -e " + escapeFilePath(file.getPath()))
         );
@@ -46,6 +47,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (executeSshCommand(
+                    executor,
                     file.getHost(),
                     "md5sum " + escapeFilePath(file.getPath()))) {
                 return executor.getOutput().replaceFirst("([^\\s]+)[\\d\\D]*", "$1");
@@ -77,6 +79,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
                 }
                 LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
                 if (!executeSshCommand(
+                        executor,
                         file.getHost(),
                         "mv " + escapeFilePath(file.getPath()) + " " + escapeFilePath(newPath))) {
                     throw new IOException(executor.getErrors());
@@ -93,6 +96,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!executeSshCommand(
+                    executor,
                     file.getHost(),
                     "rm " + escapeFilePath(file.getPath()))) {
                 throw new IOException(executor.getErrors());
@@ -104,6 +108,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         if (isSupported(directory)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!executeSshCommand(
+                    executor,
                     directory.getHost(),
                     "umask 007; mkdir " + escapeFilePath(directory.getPath()))) {
                 throw new IOException(executor.getErrors());
@@ -111,14 +116,11 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         }
     }
 
-    private boolean executeSshCommand(String host, String command) throws IOException {
-        LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-        return executor.execute("ssh " + host + " \"" + command + "\"");
-    }
     public List<String> listFiles(URI file) throws IOException {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!executeSshCommand(
+                    executor,
                     file.getHost(),
                     "ls -1 " + escapeFilePath(getDirFromPath(file.getPath())))) {
                 throw new IOException(executor.getErrors());
@@ -129,6 +131,11 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         } else {
             throw new IOException("Unsupported scheme " + file.getScheme());
         }
+    }
+
+    private boolean executeSshCommand(LinuxShellCommandExecutor executor, String host, String command)
+            throws IOException {
+        return executor.execute("ssh " + host + " \"" + command + "\"");
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
