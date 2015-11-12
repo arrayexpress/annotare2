@@ -154,6 +154,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
             String ftpRoot = ftpManager.getRoot();
+            String subDirectory = nullToEmpty(submission.getFtpSubDirectory());
 
             StringBuilder errors = new StringBuilder();
             Map<String,DataFileSource> files = new HashMap<>();
@@ -162,7 +163,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 FtpFileInfo info = getFtpFileInfo(infoStr);
                 if (null != info) {
                     URI fileUri = new URI(
-                            ftpRoot + nullToEmpty(submission.getFtpSubDirectory()) + "/"
+                            ftpRoot + subDirectory + (subDirectory.isEmpty() ? "" : "/")
                                     + URIEncoderDecoder.encode(info.getFileName())
                     );
                     DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
