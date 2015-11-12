@@ -203,6 +203,7 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>
+        <!--
         <dependency>
             <groupId>com.netflix.governator</groupId>
             <artifactId>governator</artifactId>
@@ -211,6 +212,7 @@
             <groupId>com.netflix.governator</groupId>
             <artifactId>governator-servlet</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-assistedinject</artifactId>
