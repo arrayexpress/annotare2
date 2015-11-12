@@ -35,10 +35,9 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     }
 
     public boolean isAccessible(URI file) throws IOException {
-        return (isSupported(file) &&
-                new LinuxShellCommandExecutor().execute(
-                    "ssh " + file.getHost() + " test -e " + escapeFilePath(file.getPath())
-                )
+        return (isSupported(file) && executeSshCommand(
+                file.getHost(),
+                "test -e " + escapeFilePath(file.getPath()))
         );
 
     }
@@ -46,11 +45,9 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     public String getDigest(URI file) throws IOException {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (executor.execute(
-                    "ssh " + file.getHost() + " md5sum " + escapeFilePath(file.getPath())
-                    // Mac version:
-                    // "ssh " + file.getHost() + " md5 " + escapeFilePath(file.getPath()) + " | sed -e 's/MD5.*= //'"
-            )) {
+            if (executeSshCommand(
+                    file.getHost(),
+                    "md5sum " + escapeFilePath(file.getPath()))) {
                 return executor.getOutput().replaceFirst("([^\\s]+)[\\d\\D]*", "$1");
             } else {
                 throw new IOException(executor.getErrors());
@@ -62,9 +59,9 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     public void copyTo(URI file, File destination) throws IOException {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (!(executor.execute(
-                    "scp " + file.getHost() + ":" + escapeFilePath(file.getPath()) + " " + destination.getPath()
-                    ))) {
+            if (!executor.execute(
+                    "scp " + file.getHost() + ":\"" + escapeFilePath(file.getPath()) + "\" " + destination.getPath()
+                    )) {
                 throw new IOException(executor.getErrors());
             }
         }
@@ -79,9 +76,9 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
                     throw new IOException("Unable to rename file; " + newName + " already exists");
                 }
                 LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-                if (!(executor.execute(
-                        "ssh " + file.getHost() + " mv " + escapeFilePath(file.getPath()) + " " + escapeFilePath(newPath)
-                ))) {
+                if (!executeSshCommand(
+                        file.getHost(),
+                        "mv " + escapeFilePath(file.getPath()) + " " + escapeFilePath(newPath))) {
                     throw new IOException(executor.getErrors());
                 }
                 return newFile;
@@ -95,9 +92,9 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     public void delete(URI file) throws IOException {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (!(executor.execute(
-                    "ssh " + file.getHost() + " rm " + escapeFilePath(file.getPath())
-                    ))) {
+            if (!executeSshCommand(
+                    file.getHost(),
+                    "rm " + escapeFilePath(file.getPath()))) {
                 throw new IOException(executor.getErrors());
             }
         }
@@ -106,20 +103,24 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     public void createDirectory(URI directory) throws IOException {
         if (isSupported(directory)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (!(executor.execute(
-                    "ssh " + directory.getHost() + " \"umask 002; mkdir " + escapeFilePath(directory.getPath()) + "\""
-            ))) {
+            if (!executeSshCommand(
+                    directory.getHost(),
+                    "umask 007; mkdir " + escapeFilePath(directory.getPath()))) {
                 throw new IOException(executor.getErrors());
             }
         }
     }
 
+    private boolean executeSshCommand(String host, String command) throws IOException {
+        LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+        return executor.execute("ssh " + host + " \"" + command + "\"");
+    }
     public List<String> listFiles(URI file) throws IOException {
         if (isSupported(file)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-            if (!(executor.execute(
-                    "ssh " + file.getHost() + " ls -1 " + escapeFilePath(getDirFromPath(file.getPath()))
-            ))) {
+            if (!executeSshCommand(
+                    file.getHost(),
+                    "ls -1 " + escapeFilePath(getDirFromPath(file.getPath())))) {
                 throw new IOException(executor.getErrors());
             }
             return Arrays.asList(executor.getOutput().split("\\r\\n|[\\r\\n]"));
