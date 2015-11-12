@@ -162,8 +162,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 FtpFileInfo info = getFtpFileInfo(infoStr);
                 if (null != info) {
                     URI fileUri = new URI(
-                            ftpRoot + "/"
-                                    + nullToEmpty(submission.getFtpSubDirectory()) + "/"
+                            ftpRoot + nullToEmpty(submission.getFtpSubDirectory()) + "/"
                                     + URIEncoderDecoder.encode(info.getFileName())
                     );
                     DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
