@@ -1,0 +1,24 @@
+<module rename-to="ResumableUploadSample">
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name="com.google.gwt.user.theme.clean.Clean"/>
+
+    <inherits name="com.google.gwt.logging.Logging"/>
+    <set-property name="gwt.logging.logLevel" value="INFO"/>
+    <set-property name="gwt.logging.enabled" value="TRUE"/>
+
+    <set-property name="gwt.logging.consoleHandler" value="DISABLED" />
+    <set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
+    <!-- <set-property name="gwt.logging.firebugHandler" value="DISABLED" /> -->
+    <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
+    <!-- <set-property name="gwt.logging.popupHandler" value="DISABLED" /> -->
+    <set-property name="gwt.logging.systemHandler" value="DISABLED" />
+    <set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED"/>
+
+    <set-property name="compiler.stackMode" value="emulated" />
+    <set-configuration-property name="compiler.emulatedStack.recordLineNumbers" value="true" />
+    <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+
+	<entry-point class="uk.ac.ebi.fg.annotare.prototype.upload.resumable.client.ResumableUploadSample" />
+
+    <source path="client" />
+</module>
