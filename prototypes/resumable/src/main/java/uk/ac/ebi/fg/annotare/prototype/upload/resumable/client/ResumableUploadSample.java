@@ -25,7 +25,8 @@ public class ResumableUploadSample implements EntryPoint {
         final Widget widget = binder.createAndBindUi(this);
 
         RootLayoutPanel.get().add(widget);
-        ResumableUpload.init(Document.get().getElementById("upload-button"));
+        ResumableUpload.init("/resumable/upload");
+        ResumableUpload.assignBrowse(Document.get().getElementById("upload-button"));
     }
 
 }
