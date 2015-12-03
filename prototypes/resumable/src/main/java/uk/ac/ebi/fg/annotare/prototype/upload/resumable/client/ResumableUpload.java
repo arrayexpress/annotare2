@@ -6,8 +6,7 @@ import com.google.gwt.dom.client.Element;
 
 public class ResumableUpload extends JavaScriptObject {
 
-    protected ResumableUpload() {
-    }
+    protected ResumableUpload() {}
 
     public static final native void init(String url) /*-{
         this.r = new $wnd.Resumable({
