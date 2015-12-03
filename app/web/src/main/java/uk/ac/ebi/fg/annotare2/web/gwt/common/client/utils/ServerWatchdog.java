@@ -34,10 +34,12 @@ public class ServerWatchdog {
             "Should you experience any problems after this update, please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>. " +
             "Thank you.";
 
+    private static boolean isNotificaionVisible;
     private static boolean isPaused;
 
     public static void start() {
         isPaused = false;
+        isNotificaionVisible = false;
         Scheduler.get().scheduleFixedPeriod(new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
@@ -53,27 +55,34 @@ public class ServerWatchdog {
                                     if (null != status && 2 == status.length && status[0].equals("OK")) {
                                         String revision = RootPanel.getBodyElement().getAttribute("revision");
                                         if (null != revision && revision.equals(status[1])) {
-                                            NotificationPopupPanel.cancel();
+                                            if (isNotificaionVisible) {
+                                                    NotificationPopupPanel.cancel();
+                                                    isNotificaionVisible = false;
+                                            };
                                         } else {
                                             NotificationPopupPanel.warning(SERVER_UPGRADED, false, true);
+                                            isNotificaionVisible = true;
                                         }
                                     } else {
                                         NotificationPopupPanel.error(SERVER_DOWN + "<i>Incorrect status response: " + response.getText() + "</i>", false, true);
-
+                                        isNotificaionVisible = true;
                                     }
                                 } else {
                                     NotificationPopupPanel.error(SERVER_DOWN + "<i>HTTP status code: " + response.getStatusCode() + "</i>", false, true);
+                                    isNotificaionVisible = true;
                                 }
                             }
 
                             @Override
                             public void onError(Request request, Throwable caught) {
                                 NotificationPopupPanel.error(SERVER_DOWN + "<i>Exception caught: " + caught.getMessage() + "</i>", false, true);
+                                isNotificaionVisible = true;
                             }
                         });
 
                     } catch (RequestException caught) {
                         NotificationPopupPanel.error(SERVER_DOWN + "<i>Exception caught: " + caught.getMessage() + "</i>", false, true);
+                        isNotificaionVisible = true;
                     }
                 }
                 return true;
