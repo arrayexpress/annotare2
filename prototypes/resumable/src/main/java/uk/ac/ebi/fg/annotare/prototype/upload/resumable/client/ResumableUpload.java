@@ -32,10 +32,10 @@ public class ResumableUpload extends JavaScriptObject {
         }
     }-*/;
 
-    public static final native void on(String eventType, Callback callback) /*-{
+    public static final native void addCallback(ResumableFileCallback callback) /*-{
         if (undefined !== this.r) {
-            this.r.on(eventType, function() {
-                callback;
+            this.r.on('fileAdded', function(file) {
+                callback.@uk.ac.ebi.fg.annotare.prototype.upload.resumable.client.ResumableFileCallback::onFileAdded(*)(file);
             });
         } else {
             console.error('resumable.on: please init the library first');

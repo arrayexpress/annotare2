@@ -82,9 +82,10 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dgwt.persistentunitcache=false</extraJvmArgs>
+                            <extraJvmArgs>-Xms512m -Xmx1024m -Dgwt.persistentunitcache=false</extraJvmArgs>
                             <logLevel>INFO</logLevel>
                             <style>DETAILED</style>
+                            <strict>true</strict>
                             <module>uk.ac.ebi.fg.annotare.prototype.upload.resumable.ResumableUploadSample</module>
                         </configuration>
                         <goals>
