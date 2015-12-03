@@ -23,35 +23,35 @@ public class ResumableFile extends JavaScriptObject {
 
     protected ResumableFile() {}
 
-    public static final native String getFileName() /*-{
+    public final native String getFileName() /*-{
         return this.fileName;
     }-*/;
 
-    public static long getFileSize() {
+    public final long getFileSize() {
         return Long.valueOf(getFileSizeString());
     }
 
-    private static final native String getFileSizeString() /*-{
+    private native String getFileSizeString() /*-{
         return this.size;
     }-*/;
 
-    public static final native float getProgress(boolean isRelative) /*-{
+    public final native float getProgress(boolean isRelative) /*-{
         return this.progress(isRelative);
     }-*/;
 
-    public static final native void abort() /*-{
+    public final native void abort() /*-{
         this.abort();
     }-*/;
 
-    public static final native void cancel() /*-{
+    public final native void cancel() /*-{
         this.cancel();
     }-*/;
 
-    public static final native void retry() /*-{
+    public final native void retry() /*-{
         this.retry();
     }-*/;
 
-    public static final native void bootstrap() /*-{
+    public final native void bootstrap() /*-{
         this.bootstrap();
     }-*/;
 }

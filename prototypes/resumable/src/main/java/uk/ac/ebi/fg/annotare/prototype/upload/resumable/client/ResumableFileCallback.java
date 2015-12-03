@@ -20,10 +20,10 @@ package uk.ac.ebi.fg.annotare.prototype.upload.resumable.client;
 import com.google.gwt.core.client.JsArray;
 
 public interface ResumableFileCallback {
-    void onFileAdded(ResumableFile file);
-    void onFilesAdded(JsArray<ResumableFile> files);
-    void onFileProgress(ResumableFile file);
-    void onFileSuccess(ResumableFile file);
-    void onFileRetry(ResumableFile file);
-    void onFileError(ResumableFile file, String message);
+    void onFileAdded(ResumableUpload upload, ResumableFile file);
+    void onFilesAdded(ResumableUpload upload, JsArray<ResumableFile> files);
+    void onFileProgress(ResumableUpload upload, ResumableFile file);
+    void onFileSuccess(ResumableUpload upload, ResumableFile file);
+    void onFileRetry(ResumableUpload upload, ResumableFile file);
+    void onFileError(ResumableUpload upload, ResumableFile file, String message);
 }

@@ -1,6 +1,5 @@
 package uk.ac.ebi.fg.annotare.prototype.upload.resumable.client;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 
@@ -8,48 +7,49 @@ public class ResumableUpload extends JavaScriptObject {
 
     protected ResumableUpload() {}
 
-    public static final native void init(String url) /*-{
-        this.r = new $wnd.Resumable({
-            target: url,
-            query: {xxx: 'xxx'},
-            method: "multupart"
-        });
-    }-*/;
 
-    public static final native void assignBrowse(Element element)/*-{
-        if (undefined !== this.r) {
-            this.r.assignBrowse(element);
-        } else {
-            console.error('resumable.assignBrowse: please init the library first');
-        }
-    }-*/;
+    public static ResumableUpload newInstance(String url) {
+        return createResumableJso(url);
+    }
 
-    public static final native void upload() /*-{
-        if (undefined !== this.r) {
-            this.r.upload();
-        } else {
-            console.error('resumable.upload: please init the library first');
-        }
-    }-*/;
-
-    public static final native void addCallback(ResumableFileCallback callback) /*-{
-        if (undefined !== this.r) {
-            this.r.on('fileAdded', function(file) {
-                callback.@uk.ac.ebi.fg.annotare.prototype.upload.resumable.client.ResumableFileCallback::onFileAdded(*)(file);
+    private static native ResumableUpload createResumableJso(String url) /*-{
+        if (undefined !== $wnd.Resumable) {
+            return new $wnd.Resumable({
+                target: url,
+                query: {xxx: 'xxx'},
+                method: "multupart"
             });
         } else {
-            console.error('resumable.on: please init the library first');
+            console.error('resumable.init: please ensure resumable.js is included');
         }
     }-*/;
-}
 
-/*
-        this.r.on('fileAdded', function(file, event){
-            r.upload();
-            console.debug('fileAdded', event);
-        });
-        this.r.on('filesAdded', function(array){
-            r.upload();
-            console.debug('filesAdded', array);
-        });
- */
+    public final native void assignBrowse(Element element)/*-{
+        if (undefined !== this.assignBrowse) {
+            this.assignBrowse(element);
+        } else {
+            console.error('resumable.assignBrowse: please obtain an instance through ResumableUpload.init');
+        }
+    }-*/;
+
+    public final native void upload() /*-{
+        //if (undefined !== this.upload) {
+            this.upload();
+        //} else {
+        //    console.error('resumable.upload: please obtain an instance through ResumableUpload.init');
+        //}
+    }-*/;
+
+    public final native void addCallback(ResumableFileCallback callback) /*-{
+        //if (undefined !== this.on) {
+            this.on('fileAdded', function(file) {
+                callback.@uk.ac.ebi.fg.annotare.prototype.upload.resumable.client.ResumableFileCallback::onFileAdded(*)(this, file)
+            });
+            this.on('filesAdded', function(files) {
+                callback.@uk.ac.ebi.fg.annotare.prototype.upload.resumable.client.ResumableFileCallback::onFilesAdded(*)(this, files);
+            });
+        //} else {
+        //    console.error('resumable.on: please obtain an instance through ResumableUpload.init');
+        //}
+    }-*/;
+}

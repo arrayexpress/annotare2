@@ -2,6 +2,7 @@ package uk.ac.ebi.fg.annotare.prototype.upload.resumable.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -25,8 +26,39 @@ public class ResumableUploadSample implements EntryPoint {
         final Widget widget = binder.createAndBindUi(this);
 
         RootLayoutPanel.get().add(widget);
-        ResumableUpload.init("/resumable/upload");
-        ResumableUpload.assignBrowse(Document.get().getElementById("upload-button"));
+        ResumableUpload u = ResumableUpload.newInstance("/resumable/upload");
+        u.assignBrowse(Document.get().getElementById("upload-button"));
+        u.addCallback(new ResumableFileCallback() {
+            @Override
+            public void onFileAdded(ResumableUpload upload, ResumableFile file) {
+                upload.upload();
+            }
+
+            @Override
+            public void onFilesAdded(ResumableUpload upload, JsArray<ResumableFile> files) {
+                upload.upload();
+            }
+
+            @Override
+            public void onFileProgress(ResumableUpload upload, ResumableFile file) {
+
+            }
+
+            @Override
+            public void onFileSuccess(ResumableUpload upload, ResumableFile file) {
+
+            }
+
+            @Override
+            public void onFileRetry(ResumableUpload upload, ResumableFile file) {
+
+            }
+
+            @Override
+            public void onFileError(ResumableUpload upload, ResumableFile file, String message) {
+
+            }
+        });
     }
 
 }
