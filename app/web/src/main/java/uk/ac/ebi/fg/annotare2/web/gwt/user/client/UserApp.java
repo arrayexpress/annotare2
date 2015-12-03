@@ -99,7 +99,7 @@ public class UserApp implements EntryPoint {
                     "Annotare will be unavailable between <strong>16:00 GMT December 9 and 14:00 GMT December 10</strong> due to essential maintenance of our IT infrastructure.<br><br>"
                             + "Please accept our apologies for any inconvenience caused. "
                             + "Should you need to discuss anything related to the downtime, please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>.",
-                    false, true);
+                    false, false);
             Cookies.setCookie(NOTICE_COOKIE, "YEZ");
         }
     }
