@@ -13,7 +13,7 @@
                 </g:north>
                 <g:center>
                     <g:HTMLPanel>
-                        <div>Hello, world!</div>
+                        <g:Label ui:field="text"/>
                     </g:HTMLPanel>
                 </g:center>
             </g:DockLayoutPanel>

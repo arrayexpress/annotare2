@@ -5,6 +5,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,6 +23,9 @@ public class ResumableUploadSample implements EntryPoint {
 
     private final static Logger logger = Logger.getLogger("ResumableUploadSample");
 
+    @UiField
+    Label text;
+
     public void onModuleLoad() {
         final ResumableUploadSampleBinder binder = GWT.create(ResumableUploadSampleBinder.class);
         final Widget widget = binder.createAndBindUi(this);
@@ -31,6 +36,7 @@ public class ResumableUploadSample implements EntryPoint {
         u.addCallback(new ResumableFileCallback() {
             @Override
             public void onFileAdded(ResumableUpload upload, ResumableFile file) {
+                logger.info("Added file " + file.getFileName() + ", size " + file.getFileSize());
                 upload.upload();
             }
 
@@ -41,7 +47,7 @@ public class ResumableUploadSample implements EntryPoint {
 
             @Override
             public void onFileProgress(ResumableUpload upload, ResumableFile file) {
-
+                text.setText("Sent " + file.getProgress(false) * 100 + "% of " + file.getFileName());
             }
 
             @Override
