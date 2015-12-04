@@ -8,11 +8,12 @@
             <g:DockLayoutPanel>
                 <g:north size="40">
                     <g:HorizontalPanel ui:field="toolBar" width="100%">
-                        <g:HTML><input type="file" name="Upload" id="upload-button"></input></g:HTML>
+                        <g:HTML><button id="upload-button">Upload</button></g:HTML>
                     </g:HorizontalPanel>
                 </g:north>
                 <g:center>
                     <g:HTMLPanel>
+                        <div style="width:100px;height:100px;background-color:skyblue;text-align:center;vertical-align:middle" id="upload-drop">Drop zone</div>
                         <g:Label ui:field="text"/>
                     </g:HTMLPanel>
                 </g:center>

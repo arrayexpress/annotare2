@@ -33,6 +33,7 @@ public class ResumableUploadSample implements EntryPoint {
         RootLayoutPanel.get().add(widget);
         ResumableUpload u = ResumableUpload.newInstance("/resumable/upload");
         u.assignBrowse(Document.get().getElementById("upload-button"));
+        u.assignDrop(Document.get().getElementById("upload-drop"));
         u.addCallback(new ResumableFileCallback() {
             @Override
             public void onFileAdded(ResumableUpload upload, ResumableFile file) {
@@ -47,12 +48,12 @@ public class ResumableUploadSample implements EntryPoint {
 
             @Override
             public void onFileProgress(ResumableUpload upload, ResumableFile file) {
-                text.setText("Sent " + file.getProgress(false) * 100 + "% of " + file.getFileName());
+                text.setText("Sent " + (int)(file.getProgress(false) * 100) + "% of " + file.getFileName() + " (" + upload.files().length() + " files)");
             }
 
             @Override
             public void onFileSuccess(ResumableUpload upload, ResumableFile file) {
-
+                text.setText("Successfully sent " + file.getFileName());
             }
 
             @Override
