@@ -46,6 +46,7 @@ public class ResumableUploadServlet extends HttpServlet {
         //Mark as uploaded.
         info.uploadedChunks.add(new ResumableInfo.ResumableChunkNumber(resumableChunkNumber));
         if (info.checkIfUploadFinished()) { //Check if all chunks uploaded, and change filename
+            info.restoreFileName();
             ResumableInfoStorage.getInstance().remove(info);
             response.getWriter().print("All finished.");
         } else {
