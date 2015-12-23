@@ -9,6 +9,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
+import uk.ac.ebi.fg.gwt.resumable.client.ResumableFileCallback;
+import uk.ac.ebi.fg.gwt.resumable.client.ResumableUploader;
 
 import java.util.logging.Logger;
 
@@ -31,38 +34,38 @@ public class ResumableUploadSample implements EntryPoint {
         final Widget widget = binder.createAndBindUi(this);
 
         RootLayoutPanel.get().add(widget);
-        ResumableUpload u = ResumableUpload.newInstance("/resumable/upload");
+        ResumableUploader u = ResumableUploader.newInstance("/resumable/upload");
         u.assignBrowse(Document.get().getElementById("upload-button"));
         u.assignDrop(Document.get().getElementById("upload-drop"));
         u.addCallback(new ResumableFileCallback() {
             @Override
-            public void onFileAdded(ResumableUpload upload, ResumableFile file) {
+            public void onFileAdded(ResumableUploader uploader, ResumableFile file) {
                 logger.info("Added file " + file.getFileName() + ", size " + file.getFileSize());
-                upload.upload();
+                uploader.upload();
             }
 
             @Override
-            public void onFilesAdded(ResumableUpload upload, JsArray<ResumableFile> files) {
-                upload.upload();
+            public void onFilesAdded(ResumableUploader uploader, JsArray<ResumableFile> files) {
+                uploader.upload();
             }
 
             @Override
-            public void onFileProgress(ResumableUpload upload, ResumableFile file) {
-                text.setText("Sent " + (int)(file.getProgress(false) * 100) + "% of " + file.getFileName() + " (" + upload.files().length() + " files)");
+            public void onFileProgress(ResumableUploader uploader, ResumableFile file) {
+                text.setText("Sent " + (int)(file.getProgress(false) * 100) + "% of " + file.getFileName() + " (" + uploader.files().length() + " files)");
             }
 
             @Override
-            public void onFileSuccess(ResumableUpload upload, ResumableFile file) {
+            public void onFileSuccess(ResumableUploader uploader, ResumableFile file) {
                 text.setText("Successfully sent " + file.getFileName());
             }
 
             @Override
-            public void onFileRetry(ResumableUpload upload, ResumableFile file) {
+            public void onFileRetry(ResumableUploader uploader, ResumableFile file) {
 
             }
 
             @Override
-            public void onFileError(ResumableUpload upload, ResumableFile file, String message) {
+            public void onFileError(ResumableUploader uploader, ResumableFile file, String message) {
 
             }
         });
