@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2015 European Molecular Biology Laboratory
+ * Copyright 2009-2016 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import gwtupload.client.IUploadStatus;
-import gwtupload.client.IUploader;
-import gwtupload.client.MultiUploader;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Olga Melnichuk
@@ -41,35 +35,35 @@ public class UploadSingleFilePanel extends Composite {
     @UiField
     SimplePanel placeholder;
 
-    private MultiUploader uploader;
+    //private MultiUploader uploader;
 
     public UploadSingleFilePanel() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        uploader = new MultiUploader();
-        uploader.avoidRepeatFiles(false);
-        Set<IUploadStatus.CancelBehavior> cancelBehaviors = new HashSet<IUploadStatus.CancelBehavior>();
-        cancelBehaviors.add(IUploadStatus.CancelBehavior.REMOVE_CANCELLED_FROM_LIST);
-        cancelBehaviors.add(IUploadStatus.CancelBehavior.STOP_CURRENT);
-        cancelBehaviors.add(IUploadStatus.CancelBehavior.REMOVE_REMOTE);
-
-        UploadStatus status = new UploadStatus();
-        status.setCancelConfiguration(cancelBehaviors);
-        uploader.setStatusWidget(status);
-        uploader.setMaximumFiles(1);
-        uploader.setAutoSubmit(true);
-        placeholder.setWidget(uploader);
+//        uploader = new MultiUploader();
+//        uploader.avoidRepeatFiles(false);
+//        Set<IUploadStatus.CancelBehavior> cancelBehaviors = new HashSet<IUploadStatus.CancelBehavior>();
+//        cancelBehaviors.add(IUploadStatus.CancelBehavior.REMOVE_CANCELLED_FROM_LIST);
+//        cancelBehaviors.add(IUploadStatus.CancelBehavior.STOP_CURRENT);
+//        cancelBehaviors.add(IUploadStatus.CancelBehavior.REMOVE_REMOTE);
+//
+//        UploadStatus status = new UploadStatus();
+//        status.setCancelConfiguration(cancelBehaviors);
+//        uploader.setStatusWidget(status);
+//        uploader.setMaximumFiles(1);
+//        uploader.setAutoSubmit(true);
+//        placeholder.setWidget(uploader);
     }
 
-    public void addOnFinishUploadHandler(IUploader.OnFinishUploaderHandler onFinishUploaderHandler) {
-        uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
-    }
-
-    public void addOnCancelUploadHandler(IUploader.OnCancelUploaderHandler onCancelUploaderHandler) {
-        uploader.addOnCancelUploadHandler(onCancelUploaderHandler);
-    }
-
-    public void cancel() {
-        uploader.cancel();
-    }
+//    public void addOnFinishUploadHandler(IUploader.OnFinishUploaderHandler onFinishUploaderHandler) {
+//        uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
+//    }
+//
+//    public void addOnCancelUploadHandler(IUploader.OnCancelUploaderHandler onCancelUploaderHandler) {
+//        uploader.addOnCancelUploadHandler(onCancelUploaderHandler);
+//    }
+//
+//    public void cancel() {
+//        uploader.cancel();
+//    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2015 European Molecular Biology Laboratory
+ * Copyright 2009-2016 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gwtupload.client.IUploadStatus;
-import gwtupload.client.IUploader;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.HasImportEventHandlers;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ImportEventHandler;
+
+//import gwtupload.client.IUploadStatus;
+//import gwtupload.client.IUploader;
 
 /**
  * @author Olga Melnichuk
@@ -63,24 +64,24 @@ public class ImportFileDialogContent extends Composite implements
                 okButton.setEnabled(false);
 
                 UploadSingleFilePanel uploadFilePanel = new UploadSingleFilePanel();
-                IUploader.OnCancelUploaderHandler onCancelUploaderHandler = new IUploader.OnCancelUploaderHandler() {
-                    @Override
-                    public void onCancel(IUploader widgets) {
-                        okButton.setEnabled(false);
-                    }
-                };
+//                IUploader.OnCancelUploaderHandler onCancelUploaderHandler = new IUploader.OnCancelUploaderHandler() {
+//                    @Override
+//                    public void onCancel(IUploader widgets) {
+//                        okButton.setEnabled(false);
+//                    }
+//                };
+//
+//                IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
+//                    @Override
+//                    public void onFinish(IUploader uploader) {
+//                        if (uploader.getStatus() == IUploadStatus.Status.SUCCESS) {
+//                            okButton.setEnabled(true);
+//                        }
+//                    }
+//                };
 
-                IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
-                    @Override
-                    public void onFinish(IUploader uploader) {
-                        if (uploader.getStatus() == IUploadStatus.Status.SUCCESS) {
-                            okButton.setEnabled(true);
-                        }
-                    }
-                };
-
-                uploadFilePanel.addOnFinishUploadHandler(onFinishUploaderHandler);
-                uploadFilePanel.addOnCancelUploadHandler(onCancelUploaderHandler);
+//                uploadFilePanel.addOnFinishUploadHandler(onFinishUploaderHandler);
+//                uploadFilePanel.addOnCancelUploadHandler(onCancelUploaderHandler);
 
                 dialogContent.uploadFilePanel = uploadFilePanel;
                 dialogContent.content.setWidget(uploadFilePanel);
@@ -88,7 +89,7 @@ public class ImportFileDialogContent extends Composite implements
 
             @Override
             void cancel(ImportFileDialogContent dialogContent) {
-                dialogContent.uploadFilePanel.cancel();
+//                dialogContent.uploadFilePanel.cancel();
             }
 
             @Override

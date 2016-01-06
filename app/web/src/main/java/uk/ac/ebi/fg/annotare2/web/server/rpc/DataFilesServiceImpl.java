@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2015 European Molecular Biology Laboratory
+ * Copyright 2009-2016 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.inject.Inject;
-import org.apache.commons.fileupload.FileItem;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -45,7 +44,6 @@ import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,6 +54,8 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiDataFileRows;
+
+//import org.apache.commons.fileupload.FileItem;
 
 public class DataFilesServiceImpl extends SubmissionBasedRemoteService implements DataFilesService {
 
@@ -126,21 +126,21 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
             HashMap<Integer, String> errors = new HashMap<>();
-            int index = 0;
-            for (HttpFileInfo info : filesInfo) {
-                File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
-                FileItem received = UploadedFiles.get(getSession(), info.getFieldName());
-                if (checkFileExists(submission, info.getFileName())) {
-                    errors.put(index, "file already exists");
-                } else if (0L == received.getSize()) {
-                    errors.put(index, "empty file");
-                } else {
-                    received.write(uploadedFile);
-                    saveFile(new LocalFileSource(uploadedFile), null, submission);
-                }
-                index++;
-            }
-            UploadedFiles.removeSessionFiles(getSession());
+//            int index = 0;
+//            for (HttpFileInfo info : filesInfo) {
+//                File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
+//                FileItem received = UploadedFiles.get(getSession(), info.getFieldName());
+//                if (checkFileExists(submission, info.getFileName())) {
+//                    errors.put(index, "file already exists");
+//                } else if (0L == received.getSize()) {
+//                    errors.put(index, "empty file");
+//                } else {
+//                    received.write(uploadedFile);
+//                    saveFile(new LocalFileSource(uploadedFile), null, submission);
+//                }
+//                index++;
+//            }
+//            UploadedFiles.removeSessionFiles(getSession());
             return errors;
         } catch (Exception e) {
             throw unexpected(e);

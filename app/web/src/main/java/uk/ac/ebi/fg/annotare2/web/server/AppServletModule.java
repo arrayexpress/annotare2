@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2015 European Molecular Biology Laboratory
+ * Copyright 2009-2016 European Molecular Biology Laboratory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
-import gwtupload.server.UploadServlet;
 import uk.ac.ebi.fg.annotare2.ae.AEConnection;
 import uk.ac.ebi.fg.annotare2.ae.AEConnectionProperties;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
@@ -56,6 +55,8 @@ import java.util.*;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.inject.Scopes.SINGLETON;
 
+//import gwtupload.server.UploadServlet;
+
 /**
  * @author Olga Melnichuk
  */
@@ -82,7 +83,7 @@ public class AppServletModule extends ServletModule {
     @Override
     protected void configureServlets() {
         filterRegex("^/.+[.]nocache[.]js",
-                    "^/status/?").through(ExpiresNowFilter.class);
+                "^/status/?").through(ExpiresNowFilter.class);
 
         filterRegex("^/status/?").through(AccessLoggingSuppressFilter.class);
 
@@ -110,7 +111,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
-        serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
+        //serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
         serveRegex("/sign-up" + JSESSIONID).with(SignUpServlet.class);
         serveRegex("/verify-email" + JSESSIONID).with(VerifyEmailServlet.class);
         serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
@@ -128,7 +129,7 @@ public class AppServletModule extends ServletModule {
         bind(HomeServlet.class).in(SINGLETON);
         bind(EditorServlet.class).in(SINGLETON);
         bind(WelcomeServlet.class).in(SINGLETON);
-        bind(UploadServlet.class).in(SINGLETON);
+        //bind(UploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
         bind(DownloadServlet.class).in(SINGLETON);
         bind(SignUpServlet.class).in(SINGLETON);
