@@ -47,28 +47,21 @@ import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
+import uk.ac.ebi.fg.gwt.resumable.server.ResumableUploadServlet;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.inject.Scopes.SINGLETON;
-
-//import gwtupload.server.UploadServlet;
 
 /**
  * @author Olga Melnichuk
  */
 public class AppServletModule extends ServletModule {
-
-    private static final Map<String, String> UPLOAD_SERVLET_PARAMS = new HashMap<String, String>() {
-        {
-            String _1gb = Long.toString(1024 * 1024 * 1024); // 1GB
-            put("maxSize", _1gb);
-            put("maxFileSize", _1gb);
-        }
-    };
 
     private final AllRpcServicePathsImpl allRpc = new AllRpcServicePathsImpl();
 
@@ -101,6 +94,7 @@ public class AppServletModule extends ServletModule {
                 "/",
                 "/EditorApp/*",
                 "/edit/*",
+                "/upload",
                 "/export",
                 "/download").through(SecurityFilter.class);
 
@@ -111,7 +105,7 @@ public class AppServletModule extends ServletModule {
         serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
-        //serveRegex(".*\\.gupld").with(UploadServlet.class, UPLOAD_SERVLET_PARAMS);
+        serveRegex("/upload").with(ResumableUploadServlet.class);
         serveRegex("/sign-up" + JSESSIONID).with(SignUpServlet.class);
         serveRegex("/verify-email" + JSESSIONID).with(VerifyEmailServlet.class);
         serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
@@ -129,7 +123,7 @@ public class AppServletModule extends ServletModule {
         bind(HomeServlet.class).in(SINGLETON);
         bind(EditorServlet.class).in(SINGLETON);
         bind(WelcomeServlet.class).in(SINGLETON);
-        //bind(UploadServlet.class).in(SINGLETON);
+        bind(ResumableUploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
         bind(DownloadServlet.class).in(SINGLETON);
         bind(SignUpServlet.class).in(SINGLETON);
