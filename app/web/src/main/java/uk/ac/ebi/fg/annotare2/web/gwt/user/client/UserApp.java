@@ -88,7 +88,7 @@ public class UserApp implements EntryPoint {
         historyHandler.handleCurrentHistory();
 
         ServerWatchdog.start();
-        showNotice();
+        //showNotice();
     }
 
     private final static String NOTICE_COOKIE = "DowntimeNoticeDec2015Shown";
