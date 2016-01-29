@@ -3,12 +3,39 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+    <ui:style>
+        .status {
+            float: right;
+        }
+
+        .dropzone {
+            width: 100%;
+            height: 100%;
+            background-color: salmon;
+        }
+    </ui:style>
+
     <g:RootLayoutPanel width="100%" height="100%">
         <g:layer left="20px" right="20px" top="20px" bottom="20px">
             <g:DockLayoutPanel>
+                <g:center>
+                    <g:HTMLPanel width="100%" height="100%">
+                        <button id="upload-button">Upload</button>
+                        <g:Label ui:field="text" addStyleNames="{style.status}"/>
+                        <div id="upload-drop" class="{style.dropzone}">
+                        </div>
+
+                    </g:HTMLPanel>
+                </g:center>
+
+
+<!--
                 <g:north size="40">
                     <g:HorizontalPanel ui:field="toolBar" width="100%">
                         <g:HTML><button id="upload-button">Upload</button></g:HTML>
+                        <g:Button ui:field="cancelBtn">Cancel</g:Button>
+                        <g:Button ui:field="pauseBtn">Pause</g:Button>
+                        <g:Button ui:field="resumeBtn">Resume</g:Button>
                     </g:HorizontalPanel>
                 </g:north>
                 <g:center>
@@ -17,6 +44,7 @@
                         <g:Label ui:field="text"/>
                     </g:HTMLPanel>
                 </g:center>
+-->
             </g:DockLayoutPanel>
         </g:layer>
     </g:RootLayoutPanel>

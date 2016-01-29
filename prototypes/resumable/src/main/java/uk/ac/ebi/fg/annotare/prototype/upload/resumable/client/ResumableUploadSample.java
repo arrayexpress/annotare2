@@ -4,8 +4,11 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,15 +32,17 @@ public class ResumableUploadSample implements EntryPoint {
     @UiField
     Label text;
 
+    ResumableUploader uploader;
+
     public void onModuleLoad() {
         final ResumableUploadSampleBinder binder = GWT.create(ResumableUploadSampleBinder.class);
         final Widget widget = binder.createAndBindUi(this);
 
         RootLayoutPanel.get().add(widget);
-        ResumableUploader u = ResumableUploader.newInstance("/resumable/upload");
-        u.assignBrowse(Document.get().getElementById("upload-button"));
-        u.assignDrop(Document.get().getElementById("upload-drop"));
-        u.addCallback(new ResumableFileCallback() {
+        uploader = ResumableUploader.newInstance("/resumable/upload");
+        uploader.assignBrowse(Document.get().getElementById("upload-button"));
+        uploader.assignDrop(Document.get().getElementById("upload-drop"));
+        uploader.addCallback(new ResumableFileCallback() {
             @Override
             public void onFileAdded(ResumableUploader uploader, ResumableFile file) {
                 logger.info("Added file " + file.getFileName() + ", size " + file.getFileSize());
@@ -51,7 +56,11 @@ public class ResumableUploadSample implements EntryPoint {
 
             @Override
             public void onFileProgress(ResumableUploader uploader, ResumableFile file) {
-                text.setText("Sent " + (int)(file.getProgress(false) * 100) + "% of " + file.getFileName() + " (" + uploader.files().length() + " files)");
+                text.setText("Sent " + (int)(file.getProgress(false) * 100) + "% of " + file.getFileName());
+
+                //if (file.getProgress(false) > 0.5) {
+                //    file.cancel();
+                //}
             }
 
             @Override
@@ -66,10 +75,23 @@ public class ResumableUploadSample implements EntryPoint {
 
             @Override
             public void onFileError(ResumableUploader uploader, ResumableFile file, String message) {
-
+                text.setText("Error sending " + file.getFileName() + " - " + message);
             }
         });
     }
 
+//    @UiHandler("cancelBtn")
+//    void cancelBtnClicked(ClickEvent event) {
+//        uploader.cancel();
+//    }
+//
+//    @UiHandler("pauseBtn")
+//    void pauseBtnClicked(ClickEvent event) {
+//        uploader.pause();
+//    }
+//
+//    @UiHandler("resumeBtn")
+//    void resumeBtnClicked(ClickEvent event) {
+//        uploader.upload();
+//    }
 }
-
