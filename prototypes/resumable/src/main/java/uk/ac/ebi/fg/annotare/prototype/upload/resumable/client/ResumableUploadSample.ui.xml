@@ -29,8 +29,7 @@
                 </g:center>
 
 
-<!--
-                <g:north size="40">
+<!--            <g:north size="40">
                     <g:HorizontalPanel ui:field="toolBar" width="100%">
                         <g:HTML><button id="upload-button">Upload</button></g:HTML>
                         <g:Button ui:field="cancelBtn">Cancel</g:Button>

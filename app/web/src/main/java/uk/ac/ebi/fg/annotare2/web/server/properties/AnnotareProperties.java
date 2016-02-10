@@ -282,8 +282,10 @@ public class AnnotareProperties implements DataFileStoreProperties, ArrayExpress
 
     private Properties load() {
         Properties defaults = load("/Annotare-default.properties", new Properties());
+        Properties help = load("/AnnotareHelp.properties", new Properties());
 
         Properties p = new Properties(defaults);
+        p.putAll(help);
 
         String propertiesFile = System.getProperty(ANNOTARE_PROPERTIES);
         p = isNullOrEmpty(propertiesFile) ?
