@@ -1,0 +1,178 @@
+/* CustomDataGrid stylesheet */
+
+@external .select, .non-editable;
+
+.dataGridWidget ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.dataGridWidget ::-webkit-scrollbar-thumb {
+    width: 7px;
+    height: 7px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.3);
+}
+
+.dataGridWidget input {
+    font-family: inherit;
+    font-size: inherit;
+    display: block;
+    padding: 0px;
+    margin: 0px;
+    border: 0 none;
+    width: 100%;
+}
+
+.dataGridWidget input:focus {
+    outline: 0 none;
+}
+
+.dataGridWidget .select {
+    background: #f0f0f0 url("data:image/png;base64,R0lGODlhDwAUAIABAAAAAP///yH5BAEAAAEALAAAAAAPABQAAAIXjI+py+0Po5wH2HsXzmw//lHiSJZmUAAAOw==") no-repeat 100% 50%;
+    width: 100%;
+}
+
+.dataGridWidget .select select {
+    font-family: inherit;
+    font-size: inherit;
+    display: block;
+    padding: 0px;
+    margin: 0px;
+    border: 0 none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+    width: 100%;
+}
+
+.dataGridWidget select:focus {
+    outline: 0 none;
+}
+
+.dataGridWidget .non-editable {
+    color: #777;
+    background: #eee;
+    background: linear-gradient(-45deg, white 25%, #eee 25%, #eee 50%, white 50%, white 75%, #eee 75%, #eee);
+    background-size:10px 10px;
+}
+
+.dataGridFirstColumn {
+}
+
+.dataGridLastColumn {
+}
+
+.dataGridFooter {
+    border-top: 1px solid #6f7277;
+    padding: 3px 15px;
+    text-align: left;
+    color: #4b4a4a;
+    text-shadow: #ddf 1px 1px 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dataGridHeader {
+    font-size: small;
+    border-bottom: 1px solid #6f7277;
+    padding: 3px 3px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: lightgray;
+}
+
+.dataGridCell {
+    padding: 2px 2px;
+    overflow: hidden;
+}
+
+.dataGridFirstColumnFooter {
+
+}
+
+.dataGridFirstColumnHeader {
+
+}
+
+.dataGridLastColumnFooter {
+
+}
+
+.dataGridLastColumnHeader {
+
+}
+
+.dataGridSortableHeader {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.dataGridSortableHeader:hover {
+    color: #6c6b6b;
+}
+
+.dataGridSortedHeaderAscending {
+
+}
+
+.dataGridSortedHeaderDescending {
+
+}
+
+.dataGridEvenRow {
+}
+
+.dataGridEvenRowCell {
+    border: 2px solid transparent;
+}
+
+.dataGridOddRow {
+}
+
+.dataGridOddRowCell {
+    border: 2px solid transparent;
+}
+
+.dataGridHoveredRow {
+}
+
+.dataGridHoveredRowCell {
+}
+
+.dataGridKeyboardSelectedRow {
+    /*background: #ffc;*/
+}
+
+.dataGridKeyboardSelectedRowCell {
+    /*border: 1px solid darkblue;*/
+}
+
+.dataGridSelectedRow {
+    background: #628cd5;
+    color: white;
+    height: auto;
+    overflow: auto;
+}
+
+.dataGridSelectedRowCell {
+    /*border: 1px solid darkblue;*/
+}
+
+/**
+ * The keyboard selected cell is visible over selection.
+ */
+.dataGridKeyboardSelectedCell {
+    border: 2px solid darkblue;
+}
+
+.dataGridKeyboardSelectedInactiveCell {
+    border: 2px solid darkgray;
+}

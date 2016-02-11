@@ -1,0 +1,70 @@
+.gwt-SuggestionPopup {
+    padding: 0;
+    overflow: hidden;
+    z-index: 99999;
+    color: black;
+    background-color: white;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+}
+.gwt-SuggestionPopup > div {
+    padding: 1px;
+}
+
+.gwt-SuggestionPopup ul {
+    overflow: auto;
+    width: 100%;
+    list-style-position: outside;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.gwt-SuggestionPopup li {
+    margin: 0;
+    padding: 2px 6px;
+    color: #000;
+    cursor: default;
+    font-size: small;
+}
+
+.gwt-SuggestionPopup li.selected,
+.gwt-SuggestionPopup li.selected a {
+    background-color: #5E8CC0;
+    color: white;
+}
+
+.gwt-NotificationPopup {
+    max-width: 40%;
+    background: #efefef;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+}
+
+.gwt-NotificationPopup.error {
+    border-bottom: 4px solid #a00000;
+}
+
+.gwt-NotificationPopup.error .icon {
+    color: #a00000;
+}
+
+.gwt-NotificationPopup .container {
+    display: table;
+    width: 100%
+}
+
+.gwt-NotificationPopup  .icon {
+    display: table-cell;
+    font-size: 3em;
+    padding: 0 10px 0 20px;
+    vertical-align: middle;
+}
+
+.gwt-NotificationPopup  .message {
+    display: table-cell;
+    padding: 20px 20px 20px 10px;
+    vertical-align: middle;
+}
