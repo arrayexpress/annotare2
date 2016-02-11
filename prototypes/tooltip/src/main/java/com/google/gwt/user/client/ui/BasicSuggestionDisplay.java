@@ -82,7 +82,7 @@ public class BasicSuggestionDisplay extends SuggestionDisplay
         suggestionMenu = new SuggestionMenu();
         suggestionPopup = createPopup();
         suggestionPopup.setWidget(decorateSuggestionList(suggestionMenu));
-        suggestionSet = new HashSet<String>();
+        suggestionSet = new HashSet<>();
     }
 
     @Override
