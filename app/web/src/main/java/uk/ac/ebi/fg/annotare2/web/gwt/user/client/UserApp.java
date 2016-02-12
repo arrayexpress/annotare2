@@ -88,15 +88,17 @@ public class UserApp implements EntryPoint {
         historyHandler.handleCurrentHistory();
 
         ServerWatchdog.start();
-        //showNotice();
+        showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "HolidaysNotice2015Shown";
+    private final static String NOTICE_COOKIE = "Notice_160212_Shown";
 
     private void showNotice() {
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE))) {
             NotificationPopupPanel.warning(
-                    "Due to reduced staffing levels over the holiday period (24 Dec 2015 - 4 Jan 2016), please allow extra time for your submission to be processed.<br/><br/>Happy Holidays!",
+                    "Please note that Annotare will be unavailable on Thursday, 18 February 2016 " +
+                            "between 08:00 and 16:00 GMT due to the essential IT infrastructure maintenance.<br><br>" +
+                            "Please accept our apologies for the inconvenience this may cause.",
                     false, false);
             Cookies.setCookie(NOTICE_COOKIE, "YEZ");
         }
