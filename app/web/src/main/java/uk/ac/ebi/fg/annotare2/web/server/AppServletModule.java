@@ -94,18 +94,18 @@ public class AppServletModule extends ServletModule {
                 "/",
                 "/EditorApp/*",
                 "/edit/*",
-                "/upload",
+                "/upload/",
                 "/export",
                 "/download").through(SecurityFilter.class);
 
         serveRegex("^/status/?").with(StatusServlet.class);
+        serveRegex("^/upload/").with(ResumableUploadServlet.class);
 
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
         serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
         serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
         serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
         serveRegex("(/index.*)").with(WelcomeServlet.class);
-        serveRegex("/upload").with(ResumableUploadServlet.class);
         serveRegex("/sign-up" + JSESSIONID).with(SignUpServlet.class);
         serveRegex("/verify-email" + JSESSIONID).with(VerifyEmailServlet.class);
         serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);

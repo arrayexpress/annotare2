@@ -30,9 +30,12 @@
     <g:DockLayoutPanel>
         <g:north size="40">
             <g:HorizontalPanel spacing="3">
+                <!--
                 <c:DataFilesUploadPanel ui:field="uploadPanel"/>
                 <g:Button text="Aspera Upload..." enabled="false" ui:field="asperaUploadBtn"/>
                 <g:Button text="FTP Upload..." enabled="false" ui:field="ftpUploadBtn"/>
+                -->
+                <g:Button text="Upload Files..." ui:field="uploadBtn" />
                 <g:Button text="Delete Files" enabled="false" ui:field="deleteFilesBtn"/>
             </g:HorizontalPanel>
         </g:north>

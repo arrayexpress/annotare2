@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="${contextPath}" allowLinking="false" cookies="true" swallowOutput="false" unpackWAR="true">
+<Context path="${contextPath}" allowLinking="false" cookies="true" swallowOutput="false" unpackWAR="true" allowCasualMultipartParsing="true">
     <% if (jdbcTomcatPersistenceConnectionUrl != null) { %>
     <Manager className="org.apache.catalina.session.PersistentManager"
              maxIdleBackup="10">
