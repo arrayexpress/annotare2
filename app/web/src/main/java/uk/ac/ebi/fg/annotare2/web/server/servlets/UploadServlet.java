@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -18,7 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareFileChunkInfo;
 import uk.ac.ebi.fg.gwt.resumable.server.FileChunkInfo;
 import uk.ac.ebi.fg.gwt.resumable.server.ResumableUploadServlet;
 import uk.ac.ebi.fg.gwt.resumable.server.UploadStorage;
@@ -40,6 +40,6 @@ public class UploadServlet extends ResumableUploadServlet {
     @Override
     protected FileChunkInfo buildChunkInfo(HttpServletRequest request) throws IOException, ServletException {
         Long userId = accountService.getCurrentUser(request.getSession()).getId();
-        return AnnotareUploadStorage.AnnotareFileChunkInfo.createFrom(super.buildChunkInfo(request), userId);
+        return AnnotareFileChunkInfo.createFrom(super.buildChunkInfo(request), userId);
     }
 }

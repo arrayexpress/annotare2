@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.gwt.resumable.server.FileChunkInfo;
-import uk.ac.ebi.fg.gwt.resumable.server.SimpleUploadStorageImpl;
 import uk.ac.ebi.fg.gwt.resumable.server.UploadStorage;
 
 import java.io.IOException;
@@ -33,50 +32,22 @@ public class AnnotareUploadStorage implements UploadStorage {
 
     private final AnnotareProperties properties;
 
-    private final SimpleUploadStorageImpl storage;
-
     @Inject
     public AnnotareUploadStorage(AnnotareProperties properties) {
         this.properties = properties;
-        storage = new SimpleUploadStorageImpl("/tmp/upload");
     }
 
     @Override
     public boolean hasChunk(FileChunkInfo info) {
-        return storage.hasChunk(info);
+        return false;
     }
 
     @Override
     public boolean hasAllChunks(FileChunkInfo info) {
-        return storage.hasAllChunks(info);
+        return false;
     }
 
     @Override
     public void storeChunk(FileChunkInfo info, InputStream stream, long length) throws IOException {
-        storage.storeChunk(info, stream, length);
-    }
-
-    public static class AnnotareFileChunkInfo extends FileChunkInfo {
-        Long userId;
-
-        public static AnnotareFileChunkInfo createFrom(FileChunkInfo original, Long userId) {
-
-            AnnotareFileChunkInfo info = new AnnotareFileChunkInfo();
-
-            info.chunkNumber = original.chunkNumber;
-            info.chunkSize = original.chunkSize;
-            info.fileSize = original.fileSize;
-            info.id = original.id;
-            info.fileName = original.fileName;
-            info.relativePath = original.relativePath;
-            info.userId = userId;
-
-            return info;
-        }
-
-        @Override
-        public boolean isValid() {
-            return super.isValid() && null != userId;
-        }
     }
 }

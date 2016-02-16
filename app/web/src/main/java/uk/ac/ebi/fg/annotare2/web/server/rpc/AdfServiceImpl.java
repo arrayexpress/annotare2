@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -17,7 +17,6 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.inject.Inject;
-import org.apache.commons.fileupload.FileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
@@ -25,17 +24,17 @@ import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
-import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.adf.AdfHeader;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.adf.AdfParser;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvGenerator;
 import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
-import uk.ac.ebi.fg.annotare2.web.server.services.*;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.io.IOException;
@@ -73,25 +72,26 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
         try {
             final ArrayDesignSubmission submission = getArrayDesignSubmission(submissionId, Permission.UPDATE);
 
-            FileItem item = UploadedFiles.getFirst(getSession());
-            Table bodyTable = new AdfParser().parseBody(item.getInputStream());
-            final String body = bodyTable.isEmpty() ? "" : new TsvGenerator(bodyTable).generateString();
-
-            Table headerTable = new AdfParser().parseHeader(item.getInputStream());
-            final ArrayDesignHeader header = createArrayDesignHeader(headerTable);
-
-            submission.setBody(body);
-            submission.setHeader(header);
+            // TODO: redevelop ADF import (or remove it altogether)
+//            FileItem item = UploadedFiles.getFirst(getSession());
+//            Table bodyTable = new AdfParser().parseBody(item.getInputStream());
+//            final String body = bodyTable.isEmpty() ? "" : new TsvGenerator(bodyTable).generateString();
+//
+//            Table headerTable = new AdfParser().parseHeader(item.getInputStream());
+//            final ArrayDesignHeader header = createArrayDesignHeader(headerTable);
+//
+//            submission.setBody(body);
+//            submission.setHeader(header);
             save(submission);
-        } catch (IOException e) {
-            log.warn("Unable to import ADF body data (submissionId: " + submissionId + ")", e);
-            throw new DataImportException(e.getMessage());
+//        } catch (IOException e) {
+//            log.warn("Unable to import ADF body data (submissionId: " + submissionId + ")", e);
+//            throw new DataImportException(e.getMessage());
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
+//        } catch (DataSerializationException e) {
+//            throw unexpected(e);
         }
     }
 

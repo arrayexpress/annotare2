@@ -9,13 +9,14 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,13 +39,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.apache.commons.fileupload.util.Streams.copy;
 
 /**
  * @author Olga Melnichuk
@@ -76,8 +75,9 @@ public class ExportServlet extends HttpServlet {
         response.setHeader("Content-Disposition", "inline; filename=submission.zip;");
 
         ServletOutputStream outputStream = response.getOutputStream();
-        ZipOutputStream zip = new ZipOutputStream(outputStream);
-        exportMageTab(submission, zip);
+        try (ZipOutputStream zip = new ZipOutputStream(outputStream)) {
+            exportMageTab(submission, zip);
+        }
     }
 
     private void exportMageTab(ExperimentSubmission submission, ZipOutputStream zip) throws IOException, ServletException {
@@ -85,11 +85,13 @@ public class ExportServlet extends HttpServlet {
             MageTabFiles mageTab = MageTabFiles.createMageTabFiles(submission.getExperimentProfile(), efoSearch, true);
             File idfFile = mageTab.getIdfFile();
             zip.putNextEntry(new ZipEntry(idfFile.getName()));
-            copy(new FileInputStream(idfFile), zip, false);
-
+            Files.asByteSource(idfFile).copyTo(zip);
+            zip.closeEntry();
             File sdrfFile = mageTab.getSdrfFile();
             zip.putNextEntry(new ZipEntry(sdrfFile.getName()));
-            copy(new FileInputStream(sdrfFile), zip, true);
+            Files.asByteSource(sdrfFile).copyTo(zip);
+            zip.closeEntry();
+            zip.finish();
         } catch (ParseException e) {
             throw servletException(e);
         } catch (DataSerializationException e) {

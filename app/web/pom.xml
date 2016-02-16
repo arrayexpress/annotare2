@@ -229,6 +229,10 @@
             <groupId>uk.ac.ebi.fg.gwt</groupId>
             <artifactId>resumable-gwt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+        </dependency>
 
         <!-- logging: everything -> slf4j -> logback -->
         <dependency>
@@ -326,11 +330,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
         </dependency>
 
         <!-- tomcat dependencies for debugging purposes -->
