@@ -40,6 +40,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressProperties;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFilesPeriodicProcess;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManager;
@@ -47,7 +48,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
-import uk.ac.ebi.fg.gwt.resumable.server.ResumableUploadServlet;
+import uk.ac.ebi.fg.gwt.resumable.server.UploadStorage;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
@@ -76,12 +77,13 @@ public class AppServletModule extends ServletModule {
     @Override
     protected void configureServlets() {
         filterRegex("^/.+[.]nocache[.]js",
-                "^/status/?").through(ExpiresNowFilter.class);
+                "/status").through(ExpiresNowFilter.class);
 
-        filterRegex("^/status/?").through(AccessLoggingSuppressFilter.class);
+        filterRegex("/status").through(AccessLoggingSuppressFilter.class);
 
-        filter("/login",
+        filter( "/login",
                 "/logout",
+                "/upload",
                 "/export",
                 "/download",
                 "/sign-up",
@@ -90,16 +92,13 @@ public class AppServletModule extends ServletModule {
                 "/UserApp/*",
                 "/EditorApp/*").through(HibernateSessionFilter.class);
 
-        filter("/UserApp/*",
-                "/",
+        filter( "/",
+                "/UserApp/*",
                 "/EditorApp/*",
                 "/edit/*",
-                "/upload/",
+                "/upload",
                 "/export",
                 "/download").through(SecurityFilter.class);
-
-        serveRegex("^/status/?").with(StatusServlet.class);
-        serveRegex("^/upload/").with(ResumableUploadServlet.class);
 
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
         serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
@@ -109,6 +108,8 @@ public class AppServletModule extends ServletModule {
         serveRegex("/sign-up" + JSESSIONID).with(SignUpServlet.class);
         serveRegex("/verify-email" + JSESSIONID).with(VerifyEmailServlet.class);
         serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
+        serve("/status").with(StatusServlet.class);
+        serve("/upload").with(UploadServlet.class);
         serve("/export").with(ExportServlet.class);
         serve("/download").with(DownloadServlet.class);
         serve("/error").with(UncaughtExceptionServlet.class);
@@ -123,7 +124,7 @@ public class AppServletModule extends ServletModule {
         bind(HomeServlet.class).in(SINGLETON);
         bind(EditorServlet.class).in(SINGLETON);
         bind(WelcomeServlet.class).in(SINGLETON);
-        bind(ResumableUploadServlet.class).in(SINGLETON);
+        bind(UploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
         bind(DownloadServlet.class).in(SINGLETON);
         bind(SignUpServlet.class).in(SINGLETON);
@@ -164,6 +165,8 @@ public class AppServletModule extends ServletModule {
         bind(FtpManager.class).in(SINGLETON);
         bind(DataFileConnector.class).in(SINGLETON);
         bind(EmailSender.class).in(SINGLETON);
+
+        bind(UploadStorage.class).to(AnnotareUploadStorage.class).in(SINGLETON);
 
         bind(SubsTracking.class).in(SINGLETON);
         bind(AEConnection.class).in(SINGLETON);

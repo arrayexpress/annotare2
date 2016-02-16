@@ -67,7 +67,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     public DataFilesUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload/");
+        uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", "octet");
         uploader.assignBrowse(uploadBtn.getElement());
 
         progressPanel = new UploadProgressPopupPanel(uploader);

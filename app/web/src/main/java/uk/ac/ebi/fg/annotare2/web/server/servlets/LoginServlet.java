@@ -41,8 +41,6 @@ public class LoginServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
 
-
-
     @Inject
     private AccountService accountService;
 
