@@ -36,7 +36,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataAssignmentColumnsAndRows;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.CriticalUpdateEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEvent;
@@ -48,7 +48,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataU
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.Collections2.transform;
@@ -197,8 +196,8 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     @Override
-    public void uploadFiles(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
-        filesService.registerHttpFiles(getSubmissionId(), filesInfo, callback);
+    public void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<String> callback) {
+        filesService.registerHttpFile(getSubmissionId(), fileInfo, callback);
     }
 
     @Override

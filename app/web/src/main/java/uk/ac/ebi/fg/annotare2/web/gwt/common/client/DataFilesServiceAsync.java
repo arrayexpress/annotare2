@@ -19,10 +19,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 
 import java.util.List;
-import java.util.Map;
 
 public interface DataFilesServiceAsync {
 
@@ -30,7 +29,7 @@ public interface DataFilesServiceAsync {
 
     void initSubmissionFtpDirectory(long submissionId, AsyncCallback<String> async);
 
-    void registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> async);
+    void registerUploadedFile(long submissionId, UploadedFileInfo fileInfo, AsyncCallback<String> async);
 
     void registerFtpFiles(long submissionId, List<String> filesInfo, AsyncCallback<String> async);
 

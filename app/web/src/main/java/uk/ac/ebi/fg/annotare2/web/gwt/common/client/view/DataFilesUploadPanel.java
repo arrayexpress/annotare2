@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -126,7 +126,7 @@ public class DataFilesUploadPanel extends Composite {
     }
 
     public interface Presenter {
-        void uploadFiles(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
+        void uploadFiles(List<UploadedFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback);
     }
 
     private String removeFakePath(String fileName) {

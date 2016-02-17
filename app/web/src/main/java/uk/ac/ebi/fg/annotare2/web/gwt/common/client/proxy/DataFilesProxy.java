@@ -24,11 +24,10 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.event.DataFilesUpdateEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.Updater;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class DataFilesProxy {
 
@@ -74,15 +73,15 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo, final AsyncCallback<Map<Integer, String>> callback) {
-        filesService.registerHttpFiles(submissionId, filesInfo, new AsyncCallbackWrapper<Map<Integer, String>>() {
+    public void registerHttpFile(long submissionId, UploadedFileInfo fileInfo, final AsyncCallback<String> callback) {
+        filesService.registerUploadedFile(submissionId, fileInfo, new AsyncCallbackWrapper<String>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(Map<Integer, String> result) {
+            public void onSuccess(String result) {
                 updater.update();
                 callback.onSuccess(result);
             }

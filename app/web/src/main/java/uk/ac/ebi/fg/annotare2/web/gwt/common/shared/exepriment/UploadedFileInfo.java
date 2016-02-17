@@ -18,27 +18,23 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class HttpFileInfo implements IsSerializable {
-
-    private String fieldName;
+public class UploadedFileInfo implements IsSerializable {
 
     private String fileName;
+    private long fileSize;
 
     @SuppressWarnings("unused")
-    HttpFileInfo() {
+    UploadedFileInfo() {
         /* used by GWT serialization */
     }
 
-    public HttpFileInfo(String fieldName, String fileName) {
-        this.fieldName = fieldName;
+    public UploadedFileInfo(String fileName, long fileSize) {
         this.fileName = fileName;
+        this.fileSize = fileSize;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public String getFileName() {
-        return fileName;
+    @Override
+    public String toString() {
+        return fileName + ":" + fileSize;
     }
 }

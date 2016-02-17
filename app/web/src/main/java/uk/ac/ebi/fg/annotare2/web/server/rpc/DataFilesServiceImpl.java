@@ -33,7 +33,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
@@ -121,11 +121,11 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public Map<Integer, String> registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo)
+    public String registerUploadedFile(long submissionId, UploadedFileInfo fileInfo)
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
-            HashMap<Integer, String> errors = new HashMap<>();
+            String result = "";
 //            int index = 0;
 //            for (HttpFileInfo info : filesInfo) {
 //                File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
@@ -141,7 +141,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
 //                index++;
 //            }
 //            UploadedFiles.removeSessionFiles(getSession());
-            return errors;
+            return result;
         } catch (Exception e) {
             throw unexpected(e);
         }

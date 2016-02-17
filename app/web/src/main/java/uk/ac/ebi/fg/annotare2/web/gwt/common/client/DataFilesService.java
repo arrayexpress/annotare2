@@ -20,10 +20,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 
 import java.util.List;
-import java.util.Map;
 
 @RemoteServiceRelativePath(DataFilesService.NAME)
 public interface DataFilesService extends RemoteService {
@@ -34,7 +33,7 @@ public interface DataFilesService extends RemoteService {
 
     String initSubmissionFtpDirectory(long submissionId) throws ResourceNotFoundException, NoPermissionException;
 
-    Map<Integer, String> registerHttpFiles(long submissionId, List<HttpFileInfo> filesInfo) throws ResourceNotFoundException, NoPermissionException;
+    String registerUploadedFile(long submissionId, UploadedFileInfo fileInfo) throws ResourceNotFoundException, NoPermissionException;
 
     String registerFtpFiles(long submissionId, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 

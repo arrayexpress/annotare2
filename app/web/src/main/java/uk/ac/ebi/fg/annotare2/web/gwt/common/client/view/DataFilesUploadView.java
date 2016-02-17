@@ -36,7 +36,7 @@ public interface DataFilesUploadView extends IsWidget {
 
     void setApplicationProperties(ApplicationProperties properties);
 
-    interface Presenter extends DataFilesUploadPanel.Presenter, FTPUploadDialog.Presenter, DataFileListPanel.Presenter {
+    interface Presenter extends UploadProgressPopupPanel.Presenter, FTPUploadDialog.Presenter, DataFileListPanel.Presenter {
 
         void initSubmissionFtpDirectory(AsyncCallback<String> callback);
     }

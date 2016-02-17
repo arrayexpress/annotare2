@@ -36,7 +36,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.HttpFileInfo;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.ImportSubmissionView;
@@ -44,7 +44,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.ImportSubmissionView;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.Collections2.transform;
@@ -166,8 +165,8 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void uploadFiles(List<HttpFileInfo> filesInfo, AsyncCallback<Map<Integer, String>> callback) {
-        dataFilesService.registerHttpFiles(submissionId, filesInfo, callback);
+    public void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<String> callback) {
+        dataFilesService.registerHttpFile(submissionId, fileInfo, callback);
     }
 
     @Override

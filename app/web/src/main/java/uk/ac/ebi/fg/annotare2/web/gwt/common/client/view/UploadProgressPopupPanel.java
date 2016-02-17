@@ -18,11 +18,15 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableCallback;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableFileCallback;
@@ -36,6 +40,8 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
     private final ResumableUploader uploader;
     private final DivElement messageElement;
+
+    private Presenter presenter;
 
     public UploadProgressPopupPanel(ResumableUploader uploader) {
         super(false, true);
@@ -79,6 +85,14 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
     private void updateMessage(String message) {
         messageElement.setInnerHTML(message);
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public interface Presenter {
+        void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<String> callback);
     }
 
 //    private void scheduleAutoHide() {
@@ -172,7 +186,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onFileAdded(ResumableUploader uploader, ResumableFile file) {
-            logger.info("Added file " + file.getFileName() + ", size " + file.getFileSize());
+            logger.info("Added file " + file.getFileName() + ", size " + file.getSize());
             uploader.upload();
         }
 
@@ -187,8 +201,13 @@ public class UploadProgressPopupPanel extends PopupPanel {
         }
 
         @Override
-        public void onFileSuccess(ResumableUploader uploader, ResumableFile file) {
-            panel.updateMessage("Successfully sent " + file.getFileName());
+        public void onFileSuccess(ResumableUploader uploader, final ResumableFile file) {
+            panel.updateMessage("Successfully sent " + file.getFileName() + " " + file.getSize());
+            Scheduler.get().scheduleDeferred(
+                    new SendUploadedFileInfoCommand(
+                            new UploadedFileInfo(file.getFileName(), file.getSize())
+                    )
+            );
         }
 
         @Override
@@ -199,6 +218,26 @@ public class UploadProgressPopupPanel extends PopupPanel {
         @Override
         public void onFileError(ResumableUploader uploader, ResumableFile file, String message) {
             panel.updateMessage("Error sending " + file.getFileName());
+        }
+    }
+
+    private class SendUploadedFileInfoCommand implements Scheduler.ScheduledCommand {
+
+        private final UploadedFileInfo fileInfo;
+
+        public SendUploadedFileInfoCommand(UploadedFileInfo fileInfo) {
+            this.fileInfo = fileInfo;
+        }
+
+        @Override
+        public void execute() {
+            presenter.uploadFile(fileInfo,
+                    new ReportingAsyncCallback<String>() {
+                        @Override
+                        public void onSuccess(String result) {
+                            //
+                        }
+                    });
         }
     }
 }

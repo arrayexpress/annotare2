@@ -155,7 +155,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-//        uploadPanel.setPresenter(presenter);
+        progressPanel.setPresenter(presenter);
         fileListPanel.setPresenter(presenter);
 //        ftpUploadDialog.setPresenter(presenter);
     }
