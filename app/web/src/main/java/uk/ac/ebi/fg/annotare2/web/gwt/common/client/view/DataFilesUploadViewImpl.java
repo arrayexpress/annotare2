@@ -18,6 +18,9 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -67,7 +70,11 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     public DataFilesUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", "octet");
+        JSONObject uploaderOptions = new JSONObject();
+        uploaderOptions.put("simultaneousUploads", new JSONNumber(1));
+        uploaderOptions.put("method", new JSONString("octet"));
+
+        uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", uploaderOptions);
         uploader.assignBrowse(uploadBtn.getElement());
 
         progressPanel = new UploadProgressPopupPanel(uploader);
