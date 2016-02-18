@@ -92,7 +92,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
     }
 
     public interface Presenter {
-        void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<String> callback);
+        void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback);
     }
 
 //    private void scheduleAutoHide() {
@@ -232,9 +232,9 @@ public class UploadProgressPopupPanel extends PopupPanel {
         @Override
         public void execute() {
             presenter.uploadFile(fileInfo,
-                    new ReportingAsyncCallback<String>() {
+                    new ReportingAsyncCallback<Void>() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(Void result) {
                             //
                         }
                     });

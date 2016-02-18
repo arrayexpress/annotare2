@@ -196,7 +196,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     }
 
     @Override
-    public void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<String> callback) {
+    public void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback) {
         filesService.registerHttpFile(getSubmissionId(), fileInfo, callback);
     }
 

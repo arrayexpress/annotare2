@@ -165,7 +165,7 @@ public class ImportSubmissionActivity extends AbstractActivity implements Import
     }
 
     @Override
-    public void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<String> callback) {
+    public void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback) {
         dataFilesService.registerHttpFile(submissionId, fileInfo, callback);
     }
 
