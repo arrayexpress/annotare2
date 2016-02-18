@@ -91,6 +91,27 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
                 deleteFilesBtn.setEnabled(!fileListPanel.getSelectedRows().isEmpty());
             }
         });
+
+//        fileListPanel.addDomHandler(new DragEnterHandler() {
+//            @Override
+//            public void onDragEnter(DragEnterEvent event) {
+//                fileListPanel.addStyleName("drop-active");
+//            }
+//        }, DragEnterEvent.getType());
+//
+//        fileListPanel.addDomHandler(new DragLeaveHandler() {
+//            @Override
+//            public void onDragLeave(DragLeaveEvent event) {
+//                fileListPanel.removeStyleName("drop-active");
+//            }
+//        }, DragLeaveEvent.getType());
+//
+//        fileListPanel.addDomHandler(new DropHandler() {
+//            @Override
+//            public void onDrop(DropEvent event) {
+//                fileListPanel.removeStyleName("drop-active");
+//            }
+//        }, DropEvent.getType());
     }
 
 //    @SuppressWarnings("unused")
