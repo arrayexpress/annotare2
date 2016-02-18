@@ -245,7 +245,7 @@ public class AnnotareUploadStorage implements UploadStorage {
                 return true;
             }
             int count = (int) Math.floor(((double) info.fileSize) / ((double) info.chunkSize));
-            if (chunks.size() == count) {
+            if (chunks.size() >= count) {
                 isComplete = true;
             }
             return isComplete;
