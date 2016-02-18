@@ -33,8 +33,16 @@ public class UploadedFileInfo implements IsSerializable {
         this.fileSize = fileSize;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
     @Override
     public String toString() {
-        return fileName + ":" + fileSize;
+        return fileName + " (" + fileSize + " bytes)";
     }
 }

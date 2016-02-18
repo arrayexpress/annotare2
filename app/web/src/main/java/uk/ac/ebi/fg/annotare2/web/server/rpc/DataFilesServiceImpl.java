@@ -34,16 +34,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.LocalFileSource;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -65,19 +62,19 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
 
     private final DataFileManager dataFileManager;
     private final FtpManager ftpManager;
-    private final AnnotareProperties properties;
+    private final AnnotareUploadStorage uploadStorage;
 
     @Inject
     public DataFilesServiceImpl(AccountService accountService,
                                 SubmissionManager submissionManager,
                                 DataFileManager dataFileManager,
                                 FtpManager ftpManager,
-                                AnnotareProperties properties,
+                                AnnotareUploadStorage uploadStorage,
                                 EmailSender emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.ftpManager = ftpManager;
-        this.properties = properties;
+        this.uploadStorage = uploadStorage;
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
@@ -121,27 +118,21 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public String registerUploadedFile(long submissionId, UploadedFileInfo fileInfo)
+    public void registerUploadedFile(long submissionId, UploadedFileInfo fileInfo)
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
-            String result = "";
-//            int index = 0;
-//            for (HttpFileInfo info : filesInfo) {
-//                File uploadedFile = new File(properties.getHttpUploadDir(), info.getFileName());
-//                FileItem received = UploadedFiles.get(getSession(), info.getFieldName());
-//                if (checkFileExists(submission, info.getFileName())) {
-//                    errors.put(index, "file already exists");
-//                } else if (0L == received.getSize()) {
-//                    errors.put(index, "empty file");
-//                } else {
-//                    received.write(uploadedFile);
-//                    saveFile(new LocalFileSource(uploadedFile), null, submission);
-//                }
-//                index++;
-//            }
-//            UploadedFiles.removeSessionFiles(getSession());
-            return result;
+            long userId = getCurrentUser().getId();
+
+            File uploadedFile = uploadStorage.getUploadedFile(userId, fileInfo);
+                if (checkFileExists(submission, fileInfo.getFileName())) {
+                    throw new IOException("File " + fileInfo + " already exists");
+                } else if (0L == fileInfo.getFileSize()) {
+                    throw new IOException("Empty file " + fileInfo.getFileName());
+                } else {
+                    saveFile(new LocalFileSource(uploadedFile), null, submission);
+                    uploadStorage.removeUploadedFile(userId, fileInfo, false);
+                }
         } catch (Exception e) {
             throw unexpected(e);
         }

@@ -33,7 +33,7 @@ public interface DataFilesService extends RemoteService {
 
     String initSubmissionFtpDirectory(long submissionId) throws ResourceNotFoundException, NoPermissionException;
 
-    String registerUploadedFile(long submissionId, UploadedFileInfo fileInfo) throws ResourceNotFoundException, NoPermissionException;
+    void registerUploadedFile(long submissionId, UploadedFileInfo fileInfo) throws ResourceNotFoundException, NoPermissionException;
 
     String registerFtpFiles(long submissionId, List<String> filesInfo) throws ResourceNotFoundException, NoPermissionException;
 

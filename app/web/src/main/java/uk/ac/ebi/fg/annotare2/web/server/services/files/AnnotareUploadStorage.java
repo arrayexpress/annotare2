@@ -20,16 +20,12 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.gwt.resumable.server.FileChunkInfo;
 import uk.ac.ebi.fg.gwt.resumable.server.UploadStorage;
 
 import java.io.*;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +33,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 public class AnnotareUploadStorage implements UploadStorage {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnnotareUploadStorage.class);
+//    private static final Logger logger = LoggerFactory.getLogger(AnnotareUploadStorage.class);
 
     private final File rootDirectory;
 
@@ -91,11 +87,56 @@ public class AnnotareUploadStorage implements UploadStorage {
         }
     }
 
+    public File getUploadedFile(long userId, UploadedFileInfo fileInfo) throws IOException {
+        String fileTitle = "File " + fileInfo.getFileName();
+        String key = getKey(userId, fileInfo.getFileName());
+
+        if (!storageInfoMap.containsKey(key)) {
+            throw new IOException(fileTitle + " is not in uploaded files registry");
+        }
+
+        StorageInfo storageInfo = storageInfoMap.get(key);
+
+        if (!storageInfo.isComplete) {
+            throw new IOException(fileTitle + " is not completely downloaded");
+        }
+
+        File file = new File(storageInfo.storageFile);
+
+        if (!file.isFile() || !file.canRead()) {
+            throw new IOException(fileTitle + " is missing from the filesystem or cannot be read");
+        }
+
+        if (file.length() != fileInfo.getFileSize()) {
+            throw new IOException(fileTitle + " size mismatch: received " +
+                        file.length() + " bytes, expected " + fileInfo.getFileSize() + " bytes");
+        }
+
+        return file;
+    }
+
+    public void removeUploadedFile(long userId, UploadedFileInfo fileInfo, boolean shouldDeleteFile) throws IOException {
+        String key = getKey(userId, fileInfo.getFileName());
+
+        if (!storageInfoMap.containsKey(key)) {
+            throw new IOException("File " + fileInfo.getFileName() + " is not in uploaded files registry");
+        }
+
+        StorageInfo storageInfo = storageInfoMap.get(key);
+
+        storageInfoMap.remove(key);
+
+        if (shouldDeleteFile && !new File(storageInfo.storageFile).delete()) {
+            throw new IOException("Unable to delete " + fileInfo.getFileName());
+        }
+    }
+
     private final Map<String, StorageInfo> storageInfoMap = new ConcurrentHashMap<>();
 
     private StorageInfo getStorageInfo(AnnotareFileChunkInfo info) throws IOException {
         String userId = String.format("u%s", info.userId);
-        String key = getKey(userId, info.id);
+        String key = getKey(info.userId, info.fileName);
+
         if (storageInfoMap.containsKey(key)) {
             return storageInfoMap.get(key);
         }
@@ -127,7 +168,7 @@ public class AnnotareUploadStorage implements UploadStorage {
     private StorageInfo createStorageInfo(File infoFile, AnnotareFileChunkInfo info) {
         StorageInfo storageInfo = new StorageInfo();
         storageInfo.fileName = info.fileName;
-        storageInfo.storageFile = infoFile.getParentFile() + "/" + info.fileName + ".upload";
+        storageInfo.storageFile = infoFile.getParentFile() + File.separator + info.fileName + ".upload";
         storageInfo.infoFile = infoFile.getAbsolutePath();
         storageInfo.isComplete = false;
         storageInfo.chunks = new ConcurrentSkipListSet<>();
@@ -142,18 +183,21 @@ public class AnnotareUploadStorage implements UploadStorage {
         }
     }
 
-    private static String getKey(String userId, String fileId) {
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.reset();
-            m.update(fileId.getBytes());
-            byte[] digest = m.digest();
-            BigInteger bigInt = new BigInteger(1, digest);
-            return userId + "_" + bigInt.toString(Character.MAX_RADIX);
-        } catch (NoSuchAlgorithmException x) {
-            throw new RuntimeException(x);
-        }
+    private static String getKey(long userId, String fileName) {
+        return String.format("u%d%s%s", userId, File.separator, fileName);
     }
+//    private static String getKey(String userId, String fileId) {
+//        try {
+//            MessageDigest m = MessageDigest.getInstance("MD5");
+//            m.reset();
+//            m.update(fileId.getBytes());
+//            byte[] digest = m.digest();
+//            BigInteger bigInt = new BigInteger(1, digest);
+//            return userId + "_" + bigInt.toString(Character.MAX_RADIX);
+//        } catch (NoSuchAlgorithmException x) {
+//            throw new RuntimeException(x);
+//        }
+//    }
 
     private static class StorageInfo implements Serializable {
         String fileName;
