@@ -91,7 +91,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(checkboxColumn, checkboxHeader);
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
-        emptyTableWidget = new HTML("<br><br><br>Drag files here to start upload<br>or press \"Upload files\" button<br>to open selection dialog...");
+        emptyTableWidget = new HTML("<br><br><br>Drag files here to start upload<br>or press \"Upload Files\" button<br>to open selection dialog...");
         emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
