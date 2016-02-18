@@ -44,17 +44,17 @@ public class AnnotareUploadStorage implements UploadStorage {
 
     @Override
     public boolean hasChunk(FileChunkInfo info) throws IOException {
-        return getStorageInfo((AnnotareFileChunkInfo)info).hasChunk(info.chunkNumber);
+        return getOrCreateStorageInfo((AnnotareFileChunkInfo)info).hasChunk(info.chunkNumber);
     }
 
     @Override
     public boolean hasAllChunks(FileChunkInfo info) throws IOException {
-        return getStorageInfo((AnnotareFileChunkInfo)info).hasAllChunks(info);
+        return getOrCreateStorageInfo((AnnotareFileChunkInfo)info).hasAllChunks(info);
     }
 
     @Override
     public void storeChunk(FileChunkInfo info, InputStream stream, long length) throws IOException {
-        StorageInfo storageInfo = getStorageInfo((AnnotareFileChunkInfo)info);
+        StorageInfo storageInfo = getOrCreateStorageInfo((AnnotareFileChunkInfo)info);
 
         if (!storageInfo.hasChunk(info.chunkNumber)) {
             try (RandomAccessFile raf = new RandomAccessFile(storageInfo.storageFile, "rw")) {
@@ -89,13 +89,12 @@ public class AnnotareUploadStorage implements UploadStorage {
 
     public File getUploadedFile(long userId, UploadedFileInfo fileInfo) throws IOException {
         String fileTitle = "File " + fileInfo.getFileName();
-        String key = getKey(userId, fileInfo.getFileName());
 
-        if (!storageInfoMap.containsKey(key)) {
+        StorageInfo storageInfo = getStorageInfo(userId, fileInfo.getFileName());
+
+        if (null == storageInfo) {
             throw new IOException(fileTitle + " is not in uploaded files registry");
         }
-
-        StorageInfo storageInfo = storageInfoMap.get(key);
 
         if (!storageInfo.isComplete) {
             throw new IOException(fileTitle + " is not completely downloaded");
@@ -116,15 +115,13 @@ public class AnnotareUploadStorage implements UploadStorage {
     }
 
     public void removeUploadedFile(long userId, UploadedFileInfo fileInfo, boolean shouldDeleteFile) throws IOException {
-        String key = getKey(userId, fileInfo.getFileName());
+        StorageInfo storageInfo = getStorageInfo(userId, fileInfo.getFileName());
 
-        if (!storageInfoMap.containsKey(key)) {
-            throw new IOException("File " + fileInfo.getFileName() + " is not in uploaded files registry");
+        if (null == storageInfo) {
+            throw new IOException(fileInfo.getFileName() + " is not in uploaded files registry");
         }
 
-        StorageInfo storageInfo = storageInfoMap.get(key);
-
-        storageInfoMap.remove(key);
+        deleteStorageInfo(userId, fileInfo.getFileName());
 
         if (shouldDeleteFile && !new File(storageInfo.storageFile).delete()) {
             throw new IOException("Unable to delete " + fileInfo.getFileName());
@@ -133,7 +130,7 @@ public class AnnotareUploadStorage implements UploadStorage {
 
     private final Map<String, StorageInfo> storageInfoMap = new ConcurrentHashMap<>();
 
-    private StorageInfo getStorageInfo(AnnotareFileChunkInfo info) throws IOException {
+    private StorageInfo getOrCreateStorageInfo(AnnotareFileChunkInfo info) throws IOException {
         String userId = String.format("u%s", info.userId);
         String key = getKey(info.userId, info.fileName);
 
@@ -157,6 +154,25 @@ public class AnnotareUploadStorage implements UploadStorage {
         return storageInfo;
     }
 
+    private StorageInfo getStorageInfo(long userId, String fileName) throws IOException {
+        String key = getKey(userId, fileName);
+
+        if (storageInfoMap.containsKey(key)) {
+            return storageInfoMap.get(key);
+        }
+
+        StorageInfo storageInfo;
+
+        File infoFile = new File(rootDirectory + File.separator + key + ".info");
+        if (!infoFile.exists() || !infoFile.canRead()) {
+            return null;
+        }
+
+        storageInfo = readStorageInfo(infoFile);
+        storageInfoMap.put(key, storageInfo);
+
+        return storageInfo;
+    }
 
     private StorageInfo readStorageInfo(File infoFile) throws IOException {
         Kryo kryo = new Kryo();
@@ -181,6 +197,16 @@ public class AnnotareUploadStorage implements UploadStorage {
         try (Output out = new Output(new FileOutputStream(info.infoFile))) {
             kryo.writeObject(out, info);
         }
+    }
+
+    private void deleteStorageInfo(long userId, String fileName) throws IOException {
+        String key = getKey(userId, fileName);
+
+        if (storageInfoMap.containsKey(key)) {
+            storageInfoMap.remove(key);
+        }
+
+        new File(rootDirectory + File.separator + key + ".info").delete();
     }
 
     private static String getKey(long userId, String fileName) {

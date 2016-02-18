@@ -48,7 +48,6 @@ import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
-import uk.ac.ebi.fg.gwt.resumable.server.UploadStorage;
 
 import javax.servlet.http.HttpServlet;
 import java.net.URL;
@@ -166,7 +165,7 @@ public class AppServletModule extends ServletModule {
         bind(DataFileConnector.class).in(SINGLETON);
         bind(EmailSender.class).in(SINGLETON);
 
-        bind(UploadStorage.class).to(AnnotareUploadStorage.class).in(SINGLETON);
+        bind(AnnotareUploadStorage.class).in(SINGLETON);
 
         bind(SubsTracking.class).in(SINGLETON);
         bind(AEConnection.class).in(SINGLETON);

@@ -19,9 +19,9 @@ package uk.ac.ebi.fg.annotare2.web.server.servlets;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareFileChunkInfo;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
 import uk.ac.ebi.fg.gwt.resumable.server.FileChunkInfo;
 import uk.ac.ebi.fg.gwt.resumable.server.ResumableUploadServlet;
-import uk.ac.ebi.fg.gwt.resumable.server.UploadStorage;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class UploadServlet extends ResumableUploadServlet {
     private final AccountService accountService;
 
     @Inject
-    public UploadServlet(UploadStorage storage, AccountService accountService) {
+    public UploadServlet(AnnotareUploadStorage storage, AccountService accountService) {
         this.accountService = accountService;
         setStorage(storage);
     }

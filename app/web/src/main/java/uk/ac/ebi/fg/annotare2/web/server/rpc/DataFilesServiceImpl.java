@@ -116,7 +116,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         }
     }
 
-    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class, IOException.class})
     @Override
     public void registerUploadedFile(long submissionId, UploadedFileInfo fileInfo)
             throws ResourceNotFoundException, NoPermissionException {
