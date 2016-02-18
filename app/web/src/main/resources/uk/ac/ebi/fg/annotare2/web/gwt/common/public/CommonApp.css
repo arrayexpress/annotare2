@@ -250,3 +250,65 @@
     padding: 20px 20px 20px 10px;
     vertical-align: middle;
 }
+
+.gwt-ProgressPopup {
+    width: 40%;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+
+    border-bottom: 4px solid #3094d2;
+}
+
+.gwt-ProgressPopup .container {
+    width: 100%
+}
+
+.gwt-ProgressPopup .message {
+    padding: 20px 40px 5px 40px;
+    vertical-align: middle;
+}
+
+.gwt-ProgressPopup .progress-wrapper {
+    padding: 5px 40px 5px 40px;
+    vertical-align: middle;
+}
+
+.gwt-ProgressPopup .error {
+    padding: 5px 40px 20px 40px;
+    vertical-align: middle;
+    color: darkred;
+}
+
+.gwt-ProgressPopup progress {
+    background-color: #f3f3f3;
+    border: 0;
+    width: 100%;
+    height: 9px;
+    border-radius: 5px;
+}
+.gwt-ProgressPopup progress::-webkit-progress-bar {
+    background-color: #f3f3f3;
+    border-radius: 5px;
+}
+.gwt-ProgressPopup progress::-webkit-progress-value {
+    background: #5aaadb;
+    border-color: #459fd6 #3094d2 #277db2;
+    background-image: -webkit-linear-gradient(top, #aed5ed, #7bbbe2 70%, #5aaadb);
+    background-image: -moz-linear-gradient(top, #aed5ed, #7bbbe2 70%, #5aaadb);
+    background-image: -o-linear-gradient(top, #aed5ed, #7bbbe2 70%, #5aaadb);
+    background-image: linear-gradient(to bottom, #aed5ed, #7bbbe2 70%, #5aaadb);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#aed5ed', endColorstr='#5aaadb',GradientType=0 );
+    border-radius: 5px;
+}
+.gwt-ProgressPopup progress::-moz-progress-bar {
+    background: #5aaadb;
+    border-color: #459fd6 #3094d2 #277db2;
+    background-image: -webkit-linear-gradient(top, #aed5ed, #7bbbe2 70%, #5aaadb);
+    background-image: -moz-linear-gradient(top, #aed5ed, #7bbbe2 70%, #5aaadb);
+    background-image: -o-linear-gradient(top, #aed5ed, #7bbbe2 70%, #5aaadb);
+    background-image: linear-gradient(to bottom, #aed5ed, #7bbbe2 70%, #5aaadb);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#aed5ed', endColorstr='#5aaadb',GradientType=0 );
+    border-radius: 5px;
+}

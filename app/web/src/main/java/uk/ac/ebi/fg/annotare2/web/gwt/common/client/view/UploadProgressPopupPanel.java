@@ -21,11 +21,11 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableCallback;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
@@ -38,27 +38,39 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
     private final static Logger logger = Logger.getLogger("gwt.client.UploadProgressPopupPanel");
 
-    private final ResumableUploader uploader;
     private final DivElement messageElement;
+    private final Element progressBarElement;
+    private final DivElement errorElement;
 
     private Presenter presenter;
 
     public UploadProgressPopupPanel(ResumableUploader uploader) {
         super(false, true);
-        this.uploader = uploader;
 
         uploader.addCallback(new UploaderCallback(this));
         uploader.addFileCallback(new UploaderFileCallback(this));
 
-        setStyleName("gwt-NotificationPopup");
+        setStyleName("gwt-ProgressPopup");
         addStyleName("info");
         PopupPanel.setStyleName(getContainerElement(), "container");
-//        iconElement = Document.get().createDivElement();
-//        PopupPanel.setStyleName(iconElement, "icon");
         messageElement = Document.get().createDivElement();
         PopupPanel.setStyleName(messageElement, "message");
-//        getContainerElement().appendChild(iconElement);
         getContainerElement().appendChild(messageElement);
+
+        DivElement progressWrapper = Document.get().createDivElement();
+        PopupPanel.setStyleName(progressWrapper, "progress-wrapper");
+
+        progressBarElement = Document.get().createElement("progress");
+        PopupPanel.setStyleName(progressBarElement, "progressbar");
+        progressBarElement.setAttribute("value", "0");
+        progressBarElement.setAttribute("max", "100");
+        progressWrapper.appendChild(progressBarElement);
+        getContainerElement().appendChild(progressWrapper);
+
+        errorElement = Document.get().createDivElement();
+        PopupPanel.setStyleName(errorElement, "error");
+        getContainerElement().appendChild(errorElement);
+
         setAnimationEnabled(false);
         setGlassEnabled(true);
     }
@@ -71,6 +83,9 @@ public class UploadProgressPopupPanel extends PopupPanel {
                 setPopupPosition(left, top);
             }
         });
+        updateError("");
+        updateMessage("");
+        updateProgress(0);
     }
 
     private void hideProgress() {
@@ -80,11 +95,19 @@ public class UploadProgressPopupPanel extends PopupPanel {
                 hide();
             }
         };
-        timer.schedule(5000);
+        timer.schedule(2000);
     }
 
     private void updateMessage(String message) {
         messageElement.setInnerHTML(message);
+    }
+
+    private void updateProgress(float progress) {
+        progressBarElement.setAttribute("value", String.valueOf((int)(progress * 100)));
+    }
+
+    private void updateError(String error) {
+        errorElement.setInnerHTML(error);
     }
 
     public void setPresenter(Presenter presenter) {
@@ -95,29 +118,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
         void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback);
     }
 
-//    private void scheduleAutoHide() {
-//        Timer timer = new Timer() {
-//            @Override
-//            public void run() {
-//                hide();
-//            }
-//        };
-//        timer.schedule(5000);
-//    }
 
-//    public static void message(String message, boolean shouldAutoHide) {
-//        if (null != instance) {
-//            cancel();
-//        }
-//        instance = new UploadProgressPopupPanel(Type.INFO, shouldAutoHide, false);
-//        instance.showMessage(message);
-//    }
-
-    //    public static void cancel() {
-//        if (null != instance && instance.isAttached()) {
-//            instance.hide();
-//        }
-//    }
     private class UploaderCallback implements ResumableCallback {
         private final UploadProgressPopupPanel panel;
 
@@ -132,47 +133,41 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onComplete(ResumableUploader uploader) {
+            panel.updateMessage("Successfully transferred all files");
             panel.hideProgress();
         }
 
         @Override
         public void onProgress(ResumableUploader uploader) {
-
         }
 
         @Override
         public void onError(ResumableUploader uploader, String message, ResumableFile file) {
-            panel.updateMessage("Error sending " + file.getFileName());
+            panel.updateMessage("Error transferring " + file.getFileName());
         }
 
         @Override
         public void onPause() {
-
         }
 
         @Override
         public void beforeCancel() {
-
         }
 
         @Override
         public void onCancel() {
-
         }
 
         @Override
         public void onChunkingStart(ResumableFile file) {
-
         }
 
         @Override
         public void onChunkingProgress(ResumableFile file, String ratio) {
-
         }
 
         @Override
         public void onChunkingComplete(ResumableFile file) {
-
         }
     }
 
@@ -197,15 +192,17 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onFileProgress(ResumableUploader uploader, ResumableFile file) {
-            panel.updateMessage("Sent " + (int) (file.getProgress(false) * 100) + "% of " + file.getFileName());
+            panel.updateMessage("Transferring " + file.getFileName());
+            panel.updateProgress(file.getProgress(false));
         }
 
         @Override
         public void onFileSuccess(ResumableUploader uploader, final ResumableFile file) {
-            panel.updateMessage("Successfully sent " + file.getFileName() + " " + file.getSize());
+            panel.updateMessage("Successfully transferred " + file.getFileName());
             Scheduler.get().scheduleDeferred(
                     new SendUploadedFileInfoCommand(
-                            new UploadedFileInfo(file.getFileName(), file.getSize())
+                            new UploadedFileInfo(file.getFileName(), file.getSize()),
+                            panel
                     )
             );
             uploader.removeFile(file);
@@ -218,22 +215,28 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onFileError(ResumableUploader uploader, ResumableFile file, String message) {
-            panel.updateMessage("Error sending " + file.getFileName());
+            panel.updateMessage("Error transferring " + file.getFileName());
         }
     }
 
-    private class SendUploadedFileInfoCommand implements Scheduler.ScheduledCommand {
+    class SendUploadedFileInfoCommand implements Scheduler.ScheduledCommand {
 
         private final UploadedFileInfo fileInfo;
+        private final UploadProgressPopupPanel panel;
 
-        public SendUploadedFileInfoCommand(UploadedFileInfo fileInfo) {
+        public SendUploadedFileInfoCommand(UploadedFileInfo fileInfo, UploadProgressPopupPanel panel) {
             this.fileInfo = fileInfo;
+            this.panel = panel;
         }
 
         @Override
         public void execute() {
             presenter.uploadFile(fileInfo,
-                    new ReportingAsyncCallback<Void>() {
+                    new AsyncCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            panel.updateError(caught.getMessage());
+                        }
                         @Override
                         public void onSuccess(Void result) {
                             //
