@@ -239,7 +239,7 @@
 }
 
 /* Data Grid */
-.gwt-dataGrid input[type="text"], .gwt-dataGrid select {
+.gwt-DataGrid input[type="text"], .gwt-DataGrid select {
     width: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;

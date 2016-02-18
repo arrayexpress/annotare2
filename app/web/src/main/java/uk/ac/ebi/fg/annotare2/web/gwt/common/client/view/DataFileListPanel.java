@@ -61,7 +61,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
     public DataFileListPanel() {
         grid = new CustomDataGrid<>(MAX_FILES, false);
-        grid.addStyleName("gwt-dataGrid");
+        grid.addStyleName("gwt-DataGrid");
         grid.setWidth("100%");
         grid.setHeight("100%");
 

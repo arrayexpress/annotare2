@@ -62,6 +62,13 @@
     color: #999;
 }
 
+.gwt-DataGrid .empty {
+    color: #444;
+    line-height: 2em;
+    text-align: center;
+    font-size: larger;
+}
+
 .gwt-ListBox {
     border: 1px solid #bbbbbb;
 }

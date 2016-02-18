@@ -83,14 +83,14 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
             dataProvider.setList(rows);
             return;
         }
-        dataGrid = new CustomDataGrid<R>(PAGE_SIZE);
-        dataGrid.addStyleName("gwt-dataGrid");
+        dataGrid = new CustomDataGrid<>(PAGE_SIZE);
+        dataGrid.addStyleName("gwt-DataGrid");
         dataGrid.setWidth("100%");
         dataGrid.setEmptyTableWidget(new Label("No data"));
 
         if (isRowSelectionEnabled) {
             selectionModel =
-                    new MultiSelectionModel<R>(new ProvidesKey<R>() {
+                    new MultiSelectionModel<>(new ProvidesKey<R>() {
                         @Override
                         public Object getKey(R item) {
                             return item.getIdentity();
@@ -100,11 +100,11 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
             dataGrid.setSelectionModel(selectionModel, DefaultSelectionEventManager.<R>createCheckboxManager());
         }
 
-        dataProvider = new ListDataProvider<R>();
+        dataProvider = new ListDataProvider<>();
         dataProvider.addDataDisplay(dataGrid);
         dataProvider.getList().addAll(rows);
 
-        sortHandler = new ColumnSortEvent.ListHandler<R>(dataProvider.getList());
+        sortHandler = new ColumnSortEvent.ListHandler<>(dataProvider.getList());
         dataGrid.addColumnSortHandler(sortHandler);
         permanentColumnCount = 0;
         if (isRowSelectionEnabled) {
@@ -282,7 +282,7 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     }
 
     public List<R> getRows() {
-        return new ArrayList<R>(dataProvider.getList());
+        return new ArrayList<>(dataProvider.getList());
     }
 
     public boolean moveRowUp(R row) {
