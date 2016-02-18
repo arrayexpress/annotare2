@@ -33,8 +33,8 @@ import com.google.gwt.user.cellview.client.CustomDataGrid;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
@@ -52,21 +52,21 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     private final DataGrid<DataFileRow> grid;
     private final ListDataProvider<DataFileRow> dataProvider;
     private final MultiSelectionModel<DataFileRow> selectionModel;
+    private final HTML emptyTableWidget;
     private final CheckboxHeader checkboxHeader;
-
     private final static int MAX_FILES = 40000;
 
     private long submissionId;
     private Presenter presenter;
 
     public DataFileListPanel() {
-        grid = new CustomDataGrid<DataFileRow>(MAX_FILES, false);
+        grid = new CustomDataGrid<>(MAX_FILES, false);
         grid.addStyleName("gwt-dataGrid");
         grid.setWidth("100%");
         grid.setHeight("100%");
 
         selectionModel =
-                new MultiSelectionModel<DataFileRow>(new ProvidesKey<DataFileRow>() {
+                new MultiSelectionModel<>(new ProvidesKey<DataFileRow>() {
                     @Override
                     public Object getKey(DataFileRow item) {
                         return item.getIdentity();
@@ -90,6 +90,9 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
         grid.addColumn(checkboxColumn, checkboxHeader);
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
+
+        emptyTableWidget = new HTML("<br><br><br>Drag files here to start upload<br>or press \"Upload files\" button<br>to open selection dialog...");
+        emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
             @Override
@@ -156,11 +159,11 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(statusText, "Status");
         grid.setColumnWidth(statusText, 100, Style.Unit.PX);
 
-        dataProvider = new ListDataProvider<DataFileRow>();
+        dataProvider = new ListDataProvider<>();
         dataProvider.addDataDisplay(grid);
 
         grid.setLoadingIndicator(new LoadingIndicator());
-        grid.setEmptyTableWidget(new Label("No files uploaded"));
+        grid.setEmptyTableWidget(emptyTableWidget);
         add(grid);
     }
 

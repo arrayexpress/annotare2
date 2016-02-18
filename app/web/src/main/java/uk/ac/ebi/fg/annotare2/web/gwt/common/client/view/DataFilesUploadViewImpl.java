@@ -76,6 +76,7 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
         uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", uploaderOptions);
         uploader.assignBrowse(uploadBtn.getElement());
+        uploader.assignDrop(fileListPanel.getElement());
 
         progressPanel = new UploadProgressPopupPanel(uploader);
 //        ftpUploadDialog = new FTPUploadDialog();
