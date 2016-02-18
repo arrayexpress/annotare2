@@ -30,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataFilesService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.OperationFailedException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
@@ -116,23 +117,29 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         }
     }
 
-    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class, IOException.class})
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class, OperationFailedException.class})
     @Override
     public void registerUploadedFile(long submissionId, UploadedFileInfo fileInfo)
-            throws ResourceNotFoundException, NoPermissionException {
+            throws ResourceNotFoundException, NoPermissionException, OperationFailedException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
             long userId = getCurrentUser().getId();
 
             File uploadedFile = uploadStorage.getUploadedFile(userId, fileInfo);
                 if (checkFileExists(submission, fileInfo.getFileName())) {
-                    throw new IOException("File " + fileInfo + " already exists");
+                    throw new OperationFailedException("File " + fileInfo + " already exists");
                 } else if (0L == fileInfo.getFileSize()) {
-                    throw new IOException("Empty file " + fileInfo.getFileName());
+                    throw new OperationFailedException("Empty file " + fileInfo.getFileName());
                 } else {
                     saveFile(new LocalFileSource(uploadedFile), null, submission);
                     uploadStorage.removeUploadedFile(userId, fileInfo, false);
                 }
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (OperationFailedException e) {
+            throw e;
         } catch (Exception e) {
             throw unexpected(e);
         }

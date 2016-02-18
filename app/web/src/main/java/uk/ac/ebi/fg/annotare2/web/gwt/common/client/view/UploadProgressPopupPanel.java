@@ -208,6 +208,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
                             new UploadedFileInfo(file.getFileName(), file.getSize())
                     )
             );
+            uploader.removeFile(file);
         }
 
         @Override
