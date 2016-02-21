@@ -68,7 +68,7 @@ public class SubmissionManager {
         }
         T submission = submissionDao.createSubmission(user, clazz);
         submission.setAcl(submissionDao.getAcl());
-        submission.setFtpSubDirectory(generateUniqueName(submission.getCreated()));
+        submission.setFtpSubDirectory(generateUniqueFtpSubDirectory(submission.getCreated()));
         submissionDao.save(submission);
         return submission;
     }
@@ -88,7 +88,7 @@ public class SubmissionManager {
         submissionDao.softDelete(submission);
     }
 
-    private String generateUniqueName(Date creationDate) {
+    public String generateUniqueFtpSubDirectory(Date creationDate) {
         return (BigInteger.valueOf(creationDate.getTime()).toString(36) + "-" +  new BigInteger(64, random).toString(36)).toLowerCase();
     }
 }

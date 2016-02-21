@@ -118,13 +118,7 @@ public class SubmissionDaoImpl extends AbstractDaoImpl<Submission> implements Su
             T submission = clazz.getDeclaredConstructor(User.class).newInstance(user);
             save(submission);
             return submission;
-        } catch (NoSuchMethodException x) {
-            throw new Error(x);
-        } catch (IllegalAccessException x) {
-            throw new Error(x);
-        } catch (InvocationTargetException x) {
-            throw new Error(x);
-        } catch (InstantiationException x) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException x) {
             throw new Error(x);
         }
     }

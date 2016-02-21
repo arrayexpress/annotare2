@@ -69,6 +69,7 @@ public class SubmissionMigrator extends AbstractIdleService {
                 try {
                     migrate10to11();
                     migrate11to12();
+                    reorganizeFtp();
                 } catch (Exception x) {
                     log.error("Submission watchdog process caught an exception:", x);
                 } finally {
@@ -86,7 +87,7 @@ public class SubmissionMigrator extends AbstractIdleService {
         scheduler.shutdown();
     }
 
-    public void migrate10to11() throws DataSerializationException {
+    private void migrate10to11() throws DataSerializationException {
         Collection<Submission> submissions = submissionDao.getSubmissionsByVersion(ModelVersion.VERSION_1_0);
 
         for (Submission submission : submissions) {
@@ -96,12 +97,22 @@ public class SubmissionMigrator extends AbstractIdleService {
         }
     }
 
-    public void migrate11to12() throws DataSerializationException {
+    private void migrate11to12() throws DataSerializationException {
         Collection<Submission> submissions = submissionDao.getSubmissionsByVersion(ModelVersion.VERSION_1_1);
 
         for (Submission submission : submissions) {
             if (submission instanceof ExperimentSubmission) {
                 migrateExperimentSubmission11((ExperimentSubmission)submission);
+            }
+        }
+    }
+
+    private void reorganizeFtp() {
+        Collection<Submission> submissions = submissionDao.getSubmissions();
+
+        for (Submission submission : submissions) {
+            if (isNullOrEmpty(submission.getFtpSubDirectory())) {
+                addFtpSubdirectory(submission);
             }
         }
     }
@@ -143,6 +154,17 @@ public class SubmissionMigrator extends AbstractIdleService {
         submission.setExperimentProfile(exp);
         submissionManager.save(submission);
         log.info("Migrated experiment submission {} to version 1.2", submission.getId());
+    }
+
+    @Transactional
+    public void addFtpSubdirectory(Submission submission) {
+        String ftpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission.getCreated());
+        if (!isNullOrEmpty(submission.getAccession())) {
+            ftpSubDirectory = ftpSubDirectory.replaceFirst("^[^-]+", submission.getAccession());
+        }
+        submission.setFtpSubDirectory(ftpSubDirectory);
+        submissionManager.save(submission);
+        log.info("Added FTP subdirectory {} to submission {}", ftpSubDirectory, submission.getId());
     }
 
 }

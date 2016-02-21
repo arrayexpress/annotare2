@@ -23,15 +23,15 @@ import java.net.URI;
 
 public interface RemoteFileAccess {
 
-    public boolean isSupported(URI file);
+    boolean isSupported(URI file);
 
-    public boolean isAccessible(URI file) throws IOException;
+    boolean isAccessible(URI file) throws IOException;
 
-    public String getDigest(URI file) throws IOException;
+    String getDigest(URI file) throws IOException;
 
-    public void copyTo(URI file, File destination) throws IOException;
+    void copyTo(URI file, File destination) throws IOException;
 
-    public URI rename(URI file, String newName) throws IOException;
+    URI rename(URI file, String newName) throws IOException;
 
-    public void delete(URI file) throws IOException;
+    void delete(URI file) throws IOException;
 }
