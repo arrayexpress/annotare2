@@ -22,7 +22,6 @@ import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
@@ -271,16 +270,16 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
     private void saveFile(final DataFileSource source, final String md5, final Submission submission)
             throws DataSerializationException, IOException {
 
-        boolean shouldStore = source instanceof LocalFileSource;
-        if (!shouldStore) {
-            if (submission instanceof ExperimentSubmission) {
-                shouldStore = !((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing();
-            } else if (submission instanceof ImportedExperimentSubmission) {
-                shouldStore = source.getName().matches("(?i)^.*[.]?(idf|sdrf)[.]txt$");
-            }
-        }
-
-        dataFileManager.addFile(source, md5, submission, shouldStore);
+//        boolean shouldStore = source instanceof LocalFileSource;
+//        if (!shouldStore) {
+//            if (submission instanceof ExperimentSubmission) {
+//                shouldStore = !((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing();
+//            } else if (submission instanceof ImportedExperimentSubmission) {
+//                shouldStore = source.getName().matches("(?i)^.*[.]?(idf|sdrf)[.]txt$");
+//            }
+//        }
+//
+        dataFileManager.addFile(source, md5, submission, true);
         save(submission);
     }
 

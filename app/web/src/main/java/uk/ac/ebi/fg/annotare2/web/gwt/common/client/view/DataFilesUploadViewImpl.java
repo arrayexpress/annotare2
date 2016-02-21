@@ -28,6 +28,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.AsperaConnect;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
@@ -39,15 +41,16 @@ import java.util.List;
 public class DataFilesUploadViewImpl extends Composite implements DataFilesUploadView, RequiresResize {
 
 //    private final static Logger logger = Logger.getLogger("gwt.client.DataFilesUploadViewImpl");
-//
-//    @UiField
-//    DataFilesUploadPanel uploadPanel;
-//
-//    @UiField
-//    Button asperaUploadBtn;
-//
+
     @UiField
     Button uploadBtn;
+
+    @UiField
+    Button ftpUploadBtn;
+
+
+    @UiField
+    Button asperaUploadBtn;
 
     @UiField
     Button deleteFilesBtn;
@@ -55,13 +58,12 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     @UiField
     DataFileListPanel fileListPanel;
 
-    private final ResumableUploader uploader;
-
+    private final FTPUploadDialog ftpUploadDialog;
     private final UploadProgressPopupPanel progressPanel;
 
     private Presenter presenter;
 
-//    private String asperaUrl;
+    private String asperaUrl;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -74,16 +76,12 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         uploaderOptions.put("simultaneousUploads", new JSONNumber(1));
         uploaderOptions.put("method", new JSONString("octet"));
 
-        uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", uploaderOptions);
+        ResumableUploader uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", uploaderOptions);
         uploader.assignBrowse(uploadBtn.getElement());
         uploader.assignDrop(fileListPanel.getElement());
 
         progressPanel = new UploadProgressPopupPanel(uploader);
-//        ftpUploadDialog = new FTPUploadDialog();
-//
-//        if (!AsperaConnect.isInstalled()) {
-//            asperaUploadBtn.setVisible(false);
-//        }
+        ftpUploadDialog = new FTPUploadDialog();
 
         fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
@@ -114,33 +112,35 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 //        }, DropEvent.getType());
     }
 
-//    @SuppressWarnings("unused")
-//    @UiHandler("ftpUploadBtn")
-//    void ftpUploadBtClicked(ClickEvent event) {
-//        presenter.initSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
-//            @Override
-//            public void onSuccess(String result) {
-//                ftpUploadDialog.setSubmissionDirectory(result);
-//                ftpUploadDialog.center();
-//            }
-//        });
-//    }
-//
-//    @SuppressWarnings("unused")
-//    @UiHandler("asperaUploadBtn")
-//    void asperaUploadBtClicked(ClickEvent event) {
-//        AsperaConnect.addAsperaObject();
-//        if (AsperaConnect.isEnabled()) {
-//            presenter.initSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
-//                @Override
-//                public void onSuccess(String result) {
-//                    AsperaConnect.uploadFilesTo(asperaUrl + result + "/");
-//                }
-//            });
-//        } else {
-//            NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false, false);
-//        }
-//    }
+    @SuppressWarnings("unused")
+    @UiHandler("ftpUploadBtn")
+    void ftpUploadBtClicked(ClickEvent event) {
+        presenter.initSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                ftpUploadDialog.setSubmissionDirectory(result);
+                ftpUploadDialog.center();
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    @UiHandler("asperaUploadBtn")
+    void asperaUploadBtClicked(ClickEvent event) {
+        if (AsperaConnect.isInstalled()) {
+            AsperaConnect.addAsperaObject();
+            if (AsperaConnect.isEnabled()) {
+                presenter.initSubmissionFtpDirectory(new ReportingAsyncCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        AsperaConnect.uploadFilesTo(asperaUrl + result + "/");
+                    }
+                });
+                return;
+            }
+        }
+        NotificationPopupPanel.warning("Unable to communicate with Aspera Connect plug-in. Please ensure the plug-in is installed correctly and enabled on this site.", false, false);
+    }
 
     @SuppressWarnings("unused")
     @UiHandler("deleteFilesBtn")
@@ -186,15 +186,15 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         this.presenter = presenter;
         progressPanel.setPresenter(presenter);
         fileListPanel.setPresenter(presenter);
-//        ftpUploadDialog.setPresenter(presenter);
+        ftpUploadDialog.setPresenter(presenter);
     }
 
     @Override
     public void setApplicationProperties(ApplicationProperties properties) {
-//        ftpUploadBtn.setEnabled(properties.isFtpEnabled());
-//        asperaUploadBtn.setEnabled(properties.isAsperaEnabled());
-//        asperaUrl = properties.getAsperaUrl();
-//        ftpUploadDialog.setApplicationProperties(properties);
+        ftpUploadBtn.setEnabled(properties.isFtpEnabled());
+        asperaUploadBtn.setEnabled(properties.isAsperaEnabled());
+        asperaUrl = properties.getAsperaUrl();
+        ftpUploadDialog.setApplicationProperties(properties);
     }
 
     @Override
