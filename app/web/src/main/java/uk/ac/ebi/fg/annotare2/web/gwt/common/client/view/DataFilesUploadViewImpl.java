@@ -191,10 +191,16 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 
     @Override
     public void setApplicationProperties(ApplicationProperties properties) {
-        ftpUploadBtn.setEnabled(properties.isFtpEnabled());
-        asperaUploadBtn.setEnabled(properties.isAsperaEnabled());
-        asperaUrl = properties.getAsperaUrl();
-        ftpUploadDialog.setApplicationProperties(properties);
+        if (properties.isFtpEnabled()) {
+            ftpUploadBtn.setEnabled(true);
+            ftpUploadBtn.setVisible(true);
+            ftpUploadDialog.setApplicationProperties(properties);
+        }
+        if (properties.isAsperaEnabled()) {
+            asperaUploadBtn.setEnabled(true);
+            asperaUploadBtn.setVisible(true);
+            asperaUrl = properties.getAsperaUrl();
+        }
     }
 
     @Override
