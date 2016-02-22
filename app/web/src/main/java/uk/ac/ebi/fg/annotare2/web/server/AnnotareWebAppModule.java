@@ -20,7 +20,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import uk.ac.ebi.fg.annotare2.ae.AEConnection;
 import uk.ac.ebi.fg.annotare2.ae.AEConnectionProperties;
@@ -50,27 +49,25 @@ import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
 
 import javax.servlet.http.HttpServlet;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static com.google.inject.Scopes.SINGLETON;
 
 /**
  * @author Olga Melnichuk
  */
-public class AppServletModule extends ServletModule {
+public class AnnotareWebAppModule extends ServletModule {
 
     private final AllRpcServicePathsImpl allRpc = new AllRpcServicePathsImpl();
 
     private static final String JSESSIONID = "(?:;jsessionid=[A-Za-z0-9]+)?";
 
-    private final Set<URL> libPaths = newHashSet();
+//    private final Set<URL> libPaths = newHashSet();
 
-    public AppServletModule(Set<URL> libPaths) {
-        this.libPaths.addAll(libPaths);
+    public AnnotareWebAppModule() {
+//        this.libPaths.addAll(libPaths);
     }
 
     @Override
@@ -209,11 +206,10 @@ public class AppServletModule extends ServletModule {
     }
 
     private void overrideMageTabCheck() {
-        bind(new TypeLiteral<Set<URL>>() {
-        }).annotatedWith(Names.named("libPaths")).toInstance(libPaths);
+//        bind(new TypeLiteral<Set<URL>>() {
+//        }).annotatedWith(Names.named("libPaths")).toInstance(libPaths);
 
-        bind(new TypeLiteral<List<CheckDefinition>>() {
-        }).toProvider(AnnotareCheckListProvider.class).in(SINGLETON);
+        bind(new TypeLiteral<List<CheckDefinition>>() {}).toProvider(AnnotareCheckListProvider.class).in(SINGLETON);
 
         bind(EfoService.class).to(AnnotareEfoService.class);
     }

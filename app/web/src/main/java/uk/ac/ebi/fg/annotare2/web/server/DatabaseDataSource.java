@@ -26,17 +26,27 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 
 public class DatabaseDataSource {
 
     private HikariDataSource ds;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @Inject
     public DatabaseDataSource(AnnotareProperties properties) throws NamingException {
@@ -56,8 +66,6 @@ public class DatabaseDataSource {
 
         // register data source in the naming context so hibernate can find it
         context.bind("annotareDb", this.ds);
-
-        updateDatabase();
     }
 
     @SuppressWarnings("unused")
@@ -65,9 +73,17 @@ public class DatabaseDataSource {
         return ds;
     }
 
+    @PostConstruct
+    public void startUp() {
+        updateDatabase();
+    }
+
+    @PreDestroy
     public void shutDown() {
+        logger.info("PreDestroy called");
         ds.shutdown();
         ds = null;
+        unregisterJdbc();
     }
 
     private void updateDatabase() {
@@ -107,4 +123,16 @@ public class DatabaseDataSource {
             throw new RuntimeException(e);
         }
     }
+
+    private void unregisterJdbc() {
+        Enumeration<Driver> en = DriverManager.getDrivers();
+        while (en.hasMoreElements()) {
+            try {
+                DriverManager.deregisterDriver(en.nextElement());
+            } catch (SQLException e) {
+                //
+            }
+        }
+    }
+
 }

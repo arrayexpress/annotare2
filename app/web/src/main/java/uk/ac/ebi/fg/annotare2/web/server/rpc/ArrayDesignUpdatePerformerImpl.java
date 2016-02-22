@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResu
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static com.google.inject.internal.util.$Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author Olga Melnichuk

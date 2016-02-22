@@ -52,9 +52,9 @@
         <gwt.version>2.7.0</gwt.version>
         <gwtupload.version>1.0.3</gwtupload.version>
         <gin.version>2.1.2</gin.version>
-        <guava.version>16.0.1</guava.version>
-        <guice.version>3.0</guice.version>
-        <governator.version>1.3.3</governator.version>
+        <guava.version>19.0</guava.version>
+        <guice.version>4.0</guice.version>
+        <governator.version>1.12.8</governator.version>
         <liquibase.version>2.0.5</liquibase.version>
         <hibernate.version>4.2.4.Final</hibernate.version>
         <slf4j.version>1.7.7</slf4j.version>
@@ -181,23 +181,16 @@
                 <artifactId>guice-servlet</artifactId>
                 <version>${guice.version}</version>
             </dependency>
-            <!--
             <dependency>
                 <groupId>com.netflix.governator</groupId>
-                <artifactId>governator</artifactId>
+                <artifactId>governator-core</artifactId>
                 <version>${governator.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.governator</groupId>
-                <artifactId>governator-servlet</artifactId>
+                <artifactId>governator-api</artifactId>
                 <version>${governator.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.googlecode.gwtupload</groupId>
-                <artifactId>gwtupload</artifactId>
-                <version>${gwtupload.version}</version>
-            </dependency>
-            -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

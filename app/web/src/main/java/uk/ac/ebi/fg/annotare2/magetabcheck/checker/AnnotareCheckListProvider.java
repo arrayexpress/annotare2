@@ -3,7 +3,6 @@ package uk.ac.ebi.fg.annotare2.magetabcheck.checker;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
-import com.google.inject.name.Named;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -14,11 +13,11 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.annotation.MageTabCheck;
 
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.reflections.util.ClasspathHelper.forPackage;
 
 /**
  * to be removed
@@ -34,7 +33,7 @@ public class AnnotareCheckListProvider implements Provider<List<CheckDefinition>
     private final ClassInstanceProvider instanceProvider;
 
     @Inject
-    public AnnotareCheckListProvider(final Injector injector, @Named("libPaths") Set<URL> libPaths) {
+    public AnnotareCheckListProvider(final Injector injector) {
 
         instanceProvider = new ClassInstanceProvider() {
             @Override
@@ -45,7 +44,7 @@ public class AnnotareCheckListProvider implements Provider<List<CheckDefinition>
 
         Reflections reflections = new Reflections(
                 new ConfigurationBuilder()
-                        .setUrls(libPaths)
+                        .setUrls(forPackage("uk.ac.ebi.fg.annotare2.magetabcheck.checks"))
                         .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner(), new MethodAnnotationsScanner())
         );
 
