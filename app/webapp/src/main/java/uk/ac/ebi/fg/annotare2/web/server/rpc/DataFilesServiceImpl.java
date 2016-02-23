@@ -158,8 +158,6 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
-            String ftpRoot = ftpManager.getRoot();
-            String subDirectory = nullToEmpty(submission.getFtpSubDirectory());
 
             StringBuilder errors = new StringBuilder();
             Map<String,DataFileHandle> files = new HashMap<>();
@@ -167,11 +165,11 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
                 if (null != info) {
-                    URI fileUri = new URI(
-                            ftpRoot + subDirectory + (subDirectory.isEmpty() ? "" : "/")
-                                    + URIEncoderDecoder.encode(info.getFileName())
+                    URI fileUri = new URI(ftpManager.getDirectory(submission.getFtpSubDirectory())
+                            + URIEncoderDecoder.encode(info.getFileName())
                     );
                     DataFileHandle fileSource = DataFileHandle.createFromUri(fileUri);
+
 
                     if (fileChecker.isAvailable(fileSource)) {
                         String digest = info.getMd5().toLowerCase();

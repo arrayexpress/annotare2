@@ -50,7 +50,7 @@ public class DataFileStore {
             return md5;
         }
 
-        source.copyTo(destination);
+        source.copyTo(destination.toURI());
         return md5;
     }
 
