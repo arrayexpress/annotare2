@@ -128,6 +128,9 @@ public class SubsTrackingWatchdog {
     @PreDestroy
     public void shutDown() throws Exception {
         scheduler.shutdown();
+        if (!scheduler.awaitTermination(1, MINUTES)) {
+            logger.warn("Submission watchdog process failed to stop cleanly, possibly busy processing submission");
+        }
     }
 
     private void periodicRun() throws Exception {

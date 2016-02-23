@@ -24,7 +24,7 @@
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
-        <artifactId>annotare2</artifactId>
+        <artifactId>ae-integration</artifactId>
         <version>0.30-SNAPSHOT</version>
     </parent>
 

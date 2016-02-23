@@ -21,14 +21,13 @@
     <artifactId>annotare2</artifactId>
     <packaging>pom</packaging>
     <version>0.30-SNAPSHOT</version>
-    <name>Annotare 2.0</name>
+    <name>Annotare 2</name>
 
     <modules>
-        <module>ae-subs-tracking</module>
-        <module>ae-db</module>
+        <module>ae-integration</module>
         <module>om</module>
         <module>core</module>
-        <module>web</module>
+        <module>webapp</module>
     </modules>
 
     <licenses>
