@@ -20,7 +20,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -28,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -46,7 +47,7 @@ import static java.util.concurrent.TimeUnit.HOURS;
  *
  * @author Olga Melnichuk
  */
-public class ArrayExpressArrayDesignList extends AbstractIdleService {
+public class ArrayExpressArrayDesignList {
 
     private static final Logger log = LoggerFactory.getLogger(ArrayExpressArrayDesignList.class);
     private static final String arrayDesignListLocation =
@@ -68,7 +69,7 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
         reload();
     }
 
-    @Override
+    @PostConstruct
     public void startUp() throws Exception {
         final Runnable periodicProcess = new Runnable() {
             @Override
@@ -88,7 +89,7 @@ public class ArrayExpressArrayDesignList extends AbstractIdleService {
         }
     }
 
-    @Override
+    @PreDestroy
     public void shutDown() throws Exception {
         scheduler.shutdown();
     }

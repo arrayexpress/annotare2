@@ -20,7 +20,6 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -44,6 +43,8 @@ import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.mail.MessagingException;
 import java.io.File;
 import java.io.IOException;
@@ -60,9 +61,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static uk.ac.ebi.fg.annotare2.ae.AEConnection.SubmissionState.*;
 
-public class SubsTrackingWatchdog extends AbstractIdleService {
+public class SubsTrackingWatchdog {
 
-    private static final Logger log = LoggerFactory.getLogger(SubsTrackingWatchdog.class);
+    private static final Logger logger = LoggerFactory.getLogger(SubsTrackingWatchdog.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
@@ -101,7 +102,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         this.emailer = emailer;
     }
 
-    @Override
+    @PostConstruct
     public void startUp() throws Exception {
         final Runnable periodicProcess = new Runnable() {
             @Override
@@ -110,7 +111,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                 try {
                     periodicRun();
                 } catch (Throwable x) {
-                    log.error("Submission watchdog process caught an exception:", x);
+                    logger.error("Submission watchdog process caught an exception:", x);
                     emailer.sendException("Error in submission watchdog process:", x);
                 } finally {
                     session.close();
@@ -118,19 +119,15 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
             }
 
         };
-        subsTracking.initialize();
-        aeConnection.initialize();
 
         if (properties.isSubsTrackingEnabled()) {
             scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, MINUTES);
         }
     }
 
-    @Override
+    @PreDestroy
     public void shutDown() throws Exception {
         scheduler.shutdown();
-        aeConnection.terminate();
-        subsTracking.terminate();
     }
 
     private void periodicRun() throws Exception {
@@ -368,7 +365,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                     subsTrackingConnection.rollback();
                 }
             } catch (SQLException ee) {
-                log.error("SQLException:", ee);
+                logger.error("SQLException:", ee);
             }
             throw new SubsTrackingException(e);
         } finally {
@@ -434,12 +431,12 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                         if (!isNullOrEmpty(dataFilesPostProcessingScript)) {
                             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
                             if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
-                                log.info(isNullOrEmpty(
+                                logger.info(isNullOrEmpty(
                                         executor.getOutput()) ?
                                                 "Ran post-processing script on " + f.getName() : executor.getOutput()
                                 );
                             } else {
-                                log.error("Data file post-processing script returned an error: {}", executor.getErrors());
+                                logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
                             }
                         }
                     } else if (!dataFile.getStatus().isOk()) {
@@ -518,12 +515,12 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
                         if (!isNullOrEmpty(dataFilesPostProcessingScript)) {
                             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
                             if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
-                                log.info(isNullOrEmpty(
+                                logger.info(isNullOrEmpty(
                                                 executor.getOutput()) ?
                                                 "Ran post-processing script on " + f.getName() : executor.getOutput()
                                 );
                             } else {
-                                log.error("Data file post-processing script returned an error: {}", executor.getErrors());
+                                logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
                             }
                         }
                     } else if (!dataFile.getStatus().isOk()) {
@@ -561,7 +558,7 @@ public class SubsTrackingWatchdog extends AbstractIdleService {
         try {
             emailer.sendFromTemplate(template, params);
         } catch (MessagingException e) {
-            log.error("Unable to send email", e);
+            logger.error("Unable to send email", e);
         }
     }
 }

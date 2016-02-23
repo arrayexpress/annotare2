@@ -27,8 +27,6 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 
 import javax.servlet.ServletContextEvent;
 
-import static com.google.inject.util.Modules.override;
-
 public class AnnotareWebAppInitializer extends GuiceServletContextListener {
 
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
@@ -41,19 +39,14 @@ public class AnnotareWebAppInitializer extends GuiceServletContextListener {
 //        lookupPropertiesInContext();
 //
         super.contextInitialized(servletContextEvent);
-//        startServices();
     }
 //
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-//        stopServices();
-//
-//        unregisterJdbc();
         logger.info("Annotare is shutting down...");
         super.contextDestroyed(servletContextEvent);
         if (null != injector) {
             injector.shutdown();
-            //injector.getInstance(LifecycleShutdownSignal.class).signal();
         }
     }
 
@@ -69,26 +62,6 @@ public class AnnotareWebAppInitializer extends GuiceServletContextListener {
         return injector;
     }
 
-//    private void startServices() {
-//        log.info("Starting services on context init...");
-//        injector.getInstance(HibernateSessionFactoryProvider.class).start();
-//        injector.getInstance(SubmissionMigrator.class).start();
-//        injector.getInstance(DataFilesPeriodicProcess.class).start();
-//        injector.getInstance(SubsTrackingWatchdog.class).start();
-//        injector.getInstance(ArrayExpressArrayDesignList.class).start();
-//    }
-//
-//    private void stopServices() {
-//        log.info("Stopping services on context destroy");
-//        injector.getInstance(ArrayExpressArrayDesignList.class).stop();
-//        injector.getInstance(SubsTrackingWatchdog.class).stop();
-//        injector.getInstance(DataFilesPeriodicProcess.class).stop();
-//        injector.getInstance(SubmissionMigrator.class).stop();
-//        injector.getInstance(HibernateSessionFactoryProvider.class).stop();
-//    }
-//
-//
-//
 //    private void lookupPropertiesInContext() {
 //        try {
 //            Context context = new InitialContext();
@@ -113,11 +86,5 @@ public class AnnotareWebAppInitializer extends GuiceServletContextListener {
 //            log.info("set: {}='{}'", name, value);
 //            System.setProperty(name, value);
 //        }
-//    }
-//
-//    private void findMageTabCheckAnnotationPackages() {
-//        /* note: better not to use forWebInfLib(), as you can't rely on servletContext.getResource(...) */
-//        //todo: move package names with magetabcheck annotations to the config
-//        libPaths.addAll(forPackage("uk.ac.ebi.fg.annotare2.magetabcheck.checks"));
 //    }
 }

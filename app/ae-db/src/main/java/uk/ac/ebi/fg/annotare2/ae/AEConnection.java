@@ -26,6 +26,8 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConnectionProvider;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -124,6 +126,7 @@ public class AEConnection {
         }
     }
 
+    @PostConstruct
     public void initialize() throws AEConnectionException {
         if (null != ds) {
             throw new AEConnectionException("Illegal repeat initialization of AEConnection");
@@ -151,9 +154,10 @@ public class AEConnection {
         }
     }
 
+    @PreDestroy
     public void terminate() throws AEConnectionException {
         if (null != ds) {
-            ds.shutdown();
+            ds.close();
             ds = null;
         }
     }

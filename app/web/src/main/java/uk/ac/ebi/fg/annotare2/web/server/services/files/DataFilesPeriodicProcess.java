@@ -18,7 +18,6 @@
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
 import com.google.common.base.Objects;
-import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -31,18 +30,21 @@ import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus.*;
 
-public class DataFilesPeriodicProcess extends AbstractIdleService {
+public class DataFilesPeriodicProcess {
 
-    private static final Logger log = LoggerFactory.getLogger(DataFilesPeriodicProcess.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataFilesPeriodicProcess.class);
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -66,7 +68,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
 
     }
 
-    @Override
+    @PostConstruct
     protected void startUp() throws Exception {
         final Runnable periodicProcess = new Runnable() {
             @Override
@@ -76,7 +78,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                     try {
                         periodicRun();
                     } catch (Throwable x) {
-                        log.error(x.getMessage(), x);
+                        logger.error(x.getMessage(), x);
                         emailer.sendException("Error in data file periodic process", x);
                     } finally {
                         session.close();
@@ -88,9 +90,14 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
         scheduler.scheduleAtFixedRate(periodicProcess, 0, 5, SECONDS);
     }
 
-    @Override
+    @PreDestroy
     protected void shutDown() throws Exception {
         scheduler.shutdown();
+        if (scheduler.awaitTermination(1, MINUTES)) {
+            logger.debug("Data file periodic process has shut down");
+        } else {
+            logger.warn("Data file periodic process has failed to shut down properly");
+        }
     }
 
     private void periodicRun() throws Exception {
@@ -127,7 +134,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                 String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
                     file.setStatus(MD5_ERROR);
-                    log.error("MD5 mismatch for source file {}", source.getUri());
+                    logger.error("MD5 mismatch for source file {}", source.getUri());
                 } else {
                     fileStore.store(source);
                     file.setSourceDigest(null);
@@ -138,7 +145,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                 }
             } else {
                 file.setStatus(FILE_NOT_FOUND_ERROR);
-                log.error("Unable to find source file {}", source.getUri());
+                logger.error("Unable to find source file {}", source.getUri());
             }
             fileDao.save(file);
         } catch (IOException | URISyntaxException x) {
@@ -154,7 +161,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                 String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
                     file.setStatus(MD5_ERROR);
-                    log.error("MD5 mismatch for source file {}", source.getUri());
+                    logger.error("MD5 mismatch for source file {}", source.getUri());
                 } else {
                     file.setSourceDigest(null);
                     file.setDigest(digest);
@@ -162,7 +169,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                 }
             } else {
                 file.setStatus(FILE_NOT_FOUND_ERROR);
-                log.error("Unable to find source file {}", source.getUri());
+                logger.error("Unable to find source file {}", source.getUri());
             }
             fileDao.save(file);
         } catch (IOException | URISyntaxException x) {
@@ -180,9 +187,9 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                     String digest = source.getDigest();
                     if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
                         file.setStatus(MD5_ERROR);
-                        log.error("MD5 mismatch for source file {}", source.getUri());
+                        logger.error("MD5 mismatch for source file {}", source.getUri());
                     } else {
-                        log.info("Renamed source file {} to {}", source.getUri(), file.getName());
+                        logger.info("Renamed source file {} to {}", source.getUri(), file.getName());
                         file.setSourceUri(source.rename(file.getName()).getUri().toString());
                     }
                     fileDao.save(file);
@@ -205,7 +212,7 @@ public class DataFilesPeriodicProcess extends AbstractIdleService {
                 String digest = source.getDigest();
                 if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
                     file.setStatus(MD5_ERROR);
-                    log.error("MD5 mismatch for source file {}", source.getUri());
+                    logger.error("MD5 mismatch for source file {}", source.getUri());
                 } else {
                     file.setStatus(ASSOCIATED);
                 }

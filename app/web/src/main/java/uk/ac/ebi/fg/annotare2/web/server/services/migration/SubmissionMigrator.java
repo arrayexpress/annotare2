@@ -17,7 +17,6 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.migration;
 
-import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -35,6 +34,8 @@ import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
 import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class SubmissionMigrator extends AbstractIdleService {
+public class SubmissionMigrator {
     private static final Logger log = LoggerFactory.getLogger(SubmissionMigrator.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final HibernateSessionFactory sessionFactory;
@@ -60,7 +61,7 @@ public class SubmissionMigrator extends AbstractIdleService {
         this.submissionManager = submissionManager;
     }
 
-    @Override
+    @PostConstruct
     protected void startUp() {
         final Runnable periodicProcess = new Runnable() {
             @Override
@@ -82,7 +83,7 @@ public class SubmissionMigrator extends AbstractIdleService {
         scheduler.schedule(periodicProcess, 0, TimeUnit.SECONDS);
     }
 
-    @Override
+    @PreDestroy
     protected void shutDown() {
         scheduler.shutdown();
     }

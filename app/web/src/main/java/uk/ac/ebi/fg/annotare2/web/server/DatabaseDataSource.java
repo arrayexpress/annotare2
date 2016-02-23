@@ -80,8 +80,7 @@ public class DatabaseDataSource {
 
     @PreDestroy
     public void shutDown() {
-        logger.info("PreDestroy called");
-        ds.shutdown();
+        ds.close();
         ds = null;
         unregisterJdbc();
     }

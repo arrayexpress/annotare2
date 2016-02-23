@@ -35,6 +35,8 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -339,6 +341,7 @@ public class SubsTracking {
         }
     }
 
+    @PostConstruct
     public void initialize() throws SubsTrackingException {
         if (null != ds) {
             throw new SubsTrackingException(SubsTrackingException.ILLEGAL_REPEAT_INITIALIZATION);
@@ -383,9 +386,10 @@ public class SubsTracking {
         }
     }
 
+    @PreDestroy
     public void terminate() throws SubsTrackingException {
         if (null != ds) {
-            ds.shutdown();
+            ds.close();
             ds = null;
         }
     }
