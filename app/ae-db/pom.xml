@@ -32,13 +32,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>artifactory</id>
-            <url>http://bar.ebi.ac.uk:8081/artifactory/repo</url>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
@@ -118,8 +111,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
-            <artifactId>annotare2-om</artifactId>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -135,7 +128,7 @@
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP-java6</artifactId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>com.oracle</groupId>

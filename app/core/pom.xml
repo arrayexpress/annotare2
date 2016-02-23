@@ -18,10 +18,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.ebi.fg.annotare2</groupId>
-    <artifactId>om</artifactId>
+    <artifactId>core</artifactId>
     <packaging>jar</packaging>
     <version>0.30-SNAPSHOT</version>
-    <name>Annotare Object Model</name>
+    <name>Annotare Core Components</name>
 
     <parent>
         <groupId>uk.ac.ebi.fg.annotare2</groupId>
@@ -80,42 +80,14 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>${liquibase.version}</version>
-                <executions>
-                    <execution>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <changeLogFile>src/main/resources/uk/ac/ebi/fg/annotare2/db/changelog/changelog-master.xml
-                            </changeLogFile>
-                            <driver>${annotare.test.db.driver}</driver>
-                            <url>${annotare.test.db.url}</url>
-                            <username>${annotare.test.db.user}</username>
-                            <password>${annotare.test.db.password}</password>
-                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                        </configuration>
-                        <goals>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.2.2</version>
+            <groupId>org.atteo.classindex</groupId>
+            <artifactId>classindex</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.2.2</version>
-            </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava-gwt</artifactId>
@@ -125,21 +97,7 @@
             <artifactId>guice</artifactId>
         </dependency>
 
-        <!-- DB support -->
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+        <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -147,24 +105,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>tomcat</groupId>
-            <artifactId>naming-factory</artifactId>
-            <version>5.5.23</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>tomcat</groupId>
-            <artifactId>naming-common</artifactId>
-            <version>5.0.28</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-core</artifactId>
-            <version>3.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

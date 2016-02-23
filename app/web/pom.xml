@@ -79,7 +79,7 @@
                         <executions>
                             <execution>
                                 <configuration>
-                                    <extraJvmArgs>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</extraJvmArgs>
+                                    <extraJvmArgs>-Xms512m -Xmx1024m</extraJvmArgs>
                                     <failOnError>true</failOnError>
                                     <modules>
                                         <module>uk.ac.ebi.fg.annotare2.web.gwt.user.UserApp</module>
@@ -105,8 +105,13 @@
         <!-- Annotare dependencies -->
 
         <dependency>
-            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
-            <artifactId>annotare2-om</artifactId>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>om</artifactId>
         </dependency>
 
         <dependency>

@@ -164,18 +164,11 @@ public class AnnotareWebAppModule extends ServletModule {
 
         bind(AnnotareUploadStorage.class).in(SINGLETON);
 
-        bind(SubsTracking.class).in(SINGLETON);
-        bind(AEConnection.class).in(SINGLETON);
-        bind(SubsTrackingWatchdog.class).asEagerSingleton();
-
         bind(AccountService.class).to(AccountServiceImpl.class).in(SINGLETON);
         bind(AllRpcServicePaths.class).toInstance(allRpc);
 
         bind(AnnotareProperties.class).asEagerSingleton();
         bind(DataFileStoreProperties.class).to(AnnotareProperties.class);
-        bind(ArrayExpressProperties.class).to(AnnotareProperties.class);
-        bind(SubsTrackingProperties.class).to(AnnotareProperties.class);
-        bind(AEConnectionProperties.class).to(AnnotareProperties.class);
 
         bind(DatabaseDataSource.class).asEagerSingleton();
 
@@ -206,9 +199,6 @@ public class AnnotareWebAppModule extends ServletModule {
     }
 
     private void overrideMageTabCheck() {
-//        bind(new TypeLiteral<Set<URL>>() {
-//        }).annotatedWith(Names.named("libPaths")).toInstance(libPaths);
-
         bind(new TypeLiteral<List<CheckDefinition>>() {}).toProvider(AnnotareCheckListProvider.class).in(SINGLETON);
 
         bind(EfoService.class).to(AnnotareEfoService.class);

@@ -111,8 +111,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>uk.ac.ebi.fg.annotare2.om</groupId>
-            <artifactId>annotare2-om</artifactId>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>om</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -128,7 +132,7 @@
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP-java6</artifactId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

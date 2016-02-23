@@ -22,6 +22,7 @@ import com.netflix.governator.InjectorBuilder;
 import com.netflix.governator.LifecycleInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.AnnotarePluginModules;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 
 import javax.servlet.ServletContextEvent;
@@ -59,9 +60,11 @@ public class AnnotareWebAppInitializer extends GuiceServletContextListener {
     @Override
     public Injector getInjector() {
         if (null == injector) {
-            injector = InjectorBuilder.fromModule(
-                    override(new CheckerModule()).with(new AnnotareWebAppModule())
-            ).createInjector();
+            injector = InjectorBuilder
+                    .fromModule(new CheckerModule())
+                    .overrideWith(new AnnotareWebAppModule())
+                    .overrideWith(new AnnotarePluginModules())
+                    .createInjector();
         }
         return injector;
     }
