@@ -345,6 +345,7 @@
     </dependencies>
 
     <build>
+        <finalName>annotare2-web</finalName>
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
         <resources>
             <resource>
