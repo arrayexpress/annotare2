@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -31,8 +32,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.FileColumn;
 import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.submission.transform.ModelVersion;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -50,12 +50,12 @@ public class SubmissionMigrator {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final HibernateSessionFactory sessionFactory;
     private final SubmissionDao submissionDao;
-    private final SubmissionManager submissionManager;
+    private final SubmissionManagerImpl submissionManager;
 
     @Inject
     public SubmissionMigrator(HibernateSessionFactory sessionFactory,
                                 SubmissionDao submissionDao,
-                                SubmissionManager submissionManager) {
+                                SubmissionManagerImpl submissionManager) {
         this.sessionFactory = sessionFactory;
         this.submissionDao = submissionDao;
         this.submissionManager = submissionManager;

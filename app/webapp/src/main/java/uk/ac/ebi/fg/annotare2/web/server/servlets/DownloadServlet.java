@@ -19,15 +19,15 @@ package uk.ac.ebi.fg.annotare2.web.server.servlets;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileStore;
 
 import javax.servlet.ServletException;
@@ -50,7 +50,7 @@ public class DownloadServlet extends HttpServlet {
     private AccountService accountService;
 
     @Inject
-    private SubmissionManager submissionManager;
+    private SubmissionManagerImpl submissionManager;
 
     @Inject
     private DataFileStore dataFileStore;

@@ -17,11 +17,11 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiUser;
 
@@ -31,7 +31,7 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.
 public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implements CurrentUserAccountService {
 
     @Inject
-    public CurrentUserAccountServiceImpl(AccountService accountService, EmailSender emailSender) {
+    public CurrentUserAccountServiceImpl(AccountService accountService, EmailSenderImpl emailSender) {
         super(accountService, emailSender);
     }
 

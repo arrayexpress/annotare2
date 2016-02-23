@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.gwt.user.server.rpc.UnexpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -27,10 +28,9 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 /**
  * @author Olga Melnichuk
@@ -39,12 +39,12 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionBasedRemoteService.class);
 
-    private final SubmissionManager submissionManager;
-    private final EmailSender email;
+    private final SubmissionManagerImpl submissionManager;
+    private final EmailSenderImpl email;
 
     protected SubmissionBasedRemoteService(AccountService accountService,
-                                           SubmissionManager submissionManager,
-                                           EmailSender emailSender) {
+                                           SubmissionManagerImpl submissionManager,
+                                           EmailSenderImpl emailSender) {
         super(accountService, emailSender);
         this.email = emailSender;
         this.submissionManager = submissionManager;

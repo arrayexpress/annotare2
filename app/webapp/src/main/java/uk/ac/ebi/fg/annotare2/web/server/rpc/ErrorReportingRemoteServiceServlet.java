@@ -18,13 +18,13 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.catalina.connector.ClientAbortException;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 
 abstract class ErrorReportingRemoteServiceServlet extends RemoteServiceServlet {
 
-    private final EmailSender email;
+    private final EmailSenderImpl email;
 
-    public ErrorReportingRemoteServiceServlet(EmailSender emailSender) {
+    public ErrorReportingRemoteServiceServlet(EmailSenderImpl emailSender) {
         this.email = emailSender;
     }
 

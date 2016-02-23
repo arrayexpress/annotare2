@@ -38,7 +38,7 @@ public class AuthenticationServiceImplTest {
         final String password = "existed_password";
 
         AccountManager accMan = mockAccManager(name, password, true);
-        EmailSender emailer = mockEmailer();
+        EmailSenderImpl emailer = mockEmailer();
         HttpServletRequest request = mockRequest(name, password);
 
         try {
@@ -56,7 +56,7 @@ public class AuthenticationServiceImplTest {
         final String password = "non_existed_password";
 
         AccountManager accMan = mockAccManager(name, password, false);
-        EmailSender emailer = mockEmailer();
+        EmailSenderImpl emailer = mockEmailer();
         HttpServletRequest request = mockRequest(name, password);
 
         try {
@@ -101,8 +101,8 @@ public class AuthenticationServiceImplTest {
         return accMan;
     }
 
-    private EmailSender mockEmailer() {
-        EmailSender emailer = createMock(EmailSender.class);
+    private EmailSenderImpl mockEmailer() {
+        EmailSenderImpl emailer = createMock(EmailSenderImpl.class);
         return emailer;
     }
 

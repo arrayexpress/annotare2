@@ -108,20 +108,13 @@
             <groupId>uk.ac.ebi.fg.annotare2</groupId>
             <artifactId>core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2</groupId>
             <artifactId>om</artifactId>
         </dependency>
-
         <dependency>
             <groupId>uk.ac.ebi.fg.annotare2</groupId>
             <artifactId>ae-subs-tracking</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>uk.ac.ebi.fg.annotare2</groupId>
-            <artifactId>ae-db</artifactId>
         </dependency>
 
         <dependency>

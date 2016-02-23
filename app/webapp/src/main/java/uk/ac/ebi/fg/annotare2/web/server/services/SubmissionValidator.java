@@ -26,6 +26,11 @@ import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.listener.ErrorItemListener;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
+import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.RemoteFileSource;
+import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
+import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.GenerateOption;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
@@ -35,12 +40,8 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.*;
 import uk.ac.ebi.fg.annotare2.magetabcheck.modelimpl.limpopo.LimpopoBasedExperiment;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.GenerateOption;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileSource;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.RemoteFileSource;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -56,13 +57,13 @@ import static com.google.common.collect.Ordering.natural;
 public class SubmissionValidator {
 
     private final MageTabChecker checker;
-    private final DataFileManager dataFileManager;
+    private final DataFileManagerImpl dataFileManager;
     private final DataFileConnector dataFileConnector;
     private final EfoSearch efoSearch;
 
     @Inject
     public SubmissionValidator(MageTabChecker checker,
-                               DataFileManager dataFileManager,
+                               DataFileManagerImpl dataFileManager,
                                DataFileConnector dataFileConnector,
                                EfoSearch efoSearch) {
         this.checker = checker;

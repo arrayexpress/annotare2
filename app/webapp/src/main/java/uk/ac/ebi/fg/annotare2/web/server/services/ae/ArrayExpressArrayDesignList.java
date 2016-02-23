@@ -25,7 +25,8 @@ import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
+import uk.ac.ebi.fg.annotare2.ae.ArrayExpressProperties;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -58,12 +59,12 @@ public class ArrayExpressArrayDesignList {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private final ArrayExpressProperties properties;
-    private final EmailSender emailer;
+    private final EmailSenderImpl emailer;
 
     private ArrayDesignList list;
 
     @Inject
-    public ArrayExpressArrayDesignList(ArrayExpressProperties properties, EmailSender emailer) throws IOException {
+    public ArrayExpressArrayDesignList(ArrayExpressProperties properties, EmailSenderImpl emailer) throws IOException {
         this.properties = properties;
         this.emailer = emailer;
         reload();

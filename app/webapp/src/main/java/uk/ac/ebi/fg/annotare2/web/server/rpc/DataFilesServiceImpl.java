@@ -19,6 +19,11 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.LocalFileSource;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.core.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -34,10 +39,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
-import uk.ac.ebi.fg.annotare2.web.server.services.*;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.*;
-import uk.ac.ebi.fg.annotare2.web.server.services.utils.URIEncoderDecoder;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManagerImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManager;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -60,17 +68,17 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
 
     private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
 
-    private final DataFileManager dataFileManager;
+    private final DataFileManagerImpl dataFileManager;
     private final FtpManager ftpManager;
     private final AnnotareUploadStorage uploadStorage;
 
     @Inject
     public DataFilesServiceImpl(AccountService accountService,
-                                SubmissionManager submissionManager,
-                                DataFileManager dataFileManager,
+                                SubmissionManagerImpl submissionManager,
+                                DataFileManagerImpl dataFileManager,
                                 FtpManager ftpManager,
                                 AnnotareUploadStorage uploadStorage,
-                                EmailSender emailSender) {
+                                EmailSenderImpl emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.ftpManager = ftpManager;

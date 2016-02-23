@@ -85,6 +85,33 @@
 
     <dependencies>
         <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>om</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>magetabcheck</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jul-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.atteo.classindex</groupId>
             <artifactId>classindex</artifactId>
         </dependency>

@@ -19,21 +19,21 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionCreateService;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 public class SubmissionCreateServiceImpl extends SubmissionBasedRemoteService implements SubmissionCreateService {
 
     @Inject
     public SubmissionCreateServiceImpl(
             AccountService accountService,
-            SubmissionManager submissionManager,
-            EmailSender emailSender) {
+            SubmissionManagerImpl submissionManager,
+            EmailSenderImpl emailSender) {
         super(accountService, submissionManager, emailSender);
     }
 

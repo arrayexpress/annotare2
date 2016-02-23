@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.magetab.tsv;
 
 import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvGenerator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

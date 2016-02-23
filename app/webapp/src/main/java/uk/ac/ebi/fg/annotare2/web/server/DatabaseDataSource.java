@@ -28,7 +28,7 @@ import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

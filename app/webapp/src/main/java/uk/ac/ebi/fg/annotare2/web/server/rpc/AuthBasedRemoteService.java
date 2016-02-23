@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,10 +31,10 @@ import static com.google.common.base.Strings.nullToEmpty;
 abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
     private final AccountService accountService;
-    private final EmailSender email;
+    private final EmailSenderImpl email;
 
 
-    public AuthBasedRemoteService(AccountService accountService, EmailSender emailSender) {
+    public AuthBasedRemoteService(AccountService accountService, EmailSenderImpl emailSender) {
         this.accountService = accountService;
         this.email = emailSender;
     }

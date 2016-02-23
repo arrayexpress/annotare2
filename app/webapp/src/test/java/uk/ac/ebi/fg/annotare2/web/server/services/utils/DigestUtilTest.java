@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.utils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
+import static uk.ac.ebi.fg.annotare2.core.utils.DigestUtil.md5Hex;
 
 /**
  * @author Olga Melnichuk

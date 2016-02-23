@@ -19,7 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.properties.DataFileStoreProperties;
 
 import java.io.File;
 import java.io.IOException;

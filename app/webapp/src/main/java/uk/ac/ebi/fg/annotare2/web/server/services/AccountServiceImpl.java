@@ -20,14 +20,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.RequestParam;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -42,10 +41,10 @@ public class AccountServiceImpl implements AccountService {
     private static final Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private AccountManager accountManager;
-    private EmailSender mailer;
+    private EmailSenderImpl mailer;
 
     @Inject
-    public AccountServiceImpl(AccountManager accountManager, EmailSender mailer) {
+    public AccountServiceImpl(AccountManager accountManager, EmailSenderImpl mailer) {
         this.accountManager = accountManager;
         this.mailer = mailer;
     }
@@ -65,14 +64,14 @@ public class AccountServiceImpl implements AccountService {
                 User u = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
                 try {
                     mailer.sendFromTemplate(
-                            EmailSender.NEW_USER_TEMPLATE,
+                            EmailSenderImpl.NEW_USER_TEMPLATE,
                             ImmutableMap.of(
                                     "to.name", u.getName(),
                                     "to.email", u.getEmail(),
                                     "verification.token", u.getVerificationToken()
                             )
                     );
-                } catch (MessagingException x) {
+                } catch (RuntimeException x) {
                     log.error("There was a problem sending email", x);
                 }
             }
@@ -92,14 +91,14 @@ public class AccountServiceImpl implements AccountService {
                     User u = accountManager.requestChangePassword(params.getEmail());
                     try {
                         mailer.sendFromTemplate(
-                                EmailSender.CHANGE_PASSWORD_REQUEST_TEMPLATE,
+                                EmailSenderImpl.CHANGE_PASSWORD_REQUEST_TEMPLATE,
                                 ImmutableMap.of(
                                         "to.name", u.getName(),
                                         "to.email", u.getEmail(),
                                         "verification.token", u.getVerificationToken()
                                 )
                         );
-                    } catch (MessagingException x) {
+                    } catch (RuntimeException x) {
                         log.error("There was a problem sending email", x);
                     }
                 } else {
@@ -111,13 +110,13 @@ public class AccountServiceImpl implements AccountService {
                         User u = accountManager.processChangePassword(params.getEmail(), params.getPassword());
                         try {
                             mailer.sendFromTemplate(
-                                    EmailSender.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
+                                    EmailSenderImpl.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
                                     ImmutableMap.of(
                                             "to.name", u.getName(),
                                             "to.email", u.getEmail()
                                     )
                             );
-                        } catch (MessagingException x) {
+                        } catch (RuntimeException x) {
                             log.error("There was a problem sending an email", x);
                         }
                     }
@@ -142,13 +141,13 @@ public class AccountServiceImpl implements AccountService {
                         User u = accountManager.setEmailVerified(params.getEmail());
                         try {
                             mailer.sendFromTemplate(
-                                    EmailSender.WELCOME_TEMPLATE,
+                                    EmailSenderImpl.WELCOME_TEMPLATE,
                                     ImmutableMap.of(
                                             "to.name", u.getName(),
                                             "to.email", u.getEmail()
                                     )
                             );
-                        } catch (MessagingException x) {
+                        } catch (RuntimeException x) {
                             log.error("There was a problem sending an email", x);
                         }
                     }
@@ -168,14 +167,14 @@ public class AccountServiceImpl implements AccountService {
         } else {
             try {
                 mailer.sendFromTemplate(
-                        EmailSender.VERIFY_EMAIL_TEMPLATE,
+                        EmailSenderImpl.VERIFY_EMAIL_TEMPLATE,
                         ImmutableMap.of(
                                 "to.name", u.getName(),
                                 "to.email", u.getEmail(),
                                 "verification.token", u.getVerificationToken()
                         )
                 );
-            } catch (MessagingException x) {
+            } catch (RuntimeException x) {
                 log.error("There was a problem sending email", x);
             }
 

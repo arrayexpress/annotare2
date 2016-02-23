@@ -25,6 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
@@ -39,10 +43,11 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ImportSubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.*;
+import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
+import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManagerImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -54,24 +59,24 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
-    private final DataFileManager dataFileManager;
+    private final DataFileManagerImpl dataFileManager;
     private final DataFileConnector dataFileConnector;
     private final AnnotareProperties properties;
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
-    private final EmailSender email;
+    private final EmailSenderImpl email;
 
     @Inject
     public ImportSubmissionServiceImpl(AccountService accountService,
-                                       SubmissionManager submissionManager,
-                                       DataFileManager dataFileManager,
+                                       SubmissionManagerImpl submissionManager,
+                                       DataFileManagerImpl dataFileManager,
                                        DataFileConnector dataFileConnector,
                                        AnnotareProperties properties,
                                        UserDao userDao,
                                        SubmissionFeedbackDao feedbackDao,
                                        EfoSearch efoSearch,
-                                       EmailSender emailSender) {
+                                       EmailSenderImpl emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.dataFileConnector = dataFileConnector;

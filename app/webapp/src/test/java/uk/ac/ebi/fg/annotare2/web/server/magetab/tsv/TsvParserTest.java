@@ -20,6 +20,7 @@ import com.google.common.base.Charsets;
 import org.junit.Test;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Row;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

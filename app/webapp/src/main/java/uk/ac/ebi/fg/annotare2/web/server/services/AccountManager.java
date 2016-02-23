@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 import static com.google.common.base.Strings.nullToEmpty;
-import static uk.ac.ebi.fg.annotare2.web.server.services.utils.DigestUtil.md5Hex;
+import static uk.ac.ebi.fg.annotare2.core.utils.DigestUtil.md5Hex;
 
 /**
  * @author Olga Melnichuk

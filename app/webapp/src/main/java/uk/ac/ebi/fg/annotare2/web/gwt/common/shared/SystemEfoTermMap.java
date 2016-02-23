@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.core.data.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class SystemEfoTermMap implements IsSerializable {
     private Map<SystemEfoTerm, OntologyTerm> map;
 
     public SystemEfoTermMap() {
-        map = new HashMap<SystemEfoTerm, OntologyTerm>();
+        map = new HashMap<>();
     }
 
     public OntologyTerm getEfoTerm(SystemEfoTerm term) {

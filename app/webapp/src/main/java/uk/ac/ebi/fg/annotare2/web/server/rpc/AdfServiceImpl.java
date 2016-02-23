@@ -19,25 +19,26 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
-import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.DataImportException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.adf.AdfHeader;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvParser;
 
 import java.io.IOException;
+
+//import uk.ac.ebi.fg.annotare2.submission.model.PrintingProtocol;
+//import uk.ac.ebi.fg.annotare2.core.magetab.adf.AdfHeader;
 
 /**
  * @author Olga Melnichuk
@@ -47,7 +48,7 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
     private static final Logger log = LoggerFactory.getLogger(AdfServiceImpl.class);
 
     @Inject
-    public AdfServiceImpl(AccountService accountService, SubmissionManager submissionManager, EmailSender emailSender) {
+    public AdfServiceImpl(AccountService accountService, SubmissionManagerImpl submissionManager, EmailSenderImpl emailSender) {
         super(accountService, submissionManager, emailSender);
     }
 
@@ -97,16 +98,16 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
 
     private ArrayDesignHeader createArrayDesignHeader(Table table) {
         ArrayDesignHeader adHeader = new ArrayDesignHeader();
-        if (table.isEmpty()) {
-            return adHeader;
-        }
-
-        AdfHeader header = new AdfHeader(table);
-        adHeader.setName(header.getArrayDesignName());
-        adHeader.setDescription(header.getDescription());
-        adHeader.setVersion(header.getVersion());
-        adHeader.setPrintingProtocol(PrintingProtocol.parse(header.getPrintingProtocol()));
-        //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false));
+//        if (table.isEmpty()) {
+//            return adHeader;
+//        }
+//
+//        AdfHeader header = new AdfHeader(table);
+//        adHeader.setName(header.getArrayDesignName());
+//        adHeader.setDescription(header.getDescription());
+//        adHeader.setVersion(header.getVersion());
+//        adHeader.setPrintingProtocol(PrintingProtocol.parse(header.getPrintingProtocol()));
+//        //TODO needed Organism lookup service adHeader.setOrganism(header.getOrganism(false));
         return adHeader;
     }
 }

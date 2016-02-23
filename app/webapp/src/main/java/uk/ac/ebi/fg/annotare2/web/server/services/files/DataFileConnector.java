@@ -19,14 +19,14 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
-import uk.ac.ebi.fg.annotare2.web.server.services.AccessControlException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountManager;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -39,14 +39,14 @@ public class DataFileConnector {
 
     private final DataFileStore dataFileStore;
     private final AccountManager accountManager;
-    private final SubmissionManager submissionManager;
+    private final SubmissionManagerImpl submissionManager;
 
     private static final Logger log = LoggerFactory.getLogger(DataFileConnector.class);
 
     @Inject
     public DataFileConnector(DataFileStore dataFileStore,
                              AccountManager accountManager,
-                             SubmissionManager submissionManager) {
+                             SubmissionManagerImpl submissionManager) {
         this.dataFileStore = dataFileStore;
         this.accountManager = accountManager;
         this.submissionManager = submissionManager;

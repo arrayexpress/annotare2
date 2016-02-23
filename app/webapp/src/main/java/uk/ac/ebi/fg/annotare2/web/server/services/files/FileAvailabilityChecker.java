@@ -17,6 +17,10 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
+import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.RemoteFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;

@@ -25,6 +25,11 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.SDRFGraphWriter;
+import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
 import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
@@ -49,13 +54,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator;
-import uk.ac.ebi.fg.annotare2.web.server.magetab.tsv.TsvParser;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
-import uk.ac.ebi.fg.annotare2.web.server.utils.NamingPatternUtil;
+import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvParser;
 
-import javax.mail.MessagingException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -65,7 +66,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static uk.ac.ebi.fg.annotare2.web.server.magetab.MageTabGenerator.restoreOriginalNameValues;
+import static uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.restoreOriginalNameValues;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.ExperimentBuilderFactory.createExperimentProfile;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiArrayDesignDetails;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiSubmissionDetails;
@@ -77,22 +78,22 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
-    private final DataFileManager dataFileManager;
+    private final DataFileManagerImpl dataFileManager;
     private final SubmissionValidator validator;
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
-    private final EmailSender email;
+    private final EmailSenderImpl email;
 
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
-                                 SubmissionManager submissionManager,
-                                 DataFileManager dataFileManager,
+                                 SubmissionManagerImpl submissionManager,
+                                 DataFileManagerImpl dataFileManager,
                                  SubmissionValidator validator,
                                  UserDao userDao,
                                  SubmissionFeedbackDao feedbackDao,
                                  EfoSearch efoSearch,
-                                 EmailSender emailSender) {
+                                 EmailSenderImpl emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.validator = validator;
@@ -447,14 +448,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private void sendFeedbackEmail(Byte score, String comment) {
         User u = getCurrentUser();
         try {
-            email.sendFromTemplate(EmailSender.FEEDBACK_TEMPLATE,
+            email.sendFromTemplate(EmailSenderImpl.FEEDBACK_TEMPLATE,
                     ImmutableMap.of(
                             "from.name", u.getName(),
                             "from.email", u.getEmail(),
                             "feedback.rating", null != score ? String.valueOf(score) : "-",
                             "feedback.comment", comment
                     ));
-        } catch (MessagingException x) {
+        } catch (RuntimeException x) {
             log.error("Unable to send feedback email", x);
         }
     }

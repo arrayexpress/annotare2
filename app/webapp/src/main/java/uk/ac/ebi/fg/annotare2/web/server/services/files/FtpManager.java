@@ -20,7 +20,8 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import java.io.IOException;
 import java.net.URI;

@@ -21,10 +21,15 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.ServletModule;
-import uk.ac.ebi.fg.annotare2.ae.AEConnection;
-import uk.ac.ebi.fg.annotare2.ae.AEConnectionProperties;
-import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
-import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
+import uk.ac.ebi.fg.annotare2.core.components.DataFileManager;
+import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.components.EmailSender;
+import uk.ac.ebi.fg.annotare2.core.components.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.core.data.ProtocolTypes;
+import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
+import uk.ac.ebi.fg.annotare2.core.properties.DataFileStoreProperties;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.core.transaction.TransactionalMethodInterceptor;
 import uk.ac.ebi.fg.annotare2.db.dao.*;
 import uk.ac.ebi.fg.annotare2.db.dao.impl.*;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
@@ -32,21 +37,16 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.AnnotareCheckListProvider;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckDefinition;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.*;
-import uk.ac.ebi.fg.annotare2.web.server.properties.AnnotareProperties;
-import uk.ac.ebi.fg.annotare2.web.server.properties.DataFileStoreProperties;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
-import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressProperties;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFilesPeriodicProcess;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManager;
 import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.TransactionalMethodInterceptor;
 
 import javax.servlet.http.HttpServlet;
 import java.util.HashSet;
@@ -156,11 +156,11 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(SubmissionFeedbackDao.class).to(SubmissionFeedbackDaoImpl.class).in(SINGLETON);
 
         bind(AccountManager.class).in(SINGLETON);
-        bind(SubmissionManager.class).in(SINGLETON);
-        bind(DataFileManager.class).in(SINGLETON);
+        bind(SubmissionManager.class).to(SubmissionManagerImpl.class).in(SINGLETON);
+        bind(DataFileManager.class).to(DataFileManagerImpl.class).in(SINGLETON);
+        bind(EmailSender.class).to(EmailSenderImpl.class).in(SINGLETON);
         bind(FtpManager.class).in(SINGLETON);
         bind(DataFileConnector.class).in(SINGLETON);
-        bind(EmailSender.class).in(SINGLETON);
 
         bind(AnnotareUploadStorage.class).in(SINGLETON);
 

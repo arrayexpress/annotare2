@@ -17,10 +17,10 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import uk.ac.ebi.fg.annotare2.core.data.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
 import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.util.ValueRange;

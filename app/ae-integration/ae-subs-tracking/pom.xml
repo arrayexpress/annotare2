@@ -119,6 +119,10 @@
             <artifactId>core</artifactId>
         </dependency>
         <dependency>
+            <groupId>uk.ac.ebi.fg.annotare2</groupId>
+            <artifactId>ae-db</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>

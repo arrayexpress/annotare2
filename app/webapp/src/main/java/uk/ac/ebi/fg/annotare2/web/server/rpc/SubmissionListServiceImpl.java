@@ -17,14 +17,14 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionListService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionRow;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSender;
-import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.web.server.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +36,12 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 public class SubmissionListServiceImpl extends AuthBasedRemoteService implements SubmissionListService {
 
-    private final SubmissionManager submissionManager;
+    private final SubmissionManagerImpl submissionManager;
 
     @Inject
     public SubmissionListServiceImpl(AccountService accountService,
-                                     SubmissionManager submissionManager,
-                                     EmailSender emailSender) {
+                                     SubmissionManagerImpl submissionManager,
+                                     EmailSenderImpl emailSender) {
         super(accountService, emailSender);
         this.submissionManager = submissionManager;
     }

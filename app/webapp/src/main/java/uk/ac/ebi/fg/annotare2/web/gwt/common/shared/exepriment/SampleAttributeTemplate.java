@@ -16,8 +16,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
+import uk.ac.ebi.fg.annotare2.core.data.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.util.ValueRange;
 
 import java.util.Collection;
@@ -25,8 +25,8 @@ import java.util.EnumSet;
 
 import static java.util.Collections.unmodifiableSet;
 import static java.util.EnumSet.*;
+import static uk.ac.ebi.fg.annotare2.core.data.SystemEfoTerm.*;
 import static uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType.*;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTerm.*;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.util.ValueRange.one;
 
 /**
@@ -81,46 +81,46 @@ public enum SampleAttributeTemplate {
     private final boolean isMandatory;
     private final boolean isVisible;
 
-    private SampleAttributeTemplate(SystemEfoTerm term, EnumSet<SampleAttributeType> typeRange) {
+    SampleAttributeTemplate(SystemEfoTerm term, EnumSet<SampleAttributeType> typeRange) {
         this(term, ValueRange.<SystemEfoTerm>none(), typeRange);
     }
 
-    private SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange, EnumSet<SampleAttributeType> typeRange) {
+    SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange, EnumSet<SampleAttributeType> typeRange) {
         this(term, unitRange, typeRange, false, true);
     }
 
-    private SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange) {
+    SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange) {
         this(term, unitRange, false, true);
     }
 
-    private SampleAttributeTemplate(SystemEfoTerm term) {
+    SampleAttributeTemplate(SystemEfoTerm term) {
         this(term, false, true);
     }
 
-    private SampleAttributeTemplate(SystemEfoTerm term, boolean isMandatory, boolean isVisible) {
+    SampleAttributeTemplate(SystemEfoTerm term, boolean isMandatory, boolean isVisible) {
         this(term, ValueRange.<SystemEfoTerm>none(), isMandatory, isVisible);
     }
 
-    private SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange, boolean isMandatory, boolean isVisible) {
+    SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange, boolean isMandatory, boolean isVisible) {
         this(term, unitRange, range(CHARACTERISTIC, CHARACTERISTIC_AND_FACTOR_VALUE), isMandatory, isVisible);
     }
 
-    private SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange,
-                                    EnumSet<SampleAttributeType> typeRange, boolean isMandatory, boolean isVisible) {
+    SampleAttributeTemplate(SystemEfoTerm term, ValueRange<SystemEfoTerm> unitRange,
+                            EnumSet<SampleAttributeType> typeRange, boolean isMandatory, boolean isVisible) {
         this(one(term.getName()), one(term), unitRange, typeRange, isMandatory, isVisible);
     }
 
-    private SampleAttributeTemplate(String nameRange, EnumSet<SampleAttributeType> typeRange) {
+    SampleAttributeTemplate(String nameRange, EnumSet<SampleAttributeType> typeRange) {
         this(nameRange, typeRange, false, true);
     }
 
-    private SampleAttributeTemplate(String nameRange, EnumSet<SampleAttributeType> typeRange, boolean isMandatory, boolean isVisible) {
+    SampleAttributeTemplate(String nameRange, EnumSet<SampleAttributeType> typeRange, boolean isMandatory, boolean isVisible) {
         this(one(nameRange), ValueRange.<SystemEfoTerm>none(), ValueRange.<SystemEfoTerm>none(), typeRange, isMandatory, isVisible);
     }
 
-    private SampleAttributeTemplate(ValueRange<String> nameRange, ValueRange<SystemEfoTerm> termRange,
-                                    ValueRange<SystemEfoTerm> unitRange, EnumSet<SampleAttributeType> typeRange,
-                                    boolean isMandatory, boolean isVisible) {
+    SampleAttributeTemplate(ValueRange<String> nameRange, ValueRange<SystemEfoTerm> termRange,
+                            ValueRange<SystemEfoTerm> unitRange, EnumSet<SampleAttributeType> typeRange,
+                            boolean isMandatory, boolean isVisible) {
         this.nameRange = checkNotNull(nameRange);
         this.termRange = checkNotNull(termRange);
         this.unitRange = checkNotNull(unitRange);

@@ -18,13 +18,13 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc.updates;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
 import uk.ac.ebi.fg.annotare2.submission.model.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdatePerformer;
-import uk.ac.ebi.fg.annotare2.web.server.utils.NamingPatternUtil;
 
 import javax.annotation.Nullable;
 import java.util.*;
