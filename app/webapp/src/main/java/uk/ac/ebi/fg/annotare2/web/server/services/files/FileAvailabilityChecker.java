@@ -17,8 +17,8 @@
 
 package uk.ac.ebi.fg.annotare2.web.server.services.files;
 
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
-import uk.ac.ebi.fg.annotare2.core.files.RemoteFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
+import uk.ac.ebi.fg.annotare2.core.files.RemoteFileHandle;
 import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
 
 import java.io.IOException;
@@ -38,12 +38,12 @@ public class FileAvailabilityChecker {
         this.access = new SshFileAccess();
     }
 
-    public boolean isAvailable(DataFileSource source) throws IOException {
-        if (source instanceof RemoteFileSource) {
+    public boolean isAvailable(DataFileHandle source) throws IOException {
+        if (source instanceof RemoteFileHandle) {
             URI uri = source.getUri();
             if (null != uri && access.isSupported(uri)) {
                 //String path = uri.toString();
-                String dir =  ((RemoteFileSource)source).getDirectory();
+                String dir =  ((RemoteFileHandle)source).getDirectory();
                 String name = source.getName();
                 if (filesCache.containsKey(dir)) {
                     return filesCache.get(dir).contains(name);

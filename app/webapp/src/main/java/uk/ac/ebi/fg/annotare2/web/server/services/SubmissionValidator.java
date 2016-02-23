@@ -27,8 +27,8 @@ import uk.ac.ebi.arrayexpress2.magetab.listener.ErrorItemListener;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.arrayexpress2.magetab.parser.SDRFParser;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
-import uk.ac.ebi.fg.annotare2.core.files.RemoteFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
+import uk.ac.ebi.fg.annotare2.core.files.RemoteFileHandle;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.GenerateOption;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
@@ -140,10 +140,10 @@ public class SubmissionValidator {
             }
             FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
             for (DataFile dataFile : assignedFiles) {
-                DataFileSource source = dataFileManager.getFileSource(dataFile);
+                DataFileHandle source = dataFileManager.getFileHandle(dataFile);
                 if (null == source || !fileChecker.isAvailable(source)) {
                     addError(results, "File " + dataFile.getName() + " is not accessible"
-                            + ((source instanceof RemoteFileSource) ? " on FTP" : ""));
+                            + ((source instanceof RemoteFileHandle) ? " on FTP" : ""));
                 }
             }
         }

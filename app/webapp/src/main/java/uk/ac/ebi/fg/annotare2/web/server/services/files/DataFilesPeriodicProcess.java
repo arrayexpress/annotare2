@@ -23,7 +23,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.UnexpectedException;
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
@@ -130,7 +130,7 @@ public class DataFilesPeriodicProcess {
     @Transactional
     public void copyFile(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
         try {
-            DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
+            DataFileHandle source = DataFileHandle.createFromUri(new URI(file.getSourceUri()));
             if (availabilityChecker.isAvailable(source)) {
                 String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
@@ -157,7 +157,7 @@ public class DataFilesPeriodicProcess {
     @Transactional
     public void verifyFile(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
         try {
-            DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
+            DataFileHandle source = DataFileHandle.createFromUri(new URI(file.getSourceUri()));
             if (availabilityChecker.isAvailable(source)) {
                 String digest = source.getDigest();
                 if (null != file.getSourceDigest() && !Objects.equal(digest, file.getSourceDigest())) {
@@ -181,7 +181,7 @@ public class DataFilesPeriodicProcess {
     @Transactional
     public void maintainAssociation(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
         try {
-            DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
+            DataFileHandle source = DataFileHandle.createFromUri(new URI(file.getSourceUri()));
             if (availabilityChecker.isAvailable(source)) {
                 if (!source.getName().equals(file.getName())) {
                     // check md5 to verify the file and rename source file
@@ -207,7 +207,7 @@ public class DataFilesPeriodicProcess {
     @Transactional
     public void attemptToRestoreAssociation(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
         try {
-            DataFileSource source = DataFileSource.createFromUri(new URI(file.getSourceUri()));
+            DataFileHandle source = DataFileHandle.createFromUri(new URI(file.getSourceUri()));
             if (availabilityChecker.isAvailable(source)) {
                 // check md5 to verify the file is still the same
                 String digest = source.getDigest();

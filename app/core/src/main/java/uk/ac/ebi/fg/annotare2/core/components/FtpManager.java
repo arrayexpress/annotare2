@@ -15,22 +15,17 @@
  *
  */
 
-package uk.ac.ebi.fg.annotare2.core.files;
+package uk.ac.ebi.fg.annotare2.core.components;
 
-import java.io.IOException;
-import java.net.URI;
+public interface FtpManager {
 
-public interface RemoteFileAccess {
+    boolean isEnabled();
 
-    boolean isSupported(URI file);
+    String getRoot();
 
-    boolean isAccessible(URI file) throws IOException;
+    String getDirectory(String subDirectory);
 
-    String getDigest(URI file) throws IOException;
+    boolean doesExist(String relativePath);
 
-    void copy(URI file, URI destination) throws IOException;
-
-    URI rename(URI file, String newName) throws IOException;
-
-    void delete(URI file) throws IOException;
+    void createDirectory(String relativePath);
 }

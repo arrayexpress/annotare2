@@ -26,11 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.ae.AEConnection;
 import uk.ac.ebi.fg.annotare2.ae.AEConnectionException;
-import uk.ac.ebi.fg.annotare2.core.components.DataFileManager;
-import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
-import uk.ac.ebi.fg.annotare2.core.components.EmailSender;
-import uk.ac.ebi.fg.annotare2.core.components.SubmissionManager;
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.components.*;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
+import uk.ac.ebi.fg.annotare2.core.files.LocalFileHandle;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
@@ -43,11 +41,13 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -71,6 +71,7 @@ public class SubsTrackingWatchdog {
     private final SubmissionDao submissionDao;
     private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
+    private final FtpManager ftpManager;
     private final EfoSearch efoSearch;
     private final ExtendedAnnotareProperties properties;
     private final EmailSender emailer;
@@ -89,6 +90,7 @@ public class SubsTrackingWatchdog {
                                 SubmissionDao submissionDao,
                                 SubmissionManager submissionManager,
                                 DataFileManager dataFileManager,
+                                FtpManager ftpManager,
                                 EfoSearch efoSearch,
                                 EmailSender emailer) {
         this.sessionFactory = sessionFactory;
@@ -97,6 +99,7 @@ public class SubsTrackingWatchdog {
         this.submissionDao = submissionDao;
         this.submissionManager = submissionManager;
         this.dataFileManager = dataFileManager;
+        this.ftpManager = ftpManager;
         this.efoSearch = efoSearch;
         this.properties = properties;
         this.emailer = emailer;
@@ -424,19 +427,23 @@ public class SubsTrackingWatchdog {
 
             // copy data files
             Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
+            Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
+            boolean isSequencing = exp.getType().isSequencing();
+
             if (dataFiles.size() > 0) {
                 for (DataFile dataFile : dataFiles) {
                     if (DataFileStatus.STORED == dataFile.getStatus()) {
-                        File f = new File(exportDirectory, dataFile.getName());
-                        DataFileSource source = dataFileManager.getFileSource(dataFile);
-                        source.copyTo(f);
-                        f.setWritable(true, false);
-                        if (!isNullOrEmpty(dataFilesPostProcessingScript)) {
+                        URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
+                                ? new URI(ftpManager.getDirectory(submission.getFtpSubDirectory()))
+                                : new File(exportDirectory, dataFile.getName()).toURI();
+                        DataFileHandle source = dataFileManager.getFileHandle(dataFile);
+                        DataFileHandle destination = source.copyTo(destinationURI);
+                        if (!isNullOrEmpty(dataFilesPostProcessingScript) && destination instanceof LocalFileHandle) {
                             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-                            if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
+                            if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {
                                 logger.info(isNullOrEmpty(
                                         executor.getOutput()) ?
-                                                "Ran post-processing script on " + f.getName() : executor.getOutput()
+                                                "Ran post-processing script on " + destination.getName() : executor.getOutput()
                                 );
                             } else {
                                 logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
@@ -457,86 +464,86 @@ public class SubsTrackingWatchdog {
 
     private void exportImportedExperimentSubmissionFiles(Connection connection, ImportedExperimentSubmission submission, File exportDirectory)
             throws SubsTrackingException {
-        try {
-            Integer subsTrackingId = submission.getSubsTrackingId();
-            String fileName = submission.getAccession();
-            if (null == fileName) {
-                fileName = "submission" + submission.getId() + "_annotare";
-            }
-            if (properties.isSubsTrackingEnabled()) {
-                int version = 1;
-                while (subsTracking.hasMageTabFileAdded(
-                        connection,
-                        subsTrackingId,
-                        fileName + "_v" + version + ".idf.txt")) {
-                    version++;
-                }
-                fileName = fileName + "_v" + version;
-            }
-            String idfName = fileName + "idf.txt";
-            String sdrfName = fileName + "sdrf.txt";
-
-            Collection<DataFile> idfFiles = submission.getIdfFiles();
-            Collection<DataFile> sdrfFiles = submission.getSdrfFiles();
-            if (1 != idfFiles.size() && 1 != sdrfFiles.size()) {
-                throw new IOException("Imported submission must have one IDF and one SDRF file uploaded");
-            }
-
-            File exportedIdfFile = new File(exportDirectory, idfName);
-            DataFileSource idfSource = dataFileManager.getFileSource(idfFiles.iterator().next());
-            idfSource.copyTo(exportedIdfFile);
-            exportedIdfFile.setWritable(true, false);
-
-            String dataFilesPostProcessingScript = null;
-            if (properties.isSubsTrackingEnabled()) {
-                subsTracking.deleteFiles(connection, subsTrackingId);
-                subsTracking.addMageTabFile(connection, subsTrackingId, idfName);
-                dataFilesPostProcessingScript = properties.getSubsTrackingDataFilesPostProcessingScript();
-            }
-
-            exportDirectory = new File(exportDirectory, "unpacked");
-            if (!exportDirectory.exists()) {
-                exportDirectory.mkdir();
-                exportDirectory.setWritable(true, false);
-            }
-
-            // move sdrf file
-            File exportedSdrfFile = new File(exportDirectory, sdrfName);
-            DataFileSource sdrfSource = dataFileManager.getFileSource(sdrfFiles.iterator().next());
-            sdrfSource.copyTo(exportedSdrfFile);
-            exportedSdrfFile.setWritable(true, false);
-
-            // copy data files
-            Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
-            if (dataFiles.size() > 0) {
-                for (DataFile dataFile : dataFiles) {
-                    if (DataFileStatus.STORED == dataFile.getStatus()) {
-                        File f = new File(exportDirectory, dataFile.getName());
-                        DataFileSource source = dataFileManager.getFileSource(dataFile);
-                        source.copyTo(f);
-                        f.setWritable(true, false);
-                        if (!isNullOrEmpty(dataFilesPostProcessingScript)) {
-                            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-                            if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
-                                logger.info(isNullOrEmpty(
-                                                executor.getOutput()) ?
-                                                "Ran post-processing script on " + f.getName() : executor.getOutput()
-                                );
-                            } else {
-                                logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
-                            }
-                        }
-                    } else if (!dataFile.getStatus().isOk()) {
-                        throw new IOException("Unable to process data file " + dataFile.getName() + ": " + dataFile.getStatus().getTitle());
-                    }
-                    if (properties.isSubsTrackingEnabled()) {
-                        subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new SubsTrackingException(e);
-        }
+//        try {
+//            Integer subsTrackingId = submission.getSubsTrackingId();
+//            String fileName = submission.getAccession();
+//            if (null == fileName) {
+//                fileName = "submission" + submission.getId() + "_annotare";
+//            }
+//            if (properties.isSubsTrackingEnabled()) {
+//                int version = 1;
+//                while (subsTracking.hasMageTabFileAdded(
+//                        connection,
+//                        subsTrackingId,
+//                        fileName + "_v" + version + ".idf.txt")) {
+//                    version++;
+//                }
+//                fileName = fileName + "_v" + version;
+//            }
+//            String idfName = fileName + "idf.txt";
+//            String sdrfName = fileName + "sdrf.txt";
+//
+//            Collection<DataFile> idfFiles = submission.getIdfFiles();
+//            Collection<DataFile> sdrfFiles = submission.getSdrfFiles();
+//            if (1 != idfFiles.size() && 1 != sdrfFiles.size()) {
+//                throw new IOException("Imported submission must have one IDF and one SDRF file uploaded");
+//            }
+//
+//            File exportedIdfFile = new File(exportDirectory, idfName);
+//            DataFileHandle idfSource = dataFileManager.getFileHandle(idfFiles.iterator().next());
+//            idfSource.copyTo(exportedIdfFile);
+//            exportedIdfFile.setWritable(true, false);
+//
+//            String dataFilesPostProcessingScript = null;
+//            if (properties.isSubsTrackingEnabled()) {
+//                subsTracking.deleteFiles(connection, subsTrackingId);
+//                subsTracking.addMageTabFile(connection, subsTrackingId, idfName);
+//                dataFilesPostProcessingScript = properties.getSubsTrackingDataFilesPostProcessingScript();
+//            }
+//
+//            exportDirectory = new File(exportDirectory, "unpacked");
+//            if (!exportDirectory.exists()) {
+//                exportDirectory.mkdir();
+//                exportDirectory.setWritable(true, false);
+//            }
+//
+//            // move sdrf file
+//            File exportedSdrfFile = new File(exportDirectory, sdrfName);
+//            DataFileHandle sdrfSource = dataFileManager.getFileHandle(sdrfFiles.iterator().next());
+//            sdrfSource.copyTo(exportedSdrfFile);
+//            exportedSdrfFile.setWritable(true, false);
+//
+//            // copy data files
+//            Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
+//            if (dataFiles.size() > 0) {
+//                for (DataFile dataFile : dataFiles) {
+//                    if (DataFileStatus.STORED == dataFile.getStatus()) {
+//                        File f = new File(exportDirectory, dataFile.getName());
+//                        DataFileHandle source = dataFileManager.getFileHandle(dataFile);
+//                        source.copyTo(f);
+//                        f.setWritable(true, false);
+//                        if (!isNullOrEmpty(dataFilesPostProcessingScript)) {
+//                            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+//                            if (executor.execute(dataFilesPostProcessingScript + " " + f.getAbsolutePath())) {
+//                                logger.info(isNullOrEmpty(
+//                                                executor.getOutput()) ?
+//                                                "Ran post-processing script on " + f.getName() : executor.getOutput()
+//                                );
+//                            } else {
+//                                logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
+//                            }
+//                        }
+//                    } else if (!dataFile.getStatus().isOk()) {
+//                        throw new IOException("Unable to process data file " + dataFile.getName() + ": " + dataFile.getStatus().getTitle());
+//                    }
+//                    if (properties.isSubsTrackingEnabled()) {
+//                        subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            throw new SubsTrackingException(e);
+//        }
     }
 
     private boolean isInCuration(Integer subsTrackingId) throws SubsTrackingException {

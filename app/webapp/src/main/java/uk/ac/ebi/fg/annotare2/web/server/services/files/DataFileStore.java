@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
 import uk.ac.ebi.fg.annotare2.core.properties.DataFileStoreProperties;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class DataFileStore {
         root = properties.getDataStoreDir();
     }
 
-    public String store(DataFileSource source) throws IOException {
+    public String store(DataFileHandle source) throws IOException {
         String md5 = source.getDigest();
         File destination = new File(dir(md5, true), md5);
 

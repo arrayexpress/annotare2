@@ -18,8 +18,8 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.components.DataFileManager;
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
-import uk.ac.ebi.fg.annotare2.core.files.LocalFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
+import uk.ac.ebi.fg.annotare2.core.files.LocalFileHandle;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
@@ -54,7 +54,7 @@ public class DataFileManagerImpl implements DataFileManager {
     }
 
     @Override
-    public void addFile(DataFileSource source, String md5, Submission submission, boolean shouldStore)
+    public void addFile(DataFileHandle source, String md5, Submission submission, boolean shouldStore)
             throws DataSerializationException, IOException {
         DataFile dataFile = dataFileDao.create(source.getName(), submission);
 
@@ -97,12 +97,12 @@ public class DataFileManagerImpl implements DataFileManager {
     }
 
     @Override
-    public DataFileSource getFileSource(DataFile dataFile) throws IOException {
+    public DataFileHandle getFileHandle(DataFile dataFile) throws IOException {
         if (DataFileStatus.STORED == dataFile.getStatus()) {
-            return new LocalFileSource(fileStore.get(dataFile.getDigest()));
+            return new LocalFileHandle(fileStore.get(dataFile.getDigest()));
         } else if (DataFileStatus.ASSOCIATED == dataFile.getStatus()) {
             try {
-                return DataFileSource.createFromUri(new URI(dataFile.getSourceUri()));
+                return DataFileHandle.createFromUri(new URI(dataFile.getSourceUri()));
             } catch (URISyntaxException e) {
                 return null;
             }

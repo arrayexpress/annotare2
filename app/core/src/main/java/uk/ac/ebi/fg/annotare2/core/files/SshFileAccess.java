@@ -20,7 +20,10 @@ package uk.ac.ebi.fg.annotare2.core.files;
 import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.core.utils.URIEncoderDecoder;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -58,11 +61,11 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         return null;
     }
 
-    public void copyTo(URI file, File destination) throws IOException {
-        if (isSupported(file)) {
+    public void copy(URI source, URI destination) throws IOException {
+        if (isSupported(source)) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!executor.execute(
-                    "scp " + file.getHost() + ":\"" + escapeFilePath(file.getPath()) + "\" " + destination.getPath()
+                    "scp " + scpLocationFromURI(source) + " " + scpLocationFromURI(destination)
                     )) {
                 throw new IOException(executor.getErrors());
             }
@@ -152,5 +155,15 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
 
     private String escapeFilePath(String path) {
         return null != path ? "'" + path.replaceAll("[']", "\'").replaceAll("[\"]", "\\\\\"") + "'" : null;
+    }
+
+    private String scpLocationFromURI(URI uri) throws IOException {
+        if (isSupported(uri)) {
+            return uri.getHost() + ":\"" + escapeFilePath(uri.getPath()) + "\"";
+        } else if ("file".equals(uri.getScheme()) || uri.getScheme().isEmpty()) {
+            return uri.getPath();
+        } else {
+            throw new IOException("Unsupported scheme " + uri.getScheme());
+        }
     }
 }

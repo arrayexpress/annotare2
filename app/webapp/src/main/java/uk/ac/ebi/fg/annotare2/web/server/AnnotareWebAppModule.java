@@ -21,10 +21,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.ServletModule;
-import uk.ac.ebi.fg.annotare2.core.components.DataFileManager;
-import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
-import uk.ac.ebi.fg.annotare2.core.components.EmailSender;
-import uk.ac.ebi.fg.annotare2.core.components.SubmissionManager;
+import uk.ac.ebi.fg.annotare2.core.components.*;
 import uk.ac.ebi.fg.annotare2.core.data.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.properties.DataFileStoreProperties;
@@ -44,7 +41,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeL
 import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFilesPeriodicProcess;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.migration.SubmissionMigrator;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.*;
 
@@ -156,7 +153,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(SubmissionManager.class).to(SubmissionManagerImpl.class).in(SINGLETON);
         bind(DataFileManager.class).to(DataFileManagerImpl.class).in(SINGLETON);
         bind(EmailSender.class).to(EmailSenderImpl.class).in(SINGLETON);
-        bind(FtpManager.class).in(SINGLETON);
+        bind(FtpManager.class).to(FtpManagerImpl.class).in(SINGLETON);
         bind(DataFileConnector.class).in(SINGLETON);
 
         bind(AnnotareUploadStorage.class).in(SINGLETON);

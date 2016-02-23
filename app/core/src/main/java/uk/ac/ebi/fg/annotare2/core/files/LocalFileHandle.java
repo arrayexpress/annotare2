@@ -24,7 +24,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class LocalFileSource extends DataFileSource implements Serializable {
+public class LocalFileHandle extends DataFileHandle implements Serializable {
 
     private static final long serialVersionUID = 7526471155622776156L;
 
@@ -32,7 +32,7 @@ public class LocalFileSource extends DataFileSource implements Serializable {
 
     private String digest;
 
-    public LocalFileSource(File file) throws IllegalArgumentException {
+    public LocalFileHandle(File file) throws IllegalArgumentException {
         if (null == file) {
             throw new IllegalArgumentException("File argument cannot be null");
         }
@@ -40,14 +40,17 @@ public class LocalFileSource extends DataFileSource implements Serializable {
         this.digest = null;
     }
 
+    @Override
     public boolean exists() throws IOException {
         return file.exists();
     }
 
+    @Override
     public String getName() {
         return file.getName();
     }
 
+    @Override
     public URI getUri() {
         try {
             return new URI("file", "", file.getPath(), "");
@@ -56,6 +59,7 @@ public class LocalFileSource extends DataFileSource implements Serializable {
         }
     }
 
+    @Override
     public String getDigest() throws IOException {
         if (null == digest) {
             digest = Files.hash(file, Hashing.md5()).toString();
@@ -63,20 +67,33 @@ public class LocalFileSource extends DataFileSource implements Serializable {
         return digest;
     }
 
-    public void copyTo(File destination) throws IOException {
-        Files.copy(file, destination);
+    @Override
+    public DataFileHandle copyTo(URI destination) throws IOException {
+        DataFileHandle destFileHandle = DataFileHandle.createFromUri(destination);
+        if (destFileHandle instanceof LocalFileHandle) {
+            Files.copy(file, ((LocalFileHandle)destFileHandle).getFile());
+        } else if (destFileHandle instanceof RemoteFileHandle) {
+            ((RemoteFileHandle)destFileHandle).copyFrom(file);
+        }
+        return destFileHandle;
     }
 
-    public DataFileSource rename(String newName) throws IOException {
+    @Override
+    public DataFileHandle rename(String newName) throws IOException {
         File newFile = new File(file.getParentFile(), newName);
         Files.move(file, newFile);
-        return new LocalFileSource(newFile);
+        return new LocalFileHandle(newFile);
     }
 
+    @Override
     public void delete() throws IOException {
         if (!file.delete()) {
             throw new IOException("Unable to delete file " + file.getAbsolutePath());
         }
+    }
+
+    private File getFile() {
+        return file;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

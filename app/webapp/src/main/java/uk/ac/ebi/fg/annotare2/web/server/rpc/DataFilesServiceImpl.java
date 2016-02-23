@@ -20,8 +20,8 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.common.base.Function;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
-import uk.ac.ebi.fg.annotare2.core.files.LocalFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
+import uk.ac.ebi.fg.annotare2.core.files.LocalFileHandle;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.URIEncoderDecoder;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
@@ -45,7 +45,7 @@ import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
-import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManager;
+import uk.ac.ebi.fg.annotare2.web.server.services.files.FtpManagerImpl;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -69,14 +69,14 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
     private final static String EMPTY_FILE_MD5 = "d41d8cd98f00b204e9800998ecf8427e";
 
     private final DataFileManagerImpl dataFileManager;
-    private final FtpManager ftpManager;
+    private final FtpManagerImpl ftpManager;
     private final AnnotareUploadStorage uploadStorage;
 
     @Inject
     public DataFilesServiceImpl(AccountService accountService,
                                 SubmissionManagerImpl submissionManager,
                                 DataFileManagerImpl dataFileManager,
-                                FtpManager ftpManager,
+                                FtpManagerImpl ftpManager,
                                 AnnotareUploadStorage uploadStorage,
                                 EmailSenderImpl emailSender) {
         super(accountService, submissionManager, emailSender);
@@ -138,7 +138,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 } else if (0L == fileInfo.getFileSize()) {
                     throw new OperationFailedException("Empty file " + fileInfo.getFileName());
                 } else {
-                    saveFile(new LocalFileSource(uploadedFile), null, submission);
+                    saveFile(new LocalFileHandle(uploadedFile), null, submission);
                     uploadStorage.removeUploadedFile(userId, fileInfo, false);
                 }
         } catch (AccessControlException e) {
@@ -162,7 +162,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             String subDirectory = nullToEmpty(submission.getFtpSubDirectory());
 
             StringBuilder errors = new StringBuilder();
-            Map<String,DataFileSource> files = new HashMap<>();
+            Map<String,DataFileHandle> files = new HashMap<>();
             FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
@@ -171,7 +171,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                             ftpRoot + subDirectory + (subDirectory.isEmpty() ? "" : "/")
                                     + URIEncoderDecoder.encode(info.getFileName())
                     );
-                    DataFileSource fileSource = DataFileSource.createFromUri(fileUri);
+                    DataFileHandle fileSource = DataFileHandle.createFromUri(fileUri);
 
                     if (fileChecker.isAvailable(fileSource)) {
                         String digest = info.getMd5().toLowerCase();
@@ -190,7 +190,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 }
             }
             if (0 == errors.length()) {
-                for (Map.Entry<String, DataFileSource> fileToSave : files.entrySet()) {
+                for (Map.Entry<String, DataFileHandle> fileToSave : files.entrySet()) {
                     saveFile(fileToSave.getValue(), fileToSave.getKey(), submission);
                 }
             }
@@ -275,7 +275,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         return false;
     }
 
-    private void saveFile(final DataFileSource source, final String md5, final Submission submission)
+    private void saveFile(final DataFileHandle source, final String md5, final Submission submission)
             throws DataSerializationException, IOException {
 
 //        boolean shouldStore = source instanceof LocalFileSource;

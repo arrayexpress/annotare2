@@ -23,7 +23,7 @@ import java.net.URI;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public abstract class DataFileSource {
+public abstract class DataFileHandle {
 
     public abstract boolean exists() throws IOException;
 
@@ -33,20 +33,20 @@ public abstract class DataFileSource {
 
     public abstract String getDigest() throws IOException;
 
-    public abstract void copyTo(File destination) throws IOException;
+    public abstract DataFileHandle copyTo(URI destination) throws IOException;
 
-    public abstract DataFileSource rename(String newName) throws IOException;
+    public abstract DataFileHandle rename(String newName) throws IOException;
 
     public abstract void delete() throws IOException;
 
-    public static DataFileSource createFromUri(URI uri) throws IOException {
+    public static DataFileHandle createFromUri(URI uri) throws IOException {
         if (null == uri) {
             return null;
         }
         if (isNullOrEmpty(uri.getScheme()) || "file".equals(uri.getScheme())) {
-            return new LocalFileSource(new File(uri.getPath()));
+            return new LocalFileHandle(new File(uri.getPath()));
         } else {
-            return new RemoteFileSource(uri);
+            return new RemoteFileHandle(uri);
         }
     }
 }

@@ -20,6 +20,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services.files;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.components.FtpManager;
 import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
@@ -27,15 +28,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class FtpManager {
+import static com.google.common.base.Strings.nullToEmpty;
 
-    private static final Logger log = LoggerFactory.getLogger(FtpManager.class);
+public class FtpManagerImpl implements FtpManager {
+
+    private static final Logger log = LoggerFactory.getLogger(FtpManagerImpl.class);
 
     private final String root;
     private final SshFileAccess access;
 
     @Inject
-    public FtpManager(AnnotareProperties properties) {
+    public FtpManagerImpl(AnnotareProperties properties) {
         if (properties.isFtpEnabled()) {
             String root = properties.getFtpPickUpDir();
             if (root.startsWith("/")) {
@@ -52,14 +55,23 @@ public class FtpManager {
         }
     }
 
+    @Override
     public boolean isEnabled() {
         return null != root;
     }
 
+    @Override
     public String getRoot() {
         return root;
     }
 
+    @Override
+    public String getDirectory(String subDirectory) {
+        subDirectory = nullToEmpty(subDirectory);
+        return root + subDirectory + (subDirectory.isEmpty() ? "" : "/");
+    }
+
+    @Override
     public boolean doesExist(String relativePath) {
         try {
             return access.isAccessible(new URI(root + relativePath));
@@ -69,6 +81,7 @@ public class FtpManager {
         }
     }
 
+    @Override
     public void createDirectory(String relativePath) {
         try {
             access.createDirectory(new URI(root + relativePath));

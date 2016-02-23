@@ -17,7 +17,7 @@
 
 package uk.ac.ebi.fg.annotare2.core.components;
 
-import uk.ac.ebi.fg.annotare2.core.files.DataFileSource;
+import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
@@ -29,7 +29,7 @@ import java.util.Set;
 
 public interface DataFileManager {
 
-    void addFile(DataFileSource source, String md5, Submission submission, boolean shouldStore)
+    void addFile(DataFileHandle source, String md5, Submission submission, boolean shouldStore)
             throws DataSerializationException, IOException;
 
     void storeAssociatedFile(DataFile dataFile);
@@ -39,7 +39,7 @@ public interface DataFileManager {
     Set<DataFile> getAssignedFiles(Submission submission, FileType... fileTypes)
             throws DataSerializationException;
 
-    DataFileSource getFileSource(DataFile dataFile) throws IOException;
+    DataFileHandle getFileHandle(DataFile dataFile) throws IOException;
 
     void renameDataFile(DataFile dataFile, String newFileName);
 

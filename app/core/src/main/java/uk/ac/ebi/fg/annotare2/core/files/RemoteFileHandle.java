@@ -22,7 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.net.URI;
 
-public class RemoteFileSource extends DataFileSource implements Serializable {
+public class RemoteFileHandle extends DataFileHandle implements Serializable {
 
     private static final long serialVersionUID = 7526471155622776167L;
 
@@ -30,7 +30,7 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
     private final RemoteFileAccess access;
     private String digest;
 
-    public RemoteFileSource(URI uri) throws IOException {
+    public RemoteFileHandle(URI uri) throws IOException {
         this.digest = null;
         this.uri = uri;
         if (null != uri && "scp".equals(uri.getScheme())) {
@@ -40,22 +40,22 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
         }
     }
 
+    @Override
     public boolean exists() throws IOException {
         return access.isAccessible(uri);
     }
 
-    public String getDirectory() throws IOException {
-        return FilenameUtils.getPath(uri.getPath());
-    }
-
+    @Override
     public String getName() throws IOException {
         return FilenameUtils.getName(uri.getPath());
     }
 
+    @Override
     public URI getUri() {
         return uri;
     }
 
+    @Override
     public String getDigest() throws IOException {
         if (null == digest) {
             digest = access.getDigest(uri);
@@ -63,16 +63,28 @@ public class RemoteFileSource extends DataFileSource implements Serializable {
         return digest;
     }
 
-    public void copyTo(File destination) throws IOException {
-        access.copyTo(uri, destination);
+    @Override
+    public DataFileHandle copyTo(URI destination) throws IOException {
+        access.copy(uri, destination);
+        return DataFileHandle.createFromUri(destination);
     }
 
-    public DataFileSource rename(String newName) throws IOException {
-        return new RemoteFileSource(access.rename(uri, newName));
+    @Override
+    public DataFileHandle rename(String newName) throws IOException {
+        return new RemoteFileHandle(access.rename(uri, newName));
     }
 
+    @Override
     public void delete() throws IOException {
         access.delete(uri);
+    }
+
+    public String getDirectory() throws IOException {
+        return FilenameUtils.getPath(uri.getPath());
+    }
+
+    public void copyFrom(File source) throws IOException {
+        access.copy(source.toURI(), uri);
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
