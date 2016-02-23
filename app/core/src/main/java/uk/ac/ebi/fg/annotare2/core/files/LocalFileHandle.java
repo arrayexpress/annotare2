@@ -53,7 +53,7 @@ public class LocalFileHandle extends DataFileHandle implements Serializable {
     @Override
     public URI getUri() {
         try {
-            return new URI("file", "", file.getPath(), "");
+            return new URI("file", "", file.getPath(), null);
         } catch (URISyntaxException e) {
             return null;
         }

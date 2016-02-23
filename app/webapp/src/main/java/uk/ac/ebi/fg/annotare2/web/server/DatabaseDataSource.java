@@ -63,6 +63,10 @@ public class DatabaseDataSource {
         ds.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
         ds.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
         ds.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
+        ds.addDataSourceProperty("autoReconnect", "true");
+        ds.addDataSourceProperty("useUnicode", "true");
+        ds.addDataSourceProperty("characterEncoding", "utf8");
+        ds.addDataSourceProperty("connectionCollation", "utf8_unicode_ci");
 
         // register data source in the naming context so hibernate can find it
         context.bind("annotareDb", this.ds);
