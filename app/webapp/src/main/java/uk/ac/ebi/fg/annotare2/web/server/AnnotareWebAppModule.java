@@ -64,10 +64,7 @@ public class AnnotareWebAppModule extends ServletModule {
 
     private static final String JSESSIONID = "(?:;jsessionid=[A-Za-z0-9]+)?";
 
-//    private final Set<URL> libPaths = newHashSet();
-
     public AnnotareWebAppModule() {
-//        this.libPaths.addAll(libPaths);
     }
 
     @Override
