@@ -187,6 +187,10 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onFilesAdded(ResumableUploader uploader, JsArray<ResumableFile> files) {
+            for (int i = 0; i < files.length(); ++i) {
+                ResumableFile file = files.get(i);
+                logger.info("Batch added file " + file.getFileName() + ", size " + file.getSize());
+            }
             uploader.upload();
         }
 
