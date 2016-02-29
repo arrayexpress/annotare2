@@ -429,12 +429,19 @@ public class SubsTrackingWatchdog {
             Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
             Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
             boolean isSequencing = exp.getType().isSequencing();
+            String ftpSubDirectory = submission.getFtpSubDirectory();
+
+            if (isSequencing && rawDataFiles.size() > 0) {
+                if (!ftpManager.doesExist(ftpSubDirectory)) {
+                    ftpManager.createDirectory(ftpSubDirectory);
+                }
+            }
 
             if (dataFiles.size() > 0) {
                 for (DataFile dataFile : dataFiles) {
                     if (DataFileStatus.STORED == dataFile.getStatus()) {
                         URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
-                                ? new URI(ftpManager.getDirectory(submission.getFtpSubDirectory()))
+                                ? new URI(ftpManager.getDirectory(ftpSubDirectory) + dataFile.getName())
                                 : new File(exportDirectory, dataFile.getName()).toURI();
                         DataFileHandle source = dataFileManager.getFileHandle(dataFile);
                         DataFileHandle destination = source.copyTo(destinationURI);

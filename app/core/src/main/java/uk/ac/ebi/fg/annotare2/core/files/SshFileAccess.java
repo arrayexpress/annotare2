@@ -29,12 +29,19 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 public class SshFileAccess implements RemoteFileAccess, Serializable {
 
     private static final long serialVersionUID = 752647115562277616L;
 
     public boolean isSupported(URI file) {
         return null != file && "scp".equals(file.getScheme());
+    }
+
+    public boolean isLocal(URI file) {
+
+        return null != file && (isNullOrEmpty(file.getScheme()) || "file".equals(file.getScheme()));
     }
 
     public boolean isAccessible(URI file) throws IOException {
@@ -62,7 +69,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     }
 
     public void copy(URI source, URI destination) throws IOException {
-        if (isSupported(source)) {
+        if ((isSupported(source) || isLocal(source)) && (isSupported(destination) || isLocal(destination))) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!executor.execute(
                     "scp " + scpLocationFromURI(source) + " " + scpLocationFromURI(destination)
@@ -160,7 +167,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
     private String scpLocationFromURI(URI uri) throws IOException {
         if (isSupported(uri)) {
             return uri.getHost() + ":\"" + escapeFilePath(uri.getPath()) + "\"";
-        } else if ("file".equals(uri.getScheme()) || uri.getScheme().isEmpty()) {
+        } else if (isLocal(uri)) {
             return uri.getPath();
         } else {
             throw new IOException("Unsupported scheme " + uri.getScheme());
