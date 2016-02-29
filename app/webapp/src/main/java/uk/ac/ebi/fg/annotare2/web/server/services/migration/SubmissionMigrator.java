@@ -159,10 +159,7 @@ public class SubmissionMigrator {
 
     @Transactional
     public void addFtpSubdirectory(Submission submission) {
-        String ftpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission.getCreated());
-        if (!isNullOrEmpty(submission.getAccession())) {
-            ftpSubDirectory = ftpSubDirectory.replaceFirst("^[^-]+", submission.getAccession());
-        }
+        String ftpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
         submission.setFtpSubDirectory(ftpSubDirectory);
         submissionManager.save(submission);
         log.info("Added FTP subdirectory {} to submission {}", ftpSubDirectory, submission.getId());

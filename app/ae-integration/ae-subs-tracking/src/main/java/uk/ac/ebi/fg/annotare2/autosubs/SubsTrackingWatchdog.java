@@ -48,6 +48,7 @@ import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -222,8 +223,20 @@ public class SubsTrackingWatchdog {
             // check if the accession has been assigned or updated in subs tracking
             String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
             if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
+                String oldFtpSubDirectory = submission.getFtpSubDirectory();
                 submission.setAccession(subsTrackingAccession);
+                String newFtpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
+                submission.setFtpSubDirectory(newFtpSubDirectory);
                 submissionManager.save(submission);
+                try {
+                    DataFileHandle dirToRename = DataFileHandle.createFromUri(
+                            new URI(ftpManager.getRoot() + oldFtpSubDirectory)
+                    );
+                    dirToRename.rename(newFtpSubDirectory);
+                } catch (URISyntaxException | IOException e) {
+                    throw new SubsTrackingException(e);
+                }
+
                 sendEmail(
                         EmailTemplates.ACCESSION_UPDATE_TEMPLATE,
                         ImmutableMap.of(

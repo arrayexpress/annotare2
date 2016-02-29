@@ -29,7 +29,8 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Collection;
-import java.util.Date;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class SubmissionManagerImpl implements SubmissionManager {
 
@@ -75,7 +76,7 @@ public class SubmissionManagerImpl implements SubmissionManager {
         }
         T submission = submissionDao.createSubmission(user, clazz);
         submission.setAcl(submissionDao.getAcl());
-        submission.setFtpSubDirectory(generateUniqueFtpSubDirectory(submission.getCreated()));
+        submission.setFtpSubDirectory(generateUniqueFtpSubDirectory(submission));
         submissionDao.save(submission);
         return submission;
     }
@@ -98,7 +99,11 @@ public class SubmissionManagerImpl implements SubmissionManager {
     }
 
     @Override
-    public String generateUniqueFtpSubDirectory(Date creationDate) {
-        return (BigInteger.valueOf(creationDate.getTime()).toString(36) + "-" +  new BigInteger(64, random).toString(36)).toLowerCase();
+    public String generateUniqueFtpSubDirectory(Submission submission) {
+        String prefix = isNullOrEmpty(submission.getAccession())
+                ? BigInteger.valueOf(submission.getCreated().getTime()).toString(36).toLowerCase()
+                : submission.getAccession();
+
+        return prefix + "-" + (new BigInteger(64, random).toString(36)).toLowerCase();
     }
 }

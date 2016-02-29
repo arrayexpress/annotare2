@@ -24,7 +24,6 @@ import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 
 import java.util.Collection;
-import java.util.Date;
 
 public interface SubmissionManager {
 
@@ -43,5 +42,5 @@ public interface SubmissionManager {
 
     void deleteSubmissionSoftly(Submission submission);
 
-    String generateUniqueFtpSubDirectory(Date creationDate);
+    String generateUniqueFtpSubDirectory(Submission submission);
 }
