@@ -101,9 +101,9 @@ public class SubmissionManagerImpl implements SubmissionManager {
     @Override
     public String generateUniqueFtpSubDirectory(Submission submission) {
         String prefix = isNullOrEmpty(submission.getAccession())
-                ? BigInteger.valueOf(submission.getCreated().getTime()).toString(36).toLowerCase()
+                ? BigInteger.valueOf(submission.getCreated().getTime()).toString(36)
                 : submission.getAccession();
 
-        return prefix + "-" + (new BigInteger(64, random).toString(36)).toLowerCase();
+        return prefix + "-" + new BigInteger(64, random).toString(36);
     }
 }
