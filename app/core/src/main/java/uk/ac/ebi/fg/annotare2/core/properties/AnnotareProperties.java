@@ -84,7 +84,7 @@ public class AnnotareProperties implements DataFileStoreProperties {
     }
 
     public Boolean isFtpEnabled() {
-        return  Boolean.parseBoolean(getProperty("ftp.enabled"));
+        return  Boolean.parseBoolean(getProperty("ftp.enabled").trim());
     }
 
     public String getFtpPickUpDir() {
@@ -108,7 +108,7 @@ public class AnnotareProperties implements DataFileStoreProperties {
     }
 
     public Boolean isAsperaEnabled() {
-        return  Boolean.parseBoolean(getProperty("aspera.enabled"));
+        return  Boolean.parseBoolean(getProperty("aspera.enabled").trim());
     }
 
     public String getAsperaPickUpDir() {

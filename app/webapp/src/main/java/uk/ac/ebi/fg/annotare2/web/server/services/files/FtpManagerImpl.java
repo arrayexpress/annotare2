@@ -74,7 +74,7 @@ public class FtpManagerImpl implements FtpManager {
     @Override
     public boolean doesExist(String relativePath) {
         try {
-            return access.isAccessible(new URI(root + relativePath));
+            return null != access && access.isAccessible(new URI(root + relativePath));
         } catch (URISyntaxException | IOException x) {
             log.error("Exception caught", x);
             return false;
@@ -84,7 +84,9 @@ public class FtpManagerImpl implements FtpManager {
     @Override
     public void createDirectory(String relativePath) {
         try {
-            access.createDirectory(new URI(root + relativePath));
+            if (null != access ) {
+                access.createDirectory(new URI(root + relativePath));
+            }
         } catch (URISyntaxException | IOException x) {
             log.error("Exception caught", x);
         }
