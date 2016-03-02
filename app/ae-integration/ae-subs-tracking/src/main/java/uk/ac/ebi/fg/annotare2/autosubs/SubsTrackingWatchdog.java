@@ -224,18 +224,20 @@ public class SubsTrackingWatchdog {
             String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
             if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
                 String oldFtpSubDirectory = submission.getFtpSubDirectory();
-                submission.setAccession(subsTrackingAccession);
-                String newFtpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
-                submission.setFtpSubDirectory(newFtpSubDirectory);
-                submissionManager.save(submission);
-                try {
-                    DataFileHandle dirToRename = DataFileHandle.createFromUri(
-                            new URI(ftpManager.getRoot() + oldFtpSubDirectory)
-                    );
-                    dirToRename.rename(newFtpSubDirectory);
-                } catch (URISyntaxException | IOException e) {
-                    throw new SubsTrackingException(e);
+                if (ftpManager.doesExist(oldFtpSubDirectory)) {
+                    submission.setAccession(subsTrackingAccession);
+                    String newFtpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
+                    submission.setFtpSubDirectory(newFtpSubDirectory);
+                    try {
+                        DataFileHandle dirToRename = DataFileHandle.createFromUri(
+                                new URI(ftpManager.getRoot() + oldFtpSubDirectory)
+                        );
+                        dirToRename.rename(newFtpSubDirectory);
+                    } catch (URISyntaxException | IOException e) {
+                        throw new SubsTrackingException(e);
+                    }
                 }
+                submissionManager.save(submission);
 
                 sendEmail(
                         EmailTemplates.ACCESSION_UPDATE_TEMPLATE,
