@@ -224,8 +224,8 @@ public class SubsTrackingWatchdog {
             String subsTrackingAccession = getSubsTrackingAccession(subsTrackingId);
             if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
                 String oldFtpSubDirectory = submission.getFtpSubDirectory();
+                submission.setAccession(subsTrackingAccession);
                 if (ftpManager.doesExist(oldFtpSubDirectory)) {
-                    submission.setAccession(subsTrackingAccession);
                     String newFtpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
                     submission.setFtpSubDirectory(newFtpSubDirectory);
                     try {
@@ -237,6 +237,7 @@ public class SubsTrackingWatchdog {
                         throw new SubsTrackingException(e);
                     }
                 }
+
                 submissionManager.save(submission);
 
                 sendEmail(
