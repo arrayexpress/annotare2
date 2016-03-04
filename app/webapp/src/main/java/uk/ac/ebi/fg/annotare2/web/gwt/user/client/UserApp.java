@@ -91,14 +91,14 @@ public class UserApp implements EntryPoint {
         //showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "DowntimeNoticeDec2015Shown";
+    private final static String NOTICE_COOKIE = "Notice_160212_Shown";
 
     private void showNotice() {
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE))) {
             NotificationPopupPanel.warning(
-                    "Annotare will be unavailable between <strong>16:00 GMT December 9 and 14:00 GMT December 10</strong> due to essential maintenance of our IT infrastructure.<br><br>"
-                            + "Please accept our apologies for any inconvenience caused. "
-                            + "Should you need to discuss anything related to the downtime, please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>.",
+                    "Please note that Annotare will be unavailable on Thursday, 18 February 2016 " +
+                            "between 08:00 and 16:00 GMT due to the essential IT infrastructure maintenance.<br><br>" +
+                            "Please accept our apologies for the inconvenience this may cause.",
                     false, false);
             Cookies.setCookie(NOTICE_COOKIE, "YEZ");
         }
