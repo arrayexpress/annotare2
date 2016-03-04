@@ -92,11 +92,11 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
         experimentalDesignList = new ListBox(true);
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        TooltipPopup.attachTooltip(title, title.getElement(), "Provide an informative experiment title (max. 255 characters).<br/>" +
-                "E.g. \"RNA-seq of human breast cancer cell line MCF-7 treated with tamoxifen against untreated controls.\"");
-
-        TooltipPopup.attachTooltip(description, description.getElement(), "Describe the biological relevance and intent of the experiment.<br/>" +
-                "Include an overview of the experimental workflow. Avoid copy-and-pasting your manuscript's abstract.");
+//        TooltipPopup.attachTooltip(title, title.getElement(), "Provide an informative experiment title (max. 255 characters).<br/>" +
+//                "E.g. \"RNA-seq of human breast cancer cell line MCF-7 treated with tamoxifen against untreated controls.\"");
+//
+//        TooltipPopup.attachTooltip(description, description.getElement(), "Describe the biological relevance and intent of the experiment.<br/>" +
+//                "Include an overview of the experimental workflow. Avoid copy-and-pasting your manuscript's abstract.");
 
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
