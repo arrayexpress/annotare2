@@ -62,7 +62,7 @@
                 <table class="form">
                     <tr>
                         <td></td>
-                        <td><h1><a href="./" title="Annotare 2.${project.version} rev. ${buildNumber}">Annotare 2.0</a></h1></td>
+                        <td><h1><a href="./" title="Annotare ${project.version} rev. ${buildNumber}">Annotare 2.0</a></h1></td>
                     </tr>
                     <tr class="info">
                         <td></td>
