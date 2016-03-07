@@ -72,7 +72,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
         if ((isSupported(source) || isLocal(source)) && (isSupported(destination) || isLocal(destination))) {
             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
             if (!executor.execute(
-                    "scp " + scpLocationFromURI(source) + " " + scpLocationFromURI(destination)
+                    "rsync -e ssh --perms --chmod=u+rw,g+rw,o+r " + scpLocationFromURI(source) + " " + scpLocationFromURI(destination)
                     )) {
                 throw new IOException(executor.getErrors());
             }
