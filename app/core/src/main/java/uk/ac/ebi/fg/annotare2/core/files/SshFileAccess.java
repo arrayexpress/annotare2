@@ -120,7 +120,7 @@ public class SshFileAccess implements RemoteFileAccess, Serializable {
             if (!executeSshCommand(
                     executor,
                     directory.getHost(),
-                    "mkdir " + escapeFilePath(directory.getPath()))) {
+                    "mkdir -m 775 " + escapeFilePath(directory.getPath()))) {
                 throw new IOException(executor.getErrors());
             }
         }
