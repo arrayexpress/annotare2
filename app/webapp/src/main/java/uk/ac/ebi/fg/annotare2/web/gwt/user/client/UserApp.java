@@ -88,17 +88,16 @@ public class UserApp implements EntryPoint {
         historyHandler.handleCurrentHistory();
 
         ServerWatchdog.start();
-        //showNotice();
+        showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_160212_Shown";
+    private final static String NOTICE_COOKIE = "Notice_160310_Shown";
 
     private void showNotice() {
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE))) {
             NotificationPopupPanel.warning(
-                    "Please note that Annotare will be unavailable on Thursday, 18 February 2016 " +
-                            "between 08:00 and 16:00 GMT due to the essential IT infrastructure maintenance.<br><br>" +
-                            "Please accept our apologies for the inconvenience this may cause.",
+                    "Due to reduced staffing levels between 18 Mar - 8 Apr 2016, curation and brokering of sequencing experiments will take up to 15 working days to complete.<br><br>"
+                    + "If your submission requires urgent processing, please contact us at annotare@ebi.ac.uk and we will raise its priority.  Thank you for your understanding and we apologise for any inconvenience caused.",
                     false, false);
             Cookies.setCookie(NOTICE_COOKIE, "YEZ");
         }
