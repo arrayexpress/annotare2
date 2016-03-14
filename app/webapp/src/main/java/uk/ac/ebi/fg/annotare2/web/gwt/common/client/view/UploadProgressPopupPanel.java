@@ -17,6 +17,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
@@ -43,6 +44,10 @@ public class UploadProgressPopupPanel extends PopupPanel {
     private final DivElement errorElement;
 
     private Presenter presenter;
+
+    private Duration lastTimestamp;
+    private float lastProgress;
+    private double avgSpeed;
 
     public UploadProgressPopupPanel(ResumableUploader uploader) {
         super(false, true);
@@ -85,7 +90,10 @@ public class UploadProgressPopupPanel extends PopupPanel {
         });
         updateError("");
         updateMessage("");
-        updateProgress(0);
+        avgSpeed = 0;
+        lastProgress = 0;
+        lastTimestamp = new Duration();
+        updateProgress(0, 1);
     }
 
     private void hideProgress() {
@@ -102,8 +110,26 @@ public class UploadProgressPopupPanel extends PopupPanel {
         messageElement.setInnerHTML(message);
     }
 
-    private void updateProgress(float progress) {
-        progressBarElement.setAttribute("value", String.valueOf((int)(progress * 100)));
+    private void updateProgress(float progress, long size) {
+        if (progress > lastProgress) {
+            double lastSpeed = ((progress - lastProgress) * size * 1000) / lastTimestamp.elapsedMillis();
+            avgSpeed = 0.005 * lastSpeed + 0.995 * avgSpeed;
+        }
+        lastTimestamp = new Duration();
+        lastProgress = progress;
+
+        progressBarElement.setAttribute("value", String.valueOf(Math.round(progress * 100)));
+        errorElement.setInnerHTML(formatSpeed(avgSpeed));
+    }
+
+    private String formatSpeed(double speed) {
+//        int unit = 1024;
+        long intSpeed = Math.round(speed);
+        return String.valueOf(intSpeed);
+//        if (speed < unit) return String.valueOf(intSpeed) + " B/s";
+//        int exp = (int) (Math.log(intSpeed) / Math.log(unit));
+//        String pre = " kMGTPE".charAt(exp-1) + "B/s";
+//        return String.valueOf(intSpeed / Math.pow(unit, exp)) + pre;
     }
 
     private void updateError(String error) {
@@ -197,7 +223,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
         @Override
         public void onFileProgress(ResumableUploader uploader, ResumableFile file) {
             panel.updateMessage("Transferring " + file.getFileName());
-            panel.updateProgress(file.getProgress(false));
+            panel.updateProgress(file.getProgress(false), file.getSize());
         }
 
         @Override
