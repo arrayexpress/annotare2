@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.core.files.SshFileAccess;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class FileAvailabilityChecker {
     private final SshFileAccess access;
 
     public FileAvailabilityChecker() {
-        this.filesCache = new HashMap<>();
+        this.filesCache = Collections.synchronizedMap(new HashMap<String, List<String>>());
         this.access = new SshFileAccess();
     }
 

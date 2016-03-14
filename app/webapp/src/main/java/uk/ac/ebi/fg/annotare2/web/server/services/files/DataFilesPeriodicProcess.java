@@ -48,6 +48,7 @@ public class DataFilesPeriodicProcess {
     private static final Logger logger = LoggerFactory.getLogger(DataFilesPeriodicProcess.class);
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService poolScheduler = Executors.newScheduledThreadPool(10);
 
     private final DataFileStore fileStore;
     private final DataFileDao fileDao;
@@ -94,7 +95,8 @@ public class DataFilesPeriodicProcess {
     @PreDestroy
     protected void shutDown() throws Exception {
         scheduler.shutdown();
-        if (scheduler.awaitTermination(1, MINUTES)) {
+        poolScheduler.shutdown();
+        if (scheduler.awaitTermination(1, MINUTES) && poolScheduler.awaitTermination(1, MINUTES)) {
             logger.debug("Data file periodic process has shut down");
         } else {
             logger.warn("Data file periodic process has failed to shut down properly");
@@ -102,27 +104,42 @@ public class DataFilesPeriodicProcess {
     }
 
     private void periodicRun() throws Exception {
-        FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
-        for (DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED, FILE_NOT_FOUND_ERROR)) {
+        final FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
+        for (final DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED, FILE_NOT_FOUND_ERROR)) {
             // FTP files will not be processed if FTP is not enabled
             if (!file.isDeleted() &&
                     (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
-                switch (file.getStatus()) {
-                    case TO_BE_STORED:
-                        copyFile(file, availabilityChecker);
-                        break;
+                poolScheduler.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (this) {
+                            Session session = sessionFactory.openSession();
+                            try {
+                                switch (file.getStatus()) {
+                                    case TO_BE_STORED:
+                                        copyFile(file, availabilityChecker);
+                                        break;
 
-                    case TO_BE_ASSOCIATED:
-                        verifyFile(file, availabilityChecker);
-                        break;
+                                    case TO_BE_ASSOCIATED:
+                                        verifyFile(file, availabilityChecker);
+                                        break;
 
-                    case ASSOCIATED:
-                        maintainAssociation(file, availabilityChecker);
-                        break;
+                                    case ASSOCIATED:
+                                        maintainAssociation(file, availabilityChecker);
+                                        break;
 
-                    case FILE_NOT_FOUND_ERROR:
-                        attemptToRestoreAssociation(file, availabilityChecker);
-                }
+                                    case FILE_NOT_FOUND_ERROR:
+                                        attemptToRestoreAssociation(file, availabilityChecker);
+                                }
+                            } catch (Throwable x) {
+                                logger.error(x.getMessage(), x);
+                                emailer.sendException("Error in data file periodic process", x);
+                            } finally {
+                                session.close();
+                            }
+                        }
+                    }
+                });
             }
         }
     }
