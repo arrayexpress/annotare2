@@ -48,7 +48,7 @@ public class DataFilesPeriodicProcess {
     private static final Logger logger = LoggerFactory.getLogger(DataFilesPeriodicProcess.class);
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final ScheduledExecutorService poolScheduler = Executors.newScheduledThreadPool(10);
+//    private final ScheduledExecutorService poolScheduler = Executors.newScheduledThreadPool(10);
 
     private final DataFileStore fileStore;
     private final DataFileDao fileDao;
@@ -95,8 +95,8 @@ public class DataFilesPeriodicProcess {
     @PreDestroy
     protected void shutDown() throws Exception {
         scheduler.shutdown();
-        poolScheduler.shutdown();
-        if (scheduler.awaitTermination(1, MINUTES) && poolScheduler.awaitTermination(1, MINUTES)) {
+//        poolScheduler.shutdown();
+        if (scheduler.awaitTermination(1, MINUTES) /*&& poolScheduler.awaitTermination(1, MINUTES)*/) {
             logger.debug("Data file periodic process has shut down");
         } else {
             logger.warn("Data file periodic process has failed to shut down properly");
@@ -109,9 +109,9 @@ public class DataFilesPeriodicProcess {
             // FTP files will not be processed if FTP is not enabled
             if (!file.isDeleted() &&
                     (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
-                poolScheduler.execute(new Runnable() {
-                    @Override
-                    public void run() {
+//                poolScheduler.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
                         synchronized (this) {
                             Session session = sessionFactory.openSession();
                             try {
@@ -138,8 +138,8 @@ public class DataFilesPeriodicProcess {
                                 session.close();
                             }
                         }
-                    }
-                });
+//                    }
+//                });
             }
         }
     }
