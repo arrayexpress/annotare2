@@ -41,7 +41,7 @@ public class HibernateSessionFactory {
     }
 
     public Session openSession() {
-        return openSessionWithFilters(FilterNames.NONE_DELETED_SUBMISSIONS_FILTER);
+        return openSessionWithFilters(FilterNames.NOT_DELETED_SUBMISSION_FILTER, FilterNames.NOT_DELETED_DATA_FILE_FILTER);
     }
 
     public void closeSession() throws HibernateException {

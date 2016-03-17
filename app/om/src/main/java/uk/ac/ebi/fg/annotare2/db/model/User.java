@@ -23,7 +23,7 @@ import javax.persistence.*;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NONE_DELETED_SUBMISSIONS_FILTER;
+import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NOT_DELETED_SUBMISSION_FILTER;
 
 /**
  * @author Olga Melnichuk
@@ -58,9 +58,9 @@ public class User {
     @OrderBy("role ASC")
     private List<UserRole> roles;
 
-    @Filter(name = NONE_DELETED_SUBMISSIONS_FILTER)
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "createdBy")
     @OrderBy("created DESC")
+    @Filter(name = NOT_DELETED_SUBMISSION_FILTER)
     private List<Submission> submissions;
 
     public User() {

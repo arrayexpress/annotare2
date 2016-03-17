@@ -30,7 +30,8 @@ import java.util.Date;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NONE_DELETED_SUBMISSIONS_FILTER;
+import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NOT_DELETED_DATA_FILE_FILTER;
+import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NOT_DELETED_SUBMISSION_FILTER;
 
 /**
  * @author Olga Melnichuk
@@ -39,8 +40,8 @@ import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NONE_DELETED_SUBMISSIO
 @Table(name = "submissions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@FilterDef(name = NONE_DELETED_SUBMISSIONS_FILTER, defaultCondition = "deleted = 0")
-@Filter(name = NONE_DELETED_SUBMISSIONS_FILTER)
+@FilterDef(name = NOT_DELETED_SUBMISSION_FILTER, defaultCondition = "deleted = 0")
+@Filter(name = NOT_DELETED_SUBMISSION_FILTER)
 public abstract class Submission implements HasEffectiveAcl {
 
     @Id
@@ -87,6 +88,7 @@ public abstract class Submission implements HasEffectiveAcl {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "ownedBy")
     @OrderBy("created ASC")
+    @Filter(name = NOT_DELETED_DATA_FILE_FILTER)
     private Set<DataFile> files;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatesTo")

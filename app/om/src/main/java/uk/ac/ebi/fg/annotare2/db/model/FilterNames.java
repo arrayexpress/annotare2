@@ -21,5 +21,6 @@ package uk.ac.ebi.fg.annotare2.db.model;
  */
 public class FilterNames {
 
-    public static final String NONE_DELETED_SUBMISSIONS_FILTER = "NoneDeletedSubmissions";
+    public static final String NOT_DELETED_SUBMISSION_FILTER = "NotDeletedSubmission";
+    public static final String NOT_DELETED_DATA_FILE_FILTER = "NotDeletedDataFile";
 }

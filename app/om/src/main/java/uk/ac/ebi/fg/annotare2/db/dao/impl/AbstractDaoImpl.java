@@ -51,7 +51,7 @@ public abstract class AbstractDaoImpl<T> {
     }
 
     public void save(T t) {
-        getCurrentSession().save(t);
+        getCurrentSession().saveOrUpdate(t);
     }
 
     public void delete(T t) {

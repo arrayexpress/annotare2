@@ -23,6 +23,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,8 +46,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
     private Presenter presenter;
 
-    private Duration lastTimestamp;
-    private float lastProgress;
+    private Duration startTime;
     private double avgSpeed;
 
     public UploadProgressPopupPanel(ResumableUploader uploader) {
@@ -90,10 +90,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
         });
         updateError("");
         updateMessage("");
-        avgSpeed = 0;
-        lastProgress = 0;
-        lastTimestamp = new Duration();
-        updateProgress(0, 1);
+        resetProgress();
     }
 
     private void hideProgress() {
@@ -110,26 +107,29 @@ public class UploadProgressPopupPanel extends PopupPanel {
         messageElement.setInnerHTML(message);
     }
 
+    private void resetProgress() {
+        avgSpeed = 0;
+        startTime = new Duration();
+
+        progressBarElement.setAttribute("value", "0");
+        errorElement.setInnerHTML("");
+
+    }
+
     private void updateProgress(float progress, long size) {
-        if (progress > lastProgress) {
-            double lastSpeed = ((progress - lastProgress) * size * 1000) / lastTimestamp.elapsedMillis();
-            avgSpeed = 0.005 * lastSpeed + 0.995 * avgSpeed;
-        }
-        lastTimestamp = new Duration();
-        lastProgress = progress;
+        long sent = Math.round(size * progress);
+        avgSpeed = sent * 1000 / startTime.elapsedMillis();
 
         progressBarElement.setAttribute("value", String.valueOf(Math.round(progress * 100)));
         errorElement.setInnerHTML(formatSpeed(avgSpeed));
     }
 
     private String formatSpeed(double speed) {
-//        int unit = 1024;
-        long intSpeed = Math.round(speed);
-        return String.valueOf(intSpeed);
-//        if (speed < unit) return String.valueOf(intSpeed) + " B/s";
-//        int exp = (int) (Math.log(intSpeed) / Math.log(unit));
-//        String pre = " kMGTPE".charAt(exp-1) + "B/s";
-//        return String.valueOf(intSpeed / Math.pow(unit, exp)) + pre;
+        int unit = 1024;
+        if (speed < unit) return NumberFormat.getFormat("#.0 B/s").format(speed);
+        int exp = (int)(Math.log(speed) / Math.log(unit));
+        String unitName = "kMGTPE".charAt(exp-1) + "B/s";
+        return NumberFormat.getFormat("#.0 " + unitName).format(speed / Math.pow(unit, exp));
     }
 
     private void updateError(String error) {
@@ -207,8 +207,8 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onFileAdded(ResumableUploader uploader, ResumableFile file) {
-            logger.info("Added file " + file.getFileName() + ", size " + file.getSize());
-            uploader.upload();
+//            logger.info("Added file " + file.getFileName() + ", size " + file.getSize());
+//            uploader.upload();
         }
 
         @Override
@@ -229,6 +229,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
         @Override
         public void onFileSuccess(ResumableUploader uploader, final ResumableFile file) {
             panel.updateMessage("Successfully transferred " + file.getFileName());
+            panel.resetProgress();
             Scheduler.get().scheduleDeferred(
                     new SendUploadedFileInfoCommand(
                             new UploadedFileInfo(file.getFileName(), file.getSize()),
@@ -246,6 +247,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
         @Override
         public void onFileError(ResumableUploader uploader, ResumableFile file, String message) {
             panel.updateMessage("Error transferring " + file.getFileName());
+            panel.resetProgress();
         }
     }
 

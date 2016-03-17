@@ -15,16 +15,21 @@
  */
 package uk.ac.ebi.fg.annotare2.db.model;
 
+import org.hibernate.annotations.FilterDef;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 
 import javax.persistence.*;
 import java.util.Date;
+
+import static uk.ac.ebi.fg.annotare2.db.model.FilterNames.NOT_DELETED_DATA_FILE_FILTER;
 
 /**
  * @author Olga Melnichuk
  */
 @Entity
 @Table(name = "data_files")
+@FilterDef(name = NOT_DELETED_DATA_FILE_FILTER, defaultCondition = "deleted = 0")
+
 public class DataFile {
 
     @Id

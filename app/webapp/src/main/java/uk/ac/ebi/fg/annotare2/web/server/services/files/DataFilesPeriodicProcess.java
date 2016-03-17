@@ -47,7 +47,7 @@ public class DataFilesPeriodicProcess {
 
     private static final Logger logger = LoggerFactory.getLogger(DataFilesPeriodicProcess.class);
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 //    private final ScheduledExecutorService poolScheduler = Executors.newScheduledThreadPool(10);
 
     private final DataFileStore fileStore;
@@ -75,21 +75,19 @@ public class DataFilesPeriodicProcess {
         final Runnable periodicProcess = new Runnable() {
             @Override
             public void run() {
-                synchronized (this) {
-                    Session session = sessionFactory.openSession();
-                    try {
-                        periodicRun();
-                    } catch (Throwable x) {
-                        logger.error(x.getMessage(), x);
-                        emailer.sendException("Error in data file periodic process", x);
-                    } finally {
-                        session.close();
-                    }
+                Session session = sessionFactory.openSession();
+                try {
+                    periodicRun();
+                } catch (Throwable x) {
+                    logger.error(x.getMessage(), x);
+                    emailer.sendException("Error in data file periodic process", x);
+                } finally {
+                    session.close();
                 }
             }
         };
 
-        scheduler.scheduleAtFixedRate(periodicProcess, 0, 5, SECONDS);
+        scheduler.scheduleWithFixedDelay(periodicProcess, 0, 5, SECONDS);
     }
 
     @PreDestroy
@@ -97,7 +95,7 @@ public class DataFilesPeriodicProcess {
         scheduler.shutdown();
 //        poolScheduler.shutdown();
         if (scheduler.awaitTermination(1, MINUTES) /*&& poolScheduler.awaitTermination(1, MINUTES)*/) {
-            logger.debug("Data file periodic process has shut down");
+            logger.info("Data file periodic process has shut down");
         } else {
             logger.warn("Data file periodic process has failed to shut down properly");
         }

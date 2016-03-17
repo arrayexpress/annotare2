@@ -265,7 +265,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     }
 
                     submission.getFiles().remove(dataFile);
-                    dataFileManager.deleteDataFile(dataFile);
+                    dataFileManager.deleteDataFileSoftly(dataFile);
                 }
             }
             save(submission);
