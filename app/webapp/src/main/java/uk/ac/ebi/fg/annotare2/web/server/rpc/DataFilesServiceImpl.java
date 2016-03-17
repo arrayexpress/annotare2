@@ -168,8 +168,10 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                     URI fileUri = new URI(ftpManager.getDirectory(submission.getFtpSubDirectory())
                             + URIEncoderDecoder.encode(info.getFileName())
                     );
-                    DataFileHandle fileSource = DataFileHandle.createFromUri(fileUri);
+                    URI legacyFileUri = new URI(ftpManager.getRoot() + URIEncoderDecoder.encode(info.getFileName()));
 
+                    DataFileHandle fileSource = DataFileHandle.createFromUri(fileUri);
+                    DataFileHandle legacyFileSource = DataFileHandle.createFromUri(legacyFileUri);
 
                     if (fileChecker.isAvailable(fileSource)) {
                         String digest = info.getMd5().toLowerCase();
@@ -179,6 +181,15 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                             errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
                         } else {
                             files.put(digest, fileSource);
+                        }
+                    } else if (fileChecker.isAvailable(legacyFileSource)) {
+                        String digest = info.getMd5().toLowerCase();
+                        if (checkFileExists(submission, info.getFileName())) {
+                            errors.append(" - file \"").append(info.getFileName()).append("\" already exists").append("\n");
+                        } else if (EMPTY_FILE_MD5.equals(digest)) {
+                            errors.append("empty file \"").append(info.getFileName()).append("\"").append("\n");
+                        } else {
+                            files.put(digest, legacyFileSource);
                         }
                     } else {
                         errors.append(" - file \"").append(info.getFileName()).append("\" not found").append("\n");
