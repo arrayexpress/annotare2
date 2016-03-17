@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Function;
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
 import uk.ac.ebi.fg.annotare2.core.files.LocalFileHandle;
@@ -60,7 +62,6 @@ import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Ordering.natural;
 import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.uiDataFileRows;
 
-//import org.apache.commons.fileupload.FileItem;
 
 public class DataFilesServiceImpl extends SubmissionBasedRemoteService implements DataFilesService {
 
@@ -71,6 +72,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
     private final DataFileManagerImpl dataFileManager;
     private final FtpManagerImpl ftpManager;
     private final AnnotareUploadStorage uploadStorage;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     public DataFilesServiceImpl(AccountService accountService,
@@ -140,12 +142,14 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 } else {
                     saveFile(new LocalFileHandle(uploadedFile), null, submission);
                     uploadStorage.removeUploadedFile(userId, fileInfo, false);
+                    logger.info("Uploaded {} for submission {}", fileInfo.getFileName(), submission.getId());
                 }
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (OperationFailedException e) {
+            logger.error(e.getMessage());
             throw e;
         } catch (Exception e) {
             throw unexpected(e);
