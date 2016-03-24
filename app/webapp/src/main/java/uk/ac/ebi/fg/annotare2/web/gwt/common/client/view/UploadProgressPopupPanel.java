@@ -34,6 +34,7 @@ import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableFileCallback;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableUploader;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class UploadProgressPopupPanel extends PopupPanel {
@@ -155,6 +156,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
     }
 
     public interface Presenter {
+        void registerUploadedFiles(List<UploadedFileInfo> filesInfo, AsyncCallback<List<Boolean>> callback);
         void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback);
     }
 

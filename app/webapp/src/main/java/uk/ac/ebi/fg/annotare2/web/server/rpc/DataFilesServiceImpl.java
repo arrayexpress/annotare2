@@ -126,9 +126,31 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
         }
     }
 
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
+    @Override
+    public List<Boolean> registerFilesBeforeUpload(long submissionId, List<UploadedFileInfo> filesInfo)
+            throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(submissionId, Permission.UPDATE);
+
+            List<Boolean> result = new ArrayList<>();
+            for (UploadedFileInfo fileInfo : filesInfo) {
+                result.add(!(checkFileExists(submission, fileInfo.getFileName()) || (0L == fileInfo.getFileSize())));
+            }
+
+            return result;
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (Exception e) {
+            throw unexpected(e);
+        }
+    }
+
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class, OperationFailedException.class})
     @Override
-    public void registerUploadedFile(long submissionId, UploadedFileInfo fileInfo)
+    public void addUploadedFile(long submissionId, UploadedFileInfo fileInfo)
             throws ResourceNotFoundException, NoPermissionException, OperationFailedException {
         try {
             Submission submission = getSubmission(submissionId, Permission.UPDATE);
