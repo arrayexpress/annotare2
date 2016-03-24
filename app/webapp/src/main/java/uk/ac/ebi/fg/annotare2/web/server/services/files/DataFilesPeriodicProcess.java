@@ -103,7 +103,7 @@ public class DataFilesPeriodicProcess {
 
     private void periodicRun() throws Exception {
         final FileAvailabilityChecker availabilityChecker = new FileAvailabilityChecker();
-        for (final DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED, FILE_NOT_FOUND_ERROR)) {
+        for (final DataFile file : fileDao.getFilesByStatus(TO_BE_STORED, TO_BE_ASSOCIATED, ASSOCIATED)) {
             // FTP files will not be processed if FTP is not enabled
             if (!file.isDeleted() &&
                     (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
@@ -126,8 +126,8 @@ public class DataFilesPeriodicProcess {
                                         maintainAssociation(file, availabilityChecker);
                                         break;
 
-                                    case FILE_NOT_FOUND_ERROR:
-                                        attemptToRestoreAssociation(file, availabilityChecker);
+                                    //case FILE_NOT_FOUND_ERROR:
+                                    //    attemptToRestoreAssociation(file, availabilityChecker);
                                 }
                             } catch (Throwable x) {
                                 logger.error(x.getMessage(), x);
