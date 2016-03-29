@@ -219,24 +219,24 @@ public class DataFilesPeriodicProcess {
         }
     }
 
-    @Transactional
-    public void attemptToRestoreAssociation(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
-        try {
-            DataFileHandle source = DataFileHandle.createFromUri(new URI(file.getSourceUri()));
-            if (availabilityChecker.isAvailable(source)) {
-                // check md5 to verify the file is still the same
-                String digest = source.getDigest();
-                if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
-                    file.setStatus(MD5_ERROR);
-                    logger.error("MD5 mismatch for source file {}", source.getUri());
-                } else {
-                    file.setStatus(ASSOCIATED);
-                }
-                fileDao.save(file);
-
-            }
-        } catch (IOException | URISyntaxException x) {
-            throw new UnexpectedException(x.getMessage(), x);
-        }
-    }
+//    @Transactional
+//    public void attemptToRestoreAssociation(DataFile file, FileAvailabilityChecker availabilityChecker) throws UnexpectedException {
+//        try {
+//            DataFileHandle source = DataFileHandle.createFromUri(new URI(file.getSourceUri()));
+//            if (availabilityChecker.isAvailable(source)) {
+//                // check md5 to verify the file is still the same
+//                String digest = source.getDigest();
+//                if (null != file.getDigest() && !Objects.equal(digest, file.getDigest())) {
+//                    file.setStatus(MD5_ERROR);
+//                    logger.error("MD5 mismatch for source file {}", source.getUri());
+//                } else {
+//                    file.setStatus(ASSOCIATED);
+//                }
+//                fileDao.save(file);
+//
+//            }
+//        } catch (IOException | URISyntaxException x) {
+//            throw new UnexpectedException(x.getMessage(), x);
+//        }
+//    }
 }
