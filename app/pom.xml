@@ -301,6 +301,11 @@
                 <artifactId>yuicompressor</artifactId>
                 <version>2.4.6</version>
             </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>1.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

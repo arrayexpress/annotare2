@@ -245,6 +245,10 @@
             <groupId>com.yahoo.platform.yui</groupId>
             <artifactId>yuicompressor</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
         <!-- logging: everything -> slf4j -> logback -->
         <dependency>
             <groupId>org.slf4j</groupId>
