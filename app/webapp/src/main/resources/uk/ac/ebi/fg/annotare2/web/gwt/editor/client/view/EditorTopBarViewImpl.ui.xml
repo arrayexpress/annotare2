@@ -40,10 +40,6 @@
             <tr>
                 <td>
                     <a class="{style.logo}" href="../../">Annotare 2.0</a>
-                    <!--
-                    <a class="{style.annotareLink}" href="#">Contact Us</a>
-                    <a class="{style.annotareLink}" href="http://www.ebi.ac.uk/fgpt/annotare_help/" target="_blank">Help</a>
-                     -->
                 </td>
                 <td style="text-align: right; padding-right:5px">
                     <g:InlineLabel ui:field="userNameLabel"/>

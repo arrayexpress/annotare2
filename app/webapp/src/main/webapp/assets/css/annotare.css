@@ -6,15 +6,33 @@
     display: inline-block
 }
 
+#annotare-help table {
+    border-collapse: collapse
+}
+
+#annotare-help th {
+    background-color: #ddd;
+}
+
+#annotare-help table,
+#annotare-help th,
+#annotare-help td {
+    border: 1px solid black
+}
+
+#secondary-nav li.active a {
+    font-weight: bold !important
+}
+
 #global-footer ul {
-    padding: 0 0 0 6px;
+    padding: 0 0 0 6px
 }
 
 #global-footer ul li a, #ebi-footer-meta p a {
-    padding: 2px 3px;
+    padding: 2px 3px
 }
 
 #ebi-footer-meta p a {
     margin-left: -3px;
-    margin-right: -3px;
+    margin-right: -3px
 }

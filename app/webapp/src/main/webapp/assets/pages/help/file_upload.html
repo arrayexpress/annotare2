@@ -1,0 +1,93 @@
+<section id="annotare-help" class="grid_18 alpha">
+    <h2>Upload files and assign to samples</h2>
+    <a id="direct"></a><h3>Direct upload</h3>
+    <p>This is available for all experiments, regardless of number of files and files sizes. Make sure you have read the
+    <a href="accepted_raw_ma_file_formats.html">accepted raw file types</a> and
+    <a href="accepted_processed_ma_file_formats.html">accepted processed file formats</a> before you proceed to
+    uploading files.</p>
+    <p>The files can be uploaded directly in Annotare by clicking <code>Upload Files...</code>. Don't forget there are
+    <a href="time_saving_features.html">time-saving features</a> such as uploading multiple files in one go and
+    populating multiple rows of file names using <code>Import Values</code> button.
+        <img src="../assets/images/annotare_upload_files.png" alt="upload" style="width:80%;height:80%;border:2px solid #385930"/>
+    </p>
+    <p>&nbsp;</p>
+    <a id="ftp"></a><h3>FTP upload</h3>
+    <p>This is the upload route for sequencing experiments, and also for very large microarray files (>20Mb each).</p>
+    <ol>
+        <li>Before you start uploading any files, you must calculate the "MD5 checksum" for each file.  The checksum is
+        like a hexadecimal "fingerprint" for a file, expressed as a long string of letters and numbers, which looks
+        something like this: <code>eef75461035fb66d9173799d4e26ea97</code>.  Since it is very unlikely that two
+        non-identical files would generate the same "fingerprint", we'll generate MD5 checksums at our end and compare
+        against yours to verify file integrity. If you're unsure about how to calculate MD5 checksums, try
+        these: <a href="http://www.winmd5.com/">Windows user example</a>,
+        <a href="http://www.macappguide.com/2009/04/28/quick-tip-check-md5sum-in-os-x/">Mac user example</a>,
+        <a href="http://heatware.net/linux-unix/how-to-create-md5-checksums-and-validate-a-file-in-linux/">Linux user example</a>.</li><br>
+        <li>Follow <a href="/arrayexpress/help/ftp_upload.html">these instructions to transfer the files</a>.</li><br>
+        <li>Click <code>FTP Upload...</code> to declare/register your files with their MD5 checksums.</li><br>
+        <li>Proceed to assign files to your samples.  For paired-end experiments, you can assign multiple raw read files
+        per sample; simply create two <code>Raw Data File</code> columns with the <code>Assign Files...</code> button. Don't forget that you can <a href="time_saving_features.html#import">copy and paste</a> file names down a column using the <code>Import Values</code> button.</li>
+    </ol>
+    <p><img src="../assets/images/annotare_ftp_upload_files.png" alt="upload"  style="width:80%;height:80%;border:2px solid #385930"/></p>
+</section>
+
+<aside class="grid_6 omega">
+    <h3>Annotare Guide</h3>
+    <ol id="secondary-nav">
+        <li><h4>Getting started</h4>
+            <ul>
+                <li><a href="getting_started.html#register">Register for submission account</a></li>
+                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
+                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
+            </ul>
+        </li>
+        <li><h4>Describe experiment</h4>
+            <ul>
+                <li><a href="describe_exp.html#expt_bg">Explain experiment background</a></li>
+                <li><a href="describe_exp.html#release_date">Set reasonable release date</a></li>
+                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
+                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
+            </ul>
+        </li>
+        <li><h4>Time-saving features</h4>
+            <ul>
+                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
+                <li><a href="time_saving_features.html#upload_multiple_files">Upload multiple files in one go</a></li>
+            </ul>
+        </li>
+        <li><h4>Sample attributes</h4>
+            <ul>
+                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
+                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
+                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
+            </ul>
+        </li>
+        <li><h4>Microarray experiment</h4>
+            <ul>
+                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
+                <li><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
+                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+        </li>
+        <li><h4>Sequencing experiment</h4>
+            <ul>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
+                <li><a href="seq_lib_spec.html">Provide library information</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
+            </ul>
+        </li>
+        <li class="active"><h4>Upload files and assign to samples</h4>
+            <ul>
+                <li><a href="file_upload.html#direct">Direct upload</a></li>
+                <li><a href="file_upload.html#ftp">FTP upload</a></li>
+            </ul>
+        </li>
+        <li><h4>Validate and submit</h4>
+            <ul>
+                <li><a href="validate_exp.html#validate">What is validation?</a></li>
+                <li><a href="validate_exp.html#fix_errors">How to fix validation errors?</a></li>
+                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+            </ul>
+        </li>
+    </ol>
+</aside>

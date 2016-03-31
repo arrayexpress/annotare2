@@ -1,0 +1,143 @@
+<section id="annotare-help" class="grid_18 alpha">
+    <h2>Validate your experiment submission</h2>
+    <a id="validate"></a><h3>What is validation?</h3>
+    <p>The validation step aims at catching errors such as missing mandatory information (e.g. public release date, library preparataion protocol for a sequencing experiment, some samples have not been assigned any raw or processed data files), or inconsistencies in your submission (e.g. for a two-colour microarray experiment, a
+        hybridisation assay is associated with one labeled extract only but not two).  Having errors like these caught and fixed before
+        submission allows us to process your experiment faster for loading into ArrayExpress. You must validate your submission before submitting for curation.</p>
+    <p>The checks will be run when you click <code>Validate</code>. It should only take a few seconds:
+        <img src="../assets/images/validate_wborder.png" alt="validate" style="border:2px solid #385930"/>
+    </p>
+    <p>&nbsp;</p>
+    <p>If there are no errors, you'll see a message: <code>Validation has been successful</code> and you can proceed to submit the
+        experiment to ArrayExpress.</p>
+    <p>If however there are errors, they will be listed like this:
+        <img src="../assets/images/validate_msg_wborder.png" alt="validate message"style="border:2px solid #385930"/>
+    </p>
+
+
+    <a id ="fix_errors"></a><h3>Common errors and fixes</h3>
+    <p>If you need further help with fixing errors, please email us at <a href="mailto:annotare@ebi.ac.uk">annotare@ebi.ac.uk</a>,
+        citing your submission login email, experiment title, and the error message(s) triggered. A curator will investigate and
+        suggest solutions.</p>
+    <table>
+        <tr>
+            <th>Error</th>
+            <th>Fix</th>
+        </tr>
+        <tr>
+            <td>An experiment must have at least one experimental variable specified</td>
+            <td>An "experimental variable" is the main variable under investigation, often related to
+                the hypothesis or intent of the experiment.<br><br>
+                For example, for an experiment comparing wild-type against
+                knock-out samples, attribute "genotype" should be included (to indicate which samples are
+                wild-type and which are knock-out), and the attribute should be indicated as an
+                "Experimental Variable". Likewise, "compound" would be an "experimental variable" for an experiment
+                comparing samples treated with some drugs/chemicals against untreated controls.<br><br>
+                See the <a href="sample_attributes.html#annotate">sample annotation guide</a> for more details.
+            </td>
+        </tr>
+        <tr>
+            <td>NOMINAL_LENGTH must be a positive integer and NOMINAL_SDEV must be a positive number for paired-end sequencing samples in the ENA library info</td>
+            <td>Nominal length is the expected size of the sequenced insert in the library, and Nominal SDev is the standard deviation of the
+                Nominal length. See <a href="seq_lib_spec.html">this guide on library specifications</a> for more details.
+            </td>
+        </tr>
+
+        <tr>
+            <td>At least one protocol must be used in an experiment</td>
+            <td>Protocols describe the wet-lab and dry-lab (computational) procedures carried out in your experiment,
+                e.g. how the starting materials were grown/sourced/treated, DNA or RNA extraction, data processing steps etc.
+                To process your submission we require details of the protocols used.
+            </td>
+        </tr>
+
+        <tr>
+            <td>A raw data file name must only contain alphanumeric characters, underscores and dots</td>
+            <td>File names such as <code>"my file (1).txt"</code> can confuse Annotare processing pipeline since whitespaces, some punctuations and symbols such as brackets could be accidentally misinterpreted as part of the processing code.  So instead of <code>"my file (1).txt"</code>, please use filenames such as <code>"my_file_1.txt"</code> or <code>"myfile.1.txt"</code> instead. In Annotare, in the <a href ="file_upload.html">Upload and assign files section</a>, on the left pane where you've uploaded files either directly or via FTP, you can rename any uploaded file by double-clicking at the file name.
+            </td>
+        </tr>
+
+        <tr>
+            <td>For an array assay (microarray experiment) the associated labeled extract(s) must have distinct labels<br>
+                OR<br>
+                Name of an array data matrix node must be valid file location
+            </td>
+            <td>These errors are often triggered when the data file type (raw, raw matrix, processed or processed matrix) chosen
+                does not match the actual content of your uploaded files, e.g. when "processed matrix" type is selected where in fact per-sample processed files (i.e. non-matrix) are provided.  Make sure you've selected the correct file type.
+            </td>
+        </tr>
+        <tr>
+            <td>At least one contact must have 'submitter' role specified</td>
+            <td>When creating a contact, make sure you assign a role to it. At least
+                one of the contacts created must have the role 'submitter', whose name and email address will be
+                displayed in the "Contact" field of an ArrayExpress record (here is <a href="/arrayexpress/experiments/E-MEXP-2086/">an example</a>).  See <a href="describe_exp.html#contact_citation">this page</a> for more details.
+            </td>
+        </tr>
+        <tr>
+            <td>For an array assay (microarray experiment) the associated labeled extract(s) must have distinct labels.</td>
+            <td>If you're submitting a two-color microarray experiment, the chance is either your experiment workflow isn't currently supported, or you have accidentally assigned wrong files to the wrong sample.  See the <a href="two_color_ma.html">guide on two-colour microarray experiments</a> for more details.
+            </td>
+        </tr>
+    </table>
+</section>
+<aside class="grid_6 omega">
+    <h3>Annotare Guide</h3>
+    <ol id="secondary-nav">
+        <li><h4>Getting started</h4>
+            <ul>
+                <li><a href="getting_started.html#register">Register for submission account</a></li>
+                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
+                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
+            </ul>
+        </li>
+        <li><h4>Describe experiment</h4>
+            <ul>
+                <li><a href="describe_exp.html#expt_bg">Explain experiment background</a></li>
+                <li><a href="describe_exp.html#release_date">Set reasonable release date</a></li>
+                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
+                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
+            </ul>
+        </li>
+        <li><h4>Time-saving features</h4>
+            <ul>
+                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
+                <li><a href="time_saving_features.html#upload_multiple_files">Upload multiple files in one go</a></li>
+            </ul>
+        </li>
+        <li><h4>Sample attributes</h4>
+            <ul>
+                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
+                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
+                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
+            </ul>
+        </li>
+        <li><h4>Microarray experiment</h4>
+            <ul>
+                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
+                <li><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
+                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+        </li>
+        <li><h4>Sequencing experiment</h4>
+            <ul>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
+                <li><a href="seq_lib_spec.html">Provide library information</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
+            </ul>
+        </li>
+        <li><h4>Upload files and assign to samples</h4>
+            <ul>
+                <li><a href="file_upload.html#direct">Direct upload</a></li>
+                <li><a href="file_upload.html#ftp">FTP upload</a></li>
+            </ul>
+        </li>
+        <li><h4>Validate and submit</h4>
+            <ul>
+                <li class="active"><a href="validate_exp.html#validate">What is validation?</a></li>
+                <li class="active"><a href="validate_exp.html#fix_errors">How to fix validation errors?</a></li>
+                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+            </ul>
+        </li>
+    </ol>
+</aside>

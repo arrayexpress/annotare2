@@ -21,6 +21,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.ServletModule;
+import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 import uk.ac.ebi.fg.annotare2.core.components.*;
 import uk.ac.ebi.fg.annotare2.core.data.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
@@ -69,26 +70,28 @@ public class AnnotareWebAppModule extends ServletModule {
         filterRegex("^/.+[.]nocache[.]js",
                 "/status").through(ExpiresNowFilter.class);
 
-        filterRegex("/status").through(AccessLoggingSuppressFilter.class);
+        filter("/status").through(AccessLoggingSuppressFilter.class);
 
-        filter( "/login",
-                "/logout",
-                "/upload",
-                "/export",
-                "/download",
-                "/sign-up",
-                "/verify-email",
-                "/change-password",
-                "/UserApp/*",
-                "/EditorApp/*").through(HibernateSessionFilter.class);
+        filter("/login",
+               "/logout",
+               "/upload",
+               "/export",
+               "/download",
+               "/sign-up",
+               "/verify-email",
+               "/change-password",
+               "/UserApp/*",
+               "/EditorApp/*").through(HibernateSessionFilter.class);
 
-        filter( "/",
-                "/UserApp/*",
-                "/EditorApp/*",
-                "/edit/*",
-                "/upload",
-                "/export",
-                "/download").through(SecurityFilter.class);
+        filter("/",
+               "/UserApp/*",
+               "/EditorApp/*",
+               "/edit/*",
+               "/upload",
+               "/export",
+               "/download").through(SecurityFilter.class);
+
+        filter("/*").through(UrlRewriteFilter.class);
 
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
         serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
@@ -108,6 +111,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(AccessLoggingSuppressFilter.class).in(SINGLETON);
         bind(HibernateSessionFilter.class).in(SINGLETON);
         bind(SecurityFilter.class).in(SINGLETON);
+        bind(UrlRewriteFilter.class).in(SINGLETON);
         bind(StatusServlet.class).in(SINGLETON);
         bind(LoginServlet.class).in(SINGLETON);
         bind(LogoutServlet.class).in(SINGLETON);

@@ -1,8 +1,57 @@
+<%@ tag import="static java.lang.System.out" %><%--
+~ Copyright 2009-2015 European Molecular Biology Laboratory
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~ http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+--%>
 <%@tag description="Frontier page template" pageEncoding="UTF-8"%>
 <%@attribute name="extracss" fragment="true"%>
 <%@attribute name="extrajs" fragment="true"%>
+<%@attribute name="extradeferjs" fragment="true"%>
+<%
+    String pageName = request.getParameter("pageName");
+    String pageTitle = "";
+    if ("about.html".equals(pageName)) {
+        pageTitle = "About Annotare &lt; ";
+    } else if ("help/index.html".equals(pageName)) {
+        pageTitle = "Guide &lt; ";
+    } else if ("help/getting_started.html".equals(pageName)) {
+        pageTitle = "Getting Started &lt; Guide &lt; ";
+    } else if ("help/accepted_processed_ma_file_formats.html".equals(pageName)) {
+        pageTitle = "Accepted Processed Microarray Files Formats &lt; Guide &lt; ";
+    } else if ("help/accepted_raw_ma_file_formats.html".equals(pageName)) {
+        pageTitle = "Accepted Raw Microarray Files Formats &lt; Guide &lt; ";
+    } else if ("help/describe_exp.html".equals(pageName)) {
+        pageTitle = "Describe Experiment &lt; Guide &lt; ";
+    } else if ("help/file_upload.html".equals(pageName)) {
+        pageTitle = "Upload Files and Assign to Samples &lt; Guide &lt; ";
+    } else if ("help/sample_attributes.html".equals(pageName)) {
+        pageTitle = "Sample Attributes &lt; Guide &lt; ";
+    } else if ("help/seq_lib_spec.html".equals(pageName)) {
+        pageTitle = "Sequencing Library Information &lt; Guide &lt; ";
+    } else if ("help/strict_mtab_matrix.html".equals(pageName)) {
+        pageTitle = "Strict MAGE-TAB Format for Matrix Data &lt; Guide &lt; ";
+    } else if ("help/submit_exp.html".equals(pageName)) {
+        pageTitle = "Submit Experiment &lt; Guide &lt; ";
+    } else if ("help/time_saving_features.html".equals(pageName)) {
+        pageTitle = "Time Saving Features &lt; Guide &lt; ";
+    } else if ("help/two_color_ma.html".equals(pageName)) {
+        pageTitle = "Two-colour Microarrays &lt; Guide &lt; ";
+    } else if ("help/validate_exp.html".equals(pageName)) {
+        pageTitle = "Validate Experiment &lt; Guide &lt; ";
+    }
+%>
+<!DOCTYPE html>
 <!-- for more info please see http://stackoverflow.com/questions/1296235/jsp-tricks-to-make-templating-easier/3257426#3257426 -->
-<!doctype html>
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -16,7 +65,7 @@
          More info: h5bp.com/b/378 -->
     <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
 
-    <title>Annotare &lt; EMBL-EBI</title>
+    <title><%=pageTitle%>Annotare &lt; EMBL-EBI</title>
     <meta name="description" content="EMBL-EBI"><!-- Describe what this page is about -->
     <meta name="keywords" content="bioinformatics, europe, institute"><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
     <meta name="author" content="EMBL-EBI"><!-- Your [project-name] here -->
@@ -29,8 +78,9 @@
     <!-- CSS: implied media=all -->
     <!-- CSS concatenated and minified via ant build script-->
     <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/mini/ebi-fluid-embl.css">
-    <link rel="stylesheet" href="assets/css/annotare.css">
-    <link rel="stylesheet" href="assets/css/annotare-colours.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/annotare.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/annotare-colours.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
     <jsp:invoke fragment="extracss"/>
 
     <!-- end CSS-->
@@ -82,7 +132,7 @@
             <!-- local-title -->
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
-            <div id="local-title" class="logo-title"><img class="svg" src="assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href=./" title="Back to Annotare homepage">Annotare</a></h1></span></div>
+            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href=${pageContext.request.contextPath}/" title="Back to Annotare homepage">Annotare</a></h1></span></div>
 
             <!-- /local-title -->
 
@@ -90,16 +140,46 @@
 
             <nav>
                 <ul class="grid_24" id="local-nav">
-                    <li class="first active"><a href="./">Home</a></li>
-                    <li><a href="./help/">Help</a></li>
-                    <li class="last"><a href="./about/">About Annotare</a></li>
+                    <li class="first"><a href="${pageContext.request.contextPath}/">Home</a></li>
+                    <%
+                        if (null != pageName && pageName.startsWith("help/")) {
+                    %>
+                    <li class="active"><a href="${pageContext.request.contextPath}/help/">Help</a></li>
+                    <%
+                    } else {
+                    %>
+                    <li><a href="${pageContext.request.contextPath}/help/">Help</a></li>
+                    <%
+                        }
+                        if ("about.html".equals(pageName)) {
+                    %>
+                    <li class="active last"><a href="${pageContext.request.contextPath}/about/">About Annotare</a></li>
+                    <%
+                        } else {
+                    %>
+                    <li class="last"><a href="${pageContext.request.contextPath}/about/">About Annotare</a></li>
+                    <%
+                        }
+                    %>
                     <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
                          add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
                          whichever one will show up last...
                          For example: -->
-                    <li class="functional last"><a href="./login/" class="icon icon-functional" data-icon="l">Login</a></li>
-                    <li class="functional"><a href="./sign-up/" class="icon icon-functional" data-icon="7">Register</a></li>
-                    <li class="functional"><a href="#" class="icon icon-generic" data-icon="\">Feedback</a></li>
+                    <%--<%--%>
+                        <%--Boolean isLoggedIn = (Boolean)session.getAttribute("isLoggedIn");--%>
+                        <%--if (null != isLoggedIn && isLoggedIn) {--%>
+                    <%--%>--%>
+                    <%--<li class="functional last"><a href="#" class="icon icon-functional login" data-icon="l">Logout</a></li>--%>
+                    <%--<li class="functional"><a href="#" class="icon icon-generic account" data-icon="M">${sessionScope.userName}</a></li>--%>
+                    <%--<%--%>
+                    <%--} else {--%>
+                    <%--%>--%>
+                    <%--<li class="functional last"><a href="#" class="icon icon-functional login" data-icon="l">Login</a></li>--%>
+                    <%--<li class="functional"><a href="#" class="icon icon-functional register" data-icon="7">Register</a></li>--%>
+                    <%--<%--%>
+                        <%--}--%>
+                    <%--%>--%>
+                    <%--<li class="functional"><a href="#" class="icon icon-generic feedback" data-icon="\">Feedback</a></li>--%>
                 </ul>
             </nav>
 
@@ -169,11 +249,9 @@
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/plugins.js"></script>
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/script.js"></script>
 -->
-<!-- TODO: reinstate this
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
--->
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
-
+<jsp:invoke fragment="extradeferjs"/>
 <!-- end scripts-->
 
 <!-- Google Analytics details... -->

@@ -161,7 +161,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("helpButton")
     void onHelpButtonClick(ClickEvent event) {
-        Window.open("http://www.ebi.ac.uk/fgpt/annotare_help/", "_blank", "");
+        Window.open("http://www.ebi.ac.uk/fg/annotare/help/", "_blank", "");
     }
 
     @UiHandler("feedbackButton")

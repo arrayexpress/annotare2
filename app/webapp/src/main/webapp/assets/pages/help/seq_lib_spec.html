@@ -1,0 +1,96 @@
+<section id="annotare-help" class="grid_18 alpha">
+    <h2>Sequencing library information</h2>
+    <p>The following information is required by the <a href="/ena">
+    European Nucleotide Archive (ENA)</a> that stores that raw data files of your submission. The information helps to
+    correctly interpret the submitted data.  Controlled vocabulary is provided in drop-down lists where possible.
+    <p>For <strong>all</strong> sequencing experiments:</p>
+    <ul>
+        <li><em>Library Layout</em>: whether to expect SINGLE or PAIRED end reads.</li>
+        <li><em>Library Source</em>: the type of source material that is being
+            sequenced.</li>
+        <li><em>Library Strategy</em>: the sequencing technique intended for the
+            library.</li>
+        <li><em>Library Selection</em>: the method used to select and/or enrich the
+            material being sequenced.</li>
+    </ul>
+    <p>For <strong>paired-end</strong> sequencing experiments only:</p>
+    <ul>
+        <li><em>Nominal Length</em>: the expected size of the insert. The insert being
+            the fragment sequenced, as chosen from size fractionation (e.g. cutting out a band from an agarose gel). If nominal
+            length is 500bp, put down "500" as the value.  No decimals or ranges (e.g. 100-200) allowed, and it cannot be zero. This information guides sequence aligner algorithms to place the two mates of a pair of reads on the genome sequences separated by a reasonable distance. Therefore, the nominal length value does not need to be absolutely precise, but also should not be an order of magnitude off:<br><br>
+            <img src="../assets/images/nominal_length.png" alt="nominal_length" style="width:60%;height:60%;border:2px solid #385930"/></li>
+        <li><em>Nominal SDev</em>: the standard deviation of the nominal length. Decimals are allowed (e.g. 56.4) but no ranges
+            (e.g. 34.5-42.6).</li>
+        <li><em>Orientation</em>: the orientation of the two reads. "5'-3'-3'-5'" for
+            forward-reverse pairs, "5'-3'-5'-3'" for forward-forward pairs.	</li>
+    </ul>
+
+    <p>For <strong>strand-specific</strong> sequencing experiments:</p>
+    <ul>
+        <li><em>Library Strand</em>: whether the 'first strand' or 'second strand' of cDNA was used to prepare the library. <i>Note this should not be confused with the forward and reverse strands one would get in a paired-end sequencing reaction.</i><br><br>
+            "First strand" corresponds to the "template"/ "antisense" / "-" strand and has the reverse complement sequence of the transcribed mRNA, wherease "second strand" corresponds to the "coding" /"sense" /"+" strand which has the same sequence as the RNA that is transcribed.  The commonly used <a href="http://nar.oxfordjournals.org/content/37/18/e123.long" target="_blank">dUTP-based protocol</a> sequences the 'first strand'. For paired-end strand-specific sequencing studies, sequencing the 'first strand" is sometimes referred to as "mate2_sense" (i.e. mate 2 of the paired-end reads comes from the sense strand). Please see the diagram below for further information:<br><br>
+            <img src="../assets/images/strand_specificity.png" alt="strand_specificity" style="width:60%;height:60%;border:2px solid #385930"/></li>
+    </ul>
+
+</section>
+<aside class="grid_6 omega">
+    <h3>Annotare Guide</h3>
+    <ol id="secondary-nav">
+        <li><h4>Getting started</h4>
+            <ul>
+                <li><a href="getting_started.html#register">Register for submission account</a></li>
+                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
+                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
+            </ul>
+        </li>
+        <li><h4>Describe experiment</h4>
+            <ul>
+                <li><a href="describe_exp.html#expt_bg">Explain experiment background</a></li>
+                <li><a href="describe_exp.html#release_date">Set reasonable release date</a></li>
+                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
+                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
+            </ul>
+        </li>
+        <li><h4>Time-saving features</h4>
+            <ul>
+                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
+                <li><a href="time_saving_features.html#upload_multiple_files">Upload multiple files in one go</a></li>
+            </ul>
+        </li>
+        <li><h4>Sample attributes</h4>
+            <ul>
+                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
+                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
+                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
+            </ul>
+        </li>
+        <li><h4>Microarray experiment</h4>
+            <ul>
+                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
+                <li><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
+                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+        </li>
+        <li><h4>Sequencing experiment</h4>
+            <ul>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
+                <li class="active"><a href="seq_lib_spec.html">Provide library information</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
+            </ul>
+        </li>
+        <li><h4>Upload files and assign to samples</h4>
+            <ul>
+                <li><a href="file_upload.html#direct">Direct upload</a></li>
+                <li><a href="file_upload.html#ftp">FTP upload</a></li>
+            </ul>
+        </li>
+        <li><h4>Validate and submit</h4>
+            <ul>
+                <li><a href="validate_exp.html#validate">What is validation?</a></li>
+                <li><a href="validate_exp.html#fix_errors">How to fix validation errors?</a></li>
+                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+            </ul>
+        </li>
+    </ol>
+</aside>

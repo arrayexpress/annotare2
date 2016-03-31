@@ -1,0 +1,227 @@
+<section id="annotare-help" class="grid_18 alpha">
+    <h2>Accepted processed microarray files formats</h2>
+    <p><strong>Important notes on file preparation:</strong></p>
+    <ol>
+        <li>Do not compress your microarray data files.</li>
+        <li>Make sure the file names are constructed <em>only</em> from alphanumerals [A-Z,a-z,0-9], underscores
+        [_] and dots [.], with no whitespaces, brackets, other punctuations or symbols.</li>
+        <li>Any spreadsheet/matrix file should be saved in tab-delimited text (<code>*.txt</code>) format and not
+        Excel format (<code>*.xls</code>, <code>*.xlsx</code>). If you're unfamiliar with this format, please see
+        <a href="https://wiki.openoffice.org/wiki/Documentation/FAQ/Calc/Files/How_do_I_open_a_tab-delimited_file_in_OpenOffice.org_Spreadsheet%3F_What_if_I_have_a_different_type_of_delimiter%3F">OpenOffice Calc</a>
+        or <a href="http://office.microsoft.com/en-gb/excel-help/import-or-export-text-txt-or-csv-files-HP010342598.aspx">Microsoft Excel</a> guide.</li>
+    </ol>
+
+    <h3>What are "processed" files?</h3>
+
+    <p>Processed files are generated from raw files by procedures such as background correction, normalisation, and
+    further statistical analyses (e.g. calculating fold-changes and associated p-values). We accept either "native"
+    processed files from microarray scanner software (e.g. ".chp" files from Affymetrix scanners, output files from
+    GenomeStudio software for Illumina BeadChip), or two-dimensional spreadsheet files in
+    <strong>tab-delimited text (.txt)</strong> format.  For the latter, the probes/probesets/gene names are in rows,
+    and data from one or more hybridisations are in columns. We accept processed files from the following scenarios:
+    <ul>
+        <li>one processed file per hybridisation, i.e. you have a series of processed files;</li>
+        <li>one spreadsheet ("matrix") file containing normalised data from all hybridisations;</li>
+        <li>several spreadsheet ("matrix") files containing normalised data from different stages of data processing,
+        e.g. one file containing normalised probe intensities and another containing fold-change data summarised at
+        the gene level.</li>
+    </ul>
+
+
+    <h3>What should a processed text file look like?</a></h3>
+    <p>In the two-dimensional table, you should have probes/genes in rows and samples/data in columns:</p>
+    <ul>
+        <li><strong>Probes/genes in rows</strong>:  Where possible, as row headers, you should use official probe
+        names/identifiers, matching those in the <a href="/arrayexpress/help/adf_submissions_overview.html">array design
+        file</a>, so one can map each row of data to the correct probe. Put the probe identifiers in the first column
+        under a heading <code>Reporter Identifier</code> (for probes) or <code>CompositeSequence Identifier </code>
+        (for "composite" collation of probes, most common example being Affymetrix probe sets). If probe identifiers are
+        not available, try to use proper gene symbols or other identifiers (e.g. GenBank cDNA accession, UniProt protein
+        accession).</li>
+
+        <li><strong>Samples/Data in columns</strong>: Where possible, label each data column with the same sample names
+        as you declare on the Annotare forms, or use terms as they appear in your manuscript. This would allow mapping
+        of a column of data to correct sample(s).</li>
+    </ul>
+    <p>A processed .txt file containing data from one single hybridisation should look like this:</p>
+    <table>
+        <tr>
+            <td><strong>Reporter Identifier<strong></td>
+            <td><strong>sample 1 normalised intensity</strong></td>
+            <td><strong>sample 1 background</strong></td>
+        </tr>
+        <tr>
+            <td><strong>probe_name_1</strong></td>
+            <td><i>233.5</i></td>
+            <td><i>69.1</i></td>
+        </tr>
+        <tr>
+            <td><strong>probe_name_2</strong></td>
+            <td><i>129.4</i></td>
+            <td><i>27.6</i></td>
+        </tr>
+    </table>
+    <p>And here is an example where gene names are used as row headings:</p>
+    <table>
+        <tr>
+            <td><strong>Human HGNC gene name</strong></td>
+            <td><strong>sample 1 normalised intensity</strong></td>
+            <td><strong>sample 1 background</strong></td>
+        </tr>
+        <tr>
+            <td><strong>CDKN2A</strong></td>
+            <td><i>233.5</i></td>
+            <td><i>69.1</i></td>
+        </tr>
+        <tr>
+            <td><strong>BRCA2</strong></td>
+            <td><i>129.4</i></td>
+            <td><i>27.6</i></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <p>Processed "matrices" summarising data from multiple hybridisations should look like the following. Again, as for
+    per-hybridisation processed files, if probe identifiers are not available, try to use proper gene symbols or other
+    identifiers (e.g. GenBank cDNA accession, UniProt protein accession).</p>
+    <em>Matrix of normalised values per sample:</em><br><br>
+
+    <table>
+        <tr>
+            <td><strong>Reporter Identifier</strong></td>
+            <td><strong>sample 1 normalised</strong></td>
+            <td><strong>sample 2 normalised</strong></td>
+            <td><strong>sample 3 normalised</strong></td>
+            <td><strong>sample 4 normalised</strong></td>
+        </tr>
+        <tr>
+            <td><strong>probe_name_1</strong></td>
+            <td><i>26.9</i></td>
+            <td><i>44.3</i></td>
+            <td><i>62.3</i></td>
+            <td><i>58.5</i></td>
+        </tr>
+        <tr>
+            <td><strong>probe_name_2</strong></td>
+            <td><i>22.9</i></td>
+            <td><i>43.7</i></td>
+            <td><i>58.2</i></td>
+            <td><i>67.4</i></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <table>
+        <tr>
+            <td><strong>GenBank accession</strong></td>
+            <td><strong>sample 1 normalised</strong></td>
+            <td><strong>sample 2 normalised</strong></td>
+            <td><strong>sample 3 normalised</strong></td>
+            <td><strong>sample 4 normalised</strong></td>
+        </tr>
+        <tr>
+            <td><strong>BC000578</strong></td>
+            <td><i>26.9</i></td>
+            <td><i>44.3</i></td>
+            <td><i>62.3</i></td>
+            <td><i>58.5</i></td>
+        </tr>
+        <tr>
+            <td><strong>M31642</strong></td>
+            <td><i>22.9</i></td>
+            <td><i>43.7</i></td>
+            <td><i>58.2</i></td>
+            <td><i>67.4</i></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <em>Matrix of summarised values (one column of data maps to multiple samples):</em><br><br>
+    <table>
+        <tr>
+            <td><strong>Reporter Identifier</strong></td>
+            <td><strong>drug A treated average</strong></i></td>
+            <td><strong>drug B treated average</strong></i></td>
+            <td><strong>untreated control average</strong></i></td>
+        </tr>
+        <tr>
+            <td><strong>probe_name_1</strong></td>
+            <td><i>44.6</i></td>
+            <td><i>89.3</i></td>
+            <td><i>290.15</i></td>
+        </tr>
+        <tr>
+            <td><strong>probe_name_2</strong></td>
+            <td><i>98.3</i></td>
+            <td><i>36.7</i></td>
+            <td><i>100.52</i></td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <h3>Processed matrix files in strict MAGE-TAB format (for advanced users)</a></h3>
+    <p>For submitters who are familiar with <a href="http://www.fged.org/projects/mage-tab/" target="_blank">MAGE-TAB specification</a>,
+    we also accept matrix files in strict MAGE-TAB format, which allows each data point in the file (in a given row and
+    a given column) to be mapped to a particular assay in the experiment and to a particular probe/probe set in the
+    <a href="/arrayexpress/help/adf_submissions_overview.html">array design file</a> in a human readable way and also
+    programmatically. Check out this <a href="strict_mtab_matrix.html">guide on the strict matrix format</a> for more
+    information.</p>
+</section>
+
+<aside class="grid_6 omega">
+    <h3>Annotare Guide</h3>
+    <ol id="secondary-nav">
+        <li><h4>Getting started</h4>
+            <ul>
+                <li><a href="getting_started.html#register">Register for submission account</a></li>
+                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
+                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
+            </ul>
+        </li>
+        <li><h4>Describe experiment</h4>
+            <ul>
+                <li><a href="describe_exp.html#expt_bg">Explain experiment background</a></li>
+                <li><a href="describe_exp.html#release_date">Set reasonable release date</a></li>
+                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
+                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
+            </ul>
+        </li>
+        <li><h4>Time-saving features</h4>
+            <ul>
+                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
+                <li><a href="time_saving_features.html#upload_multiple_files">Upload multiple files in one go</a></li>
+            </ul>
+        </li>
+        <li><h4>Sample attributes</h4>
+            <ul>
+                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
+                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
+                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
+            </ul>
+        </li>
+        <li><h4>Microarray experiment</h4>
+            <ul>
+                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
+                <li class="active"><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
+                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+        </li>
+        <li><h4>Sequencing experiment</h4>
+            <ul>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
+                <li><a href="seq_lib_spec.html">Provide library information</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
+            </ul>
+        </li>
+        <li><h4>Upload files and assign to samples</h4>
+            <ul>
+                <li><a href="file_upload.html#direct">Direct upload</a></li>
+                <li><a href="file_upload.html#ftp">FTP upload</a></li>
+            </ul>
+        </li>
+        <li><h4>Validate and submit</h4>
+            <ul>
+                <li><a href="validate_exp.html#validate">What is validation?</a></li>
+                <li><a href="validate_exp.html#fix_errors">How to fix validation errors?</a></li>
+                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+            </ul>
+        </li>
+    </ol>
+</aside>

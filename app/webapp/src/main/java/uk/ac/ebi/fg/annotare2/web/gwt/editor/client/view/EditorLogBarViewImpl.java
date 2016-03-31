@@ -44,7 +44,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
             if (result.getErrors().isEmpty()) {
                 panel.add(new Label("Validation has been successful"));
             } else {
-                panel.add(new HTML("Validation failed with " + result.getErrors().size() + " errors (for help fixing errors please go to <a href=\"http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html</a>):"));
+                panel.add(new HTML("Validation failed with " + result.getErrors().size() + " errors (for help fixing errors please go to <a href=\"http://www.ebi.ac.uk/fg/annotare/help/validate_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html</a>):"));
                 addAll(result.getErrors());
             }
         } else {
