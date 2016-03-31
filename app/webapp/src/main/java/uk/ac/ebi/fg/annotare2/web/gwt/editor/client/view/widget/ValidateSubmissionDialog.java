@@ -194,7 +194,7 @@ public class ValidateSubmissionDialog extends DialogBox {
                         "Our curation team will review your submission and will email you with any questions. " +
                         "Once all the required information is provided we will send you an accession number.<br><br>" +
                         "In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
-                        "Further information can be found at <a href=\"http://www.ebi.ac.uk/fg/annotare/help/submit_exp.html\" target=\"_blank\">Annotare help</a>.");
+                        "Further information can be found at <a href=\"/fg/annotare/help/submit_exp.html\" target=\"_blank\">Annotare help</a>.");
     }
 
     @Override
