@@ -34,6 +34,7 @@ import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableFileCallback;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableUploader;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class UploadProgressPopupPanel extends PopupPanel {
@@ -47,6 +48,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
     private Presenter presenter;
 
     private Duration startTime;
+    private Duration fileStartTime;
     private double avgSpeed;
 
     public UploadProgressPopupPanel(ResumableUploader uploader) {
@@ -90,6 +92,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
         });
         updateError("");
         updateMessage("");
+        startTime = new Duration();
         resetProgress();
     }
 
@@ -109,19 +112,20 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
     private void resetProgress() {
         avgSpeed = 0;
-        startTime = new Duration();
+        fileStartTime = new Duration();
 
         progressBarElement.setAttribute("value", "0");
         errorElement.setInnerHTML("");
 
     }
 
-    private void updateProgress(float progress, long size) {
-        long sent = Math.round(size * progress);
-        avgSpeed = sent * 1000 / startTime.elapsedMillis();
+    private void updateProgress(float fileProgress, long fileSize, float allProgress) {
+        long sent = Math.round(fileSize * fileProgress);
+        avgSpeed = sent * 1000 / fileStartTime.elapsedMillis();
+        int eta = Math.round(((1 - allProgress) * startTime.elapsedMillis()) / (allProgress * 1000));
 
-        progressBarElement.setAttribute("value", String.valueOf(Math.round(progress * 100)));
-        errorElement.setInnerHTML(formatSpeed(avgSpeed));
+        progressBarElement.setAttribute("value", String.valueOf(Math.round(fileProgress * 100)));
+        errorElement.setInnerHTML(formatSpeed(avgSpeed) + ", " + formatTime(eta) + " ETA");
     }
 
     private String formatSpeed(double speed) {
@@ -130,6 +134,17 @@ public class UploadProgressPopupPanel extends PopupPanel {
         int exp = (int)(Math.log(speed) / Math.log(unit));
         String unitName = "kMGTPE".charAt(exp-1) + "B/s";
         return NumberFormat.getFormat("#.0 " + unitName).format(speed / Math.pow(unit, exp));
+    }
+
+    private String formatTime(int time) {
+        int unit = 60;
+        String prefix = "";
+        if ( time > (unit * unit) ) {
+            prefix = NumberFormat.getFormat("00:").format(time / (unit * unit));
+            time = time % (unit*unit);
+        }
+        return prefix + NumberFormat.getFormat("00:").format(time/unit) +
+                NumberFormat.getFormat("00").format(time % unit);
     }
 
     private void updateError(String error) {
@@ -141,6 +156,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
     }
 
     public interface Presenter {
+        void registerUploadedFiles(List<UploadedFileInfo> filesInfo, AsyncCallback<List<Boolean>> callback);
         void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback);
     }
 
@@ -223,7 +239,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
         @Override
         public void onFileProgress(ResumableUploader uploader, ResumableFile file) {
             panel.updateMessage("Transferring " + file.getFileName());
-            panel.updateProgress(file.getProgress(false), file.getSize());
+            panel.updateProgress(file.getProgress(false), file.getSize(), uploader.progress());
         }
 
         @Override

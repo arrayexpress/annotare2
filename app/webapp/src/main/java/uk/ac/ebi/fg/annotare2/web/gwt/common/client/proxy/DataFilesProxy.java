@@ -73,8 +73,23 @@ public class DataFilesProxy {
         }.wrap());
     }
 
-    public void registerHttpFile(long submissionId, UploadedFileInfo fileInfo, final AsyncCallback<Void> callback) {
-        filesService.registerUploadedFile(submissionId, fileInfo, new AsyncCallbackWrapper<Void>() {
+    public void registerHttpFiles(long submissionId, List<UploadedFileInfo> filesInfo, final AsyncCallback<List<Boolean>> callback) {
+        filesService.registerFilesBeforeUpload(submissionId, filesInfo, new AsyncCallbackWrapper<List<Boolean>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(List<Boolean> result) {
+                updater.update();
+                callback.onSuccess(result);
+            }
+        }.wrap());
+    }
+
+    public void addHttpFile(long submissionId, UploadedFileInfo fileInfo, final AsyncCallback<Void> callback) {
+        filesService.addUploadedFile(submissionId, fileInfo, new AsyncCallbackWrapper<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);

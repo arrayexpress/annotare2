@@ -29,7 +29,9 @@ public interface DataFilesServiceAsync {
 
     void initSubmissionFtpDirectory(long submissionId, AsyncCallback<String> async);
 
-    void registerUploadedFile(long submissionId, UploadedFileInfo fileInfo, AsyncCallback<Void> async);
+    void registerFilesBeforeUpload(long submissionId, List<UploadedFileInfo> filesInfo, AsyncCallback<List<Boolean>> async);
+
+    void addUploadedFile(long submissionId, UploadedFileInfo fileInfo, AsyncCallback<Void> async);
 
     void registerFtpFiles(long submissionId, List<String> filesInfo, AsyncCallback<String> async);
 
