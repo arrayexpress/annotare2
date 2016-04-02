@@ -107,29 +107,21 @@ public class DataFilesPeriodicProcess {
             // FTP files will not be processed if FTP is not enabled
             if (!file.isDeleted() &&
                     (properties.isFtpEnabled() || !file.getSourceUri().contains(properties.getFtpPickUpDir()))) {
-                Session session = sessionFactory.openSession();
-                try {
-                    switch (file.getStatus()) {
-                        case TO_BE_STORED:
-                            copyFile(file, availabilityChecker);
-                            break;
+                switch (file.getStatus()) {
+                    case TO_BE_STORED:
+                        copyFile(file, availabilityChecker);
+                        break;
 
-                        case TO_BE_ASSOCIATED:
-                            verifyFile(file, availabilityChecker);
-                            break;
+                    case TO_BE_ASSOCIATED:
+                        verifyFile(file, availabilityChecker);
+                        break;
 
-                        case ASSOCIATED:
-                            maintainAssociation(file, availabilityChecker);
-                            break;
+                    case ASSOCIATED:
+                        maintainAssociation(file, availabilityChecker);
+                        break;
 
-                        //case FILE_NOT_FOUND_ERROR:
-                        //    attemptToRestoreAssociation(file, availabilityChecker);
-                    }
-                } catch (Throwable x) {
-                    logger.error(x.getMessage(), x);
-                    emailer.sendException("Error in data file periodic process", x);
-                } finally {
-                    session.close();
+                    //case FILE_NOT_FOUND_ERROR:
+                    //    attemptToRestoreAssociation(file, availabilityChecker);
                 }
             }
         }
