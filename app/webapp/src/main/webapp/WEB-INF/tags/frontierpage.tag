@@ -48,6 +48,8 @@
         pageTitle = "Two-colour Microarrays &lt; Guide &lt; ";
     } else if ("help/validate_exp.html".equals(pageName)) {
         pageTitle = "Validate Experiment &lt; Guide &lt; ";
+    } else if ("help/experiment_types.html".equals(pageName)) {
+        pageTitle = "Experiment Types &lt; Guide &lt; ";
     }
 %>
 <!DOCTYPE html>
