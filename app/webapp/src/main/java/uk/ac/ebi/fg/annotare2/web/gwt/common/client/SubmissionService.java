@@ -66,5 +66,7 @@ public interface SubmissionService extends RemoteService {
 
     void deleteSubmission(long id) throws ResourceNotFoundException, NoPermissionException;
 
+    void sendMessage(long id, String subject, String message) throws ResourceNotFoundException, NoPermissionException;
+
     void postFeedback(long id, Byte score, String comment) throws ResourceNotFoundException, NoPermissionException;
 }

@@ -30,9 +30,9 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FeedbackDialog extends DialogBox {
+public class ContactUsDialog extends DialogBox {
 
-    interface Binder extends UiBinder<Widget, FeedbackDialog> {
+    interface Binder extends UiBinder<Widget, ContactUsDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -47,10 +47,10 @@ public class FeedbackDialog extends DialogBox {
 
     private Presenter presenter;
 
-    public FeedbackDialog() {
+    public ContactUsDialog() {
         setModal(true);
         setGlassEnabled(true);
-        setText("Have your say");
+        setText("Contact us");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
     }
@@ -72,7 +72,7 @@ public class FeedbackDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        presenter.postFeedback(null, message.getValue().trim());
+        presenter.sendMessage("Annotare submission", message.getValue().trim());
         hide();
     }
 
@@ -92,7 +92,7 @@ public class FeedbackDialog extends DialogBox {
     }
 
     public interface Presenter {
-        void postFeedback(Byte score, String comment);
+        void sendMessage(String subject, String message);
     }
 
 }

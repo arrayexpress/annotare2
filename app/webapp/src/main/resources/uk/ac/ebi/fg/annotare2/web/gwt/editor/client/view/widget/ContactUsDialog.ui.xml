@@ -20,7 +20,7 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
     <g:VerticalPanel>
-        <g:Label height="2.5em">We value your feedback. Please leave your comments below:</g:Label>
+        <g:Label height="2.5em">Please leave your message below -- we will respond shortly via email.</g:Label>
         <g:TextArea width="40em" height="10em" ui:field="message"/>
         <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
             <g:HTMLPanel>

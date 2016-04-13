@@ -28,13 +28,14 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactUsDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
 
 /**
@@ -49,7 +50,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     Label accessionLabel;
 
     @UiField
-    Button feedbackButton;
+    Button contactButton;
 
     @UiField
     Button editButton;
@@ -75,13 +76,13 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     private boolean isCurator;
     private boolean isOwnedByCreator;
 
-    private final FeedbackDialog feedbackDialog;
+    private final ContactUsDialog contactUsDialog;
     private final WaitingPopup waitingPopup;
 
     public EditorTitleBarViewImpl() {
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
-        feedbackDialog = new FeedbackDialog();
+        contactUsDialog = new ContactUsDialog();
         waitingPopup = new WaitingPopup();
     }
 
@@ -101,14 +102,14 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
             editButton.setVisible(true);
             releaseButton.setVisible(true);
         } else {
-            feedbackButton.setVisible(true);
+            contactButton.setVisible(true);
         }
     }
 
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-        feedbackDialog.setPresenter(presenter);
+        contactUsDialog.setPresenter(presenter);
     }
 
     @Override
@@ -161,12 +162,12 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("helpButton")
     void onHelpButtonClick(ClickEvent event) {
-        Window.open("/fg/annotare/help/", "_blank", "");
+        Window.open(Urls.getContextUrl() + "help/", "_blank", "");
     }
 
-    @UiHandler("feedbackButton")
+    @UiHandler("contactButton")
     void onFeedbackButtonClick(ClickEvent event) {
-        feedbackDialog.center();
+        contactUsDialog.center();
     }
 
     @UiHandler("exportButton")

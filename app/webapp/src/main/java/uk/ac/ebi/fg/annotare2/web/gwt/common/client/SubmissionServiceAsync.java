@@ -43,5 +43,7 @@ public interface SubmissionServiceAsync {
 
     void deleteSubmission(long id, AsyncCallback<Void> async);
 
+    void sendMessage(long id, String subject, String message, AsyncCallback<Void> async);
+
     void postFeedback(long id, Byte score, String comment, AsyncCallback<Void> async);
 }

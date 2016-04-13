@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
@@ -53,6 +54,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResu
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvParser;
+import uk.org.lidalia.slf4jext.Logger;
+import uk.org.lidalia.slf4jext.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -74,14 +77,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private static final long serialVersionUID = 6482329782917056447L;
 
-//    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     private final DataFileManagerImpl dataFileManager;
     private final SubmissionValidator validator;
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
-//    private final EmailSenderImpl email;
+    private final EmailSenderImpl email;
 
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
@@ -98,7 +101,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         this.userDao = userDao;
         this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
-//        this.email = emailSender;
+        this.email = emailSender;
     }
 
     @Transactional
@@ -426,20 +429,37 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-//    private void sendFeedbackEmail(Byte score, String comment) {
-//        User u = getCurrentUser();
-//        try {
-//            email.sendFromTemplate(EmailSenderImpl.FEEDBACK_TEMPLATE,
-//                    ImmutableMap.of(
-//                            "from.name", u.getName(),
-//                            "from.email", u.getEmail(),
-//                            "feedback.rating", null != score ? String.valueOf(score) : "-",
-//                            "feedback.comment", comment
-//                    ));
-//        } catch (RuntimeException x) {
-//            log.error("Unable to send feedback email", x);
-//        }
-//    }
+    @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
+    @Override
+    public void sendMessage(long id, String subject, String message) throws ResourceNotFoundException, NoPermissionException {
+        try {
+            Submission submission = getSubmission(id, Permission.VIEW);
+            sendEmail(submission, subject, message);
+        } catch (RecordNotFoundException e) {
+            throw noSuchRecord(e);
+        } catch (AccessControlException e) {
+            throw noPermission(e);
+        }
+    }
+
+    private void sendEmail(Submission submission, String subject, String message) {
+        User u = getCurrentUser();
+        try {
+            email.sendFromTemplate(
+                    EmailSenderImpl.CONTACT_US_TEMPLATE,
+                    new ImmutableMap.Builder<String, String>()
+                            .put("from.name", u.getName())
+                            .put("from.email", u.getEmail())
+                            .put("submission.id", String.valueOf(submission.getId()))
+                            .put("submission.title", submission.getTitle())
+                            .put("message.subject", subject)
+                            .put("message.body", message)
+                            .build()
+            );
+        } catch (RuntimeException x) {
+            log.error("Unable to send email", x);
+        }
+    }
 
     private void storeAssociatedFiles(Submission submission)
             throws DataSerializationException, URISyntaxException, IOException {

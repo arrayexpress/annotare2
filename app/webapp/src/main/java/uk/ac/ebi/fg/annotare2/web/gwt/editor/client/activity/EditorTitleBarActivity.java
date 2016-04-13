@@ -212,6 +212,20 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
+    public void sendMessage(String subject, String message) {
+        submissionService.sendMessage(getSubmissionId(), subject, message,
+                callbackWrap(
+                        new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+
+                            @Override
+                            public void onSuccess(Void result) {
+                            }
+                        }
+                )
+        );
+    }
+
+    @Override
     public void postFeedback(Byte score, String comment) {
         submissionService.postFeedback(getSubmissionId(), score, comment,
                 callbackWrap(

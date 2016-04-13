@@ -54,7 +54,7 @@ public class EmailSenderImpl implements EmailSender {
     public static final String CHANGE_PASSWORD_REQUEST_TEMPLATE = "change-password-request";
     public static final String CHANGE_PASSWORD_CONFIRMATION_TEMPLATE = "change-password-confirmation";
     public static final String EXCEPTION_REPORT_TEMPLATE = "exception-report";
-    public static final String FEEDBACK_TEMPLATE = "general-feedback";
+    public static final String CONTACT_US_TEMPLATE = "contact-us";
 
     @Inject
     public EmailSenderImpl(AnnotareProperties properties) {

@@ -22,7 +22,7 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.FeedbackDialog;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactUsDialog;
 
 /**
  * @author Olga Melnichuk
@@ -49,7 +49,7 @@ public interface EditorTitleBarView extends IsWidget {
 
     void criticalUpdateStopped();
 
-    interface Presenter extends SetupExpSubmissionView.Presenter, FeedbackDialog.Presenter {
+    interface Presenter extends SetupExpSubmissionView.Presenter, ContactUsDialog.Presenter {
 
         void assignSubmissionToMe(AsyncCallback<Void> callback);
 
@@ -58,6 +58,8 @@ public interface EditorTitleBarView extends IsWidget {
         void validateSubmission(ValidationHandler handler);
 
         void submitSubmission(SubmissionHandler handler);
+
+        void postFeedback(Byte score, String message);
 
         String getSubmissionExportUrl();
     }
