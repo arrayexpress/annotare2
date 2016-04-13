@@ -42,6 +42,7 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -199,6 +200,19 @@ public class SubsTrackingWatchdog {
                 String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
                         EmailTemplates.INITIAL_SUBMISSION_OTRS_TEMPLATE : EmailTemplates.REPEAT_SUBMISSION_OTRS_TEMPLATE;
 
+                String submissionType = "";
+                if (submission instanceof ExperimentSubmission) {
+                    try {
+                        ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+                        if (exp.getType().isSequencing()) {
+                            submissionType = "HTS";
+                        } else {
+                            submissionType = "microarray";
+                        }
+                    } catch (DataSerializationException x) {}
+
+                }
+
                 sendEmail(
                         otrsTemplate,
                         new ImmutableMap.Builder<String, String>().
@@ -206,6 +220,7 @@ public class SubsTrackingWatchdog {
                                 put("to.email", submission.getCreatedBy().getEmail()).
                                 put("submission.title", submission.getTitle()).
                                 put("submission.date", submission.getUpdated().toString()).
+                                put("submission.type", submissionType).
                                 put("subsTracking.user", properties.getSubsTrackingUser()).
                                 put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType()).
                                 put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
