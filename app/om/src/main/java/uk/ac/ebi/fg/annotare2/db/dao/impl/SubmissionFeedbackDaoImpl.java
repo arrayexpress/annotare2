@@ -17,10 +17,17 @@
 package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
 import com.google.inject.Inject;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public class SubmissionFeedbackDaoImpl extends AbstractDaoImpl<SubmissionFeedback> implements SubmissionFeedbackDao {
 
@@ -34,5 +41,34 @@ public class SubmissionFeedbackDaoImpl extends AbstractDaoImpl<SubmissionFeedbac
         SubmissionFeedback feedback = new SubmissionFeedback(submission, score);
         save(feedback);
         return feedback;
+    }
+
+    @Override
+    public SubmissionFeedback getLastFeedbackFor(Submission submission) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(submission.getSubmitted());
+        cal.add(Calendar.MINUTE, -1);
+        Date minTime = cal.getTime();
+        cal.add(Calendar.MINUTE, 2);
+        Date maxTime = cal.getTime();
+
+        return (SubmissionFeedback)getCurrentSession()
+                .createCriteria(SubmissionFeedback.class)
+                .add(Restrictions.eq("relatesTo", submission))
+                .add(Restrictions.ge("posted", minTime))
+                .add(Restrictions.le("posted", maxTime))
+                .addOrder(Order.desc("posted"))
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<SubmissionFeedback> getFeedbackFor(Submission submission) {
+        return (List<SubmissionFeedback>)getCurrentSession()
+                        .createCriteria(SubmissionFeedback.class)
+                        .add(Restrictions.eq("relatesTo", submission))
+                        .addOrder(Order.desc("posted"))
+                        .list();
     }
 }

@@ -33,10 +33,8 @@ import uk.ac.ebi.fg.annotare2.core.magetab.MageTabFiles;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.LinuxShellCommandExecutor;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
-import uk.ac.ebi.fg.annotare2.db.model.DataFile;
-import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.dao.SubmissionFeedbackDao;
+import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
@@ -53,7 +51,6 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -71,6 +68,7 @@ public class SubsTrackingWatchdog {
     private final SubsTracking subsTracking;
     private final AEConnection aeConnection;
     private final SubmissionDao submissionDao;
+    private final SubmissionFeedbackDao submissionFeedbackDao;
     private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
     private final FtpManager ftpManager;
@@ -90,6 +88,7 @@ public class SubsTrackingWatchdog {
                                 SubsTracking subsTracking,
                                 AEConnection aeConnection,
                                 SubmissionDao submissionDao,
+                                SubmissionFeedbackDao submissionFeedbackDao,
                                 SubmissionManager submissionManager,
                                 DataFileManager dataFileManager,
                                 FtpManager ftpManager,
@@ -99,6 +98,7 @@ public class SubsTrackingWatchdog {
         this.subsTracking = subsTracking;
         this.aeConnection = aeConnection;
         this.submissionDao = submissionDao;
+        this.submissionFeedbackDao = submissionFeedbackDao;
         this.submissionManager = submissionManager;
         this.dataFileManager = dataFileManager;
         this.ftpManager = ftpManager;
@@ -182,7 +182,6 @@ public class SubsTrackingWatchdog {
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
             submission.setStatus(SubmissionStatus.IN_CURATION);
-            submission.setSubmitted(new Date());
             submissionManager.save(submission);
             if (!hasResubmitted) {
                 sendEmail(
@@ -212,6 +211,7 @@ public class SubsTrackingWatchdog {
                     } catch (DataSerializationException x) {}
 
                 }
+                SubmissionFeedback feedback = submissionFeedbackDao.getLastFeedbackFor(submission);
 
                 sendEmail(
                         otrsTemplate,
@@ -221,6 +221,8 @@ public class SubsTrackingWatchdog {
                                 put("submission.title", submission.getTitle()).
                                 put("submission.date", submission.getUpdated().toString()).
                                 put("submission.type", submissionType).
+                                put("submission.feedback.score", null != feedback ? String.valueOf(feedback.getScore()) + "/9" : "n/a").
+                                put("submission.feedback.comment", null != feedback ? feedback.getComment() : "n/a").
                                 put("subsTracking.user", properties.getSubsTrackingUser()).
                                 put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType()).
                                 put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).

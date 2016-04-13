@@ -17,10 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
 import uk.ac.ebi.arrayexpress2.magetab.exception.ParseException;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
@@ -62,6 +59,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -76,14 +74,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private static final long serialVersionUID = 6482329782917056447L;
 
-    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
+//    private static final Logger log = LoggerFactory.getLogger(SubmissionServiceImpl.class);
 
     private final DataFileManagerImpl dataFileManager;
     private final SubmissionValidator validator;
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
-    private final EmailSenderImpl email;
+//    private final EmailSenderImpl email;
 
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
@@ -100,7 +98,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         this.userDao = userDao;
         this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
-        this.email = emailSender;
+//        this.email = emailSender;
     }
 
     @Transactional
@@ -138,16 +136,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
             return asIdfTable(exp);
-        } catch (IOException e) {
-            throw unexpected(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        } catch (ParseException e) {
-            throw unexpected(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
+        } catch (ParseException | DataSerializationException | IOException e) {
+            throw unexpected(e);
         }
     }
 
@@ -158,16 +152,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             ExperimentSubmission submission = getExperimentSubmission(id, Permission.VIEW);
             ExperimentProfile exp = submission.getExperimentProfile();
             return asSdrfTable(exp);
-        } catch (IOException e) {
-            throw unexpected(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        } catch (ParseException e) {
-            throw unexpected(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
+        } catch (ParseException | DataSerializationException | IOException e) {
+            throw unexpected(e);
         }
     }
 
@@ -371,13 +361,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
-        } catch (IOException e) {
-            throw unexpected(e);
-        } catch (ParseException e) {
-            throw unexpected(e);
-        } catch (UnknownExperimentTypeException e) {
-            throw unexpected(e);
-        } catch (DataSerializationException e) {
+        } catch (ParseException | DataSerializationException | UnknownExperimentTypeException | IOException e) {
             throw unexpected(e);
         }
         return new ValidationResult(errors, warnings, failures);
@@ -391,6 +375,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             Submission submission = getSubmission(id, Permission.UPDATE);
             if (submission.getStatus().canSubmit()) {
                 storeAssociatedFiles(submission);
+                submission.setSubmitted(new Date());
                 submission.setStatus(
                         SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
                                 SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
@@ -402,11 +387,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
-        } catch (DataSerializationException e) {
-            throw unexpected(e);
-        } catch (URISyntaxException e) {
-            throw unexpected(e);
-        } catch (IOException e) {
+        } catch (DataSerializationException | URISyntaxException | IOException e) {
             throw unexpected(e);
         }
     }
@@ -437,7 +418,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             SubmissionFeedback feedback = feedbackDao.create(score, submission);
             feedback.setComment(comment);
             feedbackDao.save(feedback);
-            sendFeedbackEmail(score, comment);
+//            sendFeedbackEmail(score, comment);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
@@ -445,20 +426,20 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
-    private void sendFeedbackEmail(Byte score, String comment) {
-        User u = getCurrentUser();
-        try {
-            email.sendFromTemplate(EmailSenderImpl.FEEDBACK_TEMPLATE,
-                    ImmutableMap.of(
-                            "from.name", u.getName(),
-                            "from.email", u.getEmail(),
-                            "feedback.rating", null != score ? String.valueOf(score) : "-",
-                            "feedback.comment", comment
-                    ));
-        } catch (RuntimeException x) {
-            log.error("Unable to send feedback email", x);
-        }
-    }
+//    private void sendFeedbackEmail(Byte score, String comment) {
+//        User u = getCurrentUser();
+//        try {
+//            email.sendFromTemplate(EmailSenderImpl.FEEDBACK_TEMPLATE,
+//                    ImmutableMap.of(
+//                            "from.name", u.getName(),
+//                            "from.email", u.getEmail(),
+//                            "feedback.rating", null != score ? String.valueOf(score) : "-",
+//                            "feedback.comment", comment
+//                    ));
+//        } catch (RuntimeException x) {
+//            log.error("Unable to send feedback email", x);
+//        }
+//    }
 
     private void storeAssociatedFiles(Submission submission)
             throws DataSerializationException, URISyntaxException, IOException {

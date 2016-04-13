@@ -19,9 +19,15 @@ package uk.ac.ebi.fg.annotare2.db.dao;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback;
 
+import java.util.Collection;
+
 public interface SubmissionFeedbackDao {
 
     SubmissionFeedback create(Byte score, Submission submission);
 
     void save(SubmissionFeedback feedback);
+
+    SubmissionFeedback getLastFeedbackFor(Submission submission);
+
+    Collection<SubmissionFeedback> getFeedbackFor(Submission submission);
 }
