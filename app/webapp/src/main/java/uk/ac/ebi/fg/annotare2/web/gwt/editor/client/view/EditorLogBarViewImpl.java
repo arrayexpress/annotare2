@@ -48,8 +48,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
                 addAll(result.getErrors());
             }
         } else {
-            panel.add(new HTML("There was a problem with validation software, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> for help"));
-            //addAll(result.getFailures());
+            addAll(result.getFailures());
         }
     }
 

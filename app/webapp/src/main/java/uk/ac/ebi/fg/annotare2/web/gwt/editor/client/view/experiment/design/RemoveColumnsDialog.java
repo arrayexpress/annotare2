@@ -75,7 +75,7 @@ public class RemoveColumnsDialog extends DialogBox {
         if (!selection.isEmpty()) {
             hide();
             if (null != callback) {
-                callback.onOkay(getSelection());
+                callback.onOk(getSelection());
             }
         }
     }

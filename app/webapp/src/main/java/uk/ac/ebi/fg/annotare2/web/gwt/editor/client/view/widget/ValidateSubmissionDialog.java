@@ -99,7 +99,7 @@ public class ValidateSubmissionDialog extends DialogBox {
     void okButtonClicked(ClickEvent event) {
         hide();
         if (null != callback) {
-            callback.onOkay(null);
+            callback.onOk(null);
         }
     }
 

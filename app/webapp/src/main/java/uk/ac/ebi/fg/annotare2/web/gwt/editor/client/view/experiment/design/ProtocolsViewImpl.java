@@ -243,8 +243,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                                 }
                                 new ProtocolAssignmentDialog(result, new DialogCallback<ProtocolAssignmentProfileUpdates>() {
                                     @Override
-                                    public void onOkay(ProtocolAssignmentProfileUpdates profileUpdates) {
+                                    public boolean onOk(ProtocolAssignmentProfileUpdates profileUpdates) {
                                         updateProtocolAssignments(profileUpdates);
+                                        return true;
                                     }
                                 }).show();
                             }
@@ -435,8 +436,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         (new AddProtocolDialog(presenter,
                 new DialogCallback<ProtocolType>() {
                     @Override
-                    public void onOkay(ProtocolType protocolType) {
+                    public boolean onOk(ProtocolType protocolType) {
                         createProtocol(protocolType);
+                        return true;
                     }
                 })).show();
     }

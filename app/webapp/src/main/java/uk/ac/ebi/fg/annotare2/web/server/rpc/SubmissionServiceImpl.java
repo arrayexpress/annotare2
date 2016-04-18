@@ -356,7 +356,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                         errors.add(cr.asString());
                         break;
                     case FAILURE:
-                        errors.add(cr.asString());
+                        failures.add(cr.asString());
                         break;
                 }
             }
@@ -366,6 +366,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         } catch (ParseException | DataSerializationException | UnknownExperimentTypeException | IOException e) {
             throw unexpected(e);
+        } catch (IllegalArgumentException e) {
+            failures.add(e.getMessage());
         }
         return new ValidationResult(errors, warnings, failures);
     }

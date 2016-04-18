@@ -81,7 +81,7 @@ public class ExperimentSettingsDialog extends DialogBox {
         if (editor.areValuesValid()) {
             hide();
             if (null != callback) {
-                callback.onOkay(editor.getValues());
+                callback.onOk(editor.getValues());
             }
         }
     }

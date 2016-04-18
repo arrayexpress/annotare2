@@ -124,7 +124,7 @@ public class MultiSelectListDialog extends DialogBox {
     void okClicked(ClickEvent event) {
         hide();
         if (null != callback) {
-            callback.onOkay(getSelected());
+            callback.onOk(getSelected());
         }
     }
 

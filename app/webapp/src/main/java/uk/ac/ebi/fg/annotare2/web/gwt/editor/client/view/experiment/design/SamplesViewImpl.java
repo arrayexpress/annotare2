@@ -68,8 +68,9 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                         presenter.getEfoTerms(),
                         new DialogCallback<List<SampleColumn>>() {
                             @Override
-                            public void onOkay(List<SampleColumn> columns) {
+                            public boolean onOk(List<SampleColumn> columns) {
                                 updateColumns(columns);
+                                return true;
                             }
                         });
             }
@@ -185,8 +186,9 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
     private void createSamples() {
         new AddSamplesDialog(new DialogCallback<AddSamplesDialog.Result>() {
             @Override
-            public void onOkay(AddSamplesDialog.Result result) {
+            public boolean onOk(AddSamplesDialog.Result result) {
                 presenter.createSamples(result.numOfSamples, result.namingPattern, result.startingNumber);
+                return true;
             }
         }, presenter);
     }
@@ -209,8 +211,8 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         new ImportValuesDialog(
                 new DialogCallback<List<String>>() {
                     @Override
-                    public void onOkay(List<String> values) {
-                        gridView.importValuesToKeyboardSelectedColumn(values);
+                    public boolean onOk(List<String> values) {
+                        return gridView.importValuesToKeyboardSelectedColumn(values);
                     }
                 });
     }
@@ -230,12 +232,8 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                 return true;
             }
         };
-        Column<SampleRow, String> column = new Column<SampleRow, String>(nameCell) {
-            @Override
-            public String getValue(SampleRow row) {
-                return row.getName();
-            }
-        };
+        Column<SampleRow, String> column = new SampleNameColumn(nameCell);
+
         column.setFieldUpdater(new FieldUpdater<SampleRow, String>() {
             @Override
             public void update(int index, SampleRow row, String value) {
@@ -256,6 +254,18 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
             }
         };
         gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
+    }
+
+    public class SampleNameColumn extends Column<SampleRow, String> {
+
+        public SampleNameColumn(Cell<String> cell) {
+            super(cell);
+        }
+
+        @Override
+        public String getValue(SampleRow row) {
+            return row.getName();
+        }
     }
 
     private boolean isNameUnique(String name, int rowIndex) {

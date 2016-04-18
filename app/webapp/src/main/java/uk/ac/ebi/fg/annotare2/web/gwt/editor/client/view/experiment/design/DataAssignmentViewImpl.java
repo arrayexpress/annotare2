@@ -51,17 +51,18 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private Presenter presenter;
 
     public DataAssignmentViewImpl() {
-        gridView = new GridView<DataAssignmentRow>();
+        gridView = new GridView<>();
         gridView.setRowSelectionEnabled(false);
 
         Button button = new Button("Assign Files...");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new AddColumnDialog<ColumnType>(new DialogCallback<ColumnType>() {
+                new AddColumnDialog<>(new DialogCallback<ColumnType>() {
                     @Override
-                    public void onOkay(ColumnType columnType) {
+                    public boolean onOk(ColumnType columnType) {
                         createColumn(columnType.getType());
+                        return true;
                     }
                 }, getAllowedColumnTypes());
             }
@@ -74,8 +75,9 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
             public void onClick(ClickEvent event) {
                 new RemoveColumnsDialog(new DialogCallback<List<Integer>>() {
                     @Override
-                    public void onOkay(List<Integer> columns) {
+                    public boolean onOk(List<Integer> columns) {
                         removeColumns(columns);
+                        return true;
                     }
                 }, getDataFileColumnNames());
             }
@@ -280,8 +282,8 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         new ImportValuesDialog(
                 new DialogCallback<List<String>>() {
                     @Override
-                    public void onOkay(List<String> values) {
-                        gridView.importValuesToKeyboardSelectedColumn(values);
+                    public boolean onOk(List<String> values) {
+                        return gridView.importValuesToKeyboardSelectedColumn(values);
                     }
                 });
     }

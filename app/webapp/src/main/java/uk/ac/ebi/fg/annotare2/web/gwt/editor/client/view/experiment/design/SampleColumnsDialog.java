@@ -160,7 +160,7 @@ public class SampleColumnsDialog extends DialogBox {
         if (areNamesUnique()) {
             hide();
             if (null != callback) {
-                callback.onOkay(getColumns());
+                callback.onOk(getColumns());
             }
         } else {
             NotificationPopupPanel.error("There are multiple attributes or experimental variables with the same name.", true, false);

@@ -202,9 +202,10 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                         }
                         (new ExperimentalDesignsDialog(filteredResult, new DialogCallback<List<OntologyTerm>>() {
                             @Override
-                            public void onOkay(List<OntologyTerm> ontologyTerms) {
+                            public boolean onOk(List<OntologyTerm> ontologyTerms) {
                                 addExperimentalDesigns(ontologyTerms);
                                 save();
+                                return true;
                             }
                         })).show();
                     }

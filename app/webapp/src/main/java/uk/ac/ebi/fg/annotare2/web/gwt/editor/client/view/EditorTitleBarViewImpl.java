@@ -246,7 +246,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         if (isCurator) {
             dialog.showValidationFailureWarning(new DialogCallback<Void>() {
                 @Override
-                public void onOkay(Void aVoid) {
+                public boolean onOk(Void aVoid) {
                     if (isOwnedByCreator) {
                         presenter.assignSubmissionToMe(new ReportingAsyncCallback<Void>() {
                             @Override
@@ -257,7 +257,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                     } else {
                         processSubmission(dialog, false);
                     }
-
+                    return true;
                 }
             });
         } else {
@@ -282,11 +282,12 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                         reloadSubmission();
                     }
                     @Override
-                    public void onOkay(Void aVoid) {
+                    public boolean onOk(Void aVoid) {
                         if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
                             presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
                         }
                         reloadSubmission();
+                        return true;
                     }
                 }, doFeedback);
             }

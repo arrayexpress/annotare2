@@ -185,7 +185,7 @@ public class ProtocolAssignmentDialog extends DialogBox {
         }
         hide();
         if (null != callback) {
-            callback.onOkay(updates);
+            callback.onOk(updates);
         }
     }
 
