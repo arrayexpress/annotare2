@@ -144,7 +144,7 @@ public class AEConnection {
 
             ds = new HikariDataSource();
             ds.setPoolName("AEConnectionDB-Pool");
-            ds.setJdbcUrl(connectionProperties.getAeConnectionURL());
+            ds.setJdbcUrl(connectionProperties.getAeConnectionUrl());
             ds.setUsername(connectionProperties.getAeConnectionUser());
             ds.setPassword(connectionProperties.getAeConnectionPassword());
             ds.setConnectionTimeout(5000L);

@@ -360,7 +360,7 @@ public class SubsTracking {
             ds = new HikariDataSource();
             ds.setPoolName("SubsTrackingDB-Pool");
             ds.setDriverClassName(properties.getSubsTrackingConnectionDriverClass());
-            ds.setJdbcUrl(properties.getSubsTrackingConnectionURL());
+            ds.setJdbcUrl(properties.getSubsTrackingConnectionUrl());
             ds.setUsername(properties.getSubsTrackingConnectionUser());
             ds.setPassword(properties.getSubsTrackingConnectionPassword());
             ds.setConnectionTestQuery("SELECT 1");

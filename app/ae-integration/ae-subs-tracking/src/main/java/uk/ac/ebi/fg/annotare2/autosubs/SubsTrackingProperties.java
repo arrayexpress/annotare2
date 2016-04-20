@@ -26,7 +26,7 @@ public interface SubsTrackingProperties
     String getSubsTrackingExperimentType();
     File getSubsTrackingExportDir();
     String getSubsTrackingConnectionDriverClass();
-    String getSubsTrackingConnectionURL();
+    String getSubsTrackingConnectionUrl();
     String getSubsTrackingConnectionUser();
     String getSubsTrackingConnectionPassword();
     String getSubsTrackingDataFilesPostProcessingScript();

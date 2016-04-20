@@ -18,9 +18,9 @@
 package uk.ac.ebi.fg.annotare2.ae;
 
 public interface AEConnectionProperties {
-    Boolean isAeConnectionEnabled();
+    boolean isAeConnectionEnabled();
     String getAeConnectionDriverClass();
-    String getAeConnectionURL();
+    String getAeConnectionUrl();
     String getAeConnectionUser();
     String getAeConnectionPassword();
 }

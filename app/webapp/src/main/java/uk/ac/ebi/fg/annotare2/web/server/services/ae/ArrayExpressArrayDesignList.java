@@ -85,7 +85,7 @@ public class ArrayExpressArrayDesignList {
             }
 
         };
-        if (!isNullOrEmpty(properties.getArrayExpressArrayListURL())) {
+        if (!isNullOrEmpty(properties.getArrayExpressArrayListUrl())) {
             scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, HOURS);
         }
     }
@@ -115,7 +115,7 @@ public class ArrayExpressArrayDesignList {
         InputStream is = null;
         FileOutputStream fos = null;
         try {
-            URL adSource = new URL(properties.getArrayExpressArrayListURL());
+            URL adSource = new URL(properties.getArrayExpressArrayListUrl());
             is = adSource.openStream();
             if (null != is) {
                 ReadableByteChannel rbc = Channels.newChannel(is);

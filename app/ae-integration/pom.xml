@@ -32,6 +32,7 @@
     <modules>
         <module>ae-db</module>
         <module>ae-subs-tracking</module>
+        <module>otrs</module>
     </modules>
 
 </project>

@@ -34,7 +34,7 @@ public class ExtendedAnnotareProperties extends AnnotareProperties
     }
 
     @Override
-    public String getArrayExpressArrayListURL() {
+    public String getArrayExpressArrayListUrl() {
         return getProperty("arrayexpress.arraylist.url");
     }
 
@@ -64,7 +64,7 @@ public class ExtendedAnnotareProperties extends AnnotareProperties
     }
 
     @Override
-    public String getSubsTrackingConnectionURL() {
+    public String getSubsTrackingConnectionUrl() {
         return getProperty("ae-subs-tracking.connection.url");
     }
 
@@ -84,8 +84,8 @@ public class ExtendedAnnotareProperties extends AnnotareProperties
     }
 
     @Override
-    public Boolean isAeConnectionEnabled() {
-        return Boolean.parseBoolean(getProperty("ae-connection.enabled"));
+    public boolean isAeConnectionEnabled() {
+        return getBooleanProperty("ae-connection.enabled");
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ExtendedAnnotareProperties extends AnnotareProperties
     }
 
     @Override
-    public String getAeConnectionURL() {
+    public String getAeConnectionUrl() {
         return getProperty("ae-connection.url");
     }
 
@@ -106,5 +106,21 @@ public class ExtendedAnnotareProperties extends AnnotareProperties
     @Override
     public String getAeConnectionPassword() {
         return getProperty("ae-connection.password");
+    }
+
+    public boolean isOtrsIntegrationEnabled() {
+        return getBooleanProperty("otrs-integration.enabled");
+    }
+
+    public String getOtrsIntegrationUrl() {
+        return getProperty("otrs-integration.url");
+    }
+
+    public String getOtrsIntegrationUser() {
+        return getProperty("otrs-integration.user");
+    }
+
+    public String getOtrsIntegrationPassword() {
+        return getProperty("otrs-integration.password");
     }
 }

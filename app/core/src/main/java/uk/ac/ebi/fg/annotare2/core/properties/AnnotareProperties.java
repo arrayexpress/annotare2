@@ -26,7 +26,10 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.MageTabCheckProperties;
 import uk.ac.ebi.fg.annotare2.magetabcheck.efo.EfoServiceProperties;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -108,8 +111,8 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("ftp.public.password");
     }
 
-    public Boolean isAsperaEnabled() {
-        return  Boolean.parseBoolean(getProperty("aspera.enabled").trim());
+    public boolean isAsperaEnabled() {
+        return getBooleanProperty("aspera.enabled");
     }
 
     public String getAsperaPickUpDir() {
@@ -156,7 +159,7 @@ public class AnnotareProperties implements DataFileStoreProperties {
         return getProperty("db.connection.driver");
     }
 
-    public String getDbConnectionURL() {
+    public String getDbConnectionUrl() {
         return getProperty("db.connection.url");
     }
 
@@ -191,6 +194,10 @@ public class AnnotareProperties implements DataFileStoreProperties {
             return emptyList();
         }
         return asList(property.split("\\s*,\\s*"));
+    }
+
+    protected boolean getBooleanProperty(String key) {
+        return Boolean.parseBoolean(getProperty(key).trim());
     }
 
     protected String getProperty(String key) {
@@ -229,8 +236,6 @@ public class AnnotareProperties implements DataFileStoreProperties {
         logger.info("Loading properties from file: " + file.getAbsolutePath());
         try {
             return load(new FileInputStream(file), properties);
-        } catch (FileNotFoundException e) {
-            logger.error("Unable to load properties from file " + file.getAbsoluteFile(), e);
         } catch (IOException e) {
             logger.error("Unable to load properties from file " + file.getAbsoluteFile(), e);
         }

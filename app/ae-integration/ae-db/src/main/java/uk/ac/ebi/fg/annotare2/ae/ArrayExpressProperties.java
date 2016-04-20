@@ -18,5 +18,5 @@
 package uk.ac.ebi.fg.annotare2.ae;
 
 public interface ArrayExpressProperties {
-    String getArrayExpressArrayListURL();
+    String getArrayExpressArrayListUrl();
 }
