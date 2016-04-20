@@ -24,9 +24,7 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 public class SubmissionFeedbackDaoImpl extends AbstractDaoImpl<SubmissionFeedback> implements SubmissionFeedbackDao {
@@ -45,18 +43,10 @@ public class SubmissionFeedbackDaoImpl extends AbstractDaoImpl<SubmissionFeedbac
 
     @Override
     public SubmissionFeedback getLastFeedbackFor(Submission submission) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(submission.getSubmitted());
-        cal.add(Calendar.MINUTE, -1);
-        Date minTime = cal.getTime();
-        cal.add(Calendar.MINUTE, 2);
-        Date maxTime = cal.getTime();
-
         return (SubmissionFeedback)getCurrentSession()
                 .createCriteria(SubmissionFeedback.class)
                 .add(Restrictions.eq("relatesTo", submission))
-                .add(Restrictions.ge("posted", minTime))
-                .add(Restrictions.le("posted", maxTime))
+                .add(Restrictions.ge("posted", submission.getSubmitted()))
                 .addOrder(Order.desc("posted"))
                 .setMaxResults(1)
                 .uniqueResult();
