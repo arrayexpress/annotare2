@@ -190,12 +190,15 @@ public class ValidateSubmissionDialog extends DialogBox {
         cancelButton.setVisible(shouldShowFeedback);
         setTitleAndMessage(
                 "Submission Successful",
-                "You have successfully submitted the experiment to ArrayExpress. " +
-                        "You cannot make further changes to the experiment while it is in curation.<br><br>" +
-                        "Your submission is not complete until a curator is satisfied that all required information has been provided. " +
-                        "We will contact you if we have any questions.<br><br>" +
-                        "In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> with any questions. " +
-                        "Further information can be found at <a href=\"/fg/annotare/help/submit_exp.html\" target=\"_blank\">Annotare help</a>.");
+                "Thank you for your submission. You cannot make further changes to the experiment" +
+                        " while it is in curation.<br><br>" +
+                        "Please note that your submission is not complete until a curator is satisfied that" +
+                        " all required information has been provided. We will contact you if we have any" +
+                        " questions.<br><br>" +
+                        "In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>" +
+                        " with any questions. " +
+                        "Further information can be found at" +
+                        " <a href=\"/fg/annotare/help/submit_exp.html\" target=\"_blank\">Annotare help</a>.");
     }
 
     @Override
