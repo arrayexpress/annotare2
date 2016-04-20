@@ -24,7 +24,7 @@
     <name>Annotare 2</name>
 
     <modules>
-        <module>ae-integration</module>
+        <module>integration</module>
         <module>om</module>
         <module>core</module>
         <module>webapp</module>
@@ -129,6 +129,11 @@
             <dependency>
                 <groupId>uk.ac.ebi.fg.annotare2</groupId>
                 <artifactId>otrs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.ac.ebi.fg.annotare2</groupId>
+                <artifactId>ae-integration</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
