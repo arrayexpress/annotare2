@@ -423,7 +423,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             SubmissionFeedback feedback = feedbackDao.create(score, submission);
             feedback.setComment(comment);
             feedbackDao.save(feedback);
-//            sendFeedbackEmail(score, comment);
+            sendFeedbackEmail(submission, score, comment);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
@@ -441,6 +441,23 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
             throw noPermission(e);
+        }
+    }
+
+    private void sendFeedbackEmail(Submission submission, Byte score, String comment) {
+        try {
+            email.sendFromTemplate(
+                    EmailSenderImpl.SUBMISSION_FEEDBACK_TEMPLATE,
+                    new ImmutableMap.Builder<String, String>().
+                            put("to.name", submission.getCreatedBy().getName()).
+                            put("to.email", submission.getCreatedBy().getEmail()).
+                            put("submission.title", submission.getTitle()).
+                            put("submission.feedback.score", null != score ? String.valueOf(score) + "/9" : "n/a").
+                            put("submission.feedback.comment", null != comment ? comment : "n/a").
+                            build()
+            );
+        } catch (RuntimeException x) {
+            log.error("Unable to send email", x);
         }
     }
 
