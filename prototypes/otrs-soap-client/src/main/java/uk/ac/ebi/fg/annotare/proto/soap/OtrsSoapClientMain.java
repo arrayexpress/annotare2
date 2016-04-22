@@ -86,14 +86,14 @@ public class OtrsSoapClientMain {
                 params.put("TicketID", ticketId);
                 params.put("ArticleType", "email-external");
                 params.put("SenderType", "agent");
-                params.put("HistoryType", "EmailCustomer");
+                params.put("HistoryType", "FollowUp");
                 params.put("HistoryComment", "Sent from Annotare submission #12345");
                 params.put("To", "\"Nikolay Kolesnikov\" <kolais@ebi.ac.uk>");
                 params.put("From", "\"Annotare\" <annotare@ebi.ac.uk>");
                 params.put("Subject", "Submission update");
                 params.put("Type", "text/plain");
                 params.put("Charset", "UTF-8");
-                params.put("Body", "Dear Nikolay,\n\nYour submission sucks, please delete it.\n\nKind regards, Annotare.");
+                params.put("Body", "Dear Nikolay,\n\nYour submission rules, please submit more.\n\nKind regards, Annotare.");
                 params.put("UserID", 1);
                 params.put("AutoResponseType", "auto follow up");
 
