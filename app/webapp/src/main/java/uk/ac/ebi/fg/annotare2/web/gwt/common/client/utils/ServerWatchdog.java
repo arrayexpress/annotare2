@@ -29,8 +29,8 @@ public class ServerWatchdog {
             "If the problem persists, please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>. " +
             "Thank you for your patience.<br><br>";
 
-    private final static String SERVER_UPGRADED = "To improve your submission experience, the Annotare software has just been updated. " +
-            "Please refresh this page in your browser to continue editing your the submission.<br><br>" +
+    private final static String SERVER_UPGRADED = "To improve your submission experience, Annotare software has just been updated. " +
+            "Please <a href=\"javascript:window.location.reload()\">click here</a> to reload this page to continue editing your submission.<br><br>" +
             "Should you experience any problems after this update, please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>. " +
             "Thank you.";
 
@@ -58,7 +58,7 @@ public class ServerWatchdog {
                                             if (isNotificaionVisible) {
                                                     NotificationPopupPanel.cancel();
                                                     isNotificaionVisible = false;
-                                            };
+                                            }
                                         } else {
                                             NotificationPopupPanel.warning(SERVER_UPGRADED, false, true);
                                             isNotificaionVisible = true;
