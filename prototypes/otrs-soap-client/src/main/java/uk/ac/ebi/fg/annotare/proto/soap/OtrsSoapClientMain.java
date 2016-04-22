@@ -93,7 +93,7 @@ public class OtrsSoapClientMain {
                 params.put("Subject", "Submission update");
                 params.put("Type", "text/plain");
                 params.put("Charset", "UTF-8");
-                params.put("Body", "Nikolay,\n\nYour submission rules, please submit more.\n\nKind regards, Annotare.");
+                params.put("Body", "Hi Nikolay,\n\nYour submission rules, please submit more.\n\nKind regards, Annotare.");
                 params.put("UserID", 1);
                 params.put("AutoResponseType", "auto follow up");
 
