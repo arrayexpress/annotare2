@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.server;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
@@ -91,7 +92,11 @@ public class AnnotareWebAppModule extends ServletModule {
                "/export",
                "/download").through(SecurityFilter.class);
 
-        filter("/*").through(UrlRewriteFilter.class);
+        filter("/*").through(UrlRewriteFilter.class,
+                new ImmutableMap.Builder<String, String>()
+                        .put("logLevel", "slf4j")
+                        .build()
+        );
 
         serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
         serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
@@ -214,7 +219,7 @@ public class AnnotareWebAppModule extends ServletModule {
 
     static class AllRpcServicePathsImpl implements AllRpcServicePaths {
 
-        private final Set<String> paths = new HashSet<String>();
+        private final Set<String> paths = new HashSet<>();
 
         public boolean recognizeUri(String uri) {
             for (String path : paths) {
