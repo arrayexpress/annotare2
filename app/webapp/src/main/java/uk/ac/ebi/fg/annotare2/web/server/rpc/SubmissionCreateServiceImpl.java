@@ -20,11 +20,11 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionCreateService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 public class SubmissionCreateServiceImpl extends SubmissionBasedRemoteService implements SubmissionCreateService {
@@ -33,8 +33,8 @@ public class SubmissionCreateServiceImpl extends SubmissionBasedRemoteService im
     public SubmissionCreateServiceImpl(
             AccountService accountService,
             SubmissionManagerImpl submissionManager,
-            EmailSenderImpl emailSender) {
-        super(accountService, submissionManager, emailSender);
+            Messenger messenger) {
+        super(accountService, submissionManager, messenger);
     }
 
     @Transactional(rollbackOn = NoPermissionException.class)

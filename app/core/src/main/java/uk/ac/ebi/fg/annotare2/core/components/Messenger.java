@@ -19,7 +19,7 @@ package uk.ac.ebi.fg.annotare2.core.components;
 
 import java.util.Map;
 
-public interface EmailSender {
+public interface Messenger {
     void sendException(String note, Throwable x);
     void sendFromTemplate(String template, Map<String, String> parameters);
 }

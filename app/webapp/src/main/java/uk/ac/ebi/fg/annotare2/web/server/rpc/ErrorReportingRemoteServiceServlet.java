@@ -18,20 +18,20 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.catalina.connector.ClientAbortException;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 
 abstract class ErrorReportingRemoteServiceServlet extends RemoteServiceServlet {
 
-    private final EmailSenderImpl email;
+    private final Messenger messenger;
 
-    public ErrorReportingRemoteServiceServlet(EmailSenderImpl emailSender) {
-        this.email = emailSender;
+    public ErrorReportingRemoteServiceServlet(Messenger messenger) {
+        this.messenger = messenger;
     }
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
         if (!(e instanceof ClientAbortException)) {
-            email.sendException("Unexpected exception in RPC call", e);
+            messenger.sendException("Unexpected exception in RPC call", e);
             super.doUnexpectedFailure(e);
         }
     }

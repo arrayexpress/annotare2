@@ -79,8 +79,7 @@ public class AeIntegrationWatchdog {
     private final FtpManager ftpManager;
     private final EfoSearch efoSearch;
     private final ExtendedAnnotareProperties properties;
-    private final EmailSender emailer;
-    private final OtrsEmailSender otrsEmailer;
+    private final Messenger messenger;
 
     private enum SubmissionOutcome {
         INITIAL_SUBMISSION_OK,
@@ -99,8 +98,7 @@ public class AeIntegrationWatchdog {
                                  DataFileManager dataFileManager,
                                  FtpManager ftpManager,
                                  EfoSearch efoSearch,
-                                 EmailSender emailer,
-                                 OtrsEmailSender otrsEmailer) {
+                                 Messenger messenger) {
         this.sessionFactory = sessionFactory;
         this.subsTracking = subsTracking;
         this.aeConnection = aeConnection;
@@ -111,8 +109,7 @@ public class AeIntegrationWatchdog {
         this.ftpManager = ftpManager;
         this.efoSearch = efoSearch;
         this.properties = properties;
-        this.emailer = emailer;
-        this.otrsEmailer = otrsEmailer;
+        this.messenger = messenger;
     }
 
     @PostConstruct
@@ -125,7 +122,7 @@ public class AeIntegrationWatchdog {
                     periodicRun();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
-                    emailer.sendException("Error in submission watchdog process:", x);
+                    messenger.sendException("Error in submission watchdog process:", x);
                 } finally {
                     session.close();
                 }
@@ -612,7 +609,7 @@ public class AeIntegrationWatchdog {
 
     private void sendEmail(String template, Map<String,String> params) {
         try {
-            emailer.sendFromTemplate(template, params);
+            messenger.sendFromTemplate(template, params);
         } catch (RuntimeException e) {
             logger.error("Unable to send email", e);
         }
@@ -620,7 +617,7 @@ public class AeIntegrationWatchdog {
 
     private void sendOtrsEmail(String template, Map<String,String> params) {
         try {
-            emailer.sendFromTemplate(template, params);
+            messenger.sendFromTemplate(template, params);
         } catch (RuntimeException e) {
             logger.error("Unable to send email", e);
         }

@@ -23,13 +23,13 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.UnexpectedException;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.files.DataFileHandle;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.DataFileDao;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -54,19 +54,19 @@ public class DataFilesPeriodicProcess {
     private final DataFileDao fileDao;
     private final HibernateSessionFactory sessionFactory;
     private final AnnotareProperties properties;
-    private final EmailSenderImpl emailer;
+    private final Messenger messenger;
 
     @Inject
     public DataFilesPeriodicProcess(DataFileStore fileStore,
                                     DataFileDao fileDao,
                                     HibernateSessionFactory sessionFactory,
                                     AnnotareProperties properties,
-                                    EmailSenderImpl emailer) {
+                                    Messenger messenger) {
         this.fileStore = fileStore;
         this.fileDao = fileDao;
         this.sessionFactory = sessionFactory;
         this.properties = properties;
-        this.emailer = emailer;
+        this.messenger = messenger;
 
     }
 
@@ -80,7 +80,7 @@ public class DataFilesPeriodicProcess {
                     periodicRun();
                 } catch (Throwable x) {
                     logger.error(x.getMessage(), x);
-                    emailer.sendException("Error in data file periodic process", x);
+                    messenger.sendException("Error in data file periodic process", x);
                 } finally {
                     session.close();
                 }

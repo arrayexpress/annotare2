@@ -17,9 +17,9 @@
 package uk.ac.ebi.fg.annotare2.web.server.rpc;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,12 +31,12 @@ import static com.google.common.base.Strings.nullToEmpty;
 abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
     private final AccountService accountService;
-    private final EmailSenderImpl email;
+    private final Messenger messenger;
 
 
-    public AuthBasedRemoteService(AccountService accountService, EmailSenderImpl emailSender) {
+    public AuthBasedRemoteService(AccountService accountService, Messenger messenger) {
         this.accountService = accountService;
-        this.email = emailSender;
+        this.messenger = messenger;
     }
 
     protected HttpSession getSession() {
@@ -61,7 +61,7 @@ abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
-        email.sendException(
+        messenger.sendException(
                 "Unexpected exception in RPC call\n" +
                         "URI: " + getRequestURI()  + "\n" +
                         "Referer: " + getRequestReferer() + "\n" +

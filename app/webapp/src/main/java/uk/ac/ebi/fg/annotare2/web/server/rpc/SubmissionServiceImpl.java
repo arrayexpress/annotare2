@@ -25,6 +25,7 @@ import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.SDRFGraphWriter;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
@@ -84,7 +85,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
-    private final EmailSenderImpl email;
+    private final Messenger messenger;
 
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
@@ -94,14 +95,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                                  UserDao userDao,
                                  SubmissionFeedbackDao feedbackDao,
                                  EfoSearch efoSearch,
-                                 EmailSenderImpl emailSender) {
-        super(accountService, submissionManager, emailSender);
+                                 Messenger messenger) {
+        super(accountService, submissionManager, messenger);
         this.dataFileManager = dataFileManager;
         this.validator = validator;
         this.userDao = userDao;
         this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
-        this.email = emailSender;
+        this.messenger = messenger;
     }
 
     @Transactional
@@ -446,29 +447,29 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private void sendFeedbackEmail(Submission submission, Byte score, String comment) {
         try {
-            email.sendFromTemplate(
-                    EmailSenderImpl.SUBMISSION_FEEDBACK_TEMPLATE,
+            messenger.sendFromTemplate(
+                    MessengerImpl.SUBMISSION_FEEDBACK_TEMPLATE,
                     new ImmutableMap.Builder<String, String>().
                             put("to.name", submission.getCreatedBy().getName()).
-                            put("to.email", submission.getCreatedBy().getEmail()).
+                            put("to.messenger", submission.getCreatedBy().getEmail()).
                             put("submission.title", submission.getTitle()).
                             put("submission.feedback.score", null != score ? String.valueOf(score) + "/9" : "n/a").
                             put("submission.feedback.comment", null != comment ? comment : "n/a").
                             build()
             );
         } catch (RuntimeException x) {
-            log.error("Unable to send email", x);
+            log.error("Unable to send messenger", x);
         }
     }
 
     private void sendEmail(Submission submission, String subject, String message) {
         User u = getCurrentUser();
         try {
-            email.sendFromTemplate(
-                    EmailSenderImpl.CONTACT_US_TEMPLATE,
+            messenger.sendFromTemplate(
+                    MessengerImpl.CONTACT_US_TEMPLATE,
                     new ImmutableMap.Builder<String, String>()
                             .put("from.name", u.getName())
-                            .put("from.email", u.getEmail())
+                            .put("from.messenger", u.getEmail())
                             .put("submission.id", String.valueOf(submission.getId()))
                             .put("submission.title", submission.getTitle())
                             .put("message.subject", subject)
@@ -476,7 +477,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                             .build()
             );
         } catch (RuntimeException x) {
-            log.error("Unable to send email", x);
+            log.error("Unable to send messenger", x);
         }
     }
 

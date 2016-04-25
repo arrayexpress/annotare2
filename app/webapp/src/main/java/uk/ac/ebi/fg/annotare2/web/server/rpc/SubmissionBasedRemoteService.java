@@ -20,6 +20,7 @@ import com.google.gwt.user.server.rpc.UnexpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -29,7 +30,6 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 /**
@@ -40,13 +40,13 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
     private static final Logger log = LoggerFactory.getLogger(SubmissionBasedRemoteService.class);
 
     private final SubmissionManagerImpl submissionManager;
-    private final EmailSenderImpl email;
+    private final Messenger messenger;
 
     protected SubmissionBasedRemoteService(AccountService accountService,
                                            SubmissionManagerImpl submissionManager,
-                                           EmailSenderImpl emailSender) {
-        super(accountService, emailSender);
-        this.email = emailSender;
+                                           Messenger messenger) {
+        super(accountService, messenger);
+        this.messenger = messenger;
         this.submissionManager = submissionManager;
     }
 
@@ -88,20 +88,18 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
 
     protected UnexpectedException unexpected(Throwable e) {
         log.error("server error", e);
-        email.sendException("Unexpected server error for [" + getCurrentUserEmail() + "]", e);
+        messenger.sendException("Unexpected server error for [" + getCurrentUserEmail() + "]", e);
         return new UnexpectedException("Unexpected server error", e);
     }
 
     protected ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
         log.error("server error", e);
-        email.sendException("Submission not found for [" + getCurrentUserEmail() + "]", e);
+        messenger.sendException("Submission not found for [" + getCurrentUserEmail() + "]", e);
         return new ResourceNotFoundException("Submission not found");
     }
 
     protected NoPermissionException noPermission(AccessControlException e) {
         log.error(e.getMessage());
-        //TODO: no need to email this
-        //email.sendException("No permission for [" + getCurrentUserEmail() + "]", e);
         return new NoPermissionException("No permission");
     }
 }

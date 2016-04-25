@@ -22,7 +22,6 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.core.components.EmailSender;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import javax.mail.Message;
@@ -41,8 +40,8 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Properties;
 
-public class EmailSenderImpl implements EmailSender {
-    private static final Logger log = LoggerFactory.getLogger(EmailSenderImpl.class);
+public class MessengerImpl implements uk.ac.ebi.fg.annotare2.core.components.Messenger {
+    private static final Logger log = LoggerFactory.getLogger(MessengerImpl.class);
 
     private final AnnotareProperties properties;
 
@@ -58,7 +57,7 @@ public class EmailSenderImpl implements EmailSender {
     public static final String CONTACT_US_TEMPLATE = "contact-us";
 
     @Inject
-    public EmailSenderImpl(AnnotareProperties properties) {
+    public MessengerImpl(AnnotareProperties properties) {
         this.properties = properties;
     }
 
