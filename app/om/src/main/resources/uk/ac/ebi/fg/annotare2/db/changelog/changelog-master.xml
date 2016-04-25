@@ -135,7 +135,10 @@
     </changeSet>
     <changeSet id="changeFeedbackTableColumnName" author="kolais">
         <sql>
+            ALTER TABLE submission_feedback DROP FOREIGN KEY submission_feedback_ibfk_1;
             ALTER TABLE submission_feedback CHANGE relatesTo submissionId BIGINT NOT NULL;
+            ALTER TABLE submission_feedback ADD CONSTRAINT FOREIGN KEY (submissionId) REFERENCES submissions (id)
+            ON DELETE CASCADE;
         </sql>
     </changeSet>
     <changeSet id="addOtrsTicketNumberToSubmissions" author="kolais">
