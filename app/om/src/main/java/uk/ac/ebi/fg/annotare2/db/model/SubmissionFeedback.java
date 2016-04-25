@@ -37,16 +37,16 @@ public class SubmissionFeedback {
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "relatesTo", nullable = false)
-    private Submission relatesTo;
+    @JoinColumn(name = "submissionId", nullable = false)
+    private Submission submission;
 
     public SubmissionFeedback() {
         this(null, null);
     }
 
-    public SubmissionFeedback(Submission relatesTo, Byte score) {
+    public SubmissionFeedback(Submission submission, Byte score) {
         this.posted = new Date();
-        this.relatesTo = relatesTo;
+        this.submission = submission;
         this.score = score;
     }
 

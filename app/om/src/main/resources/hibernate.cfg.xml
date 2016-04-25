@@ -46,6 +46,8 @@
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission"/>
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.SubmissionFeedback" />
         <mapping class="uk.ac.ebi.fg.annotare2.db.model.DataFile" />
+        <mapping class="uk.ac.ebi.fg.annotare2.db.model.Message" />
+
     </session-factory>
 </hibernate-configuration>
 

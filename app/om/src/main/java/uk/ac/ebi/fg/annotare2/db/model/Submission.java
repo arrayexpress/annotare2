@@ -91,15 +91,22 @@ public abstract class Submission implements HasEffectiveAcl {
     @Filter(name = NOT_DELETED_DATA_FILE_FILTER)
     private Set<DataFile> files;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatesTo")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "submission")
     @OrderBy("posted ASC")
     private Set<SubmissionFeedback> feedback;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "submission")
+    @OrderBy("created ASC")
+    private Set<Message> messages;
 
     @Column(name = "ftpSubDirectory")
     private String ftpSubDirectory;
 
     @Column(name = "subsTrackingId")
     private Integer subsTrackingId;
+
+    @Column(name = "otrsTicketId")
+    private Long otrsTicketId;
 
     @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
     private boolean deleted;

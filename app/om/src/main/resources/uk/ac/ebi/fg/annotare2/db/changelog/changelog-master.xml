@@ -98,4 +98,49 @@
             ALTER TABLE submissions ADD UNIQUE (ftpSubDirectory);
         </sql>
     </changeSet>
+    <changeSet id="addMessagesTable" author="kolais">
+        <sql>
+            CREATE TABLE messages (
+            id              BIGINT AUTO_INCREMENT           NOT NULL,
+            created         TIMESTAMP                       NOT NULL
+            DEFAULT CURRENT_TIMESTAMP,
+            sent            TIMESTAMP,
+            status          ENUM('QUEUED',
+                                 'SENT',
+                                 'ERROR')                   NOT NULL,
+            `from`          TEXT                            NOT NULL,
+            `to`            TEXT                            NOT NULL,
+            subject         TEXT                            NOT NULL,
+            body            TEXT                            NOT NULL,
+            userId          BIGINT                          NOT NULL,
+            submissionId    BIGINT,
+            PRIMARY KEY (id),
+            CONSTRAINT FOREIGN KEY (userId) REFERENCES users (id)
+            ON DELETE CASCADE,
+            CONSTRAINT FOREIGN KEY (submissionId) REFERENCES submissions (id)
+            ON DELETE CASCADE
+            )
+            ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+        </sql>
+    </changeSet>
+    <changeSet id="changeTitleMaxLength" author="kolais">
+        <sql>
+            ALTER TABLE submissions MODIFY title TEXT;
+        </sql>
+    </changeSet>
+    <changeSet id="changeFeedbackCommentMaxLength" author="kolais">
+        <sql>
+            ALTER TABLE submission_feedback MODIFY comment TEXT;
+        </sql>
+    </changeSet>
+    <changeSet id="changeFeedbackTableColumnName" author="kolais">
+        <sql>
+            ALTER TABLE submission_feedback CHANGE relatesTo submissionId BIGINT NOT NULL;
+        </sql>
+    </changeSet>
+    <changeSet id="addOtrsTicketNumberToSubmissions" author="kolais">
+        <sql>
+            ALTER TABLE submissions ADD otrsTicketId BIGINT NULL AFTER subsTrackingId;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
