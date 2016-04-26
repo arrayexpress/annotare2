@@ -70,6 +70,11 @@ public class MessengerImpl implements Messenger {
 
     @Override
     public void send(String note, Throwable x) {
+        send(note, x, null);
+    }
+
+    @Override
+    public void send(String note, Throwable x, User user) {
         try {
             Thread currentThread = Thread.currentThread();
             String hostName = "unknown";
@@ -87,7 +92,8 @@ public class MessengerImpl implements Messenger {
                             "exception.note", note,
                             "exception.message", (null != x && null != x.getMessage()) ? x.getMessage() : "",
                             "exception.stack", getStackTrace(x)
-                    )
+                    ),
+                    user
             );
         } catch (Throwable xxx) {
             log.error("[SEVERE] Unable to send exception report, error:", xxx);
@@ -105,11 +111,7 @@ public class MessengerImpl implements Messenger {
     }
 
     @Override
-    public void send(String template, Map<String, String> parameters, Submission submission) {
-        send(template, parameters, submission.getOwnedBy(), submission);
-    }
-
-    private void send(String template, Map<String, String> parameters, User user, Submission submission) {
+    public void send(String template, Map<String, String> parameters, User user, Submission submission) {
         StrSubstitutor sub = new StrSubstitutor(parameters);
 
         String from = sub.replace(properties.getEmailFromAddress(template));
@@ -118,14 +120,17 @@ public class MessengerImpl implements Messenger {
         String body = sub.replace(properties.getEmailTemplate(template));
 
         if (null != from && null != to && null != subject && null != body) {
-            Session session = sessionFactory.openSession();
+            boolean hadOpenSession = sessionFactory.hasOpenSession();
+            Session session = hadOpenSession ? sessionFactory.getCurrentSession() : sessionFactory.openSession();
             try {
                 queueMessage(from, to, subject, body, user, submission);
             } catch (Throwable x) {
                 log.error("Unable to queue a message", x);
                 throw new RuntimeException(x);
             } finally {
-                session.close();
+                if (!hadOpenSession) {
+                    session.close();
+                }
             }
         } else {
             throw new RuntimeException("Unable to queue a message as there are null parameters");

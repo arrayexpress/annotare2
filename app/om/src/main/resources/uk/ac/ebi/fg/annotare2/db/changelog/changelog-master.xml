@@ -151,4 +151,9 @@
             ALTER TABLE messages MODIFY userId BIGINT NULL;
         </sql>
     </changeSet>
+    <changeSet id="changeSentNullableInMessages" author="kolais">
+        <sql>
+            ALTER TABLE messages MODIFY sent TIMESTAMP NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

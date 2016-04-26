@@ -66,7 +66,7 @@ abstract class AuthBasedRemoteService extends RemoteServiceServlet {
                         "URI: " + getRequestURI()  + "\n" +
                         "Referer: " + getRequestReferer() + "\n" +
                         "User: " + getCurrentUserEmail() + "",
-                e)
+                e, getCurrentUser())
         ;
         super.doUnexpectedFailure(e);
     }

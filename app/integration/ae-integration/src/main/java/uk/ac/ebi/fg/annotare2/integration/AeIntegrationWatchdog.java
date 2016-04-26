@@ -196,7 +196,8 @@ public class AeIntegrationWatchdog {
                                 "to.email", submission.getCreatedBy().getEmail(),
                                 "submission.title", submission.getTitle(),
                                 "submission.date", submission.getUpdated().toString()
-                        )
+                        ),
+                        submission
                 );
             }
 
@@ -229,7 +230,8 @@ public class AeIntegrationWatchdog {
                                 put("subsTracking.user", properties.getSubsTrackingUser()).
                                 put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType()).
                                 put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
-                                build()
+                                build(),
+                        submission
                 );
             }
         }
@@ -268,7 +270,8 @@ public class AeIntegrationWatchdog {
                                 "submission.title", submission.getTitle(),
                                 "submission.accession", submission.getAccession(),
                                 "submission.date", submission.getUpdated().toString()
-                        )
+                        ),
+                        submission
                 );
             }
 
@@ -285,7 +288,8 @@ public class AeIntegrationWatchdog {
                                 "to.email", submission.getCreatedBy().getEmail(),
                                 "submission.title", submission.getTitle(),
                                 "submission.date", submission.getUpdated().toString()
-                        )
+                        ),
+                        submission
                 );
             } else if (properties.isAeConnectionEnabled()) {
                 String accession = submission.getAccession();
@@ -607,20 +611,11 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private void sendEmail(String template, Map<String,String> params) {
+    private void sendEmail(String template, Map<String,String> params, Submission submission) {
         try {
-            messenger.send(template, params);
+            messenger.send(template, params, submission.getCreatedBy(), submission);
         } catch (RuntimeException e) {
             logger.error("Unable to send email", e);
         }
-    }
-
-    private void sendOtrsEmail(String template, Map<String,String> params) {
-        try {
-            messenger.send(template, params);
-        } catch (RuntimeException e) {
-            logger.error("Unable to send email", e);
-        }
-
     }
 }

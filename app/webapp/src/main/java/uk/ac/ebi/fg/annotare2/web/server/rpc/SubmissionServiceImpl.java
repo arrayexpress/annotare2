@@ -451,11 +451,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                     MessengerImpl.SUBMISSION_FEEDBACK_TEMPLATE,
                     new ImmutableMap.Builder<String, String>().
                             put("to.name", submission.getCreatedBy().getName()).
-                            put("to.messenger", submission.getCreatedBy().getEmail()).
+                            put("to.email", submission.getCreatedBy().getEmail()).
                             put("submission.title", submission.getTitle()).
                             put("submission.feedback.score", null != score ? String.valueOf(score) + "/9" : "n/a").
                             put("submission.feedback.comment", null != comment ? comment : "n/a").
-                            build()
+                            build(),
+                    getCurrentUser(),
+                    submission
             );
         } catch (RuntimeException x) {
             log.error("Unable to send messenger", x);
@@ -469,12 +471,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                     MessengerImpl.CONTACT_US_TEMPLATE,
                     new ImmutableMap.Builder<String, String>()
                             .put("from.name", u.getName())
-                            .put("from.messenger", u.getEmail())
+                            .put("from.email", u.getEmail())
                             .put("submission.id", String.valueOf(submission.getId()))
                             .put("submission.title", submission.getTitle())
                             .put("message.subject", subject)
                             .put("message.body", message)
-                            .build()
+                            .build(),
+                    u,
+                    submission
             );
         } catch (RuntimeException x) {
             log.error("Unable to send messenger", x);

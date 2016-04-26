@@ -24,9 +24,13 @@ public class HibernateSessionFactory {
     public Session getCurrentSession() throws HibernateException {
         Session session = get();
         if (!isOpen(session)) {
-            throw new HibernateException("no open session");
+            throw new HibernateException("No open session");
         }
         return session;
+    }
+
+    public boolean hasOpenSession() throws HibernateException {
+        return isOpen(get());
     }
 
     public Session openSessionWithFilters(String... filterNames) {

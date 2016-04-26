@@ -57,7 +57,7 @@ public abstract class Submission implements HasEffectiveAcl {
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "submitted", nullable = true)
+    @Column(name = "submitted")
     private Date submitted;
 
     @Temporal(TemporalType.TIMESTAMP)

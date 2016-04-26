@@ -28,7 +28,9 @@ public interface Messenger {
 
     void send(String template, Map<String, String> parameters, User user);
 
-    void send(String template, Map<String, String> parameters, Submission submission);
+    void send(String template, Map<String, String> parameters, User user, Submission submission);
 
     void send(String note, Throwable x);
+
+    void send(String note, Throwable x, User user);
 }
