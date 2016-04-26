@@ -59,7 +59,7 @@ public interface EditorTitleBarView extends IsWidget {
 
         void submitSubmission(SubmissionHandler handler);
 
-        void postFeedback(Byte score, String message);
+        void postFeedback(Byte score, String message, AsyncCallback<Void> callback);
 
         String getSubmissionExportUrl();
     }

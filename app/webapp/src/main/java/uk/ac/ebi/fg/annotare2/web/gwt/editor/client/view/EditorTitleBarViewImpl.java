@@ -17,10 +17,12 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -87,7 +89,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     public void reloadSubmission() {
-        Window.Location.reload();
+        Scheduler.get().scheduleDeferred(new Command() {
+            public void execute() {
+                Window.Location.reload();
+            }
+        });
     }
 
     @Override
@@ -284,9 +290,18 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                     @Override
                     public boolean onOk(Void aVoid) {
                         if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
-                            presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
+                            presenter.postFeedback(
+                                    dialog.getFeedbackScore(),
+                                    dialog.getFeedbackMessage(),
+                                    new ReportingAsyncCallback<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            reloadSubmission();
+                                        }
+                            });
+                        } else {
+                            reloadSubmission();
                         }
-                        //reloadSubmission();
                         return true;
                     }
                 }, doFeedback);
