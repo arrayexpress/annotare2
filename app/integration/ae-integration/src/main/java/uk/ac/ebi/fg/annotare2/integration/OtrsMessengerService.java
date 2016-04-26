@@ -119,8 +119,8 @@ public class OtrsMessengerService extends EmailMessengerService {
                 Object.class
         );
         if (null != ticketId) {
-            boolean isInternalSender = message.getFrom().matches("annotare[@]ebi[.]ac[.]uk");
-            boolean isInternalRecipient = message.getTo().matches("annotare[@]ebi[.]ac[.]uk");
+            boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
+            boolean isInternalRecipient = message.getTo().matches(".*annotare[@]ebi[.]ac[.]uk.*");
             Map<String, String> templateParams = ImmutableMap.of(
                     "original.subject", message.getSubject(),
                     "original.body", message.getBody(),
