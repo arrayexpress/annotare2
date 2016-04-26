@@ -18,7 +18,7 @@
 
 package uk.ac.ebi.fg.annotare2.core.components;
 
-public interface MessagingService {
+public interface MessengerService {
 
     void processQueue();
 }

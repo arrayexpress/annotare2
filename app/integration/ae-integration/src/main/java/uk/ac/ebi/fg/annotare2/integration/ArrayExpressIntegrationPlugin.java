@@ -39,7 +39,7 @@ public class ArrayExpressIntegrationPlugin extends AbstractModule {
     protected void configure() {
         bind(SubsTracking.class).in(SINGLETON);
         bind(AEConnection.class).in(SINGLETON);
-        bind(OtrsEmailSender.class).in(SINGLETON);
+        bind(OtrsMessengerService.class).in(SINGLETON);
         bind(AeIntegrationWatchdog.class).asEagerSingleton();
         bind(ExtendedAnnotareProperties.class).asEagerSingleton();
 

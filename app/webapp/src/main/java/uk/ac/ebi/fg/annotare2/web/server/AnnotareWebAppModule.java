@@ -149,7 +149,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(HibernateSessionFactory.class).toProvider(HibernateSessionFactoryProvider.class);
 
         bind(DataFilesPeriodicProcess.class).asEagerSingleton();
-        bind(MessagingService.class).to(EmailMessagingService.class).asEagerSingleton();
+        bind(MessengerService.class).to(EmailMessengerService.class).asEagerSingleton();
 
         bind(SubmissionListServiceImpl.class).in(SINGLETON);
 

@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.core.components.MessagingService;
+import uk.ac.ebi.fg.annotare2.core.components.MessengerService;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
@@ -45,8 +45,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-public class EmailMessagingService implements MessagingService {
-    private static final Logger logger = LoggerFactory.getLogger(EmailMessagingService.class);
+public class EmailMessengerService implements MessengerService {
+    private static final Logger logger = LoggerFactory.getLogger(EmailMessengerService.class);
 
     private static final String EMAIL_ENCODING_UTF_8 = "UTF-8";
 
@@ -71,7 +71,7 @@ public class EmailMessagingService implements MessagingService {
     private final MessageDao messageDao;
 
     @Inject
-    public EmailMessagingService(HibernateSessionFactory sessionFactory,
+    public EmailMessengerService(HibernateSessionFactory sessionFactory,
                                  AnnotareProperties properties,
                                  MessageDao messageDao) {
         this.sessionFactory = sessionFactory;
