@@ -17,11 +17,20 @@
 package uk.ac.ebi.fg.annotare2.db.dao;
 
 import uk.ac.ebi.fg.annotare2.db.model.Message;
+import uk.ac.ebi.fg.annotare2.db.model.enums.MessageStatus;
+
+import java.util.Collection;
 
 
 public interface MessageDao {
 
     Message create(String from, String to, String subject, String body);
 
+    Message markSent(Message message);
+
+    Message markFailed(Message message);
+
     void save(Message message);
+
+    Collection<Message> getMessagesByStatus(MessageStatus... statuses);
 }

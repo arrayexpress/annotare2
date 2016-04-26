@@ -17,9 +17,14 @@
 package uk.ac.ebi.fg.annotare2.db.dao.impl;
 
 import com.google.inject.Inject;
+import org.hibernate.criterion.Restrictions;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
 import uk.ac.ebi.fg.annotare2.db.model.Message;
+import uk.ac.ebi.fg.annotare2.db.model.enums.MessageStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+
+import java.util.Collection;
+import java.util.Date;
 
 public class MessageDaoImpl extends AbstractDaoImpl<Message> implements MessageDao {
 
@@ -33,5 +38,30 @@ public class MessageDaoImpl extends AbstractDaoImpl<Message> implements MessageD
         Message message = new Message(from, to, subject, body);
         save(message);
         return message;
+    }
+
+    @Override
+    public Message markSent(Message message) {
+        message.setSent(new Date());
+        message.setStatus(MessageStatus.SENT);
+        save(message);
+        return message;
+    }
+
+    @Override
+    public Message markFailed(Message message) {
+        message.setSent(null);
+        message.setStatus(MessageStatus.ERROR);
+        save(message);
+        return message;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<Message> getMessagesByStatus(MessageStatus... statuses) {
+        return getCurrentSession()
+                .createCriteria(Message.class)
+                .add(Restrictions.in("status", statuses))
+                .list();
     }
 }

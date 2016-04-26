@@ -46,8 +46,6 @@ public class MessengerImpl implements Messenger {
     private final HibernateSessionFactory sessionFactory;
     private final MessageDao messageDao;
 
-    private final static String UTF8 = "UTF-8";
-
     public static final String NEW_USER_TEMPLATE = "new-user";
     public static final String VERIFY_EMAIL_TEMPLATE = "verify-email";
     public static final String WELCOME_TEMPLATE = "welcome";
@@ -137,50 +135,6 @@ public class MessengerImpl implements Messenger {
         message.setSubmission(submission);
         messageDao.save(message);
     }
-
-//    private void send(String recipients, String hiddenRecipients, String subject, String message, String from)
-//            throws MessagingException {
-//
-//        //Set the host SMTP address and port
-//        Properties p = new Properties();
-//        p.put("mail.smtp.host", properties.getEmailSmtpHost());
-//        p.put("mail.smtp.port", properties.getEmailSmtpPort());
-//
-//        // create some properties and get the default Session
-//        Session session = Session.getDefaultInstance(p, null);
-//        session.setDebug(false);
-//
-//        // create a message
-//        MimeMessage msg = new MimeMessage(session);
-//
-//        // set originator (FROM) address
-//        InternetAddress addressFrom = parseAddresses(from)[0];
-//        msg.setFrom(addressFrom);
-//
-//        // set recipients (TO) address
-//        msg.setRecipients(Message.RecipientType.TO, parseAddresses(recipients));
-//
-//        // set hidden recipients (BCC) address
-//        if (null != hiddenRecipients) {
-//            msg.setRecipients(Message.RecipientType.BCC, parseAddresses(hiddenRecipients));
-//        }
-//        // Setting the Subject and Content Type
-//        msg.setSubject(subject);
-//        msg.setText(message, UTF8);
-//        Transport.send(msg);
-//    }
-
-//    InternetAddress[] parseAddresses(String addresses) throws AddressException {
-//        InternetAddress[] recipients = InternetAddress.parse(addresses, false);
-//        for(int i=0; i<recipients.length; i++) {
-//            try {
-//                recipients[i] = new InternetAddress(recipients[i].getAddress(), recipients[i].getPersonal(), UTF8);
-//            } catch(UnsupportedEncodingException e) {
-//                throw new RuntimeException("Unable to set encoding", e);
-//            }
-//        }
-//        return recipients;
-//    }
 
     private String getStackTrace(Throwable x) {
         final Writer result = new StringWriter();
