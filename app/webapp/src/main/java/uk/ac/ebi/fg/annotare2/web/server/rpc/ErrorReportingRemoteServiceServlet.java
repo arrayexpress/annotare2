@@ -31,7 +31,7 @@ abstract class ErrorReportingRemoteServiceServlet extends RemoteServiceServlet {
     @Override
     protected void doUnexpectedFailure(Throwable e) {
         if (!(e instanceof ClientAbortException)) {
-            messenger.sendException("Unexpected exception in RPC call", e);
+            messenger.send("Unexpected exception in RPC call", e);
             super.doUnexpectedFailure(e);
         }
     }

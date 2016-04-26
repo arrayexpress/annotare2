@@ -88,13 +88,13 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
 
     protected UnexpectedException unexpected(Throwable e) {
         log.error("server error", e);
-        messenger.sendException("Unexpected server error for [" + getCurrentUserEmail() + "]", e);
+        messenger.send("Unexpected server error for [" + getCurrentUserEmail() + "]", e);
         return new UnexpectedException("Unexpected server error", e);
     }
 
     protected ResourceNotFoundException noSuchRecord(RecordNotFoundException e) {
         log.error("server error", e);
-        messenger.sendException("Submission not found for [" + getCurrentUserEmail() + "]", e);
+        messenger.send("Submission not found for [" + getCurrentUserEmail() + "]", e);
         return new ResourceNotFoundException("Submission not found");
     }
 

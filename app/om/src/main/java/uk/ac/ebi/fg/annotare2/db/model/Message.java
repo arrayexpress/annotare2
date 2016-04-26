@@ -26,10 +26,10 @@ public class Message {
     @Column(name = "status", nullable = false)
     private MessageStatus status;
 
-    @Column(name = "from", nullable = false)
+    @Column(name = "`from`", nullable = false)
     private String from;
 
-    @Column(name = "to", nullable = false)
+    @Column(name = "`to`", nullable = false)
     private String to;
 
     @Column(name = "subject", nullable = false)
@@ -39,7 +39,7 @@ public class Message {
     private String body;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,6 +47,16 @@ public class Message {
     private Submission submission;
 
     public Message() {
+        this("", "", "", "");
+    }
+
+    public Message(String from, String to, String subject, String body) {
+        created = new Date();
+        status = MessageStatus.QUEUED;
+        this.from = from;
+        this.to = to;
+        this.subject = subject;
+        this.body = body;
     }
 
     public Long getId() {
@@ -68,6 +78,14 @@ public class Message {
 
     public void setStatus(MessageStatus status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Submission getSubmission() {

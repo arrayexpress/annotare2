@@ -122,7 +122,7 @@ public class AeIntegrationWatchdog {
                     periodicRun();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
-                    messenger.sendException("Error in submission watchdog process:", x);
+                    messenger.send("Error in submission watchdog process:", x);
                 } finally {
                     session.close();
                 }
@@ -609,7 +609,7 @@ public class AeIntegrationWatchdog {
 
     private void sendEmail(String template, Map<String,String> params) {
         try {
-            messenger.sendFromTemplate(template, params);
+            messenger.send(template, params);
         } catch (RuntimeException e) {
             logger.error("Unable to send email", e);
         }
@@ -617,7 +617,7 @@ public class AeIntegrationWatchdog {
 
     private void sendOtrsEmail(String template, Map<String,String> params) {
         try {
-            messenger.sendFromTemplate(template, params);
+            messenger.send(template, params);
         } catch (RuntimeException e) {
             logger.error("Unable to send email", e);
         }

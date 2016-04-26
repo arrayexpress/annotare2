@@ -80,7 +80,7 @@ public class ArrayExpressArrayDesignList {
                     reload();
                 } catch (Throwable x) {
                     log.error("AE array design list update process caught an exception:", x);
-                    messenger.sendException("Error in AE array design list update process:", x);
+                    messenger.send("Error in AE array design list update process:", x);
                 }
             }
 

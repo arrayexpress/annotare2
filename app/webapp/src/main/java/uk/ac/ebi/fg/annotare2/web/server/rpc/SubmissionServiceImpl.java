@@ -447,7 +447,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     private void sendFeedbackEmail(Submission submission, Byte score, String comment) {
         try {
-            messenger.sendFromTemplate(
+            messenger.send(
                     MessengerImpl.SUBMISSION_FEEDBACK_TEMPLATE,
                     new ImmutableMap.Builder<String, String>().
                             put("to.name", submission.getCreatedBy().getName()).
@@ -465,7 +465,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private void sendEmail(Submission submission, String subject, String message) {
         User u = getCurrentUser();
         try {
-            messenger.sendFromTemplate(
+            messenger.send(
                     MessengerImpl.CONTACT_US_TEMPLATE,
                     new ImmutableMap.Builder<String, String>()
                             .put("from.name", u.getName())

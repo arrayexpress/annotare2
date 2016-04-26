@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
             } else {
                 User u = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
                 try {
-                    messenger.sendFromTemplate(
+                    messenger.send(
                             MessengerImpl.NEW_USER_TEMPLATE,
                             ImmutableMap.of(
                                     "to.name", u.getName(),
@@ -91,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
                 if (null == params.getToken()) {
                     User u = accountManager.requestChangePassword(params.getEmail());
                     try {
-                        messenger.sendFromTemplate(
+                        messenger.send(
                                 MessengerImpl.CHANGE_PASSWORD_REQUEST_TEMPLATE,
                                 ImmutableMap.of(
                                         "to.name", u.getName(),
@@ -110,7 +110,7 @@ public class AccountServiceImpl implements AccountService {
                     } else if (null != params.getPassword()) {
                         User u = accountManager.processChangePassword(params.getEmail(), params.getPassword());
                         try {
-                            messenger.sendFromTemplate(
+                            messenger.send(
                                     MessengerImpl.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
                                     ImmutableMap.of(
                                             "to.name", u.getName(),
@@ -141,7 +141,7 @@ public class AccountServiceImpl implements AccountService {
                     } else {
                         User u = accountManager.setEmailVerified(params.getEmail());
                         try {
-                            messenger.sendFromTemplate(
+                            messenger.send(
                                     MessengerImpl.WELCOME_TEMPLATE,
                                     ImmutableMap.of(
                                             "to.name", u.getName(),
@@ -167,7 +167,7 @@ public class AccountServiceImpl implements AccountService {
             errors.append(FormParams.EMAIL_PARAM, "User with this email does not exist");
         } else {
             try {
-                messenger.sendFromTemplate(
+                messenger.send(
                         MessengerImpl.VERIFY_EMAIL_TEMPLATE,
                         ImmutableMap.of(
                                 "to.name", u.getName(),

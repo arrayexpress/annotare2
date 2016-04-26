@@ -146,4 +146,9 @@
             ALTER TABLE submissions ADD otrsTicketId BIGINT NULL AFTER subsTrackingId;
         </sql>
     </changeSet>
+    <changeSet id="changeUserIdNullableInMessages" author="kolais">
+        <sql>
+            ALTER TABLE messages MODIFY userId BIGINT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

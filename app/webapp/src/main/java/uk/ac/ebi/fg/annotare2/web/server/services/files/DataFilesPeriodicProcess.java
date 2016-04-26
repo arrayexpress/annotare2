@@ -80,7 +80,7 @@ public class DataFilesPeriodicProcess {
                     periodicRun();
                 } catch (Throwable x) {
                     logger.error(x.getMessage(), x);
-                    messenger.sendException("Error in data file periodic process", x);
+                    messenger.send("Error in data file periodic process", x);
                 } finally {
                     session.close();
                 }

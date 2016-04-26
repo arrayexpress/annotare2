@@ -61,7 +61,7 @@ abstract class AuthBasedRemoteService extends RemoteServiceServlet {
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
-        messenger.sendException(
+        messenger.send(
                 "Unexpected exception in RPC call\n" +
                         "URI: " + getRequestURI()  + "\n" +
                         "Referer: " + getRequestReferer() + "\n" +
