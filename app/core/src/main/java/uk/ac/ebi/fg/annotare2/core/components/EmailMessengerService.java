@@ -15,13 +15,12 @@
  *
  */
 
-package uk.ac.ebi.fg.annotare2.web.server.services;
+package uk.ac.ebi.fg.annotare2.core.components;
 
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.fg.annotare2.core.components.MessengerService;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
@@ -31,7 +30,6 @@ import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.mail.MessagingException;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -46,9 +44,10 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class EmailMessengerService implements MessengerService {
+
     private static final Logger logger = LoggerFactory.getLogger(EmailMessengerService.class);
 
-    private static final String EMAIL_ENCODING_UTF_8 = "UTF-8";
+    public static final String EMAIL_ENCODING_UTF_8 = "UTF-8";
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -57,7 +56,7 @@ public class EmailMessengerService implements MessengerService {
         public void run() {
             Session session = sessionFactory.openSession();
             try {
-                periodicRun();
+                processQueue();
             } catch (Throwable x) {
                 logger.error(x.getMessage(), x);
             } finally {
@@ -96,28 +95,28 @@ public class EmailMessengerService implements MessengerService {
     }
 
     @Override
-    public void processQueue() {
+    public void instuctProcessMessages() {
         scheduler.schedule(runnable, 100, MILLISECONDS);
     }
 
-    private void periodicRun() throws Exception {
+    private void processQueue() throws Exception {
         for (Message msg : messageDao.getMessagesByStatus(MessageStatus.QUEUED)) {
-            deliverMessage(msg);
+            processMessage(msg);
         }
     }
 
     @Transactional
-    protected void deliverMessage(Message message) {
+    protected void processMessage(Message message) {
         try {
-            sendEmail(message.getFrom(), message.getTo(), message.getSubject(), message.getBody());
+            sendMessage(message);
             messageDao.markSent(message);
         } catch (Exception x) {
+            logger.error("Unable to process message " + message.getId(), x);
             messageDao.markFailed(message);
         }
     }
 
-    private void sendEmail(String from, String recipients, String subject, String message)
-        throws MessagingException, UnsupportedEncodingException {
+    protected void sendMessage(Message message) throws Exception {
 
         //Set the host SMTP address and port
         Properties p = new Properties();
@@ -132,23 +131,23 @@ public class EmailMessengerService implements MessengerService {
         MimeMessage msg = new MimeMessage(session);
 
         // set originator (FROM) address
-        InternetAddress addressFrom = parseAddresses(from)[0];
+        InternetAddress addressFrom = parseAddresses(message.getFrom())[0];
         msg.setFrom(addressFrom);
 
         // set recipients (TO) address
-        msg.setRecipients(javax.mail.Message.RecipientType.TO, parseAddresses(recipients));
+        msg.setRecipients(javax.mail.Message.RecipientType.TO, parseAddresses(message.getTo()));
 
         // set hidden recipients (BCC) address
         if (!isNullOrEmpty(properties.getEmailBccAddress())) {
             msg.setRecipients(javax.mail.Message.RecipientType.BCC, parseAddresses(properties.getEmailBccAddress()));
         }
         // Setting the Subject and Content Type
-        msg.setSubject(subject);
-        msg.setText(message, EMAIL_ENCODING_UTF_8);
+        msg.setSubject(message.getSubject());
+        msg.setText(message.getBody(), EMAIL_ENCODING_UTF_8);
         Transport.send(msg);
     }
 
-    InternetAddress[] parseAddresses(String addresses) throws AddressException, UnsupportedEncodingException {
+    private InternetAddress[] parseAddresses(String addresses) throws AddressException, UnsupportedEncodingException {
         InternetAddress[] recipients = InternetAddress.parse(addresses, false);
         for(int i=0; i<recipients.length; i++) {
             recipients[i] = new InternetAddress(recipients[i].getAddress(), recipients[i].getPersonal(), EMAIL_ENCODING_UTF_8);

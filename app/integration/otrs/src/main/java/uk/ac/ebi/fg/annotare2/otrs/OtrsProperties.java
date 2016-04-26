@@ -9,4 +9,8 @@ public interface OtrsProperties {
     String getOtrsIntegrationUser();
 
     String getOtrsIntegrationPassword();
+
+    String getOtrsIntegrationSubjectTemplate();
+
+    String getOtrsIntegrationBodyTemplate();
 }

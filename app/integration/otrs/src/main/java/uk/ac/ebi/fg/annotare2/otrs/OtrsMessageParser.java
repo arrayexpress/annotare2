@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OtrsSoapMessageParser {
+public class OtrsMessageParser {
 
     private Object nodeToObject(Node node) {
         Node xsdTypeNode = node.getAttributes().getNamedItemNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type");
@@ -44,7 +44,21 @@ public class OtrsSoapMessageParser {
         return value;
     }
 
-    public Object[] nodesToArray(SOAPMessage msg) throws SOAPException {
+    public <Type> Type toObject(SOAPMessage msg, Class<Type> clazz) throws SOAPException {
+        Object[] results = toArray(msg);
+        if (null == results || 0 == results.length) {
+            return null;
+        } else if (1 == results.length) {
+            if (null == results[0]) {
+                return null;
+            } else if (clazz.isAssignableFrom(results[0].getClass())) {
+                return clazz.cast(results[0]);
+            }
+        }
+        throw new SOAPException("Unable to cast result to " + clazz.getName());
+    }
+
+    public Object[] toArray(SOAPMessage msg) throws SOAPException {
         Document doc = msg.getSOAPPart().getEnvelope().getBody().extractContentAsDocument();
         Element el = doc.getDocumentElement();
         NodeList nl = el.getChildNodes();
@@ -57,11 +71,11 @@ public class OtrsSoapMessageParser {
         return results;
     }
 
-    public List<?> nodesToList(SOAPMessage msg) throws SOAPException {
-        return Arrays.asList(this.nodesToArray(msg));
+    public List<?> toList(SOAPMessage msg) throws SOAPException {
+        return Arrays.asList(this.toArray(msg));
     }
 
-    public Map<String, Object> nodesToMap(SOAPMessage msg) throws SOAPException {
+    public Map<String, Object> toMap(SOAPMessage msg) throws SOAPException {
         Map<String, Object> map = new HashMap<>();
 
         Document doc = msg.getSOAPPart().getEnvelope().getBody().extractContentAsDocument();

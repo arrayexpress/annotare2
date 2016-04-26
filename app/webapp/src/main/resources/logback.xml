@@ -62,6 +62,7 @@
     <!--<logger name="org.hibernate.SQL" level="DEBUG"/>-->
     <!--<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>-->
     <logger name="org.reflections.Reflections" level="ERROR"/>
+    <!--<logger name="uk.ac.ebi.fg.annotare2.otrs" level="DEBUG"/>-->
     <!--<logger name="uk.ac.ebi.fg.annotare2.magetabcheck" level="DEBUG"/>-->
 
     <root level="INFO">

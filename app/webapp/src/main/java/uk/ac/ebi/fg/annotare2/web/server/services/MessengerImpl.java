@@ -143,7 +143,7 @@ public class MessengerImpl implements Messenger {
         message.setUser(user);
         message.setSubmission(submission);
         messageDao.save(message);
-        messengerService.processQueue();
+        messengerService.instuctProcessMessages();
     }
 
     private String getStackTrace(Throwable x) {

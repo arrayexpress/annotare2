@@ -105,8 +105,8 @@ public abstract class Submission implements HasEffectiveAcl {
     @Column(name = "subsTrackingId")
     private Integer subsTrackingId;
 
-    @Column(name = "otrsTicketId")
-    private Long otrsTicketId;
+    @Column(name = "otrsTicketNumber")
+    private String otrsTicketNumber;
 
     @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
     private boolean deleted;
@@ -219,6 +219,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setSubsTrackingId(Integer subsTrackingId) {
         this.subsTrackingId = subsTrackingId;
+    }
+
+    public String getOtrsTicketNumber() {
+        return this.otrsTicketNumber;
+    }
+
+    public void setOtrsTicketNumber(String otrsTicketNumber) {
+        this.otrsTicketNumber = otrsTicketNumber;
     }
 
     public Set<DataFile> getFiles() {

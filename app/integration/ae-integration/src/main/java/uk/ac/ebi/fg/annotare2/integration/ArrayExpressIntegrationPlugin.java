@@ -25,6 +25,7 @@ import uk.ac.ebi.fg.annotare2.ae.ArrayExpressProperties;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTracking;
 import uk.ac.ebi.fg.annotare2.autosubs.SubsTrackingProperties;
 import uk.ac.ebi.fg.annotare2.core.AnnotarePluginModule;
+import uk.ac.ebi.fg.annotare2.core.components.MessengerService;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 
 import static com.google.inject.Scopes.SINGLETON;
@@ -39,8 +40,10 @@ public class ArrayExpressIntegrationPlugin extends AbstractModule {
     protected void configure() {
         bind(SubsTracking.class).in(SINGLETON);
         bind(AEConnection.class).in(SINGLETON);
-        bind(OtrsMessengerService.class).in(SINGLETON);
         bind(AeIntegrationWatchdog.class).asEagerSingleton();
+
+        bind(MessengerService.class).to(OtrsMessengerService.class).asEagerSingleton();
+
         bind(ExtendedAnnotareProperties.class).asEagerSingleton();
 
         bind(AnnotareProperties.class).to(ExtendedAnnotareProperties.class);

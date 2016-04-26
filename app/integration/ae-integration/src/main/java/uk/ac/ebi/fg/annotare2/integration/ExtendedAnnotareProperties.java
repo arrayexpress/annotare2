@@ -129,4 +129,15 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
     public String getOtrsIntegrationPassword() {
         return getProperty("otrs-integration.password");
     }
+
+    @Override
+    public String getOtrsIntegrationSubjectTemplate() {
+        return getProperty("otrs-integration.subject-template");
+    }
+
+
+    @Override
+    public String getOtrsIntegrationBodyTemplate() {
+        return getProperty("otrs-integration.body-template");
+    }
 }
