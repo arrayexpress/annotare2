@@ -286,7 +286,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                         if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
                             presenter.postFeedback(dialog.getFeedbackScore(), dialog.getFeedbackMessage());
                         }
-                        reloadSubmission();
+                        //reloadSubmission();
                         return true;
                     }
                 }, doFeedback);
