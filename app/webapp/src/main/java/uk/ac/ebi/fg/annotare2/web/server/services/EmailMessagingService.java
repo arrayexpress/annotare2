@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.components.MessagingService;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
@@ -41,9 +42,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
-public class EmailMessagingService {
+public class EmailMessagingService implements MessagingService {
     private static final Logger logger = LoggerFactory.getLogger(EmailMessagingService.class);
 
     private static final String EMAIL_ENCODING_UTF_8 = "UTF-8";
@@ -93,8 +95,9 @@ public class EmailMessagingService {
         }
     }
 
-    public void sendNow() {
-        scheduler.schedule(runnable, 0, MINUTES);
+    @Override
+    public void processQueue() {
+        scheduler.schedule(runnable, 100, MILLISECONDS);
     }
 
     private void periodicRun() throws Exception {

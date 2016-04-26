@@ -23,6 +23,7 @@ import org.apache.commons.lang.text.StrSubstitutor;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.components.MessagingService;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
@@ -42,6 +43,7 @@ import java.util.Map;
 public class MessengerImpl implements Messenger {
     private static final Logger log = LoggerFactory.getLogger(MessengerImpl.class);
 
+    private final MessagingService messagingService;
     private final AnnotareProperties properties;
     private final HibernateSessionFactory sessionFactory;
     private final MessageDao messageDao;
@@ -56,9 +58,11 @@ public class MessengerImpl implements Messenger {
     public static final String CONTACT_US_TEMPLATE = "contact-us";
 
     @Inject
-    public MessengerImpl(AnnotareProperties properties,
+    public MessengerImpl(MessagingService messagingService,
+                         AnnotareProperties properties,
                          HibernateSessionFactory sessionFactory,
                          MessageDao messageDao) {
+        this.messagingService = messagingService;
         this.properties = properties;
         this.sessionFactory = sessionFactory;
         this.messageDao = messageDao;
@@ -134,6 +138,7 @@ public class MessengerImpl implements Messenger {
         message.setUser(user);
         message.setSubmission(submission);
         messageDao.save(message);
+        messagingService.processQueue();
     }
 
     private String getStackTrace(Throwable x) {
