@@ -99,6 +99,36 @@ public class EmailMessengerService implements MessengerService {
         scheduler.schedule(runnable, 100, MILLISECONDS);
     }
 
+    @Override
+    public void directEmail(String from, String to, String subject, String body) throws Exception {
+        Properties p = new Properties();
+        p.put("mail.smtp.host", properties.getEmailSmtpHost());
+        p.put("mail.smtp.port", properties.getEmailSmtpPort());
+
+        // create some properties and get the default Session
+        javax.mail.Session session = javax.mail.Session.getDefaultInstance(p, null);
+        session.setDebug(false);
+
+        // create a message
+        MimeMessage msg = new MimeMessage(session);
+
+        // set originator (FROM) address
+        InternetAddress addressFrom = parseAddresses(from)[0];
+        msg.setFrom(addressFrom);
+
+        // set recipients (TO) address
+        msg.setRecipients(javax.mail.Message.RecipientType.TO, parseAddresses(to));
+
+        // set hidden recipients (BCC) address
+        if (!isNullOrEmpty(properties.getEmailBccAddress())) {
+            msg.setRecipients(javax.mail.Message.RecipientType.BCC, parseAddresses(properties.getEmailBccAddress()));
+        }
+        // Setting the Subject and Content Type
+        msg.setSubject(subject);
+        msg.setText(body, EMAIL_ENCODING_UTF_8);
+        Transport.send(msg);
+    }
+
     private void processQueue() throws Exception {
         for (Message msg : messageDao.getMessagesByStatus(MessageStatus.QUEUED)) {
             processMessage(msg);
@@ -117,34 +147,7 @@ public class EmailMessengerService implements MessengerService {
     }
 
     protected void sendMessage(Message message) throws Exception {
-
-        //Set the host SMTP address and port
-        Properties p = new Properties();
-        p.put("mail.smtp.host", properties.getEmailSmtpHost());
-        p.put("mail.smtp.port", properties.getEmailSmtpPort());
-
-        // create some properties and get the default Session
-        javax.mail.Session session = javax.mail.Session.getDefaultInstance(p, null);
-        session.setDebug(false);
-
-        // create a message
-        MimeMessage msg = new MimeMessage(session);
-
-        // set originator (FROM) address
-        InternetAddress addressFrom = parseAddresses(message.getFrom())[0];
-        msg.setFrom(addressFrom);
-
-        // set recipients (TO) address
-        msg.setRecipients(javax.mail.Message.RecipientType.TO, parseAddresses(message.getTo()));
-
-        // set hidden recipients (BCC) address
-        if (!isNullOrEmpty(properties.getEmailBccAddress())) {
-            msg.setRecipients(javax.mail.Message.RecipientType.BCC, parseAddresses(properties.getEmailBccAddress()));
-        }
-        // Setting the Subject and Content Type
-        msg.setSubject(message.getSubject());
-        msg.setText(message.getBody(), EMAIL_ENCODING_UTF_8);
-        Transport.send(msg);
+        directEmail(message.getFrom(), message.getTo(), message.getSubject(), message.getBody());
     }
 
     private InternetAddress[] parseAddresses(String addresses) throws AddressException, UnsupportedEncodingException {

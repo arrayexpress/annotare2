@@ -93,7 +93,9 @@ public class MessengerImpl implements Messenger {
                             "exception.message", (null != x && null != x.getMessage()) ? x.getMessage() : "",
                             "exception.stack", getStackTrace(x)
                     ),
-                    user
+                    user,
+                    null,
+                    true
             );
         } catch (Throwable xxx) {
             log.error("[SEVERE] Unable to send exception report, error:", xxx);
@@ -112,6 +114,10 @@ public class MessengerImpl implements Messenger {
 
     @Override
     public void send(String template, Map<String, String> parameters, User user, Submission submission) {
+        send(template, parameters, user, submission, false);
+    }
+
+    private void send(String template, Map<String, String> parameters, User user, Submission submission, boolean isDirectSend) {
         StrSubstitutor sub = new StrSubstitutor(parameters);
 
         String from = sub.replace(properties.getEmailFromAddress(template));
@@ -120,16 +126,24 @@ public class MessengerImpl implements Messenger {
         String body = sub.replace(properties.getEmailTemplate(template));
 
         if (null != from && null != to && null != subject && null != body) {
-            boolean hadOpenSession = sessionFactory.hasOpenSession();
-            Session session = hadOpenSession ? sessionFactory.getCurrentSession() : sessionFactory.openSession();
-            try {
-                queueMessage(from, to, subject, body, user, submission);
-            } catch (Throwable x) {
-                log.error("Unable to queue a message", x);
-                throw new RuntimeException(x);
-            } finally {
-                if (!hadOpenSession) {
-                    session.close();
+            if (isDirectSend) {
+                try {
+                    messengerService.directEmail(from, to, subject, body);
+                } catch (Throwable x) {
+                    log.error("Unable to send message directly", x);
+                }
+            } else {
+                boolean hadOpenSession = sessionFactory.hasOpenSession();
+                Session session = hadOpenSession ? sessionFactory.getCurrentSession() : sessionFactory.openSession();
+                try {
+                    queueMessage(from, to, subject, body, user, submission);
+                } catch (Throwable x) {
+                    log.error("Unable to queue a message", x);
+                    throw new RuntimeException(x);
+                } finally {
+                    if (!hadOpenSession) {
+                        session.close();
+                    }
                 }
             }
         } else {

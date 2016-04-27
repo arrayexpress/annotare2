@@ -30,6 +30,7 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.otrs.OtrsConnector;
 import uk.ac.ebi.fg.annotare2.otrs.OtrsMessageParser;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 
 import java.util.Map;
 
@@ -40,6 +41,7 @@ public class OtrsMessengerService extends EmailMessengerService {
     private static final Logger log = LoggerFactory.getLogger(OtrsMessengerService.class);
 
     private final ExtendedAnnotareProperties properties;
+    private final HibernateSessionFactory sessionFactory;
     private final SubmissionDao submissionDao;
     private final OtrsMessageParser messageParser;
 
@@ -49,6 +51,7 @@ public class OtrsMessengerService extends EmailMessengerService {
                                 MessageDao messageDao,
                                 SubmissionDao submissionDao) {
         super(sessionFactory, properties, messageDao);
+        this.sessionFactory = sessionFactory;
         this.properties = properties;
         this.submissionDao = submissionDao;
         messageParser = new OtrsMessageParser();
@@ -76,15 +79,22 @@ public class OtrsMessengerService extends EmailMessengerService {
     private String createOtrsTicket(Submission submission) throws Exception {
         OtrsConnector otrs = getOtrsConnector();
 
+        ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
+
+//        try {
+//            ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+//            submissionType = exp.getType();
+//        } catch (DataSerializationException x) {}
+
         Object ticketId = messageParser.toObject(
                 otrs.dispatchCall(
                     "TicketObject",
                     "TicketCreate",
                     new ImmutableMap.Builder<String, Object>()
                             .put("TypeID", 1)
-                            .put("QueueID", 62)
+                            .put("QueueID", submissionType.isSequencing() ? 72 : 62)
                             .put("LockID", 1)
-                            .put("Title", "Submission \"" + submission.getTitle() + "\"")
+                            .put("Title", (submissionType.isSequencing() ? "HTS" : "MA") + " submission: " + submission.getTitle())
                             .put("OwnerID", 1)
                             .put("UserID", 1)
                             .put("PriorityID", 3)

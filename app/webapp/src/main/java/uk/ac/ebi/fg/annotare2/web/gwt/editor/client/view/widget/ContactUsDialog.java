@@ -25,16 +25,16 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
 public class ContactUsDialog extends DialogBox {
 
     interface Binder extends UiBinder<Widget, ContactUsDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
+
+    @UiField
+    TextBox subject;
 
     @UiField
     TextArea message;
@@ -51,7 +51,6 @@ public class ContactUsDialog extends DialogBox {
         setModal(true);
         setGlassEnabled(true);
         setText("Contact us");
-
         setWidget(Binder.BINDER.createAndBindUi(this));
     }
 
@@ -61,6 +60,7 @@ public class ContactUsDialog extends DialogBox {
 
     @Override
     public void show() {
+        subject.setValue("Message from submitter");
         message.setValue("");
         super.show();
         Scheduler.get().scheduleDeferred(new Command() {
@@ -72,7 +72,7 @@ public class ContactUsDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        presenter.sendMessage("Annotare submission", message.getValue().trim());
+        presenter.sendMessage(subject.getValue().trim(), message.getValue().trim());
         hide();
     }
 

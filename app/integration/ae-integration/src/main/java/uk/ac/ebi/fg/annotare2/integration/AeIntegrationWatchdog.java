@@ -215,9 +215,7 @@ public class AeIntegrationWatchdog {
                             submissionType = "microarray";
                         }
                     } catch (DataSerializationException x) {}
-
                 }
-                //SubmissionFeedback feedback = submissionFeedbackDao.getLastFeedbackFor(submission);
 
                 sendEmail(
                         otrsTemplate,

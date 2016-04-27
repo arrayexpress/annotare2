@@ -21,4 +21,6 @@ package uk.ac.ebi.fg.annotare2.core.components;
 public interface MessengerService {
 
     void instuctProcessMessages();
+
+    void directEmail(String from, String to, String subject, String body) throws Exception;
 }
