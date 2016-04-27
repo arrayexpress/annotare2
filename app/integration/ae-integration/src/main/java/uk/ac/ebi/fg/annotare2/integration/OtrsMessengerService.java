@@ -25,12 +25,16 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.components.EmailMessengerService;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Message;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateEntity;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 import uk.ac.ebi.fg.annotare2.otrs.OtrsConnector;
 import uk.ac.ebi.fg.annotare2.otrs.OtrsMessageParser;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 import java.util.Map;
 
@@ -80,11 +84,13 @@ public class OtrsMessengerService extends EmailMessengerService {
         OtrsConnector otrs = getOtrsConnector();
 
         ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
-
-//        try {
-//            ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
-//            submissionType = exp.getType();
-//        } catch (DataSerializationException x) {}
+        submission = HibernateEntity.deproxy(submission, Submission.class);
+        if (submission instanceof ExperimentSubmission) {
+            try {
+                ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+                submissionType = exp.getType();
+            } catch (DataSerializationException x) {}
+        }
 
         Object ticketId = messageParser.toObject(
                 otrs.dispatchCall(

@@ -191,12 +191,13 @@ public class AeIntegrationWatchdog {
             if (!hasResubmitted) {
                 sendEmail(
                         EmailTemplates.INITIAL_SUBMISSION_TEMPLATE,
-                        ImmutableMap.of(
-                                "to.name", submission.getCreatedBy().getName(),
-                                "to.email", submission.getCreatedBy().getEmail(),
-                                "submission.title", submission.getTitle(),
-                                "submission.date", submission.getUpdated().toString()
-                        ),
+                        new ImmutableMap.Builder<String, String>()
+                                .put("to.name", submission.getCreatedBy().getName())
+                                .put("to.email", submission.getCreatedBy().getEmail())
+                                .put("submission.id", String.valueOf(submission.getId()))
+                                .put("submission.title", submission.getTitle())
+                                .put("submission.date", submission.getUpdated().toString())
+                                .build(),
                         submission
                 );
             }
@@ -212,23 +213,24 @@ public class AeIntegrationWatchdog {
                         if (exp.getType().isSequencing()) {
                             submissionType = "HTS";
                         } else {
-                            submissionType = "microarray";
+                            submissionType = "MA";
                         }
                     } catch (DataSerializationException x) {}
                 }
 
                 sendEmail(
                         otrsTemplate,
-                        new ImmutableMap.Builder<String, String>().
-                                put("to.name", submission.getCreatedBy().getName()).
-                                put("to.email", submission.getCreatedBy().getEmail()).
-                                put("submission.title", submission.getTitle()).
-                                put("submission.date", submission.getUpdated().toString()).
-                                put("submission.type", submissionType).
-                                put("subsTracking.user", properties.getSubsTrackingUser()).
-                                put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType()).
-                                put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId())).
-                                build(),
+                        new ImmutableMap.Builder<String, String>()
+                                .put("to.name", submission.getCreatedBy().getName())
+                                .put("to.email", submission.getCreatedBy().getEmail())
+                                .put("submission.id", String.valueOf(submission.getId()))
+                                .put("submission.title", submission.getTitle())
+                                .put("submission.date", submission.getUpdated().toString())
+                                .put("submission.type", submissionType)
+                                .put("subsTracking.user", properties.getSubsTrackingUser())
+                                .put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType())
+                                .put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId()))
+                                .build(),
                         submission
                 );
             }
@@ -262,13 +264,14 @@ public class AeIntegrationWatchdog {
 
                 sendEmail(
                         EmailTemplates.ACCESSION_UPDATE_TEMPLATE,
-                        ImmutableMap.of(
-                                "to.name", submission.getCreatedBy().getName(),
-                                "to.email", submission.getCreatedBy().getEmail(),
-                                "submission.title", submission.getTitle(),
-                                "submission.accession", submission.getAccession(),
-                                "submission.date", submission.getUpdated().toString()
-                        ),
+                        new ImmutableMap.Builder<String, String>()
+                                .put("to.name", submission.getCreatedBy().getName())
+                                .put("to.email", submission.getCreatedBy().getEmail())
+                                .put("submission.id", String.valueOf(submission.getId()))
+                                .put("submission.title", submission.getTitle())
+                                .put("submission.accession", submission.getAccession())
+                                .put("submission.date", submission.getUpdated().toString())
+                                .build(),
                         submission
                 );
             }
@@ -281,12 +284,13 @@ public class AeIntegrationWatchdog {
                 submissionManager.save(submission);
                 sendEmail(
                         EmailTemplates.REJECTED_SUBMISSION_TEMPLATE,
-                        ImmutableMap.of(
-                                "to.name", submission.getCreatedBy().getName(),
-                                "to.email", submission.getCreatedBy().getEmail(),
-                                "submission.title", submission.getTitle(),
-                                "submission.date", submission.getUpdated().toString()
-                        ),
+                        new ImmutableMap.Builder<String, String>()
+                                .put("to.name", submission.getCreatedBy().getName())
+                                .put("to.email", submission.getCreatedBy().getEmail())
+                                .put("submission.id", String.valueOf(submission.getId()))
+                                .put("submission.title", submission.getTitle())
+                                .put("submission.date", submission.getUpdated().toString())
+                                .build(),
                         submission
                 );
             } else if (properties.isAeConnectionEnabled()) {

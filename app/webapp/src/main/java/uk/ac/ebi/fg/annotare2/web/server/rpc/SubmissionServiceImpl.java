@@ -449,13 +449,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         try {
             messenger.send(
                     MessengerImpl.SUBMISSION_FEEDBACK_TEMPLATE,
-                    new ImmutableMap.Builder<String, String>().
-                            put("to.name", submission.getCreatedBy().getName()).
-                            put("to.email", submission.getCreatedBy().getEmail()).
-                            put("submission.title", submission.getTitle()).
-                            put("submission.feedback.score", null != score ? String.valueOf(score) + "/9" : "n/a").
-                            put("submission.feedback.comment", null != comment ? comment : "n/a").
-                            build(),
+                    new ImmutableMap.Builder<String, String>()
+                            .put("submitter.name", submission.getCreatedBy().getName())
+                            .put("submitter.email", submission.getCreatedBy().getEmail())
+                            .put("submission.id", String.valueOf(submission.getId()))
+                            .put("submission.title", submission.getTitle())
+                            .put("submission.feedback.score", null != score ? String.valueOf(score) + "/9" : "n/a")
+                            .put("submission.feedback.comment", null != comment ? comment : "n/a")
+                            .build(),
                     getCurrentUser(),
                     submission
             );
