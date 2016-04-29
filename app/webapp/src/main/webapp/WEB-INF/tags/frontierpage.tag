@@ -198,7 +198,7 @@
         <jsp:doBody/>
         <%
             } catch (Throwable x) {
-                if (x instanceof FileNotFoundException) {
+                if (x instanceof FileNotFoundException || x.getCause() instanceof FileNotFoundException ) {
                     response.sendError(404);
                 } else {
                     throw x;
