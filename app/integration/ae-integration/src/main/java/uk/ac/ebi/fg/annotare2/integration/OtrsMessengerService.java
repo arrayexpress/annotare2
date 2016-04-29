@@ -20,9 +20,8 @@ package uk.ac.ebi.fg.annotare2.integration;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.components.EmailMessengerService;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
@@ -42,20 +41,23 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class OtrsMessengerService extends EmailMessengerService {
 
-    private static final Logger log = LoggerFactory.getLogger(OtrsMessengerService.class);
+    //private static final Logger log = LoggerFactory.getLogger(OtrsMessengerService.class);
 
     private final ExtendedAnnotareProperties properties;
-    private final HibernateSessionFactory sessionFactory;
+    //private final HibernateSessionFactory sessionFactory;
+    private final Messenger messenger;
     private final SubmissionDao submissionDao;
     private final OtrsMessageParser messageParser;
 
     @Inject
     public OtrsMessengerService(HibernateSessionFactory sessionFactory,
                                 ExtendedAnnotareProperties properties,
+                                Messenger messenger,
                                 MessageDao messageDao,
                                 SubmissionDao submissionDao) {
         super(sessionFactory, properties, messageDao);
-        this.sessionFactory = sessionFactory;
+        //this.sessionFactory = sessionFactory;
+        this.messenger = messenger;
         this.properties = properties;
         this.submissionDao = submissionDao;
         messageParser = new OtrsMessageParser();
@@ -64,17 +66,22 @@ public class OtrsMessengerService extends EmailMessengerService {
     @Override
     protected void sendMessage(Message message) throws Exception {
         if (properties.isOtrsIntegrationEnabled() && null != message.getSubmission()) {
-            Submission submission = message.getSubmission();
-            String ticketNumber = submission.getOtrsTicketNumber();
-            boolean isNewTicket = false;
-            if (isNullOrEmpty(ticketNumber)) {
-                isNewTicket = true;
-                ticketNumber = createOtrsTicket(submission);
-                submission.setOtrsTicketNumber(ticketNumber);
-                submissionDao.save(submission);
-            }
+            try {
+                Submission submission = message.getSubmission();
+                String ticketNumber = submission.getOtrsTicketNumber();
+                boolean isNewTicket = false;
+                if (isNullOrEmpty(ticketNumber)) {
+                    isNewTicket = true;
+                    ticketNumber = createOtrsTicket(submission);
+                    submission.setOtrsTicketNumber(ticketNumber);
+                    submissionDao.save(submission);
+                }
 
-            sendOtrsMessage(ticketNumber, message, isNewTicket);
+                sendOtrsMessage(ticketNumber, message, isNewTicket);
+            } catch (Throwable x){
+                messenger.send("There was a problem sending message " + String.valueOf(message.getId()), x);
+                throw x;
+            }
         } else {
             super.sendMessage(message);
         }
@@ -111,16 +118,24 @@ public class OtrsMessengerService extends EmailMessengerService {
                     ),
                 Object.class
         );
-        return String.valueOf(
-                messageParser.toObject(
-                        otrs.dispatchCall(
-                                "TicketObject",
-                                "TicketNumberLookup",
-                                ImmutableMap.of("TicketID", ticketId)
-                        ),
-                        Object.class
-                )
-        );
+        if (null == ticketId) {
+            throw new Exception("Unable to create OTRS ticket");
+        }
+        for (int i = 0; i < 10; ++i) {
+            Object ticketNumber = messageParser.toObject(
+                    otrs.dispatchCall(
+                            "TicketObject",
+                            "TicketNumberLookup",
+                            ImmutableMap.of("TicketID", ticketId)
+                    ),
+                    Object.class
+            );
+            if (null != ticketNumber) {
+                return String.valueOf(ticketNumber);
+            }
+            Thread.sleep(500);
+        }
+        throw new Exception("Unable to obtain OTRS ticket number for ticket " + String.valueOf(ticketId));
     }
 
     private void sendOtrsMessage(String ticketNumber, Message message, boolean isNewTicket) throws Exception {
@@ -165,8 +180,10 @@ public class OtrsMessengerService extends EmailMessengerService {
                     Object.class
             );
             if (null == articleId) {
-                throw new Exception("Unable to create article for ticket");
+                throw new Exception("Unable to create article for ticket " + String.valueOf(ticketId));
             }
+        } else {
+            throw new Exception("Unable to get ticket ID for ticket #" + ticketNumber);
         }
     }
 
