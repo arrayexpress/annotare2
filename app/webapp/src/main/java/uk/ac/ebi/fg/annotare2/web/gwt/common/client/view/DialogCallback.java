@@ -23,5 +23,5 @@ public abstract class DialogCallback<T> {
 
     public void onCancel() {}
 
-    public abstract void onOkay(T t);
+    public abstract boolean onOk(T t);
 }

@@ -80,7 +80,7 @@ public class ExperimentalDesignsDialog extends DialogBox {
     void okButtonClicked(ClickEvent event) {
         hide();
         if (null != callback) {
-            callback.onOkay(getSelection());
+            callback.onOk(getSelection());
         }
     }
 

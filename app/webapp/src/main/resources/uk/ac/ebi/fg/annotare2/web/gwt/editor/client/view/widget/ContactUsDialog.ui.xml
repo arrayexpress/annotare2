@@ -19,8 +19,15 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+    <ui:style>
+        .subject {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </ui:style>
     <g:VerticalPanel>
         <g:Label height="2.5em">Please leave your message below -- we will respond shortly via email.</g:Label>
+        <g:TextBox addStyleNames="{style.subject}" ui:field="subject"/>
         <g:TextArea width="40em" height="10em" ui:field="message"/>
         <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
             <g:HTMLPanel>

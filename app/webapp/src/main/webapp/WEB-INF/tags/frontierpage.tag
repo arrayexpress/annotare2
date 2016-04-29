@@ -1,5 +1,5 @@
-<%@ tag import="static java.lang.System.out" %><%--
-~ Copyright 2009-2015 European Molecular Biology Laboratory
+<%--
+~ Copyright 2009-2016 European Molecular Biology Laboratory
 ~
 ~ Licensed under the Apache License, Version 2.0 (the "License");
 ~ you may not use this file except in compliance with the License.
@@ -9,10 +9,11 @@
 ~
 ~ Unless required by applicable law or agreed to in writing, software
 ~ distributed under the License is distributed on an "AS IS" BASIS,
-~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or impl
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 --%>
+<%@tag import="java.io.FileNotFoundException"%>
 <%@tag description="Frontier page template" pageEncoding="UTF-8"%>
 <%@attribute name="extracss" fragment="true"%>
 <%@attribute name="extrajs" fragment="true"%>
@@ -191,7 +192,19 @@
     </header>
 
     <div id="content" role="main" class="grid_24 clearfix">
+        <%
+            try {
+        %>
         <jsp:doBody/>
+        <%
+            } catch (Throwable x) {
+                if (x instanceof FileNotFoundException || x.getCause() instanceof FileNotFoundException ) {
+                    response.sendError(404);
+                } else {
+                    throw x;
+                }
+            }
+        %>
     </div>
 
 

@@ -28,7 +28,6 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,13 +58,12 @@ public class AsyncSelectionCell extends AbstractInputCell<String, String> implem
     }
 
     @Override
-    public void updateOptions(Collection<String> newOptions) {
+    public void updateOptions(List<String> newOptions) {
         indexForOption.clear();
         options.clear();
 
-        int index = 0;
-        for (String option : newOptions) {
-            indexForOption.put(option, index++);
+        for (int index = 0; index < newOptions.size(); index++) {
+            indexForOption.put(newOptions.get(index), index);
         }
         options.addAll(newOptions);
     }

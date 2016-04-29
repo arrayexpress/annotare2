@@ -26,17 +26,17 @@ import java.util.List;
  */
 public class ValidationResult implements IsSerializable {
 
-    private List<String> errors = new ArrayList<String>();
+    private List<String> errors = new ArrayList<>();
 
-    private List<String> warnings = new ArrayList<String>();
+    private List<String> warnings = new ArrayList<>();
 
-    private List<String> failures = new ArrayList<String>();
+    private List<String> failures = new ArrayList<>();
 
     public ValidationResult() {
     }
 
     public ValidationResult(Throwable throwable) {
-        failures.add(throwable.getMessage());
+        failures.add("There was a problem with validation software. Please try again or contact us for assistance.");
     }
 
     public ValidationResult(List<String> errors, List<String> warnings) {

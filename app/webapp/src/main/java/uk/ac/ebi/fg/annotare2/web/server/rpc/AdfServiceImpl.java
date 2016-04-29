@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
 import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
@@ -31,7 +32,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvParser;
 
@@ -48,8 +48,8 @@ public class AdfServiceImpl extends SubmissionBasedRemoteService implements AdfS
     private static final Logger log = LoggerFactory.getLogger(AdfServiceImpl.class);
 
     @Inject
-    public AdfServiceImpl(AccountService accountService, SubmissionManagerImpl submissionManager, EmailSenderImpl emailSender) {
-        super(accountService, submissionManager, emailSender);
+    public AdfServiceImpl(AccountService accountService, SubmissionManagerImpl submissionManager, Messenger messenger) {
+        super(accountService, submissionManager, messenger);
     }
 
     @Transactional

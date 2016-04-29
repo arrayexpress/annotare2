@@ -80,7 +80,7 @@ public class AddColumnDialog<T> extends DialogBox {
 
         hide();
         if (null != callback) {
-            callback.onOkay(selection);
+            callback.onOk(selection);
         }
     }
 

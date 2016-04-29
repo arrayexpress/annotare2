@@ -25,6 +25,7 @@ import uk.ac.ebi.arrayexpress2.magetab.renderer.IDFWriter;
 import uk.ac.ebi.arrayexpress2.magetab.renderer.adaptor.SDRFGraphWriter;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
@@ -84,7 +85,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
-    private final EmailSenderImpl email;
+    private final Messenger messenger;
 
     @Inject
     public SubmissionServiceImpl(AccountService accountService,
@@ -94,14 +95,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                                  UserDao userDao,
                                  SubmissionFeedbackDao feedbackDao,
                                  EfoSearch efoSearch,
-                                 EmailSenderImpl emailSender) {
-        super(accountService, submissionManager, emailSender);
+                                 Messenger messenger) {
+        super(accountService, submissionManager, messenger);
         this.dataFileManager = dataFileManager;
         this.validator = validator;
         this.userDao = userDao;
         this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
-        this.email = emailSender;
+        this.messenger = messenger;
     }
 
     @Transactional
@@ -356,7 +357,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                         errors.add(cr.asString());
                         break;
                     case FAILURE:
-                        errors.add(cr.asString());
+                        failures.add(cr.asString());
                         break;
                 }
             }
@@ -366,6 +367,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throw noPermission(e);
         } catch (ParseException | DataSerializationException | UnknownExperimentTypeException | IOException e) {
             throw unexpected(e);
+        } catch (IllegalArgumentException e) {
+            failures.add(e.getMessage());
         }
         return new ValidationResult(errors, warnings, failures);
     }
@@ -421,7 +424,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             SubmissionFeedback feedback = feedbackDao.create(score, submission);
             feedback.setComment(comment);
             feedbackDao.save(feedback);
-//            sendFeedbackEmail(score, comment);
+            sendFeedbackEmail(submission, score, comment);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
@@ -442,11 +445,31 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
     }
 
+    private void sendFeedbackEmail(Submission submission, Byte score, String comment) {
+        try {
+            messenger.send(
+                    MessengerImpl.SUBMISSION_FEEDBACK_TEMPLATE,
+                    new ImmutableMap.Builder<String, String>()
+                            .put("submitter.name", submission.getCreatedBy().getName())
+                            .put("submitter.email", submission.getCreatedBy().getEmail())
+                            .put("submission.id", String.valueOf(submission.getId()))
+                            .put("submission.title", submission.getTitle())
+                            .put("submission.feedback.score", null != score ? String.valueOf(score) + "/9" : "n/a")
+                            .put("submission.feedback.comment", null != comment ? comment : "n/a")
+                            .build(),
+                    getCurrentUser(),
+                    submission
+            );
+        } catch (RuntimeException x) {
+            log.error("Unable to send messenger", x);
+        }
+    }
+
     private void sendEmail(Submission submission, String subject, String message) {
         User u = getCurrentUser();
         try {
-            email.sendFromTemplate(
-                    EmailSenderImpl.CONTACT_US_TEMPLATE,
+            messenger.send(
+                    MessengerImpl.CONTACT_US_TEMPLATE,
                     new ImmutableMap.Builder<String, String>()
                             .put("from.name", u.getName())
                             .put("from.email", u.getEmail())
@@ -454,10 +477,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                             .put("submission.title", submission.getTitle())
                             .put("message.subject", subject)
                             .put("message.body", message)
-                            .build()
+                            .build(),
+                    u,
+                    submission
             );
         } catch (RuntimeException x) {
-            log.error("Unable to send email", x);
+            log.error("Unable to send messenger", x);
         }
     }
 

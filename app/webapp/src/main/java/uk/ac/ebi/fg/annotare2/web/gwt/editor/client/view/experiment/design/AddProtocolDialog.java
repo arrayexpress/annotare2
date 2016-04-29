@@ -93,7 +93,7 @@ public class AddProtocolDialog extends DialogBox {
         }
         hide();
         if (null != callback) {
-            callback.onOkay(selected);
+            callback.onOk(selected);
         }
     }
 

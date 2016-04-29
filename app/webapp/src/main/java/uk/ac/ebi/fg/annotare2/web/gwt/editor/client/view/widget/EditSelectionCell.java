@@ -31,7 +31,6 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,11 +42,24 @@ import static com.google.gwt.dom.client.BrowserEvents.*;
 public class EditSelectionCell extends AbstractEditableCell<String, EditSelectionCell.ViewData> implements AsyncOptionProvider.OptionDisplay {
 
     interface Template extends SafeHtmlTemplates {
-        @Template("<option value=\"{0}\">{0}</option>")
-        SafeHtml deselected(String option);
 
-        @Template("<option value=\"{0}\" selected=\"selected\">{0}</option>")
-        SafeHtml selected(String option);
+        @Template("<select tabindex=\"{0}\">")
+        SafeHtml selectStart(String index);
+
+        @Template("</select>")
+        SafeHtml selectEnd();
+
+        @Template("<optgroup label=\"{0}\">")
+        SafeHtml groupStart(String label);
+
+        @Template("</optgroup>")
+        SafeHtml groupEnd();
+
+        @Template("<option value=\"{1}\">{0}</option>")
+        SafeHtml option(String option, String index);
+
+        @Template("<option value=\"{1}\" selected=\"selected\">{0}</option>")
+        SafeHtml selectedOption(String option, String index);
     }
 
     static class ViewData {
@@ -115,8 +127,8 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
 
     private final SafeHtmlRenderer<String> renderer;
 
-    private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
-    private List<String> options = new ArrayList<String>();
+    private HashMap<String, Integer> indexForOption = new HashMap<>();
+    private List<String> options = new ArrayList<>();
 
     public EditSelectionCell(AsyncOptionProvider optionProvider) {
         this(SimpleSafeHtmlRenderer.getInstance(), optionProvider);
@@ -136,14 +148,17 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
     }
 
     @Override
-    public void updateOptions(Collection<String> newOptions) {
+    public void updateOptions(List<String> newOptions) {
         indexForOption.clear();
         options.clear();
 
-        int index = 0;
-        for (String option : newOptions) {
-            indexForOption.put(option, index++);
+        for (int index = 0; index < newOptions.size(); index++) {
+            String option = newOptions.get(index);
+            if (!option.startsWith("---")) {
+                indexForOption.put(option, index);
+            }
         }
+
         options.addAll(newOptions);
     }
 
@@ -195,16 +210,30 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
             String text = viewData.getText();
             if (viewData.isEditing()) {
                 int selectedIndex = getSelectedIndex(viewData.getText());
-                sb.appendHtmlConstant("<select tabindex=\"-1\">");
-                int index = 0;
-                for (String option : options) {
-                    if (index++ == selectedIndex) {
-                        sb.append(template.selected(option));
+                sb.append(template.selectStart("-1"));
+
+                boolean hasGroupOpened = false;
+                for (int index = 0; index < options.size(); index++) {
+                    String option = options.get(index);
+                    if (!option.startsWith("---")) {
+                        if (index == selectedIndex) {
+                            sb.append(template.selectedOption(option, String.valueOf(index)));
+                        } else {
+                            sb.append(template.option(option, String.valueOf(index)));
+                        }
                     } else {
-                        sb.append(template.deselected(option));
+                        if (hasGroupOpened) {
+                            sb.append(template.groupEnd());
+                            hasGroupOpened = false;
+                        }
+                        sb.append(template.groupStart(option.replaceFirst("^---\\s*", "")));
+                        hasGroupOpened = true;
                     }
                 }
-                sb.appendHtmlConstant("</select>");
+                if (hasGroupOpened) {
+                    sb.append(template.groupEnd());
+                }
+                sb.append(template.selectEnd());
                 return;
             } else {
                 // The user pressed enter, but view data still exists.
@@ -256,7 +285,7 @@ public class EditSelectionCell extends AbstractEditableCell<String, EditSelectio
 
     private String updateViewData(Element parent, ViewData viewData, boolean isEditing) {
         SelectElement select = parent.getFirstChild().cast();
-        String newValue = options.get(select.getSelectedIndex());
+        String newValue = options.get(Integer.decode(select.getValue()));
         viewData.setText(newValue);
         viewData.setEditing(isEditing);
         return newValue;

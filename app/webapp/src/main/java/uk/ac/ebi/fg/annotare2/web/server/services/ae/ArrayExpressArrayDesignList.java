@@ -26,7 +26,7 @@ import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.ae.ArrayExpressProperties;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -59,14 +59,14 @@ public class ArrayExpressArrayDesignList {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private final ArrayExpressProperties properties;
-    private final EmailSenderImpl emailer;
+    private final Messenger messenger;
 
     private ArrayDesignList list;
 
     @Inject
-    public ArrayExpressArrayDesignList(ArrayExpressProperties properties, EmailSenderImpl emailer) throws IOException {
+    public ArrayExpressArrayDesignList(ArrayExpressProperties properties, Messenger messenger) throws IOException {
         this.properties = properties;
-        this.emailer = emailer;
+        this.messenger = messenger;
         reload();
     }
 
@@ -80,12 +80,12 @@ public class ArrayExpressArrayDesignList {
                     reload();
                 } catch (Throwable x) {
                     log.error("AE array design list update process caught an exception:", x);
-                    emailer.sendException("Error in AE array design list update process:", x);
+                    messenger.send("Error in AE array design list update process:", x);
                 }
             }
 
         };
-        if (!isNullOrEmpty(properties.getArrayExpressArrayListURL())) {
+        if (!isNullOrEmpty(properties.getArrayExpressArrayListUrl())) {
             scheduler.scheduleAtFixedRate(periodicProcess, 0, 1, HOURS);
         }
     }
@@ -115,7 +115,7 @@ public class ArrayExpressArrayDesignList {
         InputStream is = null;
         FileOutputStream fos = null;
         try {
-            URL adSource = new URL(properties.getArrayExpressArrayListURL());
+            URL adSource = new URL(properties.getArrayExpressArrayListUrl());
             is = adSource.openStream();
             if (null != is) {
                 ReadableByteChannel rbc = Channels.newChannel(is);

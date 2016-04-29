@@ -33,15 +33,15 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_
 public enum ExpDesignSection implements LeftNavigationView.Section {
     SAMPLES("Create samples, add attributes and experimental variables", allOf(ExperimentProfileType.class)),
     EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING)),
-    LABELED_EXTRACTS("Create labeled extracts and assign a label", of(TWO_COLOR_MICROARRAY)),
+    LABELED_EXTRACTS("Create labeled extracts and assign labels", of(TWO_COLOR_MICROARRAY)),
+    PROTOCOLS("Describe protocols", allOf(ExperimentProfileType.class)),
     FILES("Upload and assign data files", allOf(ExperimentProfileType.class)),
-    PROTOCOLS("Protocols", allOf(ExperimentProfileType.class)),
     NONE("None", noneOf(ExperimentProfileType.class));
 
     private final String title;
     private final EnumSet applyTo;
 
-    private ExpDesignSection(String title, EnumSet<ExperimentProfileType> applyTo) {
+    ExpDesignSection(String title, EnumSet<ExperimentProfileType> applyTo) {
         this.title = title;
         this.applyTo = applyTo;
     }

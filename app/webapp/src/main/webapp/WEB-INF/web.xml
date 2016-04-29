@@ -84,15 +84,26 @@
         </init-param>
     </servlet>
     -->
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
 
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>
-        <location>/error</location>
+        <location>/static.jsp?pageName=500.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>405</error-code>
+        <location>/static.jsp?pageName=500.jsp</location>
     </error-page>
 
     <error-page>
         <error-code>404</error-code>
-        <location>/not-found.html</location>
+        <location>/static.jsp?pageName=404.jsp</location>
     </error-page>
 
     <session-config>

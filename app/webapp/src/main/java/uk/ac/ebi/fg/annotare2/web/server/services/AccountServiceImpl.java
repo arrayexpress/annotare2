@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.server.UnauthorizedAccessException;
@@ -41,12 +42,12 @@ public class AccountServiceImpl implements AccountService {
     private static final Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private AccountManager accountManager;
-    private EmailSenderImpl mailer;
+    private Messenger messenger;
 
     @Inject
-    public AccountServiceImpl(AccountManager accountManager, EmailSenderImpl mailer) {
+    public AccountServiceImpl(AccountManager accountManager, Messenger messenger) {
         this.accountManager = accountManager;
-        this.mailer = mailer;
+        this.messenger = messenger;
     }
 
     public boolean isLoggedIn(HttpServletRequest request) {
@@ -61,15 +62,16 @@ public class AccountServiceImpl implements AccountService {
             if (accountManager.doesExist(params.getEmail())) {
                 errors.append(FormParams.EMAIL_PARAM, "User with this email already exists");
             } else {
-                User u = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
+                User user = accountManager.createUser(params.getName(), params.getEmail(), params.getPassword());
                 try {
-                    mailer.sendFromTemplate(
-                            EmailSenderImpl.NEW_USER_TEMPLATE,
+                    messenger.send(
+                            MessengerImpl.NEW_USER_TEMPLATE,
                             ImmutableMap.of(
-                                    "to.name", u.getName(),
-                                    "to.email", u.getEmail(),
-                                    "verification.token", u.getVerificationToken()
-                            )
+                                    "to.name", user.getName(),
+                                    "to.email", user.getEmail(),
+                                    "verification.token", user.getVerificationToken()
+                            ),
+                            user
                     );
                 } catch (RuntimeException x) {
                     log.error("There was a problem sending email", x);
@@ -88,15 +90,16 @@ public class AccountServiceImpl implements AccountService {
                 errors.append(FormParams.EMAIL_PARAM, "User with this email does not exist");
             } else {
                 if (null == params.getToken()) {
-                    User u = accountManager.requestChangePassword(params.getEmail());
+                    User user = accountManager.requestChangePassword(params.getEmail());
                     try {
-                        mailer.sendFromTemplate(
-                                EmailSenderImpl.CHANGE_PASSWORD_REQUEST_TEMPLATE,
+                        messenger.send(
+                                MessengerImpl.CHANGE_PASSWORD_REQUEST_TEMPLATE,
                                 ImmutableMap.of(
-                                        "to.name", u.getName(),
-                                        "to.email", u.getEmail(),
-                                        "verification.token", u.getVerificationToken()
-                                )
+                                        "to.name", user.getName(),
+                                        "to.email", user.getEmail(),
+                                        "verification.token", user.getVerificationToken()
+                                ),
+                                user
                         );
                     } catch (RuntimeException x) {
                         log.error("There was a problem sending email", x);
@@ -107,14 +110,15 @@ public class AccountServiceImpl implements AccountService {
                     } else if (!accountManager.isVerificationTokenValid(params.getEmail(), params.getToken())) {
                         errors.append(FormParams.TOKEN_PARAM, "Incorrect code; please try again or request a new one");
                     } else if (null != params.getPassword()) {
-                        User u = accountManager.processChangePassword(params.getEmail(), params.getPassword());
+                        User user = accountManager.processChangePassword(params.getEmail(), params.getPassword());
                         try {
-                            mailer.sendFromTemplate(
-                                    EmailSenderImpl.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
+                            messenger.send(
+                                    MessengerImpl.CHANGE_PASSWORD_CONFIRMATION_TEMPLATE,
                                     ImmutableMap.of(
-                                            "to.name", u.getName(),
-                                            "to.email", u.getEmail()
-                                    )
+                                            "to.name", user.getName(),
+                                            "to.email", user.getEmail()
+                                    ),
+                                    user
                             );
                         } catch (RuntimeException x) {
                             log.error("There was a problem sending an email", x);
@@ -138,14 +142,15 @@ public class AccountServiceImpl implements AccountService {
                     if (!accountManager.isVerificationTokenValid(params.getEmail(), params.getToken())) {
                         errors.append(FormParams.TOKEN_PARAM, "Incorrect code; please try again or request a new one");
                     } else {
-                        User u = accountManager.setEmailVerified(params.getEmail());
+                        User user = accountManager.setEmailVerified(params.getEmail());
                         try {
-                            mailer.sendFromTemplate(
-                                    EmailSenderImpl.WELCOME_TEMPLATE,
+                            messenger.send(
+                                    MessengerImpl.WELCOME_TEMPLATE,
                                     ImmutableMap.of(
-                                            "to.name", u.getName(),
-                                            "to.email", u.getEmail()
-                                    )
+                                            "to.name", user.getName(),
+                                            "to.email", user.getEmail()
+                                    ),
+                                    user
                             );
                         } catch (RuntimeException x) {
                             log.error("There was a problem sending an email", x);
@@ -161,18 +166,19 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public ValidationErrors resendVerifyEmail(String email) throws AccountServiceException {
         ValidationErrors errors = new ValidationErrors();
-        User u = accountManager.requestVerifyEmail(email);
-        if (null == u) {
+        User user = accountManager.requestVerifyEmail(email);
+        if (null == user) {
             errors.append(FormParams.EMAIL_PARAM, "User with this email does not exist");
         } else {
             try {
-                mailer.sendFromTemplate(
-                        EmailSenderImpl.VERIFY_EMAIL_TEMPLATE,
+                messenger.send(
+                        MessengerImpl.VERIFY_EMAIL_TEMPLATE,
                         ImmutableMap.of(
-                                "to.name", u.getName(),
-                                "to.email", u.getEmail(),
-                                "verification.token", u.getVerificationToken()
-                        )
+                                "to.name", user.getName(),
+                                "to.email", user.getEmail(),
+                                "verification.token", user.getVerificationToken()
+                        ),
+                        user
                 );
             } catch (RuntimeException x) {
                 log.error("There was a problem sending email", x);

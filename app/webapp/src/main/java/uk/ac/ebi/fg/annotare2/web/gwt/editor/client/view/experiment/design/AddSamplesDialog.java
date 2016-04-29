@@ -112,7 +112,7 @@ public class AddSamplesDialog extends DialogBox {
         Integer startingNumber = intValue(this.startingNumber.getValue());
 
         if (null != callback && null != numOfSamples && null != namingPattern && null != startingNumber) {
-            callback.onOkay(new Result(numOfSamples, namingPattern, startingNumber));
+            callback.onOk(new Result(numOfSamples, namingPattern, startingNumber));
         }
     }
 

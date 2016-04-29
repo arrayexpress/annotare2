@@ -43,7 +43,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.FtpFileInfo;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManagerImpl;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
+import uk.ac.ebi.fg.annotare2.web.server.services.MessengerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.AnnotareUploadStorage;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.FileAvailabilityChecker;
@@ -80,7 +80,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                                 DataFileManagerImpl dataFileManager,
                                 FtpManagerImpl ftpManager,
                                 AnnotareUploadStorage uploadStorage,
-                                EmailSenderImpl emailSender) {
+                                MessengerImpl emailSender) {
         super(accountService, submissionManager, emailSender);
         this.dataFileManager = dataFileManager;
         this.ftpManager = ftpManager;

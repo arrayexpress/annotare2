@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.server.servlets;
 
 import org.junit.Test;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.FormParams;
 import uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors;
@@ -38,11 +39,11 @@ public class AuthenticationServiceImplTest {
         final String password = "existed_password";
 
         AccountManager accMan = mockAccManager(name, password, true);
-        EmailSenderImpl emailer = mockEmailer();
+        Messenger messenger = mockMessenger();
         HttpServletRequest request = mockRequest(name, password);
 
         try {
-            AccountService accountService = new AccountServiceImpl(accMan, emailer);
+            AccountService accountService = new AccountServiceImpl(accMan, messenger);
             ValidationErrors errors = accountService.login(request);
             assertTrue(errors.isEmpty());
         } catch (AccountServiceException e) {
@@ -56,7 +57,7 @@ public class AuthenticationServiceImplTest {
         final String password = "non_existed_password";
 
         AccountManager accMan = mockAccManager(name, password, false);
-        EmailSenderImpl emailer = mockEmailer();
+        MessengerImpl emailer = mockMessenger();
         HttpServletRequest request = mockRequest(name, password);
 
         try {
@@ -101,8 +102,8 @@ public class AuthenticationServiceImplTest {
         return accMan;
     }
 
-    private EmailSenderImpl mockEmailer() {
-        EmailSenderImpl emailer = createMock(EmailSenderImpl.class);
+    private MessengerImpl mockMessenger() {
+        MessengerImpl emailer = createMock(MessengerImpl.class);
         return emailer;
     }
 

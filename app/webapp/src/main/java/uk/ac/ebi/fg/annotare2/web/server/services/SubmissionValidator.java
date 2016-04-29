@@ -99,7 +99,7 @@ public class SubmissionValidator {
         mageTab.IDF.sdrfFile.add("sdrf.txt");
         mageTab.IDF.getLayout().calculateLocations(mageTab.IDF);
         if (mageTab.SDRFs.size() > 1) {
-            throw new IllegalArgumentException("Unable to validate sumbission with no or multiple SDRFs");
+            throw new IllegalArgumentException("Unable to validate submission with no or multiple SDRFs");
         }
         SDRF sdrf = mageTab.SDRFs.values().iterator().next();
         sdrf.setLocation(dataFileConnector.getFileUrl(userId, submissionId, "sdrf.txt"));

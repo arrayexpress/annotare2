@@ -22,6 +22,7 @@ import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.data.ProtocolTypes;
 import uk.ac.ebi.fg.annotare2.core.data.SystemEfoTerm;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
@@ -35,7 +36,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.server.services.AnnotareEfoService;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpress;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressArrayDesignList;
 import uk.ac.ebi.fg.annotare2.web.server.services.ae.ArrayExpressExperimentTypeList;
@@ -71,8 +71,8 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
                                       ProtocolTypes protocolTypes,
                                       AnnotareEfoService efoService,
                                       AnnotareProperties properties,
-                                      EmailSenderImpl emailSender) {
-        super(emailSender);
+                                      Messenger messenger) {
+        super(messenger);
         this.arrayDesignList = arrayDesignList;
         this.experimentTypeList = experimentTypeList;
         this.efoService = efoService;

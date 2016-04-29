@@ -55,7 +55,7 @@ public class DatabaseDataSource {
         ds = new HikariDataSource();
         ds.setPoolName("AnnotareDB-Pool");
         ds.setDriverClassName(properties.getDbConnectionDriver());
-        ds.setJdbcUrl(properties.getDbConnectionURL());
+        ds.setJdbcUrl(properties.getDbConnectionUrl());
         ds.setUsername(properties.getDbConnectionUser());
         ds.setPassword(properties.getDbConnectionPassword());
         ds.setConnectionTestQuery("SELECT 1");

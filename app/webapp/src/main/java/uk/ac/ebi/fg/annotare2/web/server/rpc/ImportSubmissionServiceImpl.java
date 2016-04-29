@@ -27,6 +27,7 @@ import uk.ac.ebi.arrayexpress2.magetab.datamodel.IDF;
 import uk.ac.ebi.arrayexpress2.magetab.parser.IDFParser;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
+import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.properties.AnnotareProperties;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
@@ -45,7 +46,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.DataFileManagerImpl;
-import uk.ac.ebi.fg.annotare2.web.server.services.EmailSenderImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 import uk.ac.ebi.fg.annotare2.web.server.services.files.DataFileConnector;
 
@@ -65,7 +65,7 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
     private final UserDao userDao;
     private final SubmissionFeedbackDao feedbackDao;
     private final EfoSearch efoSearch;
-    private final EmailSenderImpl email;
+    private final Messenger messenger;
 
     @Inject
     public ImportSubmissionServiceImpl(AccountService accountService,
@@ -76,15 +76,15 @@ public class ImportSubmissionServiceImpl extends SubmissionBasedRemoteService im
                                        UserDao userDao,
                                        SubmissionFeedbackDao feedbackDao,
                                        EfoSearch efoSearch,
-                                       EmailSenderImpl emailSender) {
-        super(accountService, submissionManager, emailSender);
+                                       Messenger messenger) {
+        super(accountService, submissionManager, messenger);
         this.dataFileManager = dataFileManager;
         this.dataFileConnector = dataFileConnector;
         this.properties = properties;
         this.userDao = userDao;
         this.feedbackDao = feedbackDao;
         this.efoSearch = efoSearch;
-        this.email = emailSender;
+        this.messenger = messenger;
     }
 
     @Transactional(rollbackOn = NoPermissionException.class)

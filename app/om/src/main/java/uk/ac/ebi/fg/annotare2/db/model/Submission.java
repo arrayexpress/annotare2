@@ -57,7 +57,7 @@ public abstract class Submission implements HasEffectiveAcl {
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "submitted", nullable = true)
+    @Column(name = "submitted")
     private Date submitted;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -91,15 +91,22 @@ public abstract class Submission implements HasEffectiveAcl {
     @Filter(name = NOT_DELETED_DATA_FILE_FILTER)
     private Set<DataFile> files;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatesTo")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "submission")
     @OrderBy("posted ASC")
     private Set<SubmissionFeedback> feedback;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "submission")
+    @OrderBy("created ASC")
+    private Set<Message> messages;
 
     @Column(name = "ftpSubDirectory")
     private String ftpSubDirectory;
 
     @Column(name = "subsTrackingId")
     private Integer subsTrackingId;
+
+    @Column(name = "otrsTicketNumber")
+    private String otrsTicketNumber;
 
     @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
     private boolean deleted;
@@ -212,6 +219,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setSubsTrackingId(Integer subsTrackingId) {
         this.subsTrackingId = subsTrackingId;
+    }
+
+    public String getOtrsTicketNumber() {
+        return this.otrsTicketNumber;
+    }
+
+    public void setOtrsTicketNumber(String otrsTicketNumber) {
+        this.otrsTicketNumber = otrsTicketNumber;
     }
 
     public Set<DataFile> getFiles() {

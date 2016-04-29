@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.cell.client.AbstractEditableCell;
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -31,6 +32,7 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.HasIdentity;
 
 import java.util.*;
@@ -235,7 +237,7 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
                 rowIndex >=0 && rowIndex < dataGrid.getRowCount()) {
             Column<R, ?> column = dataGrid.getColumn(colIndex);
             List<R> rows = dataProvider.getList();
-            if (isColumnEditable(column, rows.get(rowIndex))) {
+            if (isColumnEditable(column, rows.get(rowIndex)) && !(column instanceof SamplesViewImpl.SampleNameColumn)) {
                 AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
                 String value = (String) column.getValue(rows.get(rowIndex));
                 FieldUpdater<R, String> updater = (FieldUpdater<R, String>) column.getFieldUpdater();
@@ -247,12 +249,14 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
                     }
                 }
                 dataProvider.refresh();
+            } else {
+                NotificationPopupPanel.warning("Fill-down function is not allowed for this column", true, false);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void importValuesToKeyboardSelectedColumn(List<String> values) {
+    public boolean importValuesToKeyboardSelectedColumn(List<String> values) {
         int colIndex = dataGrid.getKeyboardSelectedColumn();
         int rowIndex = dataGrid.getKeyboardSelectedRow() + dataGrid.getPageStart();
 
@@ -263,22 +267,33 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
                 List<R> rows = dataProvider.getList();
 
                 if (isColumnEditable(column, rows.get(rowIndex))) {
+                    if (column instanceof SamplesViewImpl.SampleNameColumn) {
+                        for (int i = 0; i < values.size(); i++) {
+                            String value = values.get(i);
+                            for (int j = i + 1; j < values.size(); j++) {
+                                if (value.equalsIgnoreCase(values.get(j))) {
+                                    NotificationPopupPanel.error("Please ensure all sample names are unique, duplicate name '" + values.get(j) +"'.", true, false);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
 
-                    AbstractEditableCell<R, String> cell = (AbstractEditableCell<R, String>) column.getCell();
+                    Cell<String> cell = (Cell<String>)column.getCell();
+
                     FieldUpdater<R, String> updater = (FieldUpdater<R, String>) column.getFieldUpdater();
-
                     for (int i = 0; i < Math.min(rows.size() - rowIndex, values.size()); i++) {
                         int j = i + rowIndex;
                         if (isColumnEditable(column, rows.get(j))) {
                             updater.update(j, rows.get(j), values.get(i));
-                            cell.clearViewData(rows.get(j));
+                            ((AbstractEditableCell)cell).clearViewData(rows.get(j));
                         }
                     }
                     dataProvider.refresh();
                 }
             }
         }
-
+        return true;
     }
 
     public List<R> getRows() {

@@ -77,9 +77,10 @@ public class ImportValuesDialog extends DialogBox {
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
         List<String> importedValues = getImportedValues();
-        hide();
         if (!importedValues.isEmpty() && null != callback) {
-            callback.onOkay(importedValues);
+            if (callback.onOk(importedValues)) {
+                hide();
+            }
         }
     }
 
