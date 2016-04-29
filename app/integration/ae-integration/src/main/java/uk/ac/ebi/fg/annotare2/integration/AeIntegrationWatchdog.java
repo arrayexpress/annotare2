@@ -188,19 +188,6 @@ public class AeIntegrationWatchdog {
             boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
-            if (!hasResubmitted) {
-                sendEmail(
-                        EmailTemplates.INITIAL_SUBMISSION_TEMPLATE,
-                        new ImmutableMap.Builder<String, String>()
-                                .put("to.name", submission.getCreatedBy().getName())
-                                .put("to.email", submission.getCreatedBy().getEmail())
-                                .put("submission.id", String.valueOf(submission.getId()))
-                                .put("submission.title", submission.getTitle())
-                                .put("submission.date", submission.getUpdated().toString())
-                                .build(),
-                        submission
-                );
-            }
 
             if (properties.isSubsTrackingEnabled()) {
                 String otrsTemplate = (SubmissionOutcome.INITIAL_SUBMISSION_OK == outcome) ?
@@ -230,6 +217,19 @@ public class AeIntegrationWatchdog {
                                 .put("subsTracking.user", properties.getSubsTrackingUser())
                                 .put("subsTracking.experiment.type", properties.getSubsTrackingExperimentType())
                                 .put("subsTracking.experiment.id", String.valueOf(submission.getSubsTrackingId()))
+                                .build(),
+                        submission
+                );
+            }
+            if (!hasResubmitted) {
+                sendEmail(
+                        EmailTemplates.INITIAL_SUBMISSION_TEMPLATE,
+                        new ImmutableMap.Builder<String, String>()
+                                .put("to.name", submission.getCreatedBy().getName())
+                                .put("to.email", submission.getCreatedBy().getEmail())
+                                .put("submission.id", String.valueOf(submission.getId()))
+                                .put("submission.title", submission.getTitle())
+                                .put("submission.date", submission.getUpdated().toString())
                                 .build(),
                         submission
                 );
