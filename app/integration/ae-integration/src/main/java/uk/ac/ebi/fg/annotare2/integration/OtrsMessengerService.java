@@ -158,30 +158,34 @@ public class OtrsMessengerService extends EmailMessengerService {
                     "ticket.number", ticketNumber);
             StrSubstitutor sub = new StrSubstitutor(templateParams);
 
-            Object articleId = messageParser.toObject(
-                    otrs.dispatchCall(
-                            "TicketObject",
-                            isInternalRecipient ? "ArticleCreate" : "ArticleSend",
-                            new ImmutableMap.Builder<String, Object>()
-                                    .put("TicketID", ticketId)
-                                    .put("ArticleType", isInternalSender ? "email-internal" : "email-external")
-                                    .put("SenderType", isInternalSender ? "agent" : "customer")
-                                    .put("HistoryType", isNewTicket ? "EmailCustomer" : "FollowUp")
-                                    .put("HistoryComment", "Sent from Annotare")
-                                    .put("From", message.getFrom())
-                                    .put("To", message.getTo())
-                                    .put("Subject", isInternalRecipient ? message.getSubject() : sub.replace(properties.getOtrsIntegrationSubjectTemplate()))
-                                    .put("Type", "text/plain")
-                                    .put("Charset", EMAIL_ENCODING_UTF_8)
-                                    .put("Body", isInternalRecipient ? message.getBody() : sub.replace(properties.getOtrsIntegrationBodyTemplate()))
-                                    .put("UserID", 1)
-                                    .build()
-                    ),
-                    Object.class
-            );
-            if (null == articleId) {
-                throw new Exception("Unable to create article for ticket " + String.valueOf(ticketId));
+            for (int i = 0; i < 3; ++i) {
+                Object articleId = messageParser.toObject(
+                        otrs.dispatchCall(
+                                "TicketObject",
+                                isInternalRecipient ? "ArticleCreate" : "ArticleSend",
+                                new ImmutableMap.Builder<String, Object>()
+                                        .put("TicketID", ticketId)
+                                        .put("ArticleType", isInternalSender ? "email-internal" : "email-external")
+                                        .put("SenderType", isInternalSender ? "agent" : "customer")
+                                        .put("HistoryType", isNewTicket ? "EmailCustomer" : "FollowUp")
+                                        .put("HistoryComment", "Sent from Annotare")
+                                        .put("From", message.getFrom())
+                                        .put("To", message.getTo())
+                                        .put("Subject", isInternalRecipient ? message.getSubject() : sub.replace(properties.getOtrsIntegrationSubjectTemplate()))
+                                        .put("Type", "text/plain")
+                                        .put("Charset", EMAIL_ENCODING_UTF_8)
+                                        .put("Body", isInternalRecipient ? message.getBody() : sub.replace(properties.getOtrsIntegrationBodyTemplate()))
+                                        .put("UserID", 1)
+                                        .build()
+                        ),
+                        Object.class
+                );
+                if (null != articleId) {
+                    return;
+                }
+                Thread.sleep(500);
             }
+            throw new Exception("Unable to create article for ticket " + String.valueOf(ticketId));
         } else {
             throw new Exception("Unable to get ticket ID for ticket #" + ticketNumber);
         }
