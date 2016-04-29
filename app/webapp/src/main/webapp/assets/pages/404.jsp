@@ -13,15 +13,8 @@
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 --%>
-<%@page contentType="text/html; charset=UTF-8" trimDirectiveWhitespaces="true"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<%@taglib uri="http://htmlcompressor.googlecode.com/taglib/compressor" prefix="compress"%>
-<compress:html enabled="true" removeComments="true" compressCss="true" compressJavaScript="true" yuiJsDisableOptimizations="true">
-    <t:frontierpage>
-        <jsp:attribute name="extradeferjs">
-        </jsp:attribute>
-        <jsp:body>
-            <jsp:include page="/assets/pages/${param.pageName}"/>
-        </jsp:body>
-    </t:frontierpage>
-</compress:html>
+<h2 class="alert">We’re sorry that the page or file you’ve requested is not publicly available</h2>
+<p>The resource located at <span class="alert">${requestScope['javax.servlet.error.request_uri']}</span> may have been removed, had its name changed, or has restricted access.</p>
+<h3>Still confused?</h3>
+<p>If you require further assistance locating missing page or file, please <a href="mailto:annotare@ebi.ac.uk">contact
+    us</a> and we will look into it for you.</p>

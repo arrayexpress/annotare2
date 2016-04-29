@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.AnnotarePluginModules;
 import uk.ac.ebi.fg.annotare2.magetabcheck.CheckerModule;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 public class AnnotareWebAppInitializer extends GuiceServletContextListener {
@@ -36,14 +37,20 @@ public class AnnotareWebAppInitializer extends GuiceServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         logger.info("Annotare is starting up...");
-//        lookupPropertiesInContext();
-//
+
         super.contextInitialized(servletContextEvent);
+
+        ServletContext sc = servletContextEvent.getServletContext();
+        sc.setAttribute(Injector.class.getName(), injector);
     }
-//
+
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         logger.info("Annotare is shutting down...");
+
+        ServletContext sc = servletContextEvent.getServletContext();
+        sc.removeAttribute(Injector.class.getName());
+
         super.contextDestroyed(servletContextEvent);
         if (null != injector) {
             injector.shutdown();

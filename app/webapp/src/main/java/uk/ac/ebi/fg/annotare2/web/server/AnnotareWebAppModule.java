@@ -110,7 +110,6 @@ public class AnnotareWebAppModule extends ServletModule {
         serve("/upload").with(UploadServlet.class);
         serve("/export").with(ExportServlet.class);
         serve("/download").with(DownloadServlet.class);
-        serve("/error").with(UncaughtExceptionServlet.class);
 
         bind(ExpiresNowFilter.class).in(SINGLETON);
         bind(AccessLoggingSuppressFilter.class).in(SINGLETON);
@@ -129,7 +128,6 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(SignUpServlet.class).in(SINGLETON);
         bind(VerifyEmailServlet.class).in(SINGLETON);
         bind(ChangePasswordServlet.class).in(SINGLETON);
-        bind(UncaughtExceptionServlet.class).in(SINGLETON);
 
         // shared services
         serveAndBindRpcService(ApplicationDataService.NAME, ApplicationDataServiceImpl.class, "UserApp", "EditorApp");
