@@ -93,17 +93,17 @@
 
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>
-        <location>/static.jsp?pageName=500.jsp</location>
+        <location>/static.jsp?pageName=error.jsp</location>
     </error-page>
 
     <error-page>
         <error-code>405</error-code>
-        <location>/static.jsp?pageName=500.jsp</location>
+        <location>/static.jsp?pageName=error.jsp</location>
     </error-page>
 
     <error-page>
         <error-code>404</error-code>
-        <location>/static.jsp?pageName=404.jsp</location>
+        <location>/static.jsp?pageName=not-found.jsp</location>
     </error-page>
 
     <session-config>
