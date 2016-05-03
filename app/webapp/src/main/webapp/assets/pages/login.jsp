@@ -13,10 +13,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
-<%@ page isELIgnored="false" %>
-<%@ page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f"%>
+<%@page isELIgnored="false"%>
+<%@page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors"%>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
@@ -41,64 +41,38 @@
     }
 </script>
 <form name="login" method="POST">
-    <table class="form">
-        <tr>
-            <td></td>
-            <td><h1><a href="./" title="Annotare ${project.version} rev. ${buildNumber}">Annotare 2.0</a></h1></td>
-        </tr>
-        <tr class="info">
-            <td></td>
-            <td><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${dummyErrors}</td>
-        </tr>
-        <tr class="row right">
-            <td>Email address</td>
-            <td>
-                <c:choose>
-                    <c:when test="${email != ''}">
-                        <input type="text" name="email" value="${email}" style="width:98%" onblur="fixEmail()"/>
-                    </c:when>
-                    <c:otherwise>
-                        <input type="text" name="email" style="width:98%" autofocus="autofocus" onblur="fixEmail()"/>
-                    </c:otherwise>
-                </c:choose>
-            </td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${emailErrors}</td>
-        </tr>
-        <tr class="row right">
-            <td>Password</td>
-            <td>
-                <c:choose>
-                    <c:when test="${email != ''}">
-                        <input type="password" name="password" style="width:98%" autofocus="autofocus"/>
-                    </c:when>
-                    <c:otherwise>
-                        <input type="password" name="password" style="width:98%"/>
-                    </c:otherwise>
-                </c:choose>
-            </td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${passwordErrors}</td>
-        </tr>
-        <tr class="row">
-            <td></td>
-            <td>
-                <button name="signIn">Sign In</button>&nbsp;&nbsp;<a href="./change-password">Forgot your password?</a>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <div style="margin-top:10px;">Don't have an account? <a href="./sign-up">Sign Up</a></div>
-            </td>
-        </tr>
-    </table>
+    <div>
+        <c:out value="${sessionScope.info}"/>
+        <c:remove var="info" scope="session"/>
+    </div>
+    <div>${dummyErrors}</div>
+    <div>
+        <label for="email">Email address</label>
+    </div>
+    <div>
+        <c:choose>
+            <c:when test="${email != ''}">
+                <input type="text" id="email" name="email" value="${email}" style="width:98%" onblur="fixEmail()"/>
+            </c:when>
+            <c:otherwise>
+                <input type="text" id="email" name="email" style="width:98%" autofocus="autofocus" onblur="fixEmail()"/>
+            </c:otherwise>
+        </c:choose>
+    </div>
+    <div>${emailErrors}</div>
+    <div><label for="password">Password</label></div>
+    <div>
+        <c:choose>
+            <c:when test="${email != ''}">
+                <input type="password" name="password" id="password" style="width:98%" autofocus="autofocus"/>
+            </c:when>
+            <c:otherwise>
+                <input type="password" name="password" id="password" style="width:98%"/>
+            </c:otherwise>
+        </c:choose>
+    </div>
+    <div>${passwordErrors}</div>
+    <div><button name="signIn">Sign In</button></div>
+    <div><a href="./change-password">Forgot your password?</a></div>
+    <div>Don't have an account? <a href="./sign-up">Sign Up</a></div>
 </form>
