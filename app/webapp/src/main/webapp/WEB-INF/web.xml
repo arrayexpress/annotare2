@@ -74,16 +74,6 @@
         </user-data-constraint>
     </security-constraint>
 
-    <!--
-    <servlet>
-        <servlet-name>jsp</servlet-name>
-        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
-        <init-param>
-            <param-name>compiler</param-name>
-            <param-value>javac1.5</param-value>
-        </init-param>
-    </servlet>
-    -->
     <jsp-config>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>

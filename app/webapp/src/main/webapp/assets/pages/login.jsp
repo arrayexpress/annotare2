@@ -40,39 +40,41 @@
         }
     }
 </script>
-<form name="login" method="POST">
-    <div>
-        <c:out value="${sessionScope.info}"/>
-        <c:remove var="info" scope="session"/>
-    </div>
-    <div>${dummyErrors}</div>
-    <div>
-        <label for="email">Email address</label>
-    </div>
-    <div>
-        <c:choose>
-            <c:when test="${email != ''}">
-                <input type="text" id="email" name="email" value="${email}" style="width:98%" onblur="fixEmail()"/>
-            </c:when>
-            <c:otherwise>
-                <input type="text" id="email" name="email" style="width:98%" autofocus="autofocus" onblur="fixEmail()"/>
-            </c:otherwise>
-        </c:choose>
-    </div>
-    <div>${emailErrors}</div>
-    <div><label for="password">Password</label></div>
-    <div>
-        <c:choose>
-            <c:when test="${email != ''}">
-                <input type="password" name="password" id="password" style="width:98%" autofocus="autofocus"/>
-            </c:when>
-            <c:otherwise>
-                <input type="password" name="password" id="password" style="width:98%"/>
-            </c:otherwise>
-        </c:choose>
-    </div>
-    <div>${passwordErrors}</div>
-    <div><button name="signIn">Sign In</button></div>
-    <div><a href="./change-password">Forgot your password?</a></div>
-    <div>Don't have an account? <a href="./sign-up">Sign Up</a></div>
-</form>
+<section class="grid_12 alpha">
+    <form name="login" method="POST">
+        <div>
+            <c:out value="${sessionScope.info}"/>
+            <c:remove var="info" scope="session"/>
+        </div>
+        <div>${dummyErrors}</div>
+        <div>
+            <label for="email">Email address</label>
+        </div>
+        <div>
+            <c:choose>
+                <c:when test="${email != ''}">
+                    <input type="text" id="email" name="email" value="${email}" style="width:98%" onblur="fixEmail()"/>
+                </c:when>
+                <c:otherwise>
+                    <input type="text" id="email" name="email" style="width:98%" autofocus="autofocus" onblur="fixEmail()"/>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div>${emailErrors}</div>
+        <div><label for="password">Password</label></div>
+        <div>
+            <c:choose>
+                <c:when test="${email != ''}">
+                    <input type="password" name="password" id="password" style="width:98%" autofocus="autofocus"/>
+                </c:when>
+                <c:otherwise>
+                    <input type="password" name="password" id="password" style="width:98%"/>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div>${passwordErrors}</div>
+        <div><button name="signIn">Sign In</button></div>
+        <div><a href="./change-password">Forgot your password?</a></div>
+        <div>Don't have an account? <a href="./sign-up">Sign Up</a></div>
+    </form>
+</section>

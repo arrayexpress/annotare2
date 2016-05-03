@@ -32,6 +32,18 @@
     </rule>
 
     <rule>
+        <condition type="attribute" name="loggedin" operator="greater"/>
+        <from>^/xxx$</from>
+        <to type="forward" last="true">/home.jsp</to>
+    </rule>
+    <rule>
+        <from>^/xxx$</from>
+        <set type="parameter" name="pageName">login.jsp</set>
+        <to type="forward" last="true">/static.jsp</to>
+    </rule>
+
+    <!-- -->
+    <rule>
         <from>^/(edit/\d+)$</from>
         <to type="redirect" last="true">%{context-path}/$1/</to>
     </rule>
