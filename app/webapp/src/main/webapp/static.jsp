@@ -16,7 +16,7 @@
 <%@page contentType="text/html; charset=UTF-8" trimDirectiveWhitespaces="true"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@taglib uri="http://htmlcompressor.googlecode.com/taglib/compressor" prefix="compress"%>
-<compress:html enabled="true" removeComments="true" compressCss="true" compressJavaScript="true" yuiJsDisableOptimizations="true">
+<compress:html enabled="true" removeComments="true" compressCss="true" compressJavaScript="false" yuiJsDisableOptimizations="true">
     <t:frontierpage>
         <jsp:attribute name="extradeferjs">
         </jsp:attribute>
