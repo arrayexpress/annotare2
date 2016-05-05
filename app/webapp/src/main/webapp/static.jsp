@@ -15,10 +15,17 @@
 --%>
 <%@page contentType="text/html; charset=UTF-8" trimDirectiveWhitespaces="true"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://htmlcompressor.googlecode.com/taglib/compressor" prefix="compress"%>
 <compress:html enabled="true" removeComments="true" compressCss="true" compressJavaScript="false" yuiJsDisableOptimizations="true">
     <t:frontierpage>
-        <jsp:attribute name="extradeferjs">
+        <jsp:attribute name="version">${project.version}</jsp:attribute>
+        <jsp:attribute name="buildnumber">${buildNumber}</jsp:attribute>
+        <jsp:attribute name="title">
+            <c:choose>
+                <c:when test="${param.pageName == 'about.html'}">About &lt; </c:when>
+                <c:otherwise/>
+            </c:choose>
         </jsp:attribute>
         <jsp:body>
             <jsp:include page="/assets/pages/${param.pageName}"/>
