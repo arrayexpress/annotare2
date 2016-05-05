@@ -35,10 +35,10 @@ import static com.google.common.base.Strings.nullToEmpty;
  * @author Olga Melnichuk
  */
 enum ServletNavigation {
-    LOGIN("/login", "/static.jsp?pageName=login.jsp"),
-    SIGNUP("/sign-up", "/static.jsp?pageName=sign-up.jsp"),
-    VERIFY_EMAIL("/verify-email", "/static.jsp?pageName=verify-email.jsp"),
-    CHANGE_PASSWORD("/change-password", "/static.jsp?pageName=change-password.jsp"),
+    LOGIN("/login/", "/static.jsp?pageName=login.jsp"),
+    SIGNUP("/sign-up/", "/static.jsp?pageName=sign-up.jsp"),
+    VERIFY_EMAIL("/verify-email/", "/static.jsp?pageName=verify-email.jsp"),
+    CHANGE_PASSWORD("/change-password/", "/static.jsp?pageName=change-password.jsp"),
     HOME("/", "/home.jsp"),
     EDITOR("/edit/", "/editor.jsp");
 

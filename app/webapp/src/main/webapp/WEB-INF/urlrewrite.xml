@@ -30,10 +30,13 @@
         <from>.*</from>
         <set type="request" name="originalRequestUri">%{request-uri}</set>
     </rule>
-
     <rule>
-        <from>^/(edit/\d+)$</from>
-        <to type="redirect" last="true">%{context-path}/$1/</to>
+        <from>^/index[.](html?|jsp)$</from>
+        <to type="permanent-redirect" last="true">%{context-path}/</to>
+    </rule>
+    <rule>
+        <from>^/(login|logout|sign-up|verify-email|change-password|edit/\d+)$</from>
+        <to type="permanent-redirect" last="true">%{context-path}/$1/</to>
     </rule>
     <rule>
         <from>^/about([.]html?|/?)$</from>
@@ -42,7 +45,7 @@
     </rule>
     <rule>
         <from>^/help(|/(|describe_files[.]html|data_format[.]html))$</from>
-        <to type="redirect" last="true">%{context-path}/help/index.html</to>
+        <to type="permanent-redirect" last="true">%{context-path}/help/index.html</to>
     </rule>
     <rule>
         <from>^/help/(.+)[.]html?$</from>

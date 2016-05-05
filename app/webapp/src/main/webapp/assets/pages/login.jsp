@@ -74,7 +74,7 @@
         </div>
         <div>${passwordErrors}</div>
         <div><button name="signIn">Sign In</button></div>
-        <div><a href="./change-password">Forgot your password?</a></div>
-        <div>Don't have an account? <a href="./sign-up">Sign Up</a></div>
+        <div><a href="${pageContext.request.contextPath}/change-password/">Forgot your password?</a></div>
+        <div>Don't have an account? <a href="${pageContext.request.contextPath}/sign-up/">Sign Up</a></div>
     </form>
 </section>

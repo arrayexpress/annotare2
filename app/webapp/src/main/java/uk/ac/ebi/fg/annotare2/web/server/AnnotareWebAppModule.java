@@ -73,16 +73,16 @@ public class AnnotareWebAppModule extends ServletModule {
 
         filter("/status").through(AccessLoggingSuppressFilter.class);
 
-        filter("/login",
-               "/logout",
+        filter("/login/",
+               "/logout/",
+               "/sign-up/",
+               "/verify-email/",
+               "/change-password/",
+               "/UserApp/*",
+               "/EditorApp/*",
                "/upload",
                "/export",
-               "/download",
-               "/sign-up",
-               "/verify-email",
-               "/change-password",
-               "/UserApp/*",
-               "/EditorApp/*").through(HibernateSessionFilter.class);
+               "/download").through(HibernateSessionFilter.class);
 
         filter("/",
                "/UserApp/*",
@@ -98,14 +98,13 @@ public class AnnotareWebAppModule extends ServletModule {
                         .build()
         );
 
-        serveRegex("(/login)" + JSESSIONID).with(LoginServlet.class);
-        serveRegex("(/logout)" + JSESSIONID).with(LogoutServlet.class);
-        serveRegex("(/)" + JSESSIONID).with(HomeServlet.class);
-        serveRegex("(/edit/[0-9]+/)" + JSESSIONID).with(EditorServlet.class);
-        serveRegex("(/index.*)").with(WelcomeServlet.class);
-        serveRegex("/sign-up" + JSESSIONID).with(SignUpServlet.class);
-        serveRegex("/verify-email" + JSESSIONID).with(VerifyEmailServlet.class);
-        serveRegex("/change-password" + JSESSIONID).with(ChangePasswordServlet.class);
+        serveRegex("/login/" + JSESSIONID).with(LoginServlet.class);
+        serveRegex("/logout/" + JSESSIONID).with(LogoutServlet.class);
+        serveRegex("/" + JSESSIONID).with(HomeServlet.class);
+        serveRegex("/edit/[0-9]+/" + JSESSIONID).with(EditorServlet.class);
+        serveRegex("/sign-up/" + JSESSIONID).with(SignUpServlet.class);
+        serveRegex("/verify-email/" + JSESSIONID).with(VerifyEmailServlet.class);
+        serveRegex("/change-password/" + JSESSIONID).with(ChangePasswordServlet.class);
         serve("/status").with(StatusServlet.class);
         serve("/upload").with(UploadServlet.class);
         serve("/export").with(ExportServlet.class);
@@ -121,7 +120,6 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(LogoutServlet.class).in(SINGLETON);
         bind(HomeServlet.class).in(SINGLETON);
         bind(EditorServlet.class).in(SINGLETON);
-        bind(WelcomeServlet.class).in(SINGLETON);
         bind(UploadServlet.class).in(SINGLETON);
         bind(ExportServlet.class).in(SINGLETON);
         bind(DownloadServlet.class).in(SINGLETON);

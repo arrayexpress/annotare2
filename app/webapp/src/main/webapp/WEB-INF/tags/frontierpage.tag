@@ -14,51 +14,16 @@
 ~ limitations under the License.
 --%>
 <%@tag import="java.io.FileNotFoundException"%>
-<%@tag import="static com.google.common.base.Strings.nullToEmpty"%>
 <%@tag description="Frontier page template" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@attribute name="version" required="true"%>
 <%@attribute name="buildnumber" required="true"%>
 <%@attribute name="title" required="true"%>
+<%@attribute name="localnav" fragment="true" required="true"%>
 <%@attribute name="extracss" fragment="true"%>
 <%@attribute name="extrajs" fragment="true"%>
 <%@attribute name="extradeferjs" fragment="true"%>
-<%
-    String pageName = nullToEmpty(request.getParameter("pageName"));
-    String pageTitle = "";
-    if ("about.html".equals(pageName)) {
-        pageTitle = "About Annotare &lt; ";
-    } else if ("help/index.html".equals(pageName)) {
-        pageTitle = "Guide &lt; ";
-    } else if ("help/getting_started.html".equals(pageName)) {
-        pageTitle = "Getting Started &lt; Guide &lt; ";
-    } else if ("help/accepted_processed_ma_file_formats.html".equals(pageName)) {
-        pageTitle = "Accepted Processed Microarray Files Formats &lt; Guide &lt; ";
-    } else if ("help/accepted_raw_ma_file_formats.html".equals(pageName)) {
-        pageTitle = "Accepted Raw Microarray Files Formats &lt; Guide &lt; ";
-    } else if ("help/describe_exp.html".equals(pageName)) {
-        pageTitle = "Describe Experiment &lt; Guide &lt; ";
-    } else if ("help/file_upload.html".equals(pageName)) {
-        pageTitle = "Upload Files and Assign to Samples &lt; Guide &lt; ";
-    } else if ("help/sample_attributes.html".equals(pageName)) {
-        pageTitle = "Sample Attributes &lt; Guide &lt; ";
-    } else if ("help/seq_lib_spec.html".equals(pageName)) {
-        pageTitle = "Sequencing Library Information &lt; Guide &lt; ";
-    } else if ("help/strict_mtab_matrix.html".equals(pageName)) {
-        pageTitle = "Strict MAGE-TAB Format for Matrix Data &lt; Guide &lt; ";
-    } else if ("help/submit_exp.html".equals(pageName)) {
-        pageTitle = "Submit Experiment &lt; Guide &lt; ";
-    } else if ("help/time_saving_features.html".equals(pageName)) {
-        pageTitle = "Time Saving Features &lt; Guide &lt; ";
-    } else if ("help/two_color_ma.html".equals(pageName)) {
-        pageTitle = "Two-colour Microarrays &lt; Guide &lt; ";
-    } else if ("help/validate_exp.html".equals(pageName)) {
-        pageTitle = "Validate Experiment &lt; Guide &lt; ";
-    } else if ("help/experiment_types.html".equals(pageName)) {
-        pageTitle = "Experiment Types &lt; Guide &lt; ";
-    }
-%>
 <!DOCTYPE html>
 <!-- for more info please see http://stackoverflow.com/questions/1296235/jsp-tricks-to-make-templating-easier/3257426#3257426 -->
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
@@ -74,7 +39,7 @@
          More info: h5bp.com/b/378 -->
     <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
 
-    <title><%=title%>Annotare &lt; EMBL-EBI</title>
+    <title>${title}</title>
     <meta name="description" content="EMBL-EBI"><!-- Describe what this page is about -->
     <meta name="keywords" content="bioinformatics, europe, institute"><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
     <meta name="author" content="EMBL-EBI"><!-- Your [project-name] here -->
@@ -141,37 +106,14 @@
             <!-- local-title -->
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
-            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare ${version}"><span><h1><a href=${pageContext.request.contextPath}/" title="Back to Annotare homepage">Annotare</a></h1></span></div>
+            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare ${version}"><span><h1><a href="${pageContext.request.contextPath}/" title="Back to Annotare homepage">Annotare</a></h1></span></div>
 
             <!-- /local-title -->
 
             <!-- local-nav -->
 
             <nav>
-                <ul class="grid_24" id="local-nav">
-                    <li class="first"><a href="${pageContext.request.contextPath}/" title="Annotare ${version} rev.${buildnumber}">Home</a></li>
-                    <li<% if (pageName.startsWith("help")) { out.print(" class=\"active\""); } %>>
-                        <a href="${pageContext.request.contextPath}/help">Help</a>
-                    </li>
-                    <li class="last<% if (pageName.equals("about.html")) { out.print(" active"); } %>">
-                        <a href="${pageContext.request.contextPath}/about">About Annotare</a>
-                    </li>
-                    <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
-                         add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
-                         whichever one will show up last...
-                         For example: -->
-                    <c:choose>
-                        <c:when test="${sessionScope.loggedin != null}">
-                            <li class="functional last"><a href="${pageContext.request.contextPath}/logout" class="icon icon-functional login" data-icon="l">Logout</a></li>
-                            <li class="functional"><a href="${pageContext.request.contextPath}/account" class="icon icon-generic account" data-icon="M">${sessionScope.email}</a></li>
-                        </c:when>
-                        <c:otherwise>
-                            <li class="functional last"><a href="${pageContext.request.contextPath}/login" class="icon icon-functional login" data-icon="l">Login</a></li>
-                            <li class="functional"><a href="${pageContext.request.contextPath}/sign-up" class="icon icon-functional register" data-icon="7">Register</a></li>
-                        </c:otherwise>
-                    </c:choose>
-                    <%--<li class="functional"><a href="#" class="icon icon-generic feedback" data-icon="\">Feedback</a></li>--%>
-                </ul>
+                <jsp:invoke fragment="localnav"/>
             </nav>
 
             <!-- /local-nav -->
