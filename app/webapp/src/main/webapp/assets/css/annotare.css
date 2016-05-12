@@ -62,7 +62,7 @@
     display: table-cell
 }
 
-#content .center-row {
+#content .last-row {
+    margin-top: 1em;
     width: 100%;
-    text-align: center
 }

@@ -40,7 +40,7 @@
         <div class="error">${dummyErrors}</div>
         <c:choose>
             <c:when test="${requestScope.phase == 'email'}">
-                <div><label for="email">Email</label></div>
+                <div><label for="email">Email address</label></div>
                 <div>
                     <c:choose>
                         <c:when test="${pageScope.userEmail == ''}">

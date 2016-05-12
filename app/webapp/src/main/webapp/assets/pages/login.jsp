@@ -78,6 +78,6 @@
             <div class="btn"><input type="submit" name="signIn" value="Login" class="submit"/></div>
             <div class="alt-link"><a href="${pageContext.request.contextPath}/change-password/">Forgot your password?</a></div>
         </div>
-        <div class="center-row">Don't have an account? Please <a href="${pageContext.request.contextPath}/sign-up/">register</a></div>
+        <div class="last-row">Don't have an account? Please <a href="${pageContext.request.contextPath}/sign-up/">register</a></div>
     </form>
 </section>
