@@ -13,10 +13,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
-<%@ page isELIgnored="false" %>
-<%@ page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f"%>
+<%@page isELIgnored="false"%>
+<%@page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors"%>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
@@ -30,36 +30,20 @@
     }
     pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
-<form method="POST">
-    <table class="form">
-        <tr>
-            <td></td>
-            <td><h1>Email verification</h1></td>
-        </tr>
-        <tr class="info">
-            <td></td>
-            <td><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${dummyErrors}</td>
-        </tr>
-        <tr class="row right">
-            <td>Code</td>
-            <td>
-                <input type="hidden" name="email" value="${pageScope.userEmail}"/>
-                <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
-            </td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${tokenErrors}</td>
-        </tr>
-        <tr class="row">
-            <td></td>
-            <td>
-                <button name="signIn">Verify</button>&nbsp;&nbsp;<a href="?resend">Resend the code?</a>
-            </td>
-        </tr>
-    </table>
-</form>
+<section class="grid_12 push_6">
+    <h2>Email verification</h2>
+    <form method="POST">
+        <div><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></div>
+        <div class="error">${dummyErrors}</div>
+        <div><label for="token">Code</label></div>
+        <div>
+            <input type="hidden" name="email" value="${pageScope.userEmail}"/>
+            <input type="text" id="token" name="token" autofocus="autofocus"/>
+        </div>
+        <div class="error">${tokenErrors}</div>
+        <div class="btn-row">
+            <div class="btn"><input type="submit" class="submit" name="verify" value="Verify"/></div>
+            <div class="alt-link"><a href="?resend">Resend the code?</a></div>
+        </div>
+    </form>
+</section>

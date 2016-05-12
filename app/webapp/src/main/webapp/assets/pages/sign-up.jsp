@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors" %>
+<%@page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors"%>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
@@ -30,59 +30,25 @@
     values = request.getParameterValues("email");
     pageContext.setAttribute("userEmail", values == null ? "" : values[0]);
 %>
-<form method="POST">
-    <table class="form">
-        <tr>
-            <td></td>
-            <td><h1>Sign Up to Annotare</h1></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${dummyErrors}</td>
-        </tr>
-        <tr class="row right">
-            <td>Full name</td>
-            <td><input type="text" name="name" value="${pageScope.userName}" style="width:98%"/></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${nameErrors}</td>
-        </tr>
-        <tr class="row right">
-            <td>Email address</td>
-            <td><input type="text" name="email" value="${pageScope.userEmail}" style="width:98%"/></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${emailErrors}</td>
-        </tr>
-        <tr class="row right">
-            <td>Password</td>
-            <td><input type="password" name="password" style="width:98%"/></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${passwordErrors}</td>
-        </tr>
-        <tr class="row right">
-            <td>Confirm password</td>
-            <td><input type="password" name="confirm-password" style="width:98%"/></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${confirmPasswordErrors}</td>
-        </tr>
-        <tr class="row">
-            <td></td>
-            <td>
-                <button name="signup">Sign Up</button>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <div style="margin-top:10px;">Already registered? <a href="./login">Sign In</a></div>
-            </td>
-        </tr>
-    </table>
-</form>
+<section class="grid_12 push_6">
+    <h2>Please register to Annotare</h2>
+    <form method="POST">
+        <div class="error">${dummyErrors}</div>
+        <div><label for="name">Full name</label></div>
+        <div><input type="text" id="name" name="name" value="${pageScope.userName}"/></div>
+        <div class="error">${nameErrors}</div>
+        <div><label for="email">Email address</label></div>
+        <div><input type="text" id="email" name="email" value="${pageScope.userEmail}"/></div>
+        <div class="error">${emailErrors}</div>
+        <div><label for="password">Password</label></div>
+        <div><input type="password" id="password" name="password"/></div>
+        <div class="error">${passwordErrors}</div>
+        <div><label for="confirm-password">Confirm password</label></div>
+        <div><input type="password" id="confirm-password" name="confirm-password"/></div>
+        <div class="error">${confirmPasswordErrors}</div>
+        <div class="btn-row">
+            <div class="btn"><input type="submit" class="submit" name="signup" value="Register"/></div>
+            <div class="alt-link">Already registered? Please <a href="${pageContext.request.contextPath}/login/">login</a></div>
+        </div>
+    </form>
+</section>

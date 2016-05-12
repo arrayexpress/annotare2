@@ -33,92 +33,57 @@
     }
     pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
-<form method="POST">
-    <table class="form">
-        <tr>
-            <td></td>
-            <td><h1>Change password request</h1></td>
-        </tr>
-        <tr class="info">
-            <td></td>
-            <td><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></td>
-        </tr>
-        <tr class="error">
-            <td></td>
-            <td>${dummyErrors}</td>
-        </tr>
+<section class="grid_12 push_6">
+    <h2>Change password request</h2>
+    <form method="POST">
+        <div><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></div>
+        <div class="error">${dummyErrors}</div>
         <c:choose>
             <c:when test="${requestScope.phase == 'email'}">
-                <tr class="row right">
-                    <td>Email</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${pageScope.userEmail == ''}">
-                                <input type="text" name="email" style="width:98%" autofocus="autofocus"/>
-                            </c:when>
-                            <c:otherwise>
-                                <input type="text" name="email" value="${pageScope.userEmail}" style="width:98%"/>
-                            </c:otherwise>
-                        </c:choose>
-
-                    </td>
-                </tr>
-                <tr class="error">
-                    <td></td>
-                    <td>${emailErrors}</td>
-                </tr>
+                <div><label for="email">Email</label></div>
+                <div>
+                    <c:choose>
+                        <c:when test="${pageScope.userEmail == ''}">
+                            <input type="text" id="email" name="email" autofocus="autofocus"/>
+                        </c:when>
+                        <c:otherwise>
+                            <input type="text" id="email" name="email" value="${pageScope.userEmail}"/>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="error">${emailErrors}</div>
             </c:when>
             <c:when test="${requestScope.phase == 'token'}">
-                <tr class="row right">
-                    <td>Code</td>
-                    <td>
-                        <input type="hidden" name="email" value="${pageScope.userEmail}"/>
-                        <input type="text" name="token" style="width:98%" autofocus="autofocus"/>
-                    </td>
-                </tr>
-                <tr class="error">
-                    <td></td>
-                    <td>${tokenErrors}</td>
-                </tr>
+                <div><label for="token">Code</label></div>
+                <div>
+                    <input type="hidden" name="email" value="${pageScope.userEmail}"/>
+                    <input type="text" id="token" name="token" autofocus="autofocus"/>
+                </div>
+                <div class="error">${tokenErrors}</div>
             </c:when>
             <c:otherwise>
-                <tr class="row right">
-                    <td>Password</td>
-                    <td>
-                        <input type="hidden" name="email" value="${pageScope.userEmail}"/>
-                        <input type="hidden" name="token" value="${param.token}"/>
-                        <input type="password" name="password" style="width:98%" autofocus="autofocus"/>
-                    </td>
-                </tr>
-                <tr class="error">
-                    <td></td>
-                    <td>${passwordErrors}</td>
-                </tr>
-                <tr class="row right">
-                    <td>Confirm password</td>
-                    <td><input type="password" name="confirm-password" style="width:98%"/></td>
-                </tr>
-                <tr class="error">
-                    <td></td>
-                    <td>${confirmPasswordErrors}</td>
-                </tr>
+                <div><label for="password">Password</label></div>
+                <div>
+                    <input type="hidden" name="email" value="${pageScope.userEmail}"/>
+                    <input type="hidden" name="token" value="${param.token}"/>
+                    <input type="password" id="password" name="password" autofocus="autofocus"/>
+                </div>
+                <div class="error">${passwordErrors}</div>
+                <div><label for="confirm-password">Confirm password</label></div>
+                <div><input type="password" id="confirm-password" name="confirm-password"/></div>
+                <div class="error">${confirmPasswordErrors}</div>
             </c:otherwise>
         </c:choose>
-
-        <tr class="row">
-            <td></td>
-            <td>
-                <c:choose>
-                    <c:when test="${requestScope.phase == 'email' && pageScope.userEmail != ''}">
-                        <button name="changePassword" autofocus="autofocus">Send</button>
-                    </c:when>
-                    <c:otherwise>
-                        <button name="changePassword">Send</button>
-                    </c:otherwise>
-                </c:choose>
-
-                <input type="hidden" name="phase" value="${requestScope.phase}"/>
-            </td>
-        </tr>
-    </table>
-</form>
+        <div>
+            <c:choose>
+                <c:when test="${requestScope.phase == 'email' && pageScope.userEmail != ''}">
+                    <input type="submit" class="submit" name="changePassword" value="Send" autofocus="autofocus"/>
+                </c:when>
+                <c:otherwise>
+                    <input type="submit" class="submit" name="changePassword" value="Send"/>
+                </c:otherwise>
+            </c:choose>
+            <input type="hidden" name="phase" value="${requestScope.phase}"/>
+        </div>
+    </form>
+</section>

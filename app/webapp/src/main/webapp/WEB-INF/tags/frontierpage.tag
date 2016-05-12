@@ -24,6 +24,9 @@
 <%@attribute name="extracss" fragment="true"%>
 <%@attribute name="extrajs" fragment="true"%>
 <%@attribute name="extradeferjs" fragment="true"%>
+<%
+    try {
+%>
 <!DOCTYPE html>
 <!-- for more info please see http://stackoverflow.com/questions/1296235/jsp-tricks-to-make-templating-easier/3257426#3257426 -->
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
@@ -122,19 +125,7 @@
     </header>
 
     <div id="content" role="main" class="grid_24 clearfix">
-        <%
-            try {
-        %>
         <jsp:doBody/>
-        <%
-            } catch (Throwable x) {
-                if (x instanceof FileNotFoundException || x.getCause() instanceof FileNotFoundException ) {
-                    response.sendError(404);
-                } else {
-                    throw x;
-                }
-            }
-        %>
     </div>
 
 
@@ -171,7 +162,7 @@
 
             <section id="ebi-footer-meta">
                 <p class="address">EMBL-EBI, Wellcome Trust Genome Campus, Hinxton, Cambridgeshire, CB10 1SD, UK &nbsp; &nbsp; +44 (0)1223 49 44 44</p>
-                <p class="legal">Copyright &copy; EMBL-EBI 2013 | EBI is an outstation of the <a href="http://www.embl.org">European Molecular Biology Laboratory</a> | <a href="/about/privacy">Privacy</a> | <a href="/about/cookies">Cookies</a> | <a href="/about/terms-of-use">Terms of use</a></p>
+                <p class="legal">Copyright &copy; EMBL-EBI 2016 | EBI is an outstation of the <a href="http://www.embl.org">European Molecular Biology Laboratory</a> | <a href="/about/privacy">Privacy</a> | <a href="/about/cookies">Cookies</a> | <a href="/about/terms-of-use">Terms of use</a></p>
             </section>
 
         </div>
@@ -211,3 +202,12 @@
 -->
 </body>
 </html>
+<%
+    } catch (Throwable x) {
+        if (x instanceof FileNotFoundException || x.getCause() instanceof FileNotFoundException ) {
+            response.sendError(404);
+        } else {
+            throw x;
+        }
+    }
+%>

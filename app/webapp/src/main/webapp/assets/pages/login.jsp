@@ -40,41 +40,44 @@
         }
     }
 </script>
-<section class="grid_12 alpha">
+<section class="grid_12 push_6">
+    <h2>Please login to Annotare</h2>
     <form name="login" method="POST">
         <div>
             <c:out value="${sessionScope.info}"/>
             <c:remove var="info" scope="session"/>
         </div>
-        <div>${dummyErrors}</div>
+        <div class="error">${dummyErrors}</div>
         <div>
             <label for="email">Email address</label>
         </div>
         <div>
             <c:choose>
                 <c:when test="${email != ''}">
-                    <input type="text" id="email" name="email" value="${email}" style="width:98%" onblur="fixEmail()"/>
+                    <input type="text" id="email" name="email" value="${email}" onblur="fixEmail()"/>
                 </c:when>
                 <c:otherwise>
-                    <input type="text" id="email" name="email" style="width:98%" autofocus="autofocus" onblur="fixEmail()"/>
+                    <input type="text" id="email" name="email" autofocus="autofocus" onblur="fixEmail()"/>
                 </c:otherwise>
             </c:choose>
         </div>
-        <div>${emailErrors}</div>
+        <div class="error">${emailErrors}</div>
         <div><label for="password">Password</label></div>
         <div>
             <c:choose>
                 <c:when test="${email != ''}">
-                    <input type="password" name="password" id="password" style="width:98%" autofocus="autofocus"/>
+                    <input type="password" name="password" id="password" autofocus="autofocus"/>
                 </c:when>
                 <c:otherwise>
-                    <input type="password" name="password" id="password" style="width:98%"/>
+                    <input type="password" name="password" id="password"/>
                 </c:otherwise>
             </c:choose>
         </div>
-        <div>${passwordErrors}</div>
-        <div><button name="signIn">Sign In</button></div>
-        <div><a href="${pageContext.request.contextPath}/change-password/">Forgot your password?</a></div>
-        <div>Don't have an account? <a href="${pageContext.request.contextPath}/sign-up/">Sign Up</a></div>
+        <div class="error">${passwordErrors}</div>
+        <div class="btn-row">
+            <div class="btn"><input type="submit" name="signIn" value="Login" class="submit"/></div>
+            <div class="alt-link"><a href="${pageContext.request.contextPath}/change-password/">Forgot your password?</a></div>
+        </div>
+        <div class="center-row">Don't have an account? Please <a href="${pageContext.request.contextPath}/sign-up/">register</a></div>
     </form>
 </section>

@@ -36,3 +36,33 @@
     margin-left: -3px;
     margin-right: -3px
 }
+
+#content input[type='text'],
+#content input[type='password'] {
+    width: 100%
+}
+
+#content .error {
+    color: red
+}
+
+#content .btn-row {
+    width: 100%;
+    display: table
+}
+
+#content .btn {
+    width: 50%;
+    display: table-cell
+}
+
+#content .alt-link {
+    width: 50%;
+    text-align: right;
+    display: table-cell
+}
+
+#content .center-row {
+    width: 100%;
+    text-align: center
+}
