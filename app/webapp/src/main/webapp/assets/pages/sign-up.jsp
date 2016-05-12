@@ -30,7 +30,7 @@
     values = request.getParameterValues("email");
     pageContext.setAttribute("userEmail", values == null ? "" : values[0]);
 %>
-<section class="grid_12 push_6">
+<section class="grid_12 push_6 form">
     <h2>Please register to Annotare</h2>
     <form method="POST">
         <div class="error">${dummyErrors}</div>

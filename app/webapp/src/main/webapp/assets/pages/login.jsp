@@ -40,7 +40,7 @@
         }
     }
 </script>
-<section class="grid_12 push_6">
+<section class="grid_12 push_6 form">
     <h2>Please login to Annotare</h2>
     <form name="login" method="POST">
         <div>

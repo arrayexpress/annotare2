@@ -30,7 +30,7 @@
     }
     pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
-<section class="grid_12 push_6">
+<section class="grid_12 push_6 form">
     <h2>Email verification</h2>
     <form method="POST">
         <div><c:out value="${sessionScope.info}" /><c:remove var="info" scope="session" /></div>
