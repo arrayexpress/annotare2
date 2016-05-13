@@ -21,24 +21,17 @@
 
 #content .btn-row {
     display: table;
-    width: 100%;
-    text-align: right
+    width: 100%
 }
 
-#content .btn {
-    display: table-cell;
-    width: 50%;
-    text-align: right
-}
-
-#content .alt-link {
+#content .btn-row > div {
     display: table-cell;
     width: 50%
 }
 
 #content .last-row {
     margin-top: 0.5em;
-    width: 100%;
+    width: 100%
 }
 
 #annotare-help table {

@@ -47,8 +47,8 @@
         <div><input type="password" id="confirm-password" name="confirm-password"/></div>
         <div class="error">${confirmPasswordErrors}</div>
         <div class="btn-row">
-            <div class="alt-link">Already registered? Please <a href="${pageContext.request.contextPath}/login/">log in</a>.</div>
-            <div class="btn"><input type="submit" class="submit" name="signup" value="Register"/></div>
+            <div>Already registered? Please <a href="${pageContext.request.contextPath}/login/">log in</a>.</div>
+            <div align="right"><input type="submit" class="submit" name="signup" value="Register"/></div>
         </div>
     </form>
 </section>

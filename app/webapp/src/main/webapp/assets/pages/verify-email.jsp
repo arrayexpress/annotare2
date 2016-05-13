@@ -42,8 +42,8 @@
         </div>
         <div class="error">${tokenErrors}</div>
         <div class="btn-row">
-            <div class="alt-link"><a href="?resend">Resend the code?</a></div>
-            <div class="btn"><input type="submit" class="submit" name="verify" value="Verify"/></div>
+            <div><a href="?resend">Resend the code?</a></div>
+            <div align="right"><input type="submit" class="submit" name="verify" value="Verify"/></div>
         </div>
     </form>
 </section>
