@@ -46,6 +46,10 @@
     width: 100%
 }
 
+#content .right {
+    text-align: right
+}
+
 #annotare-help table {
     border-collapse: collapse
 }
