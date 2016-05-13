@@ -10,9 +10,21 @@
     margin-top: 31px
 }
 
+#content label {
+    display: inline-block;
+    margin-top: 1em;
+}
+
 #content input[type='text'],
 #content input[type='password'] {
-    width: 100%
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box
+}
+
+#content input[type='submit'] {
+    display: inline-block
 }
 
 #content .error {
