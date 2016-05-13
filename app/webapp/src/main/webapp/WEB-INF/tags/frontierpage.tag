@@ -17,8 +17,6 @@
 <%@tag description="Frontier page template" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@attribute name="version" required="true"%>
-<%@attribute name="buildnumber" required="true"%>
 <%@attribute name="title" required="true"%>
 <%@attribute name="localnav" fragment="true" required="true"%>
 <%@attribute name="extracss" fragment="true"%>
@@ -109,7 +107,7 @@
             <!-- local-title -->
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
-            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare ${version}"><span><h1><a href="${pageContext.request.contextPath}/" title="Back to Annotare homepage">Annotare</a></h1></span></div>
+            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href="${pageContext.request.contextPath}/" title="Back to Annotare homepage">Annotare</a></h1></span></div>
 
             <!-- /local-title -->
 

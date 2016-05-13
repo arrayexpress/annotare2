@@ -71,12 +71,10 @@
 %>
 <compress:html enabled="true" removeComments="true" compressCss="true" compressJavaScript="false" yuiJsDisableOptimizations="true">
     <t:frontierpage>
-        <jsp:attribute name="version">${project.version}</jsp:attribute>
-        <jsp:attribute name="buildnumber">${buildNumber}</jsp:attribute>
         <jsp:attribute name="title">${pageTitle}Annotare &lt; EMBL-EBI</jsp:attribute>
         <jsp:attribute name="localnav">
             <ul class="grid_24" id="local-nav">
-                <li class="first"><a href="${pageContext.request.contextPath}/" title="Annotare ${version} rev.${buildnumber}">Home</a></li>
+                <li class="first"><a href="${pageContext.request.contextPath}/" title="Annotare ${project.version} rev.${buildNumber}">Home</a></li>
                 <li${helpClass}><a href="${pageContext.request.contextPath}/help">Help</a></li>
                 <li class="last${aboutClass}"><a href="${pageContext.request.contextPath}/about">About Annotare</a></li>
                 <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
