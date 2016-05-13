@@ -39,6 +39,10 @@
         <to type="permanent-redirect" last="true">%{context-path}/$1/</to>
     </rule>
     <rule>
+        <from>^/assets/pages/?.*$</from>
+        <to type="redirect" last="true">%{context-path}/</to>
+    </rule>
+    <rule>
         <from>^/about([.]html?|/?)$</from>
         <set type="parameter" name="pageName">about.html</set>
         <to type="forward" last="true">/static.jsp</to>
