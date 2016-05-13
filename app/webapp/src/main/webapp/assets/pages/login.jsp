@@ -41,7 +41,7 @@
     }
 </script>
 <section class="grid_12 push_6 form">
-    <h2>Please login to Annotare</h2>
+    <h2>Please log in to Annotare</h2>
     <form name="login" method="POST">
         <div>
             <c:out value="${sessionScope.info}"/>
@@ -75,9 +75,9 @@
         </div>
         <div class="error">${passwordErrors}</div>
         <div class="btn-row">
-            <div class="btn"><input type="submit" name="signIn" value="Login" class="submit"/></div>
             <div class="alt-link"><a href="${pageContext.request.contextPath}/change-password/">Forgot your password?</a></div>
+            <div class="btn"><input type="submit" name="signIn" value="Login" class="submit"/></div>
         </div>
-        <div class="last-row">Don't have an account? Please <a href="${pageContext.request.contextPath}/sign-up/">register</a></div>
+        <div class="last-row">Don't have an account? Please <a href="${pageContext.request.contextPath}/sign-up/">register</a>.</div>
     </form>
 </section>

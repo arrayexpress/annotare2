@@ -31,7 +31,7 @@
     pageContext.setAttribute("userEmail", values == null ? "" : values[0]);
 %>
 <section class="grid_12 push_6 form">
-    <h2>Please register to Annotare</h2>
+    <h2>Please register with Annotare</h2>
     <form method="POST">
         <div class="error">${dummyErrors}</div>
         <div><label for="name">Full name</label></div>
@@ -47,8 +47,8 @@
         <div><input type="password" id="confirm-password" name="confirm-password"/></div>
         <div class="error">${confirmPasswordErrors}</div>
         <div class="btn-row">
-            <div class="btn"><input type="submit" class="submit" name="signup" value="Register"/></div>
             <div class="alt-link">Already registered? Please <a href="${pageContext.request.contextPath}/login/">login</a></div>
+            <div class="btn"><input type="submit" class="submit" name="signup" value="Register"/></div>
         </div>
     </form>
 </section>

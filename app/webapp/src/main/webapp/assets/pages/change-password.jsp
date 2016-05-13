@@ -74,7 +74,7 @@
                 <div class="error">${confirmPasswordErrors}</div>
             </c:otherwise>
         </c:choose>
-        <div>
+        <div class="btn-row">
             <c:choose>
                 <c:when test="${requestScope.phase == 'email' && pageScope.userEmail != ''}">
                     <input type="submit" class="submit" name="changePassword" value="Send" autofocus="autofocus"/>
