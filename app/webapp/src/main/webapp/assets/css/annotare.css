@@ -12,7 +12,7 @@
 
 #content label {
     display: inline-block;
-    margin-top: 1em;
+    margin-top: 0.2em;
 }
 
 #content input[type='text'],
@@ -42,7 +42,7 @@
 }
 
 #content .last-row {
-    margin-top: 0.5em;
+    margin-top: 0.2em;
     width: 100%
 }
 
