@@ -68,6 +68,7 @@ import static uk.ac.ebi.fg.annotare2.ae.AEConnection.SubmissionState.*;
 public class AeIntegrationWatchdog {
 
     private static final Logger logger = LoggerFactory.getLogger(AeIntegrationWatchdog.class);
+
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
@@ -480,13 +481,16 @@ public class AeIntegrationWatchdog {
             }
 
             if (dataFiles.size() > 0) {
+                logger.debug("Will process {} data files", dataFiles.size());
                 for (DataFile dataFile : dataFiles) {
+                    logger.debug("Processing data file {}", dataFile.getName());
                     if (DataFileStatus.STORED == dataFile.getStatus()) {
                         URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
                                 ? new URI(ftpManager.getDirectory(ftpSubDirectory) + dataFile.getName())
                                 : new File(exportDirectory, dataFile.getName()).toURI();
                         DataFileHandle source = dataFileManager.getFileHandle(dataFile);
                         DataFileHandle destination = source.copyTo(destinationURI);
+                        logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
                         if (!isNullOrEmpty(dataFilesPostProcessingScript) && destination instanceof LocalFileHandle) {
                             LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
                             if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {

@@ -22,6 +22,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.ServletModule;
+import org.apache.catalina.filters.SetCharacterEncodingFilter;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 import uk.ac.ebi.fg.annotare2.core.components.*;
 import uk.ac.ebi.fg.annotare2.core.data.ProtocolTypes;
@@ -92,6 +93,11 @@ public class AnnotareWebAppModule extends ServletModule {
                "/export",
                "/download").through(SecurityFilter.class);
 
+        filter("/*").through(SetCharacterEncodingFilter.class,
+                new ImmutableMap.Builder<String, String>()
+                        .put("encoding", "UTF-8")
+                        .build());
+
         filter("/*").through(UrlRewriteFilter.class,
                 new ImmutableMap.Builder<String, String>()
                         .put("logLevel", "slf4j")
@@ -113,6 +119,7 @@ public class AnnotareWebAppModule extends ServletModule {
         bind(ExpiresNowFilter.class).in(SINGLETON);
         bind(AccessLoggingSuppressFilter.class).in(SINGLETON);
         bind(HibernateSessionFilter.class).in(SINGLETON);
+        bind(SetCharacterEncodingFilter.class).in(SINGLETON);
         bind(SecurityFilter.class).in(SINGLETON);
         bind(UrlRewriteFilter.class).in(SINGLETON);
         bind(StatusServlet.class).in(SINGLETON);

@@ -91,13 +91,13 @@ public class UserApp implements EntryPoint {
         //showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_160310_Shown";
+    private final static String NOTICE_COOKIE = "Notice_160527_Shown";
 
     private void showNotice() {
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE))) {
             NotificationPopupPanel.warning(
-                    "Due to reduced staffing levels between 18 Mar - 8 Apr 2016, curation and brokering of sequencing experiments will take up to 15 working days to complete.<br><br>"
-                    + "If your submission requires urgent processing, please contact us at annotare@ebi.ac.uk and we will raise its priority.  Thank you for your understanding and we apologise for any inconvenience caused.",
+                    "Due to scheduled maintenance we will not be able to provide accession numbers or curate experiments from 1pm today until Tue 31 May.<br><br>"
+                    + "You can still submit your experiments as usual and we will queue them for curation next week. Sorry for any inconvenience!",
                     false, false);
             Cookies.setCookie(NOTICE_COOKIE, "YEZ");
         }
