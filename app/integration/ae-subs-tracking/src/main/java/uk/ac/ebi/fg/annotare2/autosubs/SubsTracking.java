@@ -95,13 +95,13 @@ public class SubsTracking {
                                 .set(EXPERIMENTS.USER_ID, userId)
                                 .set(EXPERIMENTS.DATE_SUBMITTED, new Timestamp(new Date().getTime()))
                                 .set(EXPERIMENTS.ACCESSION, submission.getAccession())
-                                .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()).substring(0,255))
-                                .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
-                                .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
-                                .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() ? 1 : 0)
-                                .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
-                                .returning(EXPERIMENTS.ID)
-                                .fetchOne();
+                                .set(EXPERIMENTS.NAME, trimStringToSize(asciiCompliantString(submission.getTitle()), 255))
+                                        .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
+                                        .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
+                                        .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() ? 1 : 0)
+                                        .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
+                                        .returning(EXPERIMENTS.ID)
+                                        .fetchOne();
                 if (null != r) {
                     subsTrackingId = r.getId();
                 }
@@ -156,12 +156,12 @@ public class SubsTracking {
                 getContext(connection).update(EXPERIMENTS)
                         .set(EXPERIMENTS.DATE_LAST_EDITED, updateDate)
                         .set(EXPERIMENTS.DATE_SUBMITTED, updateDate)
-                        .set(EXPERIMENTS.NAME, asciiCompliantString(submission.getTitle()).substring(0,255))
-                        .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
-                        .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
-                        .set(EXPERIMENTS.NUM_SUBMISSIONS, numSubmissions + 1)
-                        .where(EXPERIMENTS.ID.equal(submission.getSubsTrackingId()))
-                        .execute();
+                        .set(EXPERIMENTS.NAME, trimStringToSize(asciiCompliantString(submission.getTitle()), 255))
+                                .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
+                                .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
+                                .set(EXPERIMENTS.NUM_SUBMISSIONS, numSubmissions + 1)
+                                .where(EXPERIMENTS.ID.equal(submission.getSubsTrackingId()))
+                                .execute();
 
             } catch (DataSerializationException e) {
                 throw new SubsTrackingException(e);
@@ -402,6 +402,13 @@ public class SubsTracking {
             }
         } catch (UnsupportedEncodingException x) {
             //
+        }
+        return null;
+    }
+
+    private String trimStringToSize(String s, int index) {
+        if (null != s) {
+            return s.substring(0, Math.min(s.length(), index));
         }
         return null;
     }
