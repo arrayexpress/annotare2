@@ -38,8 +38,9 @@ public class StatusServlet extends HttpServlet {
 
         String appRevision = request.getServletContext().getInitParameter("appRevision");
         try (PrintWriter out = response.getWriter()) {
-            out.println("OK");
-            out.println(appRevision);
+            out.print("OK\n");
+            out.print(appRevision);
+            out.print("\n");
         }
 
         log.debug("Received status request");

@@ -19,10 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.settings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
@@ -47,7 +44,7 @@ public class OneColorMicroarraySettingsEditor extends Composite implements Edito
 
     public OneColorMicroarraySettingsEditor(ExperimentSettingsPanel panel) {
         this.panel = panel;
-        this.arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(panel));
+        this.arrayDesign = new UpperCaseSuggestBox(new ArrayDesignSuggestOracle(panel));
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 

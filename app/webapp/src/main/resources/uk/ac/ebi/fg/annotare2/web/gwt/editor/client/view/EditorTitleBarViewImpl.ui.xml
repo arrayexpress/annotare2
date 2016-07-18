@@ -163,7 +163,7 @@
                         <g:Button addStyleNames="{style.regularButton}" ui:field="contactButton" visible="false"><i class="fa fa-comments-o"/>Contact us</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="editButton" visible="false"><i class="fa fa-pencil"/>Curator's Edit</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="releaseButton" visible="false"><i class="fa fa-repeat"/>Re-assign to Submitter</g:Button>
-                        <g:Button addStyleNames="{style.regularButton}" ui:field="exportButton"><i class="fa fa-arrow-circle-down"/>Export MAGE-TAB</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="exportButton"><i class="fa fa-arrow-circle-down"/>Save as Spreadsheets</g:Button>
                         <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton"><i class="fa fa-check"/>Validate</g:Button>
                         <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton"><i class="fa fa-paper-plane-o"/>Submit to ArrayExpress</g:Button>
                     </td>

@@ -552,3 +552,7 @@ a.wgt-button :hover {
 .app-Invalid-TextBox {
     border: 1px solid red !important;
 }
+
+.app-UpperCaseSuggestBox {
+    text-transform: uppercase;
+}

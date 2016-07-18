@@ -50,7 +50,7 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
 
     public TwoColorMicroarraySettings(SetupExpSubmissionView view) {
         this.view = view;
-        this.arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(view));
+        this.arrayDesign = new UpperCaseSuggestBox(new ArrayDesignSuggestOracle(view));
         initWidget(Binder.BINDER.createAndBindUi(this));
         this.description.setHTML(fromSafeConstant(
                 "<p>One hybridization is where two labeled samples are hybridized on an array chip.</p>" +

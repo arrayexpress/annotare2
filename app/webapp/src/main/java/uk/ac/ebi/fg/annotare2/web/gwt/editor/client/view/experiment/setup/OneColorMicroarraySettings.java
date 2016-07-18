@@ -53,7 +53,7 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
 
     public OneColorMicroarraySettings(SetupExpSubmissionView view) {
         this.view = view;
-        this.arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(view));
+        this.arrayDesign = new UpperCaseSuggestBox(new ArrayDesignSuggestOracle(view));
         initWidget(Binder.BINDER.createAndBindUi(this));
         this.description.setHTML(fromSafeConstant(
                 "<p>One hybridization is where one labeled sample is hybridized on an array chip</p>" +

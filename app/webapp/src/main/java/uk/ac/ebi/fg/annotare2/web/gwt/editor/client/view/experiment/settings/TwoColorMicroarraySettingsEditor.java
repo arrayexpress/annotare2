@@ -21,6 +21,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.UpperCaseSuggestBox;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
@@ -43,7 +44,7 @@ public class TwoColorMicroarraySettingsEditor extends Composite implements Edito
 
     public TwoColorMicroarraySettingsEditor(ExperimentSettingsPanel panel) {
         this.panel = panel;
-        this.arrayDesign = new SuggestBox(new ArrayDesignSuggestOracle(panel));
+        this.arrayDesign = new UpperCaseSuggestBox(new ArrayDesignSuggestOracle(panel));
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
 
@@ -52,6 +53,8 @@ public class TwoColorMicroarraySettingsEditor extends Composite implements Edito
         String ad = experimentSettings.getArrayDesign();
         arrayDesign.setValue(ad == null ? "" : ad);
     }
+
+
 
     @Override
     public boolean areValuesValid() {
