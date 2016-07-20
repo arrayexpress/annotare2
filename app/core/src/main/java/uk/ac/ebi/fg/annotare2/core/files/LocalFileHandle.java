@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.core.files;
 
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
+import org.apache.commons.lang.SystemUtils;
 
 import java.io.*;
 import java.net.URI;
@@ -53,7 +54,11 @@ public class LocalFileHandle extends DataFileHandle implements Serializable {
     @Override
     public URI getUri() {
         try {
-            return new URI("file", "", file.getPath(), null);
+            String path = file.getPath();
+            if (SystemUtils.IS_OS_WINDOWS) {
+                path = path.replaceAll("\\\\", "/");
+            }
+            return new URI("file", "", path , null);
         } catch (URISyntaxException e) {
             return null;
         }
