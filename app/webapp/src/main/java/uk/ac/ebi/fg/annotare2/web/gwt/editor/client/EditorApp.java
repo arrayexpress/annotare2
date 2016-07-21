@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -44,6 +45,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignLayou
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorStartLayout;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentLayout;
+
+import java.util.Iterator;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -76,6 +79,10 @@ public class EditorApp implements EntryPoint {
                             public void onSuccess(SubmissionDetails details) {
                                 renameBrowserTab(details);
                                 init(root, details);
+                                if (details.getStatus()!= SubmissionStatus.IN_PROGRESS) {
+                                    Window.alert("This submission can no longer be modified. " +
+                                            "Any changes made on the interface will be lost.");
+                                }
                             }
                         }
                 )

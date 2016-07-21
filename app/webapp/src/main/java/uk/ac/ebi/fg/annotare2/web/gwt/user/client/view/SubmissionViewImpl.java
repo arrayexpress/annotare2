@@ -27,6 +27,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 
@@ -78,7 +79,13 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     public void setSubmissionDetails(SubmissionDetails details) {
         submissionType = details.getType();
 
-        editButton.setText(submissionType.isImported() ? "Import" : "Edit");
+        if (details.getStatus() != SubmissionStatus.IN_PROGRESS) {
+            editButton.setText("View");
+        } else if (submissionType.isImported()) {
+            editButton.setText("Import");
+        } else {
+            editButton.setText("Edit");
+        }
 
         accession.setInnerText(details.getAccession().getText());
         title.setInnerText(details.getTitle());
