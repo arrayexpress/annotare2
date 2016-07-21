@@ -21,6 +21,8 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
@@ -59,4 +61,6 @@ public interface EditorGinjector extends Ginjector {
     ActivityMapper getStartActivityMapper();
 
     SubmissionServiceAsync getSubmissionService();
+
+    CurrentUserAccountServiceAsync getCurrentUserAccountService();
 }

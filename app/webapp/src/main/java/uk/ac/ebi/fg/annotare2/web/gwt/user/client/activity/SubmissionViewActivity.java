@@ -22,11 +22,13 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.ImportSubmissionPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionViewPlace;
@@ -43,15 +45,17 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     private final SubmissionView view;
     private final PlaceController placeController;
     private final SubmissionServiceAsync submissionService;
+    private final CurrentUserAccountServiceAsync userService;
 
     private Long submissionId;
 
     @Inject
     public SubmissionViewActivity(SubmissionView view, PlaceController placeController,
-                                  SubmissionServiceAsync submissionService) {
+                                  SubmissionServiceAsync submissionService, CurrentUserAccountServiceAsync userService) {
         this.view = view;
         this.placeController = placeController;
         this.submissionService = submissionService;
+        this.userService = userService;
     }
 
     public SubmissionViewActivity withPlace(SubmissionViewPlace place) {
@@ -70,14 +74,24 @@ public class SubmissionViewActivity extends AbstractActivity implements Submissi
     }
 
     private void loadAsync() {
-        submissionService.getSubmissionDetails(submissionId, AsyncCallbackWrapper.callbackWrap(
-                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+        userService.me(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
                     @Override
-                    public void onSuccess(SubmissionDetails result) {
-                        view.setSubmissionDetails(result);
+                    public void onSuccess(UserDto result) {
+                        view.setCurator(result.isCurator());
+                        submissionService.getSubmissionDetails(submissionId, AsyncCallbackWrapper.callbackWrap(
+                                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+                                    @Override
+                                    public void onSuccess(SubmissionDetails result) {
+                                        view.setSubmissionDetails(result);
+                                    }
+                                }
+                        ));
                     }
                 }
         ));
+
+
     }
 
     @Override

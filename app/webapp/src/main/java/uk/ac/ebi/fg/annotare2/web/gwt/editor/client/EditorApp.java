@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -38,6 +39,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
@@ -79,10 +81,6 @@ public class EditorApp implements EntryPoint {
                             public void onSuccess(SubmissionDetails details) {
                                 renameBrowserTab(details);
                                 init(root, details);
-                                if (details.getStatus()!= SubmissionStatus.IN_PROGRESS) {
-                                    Window.alert("This submission can no longer be modified. " +
-                                            "Any changes made on the interface will be lost.");
-                                }
                             }
                         }
                 )
@@ -124,6 +122,22 @@ public class EditorApp implements EntryPoint {
         root.add(layout);
 
         historyHandler.handleCurrentHistory();
+
+        final SubmissionStatus submissionStatus = details.getStatus();
+        CurrentUserAccountServiceAsync userService = injector.getCurrentUserAccountService();
+        userService.me(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
+                    @Override
+                    public void onSuccess(UserDto result) {
+                        if (submissionStatus!= SubmissionStatus.IN_PROGRESS && !result.isCurator()) {
+                            Window.alert("This submission can no longer be modified. " +
+                                    "Any changes made on the interface will be lost.");
+                        }
+                    }
+                }
+        ));
+
+
 
         ServerWatchdog.start();
     }

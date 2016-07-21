@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 
@@ -68,6 +69,8 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
 
     private SubmissionType submissionType;
 
+    private boolean isCurator;
+
     public SubmissionViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
     }
@@ -79,7 +82,7 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     public void setSubmissionDetails(SubmissionDetails details) {
         submissionType = details.getType();
 
-        if (details.getStatus() != SubmissionStatus.IN_PROGRESS) {
+        if (details.getStatus() != SubmissionStatus.IN_PROGRESS && !isCurator) {
             editButton.setText("View");
         } else if (submissionType.isImported()) {
             editButton.setText("Import");
@@ -109,6 +112,16 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     void onDeleteButtonClick(ClickEvent event) {
         if (null != presenter && confirm("Are you sure you want to delete submission \"" + getTitle() + "\"?")) {
             presenter.onDeleteSubmission();
+        }
+    }
+
+    @Override
+    public void setCurator(boolean isCurator) {
+        this.isCurator = isCurator;
+        if (isCurator) {
+
+        } else {
+
         }
     }
 }

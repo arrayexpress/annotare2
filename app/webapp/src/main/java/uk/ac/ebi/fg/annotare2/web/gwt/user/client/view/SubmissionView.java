@@ -28,6 +28,8 @@ public interface SubmissionView extends IsWidget {
 
     void setSubmissionDetails(SubmissionDetails submission);
 
+    void setCurator(boolean isCurator);
+
     public interface Presenter {
 
         void onImportSubmission();
