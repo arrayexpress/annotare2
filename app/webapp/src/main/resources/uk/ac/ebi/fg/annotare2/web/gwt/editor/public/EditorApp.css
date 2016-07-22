@@ -556,3 +556,7 @@ a.wgt-button :hover {
 .app-UpperCaseSuggestBox {
     text-transform: uppercase;
 }
+
+.app-ReadOnlySubmissionDialogBox {
+    width:30%;
+}

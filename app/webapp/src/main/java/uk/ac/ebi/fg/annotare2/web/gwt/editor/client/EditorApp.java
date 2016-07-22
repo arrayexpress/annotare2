@@ -23,7 +23,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,12 +45,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignLayout;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorStartLayout;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentLayout;
-
-import java.util.Iterator;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -59,6 +56,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class EditorApp implements EntryPoint {
 
     private final EditorGinjector injector = GWT.create(EditorGinjector.class);
+    public final static String SUBMISSION_READONLY_COOKIE = "Submission_ReadOnly_Shown";
 
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
@@ -123,23 +121,28 @@ public class EditorApp implements EntryPoint {
 
         historyHandler.handleCurrentHistory();
 
-        final SubmissionStatus submissionStatus = details.getStatus();
-        CurrentUserAccountServiceAsync userService = injector.getCurrentUserAccountService();
-        userService.me(AsyncCallbackWrapper.callbackWrap(
-                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
-                    @Override
-                    public void onSuccess(UserDto result) {
-                        if (submissionStatus!= SubmissionStatus.IN_PROGRESS && !result.isCurator()) {
-                            Window.alert("This submission can no longer be modified. " +
-                                    "Any changes made on the interface will be lost.");
-                        }
-                    }
-                }
-        ));
-
-
+        showSubmissionReadOnlyMessage(details);
 
         ServerWatchdog.start();
+    }
+
+    private void showSubmissionReadOnlyMessage(SubmissionDetails details) {
+        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(SUBMISSION_READONLY_COOKIE))) {
+            final SubmissionStatus submissionStatus = details.getStatus();
+            CurrentUserAccountServiceAsync userService = injector.getCurrentUserAccountService();
+            userService.me(AsyncCallbackWrapper.callbackWrap(
+                    new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
+                        @Override
+                        public void onSuccess(UserDto result) {
+                            if (submissionStatus != SubmissionStatus.IN_PROGRESS && !result.isCurator()) {
+                                final DialogBox dialogBox = new SubmissionIsReadOnlyDialog();
+                                dialogBox.center();
+                                dialogBox.show();
+                            }
+                        }
+                    }
+            ));
+        }
     }
 
     private Widget initStartLayout(EventBus eventBus) {
