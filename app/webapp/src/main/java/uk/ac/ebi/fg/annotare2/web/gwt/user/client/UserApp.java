@@ -28,12 +28,14 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.CookieDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.gin.UserAppGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.mvp.UserAppPlaceHistoryMapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.place.SubmissionListPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget.AppLayout;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -88,18 +90,22 @@ public class UserApp implements EntryPoint {
         historyHandler.handleCurrentHistory();
 
         ServerWatchdog.start();
-        //showNotice();
+        showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_160527_Shown";
-
+    private final static String NOTICE_COOKIE = "Notice_160826_Shown";
     private void showNotice() {
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE))) {
-            NotificationPopupPanel.warning(
-                    "Due to scheduled maintenance we will not be able to provide accession numbers or curate experiments from 1pm today until Tue 31 May.<br><br>"
-                    + "You can still submit your experiments as usual and we will queue them for curation next week. Sorry for any inconvenience!",
-                    false, false);
-            Cookies.setCookie(NOTICE_COOKIE, "YEZ");
+            Date expiryDate = new Date();
+            expiryDate.setTime(8000000000000L);
+            CookieDialog dialogBox = new CookieDialog(
+                    "Notice",
+                    "<p>Due to scheduled maintenance, Annotare will not be available from 26-31 August 2016.<br/>" +
+                            " In case you need to submit an experiment urgently, please email us at " +
+                            "<a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>.</p>",
+                    NOTICE_COOKIE, expiryDate
+            );
+            dialogBox.show();
         }
     }
 }

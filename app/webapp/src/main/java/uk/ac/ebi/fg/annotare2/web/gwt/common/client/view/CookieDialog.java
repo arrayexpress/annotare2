@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.common.client.view;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,19 +24,22 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.CalendarUtil;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorApp;
+import com.google.gwt.user.client.ui.*;
+
 import java.util.Date;
 
-public class SubmissionIsReadOnlyDialog extends DialogBox {
+public class CookieDialog extends DialogBox {
 
-    interface Binder extends UiBinder<Widget, SubmissionIsReadOnlyDialog> {
+    interface Binder extends UiBinder<Widget, CookieDialog> {
         Binder BINDER = GWT.create(Binder.class);
     }
+
+    private String title;
+    private String cookieName;
+    private Date cookieExpiryDate;
+
+    @UiField
+    HTML messageHtml;
 
     @UiField
     CheckBox repeatCheckBox;
@@ -44,12 +47,16 @@ public class SubmissionIsReadOnlyDialog extends DialogBox {
     @UiField
     Button okButton;
 
-    public SubmissionIsReadOnlyDialog() {
-        addStyleName("app-ReadOnlySubmissionDialogBox");
+    public CookieDialog(String title, String html, String cookie, Date cookieExpiryDate) {
+        this.title = title;
+        this.cookieName = cookie;
+        this.cookieExpiryDate = cookieExpiryDate;
+        addStyleName("app-CookieDialog");
         setModal(true);
         setGlassEnabled(true);
-        setText("Submissiron can not be modified");
+        setText(title);
         setWidget(Binder.BINDER.createAndBindUi(this));
+        this.messageHtml.setHTML(html);
         center();
     }
 
@@ -57,9 +64,7 @@ public class SubmissionIsReadOnlyDialog extends DialogBox {
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
         if (repeatCheckBox.getValue()) {
-            Date cookieExpiryDate = new Date();
-            CalendarUtil.addMonthsToDate(cookieExpiryDate,3);
-            Cookies.setCookie(EditorApp.SUBMISSION_READONLY_COOKIE, "YEZ", cookieExpiryDate);
+            Cookies.setCookie(cookieName, "YEZ", cookieExpiryDate);
         }
         hide();
     }

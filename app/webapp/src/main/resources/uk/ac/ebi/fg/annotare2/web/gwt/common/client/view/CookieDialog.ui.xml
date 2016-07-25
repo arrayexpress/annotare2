@@ -19,19 +19,7 @@
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <g:VerticalPanel>
-        <g:HTML>
-            <p>This submission can no longer be modified. Please do not make any changes on these forms, as they
-                will be lost.
-            </p>
-            <p>To change release date and/or publication details, please use
-                <a target="_blank" href="https://www.ebi.ac.uk/fg/acext/">https://www.ebi.ac.uk/fg/acext/</a>. Login details were
-                emailed to you when your experiment was loaded into ArrayExpress.
-            </p>
-            <p>If you'd like to modify other aspects of your submission, e.g. add/remove samples, please click the
-                "Contact Us" button above and tell us what modifications are required. A curator will respond as soon
-                as possible.
-            </p>
-        </g:HTML>
+        <g:HTML ui:field="messageHtml"></g:HTML>
         <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
             <g:HTMLPanel>
                 <g:CheckBox ui:field="repeatCheckBox">Don't show this message again</g:CheckBox>
