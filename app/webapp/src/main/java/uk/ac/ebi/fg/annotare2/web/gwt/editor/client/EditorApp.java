@@ -23,10 +23,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
@@ -35,6 +38,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.ServerWatchdog;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.CookieDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.Accession;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
@@ -43,12 +47,9 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.EditorGinjector;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceFactory;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.EditorPlaceHistoryMapper;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ArrayDesignLayout;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorLayout;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorStartLayout;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ExperimentLayout;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.*;
 
-import java.util.Iterator;
+import java.util.Date;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType.EXPERIMENT;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -59,6 +60,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class EditorApp implements EntryPoint {
 
     private final EditorGinjector injector = GWT.create(EditorGinjector.class);
+    private final static String SUBMISSION_READONLY_COOKIE = "Submission_ReadOnly_Shown";
 
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
@@ -123,23 +125,33 @@ public class EditorApp implements EntryPoint {
 
         historyHandler.handleCurrentHistory();
 
-        final SubmissionStatus submissionStatus = details.getStatus();
-        CurrentUserAccountServiceAsync userService = injector.getCurrentUserAccountService();
-        userService.me(AsyncCallbackWrapper.callbackWrap(
-                new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
-                    @Override
-                    public void onSuccess(UserDto result) {
-                        if (submissionStatus!= SubmissionStatus.IN_PROGRESS && !result.isCurator()) {
-                            Window.alert("This submission can no longer be modified. " +
-                                    "Any changes made on the interface will be lost.");
-                        }
-                    }
-                }
-        ));
-
-
+        showSubmissionReadOnlyMessage(details);
 
         ServerWatchdog.start();
+    }
+
+    private void showSubmissionReadOnlyMessage(SubmissionDetails details) {
+        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(SUBMISSION_READONLY_COOKIE))) {
+            final SubmissionStatus submissionStatus = details.getStatus();
+            CurrentUserAccountServiceAsync userService = injector.getCurrentUserAccountService();
+            userService.me(AsyncCallbackWrapper.callbackWrap(
+                    new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
+                        @Override
+                        public void onSuccess(UserDto result) {
+                            if (submissionStatus != SubmissionStatus.IN_PROGRESS && !result.isCurator()) {
+                                Date cookieExpiryDate = new Date();
+                                CalendarUtil.addMonthsToDate(cookieExpiryDate,3);
+                                final DialogBox dialogBox = new CookieDialog(
+                                        "Submission cannot be modified",
+                                        "<p>This submission can no longer be modified. Please do not make any changes on these forms, as they will be lost. </p><p>To change release date and/or publication details, please use <a target=\"_blank\" href=\"https://www.ebi.ac.uk/fg/acext/\">https://www.ebi.ac.uk/fg/acext/</a>. Login details were emailed to you when your experiment was loaded into ArrayExpress.</p><p>If you'd like to modify other aspects of your submission, e.g. add/remove samples, please click the \"Contact Us\" button above and tell us what modifications are required. A curator will respond as soon as possible.</p>",
+                                        SUBMISSION_READONLY_COOKIE, cookieExpiryDate
+                                );
+                                dialogBox.show();
+                            }
+                        }
+                    }
+            ));
+        }
     }
 
     private Widget initStartLayout(EventBus eventBus) {

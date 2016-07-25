@@ -160,7 +160,7 @@
                     </td>
                     <td class="{style.buttonPanel}">
                         <g:Button addStyleNames="{style.helpButton}" ui:field="helpButton"><i class="fa fa-life-ring"/>Help</g:Button>
-                        <g:Button addStyleNames="{style.regularButton}" ui:field="contactButton" visible="false"><i class="fa fa-comments-o"/>Contact us</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="contactButton" visible="false"><i class="fa fa-comments-o"/>Contact Us</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="editButton" visible="false"><i class="fa fa-pencil"/>Curator's Edit</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="releaseButton" visible="false"><i class="fa fa-repeat"/>Re-assign to Submitter</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="exportButton"><i class="fa fa-arrow-circle-down"/>Save as Spreadsheets</g:Button>
