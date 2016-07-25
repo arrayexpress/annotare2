@@ -28,6 +28,7 @@ public class AnnotareFileChunkInfo extends FileChunkInfo {
 
         info.chunkNumber = original.chunkNumber;
         info.chunkSize = original.chunkSize;
+        info.currentChunkSize = original.currentChunkSize;
         info.fileSize = original.fileSize;
         info.id = original.id;
         info.fileName = original.fileName;
