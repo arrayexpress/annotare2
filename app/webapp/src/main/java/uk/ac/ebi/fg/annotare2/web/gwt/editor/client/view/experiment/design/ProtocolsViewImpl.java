@@ -58,7 +58,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
 
     public ProtocolsViewImpl() {
         gridView = new GridView<ProtocolRow>();
-        Button button = new Button("Add Protocol...");
+        Button button = new Button("Add Protocol *"); 
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

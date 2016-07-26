@@ -23,7 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
  */
 public enum ExpInfoSection implements LeftNavigationView.Section {
     GENERAL_INFO("General Information"),
-    CONTACTS("Contacts"),
+    CONTACTS("Contacts *"),
     PUBLICATIONS("Publications");
 
     private final String title;

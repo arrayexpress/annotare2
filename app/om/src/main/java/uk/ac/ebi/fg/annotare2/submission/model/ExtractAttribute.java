@@ -25,12 +25,12 @@ import static java.util.Arrays.asList;
  * @author Olga Melnichuk
  */
 public enum ExtractAttribute {
-    LIBRARY_LAYOUT("Library Layout",
+    LIBRARY_LAYOUT("Library Layout *",
             "",
             "SINGLE",
             "PAIRED"),
 
-    LIBRARY_SOURCE("Library Source",
+    LIBRARY_SOURCE("Library Source *",
             "",
             "GENOMIC (Genomic DNA (includes PCR products from genomic DNA))",
             "TRANSCRIPTOMIC (Transcription products or non genomic DNA (EST, cDNA, RT-PCR, screened libraries))",
@@ -40,7 +40,7 @@ public enum ExtractAttribute {
             "VIRAL RNA (Viral RNA)",
             "OTHER (Other, unspecified, or unknown library source material)"),
 
-    LIBRARY_STRATEGY("Library Strategy",
+    LIBRARY_STRATEGY("Library Strategy *",
             "",
             "WGS (Random sequencing of the whole genome)",
             "WGA (whole genome amplification to replace some instances of RANDOM)",
@@ -72,7 +72,7 @@ public enum ExtractAttribute {
             "ChiA-PET (Direct sequencing of proximity-ligated chromatin immunoprecipitates)",
             "OTHER (Library strategy not listed)"),
 
-    LIBRARY_SELECTION("Library Selection",
+    LIBRARY_SELECTION("Library Selection *",
             "",
             "RANDOM (Random selection by shearing or other method)",
             "PCR (Source material was selected by designed primers)",

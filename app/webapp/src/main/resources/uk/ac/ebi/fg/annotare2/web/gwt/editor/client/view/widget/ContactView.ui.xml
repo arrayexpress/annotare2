@@ -26,7 +26,7 @@
                 <td valign="top">
                     <table class="app-IdfItemFormLayout">
                         <tr>
-                            <td class="label">First Name</td>
+                            <td class="label">First Name &#42;</td>
                             <td style="width:250px">
                                 <g:TextBox width="100%" ui:field="firstName"/>
                             </td>
@@ -42,7 +42,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Email</td>
+                            <td class="label">Email &#42;</td>
                             <td colspan="3">
                                 <g:TextBox width="100%" ui:field="email"/>
                             </td>
@@ -64,19 +64,19 @@
                 <td>
                     <table class="app-IdfItemFormLayout" style="height:100%;">
                         <tr>
-                            <td class="label">Affiliation</td>
+                            <td class="label">Affiliation &#42;</td>
                             <td>
                                 <g:TextArea visibleLines="3" ui:field="affiliation"/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Address</td>
+                            <td class="label">Address &#42;</td>
                             <td>
                                 <g:TextArea visibleLines="3" ui:field="address"/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Roles</td>
+                            <td class="label">Roles &#42;</td>
                             <td style="padding-bottom:0">
                                 <wgt:MultiSelectList ui:field="roles"/>
                             </td>

@@ -30,7 +30,7 @@
         }
 
         .form td.title {
-            width: 140px;
+            width: 150px;
             text-align: right;
             padding-right: 10px;
         }
@@ -67,7 +67,7 @@
                     </tr>
                     <tr>
                         <td class="{style.title}">
-                            ArrayExpress Experiment Type &#42;
+                            Experiment Type &#42;
                         </td>
                         <td>
                             <g:ListBox width="300px" ui:field="aeExperimentType"/>
@@ -111,7 +111,7 @@
                     </tr>
                     <tr>
                         <td class="{style.title}">
-                            Date of Public Release
+                            Date of Public Release &#42;
                         </td>
                         <td>
                             <dp:DateBox width="200px" ui:field="dateOfPublicRelease"/>
