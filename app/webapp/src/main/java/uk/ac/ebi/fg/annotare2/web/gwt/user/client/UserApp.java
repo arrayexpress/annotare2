@@ -95,14 +95,14 @@ public class UserApp implements EntryPoint {
 
     private final static String NOTICE_COOKIE = "Notice_160826_Shown";
     private void showNotice() {
-        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE))) {
+        Date stopNoticeDate = new Date();
+        stopNoticeDate.setTime(1472684399000L); // stop showing on 31 Aug
+        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
                     "Notice",
-                    "<p>Due to scheduled maintenance, Annotare will not be available from 26-31 August 2016.<br/>" +
-                            " In case you need to submit an experiment urgently, please email us at " +
-                            "<a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>.</p>",
+                    "<p>Dear Submitter,</p><p>Please allow extra time for your submission in August 2016, as some members of the ArrayExpress curation team will be on summer leave, with submission handling time increasing from 5 working days to 10.</p><p>Moreover, there will be essential systems maintenance between 26-31 August, when Annotare will be shut down completely.</p><p> If you have any urgent experiments to submit in August, please email us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> and we'll try our best to accommodate. We apologise for any inconvenience caused.</p><p>Regards,<br/>Annotare Team</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();

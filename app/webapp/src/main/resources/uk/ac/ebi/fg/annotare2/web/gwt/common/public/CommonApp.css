@@ -320,3 +320,7 @@
     /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#aed5ed', endColorstr='#5aaadb',GradientType=0 );*/
     border-radius: 6px;
 }
+
+.app-CookieDialog {
+    width:30%;
+}
