@@ -11,9 +11,9 @@ public enum ExperimentTab implements EditorTab {
 
     EXP_DESIGN("Samples and Data"),
 
-    IDF_PREVIEW("IDF Preview"),
+    IDF_PREVIEW("Experiment Description Preview"),
 
-    SDRF_PREVIEW("SDRF Preview");
+    SDRF_PREVIEW("Sample and Data Preview");
 
     private String title;
 
