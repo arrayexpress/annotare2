@@ -142,7 +142,7 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
                 updateRow(row);
             }
         });
-        gridView.addPermanentColumn(attr.getTitle(), column, null, 150, Style.Unit.PX);
+        gridView.addPermanentColumn(attr.getTitle(), column, null, 150, Style.Unit.PX, attr.getHelpText());
     }
 
     private void addColumnForPairedLayout(final ExtractAttribute attr) {
@@ -168,7 +168,7 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
                 updateRow(row);
             }
         });
-        gridView.addPermanentColumn(attr.getTitle(), column, null, 150, Style.Unit.PX);
+        gridView.addPermanentColumn(attr.getTitle(), column, null, 150, Style.Unit.PX, attr.getHelpText());
     }
 
     private void updateRow(ExtractAttributesRow row) {

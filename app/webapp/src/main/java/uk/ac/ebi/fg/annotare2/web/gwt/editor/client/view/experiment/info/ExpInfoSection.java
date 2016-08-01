@@ -23,13 +23,20 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.LeftNavigationView;
  */
 public enum ExpInfoSection implements LeftNavigationView.Section {
     GENERAL_INFO("General Information"),
-    CONTACTS("Contacts *"),
-    PUBLICATIONS("Publications");
+    CONTACTS("Contacts *", "Enter the details of all persons that should appear as contacts for this experiment. There must be at least one 'submitter'."),
+    PUBLICATIONS("Publications", "Enter the publication(s) using this experiment.");
 
     private final String title;
+    private final String helpText;
 
-    private ExpInfoSection(String title) {
+    ExpInfoSection(String title) {
         this.title = title;
+        this.helpText = "";
+    }
+
+    ExpInfoSection(String title, String helpText) {
+        this.title = title;
+        this.helpText = helpText;
     }
 
     @Override
@@ -40,5 +47,10 @@ public enum ExpInfoSection implements LeftNavigationView.Section {
     @Override
     public String getKey() {
         return name();
+    }
+
+    @Override
+    public String getHelpText() {
+        return helpText;
     }
 }

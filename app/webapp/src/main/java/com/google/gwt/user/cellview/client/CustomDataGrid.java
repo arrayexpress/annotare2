@@ -104,6 +104,14 @@ public class CustomDataGrid<T> extends DataGrid<T> {
         insertResizableColumn(column, title, getColumnCount());
     }
 
+    public void insertResizableColumn(Column<T, ?> column, String title, int beforeIndex, String helpText) {
+        if (isResizable) {
+            insertColumn(beforeIndex, column, new MyResizableHeader<T>(title, column, this, helpText), null);
+        } else {
+            insertColumn(beforeIndex, column, title);
+        }
+    }
+
     public void insertResizableColumn(Column<T, ?> column, String title, int beforeIndex) {
         if (isResizable) {
             insertColumn(beforeIndex, column, new MyResizableHeader<T>(title, column, this), null);
@@ -217,7 +225,11 @@ public class CustomDataGrid<T> extends DataGrid<T> {
         private final CustomDataGrid<T> dataGrid;
 
         public MyResizableHeader(String title, Column<T, ?> column, CustomDataGrid<T> dataGrid) {
-            super(title, dataGrid, column);
+            this(title,column, dataGrid, "");
+        }
+
+        public MyResizableHeader(String title, Column<T, ?> column, CustomDataGrid<T> dataGrid, String columnHelpText) {
+            super(title, dataGrid, column, columnHelpText);
             this.dataGrid = dataGrid;
         }
 

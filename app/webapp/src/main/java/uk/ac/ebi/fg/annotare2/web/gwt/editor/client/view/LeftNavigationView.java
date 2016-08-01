@@ -50,5 +50,7 @@ public interface LeftNavigationView extends IsWidget {
         String getTitle();
 
         String getKey();
+
+        String getHelpText(); // Technically it's the title attribute but that property has already been taken
     }
 }

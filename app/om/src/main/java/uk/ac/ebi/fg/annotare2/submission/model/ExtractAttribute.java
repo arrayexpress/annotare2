@@ -26,11 +26,13 @@ import static java.util.Arrays.asList;
  */
 public enum ExtractAttribute {
     LIBRARY_LAYOUT("Library Layout *",
+            "Whether to expect SINGLE or PAIRED end reads.",
             "",
             "SINGLE",
             "PAIRED"),
 
     LIBRARY_SOURCE("Library Source *",
+            "The type of source material that is being sequenced.",
             "",
             "GENOMIC (Genomic DNA (includes PCR products from genomic DNA))",
             "TRANSCRIPTOMIC (Transcription products or non genomic DNA (EST, cDNA, RT-PCR, screened libraries))",
@@ -41,6 +43,7 @@ public enum ExtractAttribute {
             "OTHER (Other, unspecified, or unknown library source material)"),
 
     LIBRARY_STRATEGY("Library Strategy *",
+            "The sequencing technique intended for the library.",
             "",
             "WGS (Random sequencing of the whole genome)",
             "WGA (whole genome amplification to replace some instances of RANDOM)",
@@ -73,6 +76,7 @@ public enum ExtractAttribute {
             "OTHER (Library strategy not listed)"),
 
     LIBRARY_SELECTION("Library Selection *",
+            "The method used to select and/or enrich the material being sequenced.",
             "",
             "RANDOM (Random selection by shearing or other method)",
             "PCR (Source material was selected by designed primers)",
@@ -100,25 +104,32 @@ public enum ExtractAttribute {
             "unspecified (Library enrichment, screening, or selection is not specified)"),
 
     LIBRARY_STRAND("Library Strand",
-                           "",
-                           "not applicable",
-                           "first strand",
-                           "second strand"),
+             "Whether the 1st or 2nd cDNA strand was used in library prep. Don't confuse this with the forward and reverse reads one would get in a paired-end sequencing reaction. Choose \"not applicable\" if the library was unstranded.",
+            "",
+            "not applicable",
+            "first strand",
+            "second strand"),
 
-    NOMINAL_LENGTH("Nominal Length"),
+    NOMINAL_LENGTH("Nominal Length","The expected size of the insert (the fragment sequenced, e.g. as selected by size fractionation) in base pairs. No decimals or ranges (e.g. 100-200) allowed, and it cannot be zero."),
 
-    NOMINAL_SDEV("Nominal SDev"),
+    NOMINAL_SDEV("Nominal SDev","The standard deviation of the nominal length. Decimals are allowed (e.g. 56.4) but no ranges (e.g. 34.5-42.6)."),
 
-    ORIENTATION("Orientation", "", "5'-3'-3'-5'", "5'-3'-5'-3'"),
+    ORIENTATION("Orientation",
+            "The orientation of the two reads.\"5'-3'-3'-5'\" for forward-reverse pairs (most common case),\"5'-3'-5'-3'\" for forward-forward pairs.",
+            "",
+            "5'-3'-3'-5'",
+            "5'-3'-5'-3'"),
 
-    ADAPTER_SEQUENCE("Adapter Sequence");
+    ADAPTER_SEQUENCE("Adapter Sequence","");
 
     private final String title;
     private final List<String> values;
     private final List<String> options;
+    private final String helpText;
 
-    private ExtractAttribute(String title, String... options) {
+    private ExtractAttribute(String title, String helpText, String... options) {
         this.title = title;
+        this.helpText = helpText;
         this.options = asList(options);
         this.values = new ArrayList<String>();
         for (String option : options) {
@@ -135,6 +146,11 @@ public enum ExtractAttribute {
     public String getTitle() {
         return title;
     }
+
+    public String getHelpText() {
+        return helpText;
+    }
+
 
     public boolean hasOptions() {
         return !this.options.isEmpty();

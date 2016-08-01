@@ -30,7 +30,7 @@ public abstract class ResizableHeader<T> extends Header<String> {
     private static final String FOREGROUND_COLOR = "white";
     private static final int MINIMUM_COLUMN_WIDTH = 50;
 
-    private static final int RESIZE_HANDLE_WIDTH = 34;
+    private static final int RESIZE_HANDLE_WIDTH = 43;
 
     private final String title;
     private final Document document = Document.get();
@@ -45,9 +45,18 @@ public abstract class ResizableHeader<T> extends Header<String> {
         this(title, table, column, null, null);
     }
 
+    public ResizableHeader(String title, AbstractCellTable<T> table, Column<T, ?> column, String helpText) {
+        this(title, table, column, null, null, helpText);
+    }
+
     public ResizableHeader(String title, AbstractCellTable<T> table, Column<T, ?> column,
                            String resizeStyle, String resizeToolTip) {
-        super(new HeaderCell());
+        this(title,table,column,resizeStyle,resizeToolTip,"");
+    }
+
+    public ResizableHeader(String title, AbstractCellTable<T> table, Column<T, ?> column,
+                String resizeStyle, String resizeToolTip, String helpText) {
+        super(new HeaderCell(helpText));
         if (title == null || table == null || column == null)
             throw new NullPointerException();
         this.title = title;
@@ -60,7 +69,7 @@ public abstract class ResizableHeader<T> extends Header<String> {
 
     @Override
     public String getValue() {
-        return title;
+        return  title;
     }
 
     @Override
@@ -217,13 +226,24 @@ public abstract class ResizableHeader<T> extends Header<String> {
     protected abstract void resizeColumn(Column<T, ?> column, int width);
 
     private static class HeaderCell extends AbstractCell<String> {
+        private String helpText = "";
+
         public HeaderCell() {
             super(MOUSEMOVE);
         }
 
+        public HeaderCell(String helpText) {
+            super(MOUSEMOVE);
+            this.helpText = helpText;
+        }
+
         @Override
         public void render(Context context, String value, SafeHtmlBuilder sb) {
-            sb.append(SafeHtmlUtils.fromString(value));
+            sb.appendHtmlConstant("<span title=\"");
+            sb.appendEscaped(helpText);
+            sb.appendHtmlConstant("\">");
+            sb.appendEscaped(value);
+            sb.appendHtmlConstant("</span>");
         }
     }
 

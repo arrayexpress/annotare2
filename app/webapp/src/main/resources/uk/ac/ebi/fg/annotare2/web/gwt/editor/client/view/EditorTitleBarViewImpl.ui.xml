@@ -159,11 +159,11 @@
                         </table>
                     </td>
                     <td class="{style.buttonPanel}">
-                        <g:Button addStyleNames="{style.helpButton}" ui:field="helpButton"><i class="fa fa-life-ring" title="Link to detailed Annotare instructions."/>Help</g:Button>
-                        <g:Button addStyleNames="{style.regularButton}" ui:field="contactButton" visible="false"><i class="fa fa-comments-o"/>Contact Us</g:Button>
+                        <g:Button addStyleNames="{style.helpButton}" ui:field="helpButton" title="Link to detailed Annotare instructions."><i class="fa fa-life-ring" title="Link to detailed Annotare instructions."/>Help</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="contactButton" title="Ask a curator a question" visible="false"><i class="fa fa-comments-o"/>Contact Us</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="editButton" visible="false"><i class="fa fa-pencil"/>Curator's Edit</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="releaseButton" visible="false"><i class="fa fa-repeat"/>Re-assign to Submitter</g:Button>
-                        <g:Button addStyleNames="{style.regularButton}" ui:field="exportButton"><i class="fa fa-arrow-circle-down" title="Download your submission in spreadsheet format"/>Save as Spreadsheets</g:Button>
+                        <g:Button addStyleNames="{style.regularButton}" ui:field="exportButton" title="Download your submission in spreadsheet format"><i class="fa fa-arrow-circle-down"/>Save as Spreadsheets</g:Button>
                         <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton" title="Check if the files are correctly assigned and all mandatory fields are filled in. Error messages are displayed at the bottom of the page."><i class="fa fa-check"/>Validate</g:Button>
                         <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton" title="Submit your experiment to ArrayExpress. Contact the curation help-desk (arrayexpress@ebi.ac.uk) to make changes after this step."><i class="fa fa-paper-plane-o"/>Submit to ArrayExpress</g:Button>
                     </td>

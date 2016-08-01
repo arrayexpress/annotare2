@@ -155,8 +155,16 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     }
 
     public void addPermanentColumn(String columnName, Column<R, ?> column, Comparator<R> comparator, int width, Style.Unit unit) {
+        addPermanentColumn(columnName, column, comparator, width, unit,"");
+    }
+
+    public void addPermanentColumn(String columnName, Column<R, ?> column, Comparator<R> comparator, int width, Style.Unit unit, String helpText) {
         permanentColumnCount++;
-        addColumn(columnName, column, comparator, width, unit);
+        addColumn(columnName, column, comparator, width, unit, helpText);
+    }
+
+    public void addColumn(String columnName, Column<R, ?> column, Comparator<R> comparator, int width, Style.Unit unit, String helpText) {
+        insertColumn(dataGrid.getColumnCount(), columnName, column, comparator, width, unit, helpText);
     }
 
     public void addColumn(String columnName, Column<R, ?> column, Comparator<R> comparator, int width, Style.Unit unit) {
@@ -168,10 +176,14 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
     }
 
     public void insertColumn(int beforeIndex, String columnName, Column<R, ?> column, Comparator<R> comparator, int width, Style.Unit unit) {
+        insertColumn(beforeIndex, columnName, column, comparator, width, unit, "");
+    }
+
+    public void insertColumn(int beforeIndex, String columnName, Column<R, ?> column, Comparator<R> comparator, int width, Style.Unit unit, String helpText) {
         if (comparator != null) {
             sortHandler.setComparator(column, comparator);
         }
-        dataGrid.insertResizableColumn(column, columnName, beforeIndex);
+        dataGrid.insertResizableColumn(column, columnName, beforeIndex, helpText);
         dataGrid.setColumnWidth(column, width, unit);
     }
 

@@ -116,6 +116,7 @@ public class LeftNavigationViewImpl extends Composite implements LeftNavigationV
         for (final Section section : sections) {
             Label label = new Label(section.getTitle());
             label.setStyleName(style.navigationItem());
+            label.setTitle(section.getHelpText());
             label.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     onSectionClick(section);

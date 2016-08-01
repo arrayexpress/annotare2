@@ -80,7 +80,7 @@
                                         </g:SimpleLayoutPanel>
                                     </g:east>
                                     <g:center>
-                                        <g:ListBox ui:field="columnList" width="100%" visibleItemCount="9"/>
+                                        <g:ListBox  title="To mark an attribute as experimental variable, select the attribute (left pane) and tick the box below the field."  ui:field="columnList" width="100%" visibleItemCount="9"/>
                                     </g:center>
                                 </g:DockLayoutPanel>
                             </g:center>

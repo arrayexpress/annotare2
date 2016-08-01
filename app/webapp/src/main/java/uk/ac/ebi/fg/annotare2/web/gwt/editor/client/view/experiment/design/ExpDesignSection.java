@@ -32,18 +32,26 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_
  */
 public enum ExpDesignSection implements LeftNavigationView.Section {
     SAMPLES("Create samples, add attributes and experimental variables", allOf(ExperimentProfileType.class)),
-    EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING)),
-    LABELED_EXTRACTS("Create labeled extracts and assign labels", of(TWO_COLOR_MICROARRAY)),
+    EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING), "Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)."),
+    LABELED_EXTRACTS("Create labeled extracts and assign labels", of(TWO_COLOR_MICROARRAY), "Assign the label to each sample by removing the one thatdoes not apply. For dye-swap designs both labels can be kept."),
     PROTOCOLS("Describe protocols", allOf(ExperimentProfileType.class)),
     FILES("Upload and assign data files", allOf(ExperimentProfileType.class)),
     NONE("None", noneOf(ExperimentProfileType.class));
 
     private final String title;
     private final EnumSet applyTo;
+    private final String helpText;
 
     ExpDesignSection(String title, EnumSet<ExperimentProfileType> applyTo) {
         this.title = title;
         this.applyTo = applyTo;
+        this.helpText ="";
+    }
+
+    ExpDesignSection(String title, EnumSet<ExperimentProfileType> applyTo, String helpText) {
+        this.title = title;
+        this.applyTo = applyTo;
+        this.helpText = helpText;
     }
 
     private boolean appliesTo(ExperimentProfileType type) {
@@ -72,5 +80,10 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
 
     public boolean isNone() {
         return this == NONE;
+    }
+
+    @Override
+    public String getHelpText() {
+        return helpText;
     }
 }
