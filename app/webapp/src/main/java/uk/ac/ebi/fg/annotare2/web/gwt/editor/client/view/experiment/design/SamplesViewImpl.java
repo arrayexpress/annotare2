@@ -75,6 +75,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                         });
             }
         });
+        button.setTitle("Add sample attributes for the biological starting materials (e.g. cells, tissues) and mark the  experimental variables (attributes) that are subject of investigation.");
         gridView.addTool(button);
 
         button = new Button("Add Samples");
@@ -93,6 +94,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                 deleteSelectedSamples();
             }
         });
+        button.setTitle(" Select samples to delete, then click here.");
         gridView.addTool(button);
 
         button = new Button("Fill Down Value");
@@ -102,6 +104,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                 fillDownValue();
             }
         });
+        button.setTitle("Copy the selected value into all the rows below.");
         gridView.addTool(button);
 
         button = new Button("Import Values");
@@ -111,6 +114,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                 importValues();
             }
         });
+        button.setTitle("Use this feature to insert/paste a column of values  from your spreadsheet into Annotare (from the selected cell downward).");
         gridView.addTool(button);
 
         initWidget(gridView);

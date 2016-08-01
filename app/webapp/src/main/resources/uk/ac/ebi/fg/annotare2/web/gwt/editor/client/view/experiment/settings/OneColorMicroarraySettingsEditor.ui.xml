@@ -36,7 +36,7 @@
             </tr>
             <tr>
                 <td>
-                    <g:TextBox ui:field="label" width="100%"/>
+                    <g:TextBox title="Chemicals (e.g. Cy3 fluorescent dye,  biotin) conjugated to nucleic acids to label them before microarray hybridisation." ui:field="label" width="100%"/>
                 </td>
             </tr>
         </table>

@@ -65,6 +65,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 createProtocol();
             }
         });
+        button.setTitle("Click here to add the protocol details by selecting the type of protocol to create. Multiple protocols of one type can be created.");
         gridView.addTool(button);
 
         button = new Button("Delete Protocols");
@@ -215,7 +216,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         Column<ProtocolRow, String> column = new Column<ProtocolRow, String>(new ButtonCell() {
             @Override
             public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
-                sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\">");
+                sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\" title=\"By default, each protocol is assigned to all samples. Click here to change this if a protocol only applies a subset of samples.\">");
                 sb.append(data);
                 sb.appendHtmlConstant("</button>");
             }

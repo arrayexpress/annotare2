@@ -91,6 +91,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 fillDownValue();
             }
         });
+        button.setTitle("Copy the selected value into all the rows below.");
         gridView.addTool(button);
 
         button = new Button("Import Values");
@@ -100,6 +101,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
                 importValues();
             }
         });
+        button.setTitle("Use this feature to insert/paste a column of values  from your spreadsheet into Annotare (from the selected cell downward).");
         gridView.addTool(button);
 
         initWidget(gridView);
