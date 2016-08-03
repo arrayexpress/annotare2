@@ -304,7 +304,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 updateRow(row);
             }
         });
-        gridView.addPermanentColumn("Description", column, null, 150, Style.Unit.PX);
+        gridView.addPermanentColumn("Description *", column, null, 150, Style.Unit.PX, "If referring to a published protocol, please provide detailed citation, and the section in which the protocol can be found");
     }
 
     private void addParametersColumn() {
@@ -355,7 +355,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Hardware", column, comparator, 150, Style.Unit.PX);
+        gridView.addPermanentColumn("Hardware", column, comparator, 150, Style.Unit.PX, "Mandatory for sequencing experiment: select name of the sequencing machine");
     }
 
     private void addSoftwareColumn() {
@@ -415,7 +415,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 return v1.compareTo(v2);
             }
         };
-        gridView.addPermanentColumn("Performer", column, comparator, 150, Style.Unit.PX);
+        gridView.addPermanentColumn("Performer", column, comparator, 150, Style.Unit.PX, "Mandatory for sequencing experiment: the university/institute/facility which performed the sequencing");
     }
 
     private void updateProtocolAssignments(ProtocolAssignmentProfileUpdates updates) {

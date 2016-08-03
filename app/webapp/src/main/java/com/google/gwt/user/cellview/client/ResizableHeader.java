@@ -12,6 +12,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 
+import java.text.MessageFormat;
+
 import static com.google.gwt.dom.client.BrowserEvents.*;
 import static com.google.gwt.dom.client.Style.Unit.PX;
 
@@ -239,11 +241,7 @@ public abstract class ResizableHeader<T> extends Header<String> {
 
         @Override
         public void render(Context context, String value, SafeHtmlBuilder sb) {
-            sb.appendHtmlConstant("<span title=\"");
-            sb.appendEscaped(helpText);
-            sb.appendHtmlConstant("\">");
-            sb.appendEscaped(value);
-            sb.appendHtmlConstant("</span>");
+            sb.appendHtmlConstant("<span title=\""+helpText+"\">"+SafeHtmlUtils.htmlEscape(value)+"</span>");
         }
     }
 

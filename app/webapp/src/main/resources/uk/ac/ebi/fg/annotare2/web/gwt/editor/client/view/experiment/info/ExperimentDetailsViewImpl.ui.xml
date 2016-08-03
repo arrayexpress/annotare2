@@ -52,7 +52,7 @@
                             Title &#42;
                         </td>
                         <td>
-                            <g:PlaceholderTextArea placeholder="Provide an informative experiment title (max. 255 characters). e.g. RNA-seq of human breast cancer cell line MCF-7 treated with tamoxifen against untreated controls." width="90%" visibleLines="2" ui:field="title"/>
+                            <g:PlaceholderTextArea placeholder="Provide an informative experiment title (max. 255 characters), e.g. RNA-seq of human breast cancer cell line MCF-7 treated with tamoxifen against untreated controls" width="90%" visibleLines="2" ui:field="title"/>
                         </td>
                     </tr>
                     <tr>
@@ -69,7 +69,7 @@
                             Experiment Type &#42;
                         </td>
                         <td>
-                            <g:ListBox title="Select the terms that best describe the technology used." width="300px" ui:field="aeExperimentType"/>
+                            <g:ListBox title="Select the terms that best describe the technology used" width="300px" ui:field="aeExperimentType"/>
                         </td>
                     </tr>
                     <tr>
@@ -80,7 +80,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <g:ListBox title="Press 'Add' to select the scientific design of your study." width="300px" visibleItemCount="5" ui:field="experimentalDesignList"/>
+                                        <g:ListBox title="Press 'Add' to select the scientific design of your study" width="300px" visibleItemCount="5" ui:field="experimentalDesignList"/>
                                     </td>
                                     <td valign="top">
                                         <table class="{style.buttons}" cellspacing="1">
@@ -105,7 +105,7 @@
                             Date of Experiment
                         </td>
                         <td>
-                            <dp:DateBox title="Enter the approximate date that experiment was performed." width="200px" ui:field="dateOfExperiment"/>
+                            <dp:DateBox title="Enter the approximate date that experiment was performed" width="200px" ui:field="dateOfExperiment"/>
                         </td>
                     </tr>
                     <tr>
@@ -121,7 +121,7 @@
                             Hide my <a href="http://www.ebi.ac.uk/fgpt/annotare_help/describe_exp.html#remain_anonymous" title="Click to learn more about this option" target="_blank">identity</a><br/>from reviewers
                         </td>
                         <td>
-                            <g:CheckBox title="Select for double blind peer review." width="200px" ui:field="anonymousReview"/>
+                            <g:CheckBox title="Select for double blind peer review" width="200px" ui:field="anonymousReview"/>
                         </td>
                     </tr>
                 </tbody>

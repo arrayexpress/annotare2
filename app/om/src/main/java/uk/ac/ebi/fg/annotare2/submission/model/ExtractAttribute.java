@@ -26,13 +26,13 @@ import static java.util.Arrays.asList;
  */
 public enum ExtractAttribute {
     LIBRARY_LAYOUT("Library Layout *",
-            "Whether to expect SINGLE or PAIRED end reads.",
+            "Whether to expect SINGLE or PAIRED end reads",
             "",
             "SINGLE",
             "PAIRED"),
 
     LIBRARY_SOURCE("Library Source *",
-            "The type of source material that is being sequenced.",
+            "The type of source material that is being sequenced",
             "",
             "GENOMIC (Genomic DNA (includes PCR products from genomic DNA))",
             "TRANSCRIPTOMIC (Transcription products or non genomic DNA (EST, cDNA, RT-PCR, screened libraries))",
@@ -43,7 +43,7 @@ public enum ExtractAttribute {
             "OTHER (Other, unspecified, or unknown library source material)"),
 
     LIBRARY_STRATEGY("Library Strategy *",
-            "The sequencing technique intended for the library.",
+            "The sequencing technique intended for the library",
             "",
             "WGS (Random sequencing of the whole genome)",
             "WGA (whole genome amplification to replace some instances of RANDOM)",
@@ -76,7 +76,7 @@ public enum ExtractAttribute {
             "OTHER (Library strategy not listed)"),
 
     LIBRARY_SELECTION("Library Selection *",
-            "The method used to select and/or enrich the material being sequenced.",
+            "The method used to select and/or enrich the material being sequenced",
             "",
             "RANDOM (Random selection by shearing or other method)",
             "PCR (Source material was selected by designed primers)",
@@ -115,7 +115,7 @@ public enum ExtractAttribute {
     NOMINAL_SDEV("Nominal SDev","The standard deviation of the nominal length. Decimals are allowed (e.g. 56.4) but no ranges (e.g. 34.5-42.6)."),
 
     ORIENTATION("Orientation",
-            "The orientation of the two reads.\"5'-3'-3'-5'\" for forward-reverse pairs (most common case),\"5'-3'-5'-3'\" for forward-forward pairs.",
+            "The orientation of the two reads. \"5'-3'-3'-5'\" for forward-reverse pairs (most common case),\"5'-3'-5'-3'\" for forward-forward pairs.",
             "",
             "5'-3'-3'-5'",
             "5'-3'-5'-3'"),
