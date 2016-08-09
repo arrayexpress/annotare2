@@ -108,6 +108,9 @@ public abstract class Submission implements HasEffectiveAcl {
     @Column(name = "otrsTicketNumber")
     private String otrsTicketNumber;
 
+    @Column(name = "rtTicketNumber")
+    private String rtTicketNumber;
+
     @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
     private boolean deleted;
 
@@ -227,6 +230,14 @@ public abstract class Submission implements HasEffectiveAcl {
 
     public void setOtrsTicketNumber(String otrsTicketNumber) {
         this.otrsTicketNumber = otrsTicketNumber;
+    }
+
+    public String getRtTicketNumber() {
+        return this.rtTicketNumber;
+    }
+
+    public void setRtTicketNumber(String rtTicketNumber) {
+        this.rtTicketNumber = rtTicketNumber;
     }
 
     public Set<DataFile> getFiles() {

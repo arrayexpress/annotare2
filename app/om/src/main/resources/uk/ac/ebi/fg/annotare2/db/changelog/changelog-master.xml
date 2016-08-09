@@ -161,5 +161,10 @@
             ALTER TABLE submissions CHANGE otrsTicketId otrsTicketNumber VARCHAR(50) NULL;
         </sql>
     </changeSet>
+    <changeSet id="addRtTicketNumberToSubmissions" author="awais">
+        <sql>
+            ALTER TABLE submissions ADD rtTicketNumber VARCHAR(50) NULL AFTER otrsTicketNumber;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
