@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ShowRangeEvent;
 import com.google.gwt.event.logical.shared.ShowRangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -155,12 +156,17 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     @UiHandler("title")
     void titleChanged(ChangeEvent event) {
-        save();
+        ExperimentDetailsDto detailsDto = getDetails();
+        save(detailsDto);
+        title.setValue(detailsDto.getTitle());
     }
 
     @UiHandler("description")
     void descriptionChanged(ChangeEvent event) {
-        save();
+
+        ExperimentDetailsDto detailsDto = getDetails();
+        save(detailsDto);
+        description.setValue(detailsDto.getDescription());
     }
 
     @UiHandler("dateOfExperiment")
@@ -279,8 +285,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     private ExperimentDetailsDto getResult() {
         return new ExperimentDetailsDto(
-                title.getValue().replaceAll("\\r\\n|[\\r\\n]", " ").replaceAll("\\p{Cntrl}","").trim(),
-                description.getValue().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]","").trim(),
+                RegExp.compile("[\\x00-\\x1F]+","g").replace(title.getValue().replaceAll("\\r\\n|[\\r\\n]", " "),"").trim(),
+                RegExp.compile("[\\x00-\\x08]*[\\x0B-\\x0C]*[\\x0E-\\x1F]*","g").replace(description.getValue(),"").trim(),
                 dateOfExperiment.getValue(),
                 dateOfPublicRelease.getValue(),
                 getAeExperimentType(),
@@ -306,5 +312,9 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     private void save() {
         presenter.saveDetails(getResult());
+    }
+
+    private void save(ExperimentDetailsDto dto) {
+        presenter.saveDetails(dto);
     }
 }
