@@ -25,6 +25,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
+import uk.ac.ebi.fg.annotare2.submission.model.EnumWithHelpText;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.FileRef;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
@@ -58,10 +59,10 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new AddColumnDialog<>(new DialogCallback<ColumnType>() {
+                new AssignFilesDialog(new DialogCallback<FileType>() {
                     @Override
-                    public boolean onOk(ColumnType columnType) {
-                        createColumn(columnType.getType());
+                    public boolean onOk(FileType type) {
+                        createColumn(type);
                         return true;
                     }
                 }, getAllowedColumnTypes());
@@ -163,15 +164,15 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         return type.getTitle() + " Data File" + (index > 1 ? " (" + index + ")" : "");
     }
 
-    private List<ColumnType> getAllowedColumnTypes() {
-        List<ColumnType> types = new ArrayList<ColumnType>();
+    private List<EnumWithHelpText> getAllowedColumnTypes() {
+        List<EnumWithHelpText> types = new ArrayList<>();
         for (FileType type : FileType.values()) {
             if (ExperimentProfileType.SEQUENCING == experimentType) {
                 if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
-                    types.add(new ColumnType(type));
+                    types.add(type);
                 }
             } else if (0 == countColumnsByType(type)) {
-                types.add(new ColumnType(type));
+                types.add(type);
             }
         }
         return types;
@@ -297,23 +298,6 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
         }
     }
 
-    private static class ColumnType {
-
-        private final FileType type;
-
-        private ColumnType(FileType type) {
-            this.type = type;
-        }
-
-        @Override
-        public String toString() {
-            return type.getTitle();
-        }
-
-        public FileType getType() {
-            return type;
-        }
-    }
 
     private static class DataAssignment {
 
