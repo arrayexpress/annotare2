@@ -10,6 +10,11 @@
     margin-top: 31px
 }
 
+#content .form h2 {
+    font-size: 24pt;
+}
+
+
 #content label {
     display: inline-block;
     margin-top: 0.2em;
