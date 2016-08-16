@@ -177,9 +177,9 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
         JSONObject uploaderOptions = new JSONObject();
         uploaderOptions.put("simultaneousUploads", new JSONNumber(1));
         uploaderOptions.put("method", new JSONString("octet"));
-        if (this.experimentProfileType!=null && this.experimentProfileType==ExperimentProfileType.SEQUENCING) {
-            uploaderOptions.put("accept", new JSONString(".fastq.gz,.fq.gz,.txt.gz,.sequence.txt.gz,.fastq.bz2,.fq.bz2,.txt.bz2,.sequence.txt.bz2,.bam"));
-        }
+//        if (this.experimentProfileType!=null && this.experimentProfileType==ExperimentProfileType.SEQUENCING) {
+//            uploaderOptions.put("accept", new JSONString(".fastq.gz,.fq.gz,.txt.gz,.sequence.txt.gz,.fastq.bz2,.fq.bz2,.txt.bz2,.sequence.txt.bz2,.bam,.txt,.cram,.sff,.metadata.xml,.bas.h5,.bax.h5,.bigwig,.bw,.bedgraph,.csv"));
+//        }
 
         ResumableUploader uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", uploaderOptions);
         uploader.assignBrowse(uploadBtn.getElement());

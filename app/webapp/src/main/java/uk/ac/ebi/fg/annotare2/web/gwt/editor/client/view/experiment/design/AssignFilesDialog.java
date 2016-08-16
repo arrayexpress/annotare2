@@ -54,7 +54,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
     ListBox columnListBox;
 
     @UiField
-    Label columnListHelp;
+    HTML columnListHelp;
 
     private Map<String, T> map = new HashMap<>();
 
@@ -76,7 +76,7 @@ public class AssignFilesDialog<T extends EnumWithHelpText> extends DialogBox {
         columnListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                columnListHelp.setText( values.get(columnListBox.getSelectedIndex()).getHelpText() );
+                columnListHelp.setHTML ( values.get(columnListBox.getSelectedIndex()).getHelpText() );
             }
         });
 

@@ -27,7 +27,7 @@
             line-height: 160%;
         }
     </ui:style>
-    <g:ResizeLayoutPanel height="300px" width="600px">
+    <g:ResizeLayoutPanel height="300px" width="650px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:SplitLayoutPanel>
@@ -43,7 +43,7 @@
                     </g:west>
                     <g:center>
                         <g:ScrollPanel>
-                            <g:Label ui:field="columnListHelp" addStyleNames="{style.typeDetails}"/>
+                            <g:HTML ui:field="columnListHelp" addStyleNames="{style.typeDetails}"/>
                         </g:ScrollPanel>
                     </g:center>
                 </g:SplitLayoutPanel>
