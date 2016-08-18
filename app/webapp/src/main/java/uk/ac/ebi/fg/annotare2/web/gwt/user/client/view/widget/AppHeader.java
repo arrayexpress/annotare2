@@ -17,9 +17,13 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls.getLogoutUrl;
 
@@ -47,4 +51,15 @@ public class AppHeader extends Composite implements IsWidget {
     public void setUserName(String name) {
         userNameLabel.setText(name);
     }
+
+    @UiHandler("helpButton")
+    void onHelpButtonClick(ClickEvent event) {
+        Window.open(Urls.getContextUrl() + "help/", "_blank", "");
+    }
+
+    @UiHandler("walkthroughButton")
+    void onWalkthroughButtonClick(ClickEvent event) {
+        Window.open(Urls.getContextUrl() + "help/getting_started.html#start_new_sub", "_blank", "");
+    }
+
 }
