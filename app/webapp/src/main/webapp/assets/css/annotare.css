@@ -11,7 +11,19 @@
 }
 
 #content .form h2 {
-    font-size: 24pt;
+    font-size: 22pt;
+}
+
+#login-box {
+    padding: 15px;
+    border: 1px solid #d7d7d7;
+    background-color: #f6f6f6;
+}
+
+#twitter-box {
+    border: 1px solid #d7d7d7;
+    margin-top: 12px;
+    background-color: #f6f6f6;
 }
 
 

@@ -107,7 +107,7 @@
             <!-- local-title -->
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
-            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href="${pageContext.request.contextPath}/" title="Back to Annotare homepage">Annotare</a></h1></span></div>
+            <div id="local-title" class="logo-title"><img class="svg" src="${pageContext.request.contextPath}/assets/images/annotare-logo-64.svg" width="64" height="64" alt="Annotare"><span><h1><a href="${pageContext.request.contextPath}/" title="Annotare">Annotare</a></h1></span></div>
 
             <!-- /local-title -->
 
