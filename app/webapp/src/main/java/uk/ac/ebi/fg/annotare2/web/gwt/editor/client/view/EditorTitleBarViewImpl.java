@@ -34,6 +34,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
@@ -44,6 +45,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissi
  * @author Olga Melnichuk
  */
 public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
+
+    private SubmissionDetails submissionDetails;
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
     }
@@ -97,11 +100,6 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
-    public void setTitle(SubmissionType type, String accession) {
-        accessionLabel.setText(accession);
-    }
-
-    @Override
     public void setCurator(boolean isCurator) {
         this.isCurator = isCurator;
         if (isCurator) {
@@ -119,25 +117,28 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
-    public void setSubmissionType(SubmissionType type) {
-        validateButton.setVisible(type.isExperiment());
-        exportButton.setVisible(type.isExperiment());
-    }
+    public void setSubmissionDetails(SubmissionDetails submissionDetails) {
+        this.submissionDetails = submissionDetails;
+        // set title
+        accessionLabel.setText(submissionDetails.getAccession().getText());
 
-    @Override
-    public void setSubmissionStatus(SubmissionStatus status) {
-        submitButton.setVisible(status.canSubmit());
+        //set owned by creator
+        isOwnedByCreator = submissionDetails.isOwnedByCreator();
+        editButton.setVisible(editButton.isVisible() && isOwnedByCreator);
+        releaseButton.setVisible(releaseButton.isVisible() && !isOwnedByCreator);
+
+        //set status and type
+        SubmissionStatus status = submissionDetails.getStatus();
+        submitButton.setVisible(status.canSubmit(isCurator));
+        validateButton.setVisible(submissionDetails.getType().isExperiment() && status.canSubmit(isCurator) );
+        exportButton.setVisible(submissionDetails.getType().isExperiment());
         editButton.setVisible(editButton.isVisible() && status.canAssign());
         releaseButton.setVisible(releaseButton.isVisible() && status.canAssign());
         shouldAllowInstantFeedback = (SubmissionStatus.IN_PROGRESS == status);
+
+
     }
 
-    @Override
-    public void setOwnedByCreator(boolean isOwnedByCreator) {
-        this.isOwnedByCreator = isOwnedByCreator;
-        editButton.setVisible(editButton.isVisible() && isOwnedByCreator);
-        releaseButton.setVisible(releaseButton.isVisible() && !isOwnedByCreator);
-    }
 
     @Override
     public void autoSaveStarted() {

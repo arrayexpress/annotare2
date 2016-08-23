@@ -124,17 +124,15 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
                     @Override
                     public void onSuccess(UserDto result) {
                         view.setCurator(result.isCurator());
-                    }
-                }
-        ));
-        submissionService.getSubmissionDetails(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
-                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
-                    @Override
-                    public void onSuccess(SubmissionDetails result) {
-                        view.setTitle(result.getType(), result.getAccession().getText());
-                        view.setSubmissionType(result.getType());
-                        view.setSubmissionStatus(result.getStatus());
-                        view.setOwnedByCreator(result.isOwnedByCreator());
+                        submissionService.getSubmissionDetails(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
+                                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+                                    @Override
+                                    public void onSuccess(SubmissionDetails result) {
+                                        view.setSubmissionDetails(result);
+                                    }
+                                }
+                        ));
+
                     }
                 }
         ));

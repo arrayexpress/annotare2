@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
@@ -31,15 +32,9 @@ public interface EditorTitleBarView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    void setTitle(SubmissionType type, String accession);
+//    void setTitle(SubmissionType type, String accession);
 
     void setCurator(boolean isCurator);
-
-    void setSubmissionType(SubmissionType type);
-
-    void setSubmissionStatus(SubmissionStatus status);
-
-    void setOwnedByCreator(boolean isOwnedbyCreator);
 
     void autoSaveStarted();
 
@@ -48,6 +43,8 @@ public interface EditorTitleBarView extends IsWidget {
     void criticalUpdateStarted();
 
     void criticalUpdateStopped();
+
+    void setSubmissionDetails(SubmissionDetails result);
 
     interface Presenter extends SetupExpSubmissionView.Presenter, ContactUsDialog.Presenter {
 

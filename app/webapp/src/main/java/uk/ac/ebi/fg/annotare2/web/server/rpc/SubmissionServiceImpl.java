@@ -35,6 +35,7 @@ import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
 import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
+import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UnknownExperimentTypeException;
@@ -379,14 +380,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(id, Permission.UPDATE);
-            if (submission.getStatus().canSubmit()) {
+            User currentUser = userDao.getCuratorUser();
+            boolean isCurator = currentUser.getRoles().contains(Role.CURATOR);
+            if (submission.getStatus().canSubmit(isCurator)) {
                 storeAssociatedFiles(submission);
                 submission.setSubmitted(new Date());
                 submission.setStatus(
                         SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
                                 SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
                 );
-                submission.setOwnedBy(userDao.getCuratorUser());
+                submission.setOwnedBy(currentUser);
                 save(submission);
             }
         } catch (RecordNotFoundException e) {
