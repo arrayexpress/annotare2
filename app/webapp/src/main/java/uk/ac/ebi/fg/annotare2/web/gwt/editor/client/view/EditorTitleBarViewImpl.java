@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
@@ -47,6 +48,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissi
 public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarView {
 
     private SubmissionDetails submissionDetails;
+    private ExperimentProfileType experimentProfileType;
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
     }
@@ -119,6 +121,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void setSubmissionDetails(SubmissionDetails submissionDetails) {
         this.submissionDetails = submissionDetails;
+
         // set title
         accessionLabel.setText(submissionDetails.getAccession().getText());
 
@@ -137,6 +140,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         shouldAllowInstantFeedback = (SubmissionStatus.IN_PROGRESS == status);
 
 
+    }
+
+    @Override
+    public void setExperimentProfileType(ExperimentProfileType experimentProfileType) {
+        this.experimentProfileType = experimentProfileType;
     }
 
 
@@ -206,7 +214,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("validateButton")
     void onValidateButtonClick(ClickEvent event) {
-        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
+        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType);
         dialog.showValidationProgressMessage(null);
 
         presenter.validateSubmission(new ValidationHandler() {
@@ -229,7 +237,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("submitButton")
     void onSubmitButtonClick(ClickEvent event) {
-        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog();
+        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType);
         dialog.showValidationProgressMessage(null);
 
         presenter.validateSubmission(new ValidationHandler() {
@@ -240,6 +248,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
             @Override
             public void onSuccess(ValidationResult result) {
+
                 if (!result.canSubmit()) {
                     onValidationFailure(dialog);
                 } else {

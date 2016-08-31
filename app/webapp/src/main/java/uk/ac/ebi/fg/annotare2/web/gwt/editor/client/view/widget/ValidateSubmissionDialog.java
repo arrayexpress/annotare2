@@ -24,7 +24,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 
 /**
@@ -32,59 +34,42 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
  */
 public class ValidateSubmissionDialog extends DialogBox {
 
-    interface Binder extends UiBinder<Widget, ValidateSubmissionDialog> {
-        Binder BINDER = GWT.create(Binder.class);
-    }
-
     @UiField
     HTML html;
-
     @UiField
     HTMLPanel feedbackPanel;
-
     @UiField
     RadioButton rbScore1;
-
     @UiField
     RadioButton rbScore2;
-
     @UiField
     RadioButton rbScore3;
-
     @UiField
     RadioButton rbScore4;
-
     @UiField
     RadioButton rbScore5;
-
     @UiField
     RadioButton rbScore6;
-
     @UiField
     RadioButton rbScore7;
-
     @UiField
     RadioButton rbScore8;
-
     @UiField
     RadioButton rbScore9;
-
     @UiField
     TextArea message;
-
     @UiField
     Button cancelButton;
-
     @UiField
     Button okButton;
-
     private DialogCallback<Void> callback;
+    private ExperimentProfileType experimentProfileType;
 
-    public ValidateSubmissionDialog() {
+    public ValidateSubmissionDialog(ExperimentProfileType experimentProfileType) {
         setModal(true);
         setGlassEnabled(true);
-
         setWidget(Binder.BINDER.createAndBindUi(this));
+        this.experimentProfileType = experimentProfileType;
     }
 
     @UiHandler("cancelButton")
@@ -137,8 +122,6 @@ public class ValidateSubmissionDialog extends DialogBox {
         center();
     }
 
-
-
     public void showValidationProgressMessage(DialogCallback<Void> callback) {
         this.callback = callback;
         setTitleAndMessage(
@@ -188,17 +171,31 @@ public class ValidateSubmissionDialog extends DialogBox {
         this.callback = callback;
         feedbackPanel.setVisible(shouldShowFeedback);
         cancelButton.setVisible(shouldShowFeedback);
-        setTitleAndMessage(
-                "Submission Successful",
-                "Thank you for your submission. You cannot make further changes to the experiment" +
-                        " while it is in curation.<br><br>" +
-                        "Please note that your submission is not complete until a curator is satisfied that" +
-                        " all required information has been provided. We will contact you if we have any" +
-                        " questions.<br><br>" +
-                        "In the meantime, please contact <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a>" +
-                        " with any questions. " +
-                        "Further information can be found at" +
-                        " <a href=\"/fg/annotare/help/submit_exp.html\" target=\"_blank\">Annotare help</a>.");
+        if (this.experimentProfileType != null && this.experimentProfileType.isSequencing()) {
+            setTitleAndMessage(
+                    "Submission Successful",
+                    "Thanks for submitting!.<br/><br/>" +
+                            "You'll receive a stable accession number shortly for this submission." +
+                            "The accession can be  <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" " +
+                            "target=\"_blank\">cited</a> " +
+                            "in your manuscript, but is not valid until a curator has checked the raw data files, " +
+                            "reviewed your submission and loaded it " +
+                            "into the ArrayExpress database. <br/><br/>" +
+                            "We will start checking the content of your raw data files as soon as possible. Sometimes " +
+                            "this can take a few days, due to the sheer volume of data; please bear with us. If we " +
+                            "detect problems with the files, we will provide information on how to fix the problems, " +
+                            "and invite you to resubmit with valid files.");
+        } else {
+            setTitleAndMessage(
+                    "Submission Successful",
+                    "Thanks for submitting!.<br/><br/>" +
+                            "You'll receive a stable accession number shortly for this submission." +
+                            "The accession can be  <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" " +
+                            "target=\"_blank\">cited</a> " +
+                            "in your manuscript, but is not valid until a curator has reviewed your submission and loaded it " +
+                            "into the ArrayExpress database. Curators will contact you if they have questions about your " +
+                            "submission.");
+        }
     }
 
     @Override
@@ -210,4 +207,9 @@ public class ValidateSubmissionDialog extends DialogBox {
             }
         }
     }
+
+    interface Binder extends UiBinder<Widget, ValidateSubmissionDialog> {
+        Binder BINDER = GWT.create(Binder.class);
+    }
+
 }
