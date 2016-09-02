@@ -37,6 +37,8 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
     private Presenter presenter;
 
     public PublicationListViewImpl() {
+        removeIcon.setTitle("Remove selected publications");
+        addIcon.setTitle("Add a new publication");
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

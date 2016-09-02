@@ -59,7 +59,11 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
                         "Europe PMC 22432704</a>. " +
                         "A two colour experiment uses two dyes, normally Cy3 " +
                         "and Cy5. For two colour data one row in the  SDRF (Sample and Data " +
-                        "Relationship Format) file is equal to one colour channel.</p>"));
+                        "Relationship Format) file is equal to one colour channel.</p>"+
+                        "<p>Not sure if your array is already accessioned in ArrayExpress, " +
+                        "or not sure what an array is? " +
+                        "<a href=\"http://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html\" " +
+                        "target=\"_blank\">Here's a quick guide</a>.</p>"));
         integerValuesOnly(numberOfHybs);
     }
 
