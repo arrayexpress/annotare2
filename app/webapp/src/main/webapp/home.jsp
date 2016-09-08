@@ -1,3 +1,4 @@
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html>
 <%--
   ~ Copyright 2009-2016 European Molecular Biology Laboratory
@@ -20,7 +21,7 @@
     <title>Annotare 2.0</title>
     <link type="text/css" rel="stylesheet" href="assets/css/general.css">
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
-
+    <t:analytics></t:analytics>
     <script type="text/javascript" src="${pageContext.request.contextPath}/UserApp/UserApp.nocache.js"></script>
 </head>
 <body revision="${buildNumber}">

@@ -1,3 +1,4 @@
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%--
   ~ Copyright 2009-2016 European Molecular Biology Laboratory
   ~
@@ -18,6 +19,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Annotare 2.0 Loading Page</title>
+    <t:analytics></t:analytics>
     <script type="text/javascript">
         function launch(url) {
             window.location.href = url;

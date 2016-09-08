@@ -428,6 +428,10 @@
                 <annotare.ae.db.user>ae_db_user</annotare.ae.db.user>
                 <annotare.ae.db.password>ae_db_password</annotare.ae.db.password>
                 <annotare.ae.db.driver>ae_db_driver_class</annotare.ae.db.driver>
+
+                <!-- shared properties -->
+                <annotare.google.analytics.tracking.id>UA-xxxxxxxx-x</annotare.google.analytics.tracking.id>
+
             </properties>
         </profile>
     </profiles>
