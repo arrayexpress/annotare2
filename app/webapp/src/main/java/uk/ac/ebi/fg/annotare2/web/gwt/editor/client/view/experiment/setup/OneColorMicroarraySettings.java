@@ -62,7 +62,11 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
                         "Europe PMC 21980142</a>. A one colour experiment uses one dye or label. For " +
                         "example experiments using an Affymetrix array use the label biotin. For " +
                         "one colour data one row in the SDRF (Sample and Data Relationship " +
-                        "Format) file is equal to one assay.</p>"
+                        "Format) file is equal to one assay.</p>" +
+                        "<p>Not sure if your array is already accessioned in ArrayExpress, " +
+                        "or not sure what an array is? " +
+                        "<a href=\"http://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html\" " +
+                        "target=\"_blank\">Here's a quick guide</a>.</p>"
         ));
         integerValuesOnly(numberOfHybs);
     }

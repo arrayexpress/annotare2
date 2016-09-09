@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.info;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ContactDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ContentChangeEvent;
@@ -37,6 +38,8 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     private Presenter presenter;
 
     public ContactListViewImpl() {
+        removeIcon.setTitle("Remove selected contacts");
+        addIcon.setTitle("Add a new contact");
         addIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -104,16 +107,34 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     private void removeSelectedContacts() {
         List<Integer> selected = getSelected();
         if (selected.isEmpty()) {
+            Window.alert("Please select the contact(s) to delete by clicking on the checkbox beside their name.");
+            return;
+        }
+        if (selected.size()==listPanel.getWidgetCount()) {
+            Window.alert("You must have at least one contact for this submission so you can't delete all contacts. " +
+                    "Please edit the details instead.");
             return;
         }
 
         List<ContactDto> contacts = new ArrayList<ContactDto>();
+        StringBuilder confirmationMessage = new StringBuilder();
+        confirmationMessage.append("Are you sure you want to delete the following contact"+(selected.size()==1 ? "" : "s")+"?\n");
+        int unnamedCount = 0;
         for (Integer index : selected) {
             DisclosureListItem item = getItem(index);
             ContactView view = (ContactView) item.getContent();
-            contacts.add(view.getContact());
+            ContactDto contactDto = view.getContact();
+            contacts.add(contactDto);
+            confirmationMessage.append("\n");
+            String name = contactDto.getFirstName() + " " + contactDto.getLastName();
+            if (name.equalsIgnoreCase("null null")) {
+                name = "Unnamed "+ (++unnamedCount);
+            }
+            confirmationMessage.append(name);
         }
-        presenter.removeContacts(contacts);
-        removeItems(selected);
+        if (Window.confirm(confirmationMessage.toString())) {
+            presenter.removeContacts(contacts);
+            removeItems(selected);
+        }
     }
 }
