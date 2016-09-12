@@ -54,6 +54,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.table.Table;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateCommand;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ArrayDesignUpdateResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update.ExperimentUpdateCommand;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.*;
 import uk.ac.ebi.fg.annotare2.web.server.services.utils.tsv.TsvParser;
 import uk.org.lidalia.slf4jext.Logger;
@@ -380,8 +381,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             throws ResourceNotFoundException, NoPermissionException {
         try {
             Submission submission = getSubmission(id, Permission.UPDATE);
-            User currentUser = userDao.getCuratorUser();
-            boolean isCurator = currentUser.getRoles().contains(Role.CURATOR);
+            User currentUser = getCurrentUser();
+            boolean isCurator = UIObjectConverter.uiUser(currentUser).isCurator();
             if (submission.getStatus().canSubmit(isCurator)) {
                 storeAssociatedFiles(submission);
                 submission.setSubmitted(new Date());
