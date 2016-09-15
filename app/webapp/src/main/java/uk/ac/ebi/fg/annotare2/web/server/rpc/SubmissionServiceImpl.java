@@ -390,7 +390,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                         SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
                                 SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
                 );
-                submission.setOwnedBy(currentUser);
+                submission.setOwnedBy(userDao.getCuratorUser());
                 save(submission);
             }
         } catch (RecordNotFoundException e) {
