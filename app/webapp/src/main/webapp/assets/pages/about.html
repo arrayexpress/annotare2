@@ -1,8 +1,272 @@
-<h2>About Annotare</h2>
-<p>Annotare is a tool for submitting functional genomics experiments to ArrayExpress in MAGE-TAB format. A series of
-    webforms (auto-saved as you type) will guide you as you describe the experiment's context, sample annotations,
-    protocols employed, and upload raw/processed data files, so there are no Excel spreadsheets to edit. The tool also
-    includes features such as "Fill down values" and "Import Values" to populate multiple rows of form efficiently. A
-    built-in validation step ensures your submission is in a reasonably good shape prior to being sent to ArrayExpress
-    for curation, which means we can issue you an accession number and load the data set into ArrayExpress much
-    quicker.</p>
+<style>
+    h4 .fa {
+        padding-right: 8px;
+    }
+
+    h4, h4 .icon-generic:before {
+        color: #666 !important;
+    }
+
+    h2 {
+        padding: 20px 10px;
+    }
+
+    h2 .fa, h2 .icon-generic:before, h2 .icon-functional:before {
+        padding-right: 8px;
+        color: #BF8F30 !important;
+    }
+
+    p {
+        text-align: justify;
+    }
+
+    .pic {
+        width: 110px;
+    }
+
+    #members, #members tr td {
+        border: 0px !important;
+        vertical-align: middle;
+    }
+
+    ul#story {
+        list-style: none;
+        padding-left:5px
+    }
+
+    ul#story li {
+        display: inline-block;
+    }
+
+    ul#toc {
+        font-size:12pt;
+    }
+
+    .twitter-mention-button {
+        vertical-align: bottom;
+    }
+</style>
+<ul id="toc">
+    <li><a href="#story">A little story behind Annotare</a></li>
+    <li><a href="#why">Why submit to ArrayExpress?</a></li>
+    <li><a href="#team">The team behind Annotare</a></li>
+    <li><a href="#cite">How to cite us?</a></li>
+    <li><a href="#contact">Contact Us</a></li>
+</ul>
+<a name="story"></a>
+<h2><i class="icon icon-generic" data-icon="P"></i>A little story behind Annotare</h2>
+<ul id="story">
+    <li>
+        <h4><i class="fa fa-users" aria-hidden="true"></i>Audience</h4>
+        <p>Annotare is a webform tool for submitting functional genomics experiments to ArrayExpress. Its major target
+            audience
+            is wet-lab researchers who are novices in data submission and often have only one or two data sets to submit
+            every
+            few years.</p></li>
+    <li>
+        <h4><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>The problem we address</h4>
+        <p>The tool was designed in response to our submitters' top complaint --- that it is extremely tedious to
+            prepare
+            standardised spreadsheets in the correct format for submission, even for experienced submitters using
+            template
+            spreadsheets. We need a better system.</p></li>
+    <li>
+        <h4><i class="fa fa-lightbulb-o" aria-hidden="true"></i>The solution</h4>
+        <p>Annotare abolishes
+            the need to "learn" any spreadsheet format prior to submission. It makes
+            use of the latest technology to guide a submitter through the series of
+            webforms, which capture the same kind of information as in the
+            spreadsheet. To preserve some features of spreadsheets that our
+            submitters love, Annotare provides wizard-style functions such as "Fill
+            down values" and "Import Values" (works like copy-and-paste) to speed up
+            the filling of online forms. </p></li>
+    <li>
+        <h4><i class="icon icon-generic" data-icon="A"></i>Gatekeeper of reproducible research</h4>
+        <p>In addition to editing features,
+            we have incorporated a built-in validator in Annotare, so a submitter
+            can more easily prepare an experiment submission that complies with
+            community-recommended data standards, promoting reproducibility of
+            research. </p></li>
+    <li>
+        <h4><i class="fa fa-rocket" aria-hidden="true"></i>Speed is key</h4>
+        <p>Only validated
+            experiments can be submitted, which in turn allows us to issue accession
+            numbers and load experiments into ArrayExpress much quicker, because
+            experiments must be in a reasonably good shape at the time of
+            submission. We believe quick turnaround time is crucial for our
+            submitters, who are often under time pressure to publish their work in
+            journals.</p></li>
+    <li>
+        <h4><i class="fa fa-comments" aria-hidden="true"></i>We collect and act on submitters' feedback</h4>
+        <p>The needs of our submitters are
+            constantly changing. In the last few years, submissions with larger
+            sample sizes, from multi-omics studies, from new technologies (e.g.
+            single-cell RNA-seq) or with complex designs are increasingly common. We
+            try our best to offer timely assistance, so Annotare has a built-in
+            "Contact Us" button for submitters to send messages to a curator, and
+            presents submitters with an optional feedback form upon successful
+            submission. Submitters have surprised us by being very generous in
+            sharing constructive criticisms on their Annotare experience, which we
+            then feed into our Annotare development plan. This ensures we focus on
+            features which matter most to our submitters.</p>
+    </li>
+</ul>
+<a name="why"></a>
+<h2><i class="icon icon-functional" data-icon="n"></i>Why submit to ArrayExpress?</h2>
+
+<ol>
+    <li><h4>Journal submission requirement</h4>
+        <p>This is by far the most common reason why a submitter deposits data at
+            ArrayExpress. Most journals now require functional genomics data sets to
+            be deposited at a public database such as ArrayExpress or Gene
+            Expression Omnibus at NCBI in compliance with <a href="http://fged.org/projects/miame/" target="_blank">MIAME</a>
+            or <a href="http://fged.org/projects/minseqe/" target="_blank">MINSEQE</a> standards
+            prior to manuscript publication. </p></li>
+
+    <li><h4>Data archiving and management</h4>
+        <p>Have you ever pondered upon the best way to keep the large raw data
+            files from your microarray or sequencing experiment? DVD? External
+            hard-drive? What if the disc is misplaced or hard-drive is corrupted?
+            And how about the experiment design, protocols and sample information,
+            i.e. meta-data that provides the experiment's context? Checking your
+            colleague's lab books is one option, but what if your colleague has
+            left the job, and a few years down the line you have a question about a
+            cryptic acronym used to describe some samples?</p>
+        <p>
+            That's where a public archive like ArrayExpress comes in. We help
+            submitters store both meta-data and data files accurately and securely
+            -- peace of mind!</p></li>
+
+    <li><h4>Promote reproducible research</h4>
+        <p>
+            All experiments submitted to ArrayExpress via Annotare, without
+            exception, are manually curated by trained bioinformaticians who have
+            doctoral-level wet-lab research experience in different areas of
+            genetics, including mammalian skin stem cells, epigenetic gene silencing
+            in mammalian embryos, and the effect of gibberellins in citrus plant
+            growth.</p>
+        <p>
+
+            Curation involves not only correcting mistakes in submissions (e.g.
+            typographic errors, inconsistent sample annotation) but also enhancing
+            the record so it's more likely to be discovered by users' searches.
+            For example, a data set may be annotated as being obtained from human
+            "MCF-7" cells. To the untrained eye, that may suffice, but curators
+            know that the cells are derived from breast cancer tissues, and will
+            therefore annotate the samples with disease term "breast carcinoma"
+            too, ensuring the data set is returned when someone searches for
+            experiments related to the disease.</p></li>
+
+    <li><h4>Increased public exposure of your work</h4>
+        <p>
+            ArrayExpress is accessed by on average 1000 unique users every day, with
+            interests ranging from data-mining for meta-analyses, combining with
+            their own data, or populating a third-party value-added database (both
+            academic and commercial settings). One of the biggest consumers of
+            ArrayExpress experiment is its sister database, <a href="http://www.ebi.ac.uk/gxa" target="_blank">Expression Atlas</a>, at
+            EMBL-EBI, with about 800 unique users every day. ArrayExpress therefore
+            provides a platform to showcase your work, complementary to the journal
+            publications.</p></li>
+
+</ol>
+
+<a name="team"></a>
+<h2><i class="icon icon-generic" data-icon="}"></i>The team behind Annotare</h2>
+
+<p>
+    Many people have contributed to the Annotare project over the years,
+    either as developers building the software, or as curators interacting
+    with submitters regularly and acting as the advocate for submitters.
+    Notably, Nikolay Kolesnikov contributed significantly to software
+    development in the project until July 2016, introducing features such as
+    double-blind peer review support, feedback collection and drag-and-drop
+    file upload.</p>
+
+<p>
+    As of August 2016, we have three major members in the Annotare team:</p>
+
+
+<table id="members">
+    <tr>
+        <td class="pic">
+            <a href="http://www.ebi.ac.uk/about/people/anja-full" target="_blank">
+                <img src="http://www.ebi.ac.uk/sites/ebi.ac.uk/files/styles/medium/public/person/image/fullgrabe_anja_web.jpg"/></a>
+        </td>
+        <td>
+            <h4><a href="http://www.ebi.ac.uk/about/people/anja-full" target="_blank">Anja F&uuml;llgrabe</a></h4>
+            <p>
+                Anja is a bioinformatician who curates submissions, looks after the
+                Annotare helpdesk, and writes biologist-friendly documentation for our
+                users. She uses Annotare extensively during curation, so can readily
+                identify with our submitters' concerns or frustration. Her previous
+                experience as a wet-lab scientist also ensures she has an excellent
+                understanding of biology, of microarray/sequencing technologies, and of
+                the publication needs of researchers. This puts her at an excellent
+                position to relay our submitters' feedback to development.
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="http://www.ebi.ac.uk/about/people/amy-tang" target="_blank">
+                <img src="http://www.ebi.ac.uk/sites/ebi.ac.uk/files/styles/medium/public/person/image/tang_amy_web_2015.jpg"/></a>
+        </td>
+        <td>
+            <h4><a href="http://www.ebi.ac.uk/about/people/amy-tang" target="_blank">Amy Tang</a></h4>
+            <p>
+
+                Amy is the Curation and Training project leader, responsible for all
+                curational activities at ArrayExpress and the usability of Annotare.
+                Like Anja, she was once trained as a wet-lab biologist, uses Annotare
+                during curation, and shares some helpdesk duties. In addition, she
+                regularly delivers outreach and training courses at the EBI and beyond,
+                to raise awareness about Annotare as well as the benefits of complying
+                with data standards during data submission.</p></td>
+    </tr>
+    <tr>
+        <td>
+            <a href="http://www.ebi.ac.uk/about/people/awais-athar" target="_blank">
+                <img src="http://www.ebi.ac.uk/sites/ebi.ac.uk/files/styles/medium/public/person/image/athar_awais_web_2015.jpg"/></a>
+        <td>
+            <h4><a href="http://www.ebi.ac.uk/about/people/awais-athar" target="_blank">Awais Athar</a></h4>
+            <p>
+                Awais is the Software Development Project Leader at the Functional
+                Genomics team. Picking up the baton from Nikolay Kolesnikov, he looks
+                after the Annotare web interface. He acts on the feedback relayed from Anja and Amy,
+                and suggests industry-standard solutions in web development to give our submitters the best user
+                experience. So if you notice a clunky feature is fixed, or pop-up
+                contextual help resembles other websites you've visited, then it's Awais
+                who has the technical know-how to make it all happen.</p>
+        </td>
+    </tr>
+</table>
+
+<a name="cite"></a>
+<h2><i class="icon icon-generic" data-icon="R"></i>How to cite us?</h2>
+<p> Please use the following publication: <p>
+<ul>
+    <li>
+        Kolesnikov N. et al., 2015. <i>ArrayExpress update-simplifying data submissions</i>. Nucleic Acids Res, <a
+            href="http://nar.oxfordjournals.org/content/43/D1/D1113" target="_blank">doi:10.1093/nar/gku1057</a>
+        . Pubmed ID 25361974.
+    </li>
+    <li>
+        Arrayexpress/Annotare2</i>. GitHub. 2012. Web. Available at: <a href="https://github.com/arrayexpress/annotare2"
+                                                                        target="_blank">https://github.com/arrayexpress/annotare2</a>
+    </li>
+</ul>
+
+<a name="contact"></a>
+<h2><i class="icon icon-generic" data-icon="E"></i>Contact Us</h2>
+<p>Email: <a href="annotare@ebi.ac.uk">annotare@ebi.ac.uk</a> </p>
+<p>
+
+    In your email, please include information such as
+    the URL of the page you were on, what you're trying to do on the page
+    and what failed, any error messages you've seen, a screenshot of the
+    page where you had a problem.</p>
+<p>
+    A curator will respond as soon as possible, usually within 3 working
+    days. You can also <a href="https://twitter.com/intent/tweet?screen_name=ArrayExpressEBI" class="twitter-mention-button" data-show-count="false">Tweet to @ArrayExpressEBI</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+

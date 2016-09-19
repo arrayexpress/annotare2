@@ -13,6 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f"%>
 <%@page isELIgnored="false" %>
@@ -33,6 +34,7 @@
     }
     pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
+<t:analytics></t:analytics>
 <section class="grid_12 push_6 form">
     <h2>Change password request</h2>
     <form method="POST">

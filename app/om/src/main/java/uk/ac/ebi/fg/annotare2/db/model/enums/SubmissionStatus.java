@@ -37,8 +37,8 @@ public enum SubmissionStatus {
         return title;
     }
 
-    public boolean canSubmit() {
-        return IN_PROGRESS == this || IN_CURATION == this;
+    public boolean canSubmit(boolean isCurator) {
+        return IN_PROGRESS == this || (IN_CURATION == this && isCurator);
     }
 
     public boolean canAssign() {

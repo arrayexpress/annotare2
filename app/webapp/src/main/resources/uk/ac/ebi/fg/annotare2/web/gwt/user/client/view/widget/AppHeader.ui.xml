@@ -17,27 +17,84 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .helpButton {
+            background: none repeat scroll 0 0 #498fcd;
+            border: 1px solid #498fcd;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+        }
 
-    <g:HTMLPanel height="100%" addStyleNames="app-Header">
-        <table width="100%" style="height:100%;" cellpadding="0" cellspacing="0">
-            <tr>
-                <td>
+        .helpButton:hover {
+            background-color: #4b9cdc;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset #999;
+        }
+
+        .walkthroughButton {
+            background: none repeat scroll 0 0 #23b79d;
+            border: 1px solid #23b79d;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .walkthroughButton:hover {
+            background-color: #23b79d;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset #999;
+        }
+    </ui:style>
+    <g:HTMLPanel addStyleNames="app-Header">
+        <div>
+            <div style="float:left;padding:4px 8px;">
+                <img src="assets/images/annotare-logo-64.svg" style="display:inline-block;vertical-align: middle;"/>
+                <div style="display:inline-block;vertical-align: middle;">
                     <h1 class="logo">Annotare 2.0</h1>
-                    <div class="logotext">
-                        <a href="http://www.ebi.ac.uk/arrayexpress">ArrayExpress</a> experiment submission tool
-                    </div>
-                </td>
-                <td width="400px">
-                    <div style="height:100%;">
-                        <div style="float:right; height:100%; padding-right:5px;">
-                            <g:InlineLabel ui:field="userNameLabel"/>,
-                            <g:Anchor ui:field="signOutLink" text="Sign Out"/>
-                        </div>
-                        <div style="clear:both; height:1px;"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+                    <span class="logotext" style="display:inline-block">
+                        <a href="http://www.ebi.ac.uk/arrayexpress">ArrayExpress</a>
+                        experiment submission tool
+                    </span>
+                </div>
+            </div>
+            <div style="float:right; padding-right:8px;">
+                <div style="float:right;">
+                    <g:InlineLabel ui:field="userNameLabel"/>,
+                    <g:Anchor ui:field="signOutLink" text="Sign Out"/>
+                </div>
+                <div style="padding-top:24px;">
+                    <g:Button addStyleNames="{style.walkthroughButton}" ui:field="walkthroughButton"
+                              title="Getting Started"><i class="fa fa-arrow-circle-right" title="Getting Started"/>
+                        Getting Started
+                    </g:Button>
+                    <g:Button addStyleNames="{style.helpButton}" ui:field="helpButton"
+                              title="Link to detailed Annotare instructions"><i class="fa fa-life-ring"
+                                                                                title="Link to detailed Annotare instructions."/>
+                        Help
+                    </g:Button>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
     </g:HTMLPanel>
 
 </ui:UiBinder>

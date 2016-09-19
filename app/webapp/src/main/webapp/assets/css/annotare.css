@@ -10,6 +10,23 @@
     margin-top: 31px
 }
 
+#content .form h2 {
+    font-size: 22pt;
+}
+
+#login-box {
+    padding: 15px;
+    border: 1px solid #d7d7d7;
+    background-color: #f6f6f6;
+}
+
+#twitter-box {
+    border: 1px solid #d7d7d7;
+    margin-top: 12px;
+    background-color: #f6f6f6;
+}
+
+
 #content label {
     display: inline-block;
     margin-top: 0.2em;

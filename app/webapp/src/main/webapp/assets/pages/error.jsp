@@ -15,6 +15,8 @@
 --%>
 <%@page import="com.google.inject.Injector"%>
 <%@page import="uk.ac.ebi.fg.annotare2.core.components.Messenger"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<t:analytics></t:analytics>
 <h2 class="alert">Oops, there is a problem with Annotare</h2>
 <p>Our web server says this as a <span class="alert">${requestScope['javax.servlet.error.status_code']} ${requestScope['javax.servlet.error.message']}</span>.
     This problem means that the service you are trying to access is currently unavailable. We’re very sorry.</p>

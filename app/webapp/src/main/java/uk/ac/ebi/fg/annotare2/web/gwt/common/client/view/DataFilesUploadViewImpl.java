@@ -59,11 +59,14 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     DataFileListPanel fileListPanel;
 
     private final FTPUploadDialog ftpUploadDialog;
-    private final UploadProgressPopupPanel progressPanel;
+
+    private UploadProgressPopupPanel progressPanel = null;
 
     private Presenter presenter;
 
     private String asperaUrl;
+
+    private ExperimentProfileType experimentProfileType;
 
     interface Binder extends UiBinder<Widget, DataFilesUploadViewImpl> {
         Binder BINDER = GWT.create(Binder.class);
@@ -72,15 +75,6 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
     public DataFilesUploadViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
 
-        JSONObject uploaderOptions = new JSONObject();
-        uploaderOptions.put("simultaneousUploads", new JSONNumber(1));
-        uploaderOptions.put("method", new JSONString("octet"));
-
-        ResumableUploader uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", uploaderOptions);
-        uploader.assignBrowse(uploadBtn.getElement());
-        uploader.assignDrop(fileListPanel.getElement());
-
-        progressPanel = new UploadProgressPopupPanel(uploader);
         ftpUploadDialog = new FTPUploadDialog();
 
         fileListPanel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -179,12 +173,25 @@ public class DataFilesUploadViewImpl extends Composite implements DataFilesUploa
 //        if (ExperimentProfileType.SEQUENCING == type) {
 //            uploadPanel.hide();
 //        }
+        experimentProfileType = type;
+        JSONObject uploaderOptions = new JSONObject();
+        uploaderOptions.put("simultaneousUploads", new JSONNumber(1));
+        uploaderOptions.put("method", new JSONString("octet"));
+//        if (this.experimentProfileType!=null && this.experimentProfileType==ExperimentProfileType.SEQUENCING) {
+//            uploaderOptions.put("accept", new JSONString(".fastq.gz,.fq.gz,.txt.gz,.sequence.txt.gz,.fastq.bz2,.fq.bz2,.txt.bz2,.sequence.txt.bz2,.bam,.txt,.cram,.sff,.metadata.xml,.bas.h5,.bax.h5,.bigwig,.bw,.bedgraph,.csv"));
+//        }
+
+        ResumableUploader uploader = ResumableUploader.newInstance(Urls.getContextUrl() + "upload", uploaderOptions);
+        uploader.assignBrowse(uploadBtn.getElement());
+        uploader.assignDrop(fileListPanel.getElement());
+
+        progressPanel = new UploadProgressPopupPanel(uploader);
+        progressPanel.setPresenter(presenter);
     }
 
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-        progressPanel.setPresenter(presenter);
         fileListPanel.setPresenter(presenter);
         ftpUploadDialog.setPresenter(presenter);
     }

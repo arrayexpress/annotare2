@@ -23,6 +23,10 @@
         <param-name>appRevision</param-name>
         <param-value>${buildNumber}</param-value>
     </context-param>
+    <context-param>
+        <param-name>analyticsTrackingId</param-name>
+        <param-value>${annotare.google.analytics.tracking.id}</param-value>
+    </context-param>
     <filter>
         <filter-name>banFilter</filter-name>
         <filter-class>org.apache.catalina.filters.RemoteAddrFilter</filter-class>

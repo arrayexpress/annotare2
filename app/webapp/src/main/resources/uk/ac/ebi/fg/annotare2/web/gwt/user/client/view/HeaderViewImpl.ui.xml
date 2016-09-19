@@ -21,7 +21,7 @@
         xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.user.client.view.widget">
 
     <g:HTMLPanel>
-        <my:AppHeader ui:field="appHeader" height="60px"/>
+        <my:AppHeader ui:field="appHeader"/>
         <div class="app-TopicHeader">
             <h1>My Submissions</h1>
         </div>

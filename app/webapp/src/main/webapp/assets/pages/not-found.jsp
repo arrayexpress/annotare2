@@ -13,6 +13,8 @@
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 --%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<t:analytics></t:analytics>
 <h2 class="alert">We’re sorry that the page or file you’ve requested is not publicly available</h2>
 <p>The resource located at <span class="alert">${requestScope['javax.servlet.error.request_uri']}</span> may have been removed, had its name changed, or has restricted access.</p>
 <h3>Still confused?</h3>

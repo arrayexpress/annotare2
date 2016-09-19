@@ -15,6 +15,7 @@
   --%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@page isELIgnored="false"%>
 <%@page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors"%>
 <%
@@ -30,6 +31,7 @@
     }
     pageContext.setAttribute("userEmail", email == null ? "" : email);
 %>
+<t:analytics></t:analytics>
 <section class="grid_12 push_6 form">
     <h2>Email verification</h2>
     <form method="POST">

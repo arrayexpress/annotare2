@@ -24,6 +24,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
@@ -33,10 +34,12 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     private final SubmissionServiceAsync submissionService;
     private final ApplicationDataServiceAsync dataService;
     private final AdfServiceAsync adfService;
+    private final ExperimentDataProxy expData;
 
     private EventBus eventBus;
 
@@ -64,13 +68,14 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
                                   CurrentUserAccountServiceAsync userService,
                                   SubmissionServiceAsync submissionService,
                                   ApplicationDataServiceAsync dataService,
-                                  AdfServiceAsync adfService) {
+                                  AdfServiceAsync adfService, ExperimentDataProxy expData) {
         this.view = view;
         this.placeController = placeController;
         this.userService = userService;
         this.submissionService = submissionService;
         this.dataService = dataService;
         this.adfService = adfService;
+        this.expData = expData;
     }
 
     public EditorTitleBarActivity withPlace(Place place) {
@@ -119,25 +124,37 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     private void initAsync() {
+        //TODO: daisy chain the call sequence (or use an event bus)
         userService.me(AsyncCallbackWrapper.callbackWrap(
                 new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION) {
                     @Override
                     public void onSuccess(UserDto result) {
                         view.setCurator(result.isCurator());
+                        submissionService.getSubmissionDetails(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
+                                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
+                                    @Override
+                                    public void onSuccess(SubmissionDetails result) {
+                                        view.setSubmissionDetails(result);
+                                        if (result.getType().equals(SubmissionType.EXPERIMENT)) {
+                                            expData.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExperimentProfileType>() {
+                                                @Override
+                                                public void onFailure(Throwable throwable) {
+                                                }
+                                                @Override
+                                                public void onSuccess(ExperimentProfileType experimentProfileType) {
+                                                    view.setExperimentProfileType(experimentProfileType);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                        ));
+
                     }
                 }
         ));
-        submissionService.getSubmissionDetails(getSubmissionId(), AsyncCallbackWrapper.callbackWrap(
-                new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_DETAILS) {
-                    @Override
-                    public void onSuccess(SubmissionDetails result) {
-                        view.setTitle(result.getType(), result.getAccession().getText());
-                        view.setSubmissionType(result.getType());
-                        view.setSubmissionStatus(result.getStatus());
-                        view.setOwnedByCreator(result.isOwnedByCreator());
-                    }
-                }
-        ));
+
+
     }
 
     @Override

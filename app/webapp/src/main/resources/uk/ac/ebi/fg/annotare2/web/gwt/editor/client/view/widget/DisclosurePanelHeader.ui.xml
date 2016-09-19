@@ -32,11 +32,11 @@
         <table width="100%" class="{style.disclosureHeader}">
             <tr>
                 <td width="20px" class="{res.editorStyles.expandIconClass}" ui:field="expandCollapseIcon"></td>
+                <td width="20px"><g:CheckBox ui:field="checkbox"/></td>
                 <td>
                     <g:Label ui:field="label" text=""/>
                 </td>
                 <td></td>
-                <td width="20px"><g:CheckBox ui:field="checkbox"/></td>
             </tr>
         </table>
     </g:HTMLPanel>

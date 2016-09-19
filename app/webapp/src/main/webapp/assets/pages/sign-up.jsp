@@ -14,6 +14,7 @@
   ~ limitations under the License.
   --%>
 <%@page import="uk.ac.ebi.fg.annotare2.web.server.servlets.utils.ValidationErrors"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%
     ValidationErrors errors = (ValidationErrors) request.getAttribute("errors");
     if (errors != null) {
@@ -30,6 +31,7 @@
     values = request.getParameterValues("email");
     pageContext.setAttribute("userEmail", values == null ? "" : values[0]);
 %>
+<t:analytics></t:analytics>
 <section class="grid_12 push_6 form">
     <h2>Please register with Annotare</h2>
     <form method="POST">

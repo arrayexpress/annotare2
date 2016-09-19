@@ -20,7 +20,7 @@
     <groupId>uk.ac.ebi.fg.annotare2</groupId>
     <artifactId>annotare2</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.40-SNAPSHOT</version>
+    <version>2.0.46-SNAPSHOT</version>
     <name>Annotare 2</name>
 
     <modules>
@@ -49,7 +49,7 @@
         <java.version>1.7</java.version>
         <limpopo.version>1.2.0</limpopo.version>
         <magetabcheck.version>1.20</magetabcheck.version>
-        <resumable-gwt.version>1.0.1</resumable-gwt.version>
+        <resumable-gwt.version>1.0.2</resumable-gwt.version>
         <gwt.version>2.7.0</gwt.version>
         <gwtupload.version>1.0.3</gwtupload.version>
         <gin.version>2.1.2</gin.version>
@@ -438,6 +438,10 @@
                 <annotare.ae.db.user>ae_db_user</annotare.ae.db.user>
                 <annotare.ae.db.password>ae_db_password</annotare.ae.db.password>
                 <annotare.ae.db.driver>ae_db_driver_class</annotare.ae.db.driver>
+
+                <!-- shared properties -->
+                <annotare.google.analytics.tracking.id>UA-xxxxxxxx-x</annotare.google.analytics.tracking.id>
+
             </properties>
         </profile>
     </profiles>
