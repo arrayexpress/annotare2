@@ -20,6 +20,7 @@ package uk.ac.ebi.fg.annotare2.integration;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -95,12 +96,15 @@ public class RtMessengerService extends EmailMessengerService {
                 String ticketNumber = submission.getRtTicketNumber();
                 if (isNullOrEmpty(ticketNumber)) {
                     ticketNumber = createRtTicket(submission, message);
+                    if (ticketNumber==null) {
+                        throw new Exception ("Unable to create RT ticket");
+                    }
                     submission.setRtTicketNumber(ticketNumber);
                     submissionDao.save(submission);
                 }
-
-                //sendOtrsMessage(ticketNumber, message, isNewTicket);
-
+                else {
+                    sendRtMessage(ticketNumber, message);
+                }
             } catch (Throwable x){
                 messenger.send("There was a problem sending message " + String.valueOf(message.getId()), x);
                 throw x;
@@ -138,25 +142,69 @@ public class RtMessengerService extends EmailMessengerService {
         }
         return ticket;
     }
+
     private String getNewMessageContent(Message message) {
-        boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
+        /*boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
         boolean isInternalRecipient = message.getTo().matches(".*annotare[@]ebi[.]ac[.]uk.*");
         Map<String, String> templateParams = ImmutableMap.of(
                 "original.subject", message.getSubject(),
                 "original.body", message.getBody(),
-                "ticket.number", "1234");// message.getSubmission().getRtTicketNumber());
-        StrSubstitutor sub = new StrSubstitutor(templateParams);
+                "ticket.number", "1234");// message.getSubmission().getRtTicketNumber());*/
+        //StrSubstitutor sub = new StrSubstitutor(templateParams);
         StringBuilder sb = new StringBuilder();
         sb.append("Requestor: ");
         sb.append(message.getUser().getEmail());
         sb.append("\nSubject: ");
-        sb.append(isInternalRecipient ? message.getSubject() : sub.replace(properties.getRtIntegrationSubjectTemplate()));
+        sb.append(message.getSubject());
         sb.append("\nText: ");
-        String body = isInternalRecipient ? message.getBody() : sub.replace(properties.getOtrsIntegrationBodyTemplate());
+        String body = message.getBody();
         sb.append(body.replaceAll("\\n","\n "));
         sb.append("\nQueue: ");
         sb.append(properties.getRtQueueName());
         return sb.toString();
+    }
+
+    private String getReplyMessageContent(Message message) {
+        //boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
+        //boolean isInternalRecipient = message.getTo().matches(".*annotare[@]ebi[.]ac[.]uk.*");
+        // TODO: fix is internal recipient
+        boolean isInternalRecipient = message.getTo().matches(".*awais[@]ebi[.]ac[.]uk.*");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Action: ");
+        sb.append(isInternalRecipient ? "comment" : "correspond");
+        sb.append("\nText: ");
+        String body = message.getBody();
+        sb.append(body.replaceAll("\\n","\n "));
+        return sb.toString();
+    }
+
+
+    private void sendRtMessage(String ticketNumber, Message message) throws Exception {
+        if (StringUtils.isBlank(ticketNumber)) return;
+
+        SSLContextBuilder builder = new SSLContextBuilder();
+        builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+                builder.build());
+        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
+                sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
+
+        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+                .addTextBody("user", properties.getRtIntegrationUser())
+                .addTextBody("pass", properties.getRtIntegrationPassword())
+                .addTextBody("content", getReplyMessageContent(message));
+
+        HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl() + "ticket/"+ticketNumber+"/comment");
+        httppost.setEntity(entityBuilder.build());
+        HttpResponse response = httpclient.execute(httppost);
+        HttpEntity r = response.getEntity();
+        BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
+        String line, ticket = null;
+        Pattern p = Pattern.compile("# Ticket (\\d+) created.");
+        while ((line = inp.readLine()) != null) {
+            System.out.println(line);
+        }
     }
 
 

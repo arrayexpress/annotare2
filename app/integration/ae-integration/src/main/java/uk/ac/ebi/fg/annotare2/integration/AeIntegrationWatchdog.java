@@ -166,7 +166,7 @@ public class AeIntegrationWatchdog {
                         hasProcessedOneSubmission = true;
                     }
                     break;
-        /*
+
                 case IN_CURATION:
                     processInCuration(submission);
                     break;
@@ -177,7 +177,7 @@ public class AeIntegrationWatchdog {
 
                 case PUBLIC_IN_AE:
                     processPublicInAE(submission);
-                    break;*/
+                    break;
             }
         }
     }
@@ -185,7 +185,7 @@ public class AeIntegrationWatchdog {
     @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processSubmitted(Submission submission) throws SubsTrackingException {
         //TODO: revert this
-        SubmissionOutcome outcome = SubmissionOutcome.INITIAL_SUBMISSION_OK;// submitSubmission(submission);
+        SubmissionOutcome outcome = submitSubmission(submission);
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
             boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
             submission.setStatus(SubmissionStatus.IN_CURATION);
@@ -223,6 +223,7 @@ public class AeIntegrationWatchdog {
                         submission
                 );
             }
+
             if (!hasResubmitted) {
                 sendEmail(
                         EmailTemplates.INITIAL_SUBMISSION_TEMPLATE,
