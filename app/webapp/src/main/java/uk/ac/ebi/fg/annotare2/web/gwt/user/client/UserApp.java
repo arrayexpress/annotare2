@@ -93,7 +93,7 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_160826_Shown";
+    private final static String NOTICE_COOKIE = "Notice_161010_Shown";
     private void showNotice() {
         Date stopNoticeDate = new Date();
         stopNoticeDate.setTime(1476053990000L); // stop showing on 10 Oct
