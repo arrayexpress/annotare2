@@ -134,6 +134,7 @@ public class SubmissionValidator {
                                     , CheckModality.WARNING
                                     , CheckPosition.undefinedPosition()
                                     , null
+                                    , null
                             )
                     );
                 }
@@ -219,6 +220,7 @@ public class SubmissionValidator {
                 errorMessage
                 , CheckModality.ERROR
                 , CheckPosition.undefinedPosition()
+                , null
                 , null
         ));
     }

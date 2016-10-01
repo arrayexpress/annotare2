@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
+import uk.ac.ebi.fg.annotare2.core.magetab.MageTabUtils;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
@@ -64,10 +65,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.restoreOriginalNameValues;
@@ -353,13 +351,13 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             for (CheckResult cr : results) {
                 switch (cr.getStatus()) {
                     case WARNING:
-                        warnings.add(cr.asString());
+                        warnings.add("WARNING: " + MageTabUtils.getErrorString(cr));
                         break;
                     case ERROR:
-                        errors.add(cr.asString());
+                        errors.add("ERROR: " + MageTabUtils.getErrorString(cr));
                         break;
                     case FAILURE:
-                        failures.add(cr.asString());
+                        failures.add("FAILURE: " + MageTabUtils.getErrorString(cr));
                         break;
                 }
             }
@@ -372,7 +370,9 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (IllegalArgumentException e) {
             failures.add(e.getMessage());
         }
-        return new ValidationResult(errors, warnings, failures);
+        return new ValidationResult( newArrayList(new LinkedHashSet(errors)),
+                newArrayList(new LinkedHashSet(warnings)),
+                newArrayList(new LinkedHashSet(failures)));
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})

@@ -16,9 +16,13 @@
 
 package uk.ac.ebi.fg.annotare2.core.magetab;
 
+import com.google.common.collect.ImmutableMap;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Olga Melnichuk
@@ -51,4 +55,13 @@ public class MageTabUtils {
             return cal.getTime();
         }
     }
+
+    public static String getErrorString(CheckResult cr) {
+        String ref = cr.getReference();
+        return errorMap.containsKey(ref) ? errorMap.get(ref) : cr.getTitle();
+    }
+
+    private static final Map<String, String> errorMap = ImmutableMap.of(
+            "SR08", "A growth, treatment or sample collection protocol must be included. Go to <a href=\"#DESIGN:PROTOCOLS\">Sample and Data / Describe protocols</a> and click on the 'Add Protocol' button to fix this."
+    );
 }

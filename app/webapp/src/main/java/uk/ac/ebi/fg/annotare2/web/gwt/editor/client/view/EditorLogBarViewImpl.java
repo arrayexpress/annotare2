@@ -54,7 +54,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
 
     private void addAll(List<String> list) {
         for (String item : list) {
-            panel.add(new Label(item));
+            panel.add(new HTML(item));
         }
     }
 }

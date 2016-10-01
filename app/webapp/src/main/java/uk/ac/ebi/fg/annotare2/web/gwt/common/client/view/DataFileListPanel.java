@@ -91,7 +91,10 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(checkboxColumn, checkboxHeader);
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
-        emptyTableWidget = new HTML("<br><br><br>Drag files here to start upload<br>or press \"Upload Files\" button<br>to open selection dialog...");
+        emptyTableWidget = new HTML("<p><br/></p><p>Drag files here to start upload or press the <br/>\"Upload Files\"" +
+                " button to open the selection dialog.</p><p>Make sure the file names are constructed only from " +
+                "alphanumerals [A-Z,a-z,0-9], underscores [_], and dots [.],<br/> with no whitespaces, brackets, other " +
+                "punctuations <br/>or symbols.</p>");
         emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {

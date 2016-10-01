@@ -138,16 +138,40 @@ public class EditorApp implements EntryPoint {
                     new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
                         @Override
                         public void onSuccess(UserDto result) {
+                            String message = null;
                             if (submissionStatus != SubmissionStatus.IN_PROGRESS && !result.isCurator()) {
+                                 switch (submissionStatus) {
+                                    case IN_CURATION:
+                                        message = "<p>This submission can no longer be modified. Please do not make any changes on these forms, as they will be lost. </p><p>If you'd like to modify any aspects of your submission, e.g. add/remove samples, change release date, update protocol description, please click the \"Contact Us\" button above and tell us what modifications are required. The curator in charge of your submission will respond as soon as possible.</p>";
+                                        break;
+                                    case PRIVATE_IN_AE:
+                                        message = "<p>Curation for this experiment was completed and your experiment has already been loaded into ArrayExpress. This submission can no longer be modified, and there may be curational changes to your experiment that are presented on the ArrayExpress website but not reflected on the Annotare forms. Please do not make any changes on these forms, as they will be lost. </p><p>To change release date and/or publication details, please use <a target=\"_blank\" href=\"https://www.ebi.ac.uk/fg/acext/\">https://www.ebi.ac.uk/fg/acext/</a>. Login details were emailed to you when your experiment was loaded into ArrayExpress.</p><p>If you'd like to modify other aspects of your submission, e.g. add/remove samples, please click the \"Contact Us\" button above and tell us what modifications are required. A curator will respond as soon as possible.</p>";
+                                        break;
+                                    case PUBLIC_IN_AE:
+                                        message = "<p>This experiment is already public in ArrayExpress and this Annotare record can no longer be modified. Please do not make any changes on these forms, as they will be lost. </p><p>If you'd like to modify any aspects of your submission, e.g. add/remove samples, turn the experiment private again because the work is unpublished, update protocol description, please click the \"Contact Us\" button above and tell us what modifications are required. A curator will respond as soon as possible.</p>";
+                                        break;
+                                    default:
+                                        message = "<p>This submission can no longer be modified. Please do not make any changes on these forms, as they will be lost. </p><p>To change release date and/or publication details, please use <a target=\"_blank\" href=\"https://www.ebi.ac.uk/fg/acext/\">https://www.ebi.ac.uk/fg/acext/</a>. Login details were emailed to you when your experiment was loaded into ArrayExpress.</p><p>If you'd like to modify other aspects of your submission, e.g. add/remove samples, please click the \"Contact Us\" button above and tell us what modifications are required. A curator will respond as soon as possible.</p>";
+                                        break;
+                                }
+                            }
+
+                            if (result.isCurator() &&
+                                    (submissionStatus == SubmissionStatus.SUBMITTED || submissionStatus == SubmissionStatus.RESUBMITTED) ) {
+                                message = "<p>This submission is being updated at the moment. Please refresh the page in one minute to see the new status. Please do not make any changes on these forms, as they will be lost.</p>";
+                            }
+
+                            if (message!=null) {
                                 Date cookieExpiryDate = new Date();
-                                CalendarUtil.addMonthsToDate(cookieExpiryDate,3);
+                                CalendarUtil.addMonthsToDate(cookieExpiryDate, 3);
                                 final DialogBox dialogBox = new CookieDialog(
                                         "Submission cannot be modified",
-                                        "<p>This submission can no longer be modified. Please do not make any changes on these forms, as they will be lost. </p><p>To change release date and/or publication details, please use <a target=\"_blank\" href=\"https://www.ebi.ac.uk/fg/acext/\">https://www.ebi.ac.uk/fg/acext/</a>. Login details were emailed to you when your experiment was loaded into ArrayExpress.</p><p>If you'd like to modify other aspects of your submission, e.g. add/remove samples, please click the \"Contact Us\" button above and tell us what modifications are required. A curator will respond as soon as possible.</p>",
+                                        message,
                                         SUBMISSION_READONLY_COOKIE, cookieExpiryDate
                                 );
                                 dialogBox.show();
                             }
+
                         }
                     }
             ));
