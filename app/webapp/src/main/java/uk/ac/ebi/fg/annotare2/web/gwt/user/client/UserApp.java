@@ -104,10 +104,10 @@ public class UserApp implements EntryPoint {
                     "Notice",
                     "<p>Dear Submitter,</p><p>" +
                             "ArrayExpress curators will be attending the EBI Functional Genomics team retreat from " +
-                            "5 Oct 2016 to 8 Oct 2016.   Our curation response time will be therefore be increased " +
+                            "5 Oct 2016 to 8 Oct 2016. Our curation response time will therefore be increased " +
                             "from 5 to 10 working days. Please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">" +
                             "annotare@ebi.ac.uk</a> if your experiment submission requires urgent attention, and we " +
-                            "will prioritise with our best efforts.  Sorry for any inconvenience caused.</p><p>" +
+                            "will prioritise with our best efforts. Sorry for any inconvenience caused.</p><p>" +
                             "Regards,<br/>Annotare Team</p>",
                     NOTICE_COOKIE, expiryDate
             );
