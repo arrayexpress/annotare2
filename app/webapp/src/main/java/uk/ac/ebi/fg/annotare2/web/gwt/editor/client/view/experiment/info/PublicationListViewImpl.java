@@ -61,8 +61,13 @@ public class PublicationListViewImpl extends ListView<PublicationDto.Editor> imp
     @Override
     public void setPublications(final List<PublicationDto> publications, Collection<OntologyTerm> publicationStatuses) {
         clear();
+        boolean expandFirst = true;
         for (PublicationDto p : publications) {
-            addPublicationView(p, publicationStatuses);
+            DisclosureListItem v = addPublicationView(p, publicationStatuses);
+            if (expandFirst) {
+                v.openPanel();
+                expandFirst = false;
+            }
         }
     }
 
