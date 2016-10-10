@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 
 /**
  * @author Olga Melnichuk
@@ -28,6 +29,8 @@ public interface EditorTabBarView extends IsWidget {
     void selectTab(EditorTab tab);
 
     void setPresenter(Presenter presenter);
+
+    void setCurrentUser(UserDto result);
 
     public interface Presenter {
         void onTabSelect(EditorTab tab);

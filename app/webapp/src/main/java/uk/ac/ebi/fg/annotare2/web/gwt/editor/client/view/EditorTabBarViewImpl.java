@@ -19,7 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorTabBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -30,6 +35,8 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
     private EditorTabBar tabBar;
 
     private Presenter presenter;
+
+    private UserDto currentUser;
 
     public EditorTabBarViewImpl() {
         tabBar = new EditorTabBar();
@@ -44,7 +51,17 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
 
     @Override
     public void initWithTabs(EditorTab... tabs) {
-       tabBar.addTabs(tabs);
+        List<EditorTab> shownTabs = new ArrayList<>();
+        for (EditorTab tab:tabs) {
+            if (tab instanceof ExperimentTab
+                    && !currentUser.isCurator()
+                    && (tab == ExperimentTab.SDRF_PREVIEW || tab == ExperimentTab.IDF_PREVIEW)) {
+                continue;
+            }
+            shownTabs.add(tab);
+        }
+
+        tabBar.addTabs(shownTabs.toArray(new EditorTab[]{}));
     }
 
     @Override
@@ -61,5 +78,9 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
         if (presenter != null) {
             presenter.onTabSelect(tab);
         }
+    }
+
+    public void setCurrentUser(UserDto currentUser) {
+        this.currentUser = currentUser;
     }
 }
