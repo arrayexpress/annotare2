@@ -67,13 +67,8 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
     @Override
     public void setContacts(List<ContactDto> contacts) {
         clear();
-        boolean expandFirst = true;
         for (ContactDto p : contacts) {
-            DisclosureListItem v = addContactView(p);
-            if (expandFirst) {
-                v.openPanel();
-                expandFirst = false;
-            }
+            addContactView(p);
         }
 
     }
