@@ -32,6 +32,7 @@ public class AutoSaveLabel extends Label {
     public void show(String text) {
         getElement().getStyle().setOpacity(1.0);
         setText(text);
+        addStyleName("autosave");
     }
 
     private static class FadeOutAnimation extends Animation {

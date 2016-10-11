@@ -22,13 +22,12 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
-import uk.ac.ebi.fg.annotare2.db.model.ArrayDesignSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.ImportedExperimentSubmission;
-import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.model.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
+import uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
 import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
@@ -101,5 +100,10 @@ public abstract class SubmissionBasedRemoteService extends AuthBasedRemoteServic
     protected NoPermissionException noPermission(AccessControlException e) {
         log.error(e.getMessage());
         return new NoPermissionException("No permission");
+    }
+
+
+    public int getSubmissionCountForCurrentUser() {
+        return submissionManager.getAllSubmissions(getCurrentUser()).size();
     }
 }

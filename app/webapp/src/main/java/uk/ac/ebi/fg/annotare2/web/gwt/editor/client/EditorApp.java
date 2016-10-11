@@ -33,6 +33,7 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -61,6 +62,7 @@ public class EditorApp implements EntryPoint {
 
     private final EditorGinjector injector = GWT.create(EditorGinjector.class);
     private final static String SUBMISSION_READONLY_COOKIE = "Submission_ReadOnly_Shown";
+    private int submissionCount = 0;
 
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
@@ -74,19 +76,34 @@ public class EditorApp implements EntryPoint {
             }
         });
 
-        SubmissionServiceAsync submissionService = injector.getSubmissionService();
+        final SubmissionServiceAsync submissionService = injector.getSubmissionService();
         final int subId = getSubmissionId();
         submissionService.getSubmissionDetails(subId,
                 AsyncCallbackWrapper.callbackWrap(
                         new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION) {
                             @Override
                             public void onSuccess(SubmissionDetails details) {
-                                renameBrowserTab(details);
-                                init(root, details);
+                                getSubmissionCountAndInit(root,details, submissionService);
                             }
                         }
                 )
         );
+
+
+
+    }
+
+    private void getSubmissionCountAndInit(final HasWidgets root, final SubmissionDetails details, SubmissionServiceAsync submissionService) {
+        submissionService.getSubmissionCountForCurrentUser( AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<Integer>() {
+                    @Override
+                    public void onSuccess(Integer count) {
+                        submissionCount = count;
+                        renameBrowserTab(details);
+                        init(root, details);
+                    }
+                }
+        ));
     }
 
     private void renameBrowserTab(SubmissionDetails details) {
@@ -193,7 +210,7 @@ public class EditorApp implements EntryPoint {
     }
 
     private Widget initMainLayout(SubmissionType type, EventBus eventBus) {
-        EditorLayout layout = (type == EXPERIMENT) ? new ExperimentLayout(eventBus) : new ArrayDesignLayout();
+        EditorLayout layout = (type == EXPERIMENT) ? new ExperimentLayout(eventBus, submissionCount) : new ArrayDesignLayout();
 
         ActivityMapper topBarActivityMapper = injector.getTopBarActivityMapper();
         ActivityManager topBarActivityManager = new ActivityManager(topBarActivityMapper, eventBus);
