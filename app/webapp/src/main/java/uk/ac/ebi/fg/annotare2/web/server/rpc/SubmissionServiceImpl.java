@@ -349,6 +349,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             Submission submission = getSubmission(id, Permission.VIEW);
             Collection<CheckResult> results = validator.validate(submission);
             for (CheckResult cr : results) {
+                if ( MageTabUtils.isObsoleteError(cr.getReference())) continue;
                 switch (cr.getStatus()) {
                     case WARNING:
                         warnings.add("WARNING: " + MageTabUtils.getErrorString(cr));
