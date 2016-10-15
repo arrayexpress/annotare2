@@ -25,4 +25,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 public interface CurrentUserAccountServiceAsync {
 
     void me(AsyncCallback<UserDto> async);
+
+    void saveCurrentUserReferrer(String referrer, AsyncCallback<Void> voidAsyncCallback);
 }

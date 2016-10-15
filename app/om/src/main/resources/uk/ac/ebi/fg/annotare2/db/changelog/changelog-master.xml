@@ -161,5 +161,10 @@
             ALTER TABLE submissions CHANGE otrsTicketId otrsTicketNumber VARCHAR(50) NULL;
         </sql>
     </changeSet>
+    <changeSet id="addReferrerToUsers" author="awais">
+        <sql>
+            ALTER TABLE users ADD referrer VARCHAR(100) NULL AFTER verificationToken;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

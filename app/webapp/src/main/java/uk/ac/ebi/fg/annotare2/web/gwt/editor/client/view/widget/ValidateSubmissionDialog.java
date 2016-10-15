@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -26,7 +28,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 
 /**
@@ -62,14 +63,37 @@ public class ValidateSubmissionDialog extends DialogBox {
     Button cancelButton;
     @UiField
     Button okButton;
+    @UiField
+    RadioButton rbJournal;
+    @UiField
+    RadioButton rbSearch;
+    @UiField
+    RadioButton rbArrayExpress;
+    @UiField
+    RadioButton rbWordOfMouth;
+    @UiField
+    RadioButton rbOther;
+    @UiField
+    TextBox tbOther;
+    @UiField
+    HTMLPanel pnlReferrer;
+
     private DialogCallback<Void> callback;
     private ExperimentProfileType experimentProfileType;
 
-    public ValidateSubmissionDialog(ExperimentProfileType experimentProfileType) {
+    public ValidateSubmissionDialog(ExperimentProfileType experimentProfileType, boolean askForReferrer) {
         setModal(true);
         setGlassEnabled(true);
         setWidget(Binder.BINDER.createAndBindUi(this));
+        this.pnlReferrer.setVisible(askForReferrer);
         this.experimentProfileType = experimentProfileType;
+        this.tbOther.getElement().setPropertyString("placeholder","Please specify");
+        this.tbOther.addKeyDownHandler(new KeyDownHandler() {
+            @Override
+            public void onKeyDown(KeyDownEvent keyDownEvent) {
+                rbOther.setValue(true);
+            }
+        });
     }
 
     @UiHandler("cancelButton")
@@ -114,6 +138,14 @@ public class ValidateSubmissionDialog extends DialogBox {
 
     public String getFeedbackMessage() {
         return message.getValue().trim();
+    }
+
+    public String getReferrer() {
+        if (rbJournal.getValue()) return "Journal";
+        if (rbArrayExpress.getValue()) return "ArrayExpress";
+        if (rbWordOfMouth.getValue()) return "Word of Mouth";
+        if (rbSearch.getValue()) return "Search Engine";
+        return tbOther.getValue();
     }
 
     private void setTitleAndMessage(String title, String message) {

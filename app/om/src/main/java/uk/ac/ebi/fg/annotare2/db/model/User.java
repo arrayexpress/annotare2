@@ -54,6 +54,9 @@ public class User {
     @Column(name = "verificationToken", nullable = true)
     private String verificationToken;
 
+    @Column(name = "referrer", nullable = true)
+    private String referrer;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("role ASC")
     private List<UserRole> roles;
@@ -162,5 +165,13 @@ public class User {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public String getReferrer() {
+        return referrer;
+    }
+
+    public void setReferrer(String referrer) {
+        this.referrer = referrer;
     }
 }
