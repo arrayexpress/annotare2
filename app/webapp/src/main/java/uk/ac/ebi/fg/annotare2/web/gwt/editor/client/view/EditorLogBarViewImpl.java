@@ -34,6 +34,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
     public EditorLogBarViewImpl() {
         panel = new VerticalPanel();
         panel.add(new Label("No validation results"));
+        panel.addStyleName("app-log");
         initWidget(panel);
     }
 

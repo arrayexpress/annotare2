@@ -62,7 +62,7 @@ public class MageTabUtils {
         if (!errorMap.containsKey(ref)) return cr.getTitle();
         StringBuilder sb = new StringBuilder(errorMap.get(ref));
         if (cr.getDynamicDetail()!=null) {
-            sb.append(" (").append(cr.getDynamicDetail()).append(")");
+            return String.format(sb.toString(), cr.getDynamicDetail() );
         }
         return sb.toString();
     }
@@ -94,7 +94,7 @@ public class MageTabUtils {
         errorMap.put("EF01", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] An experiment must have at least one experimental variable. Go to [<a href=\"#DESIGN:SAMPLES\">Samples</a>] and press 'Add Sample Attributes and Variables...'. In the left panel, select the sample attribute that varies among your samples and is subject of the study, then tick the box next to 'Experimental Variable'.");
         errorMap.put("EX03", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid extraction protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
         errorMap.put("EX04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid library construction protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
-        errorMap.put("FV04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] The values of an experimental variable must vary (for compound+dose at least one must vary). The following experimental variable(s) have the same values for all samples. Make sure the correct values were entered, or if the variable is not a factor in this experiment, uncheck 'Experimental Variable' in the 'Add Samples and Experimental Variables' dialogue.");
+        errorMap.put("FV04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] At least one sample attribute must be selected as an experimental variable, which highlights the main intent of your study.  For example, the variable is \"genotype\" if you're comparing mutant samples against wild-type controls.   The values of the variable must vary among your samples (following on the previous example, we expect you to have both mutant and wild-type samples), with the exception of compound + dose (at least one must vary). Your sample annotation currently does not satisfy such rules ( %s ). Please nominate a different sample attribute as the experimental variable, or review the sample annotation. To remove an attribute from being the experimental variable, uncheck 'Experimental Variable' in the 'Add Samples and Experimental Variables' dialogue.");
         errorMap.put("G01", "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] The experiment must have a title. Please provide an informative title that states the intent (and not conclusion) of the experiment.");
         errorMap.put("G02", "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] The experiment must have a description. Please outline the scientific background and the experimental workflow in the text field.");
         errorMap.put("G05", "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] A public release date for the experiment must be entered. To keep the experiment in private state after submission, select a date up to 1 year in the future. This can be changed later.");

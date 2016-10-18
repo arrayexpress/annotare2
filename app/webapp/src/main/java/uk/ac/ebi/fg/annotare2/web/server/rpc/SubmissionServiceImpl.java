@@ -371,7 +371,12 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (IllegalArgumentException e) {
             failures.add(e.getMessage());
         }
-        return new ValidationResult( newArrayList(new LinkedHashSet(errors)),
+        ArrayList<String> errorList = newArrayList(new LinkedHashSet(errors));
+        Collections.sort(errorList);
+        for (String s: errorList             ) {
+            System.out.println(s);
+        }
+        return new ValidationResult( errorList,
                 newArrayList(new LinkedHashSet(warnings)),
                 newArrayList(new LinkedHashSet(failures)));
     }

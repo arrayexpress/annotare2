@@ -563,3 +563,6 @@ a.wgt-button :hover {
     margin-right: 4px;
 }
 
+.app-log tbody tr td {
+    padding: 4px;
+}
