@@ -118,6 +118,7 @@ public class MageTabUtils {
         obsoleteErrors.add("AD03");
         obsoleteErrors.add("AD04");
         obsoleteErrors.add("AN02");
+        obsoleteErrors.add("AN03");
         obsoleteErrors.add("AN05");
         obsoleteErrors.add("AN06");
         obsoleteErrors.add("CA03");
