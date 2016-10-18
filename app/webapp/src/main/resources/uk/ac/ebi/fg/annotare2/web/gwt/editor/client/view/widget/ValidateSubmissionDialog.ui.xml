@@ -60,7 +60,7 @@
             box-sizing: border-box;
         }
     </ui:style>
-    <g:VerticalPanel width="800px">
+    <g:VerticalPanel width="750px">
         <g:HTML ui:field="html"/>
         <g:HTMLPanel ui:field="feedbackPanel" addStyleNames="{style.feedbackPanel}" visible="false">
             <!-- <hr/> -->
@@ -81,6 +81,7 @@
             <g:HTMLPanel ui:field="pnlReferrer">
                 <br/>
                 <g:Label>Where did you first hear/learn about Annotare?</g:Label>
+                <g:RadioButton text="Journal Submission Checklist" name="referrer" ui:field="rbChecklist"/>
                 <g:RadioButton text="Journal Editor/Reviewer" name="referrer" ui:field="rbJournal"/>
                 <g:RadioButton text="Search Engine" name="referrer" ui:field="rbSearch"/>
                 <g:RadioButton text="ArrayExpress Help" name="referrer" ui:field="rbArrayExpress"/>

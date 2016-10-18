@@ -64,6 +64,8 @@ public class ValidateSubmissionDialog extends DialogBox {
     @UiField
     Button okButton;
     @UiField
+    RadioButton rbChecklist;
+    @UiField
     RadioButton rbJournal;
     @UiField
     RadioButton rbSearch;
@@ -141,6 +143,7 @@ public class ValidateSubmissionDialog extends DialogBox {
     }
 
     public String getReferrer() {
+        if (rbChecklist.getValue()) return "Checklist";
         if (rbJournal.getValue()) return "Journal";
         if (rbArrayExpress.getValue()) return "ArrayExpress";
         if (rbWordOfMouth.getValue()) return "Word of Mouth";
