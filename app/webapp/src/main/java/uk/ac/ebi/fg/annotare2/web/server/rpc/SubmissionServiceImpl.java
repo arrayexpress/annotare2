@@ -373,9 +373,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         }
         ArrayList<String> errorList = newArrayList(new LinkedHashSet(errors));
         Collections.sort(errorList);
-        for (String s: errorList             ) {
-            System.out.println(s);
-        }
         return new ValidationResult( errorList,
                 newArrayList(new LinkedHashSet(warnings)),
                 newArrayList(new LinkedHashSet(failures)));
