@@ -245,7 +245,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                 });
             }
         };
-        t.schedule(500);
+        t.schedule(2500);
     }
 
     @UiHandler("submitButton")
@@ -275,7 +275,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                 });
             }
         };
-        t.schedule(500);
+        t.schedule(2500);
     }
 
     void onValidationFailure(final ValidateSubmissionDialog dialog) {
