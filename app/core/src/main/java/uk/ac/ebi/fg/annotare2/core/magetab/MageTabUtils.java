@@ -108,6 +108,7 @@ public class MageTabUtils {
         errorMap.put("PR08", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid library construction protocol' must be included for sequencing submissions. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
         errorMap.put("PR09", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid sequencing protocol' must be included for sequencing submissions. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
         errorMap.put("PR10", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] The 'nucleic acid sequencing protocol' must specify the sequencing hardware. Choose the name of the sequencing machine from the drop-down menu under 'Hardware' for the 'nucleic acid sequencing protocol'.");
+        errorMap.put("SR04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] 'Organism' is a mandatory attribute for the source material and must be filled in.");
         errorMap.put("SR08", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'growth protocol', 'treatment protocol' or 'sample collection protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
 
         obsoleteErrors.add("ADMN03");
@@ -142,7 +143,6 @@ public class MageTabUtils {
         obsoleteErrors.add("SC02");
         obsoleteErrors.add("SM01");
         obsoleteErrors.add("SR01");
-        obsoleteErrors.add("SR04");
         obsoleteErrors.add("SR06");
         obsoleteErrors.add("TS01");
         obsoleteErrors.add("TS02");

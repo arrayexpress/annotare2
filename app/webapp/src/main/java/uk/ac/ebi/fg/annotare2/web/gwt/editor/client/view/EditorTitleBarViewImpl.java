@@ -23,6 +23,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -223,23 +224,28 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     void onValidateButtonClick(ClickEvent event) {
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
         dialog.showValidationProgressMessage(null);
-
-        presenter.validateSubmission(new ValidationHandler() {
-
+        Timer t = new Timer() { // wait for any unsaved edits to persist
             @Override
-            public void onFailure() {
-                dialog.showValidationFailureMessage(null);
-            }
+            public void run() {
+                presenter.validateSubmission(new ValidationHandler() {
 
-            @Override
-            public void onSuccess(ValidationResult result) {
-                if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
-                    dialog.showValidationFailureMessage(null);
-                } else {
-                    dialog.hide();
-                }
+                    @Override
+                    public void onFailure() {
+                        dialog.showValidationFailureMessage(null);
+                    }
+
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+                        if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
+                            dialog.showValidationFailureMessage(null);
+                        } else {
+                            dialog.hide();
+                        }
+                    }
+                });
             }
-        });
+        };
+        t.schedule(500);
     }
 
     @UiHandler("submitButton")
@@ -247,22 +253,29 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
         dialog.showValidationProgressMessage(null);
 
-        presenter.validateSubmission(new ValidationHandler() {
-            @Override
-            public void onFailure() {
-                onValidationFailure(dialog);
-            }
 
+        Timer t = new Timer() { // wait for any unsaved edits to persist
             @Override
-            public void onSuccess(ValidationResult result) {
+            public void run() {
+                presenter.validateSubmission(new ValidationHandler() {
+                    @Override
+                    public void onFailure() {
+                        onValidationFailure(dialog);
+                    }
 
-                if (!result.canSubmit()) {
-                    onValidationFailure(dialog);
-                } else {
-                    processSubmission(dialog, shouldAllowInstantFeedback);
-                }
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+
+                        if (!result.canSubmit()) {
+                            onValidationFailure(dialog);
+                        } else {
+                            processSubmission(dialog, shouldAllowInstantFeedback);
+                        }
+                    }
+                });
             }
-        });
+        };
+        t.schedule(500);
     }
 
     void onValidationFailure(final ValidateSubmissionDialog dialog) {
