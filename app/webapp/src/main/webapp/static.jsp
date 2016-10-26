@@ -57,6 +57,8 @@
         pageTitle = "Validate Experiment";
     } else if ("help/experiment_types.html".equals(pageName)) {
         pageTitle = "Experiment Types";
+    } else if ("help/assign_files.html".equals(pageName)) {
+        pageTitle = "Assign Files";
     }
     if (!pageTitle.isEmpty()) {
         pageTitle = pageTitle + " < ";
@@ -93,6 +95,7 @@
                     </c:otherwise>
                 </c:choose>
                     <%--<li class="functional"><a href="#" class="icon icon-generic feedback" data-icon="\">Feedback</a></li>--%>
+                <li class="functional last"><a href="${pageContext.request.contextPath}/about#contact" class="icon icon-generic" data-icon="\">Contact us</a></li>
             </ul>
 
         </jsp:attribute>

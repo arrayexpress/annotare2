@@ -1,0 +1,134 @@
+<section id="annotare-help" class="grid_18 alpha">
+<h2>Assign Files to Samples</h2>
+
+<p>A submission isn't complete without knowing which data file belongs to which sample.</p>
+<p>Four different types of data files are distinguished based on whether they contain data for a single sample or for multiple samples (<strong>matrix</strong>) and whether they have been manipulated (<strong>processed</strong>) or not (<strong>raw</strong>).</p>
+<p>In order to assign the files to the samples, you must first choose the category of file that you have. Then select the respective file name from the dropdown menu for each sample. Repeat this process for each data type you want to include in the submission. You can use the functions <code>Fill Down Value</code> and <code>Import Values</code> to speed up the process and minimise mistakes. Files that are not assigned to any samples are not included in the submission.</p>
+<p><img src="../assets/images/files_data_type_selection.png" alt="Click 'Assign Files' and choose the file category" style="border:2px solid #385930; max-width:784.8px" ></p>
+
+<p><strong>Example cases for different experiment/data types:</strong></p>
+
+<ul style="list-style:none;">
+  <li><a href="#AssignRaw"><b>Raw Data Files</b></a></li>
+    <li><ul>
+      <li><a href="#OneColRaw"><b>One-colour microarray experiment</b></a></li>
+      <li><a href="#TwoColRaw"><b>Two-colour microarray experiment</b></a></li>
+      <li><a href="#SeqRaw"><b>Sequencing experiment</b></a></li>
+    </ul></li><br>
+  <li><a href="#AssignProcessed"><b>Processed Data Files</b></a></li><br>
+  <li><a href="#AssignTechReps"><b>Technical Replicates</b></a></li>
+</ul>
+
+<br>
+
+<h3 id="AssignRaw">Assign Raw Data Files</h3>
+<br>
+<h4 id="OneColRaw">One-colour microarray experiment</h4>
+<p>For one-colour microarray experiments the raw output files can be either individual files per sample or a matrix file (e.g. Illumina arrays).</p>
+<p>If you have individual files per sample, create a "Raw Data File" column and assign each sample to the respective file. For raw data matrices, all samples need to be linked to the same data file. To do so, create a "Raw Matrix Data File" column and select the name of the matrix file. Use <code>Fill Down Value</code> to propagate the file name to all samples. </p>
+<p><img src="../assets/images/files_one-colour_raw.png" alt="Raw file assigmnet for one-colour microarray experiment" style="border:2px solid #385930; max-width:784.8px" /></p>
+<br>
+
+<h4 id="TwoColRaw">Two-colour microarray experiment</h4>
+<p>Two-colour microarray experiments need extra attention when assigning data files to samples.
+  The basic assumption is that the data for both channels are stored in the same file (2 samples -> 1 hybridisation -> 1 file). See  the <a href="two_color_ma.html">two-colour microarrays help page</a> for more details and what to do if your files don't comply with this rule.</p>
+
+<p>The basic steps are:</p>
+<ol>
+  <li>Before assigning data files make sure to <a href="two_color_ma.html">select the correct label</a> for each of your samples. The panel on the right presents a list of the labeled extracts (Sample:Label combinations) that have been created. </li>
+  <li>Press <code>Assign Files...</code> and create a "Raw Data File" column.</li>
+  <li>Select the same file name for the two labelled extracts that belong to the same hybridisation. This should always be one Cy3-labelled extract and one Cy5-labelled extract that are connected via the same file name.</li>
+</ol>
+<p><img src="../assets/images/files_two-colour_simple_design.png" alt="Raw file assigment for simple two-colour microarray experiment" style="border:2px solid #385930; max-width:784.8px" /></p>
+
+<p>For two-colour microarray experiments that use a <strong>common reference sample</strong>, the first step is to create a "reference sample" in the sample annotation table. It is not possible to link several files to the same sample. Therefore, even though the same biological material may have been used on each array, the reference sample needs to be duplicated for as many times as it was used on an array. Then the file assignment can be done as explained above, selecting the test sample and one of the reference samples for each file. If the numbering of the reference sample should be removed (because the same reference material was used), leave a comment about this in the feedback dialogue after submission, and a curator will correct this before loading the experiment into ArrayExpress.</p>
+<p><img src="../assets/images/files_two-colour_reference_design.png" alt="Raw file assigment for reference design two-colour microarray experiment" style="border:2px solid #385930; max-width:784.8px" /></p>
+
+<p>Another example for a <strong>dye-swap design</strong>.
+When you have tested each sample twice (once with each label), you don't need to create a separate row in the sample annotation. Simply, leave both labels selected for each sample in the "Create labeled extracts and assign labels". The list of labelled extracts should now show each sample twice, each time with the respective label. Follow the same instruction as above to link the data files with the labelled extracts.</p>
+<p><img src="../assets/images/files_two-colour_dye-swap_design.png" alt="Raw file assigment for dye-swap design two-colour microarray experiment" style="border:2px solid #385930; max-width:784.8px" /></p>
+<br>
+
+<h4 id="SeqRaw">Sequencing experiment</h4>
+<p>Sequencing experiments should contain indivdual sequencing raw read files for each sample. To assign raw sequencing files, select the file type "Raw". Then fill the columns with the names of the corresponding file for each sample.</p>
+<p>For experiments using paired-end sequencing, two individual raw read files should be provided. To assign both files to one sample, create two "Raw" data file columns by clicking on <code>Assign Files...</code> twice. Then link the two corresponding sequencing files to each sample.</p>
+<p><img src="../assets/images/files_seq_raw.png" alt="Raw file assignment for sequencing experiment" style="border:2px solid #385930; max-width:784.8px" /></p>
+
+<br>
+<h3 id="AssignProcessed">Assign Processed Data Files</h3>
+<p>"Processed" data refers to all data files and formats that are derived from the raw files and have been manipulated in any way (e.g. background correction, log2 transformation, normalisation, read trimming). </p>
+<p>To add processed data files, create another column by pressing <code>Assign Files...</code>. Then select "Processed" if you have a separate file for each sample, or "Processed Matrix" if you have a file which contains processed data for more than one sample. Proceed to select the filenames of your uploaded processed data files for the relevant sample(s). If you have more than one processed data type, repeat the process to add more data columns. </p>
+<p>If you would like to include any other additional data types, please upload the files and leave a note in the feedback dialogue after submission, and a curator will add the files as supplement to the submission.</p>
+<p><img src="../assets/images/files_seq_processed.png" alt="Processed file assignment example" style="border:2px solid #385930; max-width:784.8px" /></p>
+
+<br>
+<h3 id="AssignTechReps">Technical Replicates</h3>
+<p>For technical replicates it is advisable to create separate samples in the sample attributes section in Annotare. Name your replicate samples with the same prefix and then add e.g. "_1"/"_2" because duplicate sample names are not allowed.</p>
+<p>For sequencing experiments it is also possible to create two columns of the same type to assign two files per sample.</p>
+<p><img src="../assets/images/files_technical_replicates.png" alt="File assignment for technical replicates" style="border:2px solid #385930; max-width:784.8px"></p>
+<br>
+
+</section>
+
+<aside class="grid_6 omega">
+    <h3>Annotare Guide</h3>
+    <ol id="secondary-nav">
+        <li><h4>Getting started</h4>
+            <ul>
+                <li><a href="getting_started.html#register">Register for submission account</a></li>
+                <li><a href="getting_started.html#start_new_sub">Start a new submission</a></li>
+                <li><a href="getting_started.html#sub_status">Understand submission status</a></li>
+            </ul>
+        </li>
+        <li><h4>Describe experiment</h4>
+            <ul>
+                <li><a href="describe_exp.html#expt_bg">Explain experiment background</a></li>
+                <li><a href="describe_exp.html#release_date">Set reasonable release date</a></li>
+                <li><a href="describe_exp.html#remain_anonymous">Enable anonymity</a></li>
+                <li><a href="describe_exp.html#contact_citation">Provide contact details</a></li>
+            </ul>
+        </li>
+        <li><h4>Time-saving features</h4>
+            <ul>
+                <li><a href="time_saving_features.html#fill_down_import">Fill-down and import values</a></li>
+                <li><a href="time_saving_features.html#upload_multiple_files">Upload multiple files in one go</a></li>
+            </ul>
+        </li>
+        <li><h4>Sample attributes</h4>
+            <ul>
+                <li><a href="sample_attributes.html#annotate">Annotate samples, nominate experimental variable(s)</a></li>
+                <li><a href="sample_attributes.html#discrete_terms">Annotate with discrete terms</a></li>
+                <li><a href="sample_attributes.html#protocols">Protocols</a></li>
+            </ul>
+        </li>
+        <li><h4>Microarray experiment</h4>
+            <ul>
+                <li><a href="accepted_raw_ma_file_formats.html">Accepted raw file types</a></li>
+                <li><a href="accepted_processed_ma_file_formats.html">Accepted processed file formats</a></li>
+                <li><a href="two_color_ma.html">Two-colour experiments</a></li>
+            </ul>
+        </li>
+        <li><h4>Sequencing experiment</h4>
+            <ul>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#DataTypes">Accepted data types</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#HowToSubmit">How to prepare raw files</a></li>
+                <li><a href="seq_lib_spec.html">Provide library information</a></li>
+                <li><a href="/arrayexpress/help/UHTS_submissions.html#processed_data">Accepted processed file formats</a></li>
+            </ul>
+        </li>
+        <li><h4>Upload files and assign to samples</h4>
+            <ul>
+                <li><a href="file_upload.html#direct">Direct upload</a></li>
+                <li><a href="file_upload.html#ftp">FTP upload</a></li>
+                <li class="active"><a href="assign_files.html">Assign files</a></li>
+            </ul>
+        </li>
+        <li><h4>Validate and submit</h4>
+            <ul>
+                <li><a href="validate_exp.html#validate">What is validation?</a></li>
+                <li><a href="validate_exp.html#fix_errors">How to fix validation errors?</a></li>
+                <li><a href="submit_exp.html">Submit, and what happens next?</a></li>
+            </ul>
+        </li>
+    </ol>
+</aside>
