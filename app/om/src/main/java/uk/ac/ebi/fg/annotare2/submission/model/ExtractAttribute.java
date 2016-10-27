@@ -176,6 +176,10 @@ public enum ExtractAttribute {
         return values.get(options.indexOf(option));
     }
 
+    public boolean hasValue(String value) {
+        return values.contains(value);
+    }
+
     public String getOption(String value) {
         return options.get(values.indexOf(value));
     }

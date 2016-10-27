@@ -27,6 +27,7 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.gwt.user.datepicker.client.DateBox;
@@ -266,6 +267,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                 return;
             }
         }
+        aeExperimentType.addItem(type);
+        aeExperimentType.setSelectedIndex(aeExperimentType.getItemCount()-1);
     }
 
     private void setAeExperimentTypeOptions(Collection<String> options) {

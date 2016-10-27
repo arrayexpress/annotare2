@@ -1,40 +1,35 @@
 antigen profiling
-Bisulfite-seq
 ChIP-chip by array
 ChIP-chip by SNP array
 ChIP-chip by tiling array
+comparative genomic hybridization by array
+genotyping by array
+methylation profiling by array
+microRNA profiling by array
+proteomic profiling by array
+RIP-Chip by array
+tiling path by array
+transcription profiling by array
+transcription profiling by RT-PCR
+4C
+GRO-seq
+ATAC-seq
+Bisulfite-seq
+Capture-C
 ChIP-seq
 CLIP-seq
-CLIP-Seq
-comparative genomic hybridization by array
 DNA-seq
 FAIRE-seq
-genotyping by array
 genotyping by high throughput sequencing
+Hi-C
 MBD-seq
 MeDIP-seq
-metabolomic profiling
-methylation profiling by array
 methylation profiling by high throughput sequencing
-microRNA profiling by array
-microRNA profiling by high-throughput sequencing
+microRNA profiling by high throughput sequencing
 MNase-seq
 MRE-seq
-proteomic profiling by array
-proteomic profiling by mass spectrometer
-RIP-chip by array
 RIP-seq
 RNA-seq of coding RNA
 RNA-seq of coding RNA from single cells
 RNA-seq of non coding RNA
 RNA-seq of non coding RNA from single cells
-RNAi profiling by array
-RNAi profiling by high throughput sequencing
-tiling path by array
-transcription profiling by array
-transcription profiling by MPSS
-transcription profiling by RT-PCR
-transcription profiling by SAGE
-transcription profiling by tiling array
-translation profiling
-whole chromosome random sequencing
