@@ -210,16 +210,14 @@ public class ValidateSubmissionDialog extends DialogBox {
             setTitleAndMessage(
                     "Submission Successful",
                     "Thanks for submitting!.<br/><br/>" +
-                            "You'll receive a stable accession number shortly for this submission." +
-                            "The accession can be  <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" " +
-                            "target=\"_blank\">cited</a> " +
-                            "in your manuscript, but is not valid until a curator has checked the raw data files, " +
-                            "reviewed your submission and loaded it " +
-                            "into the ArrayExpress database. <br/><br/>" +
-                            "We will start checking the content of your raw data files as soon as possible. Sometimes " +
-                            "this can take a few days, due to the sheer volume of data; please bear with us. If we " +
+                            "We will start checking the content of your raw data files as soon as possible. Sometimes" +
+                            " this can take a few days, due to the sheer volume of data; please bear with us. If we " +
                             "detect problems with the files, we will provide information on how to fix the problems, " +
-                            "and invite you to resubmit with valid files.");
+                            "and invite you to resubmit with valid files. <br/><br/>" +
+                            "You will receive a stable accession number shortly for this submission if there are no " +
+                            "problems. The accession can be <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" target=\"_blank\">cited</a> " +
+                            "in your manuscript, but is not valid until a curator reviewed your submission and loaded it " +
+                            "into the ArrayExpress database.");
         } else {
             setTitleAndMessage(
                     "Submission Successful",

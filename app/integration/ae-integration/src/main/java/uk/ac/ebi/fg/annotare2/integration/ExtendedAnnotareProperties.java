@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.otrs.OtrsProperties;
 import java.io.File;
 
 public class ExtendedAnnotareProperties extends AnnotareProperties implements DataFileStoreProperties,
-        ArrayExpressProperties, SubsTrackingProperties, AeConnectionProperties, OtrsProperties {
+        ArrayExpressProperties, SubsTrackingProperties, AeConnectionProperties, OtrsProperties, FileValidationProperties {
 
     @Inject
     public ExtendedAnnotareProperties(MageTabCheckProperties mageTabCheckProperties) {
@@ -135,9 +135,11 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
         return getProperty("otrs-integration.subject-template");
     }
 
+    @Override
+    public String getOtrsIntegrationBodyTemplate() { return getProperty("otrs-integration.body-template"); }
 
     @Override
-    public String getOtrsIntegrationBodyTemplate() {
-        return getProperty("otrs-integration.body-template");
+    public String getFileValidationUrl() { return getProperty("file-validation.url");
     }
+
 }

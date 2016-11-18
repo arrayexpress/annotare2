@@ -386,13 +386,17 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             Submission submission = getSubmission(id, Permission.UPDATE);
             User currentUser = getCurrentUser();
             boolean isCurator = UIObjectConverter.uiUser(currentUser).isCurator();
+            boolean isSequencing = (submission instanceof ExperimentSubmission) ?
+                    ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing()
+                    : false;
+            SubmissionStatus nextStatus = isSequencing ? SubmissionStatus.AWAITING_FILE_VALIDATION
+                    : (SubmissionStatus.IN_PROGRESS == submission.getStatus() ? SubmissionStatus.SUBMITTED
+                    : SubmissionStatus.RESUBMITTED);
+
             if (submission.getStatus().canSubmit(isCurator)) {
                 storeAssociatedFiles(submission);
                 submission.setSubmitted(new Date());
-                submission.setStatus(
-                        SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
-                                SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
-                );
+                submission.setStatus(nextStatus);
                 submission.setOwnedBy(userDao.getCuratorUser());
                 save(submission);
             }

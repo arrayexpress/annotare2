@@ -41,6 +41,7 @@ public class ArrayExpressIntegrationPlugin extends AbstractModule {
         bind(SubsTracking.class).in(SINGLETON);
         bind(AEConnection.class).in(SINGLETON);
         bind(AeIntegrationWatchdog.class).asEagerSingleton();
+        bind(FileValidationService.class).asEagerSingleton();
 
         bind(MessengerService.class).to(OtrsMessengerService.class).asEagerSingleton();
 

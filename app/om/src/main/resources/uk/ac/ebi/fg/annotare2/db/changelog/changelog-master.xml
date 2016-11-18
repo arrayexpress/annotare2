@@ -166,5 +166,9 @@
             ALTER TABLE users ADD referrer VARCHAR(100) NULL AFTER verificationToken;
         </sql>
     </changeSet>
-
+    <changeSet id="addFileValidationStatusesToSubmissions" author="awais">
+        <sql>
+            ALTER TABLE submissions MODIFY status ENUM('IN_PROGRESS','AWAITING_FILE_VALIDATION','VALIDATING_FILES', 'SUBMITTED', 'RESUBMITTED', 'IN_CURATION', 'PRIVATE_IN_AE', 'PUBLIC_IN_AE') NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
