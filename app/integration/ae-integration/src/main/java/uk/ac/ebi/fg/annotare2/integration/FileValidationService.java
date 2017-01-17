@@ -32,7 +32,7 @@ public class FileValidationService {
     final static String FILE_ERROR_KEY = "file_errors";
     final static String PAIRS_ERROR_KEY = "pairs_errors";
     final static String EXECUTION_ERROR_KEY = "execution_errors";
-    final static String INTEGRITY_ERROR_KEY = "execution_errors";
+    final static String INTEGRITY_ERROR_KEY = "integrity_errors";
 
     @Inject
     public FileValidationService(ExtendedAnnotareProperties properties) {
@@ -64,7 +64,7 @@ public class FileValidationService {
     }
 
     public JSONObject checkStatus(Long id) throws Exception {
-        URL url = new URL(properties.getFileValidationUrl() + id);
+        URL url = new URL(properties.getFileValidationUrl() + id+"/");
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         StringBuilder result = new StringBuilder();
         try {
@@ -117,7 +117,7 @@ public class FileValidationService {
 
         if (json.has(FILE_ERROR_KEY)) {
             JSONObject fileErrors = json.getJSONObject(FILE_ERROR_KEY);
-            if (fileErrors.names().length()>0) {
+            if (fileErrors.names()!=null && fileErrors.names().length()>0) {
                 errors.append("File Errors:\n\n");
                 for (Iterator it = fileErrors.keys(); it.hasNext(); ) {
                     String key = (String) it.next();
