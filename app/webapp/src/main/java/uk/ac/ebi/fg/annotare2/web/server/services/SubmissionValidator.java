@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.server.services;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.inject.Inject;
 import org.mged.magetab.error.ErrorItem;
 import uk.ac.ebi.arrayexpress2.magetab.datamodel.MAGETABInvestigation;
@@ -84,6 +85,11 @@ public class SubmissionValidator {
         }
     }
 
+    private boolean validateRelatedAccessionNumber(String relatedAccessionNumber) {
+        RegExp regex = RegExp.compile("^(?:[A|E]-[A-Z]{4}-\\d+,)*[A|E]-[A-Z]{4}-\\d+$");
+        return regex.test(relatedAccessionNumber);
+    }
+
     private Collection<CheckResult> validateExperimentSubmission(ExperimentSubmission submission) throws IOException,
             ParseException, UnknownExperimentTypeException, DataSerializationException {
 
@@ -93,6 +99,8 @@ public class SubmissionValidator {
         Long submissionId = submission.getId();
         ExperimentProfile exp = submission.getExperimentProfile();
         ExperimentType type = exp.getType().isMicroarray() ? ExperimentType.MICRO_ARRAY : ExperimentType.HTS;
+
+
 
         MAGETABInvestigation mageTab = (new MageTabGenerator(exp, efoSearch, GenerateOption.REPLACE_NEWLINES_WITH_SPACES)).generate();
         mageTab.IDF.setLocation(dataFileConnector.getFileUrl(userId, submissionId, "idf.txt"));
@@ -109,6 +117,11 @@ public class SubmissionValidator {
 
         Set<DataFile> allFiles = submission.getFiles();
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
+
+        if(!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber()))
+        {
+            addError(results, "Enter Related Accession Number in correct format ( separated by comma in case of multiple accession numbers ) e.g E-MTAB-1234,E-MTAB-4353");
+        }
 
         if (null == allFiles || 0 == allFiles.size()) {
             addError(results, "At least one data file must be uploaded and assigned");

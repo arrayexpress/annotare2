@@ -43,6 +43,8 @@ public class ExperimentProfile implements Serializable {
 
     private ExperimentProfileType type;
 
+    private String relatedAccessionNumber;
+
     private String title;
 
     private String description;
@@ -136,6 +138,14 @@ public class ExperimentProfile implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getRelatedAccessionNumber() {
+        return relatedAccessionNumber;
+    }
+
+    public void setRelatedAccessionNumber(String relatedAccessionNumber) {
+        this.relatedAccessionNumber = relatedAccessionNumber;
     }
 
     public String getDescription() {

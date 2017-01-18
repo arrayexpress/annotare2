@@ -54,7 +54,8 @@ class ExperimentProfileSerializer10 extends JsonSerializer<ExperimentProfile> {
             "fileColumns",
             "protocolId2SampleIds",
             "protocolId2ExtractIds",
-            "protocolId2LabeledExtractIds"
+            "protocolId2LabeledExtractIds",
+            "relatedExperimentAccessionNumber"
     );
 
     @Override
