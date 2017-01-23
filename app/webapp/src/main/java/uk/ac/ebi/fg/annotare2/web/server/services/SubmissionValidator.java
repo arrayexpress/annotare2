@@ -118,11 +118,11 @@ public class SubmissionValidator {
         Set<DataFile> allFiles = submission.getFiles();
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
 
-        if(!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber()))
-        {
-            addError(results, "Enter Related Accession Number in correct format ( separated by comma in case of multiple accession numbers ) e.g E-MTAB-1234,E-MTAB-4353");
+        if(!exp.getRelatedAccessionNumber().equals("")) {
+            if (!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber())) {
+                addError(results, "Enter Related Accession Number in correct format ( separated by comma in case of multiple accession numbers ) e.g E-MTAB-1234,E-MTAB-4353");
+            }
         }
-
         if (null == allFiles || 0 == allFiles.size()) {
             addError(results, "At least one data file must be uploaded and assigned");
         } else if (null == assignedFiles || 0 == assignedFiles.size()) {
