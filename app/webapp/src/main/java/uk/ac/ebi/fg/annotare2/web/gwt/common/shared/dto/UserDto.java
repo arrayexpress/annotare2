@@ -25,14 +25,16 @@ public class UserDto implements IsSerializable {
 
     private String name;
     private boolean isCurator;
+    private boolean hasReferrer;
 
     UserDto() {
         /* used by GWT Serialization */
     }
 
-    public UserDto(String name, boolean isCurator) {
+    public UserDto(String name, boolean isCurator, boolean hasReferrer) {
         this.name = name;
         this.isCurator = isCurator;
+        this.hasReferrer = hasReferrer;
     }
 
     public String getName() {
@@ -41,5 +43,9 @@ public class UserDto implements IsSerializable {
 
     public boolean isCurator() {
         return isCurator;
+    }
+
+    public boolean hasReferrer() {
+        return hasReferrer;
     }
 }

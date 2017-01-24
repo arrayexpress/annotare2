@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -26,7 +28,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 
 
 /**
@@ -62,14 +63,39 @@ public class ValidateSubmissionDialog extends DialogBox {
     Button cancelButton;
     @UiField
     Button okButton;
+    @UiField
+    RadioButton rbChecklist;
+    @UiField
+    RadioButton rbJournal;
+    @UiField
+    RadioButton rbSearch;
+    @UiField
+    RadioButton rbArrayExpress;
+    @UiField
+    RadioButton rbWordOfMouth;
+    @UiField
+    RadioButton rbOther;
+    @UiField
+    TextBox tbOther;
+    @UiField
+    HTMLPanel pnlReferrer;
+
     private DialogCallback<Void> callback;
     private ExperimentProfileType experimentProfileType;
 
-    public ValidateSubmissionDialog(ExperimentProfileType experimentProfileType) {
+    public ValidateSubmissionDialog(ExperimentProfileType experimentProfileType, boolean askForReferrer) {
         setModal(true);
         setGlassEnabled(true);
         setWidget(Binder.BINDER.createAndBindUi(this));
+        this.pnlReferrer.setVisible(askForReferrer);
         this.experimentProfileType = experimentProfileType;
+        this.tbOther.getElement().setPropertyString("placeholder","Please specify");
+        this.tbOther.addKeyDownHandler(new KeyDownHandler() {
+            @Override
+            public void onKeyDown(KeyDownEvent keyDownEvent) {
+                rbOther.setValue(true);
+            }
+        });
     }
 
     @UiHandler("cancelButton")
@@ -114,6 +140,15 @@ public class ValidateSubmissionDialog extends DialogBox {
 
     public String getFeedbackMessage() {
         return message.getValue().trim();
+    }
+
+    public String getReferrer() {
+        if (rbChecklist.getValue()) return "Checklist";
+        if (rbJournal.getValue()) return "Journal";
+        if (rbArrayExpress.getValue()) return "ArrayExpress";
+        if (rbWordOfMouth.getValue()) return "Word of Mouth";
+        if (rbSearch.getValue()) return "Search Engine";
+        return tbOther.getValue();
     }
 
     private void setTitleAndMessage(String title, String message) {
@@ -175,16 +210,14 @@ public class ValidateSubmissionDialog extends DialogBox {
             setTitleAndMessage(
                     "Submission Successful",
                     "Thanks for submitting!.<br/><br/>" +
-                            "You'll receive a stable accession number shortly for this submission." +
-                            "The accession can be  <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" " +
-                            "target=\"_blank\">cited</a> " +
-                            "in your manuscript, but is not valid until a curator has checked the raw data files, " +
-                            "reviewed your submission and loaded it " +
-                            "into the ArrayExpress database. <br/><br/>" +
-                            "We will start checking the content of your raw data files as soon as possible. Sometimes " +
-                            "this can take a few days, due to the sheer volume of data; please bear with us. If we " +
+                            "We will start checking the content of your raw data files as soon as possible. Sometimes" +
+                            " this can take a few days, due to the sheer volume of data; please bear with us. If we " +
                             "detect problems with the files, we will provide information on how to fix the problems, " +
-                            "and invite you to resubmit with valid files.");
+                            "and invite you to resubmit with valid files. <br/><br/>" +
+                            "You will receive a stable accession number shortly for this submission if there are no " +
+                            "problems. The accession can be <a href=\"http://www.ebi.ac.uk/arrayexpress/help/FAQ.html#cite\" target=\"_blank\">cited</a> " +
+                            "in your manuscript, but is not valid until a curator reviewed your submission and loaded it " +
+                            "into the ArrayExpress database.");
         } else {
             setTitleAndMessage(
                     "Submission Successful",

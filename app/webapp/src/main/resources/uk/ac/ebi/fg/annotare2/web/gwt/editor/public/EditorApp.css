@@ -556,3 +556,13 @@ a.wgt-button :hover {
 .app-UpperCaseSuggestBox {
     text-transform: uppercase;
 }
+
+.autosave:before {
+    content: "\f0c7";
+    font-family: "FontAwesome";
+    margin-right: 4px;
+}
+
+.app-log tbody tr td {
+    padding: 4px;
+}

@@ -23,4 +23,5 @@ public class EmailTemplates {
     public static final String SUBMISSION_FEEDBACK_OTRS_TEMPLATE = "submission-feedback-otrs";
     public static final String REJECTED_SUBMISSION_TEMPLATE = "rejected-submission";
     public static final String ACCESSION_UPDATE_TEMPLATE = "accession-update-submission";
+    public static final String FILE_VALIDATION_ERROR_TEMPLATE = "file-validation-error";
 }

@@ -21,8 +21,10 @@ package uk.ac.ebi.fg.annotare2.db.model.enums;
  */
 public enum SubmissionStatus {
     IN_PROGRESS("In Progress"),
+    AWAITING_FILE_VALIDATION("Awaiting File Validation"),
+    VALIDATING_FILES("Validating Files"),
     SUBMITTED("Submitted"),
-    RESUBMITTED("Resubmitted"),
+    RESUBMITTED("Resubmitted"), // TODO: Remove this. SubsTrackingId can tell if it's a resubmission or not
     IN_CURATION("In Curation"),
     PRIVATE_IN_AE("Private in ArrayExpress"),
     PUBLIC_IN_AE("Public in ArrayExpress");

@@ -22,6 +22,10 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExperimentPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTabBarView;
@@ -35,12 +39,16 @@ public class ExperimentTabBarActivity extends AbstractActivity implements Editor
     private final EditorTabBarView view;
     private final PlaceController placeController;
     private ExperimentTab selectedTab;
+    private UserDto currentUser;
+
+    private final CurrentUserAccountServiceAsync userService;
 
     @Inject
     public ExperimentTabBarActivity(EditorTabBarView view,
-                                    PlaceController placeController) {
+                                    PlaceController placeController, CurrentUserAccountServiceAsync userService) {
         this.view = view;
         this.placeController = placeController;
+        this.userService = userService;
     }
 
     public ExperimentTabBarActivity withPlace(ExperimentPlace place) {
@@ -49,12 +57,22 @@ public class ExperimentTabBarActivity extends AbstractActivity implements Editor
     }
 
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        view.initWithTabs(ExperimentTab.values());
+        loadCurrentUserAsync();
         view.setPresenter(this);
-        view.selectTab(selectedTab);
         containerWidget.setWidget(view.asWidget());
     }
 
+    private void loadCurrentUserAsync() {
+        userService.me(AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<UserDto>(ReportingAsyncCallback.FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
+                    @Override
+                    public void onSuccess(UserDto result) {
+                        view.setCurrentUser(result);
+                        view.initWithTabs(ExperimentTab.values());
+                        view.selectTab(selectedTab);
+                    }
+                }));
+    }
     public void goTo(Place place) {
         placeController.goTo(place);
     }

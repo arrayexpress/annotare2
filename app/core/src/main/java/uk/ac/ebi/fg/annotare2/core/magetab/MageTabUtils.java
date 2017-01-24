@@ -16,9 +16,10 @@
 
 package uk.ac.ebi.fg.annotare2.core.magetab;
 
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
+
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author Olga Melnichuk
@@ -50,5 +51,105 @@ public class MageTabUtils {
             cal.add(Calendar.DATE, 1);
             return cal.getTime();
         }
+    }
+
+    public static boolean isObsoleteError(String code) {
+        return obsoleteErrors.contains(code);
+    }
+
+    public static String getErrorString(CheckResult cr) {
+        String ref = cr.getReference();
+        if (!errorMap.containsKey(ref)) return cr.getTitle();
+        StringBuilder sb = new StringBuilder(errorMap.get(ref));
+        if (cr.getDynamicDetail()!=null) {
+            return String.format(sb.toString(), cr.getDynamicDetail() );
+        }
+        return sb.toString();
+    }
+
+    private static final Map<String, String> errorMap = new HashMap<>();
+    private static final HashSet obsoleteErrors = new HashSet<>();
+    static {
+        errorMap.put("ADMN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] The 'Raw Data Matrix File' column has not been filled in (completely). See <a target=\"_blank\" href=\"../../help/assign_files.html\">Assign files to samples (Annotare Help)</a> for more details.");
+        errorMap.put("ADMN02", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] An array data matrix file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
+        errorMap.put("ADN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] The 'Raw Data File' column has not been filled in (completely). See <a target=\"_blank\" href=\"../../help/assign_files.html\">Assign files to samples (Annotare Help)</a> for more details.");
+        errorMap.put("ADN02", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] A raw data file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
+        errorMap.put("AN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] An assay name could not be generated automatically. You may not have assigned a data file to the sample(s). See <a target=\"_blank\" href=\"../../help/assign_files.html\">Assign files to samples (Annotare Help)</a> for more details.");
+        errorMap.put("AN03", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid sequencing protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("AN04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid hybridization to array protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("AN08", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] The assignment between files and samples contains errors. You may have chosen the wrong type of data column (e.g. choose 'Raw Matrix', not 'Raw', if you have 1 file containing raw data for multiple samples). For two-color experiments, there may be a problem with the relationship between files and samples (expects 1 raw data file per 2 labeled extracts). See <a target=\"_blank\" href=\"../../help/assign_files.html\">Assign files to samples (Annotare Help)</a> and <a target=\"_blank\" href=\"../../help/two_color_ma.html\">Two-color experiments (Annotare Help)</a> for more details.");
+        errorMap.put("C01", "[<a href=\"#INFO:CONTACTS\">Contacts</a>] At least one contact must be included. Go to [<a href=\"#INFO:CONTACTS\">Contacts</a>] and press the '+' sign to create a new contact.");
+        errorMap.put("C02", "[<a href=\"#INFO:CONTACTS\">Contacts</a>] A contact must have a last name specified. Go to [<a href=\"#INFO:CONTACTS\">Contacts</a>], select a contact, and fill in the form.");
+        errorMap.put("C03", "[<a href=\"#INFO:CONTACTS\">Contacts</a>] At least one contact must have an email address specified. Go to [<a href=\"#INFO:CONTACTS\">Contacts</a>], select a contact, and fill in the form.");
+        errorMap.put("C04", "[<a href=\"#INFO:CONTACTS\">Contacts</a>] At least one contact must have a role specified. In the [<a href=\"#INFO:CONTACTS\">Contacts</a>] form, click on 'change' next to 'Roles' to select the role(s) of the contact.");
+        errorMap.put("C05", "[<a href=\"#INFO:CONTACTS\">Contacts</a>] At least one contact must have the role 'submitter'. In the [<a href=\"#INFO:CONTACTS\">Contacts</a>] form, click on 'change' next to 'Roles' to select the role(s) of the contact.");
+        errorMap.put("C06", "[<a href=\"#INFO:CONTACTS\">Contacts</a>] A contact with 'submitter' role must have an affiliation specified. Go to [<a href=\"#INFO:CONTACTS\">Contacts</a>], select the contact with role 'submiter', and fill in the form.");
+        errorMap.put("C07", "[<a href=\"#INFO:CONTACTS\">Contacts</a>] A contact with 'submitter' role must have an email address specified. Go to [<a href=\"#INFO:CONTACTS\">Contacts</a>], select the contact with role 'submitter', and fill in the form.");
+        errorMap.put("DADMN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] A processed data matrix file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
+        errorMap.put("DADMN02", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] A processed data matrix file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
+        errorMap.put("DADMN04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'normalization data transformation protocol' must be included wich describes the analysis methods used to generate the processed data matrix file. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("DADN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] The 'Processed Data File' column has not been filled in (completely). See <a target=\"_blank\" href=\"../../help/assign_files.html\">Assign files to samples (Annotare Help)</a> for more details.");
+        errorMap.put("DADN02", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] A processed data file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
+        errorMap.put("DADN04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'normalization data transformation protocol' must be included which describes the analysis methods used to generate the processed data file(s). To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("EF01", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] An experiment must have at least one experimental variable. Go to [<a href=\"#DESIGN:SAMPLES\">Samples</a>] and press 'Add Sample Attributes and Variables...'. In the left panel, select the sample attribute that varies among your samples and is subject of the study, then tick the box next to 'Experimental Variable'.");
+        errorMap.put("EX03", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid extraction protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("EX04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid library construction protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("FV04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] At least one sample attribute must be selected as an experimental variable, which highlights the main intent of your study.  For example, the variable is \"genotype\" if you're comparing mutant samples against wild-type controls.   The values of the variable must vary among your samples (following on the previous example, we expect you to have both mutant and wild-type samples), with the exception of compound + dose (at least one must vary). Your sample annotation currently does not satisfy such rules ( %s ). Please nominate a different sample attribute as the experimental variable, or review the sample annotation. To remove an attribute from being the experimental variable, uncheck 'Experimental Variable' in the 'Add Samples and Experimental Variables' dialogue.");
+        errorMap.put("G01", "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] The experiment must have a title. Please provide an informative title that states the intent (and not conclusion) of the experiment.");
+        errorMap.put("G02", "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] The experiment must have a description. Please outline the scientific background and the experimental workflow in the text field.");
+        errorMap.put("G05", "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] A public release date for the experiment must be entered. To keep the experiment in private state after submission, select a date up to 1 year in the future. This can be changed later.");
+        errorMap.put("LC01", "[<a href=\"#DESIGN:EXTRACTS_LIBRARY_INFO\">Library Info</a>] The library source, layout, selection and strategy must be specified in the ENA library info. See <a target=\"_blank\" href=\"../../help/seq_lib_spec.html\">Sequencing library information (Annotare Help)</a> for more details.");
+        errorMap.put("LC02", "[<a href=\"#DESIGN:EXTRACTS_LIBRARY_INFO\">Library Info</a>] NOMINAL_LENGTH and NOMINAL_SDEV must be provided for paired-end sequencing samples in [<a href=\"#DESIGN:EXTRACTS_LIBRARY_INFO\">Library Info</a>]. Both must be a positive integer. See <a target=\"_blank\" href=\"../../help/seq_lib_spec.html\">Sequencing library information (Annotare Help)</a> for more details.");
+        errorMap.put("LE05", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid labeling protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("PB02", "[<a href=\"#INFO:PUBLICATIONS\">Publication</a>] The PubMed ID field can only contain numbers, and no other characters (including whitespaces).");
+        errorMap.put("PN06", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] For the 'nucleic acid sequencing protocol' a 'performer' must be specified. Enter the name of the institute or sequencing center that generated the sequencing files under 'Performer' for the 'nucleic acid sequencing protocol'.");
+        errorMap.put("PR01", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] At least one protocol must be used in an experiment. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("PR05", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A protocol needs to have a description. Enter (or paste) a protocol text in the 'Description' field.");
+        errorMap.put("PR08", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid library construction protocol' must be included for sequencing submissions. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("PR09", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid sequencing protocol' must be included for sequencing submissions. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("PR10", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] The 'nucleic acid sequencing protocol' must specify the sequencing hardware. Choose the name of the sequencing machine from the drop-down menu under 'Hardware' for the 'nucleic acid sequencing protocol'.");
+        errorMap.put("SR04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] 'Organism' is a mandatory attribute for the source material and must be filled in.");
+        errorMap.put("SR08", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'growth protocol', 'treatment protocol' or 'sample collection protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+
+        obsoleteErrors.add("ADMN03");
+        obsoleteErrors.add("DADMN03");
+        obsoleteErrors.add("DADN03");
+        obsoleteErrors.add("ADN03");
+        obsoleteErrors.add("AD01");
+        obsoleteErrors.add("AD03");
+        obsoleteErrors.add("AD04");
+        obsoleteErrors.add("AN02");
+        obsoleteErrors.add("AN03");
+        obsoleteErrors.add("AN05");
+        obsoleteErrors.add("AN06");
+        obsoleteErrors.add("CA03");
+        obsoleteErrors.add("COM01");
+        obsoleteErrors.add("EF02");
+        obsoleteErrors.add("EX01");
+        obsoleteErrors.add("FV03");
+        obsoleteErrors.add("G04");
+        obsoleteErrors.add("G06");
+        obsoleteErrors.add("G07");
+        obsoleteErrors.add("G08");
+        obsoleteErrors.add("G09");
+        obsoleteErrors.add("L03");
+        obsoleteErrors.add("LE01");
+        obsoleteErrors.add("LE02");
+        obsoleteErrors.add("LE04");
+        obsoleteErrors.add("MT03");
+        obsoleteErrors.add("PN03");
+        obsoleteErrors.add("PN05");
+        obsoleteErrors.add("PR03");
+        obsoleteErrors.add("SC02");
+        obsoleteErrors.add("SM01");
+        obsoleteErrors.add("SR01");
+        obsoleteErrors.add("SR06");
+        obsoleteErrors.add("TS01");
+        obsoleteErrors.add("TS02");
+        obsoleteErrors.add("TT01");
+        obsoleteErrors.add("TT03");
+        obsoleteErrors.add("UA03");
+        obsoleteErrors.add("PN01");
+        obsoleteErrors.add("PR02");
     }
 }

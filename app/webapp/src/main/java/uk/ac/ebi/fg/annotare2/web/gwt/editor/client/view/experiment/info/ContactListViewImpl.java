@@ -70,6 +70,7 @@ public class ContactListViewImpl extends ListView<ContactDto.Editor> implements 
         for (ContactDto p : contacts) {
             addContactView(p);
         }
+
     }
 
     @Override

@@ -82,7 +82,9 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
     public void setSubmissionDetails(SubmissionDetails details) {
         submissionType = details.getType();
 
-        if (details.getStatus() != SubmissionStatus.IN_PROGRESS && !isCurator) {
+        if ((details.getStatus() != SubmissionStatus.IN_PROGRESS && !isCurator)
+                || details.getStatus() == SubmissionStatus.SUBMITTED
+                || details.getStatus() == SubmissionStatus.RESUBMITTED) {
             editButton.setText("View");
         } else if (submissionType.isImported()) {
             editButton.setText("Import");

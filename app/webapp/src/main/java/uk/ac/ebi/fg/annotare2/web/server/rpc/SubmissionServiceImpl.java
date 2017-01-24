@@ -27,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.EfoSearch;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator;
+import uk.ac.ebi.fg.annotare2.core.magetab.MageTabUtils;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
 import uk.ac.ebi.fg.annotare2.core.utils.NamingPatternUtil;
 import uk.ac.ebi.fg.annotare2.db.dao.RecordNotFoundException;
@@ -64,10 +65,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static uk.ac.ebi.fg.annotare2.core.magetab.MageTabGenerator.restoreOriginalNameValues;
@@ -351,15 +349,16 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             Submission submission = getSubmission(id, Permission.VIEW);
             Collection<CheckResult> results = validator.validate(submission);
             for (CheckResult cr : results) {
+                if ( MageTabUtils.isObsoleteError(cr.getReference())) continue;
                 switch (cr.getStatus()) {
                     case WARNING:
-                        warnings.add(cr.asString());
+                        warnings.add("WARNING: " + MageTabUtils.getErrorString(cr));
                         break;
                     case ERROR:
-                        errors.add(cr.asString());
+                        errors.add("ERROR: " + MageTabUtils.getErrorString(cr));
                         break;
                     case FAILURE:
-                        failures.add(cr.asString());
+                        failures.add("FAILURE: " + MageTabUtils.getErrorString(cr));
                         break;
                 }
             }
@@ -372,7 +371,11 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (IllegalArgumentException e) {
             failures.add(e.getMessage());
         }
-        return new ValidationResult(errors, warnings, failures);
+        ArrayList<String> errorList = newArrayList(new LinkedHashSet(errors));
+        Collections.sort(errorList);
+        return new ValidationResult( errorList,
+                newArrayList(new LinkedHashSet(warnings)),
+                newArrayList(new LinkedHashSet(failures)));
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
@@ -383,13 +386,17 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             Submission submission = getSubmission(id, Permission.UPDATE);
             User currentUser = getCurrentUser();
             boolean isCurator = UIObjectConverter.uiUser(currentUser).isCurator();
+            boolean isSequencing = (submission instanceof ExperimentSubmission) ?
+                    ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing()
+                    : false;
+            SubmissionStatus nextStatus = isSequencing ? SubmissionStatus.AWAITING_FILE_VALIDATION
+                    : (SubmissionStatus.IN_PROGRESS == submission.getStatus() ? SubmissionStatus.SUBMITTED
+                    : SubmissionStatus.RESUBMITTED);
+
             if (submission.getStatus().canSubmit(isCurator)) {
                 storeAssociatedFiles(submission);
                 submission.setSubmitted(new Date());
-                submission.setStatus(
-                        SubmissionStatus.IN_PROGRESS == submission.getStatus() ?
-                                SubmissionStatus.SUBMITTED : SubmissionStatus.RESUBMITTED
-                );
+                submission.setStatus(nextStatus);
                 submission.setOwnedBy(userDao.getCuratorUser());
                 save(submission);
             }

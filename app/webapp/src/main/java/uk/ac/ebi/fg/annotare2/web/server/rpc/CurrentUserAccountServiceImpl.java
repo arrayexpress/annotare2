@@ -19,6 +19,8 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.db.dao.UserDao;
+import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
@@ -30,14 +32,25 @@ import static uk.ac.ebi.fg.annotare2.web.server.rpc.transform.UIObjectConverter.
  */
 public class CurrentUserAccountServiceImpl extends AuthBasedRemoteService implements CurrentUserAccountService {
 
+    private final UserDao userDao;
+
     @Inject
-    public CurrentUserAccountServiceImpl(AccountService accountService, Messenger messenger) {
+    public CurrentUserAccountServiceImpl(AccountService accountService, Messenger messenger, UserDao userDao) {
         super(accountService, messenger);
+        this.userDao = userDao;
     }
 
     @Transactional
     @Override
     public UserDto me() {
         return uiUser(getCurrentUser());
+    }
+
+    @Transactional
+    @Override
+    public void saveCurrentUserReferrer(String referrer) {
+        User currentUser =  getCurrentUser();
+        currentUser.setReferrer(referrer);
+        userDao.save(currentUser);
     }
 }

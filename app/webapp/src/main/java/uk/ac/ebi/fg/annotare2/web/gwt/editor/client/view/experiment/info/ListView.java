@@ -60,8 +60,8 @@ public class ListView<T> extends Composite {
 
     protected DisclosureListItem addListItem(ItemView<T> itemView) {
         DisclosureListItem item = new DisclosureListItem(itemView);
+        item.openPanel();
         listPanel.add(item);
-
         item.addItemSelectionHandler(new ItemSelectionEventHandler() {
             @Override
             public void onSelect(boolean selected) {

@@ -33,6 +33,7 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.web.bindery.event.shared.EventBus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionService;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -60,7 +61,7 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmis
 public class EditorApp implements EntryPoint {
 
     private final EditorGinjector injector = GWT.create(EditorGinjector.class);
-    private final static String SUBMISSION_READONLY_COOKIE = "Submission_ReadOnly_Shown";
+    private int submissionCount = 0;
 
     public void onModuleLoad() {
         loadModule(RootLayoutPanel.get());
@@ -74,19 +75,34 @@ public class EditorApp implements EntryPoint {
             }
         });
 
-        SubmissionServiceAsync submissionService = injector.getSubmissionService();
+        final SubmissionServiceAsync submissionService = injector.getSubmissionService();
         final int subId = getSubmissionId();
         submissionService.getSubmissionDetails(subId,
                 AsyncCallbackWrapper.callbackWrap(
                         new ReportingAsyncCallback<SubmissionDetails>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION) {
                             @Override
                             public void onSuccess(SubmissionDetails details) {
-                                renameBrowserTab(details);
-                                init(root, details);
+                                getSubmissionCountAndInit(root,details, submissionService);
                             }
                         }
                 )
         );
+
+
+
+    }
+
+    private void getSubmissionCountAndInit(final HasWidgets root, final SubmissionDetails details, SubmissionServiceAsync submissionService) {
+        submissionService.getSubmissionCountForCurrentUser( AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<Integer>() {
+                    @Override
+                    public void onSuccess(Integer count) {
+                        submissionCount = count;
+                        renameBrowserTab(details);
+                        init(root, details);
+                    }
+                }
+        ));
     }
 
     private void renameBrowserTab(SubmissionDetails details) {
@@ -124,35 +140,9 @@ public class EditorApp implements EntryPoint {
         root.add(layout);
 
         historyHandler.handleCurrentHistory();
-
-        showSubmissionReadOnlyMessage(details);
-
         ServerWatchdog.start();
     }
 
-    private void showSubmissionReadOnlyMessage(SubmissionDetails details) {
-        if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(SUBMISSION_READONLY_COOKIE))) {
-            final SubmissionStatus submissionStatus = details.getStatus();
-            CurrentUserAccountServiceAsync userService = injector.getCurrentUserAccountService();
-            userService.me(AsyncCallbackWrapper.callbackWrap(
-                    new ReportingAsyncCallback<UserDto>(FailureMessage.UNABLE_TO_LOAD_USER_INFORMATION) {
-                        @Override
-                        public void onSuccess(UserDto result) {
-                            if (submissionStatus != SubmissionStatus.IN_PROGRESS && !result.isCurator()) {
-                                Date cookieExpiryDate = new Date();
-                                CalendarUtil.addMonthsToDate(cookieExpiryDate,3);
-                                final DialogBox dialogBox = new CookieDialog(
-                                        "Submission cannot be modified",
-                                        "<p>This submission can no longer be modified. Please do not make any changes on these forms, as they will be lost. </p><p>To change release date and/or publication details, please use <a target=\"_blank\" href=\"https://www.ebi.ac.uk/fg/acext/\">https://www.ebi.ac.uk/fg/acext/</a>. Login details were emailed to you when your experiment was loaded into ArrayExpress.</p><p>If you'd like to modify other aspects of your submission, e.g. add/remove samples, please click the \"Contact Us\" button above and tell us what modifications are required. A curator will respond as soon as possible.</p>",
-                                        SUBMISSION_READONLY_COOKIE, cookieExpiryDate
-                                );
-                                dialogBox.show();
-                            }
-                        }
-                    }
-            ));
-        }
-    }
 
     private Widget initStartLayout(EventBus eventBus) {
         EditorStartLayout layout = new EditorStartLayout();
@@ -169,7 +159,7 @@ public class EditorApp implements EntryPoint {
     }
 
     private Widget initMainLayout(SubmissionType type, EventBus eventBus) {
-        EditorLayout layout = (type == EXPERIMENT) ? new ExperimentLayout(eventBus) : new ArrayDesignLayout();
+        EditorLayout layout = (type == EXPERIMENT) ? new ExperimentLayout(eventBus, submissionCount) : new ArrayDesignLayout();
 
         ActivityMapper topBarActivityMapper = injector.getTopBarActivityMapper();
         ActivityManager topBarActivityManager = new ActivityManager(topBarActivityMapper, eventBus);

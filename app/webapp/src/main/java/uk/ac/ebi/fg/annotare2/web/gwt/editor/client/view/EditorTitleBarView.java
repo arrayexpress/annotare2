@@ -49,6 +49,8 @@ public interface EditorTitleBarView extends IsWidget {
 
     void setExperimentProfileType(ExperimentProfileType experimentProfileType);
 
+    void setUserHasReferrer(boolean b);
+
     interface Presenter extends SetupExpSubmissionView.Presenter, ContactUsDialog.Presenter {
 
         void assignSubmissionToMe(AsyncCallback<Void> callback);
@@ -60,6 +62,8 @@ public interface EditorTitleBarView extends IsWidget {
         void submitSubmission(SubmissionHandler handler);
 
         void postFeedback(Byte score, String message, AsyncCallback<Void> callback);
+
+        void saveCurrentUserReferrer(String referrer, AsyncCallback<Void> callback);
 
         String getSubmissionExportUrl();
     }
