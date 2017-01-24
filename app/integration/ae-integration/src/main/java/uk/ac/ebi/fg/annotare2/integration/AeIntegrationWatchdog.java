@@ -224,6 +224,7 @@ public class AeIntegrationWatchdog {
                                 .put("submission.id", String.valueOf(submission.getId()))
                                 .put("submission.title", submission.getTitle())
                                 .put("submission.errors", fileValidationService.getErrorString(json))
+                                .put("submission.date", submission.getUpdated().toString())
                                 .build(),
                         submission
                 );
