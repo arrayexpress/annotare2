@@ -93,16 +93,22 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_160826_Shown";
+    private final static String NOTICE_COOKIE = "Notice_161010_Shown";
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1472684399000L); // stop showing on 31 Aug
+        stopNoticeDate.setTime(1476053990000L); // stop showing on 10 Oct
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
                     "Notice",
-                    "<p>Dear Submitter,</p><p>Please allow extra time for your submission in August 2016, as some members of the ArrayExpress curation team will be on summer leave, with submission handling time increasing from 5 working days to 10.</p><p>Moreover, there will be essential systems maintenance between 26-31 August, when Annotare will be shut down completely.</p><p> If you have any urgent experiments to submit in August, please email us at <a href=\"mailto:annotare@ebi.ac.uk\">annotare@ebi.ac.uk</a> and we'll try our best to accommodate. We apologise for any inconvenience caused.</p><p>Regards,<br/>Annotare Team</p>",
+                    "<p>Dear Submitter,</p><p>" +
+                            "ArrayExpress curators will be attending the EBI Functional Genomics team retreat from " +
+                            "5 Oct 2016 to 8 Oct 2016. Our curation response time will therefore be increased " +
+                            "from 5 to 10 working days. Please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">" +
+                            "annotare@ebi.ac.uk</a> if your experiment submission requires urgent attention, and we " +
+                            "will prioritise with our best efforts. Sorry for any inconvenience caused.</p><p>" +
+                            "Regards,<br/>Annotare Team</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();

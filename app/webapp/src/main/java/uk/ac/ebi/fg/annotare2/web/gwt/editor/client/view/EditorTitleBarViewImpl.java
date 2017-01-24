@@ -23,7 +23,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -82,6 +84,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     private boolean shouldAllowInstantFeedback;
     private boolean isCurator;
     private boolean isOwnedByCreator;
+    private boolean hasReferrer;
 
     private final ContactUsDialog contactUsDialog;
     private final WaitingPopup waitingPopup;
@@ -145,6 +148,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     @Override
     public void setExperimentProfileType(ExperimentProfileType experimentProfileType) {
         this.experimentProfileType = experimentProfileType;
+    }
+
+    @Override
+    public void setUserHasReferrer(boolean b) {
+        this.hasReferrer = b;
     }
 
 
@@ -214,48 +222,60 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("validateButton")
     void onValidateButtonClick(ClickEvent event) {
-        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType);
+        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
         dialog.showValidationProgressMessage(null);
-
-        presenter.validateSubmission(new ValidationHandler() {
-
+        Timer t = new Timer() { // wait for any unsaved edits to persist
             @Override
-            public void onFailure() {
-                dialog.showValidationFailureMessage(null);
-            }
+            public void run() {
+                presenter.validateSubmission(new ValidationHandler() {
 
-            @Override
-            public void onSuccess(ValidationResult result) {
-                if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
-                    dialog.showValidationFailureMessage(null);
-                } else {
-                    dialog.hide();
-                }
+                    @Override
+                    public void onFailure() {
+                        dialog.showValidationFailureMessage(null);
+                    }
+
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+                        if (result.getErrors().size() > 0 || result.getFailures().size() > 0) {
+                            dialog.showValidationFailureMessage(null);
+                        } else {
+                            dialog.hide();
+                        }
+                    }
+                });
             }
-        });
+        };
+        t.schedule(2500);
     }
 
     @UiHandler("submitButton")
     void onSubmitButtonClick(ClickEvent event) {
-        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType);
+        final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
         dialog.showValidationProgressMessage(null);
 
-        presenter.validateSubmission(new ValidationHandler() {
-            @Override
-            public void onFailure() {
-                onValidationFailure(dialog);
-            }
 
+        Timer t = new Timer() { // wait for any unsaved edits to persist
             @Override
-            public void onSuccess(ValidationResult result) {
+            public void run() {
+                presenter.validateSubmission(new ValidationHandler() {
+                    @Override
+                    public void onFailure() {
+                        onValidationFailure(dialog);
+                    }
 
-                if (!result.canSubmit()) {
-                    onValidationFailure(dialog);
-                } else {
-                    processSubmission(dialog, shouldAllowInstantFeedback);
-                }
+                    @Override
+                    public void onSuccess(ValidationResult result) {
+
+                        if (!result.canSubmit()) {
+                            onValidationFailure(dialog);
+                        } else {
+                            processSubmission(dialog, shouldAllowInstantFeedback);
+                        }
+                    }
+                });
             }
-        });
+        };
+        t.schedule(2500);
     }
 
     void onValidationFailure(final ValidateSubmissionDialog dialog) {
@@ -306,15 +326,35 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                                     new ReportingAsyncCallback<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+                                            if (dialog.getReferrer()!="") {
+                                                saveCurrentUserReferrer(dialog.getReferrer());
+                                            }
                                             reloadSubmission();
                                         }
                             });
                         } else {
+                            if (dialog.getReferrer()!="") {
+                                saveCurrentUserReferrer(dialog.getReferrer());
+                            }
                             reloadSubmission();
                         }
                         return true;
                     }
                 }, doFeedback);
+            }
+        });
+    }
+
+    private void saveCurrentUserReferrer(String referrer) {
+        presenter.saveCurrentUserReferrer(referrer, new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(Void aVoid) {
+
             }
         });
     }

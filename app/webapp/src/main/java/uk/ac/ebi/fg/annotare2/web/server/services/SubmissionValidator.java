@@ -124,9 +124,9 @@ public class SubmissionValidator {
             }
         }
         if (null == allFiles || 0 == allFiles.size()) {
-            addError(results, "At least one data file must be uploaded and assigned");
+            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one data file must be uploaded and assigned");
         } else if (null == assignedFiles || 0 == assignedFiles.size()) {
-            addError(results, "At least one uploaded data file must be assigned");
+            addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] At least one uploaded data file must be assigned");
         } else {
             for (DataFile dataFile : allFiles) {
                 if (!dataFile.getStatus().isOk()) {
@@ -139,13 +139,14 @@ public class SubmissionValidator {
                             cause = " (file not found)";
                             break;
                     }
-                    addError(results, "File " + dataFile.getName() + " uploaded with an error" + cause);
+                    addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] File " + dataFile.getName() + " uploaded with an error" + cause);
                 } else if (!assignedFiles.contains(dataFile)) {
                     results.add(
                             CheckResult.checkFailed(
-                                    "File " + dataFile.getName() + " should be assigned to at least one labeled extract"
+                                    "[<a href=\"#DESIGN:FILES\">Assign Files</a>] File " + dataFile.getName() + " should be assigned to at least one labeled extract"
                                     , CheckModality.WARNING
                                     , CheckPosition.undefinedPosition()
+                                    , null
                                     , null
                             )
                     );
@@ -155,7 +156,7 @@ public class SubmissionValidator {
             for (DataFile dataFile : assignedFiles) {
                 DataFileHandle source = dataFileManager.getFileHandle(dataFile);
                 if (null == source || !fileChecker.isAvailable(source)) {
-                    addError(results, "File " + dataFile.getName() + " is not accessible"
+                    addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] File " + dataFile.getName() + " is not accessible"
                             + ((source instanceof RemoteFileHandle) ? " on FTP" : ""));
                 }
             }
@@ -181,9 +182,9 @@ public class SubmissionValidator {
         try {
             Collection<DataFile> idfFiles = submission.getIdfFiles();
             if (0 == idfFiles.size()) {
-                addError(results, "IDF file has not been uploaded");
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] IDF file has not been uploaded");
             } else if (idfFiles.size() > 1) {
-                addError(results, "More than one IDF file has been uploaded (" + fileNames(idfFiles) + ")");
+                addError(results, "[<a href=\"#DESIGN:FILES\">Assign Files</a>] More than one IDF file has been uploaded (" + fileNames(idfFiles) + ")");
             } else {
                 DataFile idfFile = idfFiles.iterator().next();
                 MAGETABInvestigation mageTab = parseMageTab(submission, idfFile.getName(), parserListener);
@@ -232,6 +233,7 @@ public class SubmissionValidator {
                 errorMessage
                 , CheckModality.ERROR
                 , CheckPosition.undefinedPosition()
+                , null
                 , null
         ));
     }

@@ -49,7 +49,7 @@ public class UIObjectConverter {
     private static Function<User, UserDto> USER_TRANSFORM = new Function<User, UserDto>() {
         public UserDto apply(@Nullable User user) {
             checkNotNull(user);
-            return new UserDto(user.getName(), isCurator(user));
+            return new UserDto(user.getName(), isCurator(user), user.getReferrer()!=null && user.getReferrer()!="");
         }
     };
 

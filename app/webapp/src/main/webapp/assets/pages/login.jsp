@@ -42,32 +42,8 @@
         }
     }
 </script>
-<section class="grid_16">
-    <div class='tableauPlaceholder' id='viz1471872169308' style='position: relative'>
-        <noscript><a href='http:&#47;&#47;localhost:8090&#47;annotare&#47;login&#47;'><img
-                alt='Annotare Submitter Satisfaction per Country '
-                src='http:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;59&#47;5979S2Y5M&#47;1_rss.png'
-                style='border: none'/></a></noscript>
-        <object class='tableauViz' style='display:none;'>
-            <param name='host_url' value='http%3A%2F%2Fpublic.tableau.com%2F'/>
-            <param name='path' value='shared&#47;5979S2Y5M'/>
-            <param name='toolbar' value='yes'/>
-            <param name='static_image'
-                   value='http:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;59&#47;5979S2Y5M&#47;1.png'/>
-            <param name='animate_transition' value='yes'/>
-            <param name='display_static_image' value='yes'/>
-            <param name='display_spinner' value='yes'/>
-            <param name='display_overlay' value='yes'/>
-            <param name='display_count' value='yes'/>
-        </object>
-    </div>
-    <script type='text/javascript'>                    var divElement = document.getElementById('viz1471872169308');
-    var vizElement = divElement.getElementsByTagName('object')[0];
-    vizElement.style.width = '804px';
-    vizElement.style.height = '669px';
-    var scriptElement = document.createElement('script');
-    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+<section class="grid_16"  style="padding-top:31px;padding-left: 26px;height:633px;">
+    <iframe height="100%" width="100%" src="https://www.youtube.com/embed/ANr2PTVy7JA" frameborder="0" allowfullscreen=""></iframe>
 </section>
 <section class="grid_7 form">
     <div id="login-box">

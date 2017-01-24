@@ -22,10 +22,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ConditionalColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.BackwardCompatibleSelectionCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.DynSelectionCell;
 
 import java.util.Comparator;
 import java.util.List;
@@ -121,18 +124,25 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     private void addColumn(final ExtractAttribute attr) {
-        Cell<String> cell = attr.hasOptions() ? new SelectionCell(attr.getOptions()) : new EditTextCell();
+        final Cell<String> cell = attr.hasOptions() ? new BackwardCompatibleSelectionCell<>(attr.getOptions()) : new EditTextCell();
         Column<ExtractAttributesRow, String> column = new Column<ExtractAttributesRow, String>(cell) {
             @Override
             public String getValue(ExtractAttributesRow row) {
                 String value = row.getValue(attr);
-                return value == null ? "" : attr.hasOptions() ? attr.getOption(value) : value;
+                if (attr.hasOptions() && !attr.hasValue(value)) {
+                    ((BackwardCompatibleSelectionCell)cell).updateOptions(value);
+                }
+                return value == null ? "" : attr.hasOptions() && attr.hasValue(value) ? attr.getOption(value) : value;
             }
         };
         column.setCellStyleNames("app-SelectionCell");
         column.setFieldUpdater(new FieldUpdater<ExtractAttributesRow, String>() {
             @Override
             public void update(int index, ExtractAttributesRow row, String value) {
+                String oldValue = row.getValue(attr);
+                if (attr.hasOptions() && !attr.hasValue(oldValue)) {
+                    ((BackwardCompatibleSelectionCell)cell).updateOptions(oldValue);
+                }
                 row.setValue(attr.hasOptions() ? attr.getValue(value) : value, attr);
                 if (LIBRARY_LAYOUT.equals(attr) && !isPairedLayout(value)) {
                     row.setValue("", NOMINAL_LENGTH);
@@ -146,12 +156,15 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
     }
 
     private void addColumnForPairedLayout(final ExtractAttribute attr) {
-        Cell<String> cell = attr.hasOptions() ? new SelectionCell(attr.getOptions()) : new EditTextCell();
+        final Cell<String> cell = attr.hasOptions() ? new BackwardCompatibleSelectionCell(attr.getOptions()) : new EditTextCell();
 
         Column<ExtractAttributesRow, String> column = new ConditionalColumn<ExtractAttributesRow>(cell) {
             @Override
             public String getValue(ExtractAttributesRow row) {
                 String value = row.getValue(attr);
+                if (attr.hasOptions() && !attr.hasValue(value)) {
+                    ((BackwardCompatibleSelectionCell)cell).updateOptions(value);
+                }
                 return value == null ? "" : attr.hasOptions() ? attr.getOption(value) : value;
             }
 
@@ -164,6 +177,10 @@ public class ExtractAttributesViewImpl extends Composite implements ExtractAttri
         column.setFieldUpdater(new FieldUpdater<ExtractAttributesRow, String>() {
             @Override
             public void update(int index, ExtractAttributesRow row, String value) {
+                String oldValue = row.getValue(attr);
+                if (attr.hasOptions() && !attr.hasValue(oldValue)) {
+                    ((BackwardCompatibleSelectionCell)cell).updateOptions(oldValue);
+                }
                 row.setValue(attr.hasOptions() ? attr.getValue(value) : value, attr);
                 updateRow(row);
             }

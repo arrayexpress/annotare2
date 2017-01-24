@@ -34,6 +34,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
     public EditorLogBarViewImpl() {
         panel = new VerticalPanel();
         panel.add(new Label("No validation results"));
+        panel.addStyleName("app-log");
         initWidget(panel);
     }
 
@@ -44,7 +45,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
             if (result.getErrors().isEmpty()) {
                 panel.add(new Label("Validation has been successful"));
             } else {
-                panel.add(new HTML("Validation failed with " + result.getErrors().size() + " errors (for help fixing errors please go to <a href=\"/fg/annotare/help/validate_exp.html\" target=\"_blank\">http://www.ebi.ac.uk/fgpt/annotare_help/validate_exp.html</a>):"));
+                panel.add(new HTML("Validation failed with " + result.getErrors().size() + " errors, please fix:"));
                 addAll(result.getErrors());
             }
         } else {
@@ -54,7 +55,7 @@ public class EditorLogBarViewImpl extends Composite implements EditorLogBarView 
 
     private void addAll(List<String> list) {
         for (String item : list) {
-            panel.add(new Label(item));
+            panel.add(new HTML(item));
         }
     }
 }

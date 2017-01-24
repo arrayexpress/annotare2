@@ -27,6 +27,7 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.gwt.user.datepicker.client.DateBox;
@@ -93,18 +94,10 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     @Inject
     public ExperimentDetailsViewImpl() {
-
         experimentalDesigns = new LinkedHashMap<>();
 
         experimentalDesignList = new ListBox(true);
         initWidget(Binder.BINDER.createAndBindUi(this));
-
-//        TooltipPopup.attachTooltip(title, title.getElement(), "Provide an informative experiment title (max. 255 characters).<br/>" +
-//                "E.g. \"RNA-seq of human breast cancer cell line MCF-7 treated with tamoxifen against untreated controls.\"");
-//
-//        TooltipPopup.attachTooltip(description, description.getElement(), "Describe the biological relevance and intent of the experiment.<br/>" +
-//                "Include an overview of the experimental workflow. Avoid copy-and-pasting your manuscript's abstract.");
-
 
         DateBox.DefaultFormat format = new DateBox.DefaultFormat(dateTimeFormat());
         dateOfExperiment.setFormat(format);
@@ -291,6 +284,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                 return;
             }
         }
+        aeExperimentType.addItem(type);
+        aeExperimentType.setSelectedIndex(aeExperimentType.getItemCount()-1);
     }
 
     private void setAeExperimentTypeOptions(Collection<String> options) {

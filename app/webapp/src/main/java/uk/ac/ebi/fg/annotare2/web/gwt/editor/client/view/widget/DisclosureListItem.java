@@ -88,4 +88,6 @@ public class DisclosureListItem extends Composite {
     public boolean isSelected() {
         return header.isSelected();
     }
+
+    public void openPanel() { panel.setOpen(true);}
 }

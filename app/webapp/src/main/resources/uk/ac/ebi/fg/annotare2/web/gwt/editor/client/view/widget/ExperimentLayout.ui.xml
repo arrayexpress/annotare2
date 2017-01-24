@@ -38,6 +38,9 @@
                                 <g:center>
                                     <g:SimplePanel/>
                                 </g:center>
+                                <g:south size="35">
+                                    <g:NotificationMole message="Annotare automatically saves any changes that you make; Simply move the cursor to a different field!" title="Annotare autosave!" ui:field="notificationMole"/>
+                                </g:south>
                             </g:DockLayoutPanel>
                         </g:north>
                         <g:west size="0">

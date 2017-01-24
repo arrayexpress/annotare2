@@ -20,6 +20,9 @@ package uk.ac.ebi.fg.annotare2.integration;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.google.gwt.thirdparty.json.JSONArray;
+import com.google.gwt.thirdparty.json.JSONException;
+import com.google.gwt.thirdparty.json.JSONObject;
 import com.google.inject.Inject;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -43,9 +46,11 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.integration.FileValidationService.FileValidationStatus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
+
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -56,6 +61,7 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -77,6 +83,7 @@ public class AeIntegrationWatchdog {
     private final SubmissionFeedbackDao submissionFeedbackDao;
     private final SubmissionManager submissionManager;
     private final DataFileManager dataFileManager;
+    private final FileValidationService fileValidationService;
     private final FtpManager ftpManager;
     private final EfoSearch efoSearch;
     private final ExtendedAnnotareProperties properties;
@@ -88,6 +95,8 @@ public class AeIntegrationWatchdog {
         SUBMISSION_FAILED
     }
 
+
+
     @Inject
     public AeIntegrationWatchdog(HibernateSessionFactory sessionFactory,
                                  ExtendedAnnotareProperties properties,
@@ -97,7 +106,7 @@ public class AeIntegrationWatchdog {
                                  SubmissionFeedbackDao submissionFeedbackDao,
                                  SubmissionManager submissionManager,
                                  DataFileManager dataFileManager,
-                                 FtpManager ftpManager,
+                                 FileValidationService fileValidationService, FtpManager ftpManager,
                                  EfoSearch efoSearch,
                                  Messenger messenger) {
         this.sessionFactory = sessionFactory;
@@ -107,6 +116,7 @@ public class AeIntegrationWatchdog {
         this.submissionFeedbackDao = submissionFeedbackDao;
         this.submissionManager = submissionManager;
         this.dataFileManager = dataFileManager;
+        this.fileValidationService = fileValidationService;
         this.ftpManager = ftpManager;
         this.efoSearch = efoSearch;
         this.properties = properties;
@@ -148,6 +158,8 @@ public class AeIntegrationWatchdog {
         Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED
                 , SubmissionStatus.RESUBMITTED
+                , SubmissionStatus.AWAITING_FILE_VALIDATION
+                , SubmissionStatus.VALIDATING_FILES
                 , SubmissionStatus.IN_CURATION
                 , SubmissionStatus.PRIVATE_IN_AE
                 , SubmissionStatus.PUBLIC_IN_AE
@@ -156,6 +168,7 @@ public class AeIntegrationWatchdog {
         // funny hack to submit only one submission per run (to make gaps between submits)
         // this only applies to processSubmitted() case
         boolean hasProcessedOneSubmission = false;
+        boolean hasValidatedOneSubmission = false;
 
         for (Submission submission : submissions) {
             switch (submission.getStatus()) {
@@ -178,8 +191,98 @@ public class AeIntegrationWatchdog {
                 case PUBLIC_IN_AE:
                     processPublicInAE(submission);
                     break;
+
+                case AWAITING_FILE_VALIDATION:
+                    processAwaitingFileValidation(submission);
+                    break;
+
+                case VALIDATING_FILES:
+                    processValidatingFiles(submission);
+                    break;
             }
         }
+    }
+
+    @Transactional(rollbackOn = {FileValidationException.class})
+    public void processValidatingFiles(Submission submission) throws Exception {
+        try {
+            JSONObject json = fileValidationService.checkStatus(submission.getId());
+
+            FileValidationStatus status = FileValidationStatus.valueOf(json.get("status").toString().replace(' ','_').toUpperCase()) ;
+            logger.debug("File validation status for submission {} is {}", submission.getId(), status);
+            if (status!= FileValidationStatus.FINISHED) return;
+            boolean hasErrors = fileValidationService.hasErrors(json);
+            if (!hasErrors) {
+                submission.setStatus(SubmissionStatus.SUBMITTED);
+                submissionManager.save(submission);
+            } else {
+                sendEmail(
+                        EmailTemplates.FILE_VALIDATION_ERROR_TEMPLATE,
+                        new ImmutableMap.Builder<String, String>()
+                                .put("to.name", submission.getCreatedBy().getName())
+                                .put("to.email", submission.getCreatedBy().getEmail())
+                                .put("submission.id", String.valueOf(submission.getId()))
+                                .put("submission.title", submission.getTitle())
+                                .put("submission.errors", fileValidationService.getErrorString(json))
+                                .put("submission.date", submission.getUpdated().toString())
+                                .build(),
+                        submission
+                );
+                submission.setStatus(SubmissionStatus.IN_PROGRESS);
+                submission.setOwnedBy(submission.getCreatedBy());
+                submissionManager.save(submission);
+            }
+        } catch (Exception e) {
+            throw new FileValidationException(e);
+        }
+    }
+
+    @Transactional(rollbackOn = {FileValidationException.class})
+    public void processAwaitingFileValidation(Submission submission) throws Exception {
+        if (! (submission instanceof ExperimentSubmission)) {
+            logger.error("Ignoring invalid submission type " + submission.getClass().getName() + " for " + submission.getId());
+            return;
+        }
+        ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+        String fileName = submission.getId().toString();
+
+        // create temp sdrf
+        File exportDir = Files.createTempDir();
+        MageTabFiles mageTab = MageTabFiles.createMageTabFiles(exp, efoSearch, exportDir, fileName + ".idf.txt", fileName + ".sdrf.txt");
+        if (!mageTab.getIdfFile().exists() || !mageTab.getSdrfFile().exists()) {
+            throw new IOException("Unable to locate generated MAGE-TAB files");
+        }
+
+        // put sdrf in upload folder
+        String ftpSubDirectory = submission.getFtpSubDirectory();
+        if (!ftpManager.doesExist(ftpSubDirectory)) {
+            ftpManager.createDirectory(ftpSubDirectory);
+        }
+        File sdrf = mageTab.getSdrfFile();
+        new LocalFileHandle(sdrf).copyTo(new URI(ftpManager.getDirectory(ftpSubDirectory) + sdrf.getName()));
+
+        // delete temp files
+        mageTab.getSdrfFile().delete();
+        mageTab.getIdfFile().delete();
+        exportDir.delete();
+
+        // put raw datafiles in upload folder
+        Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
+        for (DataFile rawDataFile: rawDataFiles ) {
+            URI destinationURI =  new URI(ftpManager.getDirectory(ftpSubDirectory) + rawDataFile.getName());
+            DataFileHandle source = dataFileManager.getFileHandle(rawDataFile);
+            source.copyTo(destinationURI);
+        }
+
+        // submit to file validator
+        fileValidationService.submit( new URI(ftpManager.getDirectory(ftpSubDirectory)).getPath() , submission.getId() );
+
+        //update status
+        submission.setStatus(SubmissionStatus.VALIDATING_FILES);
+        submissionManager.save(submission);
+
+        //TODO: send email
+
     }
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
@@ -202,7 +305,7 @@ public class AeIntegrationWatchdog {
                         if (exp.getType().isSequencing()) {
                             submissionType = "HTS";
                         } else {
-                            submissionType = "MA";
+                             submissionType = "MA";
                         }
                     } catch (DataSerializationException x) {}
                 }
@@ -240,7 +343,7 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    @Transactional(rollbackOn = {SubsTrackingException.class, AEConnectionException.class})
+    @Transactional
     public void processInCuration(Submission submission) throws SubsTrackingException, AEConnectionException {
         Integer subsTrackingId = submission.getSubsTrackingId();
         if (null != subsTrackingId) {
@@ -314,22 +417,22 @@ public class AeIntegrationWatchdog {
 
     @Transactional(rollbackOn = {AEConnectionException.class})
     public void processPrivateInAE(Submission submission) throws AEConnectionException {
-       if (properties.isAeConnectionEnabled()) {
-           String accession = submission.getAccession();
-           if (!isNullOrEmpty(accession)) {
-               AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
-               if (NOT_LOADED == state) {
-                   submission.setStatus(SubmissionStatus.IN_CURATION);
-                   submissionManager.save(submission);
-               } else if (PUBLIC == state) {
-                   submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
-                   submissionManager.save(submission);
-               }
-           } else {
-               submission.setStatus(SubmissionStatus.IN_CURATION);
-               submissionManager.save(submission);
-           }
-       }
+        if (properties.isAeConnectionEnabled()) {
+            String accession = submission.getAccession();
+            if (!isNullOrEmpty(accession)) {
+                AEConnection.SubmissionState state = aeConnection.getSubmissionState(accession);
+                if (NOT_LOADED == state) {
+                    submission.setStatus(SubmissionStatus.IN_CURATION);
+                    submissionManager.save(submission);
+                } else if (PUBLIC == state) {
+                    submission.setStatus(SubmissionStatus.PUBLIC_IN_AE);
+                    submissionManager.save(submission);
+                }
+            } else {
+                submission.setStatus(SubmissionStatus.IN_CURATION);
+                submissionManager.save(submission);
+            }
+        }
     }
 
     @Transactional(rollbackOn = {AEConnectionException.class})
@@ -498,7 +601,7 @@ public class AeIntegrationWatchdog {
                             if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {
                                 logger.info(isNullOrEmpty(
                                         executor.getOutput()) ?
-                                                "Ran post-processing script on " + destination.getName() : executor.getOutput()
+                                        "Ran post-processing script on " + destination.getName() : executor.getOutput()
                                 );
                             } else {
                                 logger.error("Data file post-processing script returned an error: {}", executor.getErrors());

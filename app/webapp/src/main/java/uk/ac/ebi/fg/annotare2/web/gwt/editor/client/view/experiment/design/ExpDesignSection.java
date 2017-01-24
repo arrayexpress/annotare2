@@ -32,7 +32,7 @@ import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_
  */
 public enum ExpDesignSection implements LeftNavigationView.Section {
     SAMPLES("Create samples, add attributes and experimental variables", allOf(ExperimentProfileType.class)),
-    EXTRACTS_LIBRARY_INFO("Create extracts and assign ENA library info", of(SEQUENCING), "Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)"),
+    EXTRACTS_LIBRARY_INFO("Assign ENA Library Information", of(SEQUENCING), "Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)"),
     LABELED_EXTRACTS("Create labeled extracts and assign labels", of(TWO_COLOR_MICROARRAY), "Assign the label to each sample by removing the one thatdoes not apply. For dye-swap designs both labels can be kept."),
     PROTOCOLS("Describe protocols", allOf(ExperimentProfileType.class)),
     FILES("Upload and assign data files", allOf(ExperimentProfileType.class)),

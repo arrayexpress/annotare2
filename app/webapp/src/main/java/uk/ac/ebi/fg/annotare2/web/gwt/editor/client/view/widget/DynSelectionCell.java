@@ -57,12 +57,12 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
 
     }
 
-    private static Template template;
+    protected static Template template;
 
-    private final List<Option<C>> options;
-    private final Map<C, Integer> indexForOption;
+    protected final List<Option<C>> options;
+    protected final Map<C, Integer> indexForOption;
 
-    private final ListProvider<C> optionsProvider;
+    protected final ListProvider<C> optionsProvider;
 
     public DynSelectionCell(ListProvider<C> optionsProvider) {
         super(BrowserEvents.CHANGE);
@@ -72,6 +72,42 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
         this.options = new ArrayList<Option<C>>();
         this.indexForOption = new HashMap<C, Integer>();
         this.optionsProvider = optionsProvider;
+        updateOptions();
+    }
+
+    public DynSelectionCell(final List<C> options) {
+        super(BrowserEvents.CHANGE);
+        if (template == null) {
+            template = GWT.create(Template.class);
+        }
+        this.options = new ArrayList<Option<C>>();
+        this.indexForOption = new HashMap<C, Integer>();
+        this.optionsProvider = new ListProvider<C>() {
+            List<Option<C>> list;
+            @Override
+            public List<Option<C>> getOptions() {
+                list = new ArrayList<>();
+                for (final C item: options ) {
+                    list.add(new Option<C>() {
+                        @Override
+                        public C getValue() {
+                            return item;
+                        }
+
+                        @Override
+                        public String getText() {
+                            return item.toString();
+                        }
+                    });
+                }
+                return list;
+            }
+
+            @Override
+            public Option<C> getDefault() {
+                return null;
+            }
+        };
         updateOptions();
     }
 
@@ -116,7 +152,7 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
         sb.appendHtmlConstant("</select>");
     }
 
-    private int getSelectedIndex(C value) {
+    protected int getSelectedIndex(C value) {
         updateOptions();
 
         Integer index = indexForOption.get(value);
@@ -127,7 +163,7 @@ public class DynSelectionCell<C> extends AbstractInputCell<C, C> {
         }
     }
 
-    private void updateOptions() {
+    protected void updateOptions() {
         options.clear();
         indexForOption.clear();
         addOption(optionsProvider.getDefault());
