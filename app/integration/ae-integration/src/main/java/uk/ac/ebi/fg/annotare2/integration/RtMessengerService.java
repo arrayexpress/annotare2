@@ -166,13 +166,18 @@ public class RtMessengerService extends EmailMessengerService {
 
     private String getReplyMessageContent(Message message) {
         //boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
-        boolean isInternalRecipient = message.getTo().matches(".*[a-z][@]ebi[.]ac[.]uk.*");
+        //boolean isInternalRecipient = message.getTo().matches(".*[a-z][@]ebi[.]ac[.]uk.*");
         // TODO: fix is internal recipient
         //boolean isInternalRecipient = message.getTo().matches(".*awais[@]ebi[.]ac[.]uk.*");
 
+        String[] str = message.getTo().split("<");
+        boolean isCurator = str[0].replaceAll("\"","").equalsIgnoreCase("Annotare RT ");
+
         StringBuilder sb = new StringBuilder();
         sb.append("Action: ");
-        sb.append(isInternalRecipient ? "comment" : "correspond");
+        sb.append(isCurator ? "comment" : "correspond");
+        sb.append("\nSubject: ");
+        sb.append(message.getSubject());
         sb.append("\nText: ");
         String body = message.getBody();
         sb.append(body.replaceAll("\\n","\n "));
