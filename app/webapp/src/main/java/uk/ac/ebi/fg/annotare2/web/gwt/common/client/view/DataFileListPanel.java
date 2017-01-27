@@ -94,7 +94,9 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         emptyTableWidget = new HTML("<p><br/></p><p>Drag files here to start upload or press the <br/>\"Upload Files\"" +
                 " button to open the selection dialog.</p><p>Make sure the file names are constructed only from " +
                 "alphanumerals [A-Z,a-z,0-9], underscores [_], and dots [.],<br/> with no whitespaces, brackets, other " +
-                "punctuations <br/>or symbols.</p>");
+                "punctuations <br/>or symbols.</p><p>File upload will auto-resume, so if internet connection drops off suddenly, " +
+                "or you leave this page, you can drag the same file into this space again, " +
+                "and the upload will pick up from where it left off previously.</p>");
         emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
