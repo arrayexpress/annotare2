@@ -87,7 +87,7 @@
                 <c:choose>
                     <c:when test="${sessionScope.loggedin != null}">
                         <li class="functional last"><a href="${pageContext.request.contextPath}/logout/" class="icon icon-functional login" data-icon="l">Logout</a></li>
-                        <li class="functional"><a href="${pageContext.request.contextPath}/account/" class="icon icon-generic account" data-icon="M">${sessionScope.email}</a></li>
+                        <li class="functional"><a href="${pageContext.request.contextPath}/account/" style="pointer-events: none; cursor: default;" class="icon icon-generic account" data-icon="M">${sessionScope.email}</a></li>
                     </c:when>
                     <c:otherwise>
                         <li class="functional last${loginClass}"><a href="${pageContext.request.contextPath}/login/" class="icon icon-functional login" data-icon="l">Login</a></li>
