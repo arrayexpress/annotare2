@@ -55,6 +55,7 @@ public class DataFileDaoImplTest extends DaoTestBase {
         assertNotNull(dataFile.getCreated());
         assertNotNull(dataFile.getStatus());
         assertEquals(name, dataFile.getName());
+        assertNotNull(dataFile.getFileSize());
     }
 
     @Test

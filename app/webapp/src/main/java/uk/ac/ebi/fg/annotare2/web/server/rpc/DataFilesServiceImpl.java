@@ -162,7 +162,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
                 } else if (0L == fileInfo.getFileSize()) {
                     throw new OperationFailedException("Empty file " + fileInfo.getFileName());
                 } else {
-                    saveFile(new LocalFileHandle(uploadedFile), null, submission);
+                    saveFile(new LocalFileHandle(uploadedFile), null, submission, uploadedFile.length());
                     uploadStorage.removeUploadedFile(userId, fileInfo, false);
                     logger.info("Uploaded {} for submission {}", fileInfo.getFileName(), submission.getId());
                 }
@@ -190,6 +190,7 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             FileAvailabilityChecker fileChecker = new FileAvailabilityChecker();
             for (String infoStr : filesInfo) {
                 FtpFileInfo info = getFtpFileInfo(infoStr);
+
                 if (null != info) {
                     URI fileUri = new URI(ftpManager.getDirectory(submission.getFtpSubDirectory())
                             + URIEncoderDecoder.encode(info.getFileName())
@@ -308,6 +309,22 @@ public class DataFilesServiceImpl extends SubmissionBasedRemoteService implement
             }
         }
         return false;
+    }
+
+    private void saveFile(final DataFileHandle source, final String md5, final Submission submission, long fileSize)
+            throws DataSerializationException, IOException {
+
+//        boolean shouldStore = source instanceof LocalFileSource;
+//        if (!shouldStore) {
+//            if (submission instanceof ExperimentSubmission) {
+//                shouldStore = !((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing();
+//            } else if (submission instanceof ImportedExperimentSubmission) {
+//                shouldStore = source.getName().matches("(?i)^.*[.]?(idf|sdrf)[.]txt$");
+//            }
+//        }
+//
+        dataFileManager.addFile(source, md5, submission, true, fileSize);
+        save(submission);
     }
 
     private void saveFile(final DataFileHandle source, final String md5, final Submission submission)

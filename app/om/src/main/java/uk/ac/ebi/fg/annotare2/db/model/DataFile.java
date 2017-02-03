@@ -63,8 +63,12 @@ public class DataFile {
     @Column(name = "deleted", nullable = false, columnDefinition = "TINYINT(1)")
     private boolean deleted;
 
+    @Column(name = "fileSize", nullable = false, columnDefinition = "BIGINT(20)")
+    private long fileSize;
+
     public DataFile() {
         this(null);
+        fileSize = 0;
     }
 
     public DataFile(String name) {
@@ -140,6 +144,10 @@ public class DataFile {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+    public long getFileSize() { return fileSize; }
+
+    public void setFileSize(long fileSize){ this.fileSize = fileSize; }
 
     @Override
     public boolean equals(Object o) {

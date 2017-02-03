@@ -54,6 +54,20 @@ public class DataFileManagerImpl implements DataFileManager {
     }
 
     @Override
+    public void addFile(DataFileHandle source, String md5, Submission submission, boolean shouldStore, long fileSize)
+            throws DataSerializationException, IOException {
+        DataFile dataFile = dataFileDao.create(source.getName(), submission);
+
+        dataFile.setSourceUri(source.getUri().toString());
+        dataFile.setSourceDigest(md5);
+        dataFile.setStatus(shouldStore ? DataFileStatus.TO_BE_STORED : DataFileStatus.TO_BE_ASSOCIATED);
+        dataFile.setFileSize(fileSize);
+
+        dataFileDao.save(dataFile);
+        submission.getFiles().add(dataFile);
+    }
+
+    @Override
     public void addFile(DataFileHandle source, String md5, Submission submission, boolean shouldStore)
             throws DataSerializationException, IOException {
         DataFile dataFile = dataFileDao.create(source.getName(), submission);
@@ -61,6 +75,7 @@ public class DataFileManagerImpl implements DataFileManager {
         dataFile.setSourceUri(source.getUri().toString());
         dataFile.setSourceDigest(md5);
         dataFile.setStatus(shouldStore ? DataFileStatus.TO_BE_STORED : DataFileStatus.TO_BE_ASSOCIATED);
+
         dataFileDao.save(dataFile);
         submission.getFiles().add(dataFile);
     }

@@ -37,16 +37,19 @@ public class DataFileRow implements IsSerializable, HasIdentity {
 
     private DataFileStatus status;
 
+    private long fileSize;
+
     DataFileRow() {
         /* used by GWT serialization */
     }
 
-    public DataFileRow(long id, String name, String md5, DataFileStatus status, Date created) {
+    public DataFileRow(long id, String name, String md5, DataFileStatus status, Date created, long fileSize) {
         this.id = id;
         this.name = name;
         this.created = created;
         this.md5 = md5;
         this.status = status;
+        this.fileSize = fileSize;
     }
 
     @Override
@@ -73,4 +76,7 @@ public class DataFileRow implements IsSerializable, HasIdentity {
     public DataFileStatus getStatus() {
         return status;
     }
+
+    public long getFileSize(){return fileSize;}
+
 }

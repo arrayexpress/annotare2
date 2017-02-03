@@ -25,6 +25,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.*;
 import com.google.gwt.user.cellview.client.CheckboxHeader;
@@ -37,15 +38,17 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.view.client.*;
+import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
+
+import static java.text.NumberFormat.getIntegerInstance;
 
 public class DataFileListPanel extends SimpleLayoutPanel {
 
@@ -144,6 +147,21 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             }
         });
         grid.addColumn(nameColumn, "Name");
+
+        Column<DataFileRow, String> sizeColumn = new Column<DataFileRow, String>(nameCell) {
+
+            @Override
+            public String getValue(DataFileRow row) {
+
+                return NumberFormat.getDecimalFormat().format(row.getFileSize());
+            }
+        };
+
+        sizeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        grid.addColumn(sizeColumn,"File Size (Bytes)");
+
+
+
 
         Column<DataFileRow, Date> dateColumn = new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yy HH:mm"))) {
             @Override

@@ -171,4 +171,9 @@
             ALTER TABLE submissions MODIFY status ENUM('IN_PROGRESS','AWAITING_FILE_VALIDATION','VALIDATING_FILES', 'SUBMITTED', 'RESUBMITTED', 'IN_CURATION', 'PRIVATE_IN_AE', 'PUBLIC_IN_AE') NOT NULL;
         </sql>
     </changeSet>
+    <changeSet id="addFileSizeColumnInDataFiles" author="haider">
+        <sql>
+            ALTER TABLE data_files ADD COLUMN fileSize BIGINT(20) NOT NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

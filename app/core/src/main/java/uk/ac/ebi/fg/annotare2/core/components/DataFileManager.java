@@ -29,6 +29,9 @@ import java.util.Set;
 
 public interface DataFileManager {
 
+    void addFile(DataFileHandle source, String md5, Submission submission, boolean shouldStore, long fileSize)
+            throws DataSerializationException, IOException;
+
     void addFile(DataFileHandle source, String md5, Submission submission, boolean shouldStore)
             throws DataSerializationException, IOException;
 
