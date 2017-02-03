@@ -19,6 +19,8 @@ public class ExperimentDetailsDto implements IsSerializable {
 
     private String description;
 
+    private String relatedAccessionNumber;
+
     private Date experimentDate;
 
     private Date publicReleaseDate;
@@ -39,7 +41,8 @@ public class ExperimentDetailsDto implements IsSerializable {
                                 Date publicReleaseDate,
                                 String aeExperimentType,
                                 Collection<OntologyTerm> experimentalDesigns,
-                                boolean isAnonymousReviewEnabled) {
+                                boolean isAnonymousReviewEnabled,
+                                String relatedAccessionNumber) {
         this.title = title;
         this.description = description;
         this.experimentDate = experimentDate;
@@ -47,6 +50,7 @@ public class ExperimentDetailsDto implements IsSerializable {
         this.aeExperimentType = aeExperimentType;
         this.experimentalDesigns = new ArrayList<>(experimentalDesigns);
         this.isAnonymousReviewEnabled = isAnonymousReviewEnabled;
+        this.relatedAccessionNumber = relatedAccessionNumber;
     }
 
     public String getDescription() {
@@ -68,6 +72,8 @@ public class ExperimentDetailsDto implements IsSerializable {
     public String getAeExperimentType() {
         return aeExperimentType;
     }
+
+    public String getRelatedAccessionNumber() { return relatedAccessionNumber; }
 
     public Collection<OntologyTerm> getExperimentalDesigns() {
         return unmodifiableCollection(experimentalDesigns);

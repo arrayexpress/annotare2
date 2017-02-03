@@ -124,6 +124,14 @@
                             <g:CheckBox title="Select for double blind peer review" width="200px" ui:field="anonymousReview"/>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="{style.title}">
+                            Related Accession Number
+                        </td>
+                        <td>
+                            <g:PlaceholderTextArea placeholder="Enter the Accession Number of related submissions in ArrayExpress e.g. E-MTAB-4688, E-MTAB-4677 " width="300px" visibleLines="2" ui:field="relatedAccessionNumber"/>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </g:HTMLPanel>

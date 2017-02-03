@@ -147,6 +147,22 @@ public class MageTabGenerator {
         return inv;
     }
 
+    private String tabSeparateRelatedAccessionNumber(String relatedAccessionNumber)
+    {
+        String[] rAccessionNumbers = relatedAccessionNumber.split(",");
+        return convertToString(rAccessionNumbers);
+    }
+
+    private String convertToString(String[] rAccessionNumbers) {
+        StringBuilder sb = new StringBuilder();
+        for (String str: rAccessionNumbers
+             ) {
+            sb.append(str);
+            sb.append("\t");
+        }
+        return sb.toString();
+    }
+
     private void generateIdf(IDF idf) {
         if (!isNullOrEmpty(exp.getAeExperimentType())) {
             idf.addComment("AEExperimentType", exp.getAeExperimentType());
@@ -155,6 +171,9 @@ public class MageTabGenerator {
         if (exp.getAnonymousReview()) {
             idf.addComment("AEAnonymousReview", "yes");
         }
+
+
+        idf.addComment("RelatedExperiment", tabSeparateRelatedAccessionNumber(exp.getRelatedAccessionNumber()));
 
         idf.investigationTitle = convertToIdfFriendly(exp.getTitle(), newLine);
         idf.experimentDescription = convertToIdfFriendly(exp.getDescription(), newLine);

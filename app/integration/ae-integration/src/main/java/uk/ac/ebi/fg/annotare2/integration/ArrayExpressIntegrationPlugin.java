@@ -43,7 +43,7 @@ public class ArrayExpressIntegrationPlugin extends AbstractModule {
         bind(AeIntegrationWatchdog.class).asEagerSingleton();
         bind(FileValidationService.class).asEagerSingleton();
 
-        bind(MessengerService.class).to(OtrsMessengerService.class).asEagerSingleton();
+        bind(MessengerService.class).to(RtMessengerService.class).asEagerSingleton();
 
         bind(ExtendedAnnotareProperties.class).asEagerSingleton();
 
