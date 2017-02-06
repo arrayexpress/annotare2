@@ -28,7 +28,7 @@ import uk.ac.ebi.fg.annotare2.otrs.OtrsProperties;
 import java.io.File;
 
 public class ExtendedAnnotareProperties extends AnnotareProperties implements DataFileStoreProperties,
-        ArrayExpressProperties, SubsTrackingProperties, AeConnectionProperties, OtrsProperties, FileValidationProperties {
+        ArrayExpressProperties, SubsTrackingProperties, AeConnectionProperties, OtrsProperties, FileValidationProperties, RtProperties {
 
     @Inject
     public ExtendedAnnotareProperties(MageTabCheckProperties mageTabCheckProperties) {
@@ -141,5 +141,27 @@ public class ExtendedAnnotareProperties extends AnnotareProperties implements Da
     @Override
     public String getFileValidationUrl() { return getProperty("file-validation.url");
     }
+
+    @Override
+    public boolean isRtIntegrationEnabled() { return getBooleanProperty("rt-integration.enabled"); }
+
+    @Override
+    public String getRtIntegrationUrl() { return getProperty("rt-integration.url"); }
+
+    @Override
+    public String getRtIntegrationUser() { return getProperty("rt-integration.user"); }
+
+    @Override
+    public String getRtIntegrationPassword() { return getProperty("rt-integration.password"); }
+
+    @Override
+    public String getRtIntegrationSubjectTemplate() { return getProperty("rt-integration.subject-template"); }
+
+    @Override
+    public String getRtIntegrationBodyTemplate() { return getProperty("rt-integration.body-template"); }
+
+    @Override
+    public String getRtQueueName() { return getProperty("rt-integration.queue-name"); }
+
 
 }

@@ -54,7 +54,8 @@ public class ExperimentProfileSerializer12  extends JsonSerializer<ExperimentPro
             "protocolId2ExtractIds",
             "protocolId2LabeledExtractIds",
             "protocolId2FileRefs",
-            "anonymousReview"
+            "anonymousReview",
+            "relatedAccessionNumber"
     );
 
     @Override

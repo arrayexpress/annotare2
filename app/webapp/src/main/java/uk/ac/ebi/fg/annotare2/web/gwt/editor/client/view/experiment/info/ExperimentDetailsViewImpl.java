@@ -41,6 +41,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.DatesTimes.dateTimeFormat;
@@ -60,6 +61,11 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
 
     @UiField
     TextArea description;
+
+    @UiField
+    @Size(max = 255)
+
+    TextArea relatedAccessionNumber;
 
     @UiField
     DateBox dateOfExperiment;
@@ -135,6 +141,7 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
         addExperimentalDesigns(details.getExperimentalDesigns());
 
         anonymousReview.setValue(details.isAnonymousReviewEnabled());
+        relatedAccessionNumber.setText(details.getRelatedAccessionNumber());
     }
 
     @Override
@@ -161,6 +168,16 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
         save(detailsDto);
         description.setValue(detailsDto.getDescription());
     }
+
+    @UiHandler("relatedAccessionNumber")
+    void relatedAccessionNumberChanged(ChangeEvent event) {
+
+        ExperimentDetailsDto detailsDto = getDetails();
+        save(detailsDto);
+        relatedAccessionNumber.setValue(detailsDto.getRelatedAccessionNumber());
+    }
+
+
 
     @UiHandler("dateOfExperiment")
     void dateOfExperimentChanged(ValueChangeEvent<Date> event) {
@@ -286,7 +303,8 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
                 dateOfPublicRelease.getValue(),
                 getAeExperimentType(),
                 experimentalDesigns.values(),
-                anonymousReview.getValue());
+                anonymousReview.getValue(),
+                relatedAccessionNumber.getValue());
     }
 
     private static Date today()
