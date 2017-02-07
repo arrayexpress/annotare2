@@ -129,7 +129,7 @@
                             Related Accession Number
                         </td>
                         <td>
-                            <g:PlaceholderTextArea placeholder="Enter the Accession Number of related submissions in ArrayExpress e.g. E-MTAB-4688, E-MTAB-4677 " width="300px" visibleLines="2" ui:field="relatedAccessionNumber"/>
+                            <g:PlaceholderTextBox placeholder="Enter the Accession Number of related submissions in ArrayExpress e.g. E-MTAB-4688" width="600px" ui:field="relatedAccessionNumber"/>
                         </td>
                     </tr>
                 </tbody>

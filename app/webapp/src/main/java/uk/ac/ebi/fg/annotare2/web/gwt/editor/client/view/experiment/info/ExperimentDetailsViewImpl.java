@@ -65,7 +65,7 @@ public class ExperimentDetailsViewImpl extends Composite implements ExperimentDe
     @UiField
     @Size(max = 255)
 
-    TextArea relatedAccessionNumber;
+    TextBox relatedAccessionNumber;
 
     @UiField
     DateBox dateOfExperiment;
