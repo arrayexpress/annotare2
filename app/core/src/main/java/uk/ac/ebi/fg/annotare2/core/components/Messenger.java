@@ -33,4 +33,6 @@ public interface Messenger {
     void send(String note, Throwable x);
 
     void send(String note, Throwable x, User user);
+
+    void updateTicket(Map<String, String> params) throws Exception;
 }

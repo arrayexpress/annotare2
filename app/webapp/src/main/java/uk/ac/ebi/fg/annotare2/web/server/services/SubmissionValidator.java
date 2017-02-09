@@ -86,7 +86,7 @@ public class SubmissionValidator {
     }
 
     private boolean validateRelatedAccessionNumber(String relatedAccessionNumber) {
-        RegExp regex = RegExp.compile("^(?:[A|E]-[A-Z]{4}-\\d+,)*[A|E]-[A-Z]{4}-\\d+$");
+        RegExp regex = RegExp.compile("^(?:(?:[E]-[A-Z]{4}-\\d+,)|(?:[A-Z]{3}\\d{6},))*(?:(?:[E]-[A-Z]{4}-\\d+)|(?:[A-Z]{3}\\d{6}))$");
         return regex.test(relatedAccessionNumber);
     }
 

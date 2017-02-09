@@ -33,9 +33,7 @@ import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.model.User;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -117,6 +115,12 @@ public class MessengerImpl implements Messenger {
         send(template, parameters, user, submission, false);
     }
 
+    @Override
+    public void updateTicket(Map<String, String> params) throws Exception
+    {
+        messengerService.ticketUpdate(params);
+    }
+
     private void send(String template, Map<String, String> parameters, User user, Submission submission, boolean isDirectSend) {
         StrSubstitutor sub = new StrSubstitutor(parameters);
 
@@ -159,6 +163,8 @@ public class MessengerImpl implements Messenger {
         messageDao.save(message);
         messengerService.instuctProcessMessages();
     }
+
+
 
     private String getStackTrace(Throwable x) {
         final Writer result = new StringWriter();

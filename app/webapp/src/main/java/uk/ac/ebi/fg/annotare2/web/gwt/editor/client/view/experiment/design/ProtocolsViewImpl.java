@@ -158,7 +158,6 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         addAssignmentColumn();
         addTypeColumn();
         addDescriptionColumn();
-        addParametersColumn();
         addHardwareColumn();
         addSoftwareColumn();
         addPerformerColumn();
@@ -305,23 +304,6 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
             }
         });
         gridView.addPermanentColumn("Description *", column, null, 150, Style.Unit.PX, "If referring to a published protocol, please provide detailed citation, and the section in which the protocol can be found");
-    }
-
-    private void addParametersColumn() {
-        Column<ProtocolRow, List<String>> column = new Column<ProtocolRow, List<String>>(new EditListCell()) {
-            @Override
-            public List<String> getValue(ProtocolRow row) {
-                return row.getParameters();
-            }
-        };
-        column.setFieldUpdater(new FieldUpdater<ProtocolRow, List<String>>() {
-            @Override
-            public void update(int index, ProtocolRow row, List<String> value) {
-                row.setParameters(value);
-                updateRow(row);
-            }
-        });
-        gridView.addPermanentColumn("Parameters", column, null, 150, Style.Unit.PX);
     }
 
     private void addHardwareColumn() {

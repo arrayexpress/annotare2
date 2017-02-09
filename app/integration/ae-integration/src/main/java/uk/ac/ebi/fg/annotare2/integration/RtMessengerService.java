@@ -43,6 +43,7 @@ import java.io.InputStreamReader;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,6 +97,35 @@ public class RtMessengerService extends EmailMessengerService {
         }
     }
 
+    @Override
+    public void ticketUpdate(Map<String, String> params) throws Exception
+    {
+        if (StringUtils.isBlank(params.get("ticketNumber"))) return;
+
+        SSLContextBuilder builder = new SSLContextBuilder();
+        builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+                builder.build());
+        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
+                sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
+
+        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+                .addTextBody("user", properties.getRtIntegrationUser())
+                .addTextBody("pass", properties.getRtIntegrationPassword())
+                .addTextBody("content", "CF-Accession: "+ params.get("accessionNumber"));
+
+        HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl() + "ticket/"+params.get("ticketNumber")+"/edit");
+        httppost.setEntity(entityBuilder.build());
+        HttpResponse response = httpclient.execute(httppost);
+        HttpEntity r = response.getEntity();
+        BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
+        String line, ticket = null;
+        Pattern p = Pattern.compile("# Ticket (\\d+) created.");
+        while ((line = inp.readLine()) != null) {
+            System.out.println(line);
+        }
+    }
+
     private String createRtTicket(Submission submission, Message message) throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -125,6 +155,7 @@ public class RtMessengerService extends EmailMessengerService {
         return ticket;
     }
 
+
     private String getNewMessageContent(Message message) {
         /*boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
         boolean isInternalRecipient = message.getTo().matches(".*annotare[@]ebi[.]ac[.]uk.*");
@@ -143,6 +174,12 @@ public class RtMessengerService extends EmailMessengerService {
         sb.append(body.replaceAll("\\n","\n "));
         sb.append("\nQueue: ");
         sb.append(properties.getRtQueueName());
+        sb.append("\nCF-Accession: ");
+        sb.append(message.getSubmission().getAccession());
+        sb.append("\nCF-SubmissionID: ");
+        sb.append(message.getSubmission().getId());
+        sb.append("\nCF-Directory: ");
+        sb.append("/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/"+ properties.getSubsTrackingUser()+"/"+ properties.getSubsTrackingExperimentType() +"_"+message.getSubmission().getSubsTrackingId());
         return sb.toString();
     }
 

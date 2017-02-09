@@ -40,7 +40,6 @@ class ProtocolSerializer10 extends JsonSerializer<Protocol> {
             "hardware",
             "software",
             "performer",
-            "parameters",
             "subjectType");
 
     @Override

@@ -35,6 +35,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -97,6 +98,15 @@ public class EmailMessengerService implements MessengerService {
     @Override
     public void instuctProcessMessages() {
         scheduler.schedule(runnable, 100, MILLISECONDS);
+    }
+
+    @Override
+    public void ticketUpdate(Map<String, String> params) throws Exception
+    {
+        //This method is override in RtMessenger Service class
+        //Tickets are also being treated as messages in Annotare
+        //To update an existing ticket I used this workaround
+        //Created By Haider Iqbal
     }
 
     @Override

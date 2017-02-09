@@ -20,8 +20,6 @@ package uk.ac.ebi.fg.annotare2.integration;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.gwt.thirdparty.json.JSONArray;
-import com.google.gwt.thirdparty.json.JSONException;
 import com.google.gwt.thirdparty.json.JSONObject;
 import com.google.inject.Inject;
 import org.hibernate.Session;
@@ -61,7 +59,6 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -351,6 +348,18 @@ public class AeIntegrationWatchdog {
             if (!Objects.equal(submission.getAccession(), subsTrackingAccession)) {
                 String oldFtpSubDirectory = submission.getFtpSubDirectory();
                 submission.setAccession(subsTrackingAccession);
+
+                try {
+                    messenger.updateTicket(
+                            new ImmutableMap.Builder<String, String>()
+                                    .put("ticketNumber", submission.getRtTicketNumber())
+                                    .put("accessionNumber", submission.getAccession())
+                                    .build()
+                    );
+                }
+                catch (Exception x){
+                    messenger.send("There was a problem updating Accession Number " + submission.getRtTicketNumber(), x);
+                }
                 if (ftpManager.doesExist(oldFtpSubDirectory)) {
                     String newFtpSubDirectory = submissionManager.generateUniqueFtpSubDirectory(submission);
                     submission.setFtpSubDirectory(newFtpSubDirectory);
@@ -727,4 +736,6 @@ public class AeIntegrationWatchdog {
             logger.error("Unable to send email", e);
         }
     }
+
+
 }

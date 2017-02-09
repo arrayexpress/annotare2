@@ -18,9 +18,13 @@
 
 package uk.ac.ebi.fg.annotare2.core.components;
 
+import java.util.Map;
+
 public interface MessengerService {
 
     void instuctProcessMessages();
 
     void directEmail(String from, String to, String subject, String body) throws Exception;
+
+    void ticketUpdate(Map<String, String> params) throws Exception;
 }

@@ -32,7 +32,6 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
     private String name;
     private OntologyTerm protocolType;
     private String description;
-    private List<String> parameters = new ArrayList<String>();
     private String hardware;
     private String software;
     private String performer;
@@ -80,14 +79,6 @@ public class ProtocolRow implements IsSerializable, HasIdentity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<String> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(List<String> parameters) {
-        this.parameters = new ArrayList<String>(parameters);
     }
 
     public String getHardware() {

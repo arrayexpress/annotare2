@@ -41,8 +41,6 @@ public class Protocol implements Serializable {
 
     private String performer;
 
-    private List<String> parameters;
-
     private ProtocolSubjectType subjectType;
 
     private boolean isAssigned;
@@ -54,7 +52,6 @@ public class Protocol implements Serializable {
 
     public Protocol(int id) {
         this.id = id;
-        this.parameters = new ArrayList<String>();
         this.isAssigned = true;
     }
 
@@ -116,14 +113,6 @@ public class Protocol implements Serializable {
 
     public void setPerformer(String performer) {
         this.performer = performer;
-    }
-
-    public void setParameters(List<String> parameters) {
-        this.parameters = new ArrayList<String>(parameters);
-    }
-
-    public List<String> getParameters() {
-        return parameters;
     }
 
     public void setAssigned(boolean isAssigned) {
