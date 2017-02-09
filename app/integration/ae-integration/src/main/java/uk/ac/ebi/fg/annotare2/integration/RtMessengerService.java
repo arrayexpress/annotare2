@@ -33,6 +33,7 @@ import uk.ac.ebi.fg.annotare2.core.components.EmailMessengerService;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
 import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Message;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
@@ -180,6 +181,14 @@ public class RtMessengerService extends EmailMessengerService {
         sb.append(message.getSubmission().getId());
         sb.append("\nCF-Directory: ");
         sb.append("/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/"+ properties.getSubsTrackingUser()+"/"+ properties.getSubsTrackingExperimentType() +"_"+message.getSubmission().getSubsTrackingId());
+        sb.append("\nCF-ExperimentType: ");
+        try {
+            sb.append(((ExperimentSubmission) message.getSubmission()).getExperimentProfile().getType().isSequencing() ? "HTS" : "MA");
+        }
+        catch (Exception x)
+        {
+            messenger.send("Caanot get experiment type",x);
+        }
         return sb.toString();
     }
 

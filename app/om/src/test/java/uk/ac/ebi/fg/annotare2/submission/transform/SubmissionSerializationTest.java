@@ -66,6 +66,7 @@ public class SubmissionSerializationTest {
         Protocol prot1 = profileIn.createProtocol(new OntologyTerm("protocol1", "protocol1"), ProtocolSubjectType.EXTRACT);
         prot1.setName("Name of Protocol1");
         prot1.setDescription("Description of Protocol1");
+        prot1.setParameters(asList("param1", "param2"));
 
         Protocol prot2 = profileIn.createProtocol(new OntologyTerm("protocol2", "protocol2"), ProtocolSubjectType.LABELED_EXTRACT);
         prot2.setName("Name of Protocol2");

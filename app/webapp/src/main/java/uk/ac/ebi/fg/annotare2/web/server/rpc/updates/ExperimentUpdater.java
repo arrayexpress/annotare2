@@ -245,6 +245,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             protocol.setHardware(row.getHardware());
             protocol.setSoftware(row.getSoftware());
             protocol.setPerformer(row.getPerformer());
+            protocol.setParameters(row.getParameters());
         }
     }
 
