@@ -172,8 +172,9 @@ public class MageTabGenerator {
             idf.addComment("AEAnonymousReview", "yes");
         }
 
-
-        idf.addComment("RelatedExperiment", tabSeparateRelatedAccessionNumber(exp.getRelatedAccessionNumber()));
+        if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
+            idf.addComment("RelatedExperiment", tabSeparateRelatedAccessionNumber(exp.getRelatedAccessionNumber()));
+        }
 
         idf.investigationTitle = convertToIdfFriendly(exp.getTitle(), newLine);
         idf.experimentDescription = convertToIdfFriendly(exp.getDescription(), newLine);
