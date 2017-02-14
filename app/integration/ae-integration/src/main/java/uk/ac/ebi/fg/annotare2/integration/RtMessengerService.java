@@ -36,7 +36,12 @@ import uk.ac.ebi.fg.annotare2.db.dao.SubmissionDao;
 import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
 import uk.ac.ebi.fg.annotare2.db.model.Message;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
+import uk.ac.ebi.fg.annotare2.db.util.HibernateEntity;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
+import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -165,6 +170,17 @@ public class RtMessengerService extends EmailMessengerService {
                 "original.body", message.getBody(),
                 "ticket.number", "1234");// message.getSubmission().getRtTicketNumber());*/
         //StrSubstitutor sub = new StrSubstitutor(templateParams);
+
+        ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
+        Submission submission = message.getSubmission();
+        submission = HibernateEntity.deproxy(submission, Submission.class);
+        if (submission instanceof ExperimentSubmission) {
+            try {
+                ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+                submissionType = exp.getType();
+            } catch (DataSerializationException x) {}
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("Requestor: ");
         sb.append(message.getUser().getEmail());
@@ -181,13 +197,13 @@ public class RtMessengerService extends EmailMessengerService {
         sb.append(message.getSubmission().getId());
         sb.append("\nCF-Directory: ");
         sb.append("/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/"+ properties.getSubsTrackingUser()+"/"+ properties.getSubsTrackingExperimentType() +"_"+message.getSubmission().getSubsTrackingId());
-        sb.append("\nCF-ExperimentType: ");
+        sb.append("\nCF-Experiment Type: ");
         try {
-            sb.append(((ExperimentSubmission) message.getSubmission()).getExperimentProfile().getType().isSequencing() ? "HTS" : "MA");
+            sb.append(submissionType.isSequencing() ? "HTS" : "MA");
         }
         catch (Exception x)
         {
-            messenger.send("Caanot get experiment type",x);
+            messenger.send("Cannot get experiment type",x);
         }
         return sb.toString();
     }
