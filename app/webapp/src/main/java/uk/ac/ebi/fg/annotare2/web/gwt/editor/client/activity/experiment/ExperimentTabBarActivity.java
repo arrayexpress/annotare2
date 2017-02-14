@@ -40,6 +40,7 @@ public class ExperimentTabBarActivity extends AbstractActivity implements Editor
     private final PlaceController placeController;
     private ExperimentTab selectedTab;
     private UserDto currentUser;
+    private boolean tabLoadedFlag = false;
 
     private final CurrentUserAccountServiceAsync userService;
 
@@ -53,6 +54,9 @@ public class ExperimentTabBarActivity extends AbstractActivity implements Editor
 
     public ExperimentTabBarActivity withPlace(ExperimentPlace place) {
         selectedTab = place.getSelectedTab();
+        if(tabLoadedFlag) {
+            view.selectTab(selectedTab);
+        }
         return this;
     }
 
@@ -70,6 +74,7 @@ public class ExperimentTabBarActivity extends AbstractActivity implements Editor
                         view.setCurrentUser(result);
                         view.initWithTabs(ExperimentTab.values());
                         view.selectTab(selectedTab);
+                        tabLoadedFlag = true;
                     }
                 }));
     }
