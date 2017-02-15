@@ -67,7 +67,12 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         exp.setAeExperimentType(details.getAeExperimentType());
         exp.setExperimentalDesigns(details.getExperimentalDesigns());
         exp.setAnonymousReview(details.isAnonymousReviewEnabled());
-        exp.setRelatedAccessionNumber(details.getRelatedAccessionNumber());
+        exp.setRelatedAccessionNumber(removeDuplicateAccessionNumber(details.getRelatedAccessionNumber()));
+    }
+
+    private String removeDuplicateAccessionNumber(String accessionNumber)
+    {
+        return new LinkedHashSet<String>(Arrays.asList(accessionNumber.split(",\\s*\\t*"))).toString().replaceAll("(^\\[|\\]$)", "");
     }
 
     @Override

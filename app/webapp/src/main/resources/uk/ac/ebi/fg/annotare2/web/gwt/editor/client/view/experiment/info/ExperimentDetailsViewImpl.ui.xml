@@ -129,7 +129,7 @@
                             Related Accession Number
                         </td>
                         <td>
-                            <g:PlaceholderTextBox placeholder="Enter the accession number of related experiments in ArrayExpress or other EBI databases (PRIDE) e.g. E-MTAB-4688, PXD123456" width="800px" ui:field="relatedAccessionNumber"/>
+                            <g:PlaceholderTextBox placeholder="Enter the accession number of related experiments in ArrayExpress or PRIDE e.g. E-MTAB-4688, PXD123456" width="800px" title="If you don't have accession number yet, tell us the related experiment title in feedback form." ui:field="relatedAccessionNumber"/>
                         </td>
                     </tr>
                 </tbody>

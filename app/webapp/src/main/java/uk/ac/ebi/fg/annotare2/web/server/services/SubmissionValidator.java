@@ -86,7 +86,7 @@ public class SubmissionValidator {
     }
 
     private boolean validateRelatedAccessionNumber(String relatedAccessionNumber) {
-        RegExp regex = RegExp.compile("^(?:(?:[E]-[A-Z]{4}-\\d+,)|(?:[A-Z]{3}\\d{6},))*(?:(?:[E]-[A-Z]{4}-\\d+)|(?:[A-Z]{3}\\d{6}))$");
+        RegExp regex = RegExp.compile("^\\t*\\s*(?:(?:[E]-[A-Z]{4}-\\d+,\\t*\\s*)|(?:[A-Z]{3}\\d{6},\\t*\\s*))*(?:(?:[E]-[A-Z]{4}-\\d+)|(?:[A-Z]{3}\\d{6}))$");
         return regex.test(relatedAccessionNumber);
     }
 
@@ -120,7 +120,7 @@ public class SubmissionValidator {
 
         if(!("".equals(exp.getRelatedAccessionNumber()))) {
             if (!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber())) {
-                addError(results, "Enter Related Accession Number in correct format ( separated by comma in case of multiple accession numbers ) e.g E-MTAB-1234,PXD123456,E-MTAB-4353");
+                addError(results, "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>]Enter Related Accession Number in correct format ( separated by comma in case of multiple accession numbers ) e.g E-MTAB-1234, PXD123456, E-MTAB-4353");
             }
         }
         if (null == allFiles || 0 == allFiles.size()) {

@@ -37,6 +37,7 @@ public class ArrayDesignTabBarActivity  extends AbstractActivity  implements Edi
     private EditorTabBarView view;
     private ArrayDesignTab selectedTab;
     private PlaceController placeController;
+    private boolean tabLoadedFlag = false;
 
     @Inject
     public ArrayDesignTabBarActivity(EditorTabBarView view,
@@ -50,11 +51,15 @@ public class ArrayDesignTabBarActivity  extends AbstractActivity  implements Edi
         view.initWithTabs(ArrayDesignTab.values());
         view.setPresenter(this);
         view.selectTab(selectedTab);
+        tabLoadedFlag = true;
         containerWidget.setWidget(view.asWidget());
     }
 
     public ArrayDesignTabBarActivity withPlace(ArrayDesignPlace place) {
         selectedTab = place.getSelectedTab();
+        if(tabLoadedFlag) {
+            view.selectTab(selectedTab);
+        }
         return this;
     }
 
