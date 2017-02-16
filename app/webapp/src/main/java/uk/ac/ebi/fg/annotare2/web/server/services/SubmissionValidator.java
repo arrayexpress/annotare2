@@ -52,6 +52,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Ordering.natural;
 
@@ -118,7 +119,7 @@ public class SubmissionValidator {
         Set<DataFile> allFiles = submission.getFiles();
         Set<DataFile> assignedFiles = dataFileManager.getAssignedFiles(submission);
 
-        if(!("".equals(exp.getRelatedAccessionNumber()))) {
+        if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
             if (!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber())) {
                 addError(results, "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>]Enter Related Accession Number in correct format ( separated by comma in case of multiple accession numbers ) e.g E-MTAB-1234, PXD123456, E-MTAB-4353");
             }

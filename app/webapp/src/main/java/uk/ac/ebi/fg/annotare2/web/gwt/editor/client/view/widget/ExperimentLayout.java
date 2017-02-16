@@ -67,15 +67,15 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
     private void showNotificationMole() {
         if (submissionCount==1) {
-            notificationMole.setAnimationDuration(500);
-            notificationMole.showDelayed(1000);
+            notificationMole.setAnimationDuration(1000);
+            notificationMole.showDelayed(2000);
             com.google.gwt.user.client.Timer t = new com.google.gwt.user.client.Timer() {
                 @Override
                 public void run() {
                     notificationMole.hide();
                 }
             };
-            t.schedule(6000);
+            t.schedule(10000);
         }
     }
 
