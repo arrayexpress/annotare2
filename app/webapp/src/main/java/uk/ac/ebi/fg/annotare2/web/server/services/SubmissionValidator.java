@@ -121,7 +121,7 @@ public class SubmissionValidator {
 
         if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
             if (!validateRelatedAccessionNumber(exp.getRelatedAccessionNumber())) {
-                addError(results, "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>]Enter Related Accession Number in correct format ( separated by comma in case of multiple accession numbers ) e.g E-MTAB-1234, PXD123456, E-MTAB-4353");
+                addError(results, "[<a href=\"#INFO:GENERAL_INFO\">General Info</a>] Enter the accession number of related experiments in ArrayExpress or PRIDE e.g. E-MTAB-4688, PXD123456");
             }
         }
         if (null == allFiles || 0 == allFiles.size()) {
