@@ -26,5 +26,5 @@ public interface MessengerService {
 
     void directEmail(String from, String to, String subject, String body) throws Exception;
 
-    void ticketUpdate(Map<String, String> params) throws Exception;
+    void ticketUpdate(Map<String, String> params, String ticketNumber) throws Exception;
 }

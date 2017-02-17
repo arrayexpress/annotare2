@@ -17,6 +17,7 @@
 
 package uk.ac.ebi.fg.annotare2.integration;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -38,7 +39,6 @@ import uk.ac.ebi.fg.annotare2.db.model.Message;
 import uk.ac.ebi.fg.annotare2.db.model.Submission;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateEntity;
 import uk.ac.ebi.fg.annotare2.db.util.HibernateSessionFactory;
-import uk.ac.ebi.fg.annotare2.magetabcheck.checker.ExperimentType;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
@@ -57,12 +57,12 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class RtMessengerService extends EmailMessengerService {
 
-    //private static final Logger log = LoggerFactory.getLogger(OtrsMessengerService.class);
 
     private final ExtendedAnnotareProperties properties;
-    //private final HibernateSessionFactory sessionFactory;
     private final Messenger messenger;
     private final SubmissionDao submissionDao;
+    private boolean RtTicket = false;
+    private String errorTrace = "";
 
     @Inject
     public RtMessengerService(HibernateSessionFactory sessionFactory,
@@ -86,7 +86,7 @@ public class RtMessengerService extends EmailMessengerService {
                 if (isNullOrEmpty(ticketNumber)) {
                     ticketNumber = createRtTicket(submission, message);
                     if (ticketNumber==null) {
-                        throw new Exception ("Unable to create RT ticket");
+                        throw new Exception ("Unable to create RT ticket\n"+ errorTrace);
                     }
                     submission.setRtTicketNumber(ticketNumber);
                     submissionDao.save(submission);
@@ -104,9 +104,10 @@ public class RtMessengerService extends EmailMessengerService {
     }
 
     @Override
-    public void ticketUpdate(Map<String, String> params) throws Exception
+    public void ticketUpdate(Map<String, String> params, String ticketNumber) throws Exception
     {
-        if (StringUtils.isBlank(params.get("ticketNumber"))) return;
+        if (StringUtils.isBlank(ticketNumber)) return;
+
 
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -118,21 +119,50 @@ public class RtMessengerService extends EmailMessengerService {
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                 .addTextBody("user", properties.getRtIntegrationUser())
                 .addTextBody("pass", properties.getRtIntegrationPassword())
-                .addTextBody("content", "CF-Accession: "+ params.get("accessionNumber"));
+                .addTextBody("content", getMessageContent(params));
 
-        HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl() + "ticket/"+params.get("ticketNumber")+"/edit");
+        HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl() + "ticket/"+ticketNumber+"/edit");
         httppost.setEntity(entityBuilder.build());
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
         String line, ticket = null;
-        Pattern p = Pattern.compile("# Ticket (\\d+) created.");
+        //Pattern p = Pattern.compile("# Ticket (\\d+) created.");
+        try
+        {
+            Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
+            while ((line = inp.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                if (m.find()) {
+                    RtTicket = true;
+                }
+                if (!RtTicket) {
+                    throw new Exception("RT Ticket Creation Failed");
+                }
+            }
+        }catch (Exception e)
+        {
         while ((line = inp.readLine()) != null) {
-            System.out.println(line);
+                errorTrace = errorTrace + line + "\n";
+            }
         }
     }
 
+    private String getMessageContent(Map<String, String> params)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> entry: params.entrySet()
+                ) {
+            sb.append(entry.getKey());
+            sb.append(": ");
+            sb.append(entry.getValue());
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     private String createRtTicket(Submission submission, Message message) throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
@@ -140,10 +170,12 @@ public class RtMessengerService extends EmailMessengerService {
         CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
                 sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
 
+
+
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                 .addTextBody("user", properties.getRtIntegrationUser())
                 .addTextBody("pass", properties.getRtIntegrationPassword())
-                .addTextBody("content", getNewMessageContent(message));
+                .addTextBody("content", getMessageContent(getNewTicketFieldsMap(message)));
 
         HttpPost httppost = new HttpPost( properties.getRtIntegrationUrl() + "ticket/new");
         httppost.setEntity(entityBuilder.build());
@@ -151,26 +183,31 @@ public class RtMessengerService extends EmailMessengerService {
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
         String line, ticket = null;
-        Pattern p = Pattern.compile("# Ticket (\\d+) created.");
-        while ((line = inp.readLine()) != null) {
-            Matcher m = p.matcher(line);
-            if (m.find()) {
-                ticket = m.group(1);
+
+        try {
+            Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
+            //Pattern p = Pattern.compile("# Ticket (\\d+) created.");
+            while ((line = inp.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                if (m.find()) {
+                    ticket = m.group(1);
+                    RtTicket = true;
+                }
+                if (!RtTicket) {
+                    throw new Exception("RT Ticket Creation Failed");
+                }
+            }
+        } catch (Exception e)
+        {
+            while ((line = inp.readLine()) != null) {
+                errorTrace = errorTrace + line + "\n";
             }
         }
         return ticket;
     }
 
-
-    private String getNewMessageContent(Message message) {
-        /*boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
-        boolean isInternalRecipient = message.getTo().matches(".*annotare[@]ebi[.]ac[.]uk.*");
-        Map<String, String> templateParams = ImmutableMap.of(
-                "original.subject", message.getSubject(),
-                "original.body", message.getBody(),
-                "ticket.number", "1234");// message.getSubmission().getRtTicketNumber());*/
-        //StrSubstitutor sub = new StrSubstitutor(templateParams);
-
+    private Map<String,String> getNewTicketFieldsMap(Message message)
+    {
         ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
@@ -181,53 +218,28 @@ public class RtMessengerService extends EmailMessengerService {
             } catch (DataSerializationException x) {}
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("Requestor: ");
-        sb.append(message.getUser().getEmail());
-        sb.append("\nSubject: ");
-        sb.append(message.getSubject());
-        sb.append("\nText: ");
-        String body = message.getBody();
-        sb.append(body.replaceAll("\\n","\n "));
-        sb.append("\nQueue: ");
-        sb.append(properties.getRtQueueName());
-        sb.append("\nCF-Accession: ");
-        sb.append(message.getSubmission().getAccession());
-        sb.append("\nCF-SubmissionID: ");
-        sb.append(message.getSubmission().getId());
-        sb.append("\nCF-Directory: ");
-        sb.append("/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/"+ properties.getSubsTrackingUser()+"/"+ properties.getSubsTrackingExperimentType() +"_"+message.getSubmission().getSubsTrackingId());
-        sb.append("\nCF-Experiment Type: ");
-        try {
-            sb.append(submissionType.isSequencing() ? "HTS" : "MA");
-        }
-        catch (Exception x)
-        {
-            messenger.send("Cannot get experiment type",x);
-        }
-        return sb.toString();
+        return new ImmutableMap.Builder<String, String>()
+                .put(RtFieldNames.REQUESTOR, message.getUser().getEmail())
+                .put(RtFieldNames.SUBJECT, message.getSubject())
+                .put(RtFieldNames.TEXT, message.getBody().replaceAll("\\n","\n "))
+                .put(RtFieldNames.QUEUE, properties.getRtQueueName())
+                .put(RtFieldNames.SUBMISSION_ID,String.valueOf(message.getSubmission().getId()))
+                .put(RtFieldNames.DIRECTORY,"/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/"+ properties.getSubsTrackingUser()+"/"+ properties.getSubsTrackingExperimentType() +"_"+message.getSubmission().getSubsTrackingId())
+                .put(RtFieldNames.EXPERIMENT_TYPE, submissionType.isSequencing() ? "HTS" : "MA")
+                .build();
     }
 
-    private String getReplyMessageContent(Message message) {
-        //boolean isInternalSender = message.getFrom().matches(".*annotare[@]ebi[.]ac[.]uk.*");
-        //boolean isInternalRecipient = message.getTo().matches(".*[a-z][@]ebi[.]ac[.]uk.*");
-        // TODO: fix is internal recipient
-        //boolean isInternalRecipient = message.getTo().matches(".*awais[@]ebi[.]ac[.]uk.*");
-
+    private Map<String,String> getFieldsMap(Message message)
+    {
         String[] str = message.getTo().split("<");
         boolean isCurator = str[0].replaceAll("\"","").equalsIgnoreCase("Annotare RT ");
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("Action: ");
-        sb.append(isCurator ? "comment" : "correspond");
-        sb.append("\nSubject: ");
-        sb.append(message.getSubject());
-        sb.append("\nText: ");
-        String body = message.getBody();
-        sb.append(body.replaceAll("\\n","\n "));
-        return sb.toString();
+        return new ImmutableMap.Builder<String, String>()
+                .put(RtFieldNames.ACTION, isCurator ? "comment" : "correspond")
+                .put(RtFieldNames.SUBJECT, message.getSubject())
+                .put(RtFieldNames.TEXT, message.getBody().replaceAll("\\n","\n "))
+                .build();
     }
-
 
     private void sendRtMessage(String ticketNumber, Message message) throws Exception {
         if (StringUtils.isBlank(ticketNumber)) return;
@@ -242,7 +254,7 @@ public class RtMessengerService extends EmailMessengerService {
         MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                 .addTextBody("user", properties.getRtIntegrationUser())
                 .addTextBody("pass", properties.getRtIntegrationPassword())
-                .addTextBody("content", getReplyMessageContent(message));
+                .addTextBody("content", getMessageContent(getFieldsMap(message)));
 
         HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl() + "ticket/"+ticketNumber+"/comment");
         httppost.setEntity(entityBuilder.build());
@@ -250,9 +262,23 @@ public class RtMessengerService extends EmailMessengerService {
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
         String line, ticket = null;
-        Pattern p = Pattern.compile("# Ticket (\\d+) created.");
-        while ((line = inp.readLine()) != null) {
-            System.out.println(line);
+        try
+        {
+            Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
+            while ((line = inp.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                if (m.find()) {
+                    RtTicket = true;
+                }
+                if (!RtTicket) {
+                    throw new Exception("RT Ticket Creation Failed");
+                }
+            }
+        }catch (Exception e)
+        {
+            while ((line = inp.readLine()) != null) {
+                errorTrace = errorTrace + line + "\n";
+            }
         }
     }
 

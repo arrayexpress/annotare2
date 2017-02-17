@@ -116,9 +116,9 @@ public class MessengerImpl implements Messenger {
     }
 
     @Override
-    public void updateTicket(Map<String, String> params) throws Exception
+    public void updateTicket(Map<String, String> params, String ticketNumber) throws Exception
     {
-        messengerService.ticketUpdate(params);
+        messengerService.ticketUpdate(params,ticketNumber);
     }
 
     private void send(String template, Map<String, String> parameters, User user, Submission submission, boolean isDirectSend) {

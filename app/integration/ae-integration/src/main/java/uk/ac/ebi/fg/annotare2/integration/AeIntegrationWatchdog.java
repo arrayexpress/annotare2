@@ -352,9 +352,9 @@ public class AeIntegrationWatchdog {
                 try {
                     messenger.updateTicket(
                             new ImmutableMap.Builder<String, String>()
-                                    .put("ticketNumber", submission.getRtTicketNumber())
-                                    .put("accessionNumber", submission.getAccession())
-                                    .build()
+                                    .put(RtFieldNames.ACCESSION_NUMBER, submission.getAccession())
+                                    .build(),
+                            submission.getRtTicketNumber()
                     );
                 }
                 catch (Exception x){

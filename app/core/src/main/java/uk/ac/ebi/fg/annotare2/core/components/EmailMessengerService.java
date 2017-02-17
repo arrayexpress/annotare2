@@ -101,7 +101,7 @@ public class EmailMessengerService implements MessengerService {
     }
 
     @Override
-    public void ticketUpdate(Map<String, String> params) throws Exception
+    public void ticketUpdate(Map<String, String> params, String ticketNumber) throws Exception
     {
         //This method is override in RtMessenger Service class
         //Tickets are also being treated as messages in Annotare
