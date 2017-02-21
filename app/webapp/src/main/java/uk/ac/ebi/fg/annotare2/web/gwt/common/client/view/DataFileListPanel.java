@@ -28,15 +28,10 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.*;
-import com.google.gwt.user.cellview.client.CheckboxHeader;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.CustomDataGrid;
-import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.*;
 import uk.ac.ebi.fg.annotare2.db.model.DataFile;
 import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
@@ -48,7 +43,6 @@ import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
 
 import java.util.*;
 
-import static java.text.NumberFormat.getIntegerInstance;
 
 public class DataFileListPanel extends SimpleLayoutPanel {
 
@@ -64,6 +58,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
 
     public DataFileListPanel() {
         grid = new CustomDataGrid<>(MAX_FILES, false);
+        //grid = new DataGrid<>();
         grid.addStyleName("gwt-DataGrid");
         grid.setWidth("100%");
         grid.setHeight("100%");
@@ -148,19 +143,6 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         });
         grid.addColumn(nameColumn, "Name");
 
-        Column<DataFileRow, String> sizeColumn = new Column<DataFileRow, String>(nameCell) {
-
-            @Override
-            public String getValue(DataFileRow row) {
-
-                return NumberFormat.getDecimalFormat().format(row.getFileSize());
-            }
-        };
-
-        sizeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        grid.addColumn(sizeColumn,"File Size (Bytes)");
-
-
 
 
         Column<DataFileRow, Date> dateColumn = new Column<DataFileRow, Date>(new DateCell(DateTimeFormat.getFormat("dd/MM/yy HH:mm"))) {
@@ -181,6 +163,29 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         grid.addColumn(statusText, "Status");
         grid.setColumnWidth(statusText, 100, Style.Unit.PX);
+
+        Column<DataFileRow, String> sizeColumn = new Column<DataFileRow, String>(nameCell) {
+
+            @Override
+            public String getValue(DataFileRow row) {
+
+                return NumberFormat.getDecimalFormat().format(row.getFileSize());
+            }
+        };
+
+        sizeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+
+        SafeHtmlHeader header = new SafeHtmlHeader(new SafeHtml() {
+
+            @Override
+            public String asString() {
+                return "<div style=\"text-align:center;\">File Size (Bytes)</div>";
+            }
+        });
+
+        grid.addColumn(sizeColumn,header);
+        grid.setColumnWidth(sizeColumn, 200, Style.Unit.PX);
+
 
         dataProvider = new ListDataProvider<>();
         dataProvider.addDataDisplay(grid);

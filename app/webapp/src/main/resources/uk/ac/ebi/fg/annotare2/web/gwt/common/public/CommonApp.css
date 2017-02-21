@@ -69,6 +69,15 @@
     font-size: larger;
 }
 
+/* Added for rendering issue on Windows Chrome for the last column of DataGrid in FileUploadView*/
+.gwt-DataGrid td:last-child  {
+    padding-right:20px;
+}
+
+.gwt-DataGrid td:nth-last-child(3) {
+    padding-left:5px;
+}
+
 .gwt-ListBox {
     border: 1px solid #bbbbbb;
 }
