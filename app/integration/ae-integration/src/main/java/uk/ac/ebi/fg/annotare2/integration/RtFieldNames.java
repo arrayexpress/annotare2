@@ -4,7 +4,7 @@ package uk.ac.ebi.fg.annotare2.integration;
  * Created by haideri on 16/02/2017.
  */
 public class RtFieldNames {
-    public static final String REQUESTOR = "Requester";
+    public static final String REQUESTOR = "Requestor";
     public static final String SUBJECT = "Subject";
     public static final String QUEUE = "Queue";
     public static final String ACTION = "Action";
