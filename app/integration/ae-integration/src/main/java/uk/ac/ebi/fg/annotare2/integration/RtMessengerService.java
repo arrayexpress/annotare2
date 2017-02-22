@@ -61,8 +61,6 @@ public class RtMessengerService extends EmailMessengerService {
     private final ExtendedAnnotareProperties properties;
     private final Messenger messenger;
     private final SubmissionDao submissionDao;
-    private boolean RtTicket = false;
-    private String errorTrace = "";
 
     @Inject
     public RtMessengerService(HibernateSessionFactory sessionFactory,
@@ -71,7 +69,6 @@ public class RtMessengerService extends EmailMessengerService {
                               MessageDao messageDao,
                               SubmissionDao submissionDao) {
         super(sessionFactory, properties, messageDao);
-        //this.sessionFactory = sessionFactory;
         this.messenger = messenger;
         this.properties = properties;
         this.submissionDao = submissionDao;
@@ -81,6 +78,7 @@ public class RtMessengerService extends EmailMessengerService {
     protected void sendMessage(Message message) throws Exception {
         if (properties.isRtIntegrationEnabled() && null != message.getSubmission()) {
             try {
+                String errorTrace = "";
                 Submission submission = message.getSubmission();
                 String ticketNumber = submission.getRtTicketNumber();
                 if (isNullOrEmpty(ticketNumber)) {
@@ -108,6 +106,8 @@ public class RtMessengerService extends EmailMessengerService {
     {
         if (StringUtils.isBlank(ticketNumber)) return;
 
+        boolean ticketUpdated = false;
+        String errorTrace = "";
 
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -126,19 +126,18 @@ public class RtMessengerService extends EmailMessengerService {
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
-        String line, ticket = null;
-        //Pattern p = Pattern.compile("# Ticket (\\d+) created.");
+        String line;
         try
         {
-            Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
+            Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
                 Matcher m = p.matcher(line);
                 if (m.find()) {
-                    RtTicket = true;
+                    ticketUpdated = true;
                 }
-                if (!RtTicket) {
-                    throw new Exception("RT Ticket Creation Failed");
-                }
+            }
+            if (!ticketUpdated) {
+                throw new Exception("RT was unable to update ticket.");
             }
         }catch (Exception e)
         {
@@ -163,6 +162,8 @@ public class RtMessengerService extends EmailMessengerService {
 
     private String createRtTicket(Submission submission, Message message) throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
+        boolean ticketCreated = false;
+        String errorTrace = "";
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
@@ -185,17 +186,17 @@ public class RtMessengerService extends EmailMessengerService {
         String line, ticket = null;
 
         try {
-            Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
-            //Pattern p = Pattern.compile("# Ticket (\\d+) created.");
+            //Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
+            Pattern p = Pattern.compile("# Ticket (\\d+) created.");
             while ((line = inp.readLine()) != null) {
                 Matcher m = p.matcher(line);
                 if (m.find()) {
                     ticket = m.group(1);
-                    RtTicket = true;
+                    ticketCreated = true;
                 }
-                if (!RtTicket) {
-                    throw new Exception("RT Ticket Creation Failed");
-                }
+            }
+            if (!ticketCreated) {
+                throw new Exception("RT Ticket Creation Failed");
             }
         } catch (Exception e)
         {
@@ -244,6 +245,8 @@ public class RtMessengerService extends EmailMessengerService {
     private void sendRtMessage(String ticketNumber, Message message) throws Exception {
         if (StringUtils.isBlank(ticketNumber)) return;
 
+        boolean messageSent = false;
+        String errorTrace = "";
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
@@ -261,18 +264,18 @@ public class RtMessengerService extends EmailMessengerService {
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
-        String line, ticket = null;
+        String line;
         try
         {
-            Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
+            Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
                 Matcher m = p.matcher(line);
                 if (m.find()) {
-                    RtTicket = true;
+                    messageSent = true;
                 }
-                if (!RtTicket) {
-                    throw new Exception("RT Ticket Creation Failed");
-                }
+            }
+            if (!messageSent) {
+                throw new Exception("RT was unable to send Message");
             }
         }catch (Exception e)
         {
