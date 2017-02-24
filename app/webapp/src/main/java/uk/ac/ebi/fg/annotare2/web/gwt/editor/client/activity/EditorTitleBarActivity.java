@@ -224,6 +224,19 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
+    public void checkRtServerStatus() {
+        submissionService.checkRtServerStatus(getSubmissionId(),AsyncCallbackWrapper.callbackWrap(
+                new ReportingAsyncCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        view.setRtServerStatus(aBoolean);
+                    }
+                }
+        ));
+    }
+
+
+    @Override
     public void assignSubmissionToCreator(final AsyncCallback<Void> callback) {
         submissionService.assignSubmissionToCreator(getSubmissionId(), callbackWrap(callback));
     }

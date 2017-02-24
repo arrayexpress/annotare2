@@ -26,19 +26,13 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactUsDialog;
@@ -51,6 +45,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     private SubmissionDetails submissionDetails;
     private ExperimentProfileType experimentProfileType;
+
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
     }
@@ -81,6 +76,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     private Presenter presenter;
 
+    private boolean RtServerStatus;
     private boolean shouldAllowInstantFeedback;
     private boolean isCurator;
     private boolean isOwnedByCreator;
@@ -94,6 +90,12 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         initWidget(uiBinder.createAndBindUi(this));
         contactUsDialog = new ContactUsDialog();
         waitingPopup = new WaitingPopup();
+    }
+
+    @Override
+    public void setRtServerStatus(boolean status)
+    {
+        this.RtServerStatus = status;
     }
 
     public void reloadSubmission() {
@@ -250,6 +252,25 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("submitButton")
     void onSubmitButtonClick(ClickEvent event) {
+try {
+    presenter.checkRtServerStatus();
+    if (!RtServerStatus) {
+            MessageDialog dialogBox = new MessageDialog(
+                    "Submission cannot be processed",
+                    "<p>Dear Submitter,</p><p>" +
+                            "We are sorry that we currently cannot process your submission because of a scheduled maintenance. But don’t worry, the data you have entered is saved.\n"+
+                            "You can try again submitting your experiment later.\n<p></p>We will bring back the service as soon as possible.\n"+
+                            "Please check our Twitter <a href=\"https://twitter.com/ArrayExpressEBI\" target=\"_blank\">(https://twitter.com/ArrayExpressEBI)</a> for the latest announcements.\n"+
+                            "If you have any further questions don’t hesitate to contact us " +
+                            "at <a href=\"mailto:arrayexpress_cur@ebi.ac.uk\">arrayexpress_cur@ebi.ac.uk</a>.\n" +
+                            "<p></p>Sorry for any inconvenience caused.</p><p>" +
+                            "Regards,<br/>Annotare Team</p>"
+            );
+            dialogBox.show();
+        return;
+    }
+}catch (Exception e)
+{}
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
         dialog.showValidationProgressMessage(null);
 

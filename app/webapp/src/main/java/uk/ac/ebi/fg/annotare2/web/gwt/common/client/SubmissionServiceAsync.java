@@ -48,4 +48,6 @@ public interface SubmissionServiceAsync {
     void postFeedback(long id, Byte score, String comment, AsyncCallback<Void> async);
 
     void getSubmissionCountForCurrentUser(AsyncCallback<Integer> async);
+
+    void checkRtServerStatus(int submissionId, AsyncCallback<Boolean> async);
 }

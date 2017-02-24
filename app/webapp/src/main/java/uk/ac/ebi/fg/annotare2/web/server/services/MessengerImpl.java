@@ -121,6 +121,23 @@ public class MessengerImpl implements Messenger {
         messengerService.ticketUpdate(params,ticketNumber);
     }
 
+    @Override
+    public boolean checkRtServerStatus(int submissionId) throws Exception
+    {
+        boolean status = messengerService.checkRtServerStatus();
+        try {
+            if(!status)
+            {
+                messengerService.directEmail(properties.getEmailFromAddress("exception-report"),properties.getEmailToAddress("exception-report"),properties.getEmailSubject("exception-report"),"Exception caused due to RT server down. Submission ID: "+ submissionId);
+            }
+            return status;
+        }
+        catch (Exception e )
+        {
+            return false;
+        }
+    }
+
     private void send(String template, Map<String, String> parameters, User user, Submission submission, boolean isDirectSend) {
         StrSubstitutor sub = new StrSubstitutor(parameters);
 

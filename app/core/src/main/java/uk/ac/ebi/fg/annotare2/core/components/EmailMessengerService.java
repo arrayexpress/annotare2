@@ -110,6 +110,12 @@ public class EmailMessengerService implements MessengerService {
     }
 
     @Override
+    public boolean checkRtServerStatus() throws Exception
+    {
+        return true; //Just Dummy Value actual call will be directed to RtMessenger
+    }
+
+    @Override
     public void directEmail(String from, String to, String subject, String body) throws Exception {
         Properties p = new Properties();
         p.put("mail.smtp.host", properties.getEmailSmtpHost());

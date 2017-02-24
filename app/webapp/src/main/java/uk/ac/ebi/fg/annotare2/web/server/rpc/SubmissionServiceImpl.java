@@ -378,6 +378,17 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                 newArrayList(new LinkedHashSet(failures)));
     }
 
+    @Override
+    public boolean checkRtServerStatus(int submissionId) throws Exception
+    {
+        try {
+            return messenger.checkRtServerStatus(submissionId);
+        }catch(Exception e)
+        {
+            return false;
+        }
+    }
+
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
     public void submitSubmission(final long id)

@@ -37,6 +37,8 @@ public interface EditorTitleBarView extends IsWidget {
 
     void setCurator(boolean isCurator);
 
+    void setRtServerStatus(boolean status);
+
     void autoSaveStarted();
 
     void autoSaveStopped(String errorMessage);
@@ -66,6 +68,8 @@ public interface EditorTitleBarView extends IsWidget {
         void saveCurrentUserReferrer(String referrer, AsyncCallback<Void> callback);
 
         String getSubmissionExportUrl();
+
+        void checkRtServerStatus();
     }
 
     interface ValidationHandler {

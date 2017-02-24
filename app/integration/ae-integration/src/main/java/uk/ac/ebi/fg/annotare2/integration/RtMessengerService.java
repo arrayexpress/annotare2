@@ -102,6 +102,51 @@ public class RtMessengerService extends EmailMessengerService {
     }
 
     @Override
+    public boolean checkRtServerStatus() throws Exception
+    {
+        boolean serverStatus = false;
+        try {
+
+            SSLContextBuilder builder = new SSLContextBuilder();
+
+            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+                    builder.build());
+            CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
+                    sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
+
+            MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+                    .addTextBody("user", properties.getRtIntegrationUser())
+                    .addTextBody("pass", properties.getRtIntegrationPassword())
+                    .addTextBody("content", "");
+
+            HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl());
+            httppost.setEntity(entityBuilder.build());
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity r = response.getEntity();
+            BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
+            String line;
+            try {
+                Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
+                while ((line = inp.readLine()) != null) {
+                    Matcher m = p.matcher(line);
+                    if (m.find()) {
+                        serverStatus = true;
+                    }
+                }
+            } catch (Exception e) {
+
+            }
+        }catch(Exception e)
+        {
+            serverStatus = false;
+
+        }
+
+        return serverStatus;
+    }
+
+    @Override
     public void ticketUpdate(Map<String, String> params, String ticketNumber) throws Exception
     {
         if (StringUtils.isBlank(ticketNumber)) return;
