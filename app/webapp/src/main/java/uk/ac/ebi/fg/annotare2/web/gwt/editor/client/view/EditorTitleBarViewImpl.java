@@ -252,7 +252,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("submitButton")
     void onSubmitButtonClick(ClickEvent event) {
-try {
+/*try {
     presenter.checkRtServerStatus();
     if (!RtServerStatus) {
             MessageDialog dialogBox = new MessageDialog(
@@ -270,7 +270,7 @@ try {
         return;
     }
 }catch (Exception e)
-{}
+{}*/
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
         dialog.showValidationProgressMessage(null);
 
