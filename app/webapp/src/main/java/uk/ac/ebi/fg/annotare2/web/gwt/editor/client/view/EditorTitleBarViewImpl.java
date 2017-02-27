@@ -93,8 +93,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
     }
 
     @Override
-    public void setRtServerStatus(boolean status)
-    {
+    public void setRtServerStatus(boolean status) {
         this.RtServerStatus = status;
     }
 
@@ -138,7 +137,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         //set status and type
         SubmissionStatus status = submissionDetails.getStatus();
         submitButton.setVisible(status.canSubmit(isCurator));
-        validateButton.setVisible(submissionDetails.getType().isExperiment() && status.canSubmit(isCurator) );
+        validateButton.setVisible(submissionDetails.getType().isExperiment() && status.canSubmit(isCurator));
         exportButton.setVisible(submissionDetails.getType().isExperiment());
         editButton.setVisible(editButton.isVisible() && status.canAssign());
         releaseButton.setVisible(releaseButton.isVisible() && status.canAssign());
@@ -252,25 +251,11 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiHandler("submitButton")
     void onSubmitButtonClick(ClickEvent event) {
-/*try {
-    presenter.checkRtServerStatus();
-    if (!RtServerStatus) {
-            MessageDialog dialogBox = new MessageDialog(
-                    "Submission cannot be processed",
-                    "<p>Dear Submitter,</p><p>" +
-                            "We are sorry that we currently cannot process your submission because of a scheduled maintenance. But don’t worry, the data you have entered is saved.\n"+
-                            "You can try again submitting your experiment later.\n<p></p>We will bring back the service as soon as possible.\n"+
-                            "Please check our Twitter <a href=\"https://twitter.com/ArrayExpressEBI\" target=\"_blank\">(https://twitter.com/ArrayExpressEBI)</a> for the latest announcements.\n"+
-                            "If you have any further questions don’t hesitate to contact us " +
-                            "at <a href=\"mailto:arrayexpress_cur@ebi.ac.uk\">arrayexpress_cur@ebi.ac.uk</a>.\n" +
-                            "<p></p>Sorry for any inconvenience caused.</p><p>" +
-                            "Regards,<br/>Annotare Team</p>"
-            );
-            dialogBox.show();
-        return;
-    }
-}catch (Exception e)
-{}*/
+        try {
+            presenter.checkRtServerStatus();
+        } catch (Exception e) {
+        }
+
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
         dialog.showValidationProgressMessage(null);
 
@@ -290,6 +275,22 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                         if (!result.canSubmit()) {
                             onValidationFailure(dialog);
                         } else {
+                            if (!RtServerStatus) {
+                                MessageDialog dialogBox = new MessageDialog(
+                                        "Submission cannot be processed",
+                                        "<p>Dear Submitter,</p><p>" +
+                                                "We are sorry that we currently cannot process your submission because of a scheduled maintenance. But don’t worry, the data you have entered is saved.\n" +
+                                                "You can try again submitting your experiment later.\n<p></p>We will bring back the service as soon as possible.\n" +
+                                                "Please check our Twitter <a href=\"https://twitter.com/ArrayExpressEBI\" target=\"_blank\">(https://twitter.com/ArrayExpressEBI)</a> for the latest announcements.\n" +
+                                                "If you have any further questions don’t hesitate to contact us " +
+                                                "at <a href=\"mailto:arrayexpress_cur@ebi.ac.uk\">arrayexpress_cur@ebi.ac.uk</a>.\n" +
+                                                "<p></p>Sorry for any inconvenience caused.</p><p>" +
+                                                "Regards,<br/>Annotare Team</p>"
+                                );
+                                dialog.hide();
+                                dialogBox.show();
+                                return;
+                            }
                             processSubmission(dialog, shouldAllowInstantFeedback);
                         }
                     }
@@ -338,6 +339,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                     public void onCancel() {
                         reloadSubmission();
                     }
+
                     @Override
                     public boolean onOk(Void aVoid) {
                         if (null != dialog.getFeedbackScore() || !dialog.getFeedbackMessage().isEmpty()) {
@@ -347,14 +349,14 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
                                     new ReportingAsyncCallback<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            if (dialog.getReferrer()!="") {
+                                            if (dialog.getReferrer() != "") {
                                                 saveCurrentUserReferrer(dialog.getReferrer());
                                             }
                                             reloadSubmission();
                                         }
-                            });
+                                    });
                         } else {
-                            if (dialog.getReferrer()!="") {
+                            if (dialog.getReferrer() != "") {
                                 saveCurrentUserReferrer(dialog.getReferrer());
                             }
                             reloadSubmission();

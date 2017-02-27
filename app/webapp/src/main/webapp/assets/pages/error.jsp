@@ -18,8 +18,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <t:analytics></t:analytics>
 <h2 class="alert">Oops, there is a problem with Annotare</h2>
-<p>Our web server says this as a <span class="alert">${requestScope['javax.servlet.error.status_code']} ${requestScope['javax.servlet.error.message']}</span>.
-    This problem means that the service you are trying to access is currently unavailable. We’re very sorry.</p>
+<p>This problem means that the service you are trying to access is currently unavailable. We'll bring back the service as soon as possible. We’re very sorry.</p>
 <h3>Still confused?</h3>
 <p>If you require further assistance locating missing page or file, please <a href="mailto:annotare@ebi.ac.uk">contact
     us</a> and we will look into it for you.</p>
