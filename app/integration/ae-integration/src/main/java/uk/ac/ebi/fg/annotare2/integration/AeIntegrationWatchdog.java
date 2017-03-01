@@ -306,6 +306,18 @@ public class AeIntegrationWatchdog {
                     } catch (DataSerializationException x) {}
                 }
 
+                try {
+                    messenger.updateTicket(
+                            new ImmutableMap.Builder<String, String>()
+                                    .put(RtFieldNames.DIRECTORY, "/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/"+ properties.getSubsTrackingUser()+"/"+ properties.getSubsTrackingExperimentType() +"_"+ submission.getSubsTrackingId())
+                                    .build(),
+                            submission.getRtTicketNumber()
+                    );
+                }
+                catch (Exception x){
+                    messenger.send("There was a problem updating Submission Directory " + submission.getRtTicketNumber(), x);
+                }
+
                 sendEmail(
                         otrsTemplate,
                         new ImmutableMap.Builder<String, String>()

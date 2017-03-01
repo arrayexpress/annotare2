@@ -80,6 +80,7 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 String errorTrace = "";
                 Submission submission = message.getSubmission();
+                submission = HibernateEntity.deproxy(submission, Submission.class);
                 String ticketNumber = submission.getRtTicketNumber();
                 if (isNullOrEmpty(ticketNumber)) {
                     ticketNumber = createRtTicket(submission, message);
@@ -270,7 +271,6 @@ public class RtMessengerService extends EmailMessengerService {
                 .put(RtFieldNames.TEXT, message.getBody().replaceAll("\\n","\n "))
                 .put(RtFieldNames.QUEUE, properties.getRtQueueName())
                 .put(RtFieldNames.SUBMISSION_ID,String.valueOf(message.getSubmission().getId()))
-                .put(RtFieldNames.DIRECTORY,"/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/"+ properties.getSubsTrackingUser()+"/"+ properties.getSubsTrackingExperimentType() +"_"+message.getSubmission().getSubsTrackingId())
                 .put(RtFieldNames.EXPERIMENT_TYPE, submissionType.isSequencing() ? "HTS" : "MA")
                 .build();
     }
