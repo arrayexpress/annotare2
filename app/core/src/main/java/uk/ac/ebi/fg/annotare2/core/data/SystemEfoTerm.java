@@ -27,15 +27,15 @@ public enum SystemEfoTerm {
     PUBLICATION_STATUS("Publication Status", "publication_status"),
 
     ORGANISM("Organism", "organism"),
-    ORGANISM_PART("Organism Part", "organism_part"),
+    ORGANISM_PART("Organism Part/Tissue", "organism_part"),
     STRAIN("Strain", "strain"),
     DISEASE("Disease", "disease"),
     GENOTYPE("Genotype", "genotype"),
     AGE("Age", "age"),
+    COMPOUND("Compound/Drug","compound"),
     CELL_LINE("Cell Line", "cell_line"),
     CELL_TYPE("Cell Type", "cell_type"),
     DEVELOPMENTAL_STAGE("Developmental Stage", "developmental_stage"),
-    GENETIC_MODIFICATION("Genetic Modification", "genetic_modification"),
     ENVIRONMENTAL_HISTORY("Environmental History", "environmental_history"),
     INDIVIDUAL("Individual", "individual"),
     SEX("Sex", "sex"),
@@ -53,7 +53,8 @@ public enum SystemEfoTerm {
     TUMOR_GRADING("Tumor grading", "tumor_grading"),
     AE_EXPERIMENT_TYPE("AE Experiment Type", "ae_experiment_type"),
     ARRAY_ASSAY("Array Assay", "array_assay"),
-    SEQUENCING_ASSAY("Sequencing Assay", "sequencing_assay");
+    SEQUENCING_ASSAY("Sequencing Assay", "sequencing_assay"),
+    TIME("Time","time");
 
     private final String name;
     private final String propertyName;
