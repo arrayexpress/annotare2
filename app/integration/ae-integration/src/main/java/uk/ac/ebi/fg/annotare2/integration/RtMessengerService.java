@@ -290,6 +290,22 @@ public class RtMessengerService extends EmailMessengerService {
     private void sendRtMessage(String ticketNumber, Message message) throws Exception {
         if (StringUtils.isBlank(ticketNumber)) return;
 
+        Submission submission = message.getSubmission();
+        submission = HibernateEntity.deproxy(submission, Submission.class);
+
+        if(null != submission.getSubsTrackingId()) {
+            try {
+                ticketUpdate(
+                        new ImmutableMap.Builder<String, String>()
+                                .put(RtFieldNames.DIRECTORY, "/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/" + properties.getSubsTrackingUser() + "/" + properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
+                                .build(),
+                        ticketNumber
+                );
+            } catch (Exception x) {
+                messenger.send("There was a problem updating Submission Directory " + submission.getRtTicketNumber(), x);
+            }
+        }
+
         boolean messageSent = false;
         String errorTrace = "";
         SSLContextBuilder builder = new SSLContextBuilder();
