@@ -297,7 +297,7 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 ticketUpdate(
                         new ImmutableMap.Builder<String, String>()
-                                .put(RtFieldNames.DIRECTORY, "/ebi/microarray/home/fgpt/sw/lib/perl/testing/files/" + properties.getSubsTrackingUser() + "/" + properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
+                                .put(RtFieldNames.DIRECTORY, properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
                                 .build(),
                         ticketNumber
                 );
