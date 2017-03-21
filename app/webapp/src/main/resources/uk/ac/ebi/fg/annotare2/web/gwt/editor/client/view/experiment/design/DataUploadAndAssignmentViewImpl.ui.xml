@@ -28,7 +28,7 @@
     </ui:style>
 
     <g:SplitLayoutPanel addStyleNames="{style.padding}">
-        <g:west size="850">
+        <g:west size="500">
             <c:DataFilesUploadViewImpl ui:field="dataFilesUploadView"/>
         </g:west>
         <g:center>

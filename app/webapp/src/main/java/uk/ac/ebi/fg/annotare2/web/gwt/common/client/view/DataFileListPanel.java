@@ -142,6 +142,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             }
         });
         grid.addColumn(nameColumn, "Name");
+        grid.setColumnWidth(nameColumn, 25, Style.Unit.PCT);
 
 
 
@@ -152,7 +153,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             }
         };
         grid.addColumn(dateColumn, "Date");
-        grid.setColumnWidth(dateColumn, 110, Style.Unit.PX);
+        grid.setColumnWidth(dateColumn, 25, Style.Unit.PCT);
 
         Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell(this)) {
             @Override
@@ -162,7 +163,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         };
         statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         grid.addColumn(statusText, "Status");
-        grid.setColumnWidth(statusText, 100, Style.Unit.PX);
+        grid.setColumnWidth(statusText, 20, Style.Unit.PCT);
 
         Column<DataFileRow, String> sizeColumn = new Column<DataFileRow, String>(nameCell) {
 
@@ -184,7 +185,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         });
 
         grid.addColumn(sizeColumn,header);
-        grid.setColumnWidth(sizeColumn, 200, Style.Unit.PX);
+        grid.setColumnWidth(sizeColumn, 30, Style.Unit.PCT);
 
 
         dataProvider = new ListDataProvider<>();
