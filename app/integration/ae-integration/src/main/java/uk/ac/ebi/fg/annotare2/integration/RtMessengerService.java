@@ -278,7 +278,7 @@ public class RtMessengerService extends EmailMessengerService {
     private Map<String,String> getFieldsMap(Message message)
     {
         String[] str = message.getTo().split("<");
-        boolean isCurator = str[0].replaceAll("\"","").equalsIgnoreCase("Annotare RT ");
+        boolean isCurator = (str[0].replaceAll("\"","").equalsIgnoreCase("Annotare RT ")) || (str[0].replaceAll("\"","").equalsIgnoreCase("Annotare Admin "));
 
         return new ImmutableMap.Builder<String, String>()
                 .put(RtFieldNames.ACTION, isCurator ? "comment" : "correspond")
@@ -292,12 +292,14 @@ public class RtMessengerService extends EmailMessengerService {
 
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
+        String subject = "Message from the Submitter";
 
-        if(null != submission.getSubsTrackingId()) {
+        if(null != submission.getSubsTrackingId() && !message.getSubject().equalsIgnoreCase(subject)) {
             try {
                 ticketUpdate(
                         new ImmutableMap.Builder<String, String>()
                                 .put(RtFieldNames.DIRECTORY, properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
+                                .put(RtFieldNames.SUBJECT, message.getSubject())
                                 .build(),
                         ticketNumber
                 );

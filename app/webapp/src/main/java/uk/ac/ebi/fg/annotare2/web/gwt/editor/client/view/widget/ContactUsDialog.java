@@ -27,6 +27,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 public class ContactUsDialog extends DialogBox {
 
     interface Binder extends UiBinder<Widget, ContactUsDialog> {
@@ -45,6 +47,9 @@ public class ContactUsDialog extends DialogBox {
     @UiField
     Button okButton;
 
+    @UiField
+    NotificationMole notificationMole;
+
     private Presenter presenter;
 
     public ContactUsDialog() {
@@ -60,7 +65,7 @@ public class ContactUsDialog extends DialogBox {
 
     @Override
     public void show() {
-        subject.setValue("Message from submitter");
+        subject.setValue("Message from the Submitter");
         message.setValue("");
         super.show();
         Scheduler.get().scheduleDeferred(new Command() {
@@ -68,12 +73,15 @@ public class ContactUsDialog extends DialogBox {
                 message.setFocus(true);
             }
         });
+        subject.setVisible(false);
     }
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
-        presenter.sendMessage(subject.getValue().trim(), message.getValue().trim());
-        hide();
+        if(!isNullOrEmpty(message.getValue())) {
+            presenter.sendMessage(subject.getValue().trim(), message.getValue().trim());
+            showNotificationMole();
+        }
     }
 
     @UiHandler("cancelButton")
@@ -95,4 +103,16 @@ public class ContactUsDialog extends DialogBox {
         void sendMessage(String subject, String message);
     }
 
+    private void showNotificationMole() {
+            notificationMole.setAnimationDuration(1000);
+            notificationMole.showDelayed(2000);
+            com.google.gwt.user.client.Timer t = new com.google.gwt.user.client.Timer() {
+                @Override
+                public void run() {
+                    notificationMole.hide();
+                }
+            };
+            t.schedule(10000);
+            hide();
+    }
 }

@@ -28,6 +28,7 @@
     <g:VerticalPanel>
         <g:Label height="2.5em">Please leave your message below -- we will respond shortly via email.</g:Label>
         <g:TextBox addStyleNames="{style.subject}" ui:field="subject"/>
+        <g:Label height="2.5em">Message:</g:Label>
         <g:TextArea width="40em" height="10em" ui:field="message"/>
         <g:cell height="50px" horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_BOTTOM">
             <g:HTMLPanel>
@@ -35,5 +36,6 @@
                 <g:Button ui:field="okButton">Send</g:Button>
             </g:HTMLPanel>
         </g:cell>
+        <g:NotificationMole message="Thank you for your message. We will contact you shortly!" title="Contact Us!" ui:field="notificationMole"/>
     </g:VerticalPanel>
 </ui:UiBinder>
