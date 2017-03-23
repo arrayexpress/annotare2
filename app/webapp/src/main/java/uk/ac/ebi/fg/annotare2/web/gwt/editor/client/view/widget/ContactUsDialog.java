@@ -66,20 +66,22 @@ public class ContactUsDialog extends DialogBox {
     @Override
     public void show() {
         subject.setValue("Message from the Submitter");
+        subject.setVisible(false);
         message.setValue("");
+        okButton.setEnabled(true);
         super.show();
         Scheduler.get().scheduleDeferred(new Command() {
             public void execute() {
                 message.setFocus(true);
             }
         });
-        subject.setVisible(false);
     }
 
     @UiHandler("okButton")
     void okButtonClicked(ClickEvent event) {
         if(!isNullOrEmpty(message.getValue())) {
             presenter.sendMessage(subject.getValue().trim(), message.getValue().trim());
+            okButton.setEnabled(false);
             showNotificationMole();
         }
     }
@@ -105,14 +107,15 @@ public class ContactUsDialog extends DialogBox {
 
     private void showNotificationMole() {
             notificationMole.setAnimationDuration(1000);
-            notificationMole.showDelayed(2000);
+            notificationMole.show();
             com.google.gwt.user.client.Timer t = new com.google.gwt.user.client.Timer() {
                 @Override
                 public void run() {
                     notificationMole.hide();
+                    hide();
                 }
             };
-            t.schedule(10000);
-            hide();
+            t.schedule(2000);
+
     }
 }
