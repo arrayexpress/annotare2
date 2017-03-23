@@ -29,6 +29,9 @@
         .newAttribute:hover {
             background-color: #eeeeee;
         }
+        .scrollbar {
+            overflow: scroll;
+        }
     </ui:style>
     <g:ResizeLayoutPanel height="625px" width="700px">
         <g:DockLayoutPanel>
@@ -37,7 +40,7 @@
                     <g:east size="300">
                         <g:DockLayoutPanel>
                             <g:center>
-                                <g:ListBox ui:field="templateColumnList" visibleItemCount="9" width="100%"/>
+                                <g:ListBox addStyleNames="{style.scrollbar}" ui:field="templateColumnList" visibleItemCount="9" width="100%"/>
                             </g:center>
                             <g:south size="25">
                                 <g:Label addStyleNames="{style.newAttribute}" ui:field="newColumnLabel">New Attribute</g:Label>
@@ -80,7 +83,7 @@
                                         </g:SimpleLayoutPanel>
                                     </g:east>
                                     <g:center>
-                                        <g:ListBox  title="To mark an attribute as experimental variable, select the attribute (left pane) and tick the box below the field"  ui:field="columnList" width="100%" visibleItemCount="9"/>
+                                        <g:ListBox addStyleNames="{style.scrollbar}" title="To mark an attribute as experimental variable, select the attribute (left pane) and tick the box below the field"  ui:field="columnList" width="100%" visibleItemCount="9"/>
                                     </g:center>
                                 </g:DockLayoutPanel>
                             </g:center>
