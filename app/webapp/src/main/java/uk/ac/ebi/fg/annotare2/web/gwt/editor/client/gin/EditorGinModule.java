@@ -53,6 +53,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(ActivityMapper.class).annotatedWith(EditorContentDisplay.class).to(EditorContentActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorLogBarDisplay.class).to(EditorLogBarActivityMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).annotatedWith(EditorStartDisplay.class).to(EditorStartActivityMapper.class).in(Singleton.class);
+        bind(ActivityMapper.class).annotatedWith(EditorFileUploadDisplay.class).to(EditorFileUploadActivityMapper.class).in(Singleton.class);
 
         bind(EditorTopBarView.class).to(EditorTopBarViewImpl.class);
         bind(EditorTitleBarView.class).to(EditorTitleBarViewImpl.class);
@@ -75,6 +76,7 @@ public class EditorGinModule extends AbstractGinModule {
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);
 
         bind(StartView.class).to(StartViewImpl.class);
+
 
         bind(ExperimentDataProxy.class).in(Singleton.class);
         bind(ArrayDesignDataProxy.class).in(Singleton.class);

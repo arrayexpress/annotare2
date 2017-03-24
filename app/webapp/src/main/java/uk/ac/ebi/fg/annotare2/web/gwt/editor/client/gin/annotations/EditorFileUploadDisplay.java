@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
+package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations;
 
-import com.google.gwt.user.client.ui.HasOneWidget;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.BindingAnnotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Olga Melnichuk
  */
-public interface EditorLayout extends IsWidget {
-
-    HasOneWidget getTopBarDisplay();
-
-    HasOneWidget getTitleBarDisplay();
-
-    HasOneWidget getTabBarDisplay();
-
-    HasOneWidget getLeftMenuDisplay();
-
-    HasOneWidget getContentDisplay();
-
-    HasOneWidget getLogBarDisplay();
-
-    HasOneWidget getFileUploadDisplay();
+@BindingAnnotation
+@Target({FIELD, PARAMETER, METHOD})
+@Retention(RUNTIME)
+public @interface EditorFileUploadDisplay {
 }

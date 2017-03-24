@@ -60,6 +60,9 @@ public interface EditorGinjector extends Ginjector {
     @EditorStartDisplay
     ActivityMapper getStartActivityMapper();
 
+    @EditorFileUploadDisplay
+    ActivityMapper getFileUploadActivityMapper();
+
     SubmissionServiceAsync getSubmissionService();
 
     CurrentUserAccountServiceAsync getCurrentUserAccountService();
