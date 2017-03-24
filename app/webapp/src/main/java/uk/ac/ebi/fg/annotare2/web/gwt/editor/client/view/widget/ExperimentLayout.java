@@ -6,6 +6,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
@@ -40,6 +41,9 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
     @UiField
     NotificationMole notificationMole;
+
+    @UiField
+    SimpleLayoutPanel fileUploadDisplay;
 
     private int submissionCount;
 
@@ -116,6 +120,9 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
     public HasOneWidget getLogBarDisplay() {
         return logBarDisplay;
     }
+
+    @Override
+    public HasOneWidget getFileUploadDisplay() { return fileUploadDisplay; }
 
     @Override
     public void onResize() {

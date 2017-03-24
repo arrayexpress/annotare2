@@ -17,7 +17,8 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
+        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget"
+        xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view">
 
     <g:DockLayoutPanel>
         <g:north size="25">
@@ -54,6 +55,9 @@
                 <g:south size="40">
                     <g:ScrollPanel ui:field="logBarDisplay" height="100%"/>
                 </g:south>
+                <g:east size="400">
+                    <g:SimpleLayoutPanel ui:field="fileUploadDisplay"/>
+                </g:east>
             </g:SplitLayoutPanel>
         </g:center>
     </g:DockLayoutPanel>
