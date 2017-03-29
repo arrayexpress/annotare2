@@ -48,16 +48,27 @@
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
-                            <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
+                            <g:SplitLayoutPanel>
+                                <g:center size="600">
+                                    <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
+                                </g:center>
+                                <g:east size="200">
+                                    <g:DockLayoutPanel>
+                                        <g:west size="20">
+                                            <g:ToggleButton text="&lt;"/>
+                                        </g:west>
+                                        <g:center>
+                                            <g:SimpleLayoutPanel ui:field="fileUploadDisplay"/>
+                                        </g:center>
+                                    </g:DockLayoutPanel>
+                                </g:east>
+                            </g:SplitLayoutPanel>
                         </g:center>
                     </g:DockLayoutPanel>
                 </g:center>
                 <g:south size="40">
                     <g:ScrollPanel ui:field="logBarDisplay" height="100%"/>
                 </g:south>
-                <g:east size="400">
-                    <g:SimpleLayoutPanel ui:field="fileUploadDisplay"/>
-                </g:east>
             </g:SplitLayoutPanel>
         </g:center>
     </g:DockLayoutPanel>
