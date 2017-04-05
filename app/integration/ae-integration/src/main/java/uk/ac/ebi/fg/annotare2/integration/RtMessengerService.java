@@ -30,6 +30,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.components.EmailMessengerService;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
@@ -57,6 +59,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class RtMessengerService extends EmailMessengerService {
 
+    private static final Logger logger = LoggerFactory.getLogger(RtMessengerService.class);
 
     private final ExtendedAnnotareProperties properties;
     private final Messenger messenger;
@@ -130,16 +133,18 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
                 while ((line = inp.readLine()) != null) {
+                    logger.debug(line);
                     Matcher m = p.matcher(line);
                     if (m.find()) {
                         serverStatus = true;
                     }
                 }
             } catch (Exception e) {
-
+                logger.error("Error parsing RT response",e);
             }
         }catch(Exception e)
         {
+            logger.error("Error checking Rt Server Status",e);
             serverStatus = false;
 
         }
@@ -177,6 +182,7 @@ public class RtMessengerService extends EmailMessengerService {
         {
             Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 Matcher m = p.matcher(line);
                 if (m.find()) {
                     ticketUpdated = true;
@@ -185,9 +191,10 @@ public class RtMessengerService extends EmailMessengerService {
             if (!ticketUpdated) {
                 throw new Exception("RT was unable to update ticket.");
             }
-        }catch (Exception e)
-        {
-        while ((line = inp.readLine()) != null) {
+        } catch (Exception e) {
+            logger.error("Error updating RT ticket",e);
+            while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 errorTrace = errorTrace + line + "\n";
             }
         }
@@ -235,6 +242,7 @@ public class RtMessengerService extends EmailMessengerService {
             //Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
             Pattern p = Pattern.compile("# Ticket (\\d+) created.");
             while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 Matcher m = p.matcher(line);
                 if (m.find()) {
                     ticket = m.group(1);
@@ -244,9 +252,10 @@ public class RtMessengerService extends EmailMessengerService {
             if (!ticketCreated) {
                 throw new Exception("RT Ticket Creation Failed");
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e){
+            logger.error("Error creating RT ticket",e);
             while ((line = inp.readLine()) != null) {
+                logger.error(line);
                 errorTrace = errorTrace + line + "\n";
             }
         }
@@ -332,6 +341,7 @@ public class RtMessengerService extends EmailMessengerService {
         {
             Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 Matcher m = p.matcher(line);
                 if (m.find()) {
                     messageSent = true;
@@ -342,7 +352,9 @@ public class RtMessengerService extends EmailMessengerService {
             }
         }catch (Exception e)
         {
+            logger.error("Error sending RT message",e);
             while ((line = inp.readLine()) != null) {
+                logger.error(line);
                 errorTrace = errorTrace + line + "\n";
             }
         }
