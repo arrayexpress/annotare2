@@ -17,24 +17,26 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * @author Olga Melnichuk
@@ -46,16 +48,20 @@ public class AddProtocolDialog extends DialogBox {
     }
 
     @UiField
-    ListBox protocolTypeList;
+    VerticalPanel protocolsPanel;
 
     @UiField
-    Label protocolTypeDefinition;
+    Label descriptionNotNullLabel;
 
     private final Presenter presenter;
     private List<ProtocolType> protocolTypes;
-    private DialogCallback<ProtocolType> callback;
+    private List<String> mandatoryProtocols;
+    private List<String> optionalProtocols;
+    private List<ProtocolDetail> selectedProtocolTypes;
+    private DialogCallback<List<ProtocolDetail>> callback;
+    private HashMap<String,TextBox> protocolDescriptions;
 
-    public AddProtocolDialog(Presenter presenter, DialogCallback<ProtocolType> callback) {
+    public AddProtocolDialog(Presenter presenter, DialogCallback<List<ProtocolDetail>> callback) {
         this.presenter = presenter;
         this.callback = callback;
 
@@ -65,16 +71,56 @@ public class AddProtocolDialog extends DialogBox {
 
         setWidget(Binder.BINDER.createAndBindUi(this));
 
-        protocolTypeList.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                setTypeSelection(getSelectedType());
-            }
-        });
+        mandatoryProtocols = new ArrayList<>();
+        selectedProtocolTypes = new ArrayList<>();
+        optionalProtocols = new ArrayList<>();
+        protocolDescriptions = new HashMap<>();
+
+
+        mandatoryProtocols.add("growth protocol");
+        mandatoryProtocols.add("nucleic acid extraction protocol");
+        mandatoryProtocols.add("nucleic acid library construction protocol");
+        mandatoryProtocols.add("nucleic acid sequencing protocol");
+
+        optionalProtocols.add("sample collection protocol");
+        optionalProtocols.add("treatment protocol");
+        optionalProtocols.add("normalization data transformation protocol");
+
+        for (String protocol:
+             mandatoryProtocols) {
+
+            TextBox textBox = new TextBox();
+
+            textBox.setWidth("100%");
+            textBox.setName(protocol+"description");
+
+            protocolDescriptions.put(protocol,textBox);
+
+            protocolsPanel.add(new Label(protocol));
+            protocolsPanel.add(textBox);
+        }
+
+        Label optionalProtocolsLabel = new Label("Optional Protocols");
+        optionalProtocolsLabel.addStyleName("optionalProtocolHeaderLabel");
+        optionalProtocolsLabel.addStyleName("optionalProtocolHeader");
+
+        protocolsPanel.add(optionalProtocolsLabel);
+
+        for (String protocol:
+                optionalProtocols) {
+            TextBox textBox = new TextBox();
+
+            textBox.setWidth("100%");
+            textBox.setName(protocol+"description");
+
+            protocolDescriptions.put(protocol,textBox);
+
+            protocolsPanel.add(new Label(protocol));
+            protocolsPanel.add(textBox);
+        }
 
         center();
         loadProtocolTypes();
-        setTypeSelection(null);
     }
 
     @UiHandler("cancelButton")
@@ -87,13 +133,56 @@ public class AddProtocolDialog extends DialogBox {
 
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
-        ProtocolType selected = getSelectedType();
-        if (null == selected) {
+
+        List<ProtocolDetail> selectedProtocols = selectedProtocolTypes;
+
+        boolean descriptionIsNull = false;
+
+        for (ProtocolDetail detail:
+                selectedProtocolTypes) {
+            detail.setProtocolDescription(protocolDescriptions.get(detail.getProtocolType().getTerm().getLabel()).getValue());
+        }
+
+        for (ProtocolDetail detail:
+                selectedProtocolTypes) {
+            if(isNullOrEmpty(detail.getProtocolDescription()))
+            {
+                descriptionIsNull = true;
+                break;
+            }
+        }
+
+        if(descriptionIsNull)
+        {
+            descriptionNotNullLabel.setVisible(true);
             return;
         }
+
+
+        for(Map.Entry<String,TextBox> entry: protocolDescriptions.entrySet() )
+        {
+            if(!isNullOrEmpty(entry.getValue().getValue()))
+            {
+                ProtocolDetail detail = new ProtocolDetail();
+                if(optionalProtocols.contains(entry.getKey().toString()))
+                {
+                    for (ProtocolType type:
+                         protocolTypes) {
+                        if(entry.getKey().toString().equalsIgnoreCase(type.getTerm().getLabel()))
+                        {
+                            detail.setProtocolType(type);
+                            detail.setProtocolDescription(entry.getValue().getValue());
+                            selectedProtocols.add(detail);
+                        }
+                    }
+                }
+            }
+        }
+
         hide();
+
         if (null != callback) {
-            callback.onOk(selected);
+            callback.onOk(selectedProtocols);
         }
     }
 
@@ -124,23 +213,15 @@ public class AddProtocolDialog extends DialogBox {
 
     private void showProtocolTypes(List<ProtocolType> types) {
         protocolTypes = new ArrayList<>(types);
-        protocolTypeList.clear();
+        selectedProtocolTypes.clear();
         for (ProtocolType type : types) {
-            protocolTypeList.addItem(type.getTerm().getLabel());
-        }
-        if (!protocolTypes.isEmpty()) {
-            protocolTypeList.setItemSelected(0, true);
-            DomEvent.fireNativeEvent(Document.get().createChangeEvent(), protocolTypeList);
-        }
-    }
+            ProtocolDetail detail = new ProtocolDetail();
+            if (mandatoryProtocols.contains(type.getTerm().getLabel())) {
+                detail.setProtocolType(type);
 
-    private ProtocolType getSelectedType() {
-        int index = protocolTypeList.getSelectedIndex();
-        return index >= 0 ? protocolTypes.get(index) : null;
-    }
-
-    private void setTypeSelection(ProtocolType type) {
-        protocolTypeDefinition.setText(type == null ? "" : type.getDefinition());
+                selectedProtocolTypes.add(detail);
+            }
+        }
     }
 
     public interface Presenter {

@@ -43,6 +43,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AsyncOptionProvider;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditListCell;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditSelectionCell;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
 
 import java.util.*;
 
@@ -417,17 +418,29 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
             return;
         }
         (new AddProtocolDialog(presenter,
-                new DialogCallback<ProtocolType>() {
+                new DialogCallback<List<ProtocolDetail>>() {
                     @Override
-                    public boolean onOk(ProtocolType protocolType) {
-                        createProtocol(protocolType);
+                    public boolean onOk(List<ProtocolDetail> protocolDetails)
+                    {
+                        createProtocols(protocolDetails);
                         return true;
                     }
                 })).show();
     }
 
+    //@Override
+                    /*public boolean onOk(ProtocolType protocolType) {
+                        createProtocol(protocolType);
+                        return true;
+                    }*/
+
     private void createProtocol(ProtocolType protocolType) {
         presenter.createProtocol(protocolType);
+    }
+
+    private void createProtocols(List<ProtocolDetail> protocolDetails)
+    {
+        presenter.createProtocol(protocolDetails);
     }
 
     private void removeSelectedProtocols() {

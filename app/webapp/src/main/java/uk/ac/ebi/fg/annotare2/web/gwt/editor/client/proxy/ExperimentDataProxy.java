@@ -474,6 +474,10 @@ public class ExperimentDataProxy {
         updateQueue.add(new CreateProtocolCommand(protocolType));
     }
 
+    public void createProtocol(List<ProtocolDetail> protocolDetails) {
+        updateQueue.add(new CreateProtocolCommand(protocolDetails));
+    }
+
     public void updateProtocol(ProtocolRow row) {
         updateQueue.add(new UpdateProtocolCommand(row));
     }
