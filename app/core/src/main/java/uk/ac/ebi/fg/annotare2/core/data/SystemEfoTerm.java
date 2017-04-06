@@ -27,7 +27,8 @@ public enum SystemEfoTerm {
     PUBLICATION_STATUS("Publication Status", "publication_status"),
 
     ORGANISM("Organism", "organism"),
-    ORGANISM_PART("Organism Part/Tissue", "organism_part"),
+    ORGANISM_PART("Organism Part", "organism_part"),
+    GENETIC_MODIFICATION("Genetic Modification", "genetic_modification"),
     RNA_INTERFERENCE("RNA interference","RNA_interference"),
     CULTIVAR("Cultivar","cultivar"),
     DIET("Diet","diet"),
