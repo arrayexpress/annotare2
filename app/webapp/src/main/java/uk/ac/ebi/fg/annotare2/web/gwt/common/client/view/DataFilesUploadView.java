@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ApplicationProperties;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.DataFileRow;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 
 import java.util.List;
 
@@ -36,8 +37,9 @@ public interface DataFilesUploadView extends IsWidget {
 
     void setApplicationProperties(ApplicationProperties properties);
 
-    interface Presenter extends UploadProgressPopupPanel.Presenter, FTPUploadDialog.Presenter, DataFileListPanel.Presenter {
+    interface Presenter extends FTPUploadDialog.Presenter, DataFileListPanel.Presenter {
 
         void initSubmissionFtpDirectory(AsyncCallback<String> callback);
+        void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback);
     }
 }

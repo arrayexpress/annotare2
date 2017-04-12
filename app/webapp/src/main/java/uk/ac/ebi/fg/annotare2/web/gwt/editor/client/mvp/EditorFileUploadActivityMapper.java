@@ -21,19 +21,18 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.DataUploadAndAssignmentActivity;
-import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.SetupActivity;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment.DataFileUploadActivity;
 
 /**
  * @author Olga Melnichuk
  */
 public class EditorFileUploadActivityMapper implements ActivityMapper {
 
-    private final Provider<DataUploadAndAssignmentActivity> activityProvider;
-    private DataUploadAndAssignmentActivity current;
+    private final Provider<DataFileUploadActivity> activityProvider;
+    private DataFileUploadActivity current;
 
     @Inject
-    public EditorFileUploadActivityMapper(Provider<DataUploadAndAssignmentActivity> activityProvider) {
+    public EditorFileUploadActivityMapper(Provider<DataFileUploadActivity> activityProvider) {
         this.activityProvider = activityProvider;
     }
 

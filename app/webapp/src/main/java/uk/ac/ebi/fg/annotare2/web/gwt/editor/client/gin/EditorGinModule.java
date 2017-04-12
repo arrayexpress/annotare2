@@ -25,6 +25,8 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.proxy.DataFilesProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadViewImpl;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.gin.annotations.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.mvp.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
@@ -72,6 +74,8 @@ public class EditorGinModule extends AbstractGinModule {
         bind(LabeledExtractsView.class).to(LabeledExtractsViewImpl.class);
         bind(DataUploadAndAssignmentView.class).to(DataUploadAndAssignmentViewImpl.class);
         bind(ProtocolsView.class).to(ProtocolsViewImpl.class);
+        bind(DataFilesUploadView.class).to(DataFilesUploadViewImpl.class);
+        bind(DataAssignmentView.class).to(DataAssignmentViewImpl.class);
 
         bind(AdfDetailsView.class).to(AdfDetailsViewImpl.class);
 
