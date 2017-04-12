@@ -1,19 +1,3 @@
-/*
- * Copyright 2009-2016 European Molecular Biology Laboratory
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.activity.experiment;
 
 import com.google.common.base.Function;
@@ -43,6 +27,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.DataFileRenamedEventHandler;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataAssignmentView;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.DataUploadAndAssignmentView;
 
 import javax.annotation.Nullable;
@@ -53,9 +38,13 @@ import java.util.Set;
 import static com.google.common.collect.Collections2.transform;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
-public class DataUploadAndAssignmentActivity extends AbstractActivity implements DataUploadAndAssignmentView.Presenter {
 
-    private final DataUploadAndAssignmentView view;
+/**
+ * Created by haideri on 10/04/2017.
+ */
+public class DataFileAssignmentActivity extends AbstractActivity implements DataAssignmentView.Presenter{
+
+    private final DataAssignmentView view;
     private final ApplicationDataProxy appDataService;
     private final ExperimentDataProxy expDataService;
     private final DataFilesProxy filesService;
@@ -66,7 +55,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
     private HandlerRegistration dataFileRenamedHandler;
 
     @Inject
-    public DataUploadAndAssignmentActivity(DataUploadAndAssignmentView view,
+    public DataFileAssignmentActivity(DataAssignmentView view,
                                            ApplicationDataProxy appDataService,
                                            ExperimentDataProxy expDataService,
                                            DataFilesProxy filesService) {
@@ -130,7 +119,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 new ReportingAsyncCallback<ApplicationProperties>(FailureMessage.UNABLE_TO_LOAD_APP_PROPERTIES) {
                     @Override
                     public void onSuccess(ApplicationProperties properties) {
-                        view.getUploadView().setApplicationProperties(properties);
+                        //view.getUploadView().setApplicationProperties(properties);
                     }
                 }
         );
@@ -141,8 +130,8 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 new ReportingAsyncCallback<ExperimentProfileType>(FailureMessage.UNABLE_TO_LOAD_SUBMISSION_TYPE) {
                     @Override
                     public void onSuccess(ExperimentProfileType result) {
-                        view.getUploadView().setExperimentType(result);
-                        view.getAssignmentView().setExperimentType(result);
+                        //view.getUploadView().setExperimentType(result);
+                        view.setExperimentType(result);
                     }
                 }
         );
@@ -154,7 +143,7 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 new ReportingAsyncCallback<DataAssignmentColumnsAndRows>(FailureMessage.UNABLE_TO_LOAD_DATA_ASSIGNMENT) {
                     @Override
                     public void onSuccess(DataAssignmentColumnsAndRows result) {
-                        view.getAssignmentView().setData(result.getColumns(), result.getRows());
+                        view.setData(result.getColumns(), result.getRows());
                     }
                 }
         );
@@ -167,9 +156,9 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
                 new ReportingAsyncCallback<List<DataFileRow>>(FailureMessage.UNABLE_TO_LOAD_DATA_FILES_LIST) {
                     @Override
                     public void onSuccess(List<DataFileRow> result) {
-                        view.getUploadView().setSubmissionId(getSubmissionId());
-                        view.getUploadView().setDataFiles(result);
-                        view.getAssignmentView().setDataFiles(result);
+                        //view.getUploadView().setSubmissionId(getSubmissionId());
+                        //view.getUploadView().setDataFiles(result);
+                        view.setDataFiles(result);
                     }
                 }
         );
@@ -190,50 +179,5 @@ public class DataUploadAndAssignmentActivity extends AbstractActivity implements
         expDataService.updateDataAssignmentColumn(column);
     }
 
-    @Override
-    public void initSubmissionFtpDirectory(AsyncCallback<String> callback) {
-        filesService.initSubmissionFtpDirectory(getSubmissionId(), callback);
-    }
-
-    /*@Override
-    public void registerUploadedFiles(List<UploadedFileInfo> filesInfo, AsyncCallback<List<Boolean>> callback) {
-        filesService.registerHttpFiles(getSubmissionId(), filesInfo, callback);
-    }*/
-
-    @Override
-    public void uploadFile(UploadedFileInfo fileInfo, AsyncCallback<Void> callback) {
-        filesService.addHttpFile(getSubmissionId(), fileInfo, callback);
-    }
-
-    @Override
-    public void uploadFtpFiles(List<String> filesInfo, AsyncCallback<String> callback) {
-        filesService.registerFtpFiles(getSubmissionId(), filesInfo, callback);
-    }
-
-    @Override
-    public void renameFile(DataFileRow dataFile, String newFileName, final AsyncCallback<Void> callback) {
-        filesService.renameFile(getSubmissionId(), dataFile, newFileName, new AsyncCallback<Void>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(Void aVoid) {
-                expDataService.invalidate();
-                eventBus.fireEvent(new DataFileRenamedEvent());
-                callback.onSuccess(aVoid);
-            }
-        });
-    }
-
-    @Override
-    public void removeFiles(Set<DataFileRow> dataFiles, AsyncCallback<Void> callback) {
-        filesService.deleteFiles(getSubmissionId(), new ArrayList<Long>(transform(dataFiles, new Function<DataFileRow, Long>() {
-            public Long apply(@Nullable DataFileRow input) {
-                return null != input ? input.getId() : null;
-            }
-        })), callback);
-    }
 
 }

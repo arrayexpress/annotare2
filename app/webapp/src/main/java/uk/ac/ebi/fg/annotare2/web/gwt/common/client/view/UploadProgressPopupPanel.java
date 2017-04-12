@@ -27,7 +27,10 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.UploadedFileInfo;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableCallback;
 import uk.ac.ebi.fg.gwt.resumable.client.ResumableFile;
@@ -37,13 +40,14 @@ import uk.ac.ebi.fg.gwt.resumable.client.ResumableUploader;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class UploadProgressPopupPanel extends PopupPanel {
+public class UploadProgressPopupPanel extends VerticalPanel {
 
     private final static Logger logger = Logger.getLogger("gwt.client.UploadProgressPopupPanel");
 
     private final DivElement messageElement;
     private final Element progressBarElement;
     private final DivElement errorElement;
+    private VerticalPanel verticalPanel;
 
     private Presenter presenter;
 
@@ -52,44 +56,52 @@ public class UploadProgressPopupPanel extends PopupPanel {
     private double avgSpeed;
 
     public UploadProgressPopupPanel(ResumableUploader uploader) {
-        super(false, true);
+        //super(false, true);
 
         uploader.addCallback(new UploaderCallback(this));
         uploader.addFileCallback(new UploaderFileCallback(this));
 
         setStyleName("gwt-ProgressPopup");
         addStyleName("info");
-        PopupPanel.setStyleName(getContainerElement(), "container");
+      //  VerticalPanel.setStyleName(getContainerElement(), "container");
         messageElement = Document.get().createDivElement();
-        PopupPanel.setStyleName(messageElement, "message");
-        getContainerElement().appendChild(messageElement);
+        verticalPanel.setStyleName(messageElement, "message");
+        //verticalPanel.add(new HTMLPanel("<div id=\\\"messageElement\\\"></div>"));
+        //(messageElement);
+
+        getBody().appendChild(messageElement);
 
         DivElement progressWrapper = Document.get().createDivElement();
-        PopupPanel.setStyleName(progressWrapper, "progress-wrapper");
+        //PopupPanel.setStyleName(progressWrapper, "progress-wrapper");
 
         progressBarElement = Document.get().createElement("progress");
-        PopupPanel.setStyleName(progressBarElement, "progressbar");
+        verticalPanel.setStyleName(progressBarElement, "progressbar");
         progressBarElement.setAttribute("value", "0");
         progressBarElement.setAttribute("max", "100");
         progressWrapper.appendChild(progressBarElement);
-        getContainerElement().appendChild(progressWrapper);
+        //getContainerElement().appendChild(progressWrapper);
+        getBody().appendChild(progressWrapper);
 
         errorElement = Document.get().createDivElement();
-        PopupPanel.setStyleName(errorElement, "error");
-        getContainerElement().appendChild(errorElement);
+        verticalPanel.setStyleName(errorElement, "error");
 
-        setAnimationEnabled(false);
-        setGlassEnabled(true);
+        getBody().appendChild(errorElement);
+
+        //getContainerElement().appendChild(errorElement);
+
+        //setAnimationEnabled(false);
+        //setGlassEnabled(true);
     }
 
     private void showProgress() {
-        setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+        /*setPopupPositionAndShow(new PopupPanel.PositionCallback() {
             public void setPosition(int offsetWidth, int offsetHeight) {
                 int left = (Window.getClientWidth() - offsetWidth) / 2;
                 int top = 0;
                 setPopupPosition(left, top);
             }
-        });
+        });*/
+        //verticalPanel.setVisible(true);
         updateError("");
         updateMessage("");
         startTime = new Duration();
@@ -97,13 +109,14 @@ public class UploadProgressPopupPanel extends PopupPanel {
     }
 
     private void hideProgress() {
-        Timer timer = new Timer() {
+        /*Timer timer = new Timer() {
             @Override
             public void run() {
                 hide();
             }
         };
-        timer.schedule(2000);
+        timer.schedule(2000);*/
+        verticalPanel.setVisible(false);
     }
 
     private void updateMessage(String message) {
@@ -170,13 +183,13 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onUploadStart(ResumableUploader uploader) {
-            panel.showProgress();
+            //panel.showProgress();
         }
 
         @Override
         public void onComplete(ResumableUploader uploader) {
-            panel.updateMessage("Successfully transferred all files");
-            panel.hideProgress();
+            //panel.updateMessage("Successfully transferred all files");
+            //panel.hideProgress();
         }
 
         @Override
@@ -185,7 +198,7 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onError(ResumableUploader uploader, String message, ResumableFile file) {
-            panel.updateMessage("Error transferring " + file.getFileName());
+            //panel.updateMessage("Error transferring " + file.getFileName());
         }
 
         @Override
@@ -238,14 +251,14 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onFileProgress(ResumableUploader uploader, ResumableFile file) {
-            panel.updateMessage("Transferring " + file.getFileName());
-            panel.updateProgress(file.getProgress(false), file.getSize(), uploader.progress());
+           //panel.updateMessage("Transferring " + file.getFileName());
+           //panel.updateProgress(file.getProgress(false), file.getSize(), uploader.progress());
         }
 
         @Override
         public void onFileSuccess(ResumableUploader uploader, final ResumableFile file) {
-            panel.updateMessage("Successfully transferred " + file.getFileName());
-            panel.resetProgress();
+            //panel.updateMessage("Successfully transferred " + file.getFileName());
+            //panel.resetProgress();
             Scheduler.get().scheduleDeferred(
                     new SendUploadedFileInfoCommand(
                             new UploadedFileInfo(file.getFileName(), file.getSize()),
@@ -262,8 +275,8 @@ public class UploadProgressPopupPanel extends PopupPanel {
 
         @Override
         public void onFileError(ResumableUploader uploader, ResumableFile file, String message) {
-            panel.updateMessage("Error transferring " + file.getFileName());
-            panel.resetProgress();
+           // panel.updateMessage("Error transferring " + file.getFileName());
+            //panel.resetProgress();
         }
     }
 

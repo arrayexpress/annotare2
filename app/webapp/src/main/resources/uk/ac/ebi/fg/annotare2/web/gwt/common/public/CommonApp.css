@@ -268,13 +268,11 @@
 }
 
 .gwt-ProgressPopup {
-    width: 40%;
+    width: 100%;
     background-color: white;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-
-    border-bottom: 4px solid #3094d2;
 }
 
 .gwt-ProgressPopup .container {
