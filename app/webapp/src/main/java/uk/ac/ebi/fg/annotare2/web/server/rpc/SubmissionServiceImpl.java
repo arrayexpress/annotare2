@@ -500,7 +500,6 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                             .put("from.name", u.getName())
                             .put("from.email", u.getEmail())
                             .put("submission.id", String.valueOf(submission.getId()))
-                            .put("submission.title", submission.getTitle())
                             .put("message.subject", subject)
                             .put("message.body", message)
                             .build(),

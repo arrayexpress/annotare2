@@ -58,7 +58,7 @@ public enum SampleAttributeTemplate {
 
     AGE_ATTRIBUTE(AGE, ValueRange.<SystemEfoTerm>any()),
 
-    TIME_ATTRIBUTE(TIME, ValueRange.<SystemEfoTerm>any()),
+    TIME_ATTRIBUTE(TIME, ValueRange.<SystemEfoTerm>any(), of(FACTOR_VALUE)),
 
     CELL_LINE_ORIGIN(CELL_LINE),
     CELL_TYPE_ORIGIN(CELL_TYPE),
