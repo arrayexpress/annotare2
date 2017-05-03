@@ -85,21 +85,21 @@ public class RtMessengerService extends EmailMessengerService {
                 Submission submission = message.getSubmission();
                 submission = HibernateEntity.deproxy(submission, Submission.class);
                 String ticketNumber = submission.getRtTicketNumber();
-                logger.debug("Checking if RT ticket number is null: ", ticketNumber);
+                logger.debug("Checking if RT ticket number is null: "+ ticketNumber);
                 if (isNullOrEmpty(ticketNumber)) {
                     ticketNumber = createRtTicket(submission, message);
                     if (ticketNumber==null) {
                         throw new Exception ("Unable to create RT ticket\n"+ errorTrace);
                     }
                     submission.setRtTicketNumber(ticketNumber);
-                    logger.debug("Saving new RT ticket number: ", ticketNumber);
+                    logger.debug("Saving new RT ticket number: "+ ticketNumber);
                     submissionDao.save(submission);
                     submission = HibernateEntity.deproxy(submission, Submission.class);
-                    logger.debug("New RT ticket number is : ", submission.getRtTicketNumber());
+                    logger.debug("New RT ticket number is : "+ submission.getRtTicketNumber());
                 }
                 else {
                     sendRtMessage(ticketNumber, message);
-                    logger.debug("RT ticket number is : ", submission.getRtTicketNumber());
+                    logger.debug("RT ticket number is : "+ submission.getRtTicketNumber());
                 }
             } catch (Throwable x){
                 messenger.send("There was a problem sending message " + String.valueOf(message.getId()), x);
@@ -161,10 +161,10 @@ public class RtMessengerService extends EmailMessengerService {
     public void ticketUpdate(Map<String, String> params, String ticketNumber) throws Exception
     {
         if (StringUtils.isBlank(ticketNumber)) {
-            logger.debug("Rt ticket is null for params: ", params);
+            logger.debug("Rt ticket is null for params: "+ params);
             throw new Exception("Rt ticket is null");
         }
-        logger.debug("Updating Rt ticket ", ticketNumber);
+        logger.debug("Updating Rt ticket "+ ticketNumber);
         boolean ticketUpdated = false;
         String errorTrace = "";
 
@@ -306,14 +306,14 @@ public class RtMessengerService extends EmailMessengerService {
 
     private void sendRtMessage(String ticketNumber, Message message) throws Exception {
         if (StringUtils.isBlank(ticketNumber)) {
-            logger.debug("Rt ticket is null for message: ", message.getId());
+            logger.debug("Rt ticket is null for message: "+ message.getId());
             throw new Exception("Rt ticket is null");
         }
 
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
-        logger.debug("Rt ticket number is ", ticketNumber);
-        logger.debug("Adding message to  Rt ticket ", submission.getRtTicketNumber());
+        logger.debug("Rt ticket number is "+ ticketNumber);
+        logger.debug("Adding message to  Rt ticket "+ submission.getRtTicketNumber());
         String subject = "Message from the Submitter";
 
         if(null != submission.getSubsTrackingId() && !message.getSubject().equalsIgnoreCase(subject)) {
