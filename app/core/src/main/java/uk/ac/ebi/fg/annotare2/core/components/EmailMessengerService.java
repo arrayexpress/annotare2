@@ -156,6 +156,8 @@ public class EmailMessengerService implements MessengerService {
         try {
             sendMessage(message);
             messageDao.markSent(message);
+            logger.debug("flushing session for message " + message.getId());
+            sessionFactory.getCurrentSession().flush();
         } catch (Exception x) {
             logger.error("Unable to process message " + message.getId(), x);
             messageDao.markFailed(message);
