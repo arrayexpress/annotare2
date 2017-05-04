@@ -85,7 +85,8 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 String errorTrace = "";
                 Submission submission = message.getSubmission();
-                submission = (Submission) sessionFactory.getCurrentSession().load( Submission.class, submission.getId() );
+                submission = (Submission) sessionFactory.getCurrentSession().get( Submission.class, submission.getId() );
+                submission = HibernateEntity.deproxy(submission, Submission.class);
                 String ticketNumber = submission.getRtTicketNumber();
                 logger.debug("Checking if RT ticket number is null: "+ ticketNumber);
                 if (isNullOrEmpty(ticketNumber)) {
