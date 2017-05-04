@@ -163,7 +163,7 @@ public class EmailMessengerService implements MessengerService {
             sendMessage(message);
             logger.info("Sent message " + message.getId());
             messageDao.markSent(message);
-            logger.debug("flushing session for message " + message.getId());
+            logger.info("flushing session for message " + message.getId());
             sessionFactory.getCurrentSession().flush();
         } catch (Exception x) {
             logger.error("Unable to process message " + message.getId(), x);
