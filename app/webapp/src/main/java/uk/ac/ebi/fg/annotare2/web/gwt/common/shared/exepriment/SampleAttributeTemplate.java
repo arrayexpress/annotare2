@@ -40,7 +40,7 @@ public enum SampleAttributeTemplate {
     ORGANISM_ATTRIBUTE(ORGANISM, true, true),
     ORGANISM_PART_ATTRIBUTE(ORGANISM_PART),
     STRAIN_ATTRIBUTE(STRAIN),
-    DISEASE_ATTRIBUTE(DISEASE),
+    DESEASE_ATTRIBUTE(DISEASE),
     GENOTYPE_ATTRIBUTE(GENOTYPE),
     RNA_INTERFERENCE_ATTRIBUTE(RNA_INTERFERENCE,of(FACTOR_VALUE)),
     CULTIVAR_ATTRIBUTE(CULTIVAR),
@@ -86,8 +86,15 @@ public enum SampleAttributeTemplate {
     PHENOTYPE_ATTRIBUTE(PHENOTYPE),
     TUMOR_GRADING_ATTRIBUTE(TUMOR_GRADING),
 
-    USER_DEFIED_ATTRIBUTE(ValueRange.<String>any(), ValueRange.<SystemEfoTerm>any(), ValueRange.<SystemEfoTerm>any(), range(CHARACTERISTIC, FACTOR_VALUE), false, true);
+    USER_DEFIED_ATTRIBUTE(ValueRange.<String>any(), ValueRange.<SystemEfoTerm>any(), ValueRange.<SystemEfoTerm>any(), range(CHARACTERISTIC, FACTOR_VALUE), false, true),
 
+
+    // Previously removed attribute
+    // TODO: Make these invisible in the UI
+    ENVIRONMENTAL_HISTORY_ORIGIN(ENVIRONMENTAL_HISTORY),
+    SPECIMEN_ORIGIN(SPECIMEN_WITH_KNOWN_STORAGE_STATE)
+
+    ;
     private final ValueRange<String> nameRange;
     private final ValueRange<SystemEfoTerm> termRange;
     private final ValueRange<SystemEfoTerm> unitRange;

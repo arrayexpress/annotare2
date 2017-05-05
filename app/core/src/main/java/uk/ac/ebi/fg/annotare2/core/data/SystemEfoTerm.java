@@ -60,8 +60,14 @@ public enum SystemEfoTerm {
     AE_EXPERIMENT_TYPE("AE Experiment Type", "ae_experiment_type"),
     ARRAY_ASSAY("Array Assay", "array_assay"),
     SEQUENCING_ASSAY("Sequencing Assay", "sequencing_assay"),
-    TIME("Time","time");
+    TIME("Time","time"),
 
+    // Previously removed attribute
+    // TODO: Make these invisible in the UI
+    ENVIRONMENTAL_HISTORY("Environmental History", "environmental_history"),
+    SPECIMEN_WITH_KNOWN_STORAGE_STATE("Specimen With Known Storage State", "specimen_with_known_storage_state")
+
+    ;
     private final String name;
     private final String propertyName;
 

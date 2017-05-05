@@ -83,6 +83,7 @@ public class EmailMessengerService implements MessengerService {
     @PostConstruct
     protected void startUp() throws Exception {
         scheduler.scheduleWithFixedDelay(runnable, 0, 1, MINUTES);
+        logger.info("Messaging service periodic process has started");
     }
 
     @PreDestroy
@@ -97,7 +98,8 @@ public class EmailMessengerService implements MessengerService {
 
     @Override
     public void instuctProcessMessages() {
-        scheduler.schedule(runnable, 100, MILLISECONDS);
+        //logger.info("Scheduling email service to run in 100 milliseconds");
+        //scheduler.schedule(runnable, 100, MILLISECONDS);
     }
 
     @Override
@@ -145,17 +147,25 @@ public class EmailMessengerService implements MessengerService {
         Transport.send(msg);
     }
 
-    private void processQueue() throws Exception {
+    private synchronized void processQueue() throws Exception {
+        logger.info("Processing message queue");
         for (Message msg : messageDao.getMessagesByStatus(MessageStatus.QUEUED)) {
+            logger.info("Processing message " + msg.getId());
             processMessage(msg);
+            logger.info("Processed message " + msg.getId());
         }
+        logger.info("Processed message queue");
     }
 
     @Transactional
     protected void processMessage(Message message) {
         try {
+            logger.info("Sending message " + message.getId());
             sendMessage(message);
+            logger.info("Sent message " + message.getId());
             messageDao.markSent(message);
+            logger.info("flushing session for message " + message.getId());
+            sessionFactory.getCurrentSession().flush();
         } catch (Exception x) {
             logger.error("Unable to process message " + message.getId(), x);
             messageDao.markFailed(message);
