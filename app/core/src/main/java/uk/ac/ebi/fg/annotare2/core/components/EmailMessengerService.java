@@ -147,25 +147,17 @@ public class EmailMessengerService implements MessengerService {
         Transport.send(msg);
     }
 
-    private synchronized void processQueue() throws Exception {
-        logger.info("Processing message queue");
+    private void processQueue() throws Exception {
         for (Message msg : messageDao.getMessagesByStatus(MessageStatus.QUEUED)) {
-            logger.info("Processing message " + msg.getId());
             processMessage(msg);
-            logger.info("Processed message " + msg.getId());
         }
-        logger.info("Processed message queue");
     }
 
     @Transactional
     protected void processMessage(Message message) {
         try {
-            logger.info("Sending message " + message.getId());
             sendMessage(message);
-            logger.info("Sent message " + message.getId());
             messageDao.markSent(message);
-            logger.info("flushing session for message " + message.getId());
-            sessionFactory.getCurrentSession().flush();
         } catch (Exception x) {
             logger.error("Unable to process message " + message.getId(), x);
             messageDao.markFailed(message);

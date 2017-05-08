@@ -38,6 +38,7 @@ import uk.ac.ebi.fg.annotare2.db.model.enums.DataFileStatus;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Permission;
 import uk.ac.ebi.fg.annotare2.db.model.enums.Role;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
+import uk.ac.ebi.fg.annotare2.integration.EmailTemplates;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.CheckResult;
 import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UnknownExperimentTypeException;
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
@@ -249,6 +250,19 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                     getExperimentSubmission(id, Permission.UPDATE);
             submission.setExperimentProfile(createExperimentProfile(settings, submission.getCreatedBy()));
             save(submission);
+
+            //create ticket in RT
+            messenger.send(
+                    EmailTemplates.NEW_SUBMISSION_TEMPLATE,
+                    new ImmutableMap.Builder<String, String>()
+                            .put("to.name", submission.getCreatedBy().getName())
+                            .put("to.email", submission.getCreatedBy().getEmail())
+                            .put("submission.id", String.valueOf(submission.getId()))
+                            .build()
+                    , submission.getCreatedBy()
+                    , submission
+            );
+
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);
         } catch (AccessControlException e) {
@@ -256,6 +270,8 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
         } catch (DataSerializationException e) {
             throw unexpected(e);
         }
+
+
     }
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})

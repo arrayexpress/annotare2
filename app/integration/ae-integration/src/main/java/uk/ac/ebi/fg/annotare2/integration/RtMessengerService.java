@@ -284,7 +284,9 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
                 submissionType = exp.getType();
-            } catch (DataSerializationException x) {}
+            } catch (DataSerializationException x) {
+                logger.error("Error creating new ticket fields map", x);
+            }
         }
 
         return new ImmutableMap.Builder<String, String>()
