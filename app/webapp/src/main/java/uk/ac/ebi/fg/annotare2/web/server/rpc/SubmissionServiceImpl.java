@@ -401,6 +401,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             return messenger.checkRtServerStatus(submissionId);
         }catch(Exception e)
         {
+            log.error("RT Server is down!");
             return false;
         }
     }

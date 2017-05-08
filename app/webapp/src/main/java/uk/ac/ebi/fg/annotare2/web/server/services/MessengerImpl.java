@@ -134,6 +134,7 @@ public class MessengerImpl implements Messenger {
         }
         catch (Exception e )
         {
+            log.error("RT Server is down!");
             return false;
         }
     }

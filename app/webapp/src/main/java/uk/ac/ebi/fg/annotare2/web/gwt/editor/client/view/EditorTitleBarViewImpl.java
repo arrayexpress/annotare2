@@ -27,6 +27,8 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -45,6 +47,8 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     private SubmissionDetails submissionDetails;
     private ExperimentProfileType experimentProfileType;
+
+    private static final Logger log = LoggerFactory.getLogger(EditorTitleBarViewImpl.class);
 
 
     interface Binder extends UiBinder<HTMLPanel, EditorTitleBarViewImpl> {
@@ -254,6 +258,7 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         try {
             presenter.checkRtServerStatus();
         } catch (Exception e) {
+            log.error("RT Server is down!");
         }
 
         final ValidateSubmissionDialog dialog = new ValidateSubmissionDialog(this.experimentProfileType, !this.hasReferrer);
