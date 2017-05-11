@@ -57,7 +57,7 @@
 
         .deleteButton {
             border: 1px solid white;
-            background: #48877C;
+            background: #ec0000;
             color: white;
         }
 

@@ -112,7 +112,9 @@ public class SubmissionViewImpl extends Composite implements SubmissionView {
 
     @UiHandler("deleteButton")
     void onDeleteButtonClick(ClickEvent event) {
-        if (null != presenter && confirm("Are you sure you want to delete submission \"" + getTitle() + "\"?")) {
+        if (null != presenter && confirm(
+                getTitle().isEmpty() ? "Are you sure you want to delete this submission" :
+                "Are you sure you want to delete submission \"" + getTitle() + "\"?")) {
             presenter.onDeleteSubmission();
         }
     }
