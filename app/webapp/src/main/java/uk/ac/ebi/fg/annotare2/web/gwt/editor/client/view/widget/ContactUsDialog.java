@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.integration.RtFieldNames;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -65,7 +66,7 @@ public class ContactUsDialog extends DialogBox {
 
     @Override
     public void show() {
-        subject.setValue("Message from the Submitter");
+        subject.setValue(RtFieldNames.CONTACT_US_SUBJECT);
         subject.setVisible(false);
         message.setValue("");
         okButton.setEnabled(true);

@@ -321,9 +321,8 @@ public class RtMessengerService extends EmailMessengerService {
         submission = HibernateEntity.deproxy(submission, Submission.class);
         logger.debug("Rt ticket number is "+ ticketNumber);
         logger.debug("Adding message to  Rt ticket "+ submission.getRtTicketNumber());
-        String subject = "Message from the Submitter";
 
-        if(null != submission.getSubsTrackingId() && !message.getSubject().equalsIgnoreCase(subject)) {
+        if(null != submission.getSubsTrackingId() && !message.getSubject().equalsIgnoreCase(RtFieldNames.CONTACT_US_SUBJECT)) {
             try {
                 ticketUpdate(
                         new ImmutableMap.Builder<String, String>()
@@ -335,6 +334,20 @@ public class RtMessengerService extends EmailMessengerService {
             } catch (Exception x) {
                 messenger.send("There was a problem updating Submission Directory " + submission.getRtTicketNumber(), x);
             }
+        }
+        else
+        {
+            try {
+                    ticketUpdate(
+                            new ImmutableMap.Builder<String, String>()
+                                    .put(RtFieldNames.SUBJECT, message.getSubject())
+                                    .put(RtFieldNames.STATUS, "open")
+                                    .build(),
+                            ticketNumber
+                    );
+                } catch (Exception x) {
+                    messenger.send("There was a problem updating ticket subject " + submission.getRtTicketNumber(), x);
+                }
         }
 
         boolean messageSent = false;

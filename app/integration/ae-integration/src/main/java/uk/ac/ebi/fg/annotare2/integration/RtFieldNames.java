@@ -13,4 +13,6 @@ public class RtFieldNames {
     public static final String ACCESSION_NUMBER = "CF-Accession";
     public static final String DIRECTORY = "CF-Directory";
     public static final String EXPERIMENT_TYPE = "CF-Experiment Type";
+    public static final String CONTACT_US_SUBJECT = "Message from the Submitter";
+    public static final String STATUS = "Status";
 }
