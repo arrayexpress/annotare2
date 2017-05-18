@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2009-2016 European Molecular Biology Laboratory
  *
@@ -30,6 +31,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignment.createProtocolAssignment;
@@ -227,16 +229,45 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 }
         );
 
-        Protocol protocol = exp.createProtocol(protocolType.getTerm(), protocolType.getSubjectType());
-        protocol.setName(newName("Protocol", existedNames));
+        //Protocol protocol = exp.createProtocol(protocolType.getTerm(), protocolType.getSubjectType());
+        //protocol.setName(newName("Protocol", existedNames));
+    }
+
+    @Override
+    public void createProtocol(List<ProtocolDetail> protocolDetails)
+    {
+        Collection<String> existedNames = Collections2.transform(
+                exp.getProtocols(),
+                new Function<Protocol, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(@Nullable Protocol input) {
+                        return null != input ? input.getName() : null;
+                    }
+                }
+        );
+
+        ArrayList<String> newNames = new ArrayList<>();
+
+        for (ProtocolDetail detail:
+                protocolDetails) {
+            Protocol protocol = exp.createProtocol(detail.getProtocolType().getTerm(), detail.getProtocolType().getSubjectType(), detail.getProtocolDescription());
+            protocol.setName(newName("Protocol", existedNames, newNames));
+            newNames.add(protocol.getName());
+        }
     }
 
 
 
-    private String newName(String prefix, Collection<String> existedNames) {
+
+    private String newName(String prefix, Collection<String> existedNames, ArrayList<String> newNames) {
         Set<String> names = newHashSet(existedNames);
         CompositeName name = new CompositeName(prefix);
-        while (names.contains(name.next())) {
+
+        name.next();
+
+        while (names.contains(name.toString()) || newNames.contains(name.toString()) ) {
+            name.next();
         }
         return name.toString();
     }
@@ -317,7 +348,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     private static class CompositeName {
-        private final String prefix;
+        private String prefix;
         private int next;
 
         private CompositeName(String prefix) {

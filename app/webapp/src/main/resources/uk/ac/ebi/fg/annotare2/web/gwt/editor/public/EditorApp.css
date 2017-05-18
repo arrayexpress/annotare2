@@ -425,7 +425,6 @@ a.wgt-button :hover {
     border-bottom: 1px solid #E5A066;
     border-top: 1px solid white;
 }
-
 .app-TabItem {
     padding: 5px 10px 5px 10px;
     font-size: 14px;
@@ -436,7 +435,6 @@ a.wgt-button :hover {
     cursor: pointer;
     color: #000000;
 }
-
 .app-TabItem.selected {
     margin-bottom: -1px;
     background-color: white;
@@ -445,7 +443,6 @@ a.wgt-button :hover {
     border-top: 2px solid #E5A066;
     color: black;
 }
-
 .app-ExportLink {
     font-size: 14px;
     padding: 0;
@@ -565,4 +562,30 @@ a.wgt-button :hover {
 
 .app-log tbody tr td {
     padding: 4px;
+}
+
+.optionalProtocolHeader
+{
+    background-color: #207A7A;
+    margin-bottom: 10px;
+}
+
+.optionalProtocolHeaderLabel
+{
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    padding-left: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.protocolLabel
+{
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+
 }
