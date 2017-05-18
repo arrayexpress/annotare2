@@ -32,7 +32,7 @@ public interface ProtocolsView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    interface Presenter extends AddProtocolDialog.Presenter {
+    interface Presenter extends AddProtocolDialog.Presenter, AddOptionalProtocolDialog.Presenter{
 
         void createProtocol(ProtocolType protocolType);
 

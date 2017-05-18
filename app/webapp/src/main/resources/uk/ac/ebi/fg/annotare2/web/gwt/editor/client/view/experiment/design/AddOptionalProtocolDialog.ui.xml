@@ -18,7 +18,7 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
+>
     <ui:style>
         .protocolDialogPadding {
             padding: 10px;
@@ -45,7 +45,7 @@
     <g:ResizeLayoutPanel height="800px" width="600px">
         <g:DockLayoutPanel>
             <g:north size="30" addStyleNames="{style.protocolDialogPadding}">
-                <g:Label text="Minimum Protocols Required" addStyleNames="{style.minimumProtocolheader} {style.minimumProtocolheaderLabel}">
+                <g:Label text="Add Protocols" addStyleNames="{style.minimumProtocolheader} {style.minimumProtocolheaderLabel}">
                 </g:Label>
             </g:north>
             <g:center>

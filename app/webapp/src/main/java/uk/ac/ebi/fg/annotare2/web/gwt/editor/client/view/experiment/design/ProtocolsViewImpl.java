@@ -417,15 +417,27 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         if (presenter == null) {
             return;
         }
-        (new AddProtocolDialog(presenter,
-                new DialogCallback<List<ProtocolDetail>>() {
-                    @Override
-                    public boolean onOk(List<ProtocolDetail> protocolDetails)
-                    {
-                        createProtocols(protocolDetails);
-                        return true;
-                    }
-                })).show();
+        if(gridView.getRows().isEmpty()) {
+            (new AddProtocolDialog(presenter,
+                    new DialogCallback<List<ProtocolDetail>>() {
+                        @Override
+                        public boolean onOk(List<ProtocolDetail> protocolDetails) {
+                            createProtocols(protocolDetails);
+                            return true;
+                        }
+                    })).show();
+        }
+        else
+        {
+            (new AddOptionalProtocolDialog(presenter,
+                    new DialogCallback<List<ProtocolDetail>>() {
+                        @Override
+                        public boolean onOk(List<ProtocolDetail> protocolDetails) {
+                            createProtocols(protocolDetails);
+                            return true;
+                        }
+                    })).show();
+        }
     }
 
     //@Override
