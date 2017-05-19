@@ -197,6 +197,7 @@ public class AddProtocolDialog extends DialogBox {
             PlaceholderTextArea textBox = new PlaceholderTextArea();
 
             textBox.setWidth("95%");
+            textBox.setStyleName("protocol_description_textArea_resize");
             textBox.setName(protocol+"description");
             textBox.setPlaceholder("Please enter the description of "+ protocol);
 
@@ -220,6 +221,7 @@ public class AddProtocolDialog extends DialogBox {
             PlaceholderTextArea textBox = new PlaceholderTextArea();
 
             textBox.setWidth("95%");
+            textBox.setStyleName("protocol_description_textArea_resize");
             textBox.setName(protocol+"description");
             textBox.setPlaceholder("Please enter the description of "+ protocol);
 

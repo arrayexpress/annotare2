@@ -589,3 +589,8 @@ a.wgt-button :hover {
     margin-top: 5px;
 
 }
+
+.protocol_description_textArea_resize
+{
+    resize: vertical;
+}
