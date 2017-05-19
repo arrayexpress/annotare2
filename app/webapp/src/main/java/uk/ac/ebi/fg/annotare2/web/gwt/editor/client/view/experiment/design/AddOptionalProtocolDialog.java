@@ -41,7 +41,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
     private List<String> protocolsList;
     private List<ProtocolDetail> selectedProtocolTypes;
     private DialogCallback<List<ProtocolDetail>> callback;
-    private HashMap<String,TextBox> protocolDescriptions;
+    private HashMap<String,TextArea> protocolDescriptions;
 
     public AddOptionalProtocolDialog(Presenter presenter, DialogCallback<List<ProtocolDetail>> callback) {
         this.presenter = presenter;
@@ -121,7 +121,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
         }
 */
 
-        for(Map.Entry<String,TextBox> entry: protocolDescriptions.entrySet() )
+        for(Map.Entry<String,TextArea> entry: protocolDescriptions.entrySet() )
         {
             if(!isNullOrEmpty(entry.getValue().getValue()))
             {
@@ -185,11 +185,11 @@ public class AddOptionalProtocolDialog extends DialogBox {
         for (String protocol:
                 protocolsList) {
 
-            PlaceholderTextBox textBox = new PlaceholderTextBox();
+            PlaceholderTextArea textBox = new PlaceholderTextArea();
 
-            textBox.setWidth("100%");
+            textBox.setWidth("95%");
             textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Protocol Description");
+            textBox.setPlaceholder("Please enter the description of "+ protocol);
 
 
             protocolDescriptions.put(protocol,textBox);

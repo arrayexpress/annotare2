@@ -59,7 +59,7 @@ public class AddProtocolDialog extends DialogBox {
     private List<String> optionalProtocols;
     private List<ProtocolDetail> selectedProtocolTypes;
     private DialogCallback<List<ProtocolDetail>> callback;
-    private HashMap<String,TextBox> protocolDescriptions;
+    private HashMap<String,TextArea> protocolDescriptions;
 
     public AddProtocolDialog(Presenter presenter, DialogCallback<List<ProtocolDetail>> callback) {
         this.presenter = presenter;
@@ -117,7 +117,7 @@ public class AddProtocolDialog extends DialogBox {
         }
 
 
-        for(Map.Entry<String,TextBox> entry: protocolDescriptions.entrySet() )
+        for(Map.Entry<String,TextArea> entry: protocolDescriptions.entrySet() )
         {
             if(!isNullOrEmpty(entry.getValue().getValue()))
             {
@@ -194,11 +194,11 @@ public class AddProtocolDialog extends DialogBox {
         for (String protocol:
                 mandatoryProtocols) {
 
-            PlaceholderTextBox textBox = new PlaceholderTextBox();
+            PlaceholderTextArea textBox = new PlaceholderTextArea();
 
-            textBox.setWidth("100%");
+            textBox.setWidth("95%");
             textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Protocol Description");
+            textBox.setPlaceholder("Please enter the description of "+ protocol);
 
             protocolDescriptions.put(protocol,textBox);
 
@@ -217,11 +217,11 @@ public class AddProtocolDialog extends DialogBox {
 
         for (String protocol:
                 optionalProtocols) {
-            PlaceholderTextBox textBox = new PlaceholderTextBox();
+            PlaceholderTextArea textBox = new PlaceholderTextArea();
 
-            textBox.setWidth("100%");
+            textBox.setWidth("95%");
             textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Protocol Description");
+            textBox.setPlaceholder("Please enter the description of "+ protocol);
 
             protocolDescriptions.put(protocol,textBox);
 
