@@ -46,7 +46,7 @@ import java.util.*;
 
 public class DataFileListPanel extends SimpleLayoutPanel {
 
-    private final DataGrid<DataFileRow> grid;
+    private final CustomDataGrid<DataFileRow> grid;
     private final ListDataProvider<DataFileRow> dataProvider;
     private final MultiSelectionModel<DataFileRow> selectionModel;
     private final HTML emptyTableWidget;
@@ -57,7 +57,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     private Presenter presenter;
 
     public DataFileListPanel() {
-        grid = new CustomDataGrid<>(MAX_FILES, false);
+        grid = new CustomDataGrid<>(MAX_FILES, true);
         //grid = new DataGrid<>();
         grid.addStyleName("gwt-DataGrid");
         grid.setWidth("100%");
@@ -141,8 +141,8 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 });
             }
         });
-        grid.addColumn(nameColumn, "Name");
-        grid.setColumnWidth(nameColumn, 25, Style.Unit.PCT);
+        grid.addResizableColumn(nameColumn, "Name");
+        grid.setColumnWidth(nameColumn, 30, Style.Unit.PCT);
 
 
 
@@ -152,7 +152,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 return object.getCreated();
             }
         };
-        grid.addColumn(dateColumn, "Date");
+        grid.addResizableColumn(dateColumn, "Date");
         grid.setColumnWidth(dateColumn, 25, Style.Unit.PCT);
 
         Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell(this)) {
@@ -162,8 +162,8 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             }
         };
         statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        grid.addColumn(statusText, "Status");
-        grid.setColumnWidth(statusText, 20, Style.Unit.PCT);
+        grid.addResizableColumn(statusText, "Status");
+        grid.setColumnWidth(statusText, 15, Style.Unit.PCT);
 
         Column<DataFileRow, String> sizeColumn = new Column<DataFileRow, String>(nameCell) {
 
