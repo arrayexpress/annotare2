@@ -41,17 +41,17 @@ public class DataFileStore {
         root = properties.getDataStoreDir();
     }
 
-    public String store(DataFileHandle source) throws IOException {
+    public long store(DataFileHandle source) throws IOException {
         String md5 = source.getDigest();
         File destination = new File(dir(md5, true), md5);
 
         if (destination.exists()) {
             log.warn("File {} already exists in the repository and will not be overwritten", source.getName());
-            return md5;
+            return destination.length();
         }
 
         source.copyTo(destination.toURI());
-        return md5;
+        return destination.length();
     }
 
     public File get(String digest) throws IOException {

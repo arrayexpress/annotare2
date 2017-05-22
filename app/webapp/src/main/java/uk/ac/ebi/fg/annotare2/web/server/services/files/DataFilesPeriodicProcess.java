@@ -137,7 +137,7 @@ public class DataFilesPeriodicProcess {
                     file.setStatus(MD5_ERROR);
                     logger.error("MD5 mismatch for source file {}", source.getUri());
                 } else {
-                    fileStore.store(source);
+                    file.setFileSize(fileStore.store(source)); // save the file size after copying the file
                     file.setSourceDigest(null);
                     file.setDigest(digest);
                     file.setStatus(STORED);
