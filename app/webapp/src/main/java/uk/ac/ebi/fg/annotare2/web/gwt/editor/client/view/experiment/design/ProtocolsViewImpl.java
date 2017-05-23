@@ -159,9 +159,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         addAssignmentColumn();
         addTypeColumn();
         addDescriptionColumn();
+        addPerformerColumn();
         addHardwareColumn();
         addSoftwareColumn();
-        addPerformerColumn();
     }
 
     private void addNameColumn() {
@@ -254,7 +254,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 );
             }
         });
-        gridView.addPermanentColumn("Assign protocols to materials/data files", column, null, 300, Style.Unit.PX);
+        gridView.addPermanentColumn("Assign protocols to samples", column, null, 300, Style.Unit.PX);
     }
 
     private boolean isNameUnique(String name, int rowIndex) {
