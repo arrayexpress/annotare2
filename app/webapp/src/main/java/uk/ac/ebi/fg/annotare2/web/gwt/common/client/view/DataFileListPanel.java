@@ -175,6 +175,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         };
 
         sizeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        sizeColumn.setCellStyleNames("fileSizeColumn");
 
         SafeHtmlHeader header = new SafeHtmlHeader(new SafeHtml() {
 

@@ -594,3 +594,8 @@ a.wgt-button :hover {
 {
     resize: vertical;
 }
+
+.fileSizeColumn
+{
+    padding-right: 15px !important;
+}
