@@ -89,12 +89,9 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(checkboxColumn, checkboxHeader);
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
-        emptyTableWidget = new HTML("<p><br/></p><p>Drag files here to start upload or press the <br/>\"Upload Files\"" +
-                " button to open the selection dialog.</p><p>Make sure the file names are constructed only from " +
-                "alphanumerals [A-Z,a-z,0-9], underscores [_], and dots [.],<br/> with no whitespaces, brackets, other " +
-                "punctuations <br/>or symbols.</p><p>File upload will auto-resume, so if internet connection drops off suddenly, " +
-                "or you leave this page, you can drag the same file into this space again, " +
-                "and the upload will pick up from where it left off previously.</p>");
+        emptyTableWidget = new HTML("<p><br/></p><p><b style=\"font-size:18px;\">Upload Files</b><br/><br/>Drag-and-drop files here to start upload or press the <br/>\"Upload Files\".<br/><br/></p>"+
+        "<p><i class=\"fa fa-warning\"></i>File names only contain letters [A-Z,a-z], numbers [0,9], underscores [_], and dots [.].<br/></p>" +
+        "<p><i class=\"fa fa-play\"></i> <i class=\"fa fa-pause\"></i>File upload will auto resume if the connection is interrupted or you leave the page.<br/></p>");
         emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
