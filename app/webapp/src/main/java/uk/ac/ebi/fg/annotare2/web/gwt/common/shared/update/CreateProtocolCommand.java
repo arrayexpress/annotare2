@@ -16,7 +16,12 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+
+
+import java.util.List;
 
 /**
  * @author Olga Melnichuk
@@ -24,6 +29,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
 public class CreateProtocolCommand implements ExperimentUpdateCommand {
 
     private ProtocolType protocolType;
+
+    private List<ProtocolDetail> protocolTypes;
 
     @SuppressWarnings("unused")
     CreateProtocolCommand() {
@@ -34,9 +41,14 @@ public class CreateProtocolCommand implements ExperimentUpdateCommand {
         this.protocolType = protocolType;
     }
 
+    public CreateProtocolCommand(List<ProtocolDetail> protocolDetails) {
+        this.protocolTypes = protocolDetails;
+    }
+
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
-        performer.createProtocol(protocolType);
+        // performer.createProtocol(protocolType);
+        performer.createProtocol(protocolTypes);
     }
 
     @Override

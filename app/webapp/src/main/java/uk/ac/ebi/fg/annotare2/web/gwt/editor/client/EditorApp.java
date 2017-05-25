@@ -181,6 +181,11 @@ public class EditorApp implements EntryPoint {
         ActivityManager contentActivityManager = new ActivityManager(contentActivityMapper, eventBus);
         contentActivityManager.setDisplay(layout.getContentDisplay());
 
+        ActivityMapper fileUploadActivityMapper = injector.getFileUploadActivityMapper();
+        ActivityManager fileUploadActivityManager = new ActivityManager(fileUploadActivityMapper, eventBus);
+        fileUploadActivityManager.setDisplay(layout.getFileUploadDisplay());
+
+
         if (layout.getLogBarDisplay() != null) {
             ActivityMapper logBarActivityMapper = injector.getLogBarActivityMapper();
             ActivityManager logBarActivityManager = new ActivityManager(logBarActivityMapper, eventBus);

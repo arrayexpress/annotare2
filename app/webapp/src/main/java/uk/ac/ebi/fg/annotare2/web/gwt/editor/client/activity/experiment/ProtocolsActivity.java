@@ -35,6 +35,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.OntologyDataProxy;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.ProtocolsView;
 
 import java.util.ArrayList;
@@ -101,6 +102,11 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     @Override
     public void createProtocol(ProtocolType protocolType) {
         expData.createProtocol(protocolType);
+    }
+
+    @Override
+    public void createProtocol(List<ProtocolDetail> protocolDetails){
+        expData.createProtocol(protocolDetails);
     }
 
     @Override

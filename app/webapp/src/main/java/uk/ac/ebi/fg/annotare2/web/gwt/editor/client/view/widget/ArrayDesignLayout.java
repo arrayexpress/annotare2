@@ -64,6 +64,11 @@ public class ArrayDesignLayout extends Composite implements EditorLayout, Requir
     }
 
     @Override
+    public HasOneWidget getFileUploadDisplay() {
+        return null;
+    }
+
+    @Override
     public void onResize() {
         if (getWidget() instanceof RequiresResize) {
             ((RequiresResize) getWidget()).onResize();

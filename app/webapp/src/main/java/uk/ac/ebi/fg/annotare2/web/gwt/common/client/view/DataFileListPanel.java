@@ -46,7 +46,7 @@ import java.util.*;
 
 public class DataFileListPanel extends SimpleLayoutPanel {
 
-    private final DataGrid<DataFileRow> grid;
+    private final CustomDataGrid<DataFileRow> grid;
     private final ListDataProvider<DataFileRow> dataProvider;
     private final MultiSelectionModel<DataFileRow> selectionModel;
     private final HTML emptyTableWidget;
@@ -57,7 +57,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
     private Presenter presenter;
 
     public DataFileListPanel() {
-        grid = new CustomDataGrid<>(MAX_FILES, false);
+        grid = new CustomDataGrid<>(MAX_FILES, true);
         //grid = new DataGrid<>();
         grid.addStyleName("gwt-DataGrid");
         grid.setWidth("100%");
@@ -89,12 +89,9 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.addColumn(checkboxColumn, checkboxHeader);
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
-        emptyTableWidget = new HTML("<p><br/></p><p>Drag files here to start upload or press the <br/>\"Upload Files\"" +
-                " button to open the selection dialog.</p><p>Make sure the file names are constructed only from " +
-                "alphanumerals [A-Z,a-z,0-9], underscores [_], and dots [.],<br/> with no whitespaces, brackets, other " +
-                "punctuations <br/>or symbols.</p><p>File upload will auto-resume, so if internet connection drops off suddenly, " +
-                "or you leave this page, you can drag the same file into this space again, " +
-                "and the upload will pick up from where it left off previously.</p>");
+        emptyTableWidget = new HTML("<p><br/></p><p><b style=\"font-size:18px;\">Upload Files</b><br/><br/>Drag-and-drop files here to start upload or press the <br/>\"Upload Files\".<br/><br/></p>"+
+        "<p><i class=\"fa fa-warning\"></i>File names only contain letters [A-Z,a-z], numbers [0,9], underscores [_], and dots [.].<br/></p>" +
+        "<p><i class=\"fa fa-play\"></i> <i class=\"fa fa-pause\"></i>File upload will auto resume if the connection is interrupted or you leave the page.<br/></p>");
         emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
@@ -141,8 +138,8 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 });
             }
         });
-        grid.addColumn(nameColumn, "Name");
-        grid.setColumnWidth(nameColumn, 25, Style.Unit.PCT);
+        grid.addResizableColumn(nameColumn, "Name");
+        grid.setColumnWidth(nameColumn, 30, Style.Unit.PCT);
 
 
 
@@ -152,7 +149,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
                 return object.getCreated();
             }
         };
-        grid.addColumn(dateColumn, "Date");
+        grid.addResizableColumn(dateColumn, "Date");
         grid.setColumnWidth(dateColumn, 25, Style.Unit.PCT);
 
         Column<DataFileRow, DataFileRow> statusText = new Column<DataFileRow, DataFileRow>(new DownloadLinkStatusCell(this)) {
@@ -162,8 +159,8 @@ public class DataFileListPanel extends SimpleLayoutPanel {
             }
         };
         statusText.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        grid.addColumn(statusText, "Status");
-        grid.setColumnWidth(statusText, 20, Style.Unit.PCT);
+        grid.addResizableColumn(statusText, "Status");
+        grid.setColumnWidth(statusText, 15, Style.Unit.PCT);
 
         Column<DataFileRow, String> sizeColumn = new Column<DataFileRow, String>(nameCell) {
 
@@ -175,6 +172,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         };
 
         sizeColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        sizeColumn.setCellStyleNames("fileSizeColumn");
 
         SafeHtmlHeader header = new SafeHtmlHeader(new SafeHtml() {
 

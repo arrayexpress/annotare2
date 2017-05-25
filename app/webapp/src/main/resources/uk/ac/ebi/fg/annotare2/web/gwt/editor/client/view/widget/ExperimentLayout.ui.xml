@@ -17,7 +17,14 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget">
+        xmlns:my="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget"
+        xmlns:c="urn:import:uk.ac.ebi.fg.annotare2.web.gwt.common.client.view">
+
+    <ui:style>
+        .showHideButton {
+            margin-top: 75px;
+        }
+    </ui:style>
 
     <g:DockLayoutPanel>
         <g:north size="25">
@@ -47,7 +54,18 @@
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
-                            <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
+                            <g:SplitLayoutPanel ui:field="fileUploadPanel">
+                                <g:center size="600">
+                                    <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
+                                </g:center>
+                                <g:east size="530">
+                                    <g:DockLayoutPanel>
+                                        <g:center>
+                                            <g:SimpleLayoutPanel ui:field="fileUploadDisplay"/>
+                                        </g:center>
+                                    </g:DockLayoutPanel>
+                                </g:east>
+                            </g:SplitLayoutPanel>
                         </g:center>
                     </g:DockLayoutPanel>
                 </g:center>
@@ -56,5 +74,14 @@
                 </g:south>
             </g:SplitLayoutPanel>
         </g:center>
+        <g:east size="20">
+            <g:DockLayoutPanel>
+                <g:east size="20">
+                    <g:SimpleLayoutPanel ui:field="simpleToggleButtonPanel">
+                        <g:Button ui:field="showHideButton">U</g:Button>
+                    </g:SimpleLayoutPanel>
+                </g:east>
+            </g:DockLayoutPanel>
+        </g:east>
     </g:DockLayoutPanel>
 </ui:UiBinder>

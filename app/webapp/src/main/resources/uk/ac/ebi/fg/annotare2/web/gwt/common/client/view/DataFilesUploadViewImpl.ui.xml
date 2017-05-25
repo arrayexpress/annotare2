@@ -39,6 +39,10 @@
         <g:center>
             <c:DataFileListPanel ui:field="fileListPanel" addStyleNames="{style.grid}"/>
         </g:center>
+        <g:south size="100">
+            <g:VerticalPanel ui:field="progressPanel">
+            </g:VerticalPanel>
+        </g:south>
     </g:DockLayoutPanel>
 
 </ui:UiBinder>

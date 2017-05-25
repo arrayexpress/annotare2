@@ -35,7 +35,7 @@ public enum ExpDesignSection implements LeftNavigationView.Section {
     EXTRACTS_LIBRARY_INFO("Assign ENA library information", of(SEQUENCING), "Provide technical details of your sequencing libraries as required by the Sequence Read Archive (SRA)"),
     LABELED_EXTRACTS("Create labeled extracts and assign labels", of(TWO_COLOR_MICROARRAY), "Assign the label to each sample by removing the one thatdoes not apply. For dye-swap designs both labels can be kept."),
     PROTOCOLS("Describe protocols", allOf(ExperimentProfileType.class)),
-    FILES("Upload and assign data files", allOf(ExperimentProfileType.class)),
+    FILES("Assign data files", allOf(ExperimentProfileType.class)),
     NONE("None", noneOf(ExperimentProfileType.class));
 
     private final String title;

@@ -40,7 +40,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
     private final Provider<SamplesActivity> samplesActivityProvider;
     private final Provider<ExtractAttributesActivity> extractAttributesActivityProvider;
     private final Provider<LabeledExtractsActivity> labeledExtractsActivityProvider;
-    private final Provider<DataUploadAndAssignmentActivity> dataUploadAndAssignmentActivityProvider;
+    private final Provider<DataFileAssignmentActivity> dataFileAssignmentActivityProvider;
     private final Provider<ProtocolsActivity> protocolsActivityProvider;
 
     private final Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider;
@@ -57,7 +57,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
             Provider<SamplesActivity> samplesActivityProvider,
             Provider<ExtractAttributesActivity> extractAttributesActivityProvider,
             Provider<LabeledExtractsActivity> labeledExtractsActivityProvider,
-            Provider<DataUploadAndAssignmentActivity> dataUploadAndAssignmentActivityProvider,
+            Provider<DataFileAssignmentActivity> dataFileAssignmentActivityProvider,
             Provider<ProtocolsActivity> protocolsActivityProvider,
             Provider<SdrfPreviewActivity> sdrfPreviewActivityProvider,
             Provider<IdfPreviewActivity> idfPreviewActivityProvider,
@@ -70,7 +70,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
         this.samplesActivityProvider = samplesActivityProvider;
         this.extractAttributesActivityProvider = extractAttributesActivityProvider;
         this.labeledExtractsActivityProvider = labeledExtractsActivityProvider;
-        this.dataUploadAndAssignmentActivityProvider = dataUploadAndAssignmentActivityProvider;
+        this.dataFileAssignmentActivityProvider = dataFileAssignmentActivityProvider;
         this.protocolsActivityProvider = protocolsActivityProvider;
 
         this.sdrfPreviewActivityProvider = sdrfPreviewActivityProvider;
@@ -103,7 +103,7 @@ public class EditorContentActivityMapper implements ActivityMapper {
                 case LABELED_EXTRACTS:
                     return (labeledExtractsActivityProvider.get()).withPlace(designPlace);
                 case FILES:
-                    return (dataUploadAndAssignmentActivityProvider.get()).withPlace(designPlace);
+                    return (dataFileAssignmentActivityProvider.get()).withPlace(designPlace);
                 case PROTOCOLS:
                     return (protocolsActivityProvider.get()).withPlace(designPlace);
             }

@@ -18,10 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfileUpdates;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolRow;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolType;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +32,11 @@ public interface ProtocolsView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    interface Presenter extends AddProtocolDialog.Presenter {
+    interface Presenter extends AddProtocolDialog.Presenter, AddOptionalProtocolDialog.Presenter{
 
         void createProtocol(ProtocolType protocolType);
+
+        void createProtocol(List<ProtocolDetail> protocolDetails);
 
         void updateProtocol(ProtocolRow row);
 

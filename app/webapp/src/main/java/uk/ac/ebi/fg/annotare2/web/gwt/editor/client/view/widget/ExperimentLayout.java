@@ -1,6 +1,8 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -41,7 +43,20 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
     @UiField
     NotificationMole notificationMole;
 
+    @UiField
+    SimpleLayoutPanel fileUploadDisplay;
+
+    @UiField
+    Button showHideButton;
+
+    @UiField
+    SplitLayoutPanel fileUploadPanel;
+
+    @UiField
+    SimpleLayoutPanel simpleToggleButtonPanel;
+
     private int submissionCount;
+    private boolean filePanelIsVisible;
 
     interface Binder extends UiBinder<Widget, ExperimentLayout> {
         Binder BINDER = GWT.create(Binder.class);
@@ -56,10 +71,33 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
                 openLogPanel(DEFAULT_LOG_PANEL_SIZE);
             }
         });
+        showHideButton.setHTML("&#9654;");
+        filePanelIsVisible = true;
         notificationMole.addAttachHandler(new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent attachEvent) {
                 showNotificationMole();
+            }
+        });
+        showHideButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+
+                if(filePanelIsVisible)
+                {
+                    showHideButton.setHTML("&#9664;");
+                    Widget w = fileUploadPanel.getWidget(0);
+                    fileUploadPanel.setWidgetHidden(w,true);
+                    //fileUploadPanel.setWidgetSize(w,20);
+                }
+                else
+                {
+                    showHideButton.setHTML("&#9654;");
+                    Widget w = fileUploadPanel.getWidget(0);
+                    fileUploadPanel.setWidgetHidden(w,false);
+                    //fileUploadPanel.setWidgetSize(w,530);
+                }
+                filePanelIsVisible = !filePanelIsVisible;
             }
         });
 
@@ -116,6 +154,9 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
     public HasOneWidget getLogBarDisplay() {
         return logBarDisplay;
     }
+
+    @Override
+    public HasOneWidget getFileUploadDisplay() { return fileUploadDisplay; }
 
     @Override
     public void onResize() {
