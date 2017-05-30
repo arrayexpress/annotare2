@@ -272,6 +272,19 @@ public class RtMessengerService extends EmailMessengerService {
                 errorTrace = errorTrace + line + "\n";
             }
         }
+        if(!isNullOrEmpty(ticket))
+        {
+            try {
+                ticketUpdate(
+                        new ImmutableMap.Builder<String, String>()
+                                .put(RtFieldNames.STATUS, "stalled")
+                                .build(),
+                        ticket
+                );
+            } catch (Exception x) {
+                messenger.send("There was a problem updating ticket status to stalled " + submission.getRtTicketNumber(), x);
+            }
+        }
         return ticket;
     }
 
