@@ -9,7 +9,7 @@ public enum ExperimentTab implements EditorTab {
 
     EXP_INFO("Experiment Description"),
 
-    EXP_DESIGN("Samples and Data"),
+    EXP_DESIGN("Experiment Details"),
 
     IDF_PREVIEW("Experiment Description Preview"),
 

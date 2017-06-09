@@ -16,6 +16,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
@@ -70,6 +71,8 @@ public interface EditorTitleBarView extends IsWidget {
         String getSubmissionExportUrl();
 
         void checkRtServerStatus();
+
+        void goTo(Place place);
     }
 
     interface ValidationHandler {

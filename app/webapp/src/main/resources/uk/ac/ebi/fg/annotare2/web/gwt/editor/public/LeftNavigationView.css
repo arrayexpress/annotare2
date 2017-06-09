@@ -15,16 +15,20 @@
  */
 
 .navigationPanel {
-    border: 1px solid #eeeeee;
+    border: 1px solid #48877c;
+    background-color: #f3f7fb;
 }
 
+.navigationItem:first-child {
+    border: 0px;
+}
 .navigationItem {
     padding: 10px 15px;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
     font-size: 14px;
-    border: 1px solid transparent;
+    border-top: 1px solid #e8e8e8;;
 }
 
 .navigationItem:hover {

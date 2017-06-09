@@ -599,3 +599,8 @@ a.wgt-button :hover {
 {
     padding-right: 15px !important;
 }
+
+.gone {
+    display: none;
+    height: 0px;
+}

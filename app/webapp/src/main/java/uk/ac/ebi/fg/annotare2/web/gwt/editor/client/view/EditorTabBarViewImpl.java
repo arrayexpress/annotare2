@@ -23,6 +23,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorTabBar;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,17 +52,19 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
 
     @Override
     public void initWithTabs(EditorTab... tabs) {
-        List<EditorTab> shownTabs = new ArrayList<>();
-        for (EditorTab tab:tabs) {
-            if (tab instanceof ExperimentTab
-                    && !currentUser.isCurator()
-                    && (tab == ExperimentTab.SDRF_PREVIEW || tab == ExperimentTab.IDF_PREVIEW)) {
-                continue;
-            }
-            shownTabs.add(tab);
-        }
 
+        List<EditorTab> shownTabs = new ArrayList<>();
+        for (EditorTab tab : tabs) {
+            if (tab instanceof ExperimentTab) {
+                if ( (!currentUser.isCurator() && tab!= ExperimentTab.EXP_DESIGN)
+                        || tab==ExperimentTab.EXP_INFO) {
+                    continue;
+                }
+                shownTabs.add(tab);
+            }
+        }
         tabBar.addTabs(shownTabs.toArray(new EditorTab[]{}));
+
     }
 
     @Override

@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -34,6 +35,8 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExperimentPlace;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.AutoSaveLabel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactUsDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ValidateSubmissionDialog;
@@ -70,6 +73,15 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
 
     @UiField
     Button submitButton;
+
+//    @UiField
+//    Button experimentButton;
+//
+//    @UiField
+//    Button idfButton;
+//
+//    @UiField
+//    Button sdrfButton;
 
     @UiField
     AutoSaveLabel autoSaveLabel;
@@ -133,6 +145,9 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
         isOwnedByCreator = submissionDetails.isOwnedByCreator();
         editButton.setVisible(editButton.isVisible() && isOwnedByCreator);
         releaseButton.setVisible(releaseButton.isVisible() && !isOwnedByCreator);
+//        experimentButton.setVisible(isCurator);
+//        idfButton.setVisible(isCurator);
+//        sdrfButton.setVisible(isCurator);
 
         //set status and type
         SubmissionStatus status = submissionDetails.getStatus();
@@ -382,4 +397,22 @@ public class EditorTitleBarViewImpl extends Composite implements EditorTitleBarV
             }
         });
     }
+
+    public void goTo(Place place) {
+        presenter.goTo(place);
+    }
+/*
+    @UiHandler("experimentButton")
+    void onExperimentButtonClick(ClickEvent event) {
+        goTo( ExperimentPlace.create(ExperimentTab.EXP_DESIGN));
+    }
+    @UiHandler("idfButton")
+    void onIDFButtonClick(ClickEvent event) {
+        goTo( ExperimentPlace.create(ExperimentTab.IDF_PREVIEW));
+    }
+    @UiHandler("sdrfButton")
+    void onSDRFButtonClick(ClickEvent event) {
+        goTo( ExperimentPlace.create(ExperimentTab.SDRF_PREVIEW));
+    }
+    */
 }

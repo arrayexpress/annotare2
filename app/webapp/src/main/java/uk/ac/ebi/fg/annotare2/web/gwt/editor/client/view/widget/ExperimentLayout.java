@@ -6,8 +6,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
@@ -41,9 +43,6 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
     SimpleLayoutPanel tabBarDisplay;
 
     @UiField
-    NotificationMole notificationMole;
-
-    @UiField
     SimpleLayoutPanel fileUploadDisplay;
 
     @UiField
@@ -54,6 +53,9 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
     @UiField
     SimpleLayoutPanel simpleToggleButtonPanel;
+
+    @UiField
+    DockLayoutPanel dockLayoutPanel;
 
     private int submissionCount;
     private boolean filePanelIsVisible;
@@ -73,7 +75,7 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
         });
         showHideButton.setHTML("&#9654;");
         filePanelIsVisible = true;
-        notificationMole.addAttachHandler(new AttachEvent.Handler() {
+        contentDisplay.addAttachHandler(new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent attachEvent) {
                 showNotificationMole();
@@ -100,20 +102,11 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
                 filePanelIsVisible = !filePanelIsVisible;
             }
         });
-
     }
 
     private void showNotificationMole() {
         if (submissionCount==1) {
-            notificationMole.setAnimationDuration(1000);
-            notificationMole.showDelayed(2000);
-            com.google.gwt.user.client.Timer t = new com.google.gwt.user.client.Timer() {
-                @Override
-                public void run() {
-                    notificationMole.hide();
-                }
-            };
-            t.schedule(10000);
+            NotificationPopupPanel.message ("Annotare automatically saves any changes that you make; Simply move the cursor to a different field!", true);
         }
     }
 

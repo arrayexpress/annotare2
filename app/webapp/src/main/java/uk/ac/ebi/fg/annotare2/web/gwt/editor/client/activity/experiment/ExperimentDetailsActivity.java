@@ -28,6 +28,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpDesignPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.place.ExpInfoPlace;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ApplicationDataProxy;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.proxy.ExperimentDataProxy;
@@ -69,6 +70,11 @@ public class ExperimentDetailsActivity extends AbstractActivity implements Exper
     public ExperimentDetailsActivity withPlace(ExpInfoPlace place) {
         return this;
     }
+
+    public ExperimentDetailsActivity withPlace(ExpDesignPlace place) {
+        return this;
+    }
+
 
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {

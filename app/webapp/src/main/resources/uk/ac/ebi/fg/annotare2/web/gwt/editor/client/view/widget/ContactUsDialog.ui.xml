@@ -36,6 +36,5 @@
                 <g:Button ui:field="okButton">Send</g:Button>
             </g:HTMLPanel>
         </g:cell>
-        <g:NotificationMole message="Thank you! Your message has been sent!" title="Contact Us!" ui:field="notificationMole"/>
     </g:VerticalPanel>
 </ui:UiBinder>

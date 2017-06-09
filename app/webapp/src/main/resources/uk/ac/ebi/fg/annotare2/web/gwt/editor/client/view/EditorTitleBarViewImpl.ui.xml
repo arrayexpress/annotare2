@@ -41,6 +41,30 @@
             white-space: nowrap;
         }
 
+        .specialButton {
+            background: none repeat scroll 0 0 chocolate;
+            border: 1px solid chocolate;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            -ms-border-radius: 3px;
+            -o-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .specialButton:hover {
+            background-color: sandybrown;
+            cursor: pointer;
+            text-shadow: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            border: 1px outset sandybrown;
+        }
+
+
         .regularButton {
             background: none repeat scroll 0 0 #888;
             border: 1px solid #888;
@@ -159,6 +183,9 @@
                         </table>
                     </td>
                     <td class="{style.buttonPanel}">
+                        <!--g:Button addStyleNames="{style.specialButton}" ui:field="experimentButton" visible="false"><i class="fa fa-flask"/>Experiment</g:Button>
+                        <g:Button addStyleNames="{style.specialButton}" ui:field="idfButton" visible="false"><i class="fa fa-info"/>IDF Preview</g:Button>
+                        <g:Button addStyleNames="{style.specialButton}" ui:field="sdrfButton" visible="false"><i class="fa fa-table"/>SDRF Preview</g:Button-->
                         <g:Button addStyleNames="{style.helpButton}" ui:field="helpButton" title="Link to detailed Annotare instructions"><i class="fa fa-life-ring" title="Link to detailed Annotare instructions."/>Help</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="contactButton" title="Ask a curator a question" visible="false"><i class="fa fa-comments-o"/>Contact Us</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="editButton" visible="false"><i class="fa fa-pencil"/>Curator's Edit</g:Button>
