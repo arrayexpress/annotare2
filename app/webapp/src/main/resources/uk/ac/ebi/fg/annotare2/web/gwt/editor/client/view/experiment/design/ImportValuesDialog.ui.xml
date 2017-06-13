@@ -30,7 +30,7 @@
     <g:ResizeLayoutPanel height="300px" width="400px">
         <g:DockLayoutPanel>
             <g:north size="20">
-                <g:Label>Please enter values to import, one per line:</g:Label>
+                <g:Label>Please enter values, one per line:</g:Label>
             </g:north>
             <g:center>
                 <g:TextArea ui:field="values" addStyleNames="{style.textarea}"/>
@@ -41,7 +41,7 @@
                         <tr>
                             <td align="right" valign="bottom">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
-                                <g:Button ui:field="okButton">Import</g:Button>
+                                <g:Button ui:field="okButton">Ok</g:Button>
                             </td>
                         </tr>
                     </table>
