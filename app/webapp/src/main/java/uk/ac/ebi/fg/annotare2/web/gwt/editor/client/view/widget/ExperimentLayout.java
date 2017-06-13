@@ -73,7 +73,7 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
                 openLogPanel(DEFAULT_LOG_PANEL_SIZE);
             }
         });
-        showHideButton.setHTML("&#9654;");
+        showHideButton.setHTML("<i class=\"fa fa-chevron-circle-right\"/>");
         filePanelIsVisible = true;
         contentDisplay.addAttachHandler(new AttachEvent.Handler() {
             @Override
@@ -87,17 +87,15 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
                 if(filePanelIsVisible)
                 {
-                    showHideButton.setHTML("&#9664;");
+                    showHideButton.setHTML("<i class=\"fa fa-chevron-circle-left\"/>");
                     Widget w = fileUploadPanel.getWidget(0);
                     fileUploadPanel.setWidgetHidden(w,true);
-                    //fileUploadPanel.setWidgetSize(w,20);
                 }
                 else
                 {
-                    showHideButton.setHTML("&#9654;");
+                    showHideButton.setHTML("<i class=\"fa fa-chevron-circle-right\"/>");
                     Widget w = fileUploadPanel.getWidget(0);
                     fileUploadPanel.setWidgetHidden(w,false);
-                    //fileUploadPanel.setWidgetSize(w,530);
                 }
                 filePanelIsVisible = !filePanelIsVisible;
             }
