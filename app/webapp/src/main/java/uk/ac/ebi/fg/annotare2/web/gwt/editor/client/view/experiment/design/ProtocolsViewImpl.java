@@ -31,6 +31,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
@@ -419,10 +420,10 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         }
         if(gridView.getRows().isEmpty()) {
             (new AddProtocolDialog(presenter,
-                    new DialogCallback<List<ProtocolDetail>>() {
+                    new DialogCallback<List<Protocol>>() {
                         @Override
-                        public boolean onOk(List<ProtocolDetail> protocolDetails) {
-                            createProtocols(protocolDetails);
+                        public boolean onOk(List<Protocol> protocols) {
+                            createProtocols(protocols);
                             return true;
                         }
                     })).show();
@@ -430,10 +431,10 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         else
         {
             (new AddOptionalProtocolDialog(presenter,
-                    new DialogCallback<List<ProtocolDetail>>() {
+                    new DialogCallback<List<Protocol>>() {
                         @Override
-                        public boolean onOk(List<ProtocolDetail> protocolDetails) {
-                            createProtocols(protocolDetails);
+                        public boolean onOk(List<Protocol> protocols) {
+                            createProtocols(protocols);
                             return true;
                         }
                     })).show();
@@ -450,9 +451,9 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         presenter.createProtocol(protocolType);
     }
 
-    private void createProtocols(List<ProtocolDetail> protocolDetails)
+    private void createProtocols(List<Protocol> protocols)
     {
-        presenter.createProtocol(protocolDetails);
+        presenter.createProtocol(protocols);
     }
 
     private void removeSelectedProtocols() {

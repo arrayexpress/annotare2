@@ -9,6 +9,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolDetail;
@@ -39,11 +40,11 @@ public class AddOptionalProtocolDialog extends DialogBox {
     private final Presenter presenter;
     private List<ProtocolType> protocolTypes;
     private List<String> protocolsList;
-    private List<ProtocolDetail> selectedProtocolTypes;
-    private DialogCallback<List<ProtocolDetail>> callback;
+    private List<Protocol> selectedProtocolTypes;
+    private DialogCallback<List<Protocol>> callback;
     private HashMap<String,TextBox> protocolDescriptions;
 
-    public AddOptionalProtocolDialog(Presenter presenter, DialogCallback<List<ProtocolDetail>> callback) {
+    public AddOptionalProtocolDialog(Presenter presenter, DialogCallback<List<Protocol>> callback) {
         this.presenter = presenter;
         this.callback = callback;
 
@@ -103,7 +104,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
 
-        List<ProtocolDetail> selectedProtocols = selectedProtocolTypes;
+        List<Protocol> selectedProtocols = selectedProtocolTypes;
 
         boolean descriptionIsNull = false;
 
@@ -132,16 +133,16 @@ public class AddOptionalProtocolDialog extends DialogBox {
         {
             if(!isNullOrEmpty(entry.getValue().getValue()))
             {
-                ProtocolDetail detail = new ProtocolDetail();
+                Protocol protocol = new Protocol(1);
                 if(protocolsList.contains(entry.getKey().toString()))
                 {
                     for (ProtocolType type:
                             protocolTypes) {
                         if(entry.getKey().toString().equalsIgnoreCase(type.getTerm().getLabel()))
                         {
-                            detail.setProtocolType(type);
-                            detail.setProtocolDescription(entry.getValue().getValue());
-                            selectedProtocols.add(detail);
+                            protocol.setType(type.getTerm());
+                            protocol.setDescription(entry.getValue().getValue());
+                            selectedProtocols.add(protocol);
                         }
                     }
                 }

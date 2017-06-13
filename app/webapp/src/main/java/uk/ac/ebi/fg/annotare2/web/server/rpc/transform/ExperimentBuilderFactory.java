@@ -22,6 +22,7 @@ import uk.ac.ebi.fg.annotare2.submission.model.Contact;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExtractAttributesRow;
 import uk.ac.ebi.fg.annotare2.web.server.rpc.updates.ExperimentUpdater;
 
 import java.util.Map;
@@ -70,6 +71,20 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
+                exp.setAeExperimentType("RNA-seq of coding RNA");
+                return exp;
+            }
+        },
+        PLANT_SEQUENCING_EXPERIMENT_BUILDER(PLANT_SEQUENCING) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(PLANT_SEQUENCING);
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
                 exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }

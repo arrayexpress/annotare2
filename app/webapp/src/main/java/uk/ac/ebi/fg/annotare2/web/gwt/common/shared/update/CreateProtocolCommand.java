@@ -30,7 +30,7 @@ public class CreateProtocolCommand implements ExperimentUpdateCommand {
 
     private ProtocolType protocolType;
 
-    private List<ProtocolDetail> protocolTypes;
+    private List<Protocol> protocols;
 
     @SuppressWarnings("unused")
     CreateProtocolCommand() {
@@ -41,14 +41,14 @@ public class CreateProtocolCommand implements ExperimentUpdateCommand {
         this.protocolType = protocolType;
     }
 
-    public CreateProtocolCommand(List<ProtocolDetail> protocolDetails) {
-        this.protocolTypes = protocolDetails;
+    public CreateProtocolCommand(List<Protocol> protocols) {
+        this.protocols = protocols;
     }
 
     @Override
     public void execute(ExperimentUpdatePerformer performer) {
        // performer.createProtocol(protocolType);
-        performer.createProtocol(protocolTypes);
+        performer.createProtocol(protocols);
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Label;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.Arrays.asList;
 
 /**
  * @author Olga Melnichuk
@@ -57,11 +59,13 @@ public class AddProtocolDialog extends DialogBox {
     private List<ProtocolType> protocolTypes;
     private List<String> mandatoryProtocols;
     private List<String> optionalProtocols;
-    private List<ProtocolDetail> selectedProtocolTypes;
-    private DialogCallback<List<ProtocolDetail>> callback;
+    private List<Protocol> selectedProtocolTypes;
+    private DialogCallback<List<Protocol>> callback;
     private HashMap<String,TextBox> protocolDescriptions;
+    private String sequencingHardware = "454 GS, 454 GS 20, 454 GS FLX, 454 GS FLX+, 454 GS FLX Titanium, 454 GS Junior, Illumina Genome Analyzer, Illumina Genome Analyzer II, Illumina Genome Analyzer IIx, Illumina HiSeq 1000, Illumina HiSeq 1500, Illumina HiSeq 2000, Illumina HiSeq 2500, Illumina HiSeq 3000, Illumina HiSeq 4000, Illumina MiSeq, Illumina HiScanSQ, HiSeq X Five, HiSeq X Ten, NextSeq 500, NextSeq 550, Helicos HeliScope, AB SOLiD System, AB SOLiD System 2.0, AB SOLiD System 3.0, AB SOLiD 3 Plus System, AB SOLiD 4 System, AB SOLiD 4hq System, AB SOLiD PI System, AB 5500 Genetic Analyzer, AB 5500xl Genetic Analyzer, AB 5500xl-W Genetic Analysis System, Complete Genomics, BGISEQ-500, PacBio RS, PacBio RS II, Sequel, Ion Torrent PGM, Ion Torrent Proton, MinION, GridION, AB 3730xL Genetic Analyzer, AB 3730 Genetic Analyzer, AB 3500xL Genetic Analyzer, AB 3500 Genetic Analyzer, AB 3130xL Genetic Analyzer, AB 3130 Genetic Analyzer, AB 310 Genetic Analyzer, unspecified";
+    private List<String> sequencingHardwareList;
 
-    public AddProtocolDialog(Presenter presenter, DialogCallback<List<ProtocolDetail>> callback) {
+    public AddProtocolDialog(Presenter presenter, DialogCallback<List<Protocol>> callback) {
         this.presenter = presenter;
         this.callback = callback;
 
@@ -78,6 +82,9 @@ public class AddProtocolDialog extends DialogBox {
         optionalProtocols = new ArrayList<>();
         protocolDescriptions = new HashMap<>();
 
+        sequencingHardwareList = new ArrayList<>();
+        sequencingHardwareList = asList(sequencingHardware.split("\\s*,\\s*"));
+
         center();
     }
 
@@ -92,18 +99,18 @@ public class AddProtocolDialog extends DialogBox {
     @UiHandler("okButton")
     void okClicked(ClickEvent event) {
 
-        List<ProtocolDetail> selectedProtocols = selectedProtocolTypes;
+        List<Protocol> selectedProtocols = selectedProtocolTypes;
 
         boolean descriptionIsNull = false;
 
-        for (ProtocolDetail detail:
+        for (Protocol protocol:
                 selectedProtocolTypes) {
-            detail.setProtocolDescription(protocolDescriptions.get(detail.getProtocolType().getTerm().getLabel()).getValue());
+            protocol.setDescription(protocolDescriptions.get(protocol.getType().getLabel()).getValue());
         }
 
-        for (ProtocolDetail detail:
+        for (Protocol protocol:
                 selectedProtocolTypes) {
-            if(isNullOrEmpty(detail.getProtocolDescription()))
+            if(isNullOrEmpty(protocol.getDescription()))
             {
                 descriptionIsNull = true;
                 break;
@@ -121,16 +128,16 @@ public class AddProtocolDialog extends DialogBox {
         {
             if(!isNullOrEmpty(entry.getValue().getValue()))
             {
-                ProtocolDetail detail = new ProtocolDetail();
+                Protocol protocol = new Protocol(1);
                 if(optionalProtocols.contains(entry.getKey().toString()))
                 {
                     for (ProtocolType type:
                          protocolTypes) {
                         if(entry.getKey().toString().equalsIgnoreCase(type.getTerm().getLabel()))
                         {
-                            detail.setProtocolType(type);
-                            detail.setProtocolDescription(entry.getValue().getValue());
-                            selectedProtocols.add(detail);
+                            protocol.setType(type.getTerm());
+                            protocol.setDescription(entry.getValue().getValue());
+                            selectedProtocols.add(protocol);
                         }
                     }
                 }
@@ -207,6 +214,34 @@ public class AddProtocolDialog extends DialogBox {
 
             protocolsPanel.add(protocolLabel);
             protocolsPanel.add(textBox);
+
+            if(protocol.equalsIgnoreCase("nucleic acid sequencing protocol"))
+            {
+                HorizontalPanel sequencingProtocolPanel = new HorizontalPanel();
+                VerticalPanel protocolHardware = new VerticalPanel();
+                Label hardwareLabel = new Label("Hardware");
+                ListBox hardwareList = new ListBox();
+                hardwareList.setVisibleItemCount(1);
+                for(String seqHardware:sequencingHardwareList)
+                {
+                    hardwareList.addItem(seqHardware);
+                }
+                protocolHardware.add(hardwareLabel);
+                protocolHardware.add(hardwareList);
+                sequencingProtocolPanel.add(protocolHardware);
+
+                VerticalPanel protocolPerformer = new VerticalPanel();
+
+                PlaceholderTextBox performerTextBox = new PlaceholderTextBox();
+
+                performerTextBox.setWidth("100%");
+                performerTextBox.setName(protocol+"performer");
+                performerTextBox.setPlaceholder("Performer Description");
+                protocolPerformer.add(performerTextBox);
+                sequencingProtocolPanel.add(protocolPerformer);
+
+                protocolsPanel.add(sequencingProtocolPanel);
+            }
         }
 
         Label optionalProtocolsLabel = new Label("Optional Protocols");
@@ -234,11 +269,11 @@ public class AddProtocolDialog extends DialogBox {
 
         selectedProtocolTypes.clear();
         for (ProtocolType type : types) {
-            ProtocolDetail detail = new ProtocolDetail();
+            Protocol protocol = new Protocol(1);
             if (mandatoryProtocols.contains(type.getTerm().getLabel())) {
-                detail.setProtocolType(type);
+                protocol.setType(type.getTerm());
 
-                selectedProtocolTypes.add(detail);
+                selectedProtocolTypes.add(protocol);
             }
         }
     }

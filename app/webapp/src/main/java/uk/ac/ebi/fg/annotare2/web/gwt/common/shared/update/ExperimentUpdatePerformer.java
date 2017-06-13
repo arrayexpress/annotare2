@@ -16,11 +16,14 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.update;
 
+import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ExperimentSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -52,11 +55,13 @@ public interface ExperimentUpdatePerformer {
 
     void updateExtractAttributes(ExtractAttributesRow row);
 
+    void updateExtractAttributes(HashMap<ExtractAttribute,String> values, int noOfSamples);
+
     void updateExtractLabels(LabeledExtractsRow row);
 
     void createProtocol(ProtocolType protocolType);
 
-    void createProtocol(List<ProtocolDetail> protocolDetails);
+    void createProtocol(List<Protocol> protocols);
 
     void updateProtocol(ProtocolRow row);
 

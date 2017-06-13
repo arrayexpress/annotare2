@@ -22,7 +22,8 @@ package uk.ac.ebi.fg.annotare2.submission.model;
 public enum ExperimentProfileType {
     ONE_COLOR_MICROARRAY("One-color microarray"),
     TWO_COLOR_MICROARRAY("Two-color microarray"),
-    SEQUENCING("High-throughput sequencing");
+    SEQUENCING("High-throughput sequencing"),
+    PLANT_SEQUENCING("Plants-High-throughput sequencing");
 
     private final String title;
 
@@ -45,4 +46,6 @@ public enum ExperimentProfileType {
     public boolean isSequencing() {
         return SEQUENCING == this;
     }
+
+    public boolean isPlantSequncing() {return PLANT_SEQUENCING == this;}
 }

@@ -23,6 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
@@ -105,8 +106,8 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     }
 
     @Override
-    public void createProtocol(List<ProtocolDetail> protocolDetails){
-        expData.createProtocol(protocolDetails);
+    public void createProtocol(List<Protocol> protocols){
+        expData.createProtocol(protocols);
     }
 
     @Override

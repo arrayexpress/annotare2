@@ -20,17 +20,103 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
 
-    <g:HTMLPanel>
+    <g:DockLayoutPanel>
+        <g:north size="625">
+            <g:VerticalPanel>
+                <g:HorizontalPanel>
+                    <g:Label width="200px">How many RNA-seq libraries did you perform?</g:Label>
+                    <g:TextBox ui:field="numberOfSamples" width="150px"/>
+                </g:HorizontalPanel>
+                <g:HorizontalPanel>
+                    <g:Label width="200px">Are you libraries strand-specific?</g:Label>
+                    <g:ListBox ui:field="strandLibraries" width="250px" visibleItemCount="1"/>
+                </g:HorizontalPanel>
+                <g:HorizontalPanel>
+                    <g:Label width="200px">Does you experiment involve single-end or paired-end sequencing?</g:Label>
+                    <g:ListBox ui:field="libraryLayout" width="250px" visibleItemCount="1"/>
+                </g:HorizontalPanel>
+                <g:Label width="200px">We need some more details.....</g:Label>
+                <g:HorizontalPanel>
+                    <g:VerticalPanel>
+                        <g:Label>Library Source</g:Label>
+                        <g:ListBox ui:field="librarySource" width="150px" visibleItemCount="1"/>
+                    </g:VerticalPanel>
+                    <g:VerticalPanel>
+                        <g:Label>Library Strategy</g:Label>
+                        <g:ListBox ui:field="libraryStrategy" width="150px" visibleItemCount="1"/>
+                    </g:VerticalPanel>
+                    <g:VerticalPanel>
+                        <g:Label>Library Selection</g:Label>
+                        <g:ListBox ui:field="librarySelection" width="150px" visibleItemCount="1"/>
+                    </g:VerticalPanel>
+                </g:HorizontalPanel>
+                <g:HorizontalPanel>
+                    <g:VerticalPanel>
+                        <g:Label ui:field="nominalLengthLabel">Nominal Length</g:Label>
+                        <g:TextBox ui:field="nominalLength" width="150px"/>
+                    </g:VerticalPanel>
+                    <g:VerticalPanel>
+                        <g:Label ui:field="nominalSDevLabel">Nominal SDev</g:Label>
+                        <g:TextBox ui:field="nominalSDev" width="150px"/>
+                    </g:VerticalPanel>
+                    <g:VerticalPanel>
+                        <g:Label ui:field="orientationLabel">Orientation</g:Label>
+                        <g:ListBox ui:field="orientation" width="150px" visibleItemCount="1"/>
+                    </g:VerticalPanel>
+                </g:HorizontalPanel>
+            </g:VerticalPanel>
+        </g:north>
+    </g:DockLayoutPanel>
+    <!--<g:HTMLPanel>
         <table>
             <tr>
-                <td>How many samples does your submission have?</td>
-                <td width="200px">
-                    <g:TextBox ui:field="numberOfSamples" width="50px"/>
+                <td width="200px">How many RNA-seq libraries did you perform?</td>
+                <td>
+                    <g:TextBox ui:field="numberOfSamples" width="150px"/>
                 </td>
             </tr>
+            <tr>
+                <td width="200px">Are you libraries strand-specific?</td>
+                <td>
+                    <g:ListBox ui:field="strandLibraries" width="300px" visibleItemCount="1"/>
+                </td>
+            </tr>
+            <tr>
+                <td width="200px">What kit did you use for library preparation?</td>
+                <td>
+                    <g:ListBox ui:field="libraryPreparationKits" width="300px" visibleItemCount="1"/>
+                </td>
+            </tr>
+            <tr>
+                <td width="200px">Does you experiment involve single-end or paired-end sequencing?</td>
+                <td>
+                    <g:ListBox ui:field="sequencingEndList" width="300px" visibleItemCount="1"/>
+                </td>
+            </tr>
+            <tr>
+                <td width="200px">We need some more details.....</td>
+            </tr>
         </table>
-        <div style="padding-top:10px;margin-top:10px;border-top:1px solid #eeeeee">
-            <g:HTML ui:field="description"/>
-        </div>
-    </g:HTMLPanel>
+        <g:DockLayoutPanel>
+            <g:north size="50">
+                <g:HorizontalPanel>
+                    <g:VerticalPanel>
+                        <g:Label>Testing label</g:Label>
+                    <g:ListBox ui:field="librarySource" width="150px" visibleItemCount="1"/>
+                    </g:VerticalPanel>
+                    <g:ListBox ui:field="libraryStrategy" width="150px" visibleItemCount="1"/>
+                    <g:ListBox ui:field="librarySelection" width="150px" visibleItemCount="1"/>
+                </g:HorizontalPanel>
+            </g:north>
+            <g:west size="600">
+                <g:HorizontalPanel>
+                    <g:TextBox ui:field="nominalLength" width="150px"/>
+                    <g:TextBox ui:field="nominalSDev" width="150px"/>
+                    <g:ListBox ui:field="orientation" width="150px" visibleItemCount="1"/>
+                    <g:ListBox ui:field="hardware" width="150px" visibleItemCount="1"/>
+                    <g:ListBox ui:field="performer" width="150px" visibleItemCount="1"/>
+                </g:HorizontalPanel>
+            </g:west>
+        </g:DockLayoutPanel>
+    </g:HTMLPanel>-->
 </ui:UiBinder>

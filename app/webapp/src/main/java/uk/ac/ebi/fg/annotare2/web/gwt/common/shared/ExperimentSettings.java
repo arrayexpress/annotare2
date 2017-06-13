@@ -19,8 +19,10 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.shared;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * @author Olga Melnichuk
@@ -28,6 +30,8 @@ import java.util.Collection;
 public class ExperimentSettings implements IsSerializable {
 
     private ExperimentProfileType experimentType;
+
+    private HashMap<ExtractAttribute,String> extractValues;
     private String arrayDesign;
     private String label;
 
@@ -37,6 +41,7 @@ public class ExperimentSettings implements IsSerializable {
 
     public ExperimentSettings(ExperimentProfileType experimentType) {
         this.experimentType = experimentType;
+
     }
 
     public void setArrayDesign(String arrayDesign) {
@@ -57,6 +62,14 @@ public class ExperimentSettings implements IsSerializable {
 
     public String getLabel() {
         return label;
+    }
+
+    public HashMap<ExtractAttribute, String> getExtractValues() {
+        return extractValues;
+    }
+
+    public void setExtractValues(HashMap<ExtractAttribute, String> extractValues) {
+        this.extractValues = new HashMap<>(extractValues);
     }
 
     public static ExperimentSettings create(ExperimentProfile exp) {

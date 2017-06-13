@@ -18,7 +18,7 @@
 <ui:UiBinder
         xmlns:ui="urn:ui:com.google.gwt.uibinder"
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
-        >
+>
     <ui:style>
         .border {
             border-bottom: 1px solid #eeeeee;
@@ -31,25 +31,66 @@
             font-size: 15px;
             line-height: 160%;
         }
+
+        .title{
+            font-size: 18px;
+            color: #207A7A;
+        }
+
+        .title-lef-nav
+        {
+            font-size: 16px;
+            color: #207A7A;
+            margin-top: 5px;
+        }
+
+        .titleMargin{
+            margin-left: 10px;
+        }
+
     </ui:style>
     <g:ResizeLayoutPanel height="300px" width="700px">
         <g:DockLayoutPanel>
+            <g:north size="100">
+                <g:DockLayoutPanel>
+                    <g:north size="50">
+                        <g:HorizontalPanel>
+                            <g:Label addStyleNames="{style.title}"> Please, Select the Submission Type </g:Label>
+                            <g:ListBox title="Select the technology type carefully because we rely on this to present you with relevant questions to complete this submission" ui:field="templateBox" visibleItemCount="1" width="100%" height="100%"/>
+                        </g:HorizontalPanel>
+                    </g:north>
+                    <g:south size="50">
+                        <g:Label>
+                            Take your time to ask this question as you won’t be able to change it back. If you change your mind you will need to start another submission from the beginning
+                        </g:Label>
+                    </g:south>
+                </g:DockLayoutPanel>
+            </g:north>
             <g:center>
-                <g:SplitLayoutPanel addStyleNames="{style.border}">
-                    <g:west size="210">
+                <g:DockLayoutPanel>
+                    <g:west size="250">
                         <g:DockLayoutPanel>
                             <g:north size="20">
-                                <g:Label>Submission type:</g:Label>
+                                <g:Label addStyleNames="{style.title}">Submission Overview</g:Label>
                             </g:north>
                             <g:center>
-                                <g:ListBox title="Select the technology type carefully because we rely on this to present you with relevant questions to complete this submission" ui:field="templateBox" visibleItemCount="10" width="100%" height="100%"/>
+                                <g:VerticalPanel>
+                                    <g:Label addStyleNames="{style.title-lef-nav}">Experiment Description</g:Label>
+                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
+                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
+                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
+                                    <g:Label addStyleNames="{style.title-lef-nav}">Samples and Data</g:Label>
+                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
+                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
+                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
+                                </g:VerticalPanel>
                             </g:center>
                         </g:DockLayoutPanel>
                     </g:west>
                     <g:center>
                         <g:ScrollPanel height="100%" ui:field="templateDetails" addStyleNames="{style.templateDetails}"/>
                     </g:center>
-                </g:SplitLayoutPanel>
+                </g:DockLayoutPanel>
             </g:center>
             <g:south size="50">
                 <g:HTMLPanel>

@@ -233,11 +233,8 @@ public class ExperimentProfile implements Serializable {
         return protocol;
     }
 
-    public Protocol createProtocol(OntologyTerm term, ProtocolSubjectType usageType, String protocolDescription) {
-        Protocol protocol = new Protocol(nextId());
-        protocol.setType(term);
-        protocol.setSubjectType(usageType);
-        protocol.setDescription(protocolDescription);
+    public Protocol updateProtocolFields(Protocol protocol) {
+        protocol.setId(nextId());
         protocolMap.put(protocol.getId(), protocol);
         protocolOrder.add(protocol.getId());
         return protocol;

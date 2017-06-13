@@ -55,6 +55,8 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
                 return new TwoColorMicroarrayUpdater(exp);
             case SEQUENCING:
                 return new SequencingUpdater(exp);
+            case PLANT_SEQUENCING:
+                return new SequencingUpdater(exp);
         }
         throw new IllegalArgumentException("No updater for experiment type: " + type);
     }
@@ -193,6 +195,17 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
+    public void updateExtractAttributes(HashMap<ExtractAttribute,String> values, int noOfSamples)
+    {
+        for(int i=2; i<= noOfSamples*2; i++)
+        {
+            Extract extract = exp.getExtract(i);
+            if(extract != null)
+                extract.setAttributeValues(values);
+        }
+    }
+
+    @Override
     public void updateExtractLabels(LabeledExtractsRow row) {
         Extract extract = exp.getExtract(row.getId());
         if (extract == null) {
@@ -233,7 +246,7 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
     }
 
     @Override
-    public void createProtocol(List<ProtocolDetail> protocolDetails)
+    public void createProtocol(List<Protocol> protocols)
     {
         Collection<String> existedNames = Collections2.transform(
                 exp.getProtocols(),
@@ -248,9 +261,9 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
 
         ArrayList<String> newNames = new ArrayList<>();
 
-        for (ProtocolDetail detail:
-             protocolDetails) {
-            Protocol protocol = exp.createProtocol(detail.getProtocolType().getTerm(), detail.getProtocolType().getSubjectType(), detail.getProtocolDescription());
+        for (Protocol protocol:
+             protocols) {
+            protocol = exp.updateProtocolFields(protocol);
             protocol.setName(newName("Protocol", existedNames, newNames));
             newNames.add(protocol.getName());
         }

@@ -158,6 +158,8 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 return new TwoColorMicroarraySettings(this);
             case SEQUENCING:
                 return new HighThroughputSeqSettings();
+            case PLANT_SEQUENCING:
+                return new HighThroughputSeqSettings();
             default:
                 throw new IllegalArgumentException("Unknown experiment type: " + type);
         }
