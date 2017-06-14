@@ -56,7 +56,7 @@ public class ImportValuesDialog extends DialogBox {
 
         setModal(true);
         setGlassEnabled(true);
-        setText("Paste into Column");
+        setText("Paste Into Column");
 
         setWidget(Binder.BINDER.createAndBindUi(this));
 
