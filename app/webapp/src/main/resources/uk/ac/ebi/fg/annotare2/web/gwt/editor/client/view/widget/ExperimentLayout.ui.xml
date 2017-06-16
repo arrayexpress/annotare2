@@ -29,6 +29,7 @@
             color: #48877c;
             cursor: pointer;
             outline: none;
+            padding-left: 5px;
         }
     </ui:style>
 
