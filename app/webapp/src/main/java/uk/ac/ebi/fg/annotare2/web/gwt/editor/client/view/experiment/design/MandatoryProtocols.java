@@ -6,7 +6,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
  */
 public enum MandatoryProtocols {
 
-    GROWTH_PROTOCOL("growth protocol"),
+    SAMPLE_COLLECTION_PROTOCOL("sample collection protocol"),
     NUCLEIC_ACID_EXTRACTION_PROTOCOL("nucleic acid extraction protocol"),
     NUCLEIC_ACID_LABELING_PROTOCOL("nucleic acid labeling protocol"),
     NUCLEIC_ACID_HYBRIDIZATION_TO_ARRAY_PROTOCOL("nucleic acid hybridization to array protocol"),
