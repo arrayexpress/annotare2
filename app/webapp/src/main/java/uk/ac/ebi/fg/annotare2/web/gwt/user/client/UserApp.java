@@ -93,22 +93,23 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_161010_Shown";
+    private final static String NOTICE_COOKIE = "Notice_170104_Shown";
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1476053990000L); // stop showing on 10 Oct
+        stopNoticeDate.setTime(1483488000000L); // stop showing on 4 jan (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Notice",
-                    "<p>Dear Submitter,</p><p>" +
-                            "ArrayExpress curators will be attending the EBI Functional Genomics team retreat from " +
-                            "5 Oct 2016 to 8 Oct 2016. Our curation response time will therefore be increased " +
-                            "from 5 to 10 working days. Please contact us at <a href=\"mailto:annotare@ebi.ac.uk\">" +
-                            "annotare@ebi.ac.uk</a> if your experiment submission requires urgent attention, and we " +
-                            "will prioritise with our best efforts. Sorry for any inconvenience caused.</p><p>" +
-                            "Regards,<br/>Annotare Team</p>",
+                    "Annotare Christmas Downtime",
+                    "<p>Due to reduced staffing levels over the holiday period (19 Dec 2016 - 4 Jan 2017), please " +
+                            "allow extra time for your submission or update requests to be processed.</p>" +
+                            "<p>For new submisisons, please try to get your new submission in the best possible shape" +
+                            " by following our " +
+                            "<a href=\"https://www.ebi.ac.uk/arrayexpress/submit/overview.html\" target=\"_blank\">" +
+                            "submission guidelines</a>, as that would greatly speed " +
+                            "up our curation efforts.</p>" +
+                            "<p>Happy Holidays!</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();

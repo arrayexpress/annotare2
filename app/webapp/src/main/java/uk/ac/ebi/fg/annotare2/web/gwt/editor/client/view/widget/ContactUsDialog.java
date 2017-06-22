@@ -26,6 +26,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.integration.RtFieldNames;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -47,9 +49,6 @@ public class ContactUsDialog extends DialogBox {
     @UiField
     Button okButton;
 
-    @UiField
-    NotificationMole notificationMole;
-
     private Presenter presenter;
 
     public ContactUsDialog() {
@@ -65,7 +64,7 @@ public class ContactUsDialog extends DialogBox {
 
     @Override
     public void show() {
-        subject.setValue("Message from the Submitter");
+        subject.setValue(RtFieldNames.CONTACT_US_SUBJECT);
         subject.setVisible(false);
         message.setValue("");
         okButton.setEnabled(true);
@@ -106,16 +105,7 @@ public class ContactUsDialog extends DialogBox {
     }
 
     private void showNotificationMole() {
-            notificationMole.setAnimationDuration(1000);
-            notificationMole.show();
-            com.google.gwt.user.client.Timer t = new com.google.gwt.user.client.Timer() {
-                @Override
-                public void run() {
-                    notificationMole.hide();
-                    hide();
-                }
-            };
-            t.schedule(2000);
-
+        NotificationPopupPanel.message ("Thank you! Your message has been sent!", true);
+        hide();
     }
 }

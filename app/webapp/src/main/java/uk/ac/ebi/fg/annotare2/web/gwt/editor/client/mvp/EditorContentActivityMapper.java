@@ -96,6 +96,12 @@ public class EditorContentActivityMapper implements ActivityMapper {
             ExpDesignPlace designPlace = (ExpDesignPlace) place;
             ExpDesignSection section = designPlace.getExpDesignSection();
             switch (section) {
+                case GENERAL_INFO:
+                    return (expDetailsActivityProvider.get()).withPlace(designPlace);
+                case CONTACTS:
+                    return (contactsActivityProvider.get()).withPlace(designPlace);
+                case PUBLICATIONS:
+                    return (publicationsActivityProvider.get()).withPlace(designPlace);
                 case SAMPLES:
                     return (samplesActivityProvider.get()).withPlace(designPlace);
                 case EXTRACTS_LIBRARY_INFO:

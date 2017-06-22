@@ -36,7 +36,7 @@ public class ExpDesignPlace extends ExperimentPlace {
     private ExpDesignSection expDesignSection;
 
     public ExpDesignPlace() {
-        this(ExpDesignSection.SAMPLES);
+        this(ExpDesignSection.GENERAL_INFO);
     }
 
     public ExpDesignPlace(ExpDesignSection expDesignSection) {
@@ -44,7 +44,7 @@ public class ExpDesignPlace extends ExperimentPlace {
     }
 
     public void setExpDesignSection(ExpDesignSection expDesignSection) {
-        this.expDesignSection = expDesignSection == null ? ExpDesignSection.SAMPLES : expDesignSection;
+        this.expDesignSection = expDesignSection == null ? ExpDesignSection.GENERAL_INFO : expDesignSection;
     }
 
     @Override

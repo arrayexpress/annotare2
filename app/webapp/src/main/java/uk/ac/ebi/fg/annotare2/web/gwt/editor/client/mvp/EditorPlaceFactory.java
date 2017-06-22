@@ -59,6 +59,11 @@ public class EditorPlaceFactory {
         return adHeaderPlaceProvider.get();
     }
 
+    public ExpDesignPlace getExpDesignPlace() {
+        return expDesignPlaceProvider.get();
+    }
+
+
     public ExpInfoPlace.Tokenizer getExpInfoPlaceTokenizer() {
         return expInfoPlaceTokenizer;
     }

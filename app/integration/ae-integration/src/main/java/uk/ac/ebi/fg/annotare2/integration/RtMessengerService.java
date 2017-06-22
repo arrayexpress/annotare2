@@ -30,6 +30,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.fg.annotare2.core.components.EmailMessengerService;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.db.dao.MessageDao;
@@ -57,10 +59,12 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class RtMessengerService extends EmailMessengerService {
 
+    private static final Logger logger = LoggerFactory.getLogger(RtMessengerService.class);
 
     private final ExtendedAnnotareProperties properties;
     private final Messenger messenger;
     private final SubmissionDao submissionDao;
+    private final HibernateSessionFactory sessionFactory;
 
     @Inject
     public RtMessengerService(HibernateSessionFactory sessionFactory,
@@ -72,6 +76,7 @@ public class RtMessengerService extends EmailMessengerService {
         this.messenger = messenger;
         this.properties = properties;
         this.submissionDao = submissionDao;
+        this.sessionFactory = sessionFactory;
     }
 
     @Override
@@ -80,18 +85,26 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 String errorTrace = "";
                 Submission submission = message.getSubmission();
+                submission = (Submission) sessionFactory.getCurrentSession().get( Submission.class, submission.getId() );
                 submission = HibernateEntity.deproxy(submission, Submission.class);
                 String ticketNumber = submission.getRtTicketNumber();
+                logger.debug("Checking if RT ticket number is null: "+ ticketNumber);
                 if (isNullOrEmpty(ticketNumber)) {
                     ticketNumber = createRtTicket(submission, message);
                     if (ticketNumber==null) {
                         throw new Exception ("Unable to create RT ticket\n"+ errorTrace);
                     }
                     submission.setRtTicketNumber(ticketNumber);
+                    logger.debug("Saving new RT ticket number: "+ ticketNumber);
                     submissionDao.save(submission);
+                    logger.debug("Flushing session for "+ ticketNumber);
+                    sessionFactory.getCurrentSession().flush();
+                    submission = HibernateEntity.deproxy(submission, Submission.class);
+                    logger.debug("New RT ticket number is : "+ submission.getRtTicketNumber());
                 }
                 else {
                     sendRtMessage(ticketNumber, message);
+                    logger.debug("RT ticket number is : "+ submission.getRtTicketNumber());
                 }
             } catch (Throwable x){
                 messenger.send("There was a problem sending message " + String.valueOf(message.getId()), x);
@@ -130,16 +143,18 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
                 while ((line = inp.readLine()) != null) {
+                    logger.debug(line);
                     Matcher m = p.matcher(line);
                     if (m.find()) {
                         serverStatus = true;
                     }
                 }
             } catch (Exception e) {
-
+                logger.error("Error parsing RT response",e);
             }
         }catch(Exception e)
         {
+            logger.error("Error checking Rt Server Status",e);
             serverStatus = false;
 
         }
@@ -150,8 +165,11 @@ public class RtMessengerService extends EmailMessengerService {
     @Override
     public void ticketUpdate(Map<String, String> params, String ticketNumber) throws Exception
     {
-        if (StringUtils.isBlank(ticketNumber)) return;
-
+        if (StringUtils.isBlank(ticketNumber)) {
+            logger.debug("Rt ticket is null for params: "+ params);
+            throw new Exception("Rt ticket is null");
+        }
+        logger.debug("Updating Rt ticket "+ ticketNumber);
         boolean ticketUpdated = false;
         String errorTrace = "";
 
@@ -177,6 +195,7 @@ public class RtMessengerService extends EmailMessengerService {
         {
             Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 Matcher m = p.matcher(line);
                 if (m.find()) {
                     ticketUpdated = true;
@@ -185,9 +204,10 @@ public class RtMessengerService extends EmailMessengerService {
             if (!ticketUpdated) {
                 throw new Exception("RT was unable to update ticket.");
             }
-        }catch (Exception e)
-        {
-        while ((line = inp.readLine()) != null) {
+        } catch (Exception e) {
+            logger.error("Error updating RT ticket",e);
+            while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 errorTrace = errorTrace + line + "\n";
             }
         }
@@ -235,6 +255,7 @@ public class RtMessengerService extends EmailMessengerService {
             //Pattern p = Pattern.compile("RT//4.2.12 200 Ok");
             Pattern p = Pattern.compile("# Ticket (\\d+) created.");
             while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 Matcher m = p.matcher(line);
                 if (m.find()) {
                     ticket = m.group(1);
@@ -244,10 +265,24 @@ public class RtMessengerService extends EmailMessengerService {
             if (!ticketCreated) {
                 throw new Exception("RT Ticket Creation Failed");
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e){
+            logger.error("Error creating RT ticket",e);
             while ((line = inp.readLine()) != null) {
+                logger.error(line);
                 errorTrace = errorTrace + line + "\n";
+            }
+        }
+        if(!isNullOrEmpty(ticket))
+        {
+            try {
+                ticketUpdate(
+                        new ImmutableMap.Builder<String, String>()
+                                .put(RtFieldNames.STATUS, "stalled")
+                                .build(),
+                        ticket
+                );
+            } catch (Exception x) {
+                messenger.send("There was a problem updating ticket status to stalled " + submission.getRtTicketNumber(), x);
             }
         }
         return ticket;
@@ -262,7 +297,9 @@ public class RtMessengerService extends EmailMessengerService {
             try {
                 ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
                 submissionType = exp.getType();
-            } catch (DataSerializationException x) {}
+            } catch (DataSerializationException x) {
+                logger.error("Error creating new ticket fields map", x);
+            }
         }
 
         return new ImmutableMap.Builder<String, String>()
@@ -288,13 +325,17 @@ public class RtMessengerService extends EmailMessengerService {
     }
 
     private void sendRtMessage(String ticketNumber, Message message) throws Exception {
-        if (StringUtils.isBlank(ticketNumber)) return;
+        if (StringUtils.isBlank(ticketNumber)) {
+            logger.debug("Rt ticket is null for message: "+ message.getId());
+            throw new Exception("Rt ticket is null");
+        }
 
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
-        String subject = "Message from the Submitter";
+        logger.debug("Rt ticket number is "+ ticketNumber);
+        logger.debug("Adding message to  Rt ticket "+ submission.getRtTicketNumber());
 
-        if(null != submission.getSubsTrackingId() && !message.getSubject().equalsIgnoreCase(subject)) {
+        if(null != submission.getSubsTrackingId() && !message.getSubject().equalsIgnoreCase(RtFieldNames.CONTACT_US_SUBJECT)) {
             try {
                 ticketUpdate(
                         new ImmutableMap.Builder<String, String>()
@@ -306,6 +347,20 @@ public class RtMessengerService extends EmailMessengerService {
             } catch (Exception x) {
                 messenger.send("There was a problem updating Submission Directory " + submission.getRtTicketNumber(), x);
             }
+        }
+        else
+        {
+            try {
+                    ticketUpdate(
+                            new ImmutableMap.Builder<String, String>()
+                                    .put(RtFieldNames.SUBJECT, message.getSubject())
+                                    .put(RtFieldNames.STATUS, "open")
+                                    .build(),
+                            ticketNumber
+                    );
+                } catch (Exception x) {
+                    messenger.send("There was a problem updating ticket subject " + submission.getRtTicketNumber(), x);
+                }
         }
 
         boolean messageSent = false;
@@ -332,6 +387,7 @@ public class RtMessengerService extends EmailMessengerService {
         {
             Pattern p = Pattern.compile("RT/4.2.12 200 Ok");
             while ((line = inp.readLine()) != null) {
+                logger.debug(line);
                 Matcher m = p.matcher(line);
                 if (m.find()) {
                     messageSent = true;
@@ -342,7 +398,9 @@ public class RtMessengerService extends EmailMessengerService {
             }
         }catch (Exception e)
         {
+            logger.error("Error sending RT message",e);
             while ((line = inp.readLine()) != null) {
+                logger.error(line);
                 errorTrace = errorTrace + line + "\n";
             }
         }

@@ -108,7 +108,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
         button.setTitle("Copy the selected value into all the rows below");
         gridView.addTool(button);
 
-        button = new Button("Import Values");
+        button = new Button("Paste Into Column");
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

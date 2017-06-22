@@ -22,13 +22,20 @@
 
     <ui:style>
         .showHideButton {
-            margin-top: 75px;
+            height: 27px;
+            font-size: 12pt;
+            border: 0;
+            background: #e7e7e7;
+            color: #48877c;
+            cursor: pointer;
+            outline: none;
+            padding-left: 5px;
         }
     </ui:style>
 
     <g:DockLayoutPanel>
         <g:north size="25">
-            <g:SimpleLayoutPanel ui:field="topBarDisplay" height="100%"/>
+                <g:SimpleLayoutPanel ui:field="topBarDisplay" height="100%"/>
         </g:north>
         <g:north size="60">
             <g:SimpleLayoutPanel ui:field="titleBarDisplay"/>
@@ -36,34 +43,29 @@
         <g:center>
             <g:SplitLayoutPanel ui:field="splitPanel">
                 <g:center>
-                    <g:DockLayoutPanel>
-                        <g:north size="75">
-                            <g:DockLayoutPanel>
-                                <g:north size="40">
-                                    <g:SimpleLayoutPanel ui:field="tabBarDisplay" height="100%"/>
-                                </g:north>
-                                <g:center>
-                                    <g:SimplePanel/>
-                                </g:center>
-                                <g:south size="35">
-                                    <g:NotificationMole message="Annotare automatically saves any changes that you make; Simply move the cursor to a different field!" title="Annotare autosave!" ui:field="notificationMole"/>
-                                </g:south>
-                            </g:DockLayoutPanel>
+                    <g:DockLayoutPanel ui:field="dockLayoutPanel">
+                        <g:north size="40">
+                            <g:SimpleLayoutPanel ui:field="tabBarDisplay" height="100%"/>
                         </g:north>
                         <g:west size="0">
                             <my:MinimizableScrollPanel size="200" height="100%" ui:field="leftMenuDisplay"/>
                         </g:west>
                         <g:center>
                             <g:SplitLayoutPanel ui:field="fileUploadPanel">
-                                <g:center size="600">
-                                    <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
-                                </g:center>
-                                <g:east size="530">
+                                <g:center size="580">
                                     <g:DockLayoutPanel>
                                         <g:center>
-                                            <g:SimpleLayoutPanel ui:field="fileUploadDisplay"/>
+                                            <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
                                         </g:center>
+                                        <g:east size="20">
+                                            <g:SimpleLayoutPanel ui:field="simpleToggleButtonPanel">
+                                                <g:Button styleName="{style.showHideButton}" ui:field="showHideButton"><i class="fa fa-arrow-circle-down"/></g:Button>
+                                            </g:SimpleLayoutPanel>
+                                        </g:east>
                                     </g:DockLayoutPanel>
+                                </g:center>
+                                <g:east size="520">
+                                    <g:SimpleLayoutPanel ui:field="fileUploadDisplay"/>
                                 </g:east>
                             </g:SplitLayoutPanel>
                         </g:center>
@@ -74,14 +76,5 @@
                 </g:south>
             </g:SplitLayoutPanel>
         </g:center>
-        <g:east size="20">
-            <g:DockLayoutPanel>
-                <g:east size="20">
-                    <g:SimpleLayoutPanel ui:field="simpleToggleButtonPanel">
-                            <g:Button ui:field="showHideButton">U</g:Button>
-                    </g:SimpleLayoutPanel>
-                </g:east>
-            </g:DockLayoutPanel>
-        </g:east>
     </g:DockLayoutPanel>
 </ui:UiBinder>

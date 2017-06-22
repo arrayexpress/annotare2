@@ -28,6 +28,29 @@
         per sample; simply create two <code>Raw Data File</code> columns with the <code>Assign Files...</code> button. Don't forget that you can <a href="time_saving_features.html#import">copy and paste</a> file names down a column using the <code>Import Values</code> button.</li>
     </ol>
     <p><img src="../assets/images/annotare_ftp_upload_files.png" alt="upload"  style="width:80%;height:80%;border:2px solid #385930"/></p>
+    <p>&nbsp;</p>
+    <a id="aspera"></a><h3>Aspera upload</h3>
+    <p>Aspera is a commercial file transfer protocol that provides better transfer speeds than FTP over long distances. For short distance file transfers we recommend the use of FTP.</p>
+    <ol>
+        <li>
+            Download Aspera Command Line client <a href="http://downloads.asperasoft.com/en/downloads/62" target="_blank">here</a> (choose the required platform)
+        </li>
+        <br>
+        <li>
+            Once the tool has been setup then enter the following command:
+            <br>
+            <br>
+            <code>
+                <strong>
+                    ascp &lt;yourfile.txt&gt; aexpress@fasp.ebi.ac.uk:&lt;your upload directory&gt;&#47;&lt;yourfile.txt&gt;
+                </strong>
+            </code>
+        </li>
+        <br>
+    </ol>
+    <p>You can find your upload directory from Annotare under <code>"Assign data files"</code> by clicking on <code>"FTP upload..."</code>. It should look similar to this:
+        <code>abcd1efg-hijk2lmno3pqr</code>.</p>
+    <p>When prompted for password enter this: <code><strong>aexpress1</strong></code></p>
 </section>
 
 <aside class="grid_6 omega">

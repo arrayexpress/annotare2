@@ -147,10 +147,10 @@ public class MageTabGenerator {
         return inv;
     }
 
-    private String tabSeparateRelatedAccessionNumber(String relatedAccessionNumber)
+    private String[] relatedAccessionNumberList(String relatedAccessionNumber)
     {
         String[] rAccessionNumbers = relatedAccessionNumber.split(",");
-        return convertToString(rAccessionNumbers);
+        return rAccessionNumbers;
     }
 
     private String convertToString(String[] rAccessionNumbers) {
@@ -173,7 +173,11 @@ public class MageTabGenerator {
         }
 
         if(!isNullOrEmpty(exp.getRelatedAccessionNumber())) {
-            idf.addComment("RelatedExperiment", tabSeparateRelatedAccessionNumber(exp.getRelatedAccessionNumber()));
+            List<String> accessionNumbers = Arrays.asList(relatedAccessionNumberList(exp.getRelatedAccessionNumber()));
+            for (String accessionNumber:accessionNumbers
+                 ) {
+                idf.addComment("RelatedExperiment",accessionNumber);
+            }
         }
 
         idf.investigationTitle = convertToIdfFriendly(exp.getTitle(), newLine);

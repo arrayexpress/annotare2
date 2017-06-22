@@ -103,7 +103,7 @@ public class DataFileConnector {
                 }
             }
         } catch (Throwable e) {
-            //
+            log.error("Cannot register Annotare URL Scheme!");
         }
     }
 }

@@ -27,7 +27,16 @@ public enum SystemEfoTerm {
     PUBLICATION_STATUS("Publication Status", "publication_status"),
 
     ORGANISM("Organism", "organism"),
-    ORGANISM_PART("Organism Part/Tissue", "organism_part"),
+    ORGANISM_PART("Organism Part", "organism_part"),
+    GENETIC_MODIFICATION("Genetic Modification", "genetic_modification"),
+    RNA_INTERFERENCE("RNA interference","rna_interference"),
+    CULTIVAR("Cultivar","cultivar"),
+    DIET("Diet","diet"),
+    INFECT("Infect","infect"),
+    INJURY("Injury","injury"),
+    SAMPLING_SITE("Sampling site","sampling_site"),
+    ENVIRONMENTAL_STRESS("Environmental stress","environmental_stress"),
+    REPLICATE("Replicate","replicate"),
     STRAIN("Strain", "strain"),
     DISEASE("Disease", "disease"),
     GENOTYPE("Genotype", "genotype"),
@@ -35,10 +44,8 @@ public enum SystemEfoTerm {
     CELL_LINE("Cell Line", "cell_line"),
     CELL_TYPE("Cell Type", "cell_type"),
     DEVELOPMENTAL_STAGE("Developmental Stage", "developmental_stage"),
-    ENVIRONMENTAL_HISTORY("Environmental History", "environmental_history"),
     INDIVIDUAL("Individual", "individual"),
     SEX("Sex", "sex"),
-    SPECIMEN_WITH_KNOWN_STORAGE_STATE("Specimen With Known Storage State", "specimen_with_known_storage_state"),
     GROWTH_CONDITION("Growth Condition", "growth_condition"),
     DOSE("Dose", "dose"),
     IMMUNOPRECIPITATE("Immunoprecipitate", "immunoprecipitate"),
@@ -53,8 +60,14 @@ public enum SystemEfoTerm {
     AE_EXPERIMENT_TYPE("AE Experiment Type", "ae_experiment_type"),
     ARRAY_ASSAY("Array Assay", "array_assay"),
     SEQUENCING_ASSAY("Sequencing Assay", "sequencing_assay"),
-    TIME("Time","time");
+    TIME("Time","time"),
 
+    // Previously removed attribute
+    // TODO: Make these invisible in the UI
+    ENVIRONMENTAL_HISTORY("Environmental History", "environmental_history"),
+    SPECIMEN_WITH_KNOWN_STORAGE_STATE("Specimen With Known Storage State", "specimen_with_known_storage_state")
+
+    ;
     private final String name;
     private final String propertyName;
 

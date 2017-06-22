@@ -83,6 +83,7 @@ public class EmailMessengerService implements MessengerService {
     @PostConstruct
     protected void startUp() throws Exception {
         scheduler.scheduleWithFixedDelay(runnable, 0, 1, MINUTES);
+        logger.info("Messaging service periodic process has started");
     }
 
     @PreDestroy
@@ -97,7 +98,8 @@ public class EmailMessengerService implements MessengerService {
 
     @Override
     public void instuctProcessMessages() {
-        scheduler.schedule(runnable, 100, MILLISECONDS);
+        //logger.info("Scheduling email service to run in 100 milliseconds");
+        //scheduler.schedule(runnable, 100, MILLISECONDS);
     }
 
     @Override

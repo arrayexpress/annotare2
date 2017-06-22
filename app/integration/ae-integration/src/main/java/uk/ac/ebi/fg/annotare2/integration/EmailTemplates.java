@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.integration;
 
 public class EmailTemplates {
+    public static final String NEW_SUBMISSION_TEMPLATE = "new-submission";
     public static final String INITIAL_SUBMISSION_TEMPLATE = "initial-submission";
     public static final String INITIAL_SUBMISSION_OTRS_TEMPLATE = "initial-submission-otrs";
     public static final String REPEAT_SUBMISSION_OTRS_TEMPLATE = "repeat-submission-otrs";

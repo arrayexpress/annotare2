@@ -1,18 +1,15 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget;
 
-import com.google.common.base.Splitter;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DataFilesUploadView;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEvent;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.ValidationFinishedEventHandler;
@@ -46,9 +43,6 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
     SimpleLayoutPanel tabBarDisplay;
 
     @UiField
-    NotificationMole notificationMole;
-
-    @UiField
     SimpleLayoutPanel fileUploadDisplay;
 
     @UiField
@@ -59,6 +53,9 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
     @UiField
     SimpleLayoutPanel simpleToggleButtonPanel;
+
+    @UiField
+    DockLayoutPanel dockLayoutPanel;
 
     private int submissionCount;
     private boolean filePanelIsVisible;
@@ -76,9 +73,9 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
                 openLogPanel(DEFAULT_LOG_PANEL_SIZE);
             }
         });
-        showHideButton.setHTML("&#9654;");
+        showHideButton.setHTML("<i class=\"fa fa-chevron-circle-right\"/>");
         filePanelIsVisible = true;
-        notificationMole.addAttachHandler(new AttachEvent.Handler() {
+        contentDisplay.addAttachHandler(new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent attachEvent) {
                 showNotificationMole();
@@ -90,35 +87,24 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
                 if(filePanelIsVisible)
                 {
-                    showHideButton.setHTML("&#9664;");
+                    showHideButton.setHTML("<i class=\"fa fa-chevron-circle-left\"/>");
                     Widget w = fileUploadPanel.getWidget(0);
                     fileUploadPanel.setWidgetHidden(w,true);
-                    //fileUploadPanel.setWidgetSize(w,20);
                 }
                 else
                 {
-                    showHideButton.setHTML("&#9654;");
+                    showHideButton.setHTML("<i class=\"fa fa-chevron-circle-right\"/>");
                     Widget w = fileUploadPanel.getWidget(0);
                     fileUploadPanel.setWidgetHidden(w,false);
-                    //fileUploadPanel.setWidgetSize(w,530);
                 }
                 filePanelIsVisible = !filePanelIsVisible;
             }
         });
-
     }
 
     private void showNotificationMole() {
         if (submissionCount==1) {
-            notificationMole.setAnimationDuration(1000);
-            notificationMole.showDelayed(2000);
-            com.google.gwt.user.client.Timer t = new com.google.gwt.user.client.Timer() {
-                @Override
-                public void run() {
-                    notificationMole.hide();
-                }
-            };
-            t.schedule(10000);
+            NotificationPopupPanel.message ("Annotare automatically saves any changes that you make; Simply move the cursor to a different field!", true);
         }
     }
 
