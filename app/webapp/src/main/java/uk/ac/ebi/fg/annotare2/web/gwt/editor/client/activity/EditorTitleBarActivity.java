@@ -29,6 +29,7 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.db.model.enums.SubmissionStatus;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.AdfServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ApplicationDataServiceAsync;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.CurrentUserAccountServiceAsync;
@@ -37,10 +38,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.CookieDialog;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionType;
-import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.event.*;
@@ -49,6 +47,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.EditorTitleBarView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper.callbackWrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
@@ -283,8 +282,8 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
     }
 
     @Override
-    public void setupNewSubmission(ExperimentSetupSettings settings, AsyncCallback<Void> callback) {
-        submissionService.setupExperiment(getSubmissionId(), settings, callbackWrap(callback));
+    public void setupNewSubmission(ExperimentSetupSettings settings, List<OntologyTerm> experimentDesigns, AsyncCallback<Void> callback) {
+        submissionService.setupExperiment(getSubmissionId(), settings, experimentDesigns, callbackWrap(callback));
     }
 
     @Override
@@ -328,4 +327,9 @@ public class EditorTitleBarActivity extends AbstractActivity implements EditorTi
         userService.saveCurrentUserReferrer(referrer, callbackWrap(callback));
     }
 
+    /*@Override
+    public void setExperimentalDesigns(List<OntologyTerm> experimentalDesigns)
+    {
+        //Not Being Used here Actual in SetupActivity
+    }*/
 }

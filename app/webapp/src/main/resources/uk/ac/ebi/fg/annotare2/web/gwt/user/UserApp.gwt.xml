@@ -30,6 +30,8 @@
 
     <inherits name="uk.ac.ebi.fg.annotare2.web.gwt.common.CommonApp" />
 
+    <set-property name="user.agent" value="safari"></set-property>
+
     <entry-point class="uk.ac.ebi.fg.annotare2.web.gwt.user.client.UserApp" />
 
     <stylesheet src="UserApp.css"/>

@@ -215,7 +215,7 @@ public class AddProtocolDialog extends DialogBox {
             protocolsPanel.add(protocolLabel);
             protocolsPanel.add(textBox);
 
-            if(protocol.equalsIgnoreCase("nucleic acid sequencing protocol"))
+            /*if(protocol.equalsIgnoreCase("nucleic acid sequencing protocol"))
             {
                 HorizontalPanel sequencingProtocolPanel = new HorizontalPanel();
                 VerticalPanel protocolHardware = new VerticalPanel();
@@ -241,7 +241,7 @@ public class AddProtocolDialog extends DialogBox {
                 sequencingProtocolPanel.add(protocolPerformer);
 
                 protocolsPanel.add(sequencingProtocolPanel);
-            }
+            }*/
         }
 
         Label optionalProtocolsLabel = new Label("Optional Protocols");

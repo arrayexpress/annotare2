@@ -118,7 +118,7 @@ public class ApplicationDataServiceImpl extends ErrorReportingRemoteServiceServl
 
             OntologyTerm term = loadSystemTerm(accession);
             if (term == null) {
-                log.error("Unable to load system term by accession: " + accession);
+                log.error("Unable to load system term by accession: " + accession + "--" + systemTerm);
                 continue;
             }
 

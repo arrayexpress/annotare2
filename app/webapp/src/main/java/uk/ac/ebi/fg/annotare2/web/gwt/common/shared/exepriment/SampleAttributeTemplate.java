@@ -59,7 +59,7 @@ public enum SampleAttributeTemplate {
     DOSE_ORIGIN(DOSE, ValueRange.<SystemEfoTerm>any(), of(FACTOR_VALUE)),
     IMMUNOPRECIPITATE_ORIGIN(IMMUNOPRECIPITATE, of(FACTOR_VALUE)),
     TREATMENT_ATTRIBUTE("Treatment", of(FACTOR_VALUE), false, false),
-    COMPOUND_ATTRIBUTE(COMPOUND, of(FACTOR_VALUE)),
+    COMPOUND_ATTRIBUTE("Compound", of(FACTOR_VALUE)),
 
     STIMULUS_ATTRIBUTE("Stimulus", range(CHARACTERISTIC, CHARACTERISTIC_AND_FACTOR_VALUE)),
     CLINICAL_HISTORY_ATTRIBUTE(CLINICAL_HISTORY),
@@ -78,8 +78,8 @@ public enum SampleAttributeTemplate {
     private final ValueRange<SystemEfoTerm> unitRange;
 
     private final EnumSet<SampleAttributeType> typeRange;
-    private final boolean isMandatory;
-    private final boolean isVisible;
+    private boolean isMandatory;
+    private boolean isVisible;
 
     SampleAttributeTemplate(SystemEfoTerm term, EnumSet<SampleAttributeType> typeRange) {
         this(term, ValueRange.<SystemEfoTerm>none(), typeRange);
@@ -136,6 +136,9 @@ public enum SampleAttributeTemplate {
     public boolean isVisible() {
         return isVisible;
     }
+
+    public void setIsMandatory(boolean isMandatory) { this.isMandatory = isMandatory; }
+    public void setIsVisible(boolean isVisible) { this.isVisible = isVisible; }
 
     public Collection<SampleAttributeType> getTypes() {
         return unmodifiableSet(typeRange);

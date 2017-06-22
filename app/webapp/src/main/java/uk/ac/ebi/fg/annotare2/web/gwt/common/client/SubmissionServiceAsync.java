@@ -2,6 +2,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
@@ -17,7 +18,7 @@ public interface SubmissionServiceAsync {
 
     void getSubmissionDetails(long id, AsyncCallback<SubmissionDetails> async);
 
-    void setupExperiment(long id, ExperimentSetupSettings settings, AsyncCallback<Void> async);
+    void setupExperiment(long id, ExperimentSetupSettings settings, List<OntologyTerm> experimentDesigns, AsyncCallback<Void> async);
 
     void assignSubmissionToMe(long id, AsyncCallback<Void> async);
 

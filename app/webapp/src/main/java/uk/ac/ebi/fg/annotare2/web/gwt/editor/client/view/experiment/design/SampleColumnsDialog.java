@@ -28,11 +28,15 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDesignType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
@@ -79,12 +83,15 @@ public class SampleColumnsDialog extends DialogBox {
 
     private DialogCallback<List<SampleColumn>> callback;
 
+    private Collection<OntologyTerm> experimentDesigns = new ArrayList<>();
+
     private int nextId;
 
     private final SampleAttributeEfoSuggest efoSuggest;
 
     public SampleColumnsDialog(List<SampleColumn> columns,
                                SampleAttributeEfoSuggest efoSuggest,
+                               Collection<OntologyTerm> experimentDesigns,
                                DialogCallback<List<SampleColumn>> callback) {
         setModal(true);
         setGlassEnabled(true);
@@ -92,6 +99,8 @@ public class SampleColumnsDialog extends DialogBox {
 
         setWidget(Binder.BINDER.createAndBindUi(this));
         center();
+
+        this.experimentDesigns = experimentDesigns;
 
         this.templateColumnList.sinkEvents(Event.ONDBLCLICK);
         this.templateColumnList.addHandler(new DoubleClickHandler() {
@@ -111,8 +120,29 @@ public class SampleColumnsDialog extends DialogBox {
         this.efoSuggest = efoSuggest;
         this.callback = callback;
         setColumns(columns);
-        addMandatoryColumns();
         updateTemplates();
+        setMandatoryColumn();
+        addMandatoryColumns();
+    }
+
+    private void setMandatoryColumn()
+    {
+        List<String> expDesignTypes = new ArrayList<>();
+        for(OntologyTerm term: experimentDesigns)
+        {
+            expDesignTypes.add(term.getLabel());
+        }
+
+        for(ExperimentDesignType designType: ExperimentDesignType.values())
+        {
+            if(expDesignTypes.contains(designType.getLabel())) {
+                for (SampleAttributeTemplate attribute : designType.getAttributes()) {
+                    attribute.setIsVisible(true);
+                    addColumn(attribute);
+                }
+            }
+
+        }
     }
 
     @UiHandler("columnList")

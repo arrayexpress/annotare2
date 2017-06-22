@@ -43,6 +43,7 @@ import uk.ac.ebi.fg.annotare2.magetabcheck.checker.UnknownExperimentTypeExceptio
 import uk.ac.ebi.fg.annotare2.submission.model.ArrayDesignHeader;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.FileType;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.ResourceNotFoundException;
@@ -242,12 +243,14 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
 
     @Transactional(rollbackOn = {NoPermissionException.class, ResourceNotFoundException.class})
     @Override
-    public void setupExperiment(final long id, final ExperimentSetupSettings settings)
+    public void setupExperiment(final long id, final ExperimentSetupSettings settings, List<OntologyTerm> experimentDesigns)
             throws ResourceNotFoundException, NoPermissionException {
         try {
             ExperimentSubmission submission =
                     getExperimentSubmission(id, Permission.UPDATE);
-            submission.setExperimentProfile(createExperimentProfile(settings, submission.getCreatedBy()));
+            ExperimentProfile experimentProfile = createExperimentProfile(settings, submission.getCreatedBy());
+            experimentProfile.setExperimentalDesigns(experimentDesigns);
+            submission.setExperimentProfile(experimentProfile);
             save(submission);
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);

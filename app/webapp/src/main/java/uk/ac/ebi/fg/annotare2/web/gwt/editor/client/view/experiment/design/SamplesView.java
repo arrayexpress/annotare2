@@ -19,10 +19,12 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,6 +41,8 @@ public interface SamplesView extends IsWidget {
     interface Presenter extends AddSamplesDialog.Presenter {
 
         SampleAttributeEfoSuggest getEfoTerms();
+
+        Collection<OntologyTerm> getExperimentDesigns();
 
         void updateColumns(List<SampleColumn> newColumns);
 

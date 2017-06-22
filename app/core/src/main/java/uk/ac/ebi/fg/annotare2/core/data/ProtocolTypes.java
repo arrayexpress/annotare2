@@ -35,9 +35,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import static java.util.EnumSet.*;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.ONE_COLOR_MICROARRAY;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.PLANT_SEQUENCING;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.TWO_COLOR_MICROARRAY;
+import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.*;
 
 /**
  * @author Olga Melnichuk
@@ -169,6 +167,7 @@ public class ProtocolTypes {
         MICRO_ARRAY(of(ONE_COLOR_MICROARRAY, TWO_COLOR_MICROARRAY)),
         SEQUENCING(of(ExperimentProfileType.SEQUENCING)),
         PLANT_SEQUENCING(of(ExperimentProfileType.PLANT_SEQUENCING)),
+        PLANT_MICRO_ARRAY(of(PLANT_ONE_COLOR_MICROARRAY, PLANT_TWO_COLOR_MICROARRAY)),
         ANY(allOf(ExperimentProfileType.class)),
         NONE(noneOf(ExperimentProfileType.class));
 

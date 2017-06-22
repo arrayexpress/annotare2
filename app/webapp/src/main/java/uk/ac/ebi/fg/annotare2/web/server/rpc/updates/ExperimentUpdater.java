@@ -51,7 +51,11 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
         switch (type) {
             case ONE_COLOR_MICROARRAY:
                 return new OneColorMicroarrayUpdater(exp);
+            case PLANT_ONE_COLOR_MICROARRAY:
+                return new OneColorMicroarrayUpdater(exp);
             case TWO_COLOR_MICROARRAY:
+                return new TwoColorMicroarrayUpdater(exp);
+            case PLANT_TWO_COLOR_MICROARRAY:
                 return new TwoColorMicroarrayUpdater(exp);
             case SEQUENCING:
                 return new SequencingUpdater(exp);

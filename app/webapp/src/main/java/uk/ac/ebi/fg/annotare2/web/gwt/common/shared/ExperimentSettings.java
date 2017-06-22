@@ -31,7 +31,7 @@ public class ExperimentSettings implements IsSerializable {
 
     private ExperimentProfileType experimentType;
 
-    private HashMap<ExtractAttribute,String> extractValues;
+    //private HashMap<ExtractAttribute,String> extractValues;
     private String arrayDesign;
     private String label;
 
@@ -64,14 +64,14 @@ public class ExperimentSettings implements IsSerializable {
         return label;
     }
 
-    public HashMap<ExtractAttribute, String> getExtractValues() {
+   /* public HashMap<ExtractAttribute, String> getExtractValues() {
         return extractValues;
     }
 
     public void setExtractValues(HashMap<ExtractAttribute, String> extractValues) {
         this.extractValues = new HashMap<>(extractValues);
     }
-
+*/
     public static ExperimentSettings create(ExperimentProfile exp) {
         Collection<String> labels = exp.getLabelNames();
 

@@ -24,9 +24,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDetailsDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRow;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleRowsAndColumns;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
@@ -40,6 +42,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.Sampl
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design.SamplesView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -54,6 +57,7 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     private final SampleAttributeEfoSuggest efoTerms;
 
     private HandlerRegistration criticalUpdateHandler;
+    Collection<OntologyTerm> expDesigns = new ArrayList<>();
 
     @Inject
     public SamplesActivity(SamplesView view,
@@ -96,6 +100,23 @@ public class SamplesActivity extends AbstractActivity implements SamplesView.Pre
     @Override
     public SampleAttributeEfoSuggest getEfoTerms() {
         return efoTerms;
+    }
+
+    @Override
+    public Collection<OntologyTerm> getExperimentDesigns()
+    {
+        expDataProxy.getDetailsAsync(new AsyncCallbackWrapper<ExperimentDetailsDto>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(ExperimentDetailsDto experimentDetailsDto) {
+                expDesigns = experimentDetailsDto.getExperimentalDesigns();
+            }
+        });
+        return expDesigns;
     }
 
     @Override

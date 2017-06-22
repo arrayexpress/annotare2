@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.common.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
+import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SubmissionDetails;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ValidationResult;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.arraydesign.ArrayDesignDetailsDto;
@@ -48,7 +49,7 @@ public interface SubmissionService extends RemoteService {
 
     String getGeneratedSamplesPreview(long id, int numOfSamples, String namingPattern, int startingNumber) throws ResourceNotFoundException, NoPermissionException;
 
-    void setupExperiment(long id, ExperimentSetupSettings settings) throws ResourceNotFoundException, NoPermissionException;
+    void setupExperiment(long id, ExperimentSetupSettings settings, List<OntologyTerm> experimentDesigns) throws ResourceNotFoundException, NoPermissionException;
 
     void assignSubmissionToMe(long id) throws ResourceNotFoundException, NoPermissionException;
 

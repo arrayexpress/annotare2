@@ -32,7 +32,6 @@ public enum SystemEfoTerm {
     DISEASE("Disease", "disease"),
     GENOTYPE("Genotype", "genotype"),
     AGE("Age", "age"),
-    COMPOUND("Compound/Drug","compound"),
     CELL_LINE("Cell Line", "cell_line"),
     CELL_TYPE("Cell Type", "cell_type"),
     DEVELOPMENTAL_STAGE("Developmental Stage", "developmental_stage"),

@@ -37,6 +37,14 @@
             color: #207A7A;
         }
 
+        .expDesignPanel{
+            border-style: solid !important;
+            border-width: 1px;
+            margin: 10px;
+            width: 96% !important;
+            border-color: #207a7a;
+        }
+
         .title-lef-nav
         {
             font-size: 16px;
@@ -60,33 +68,24 @@
                         </g:HorizontalPanel>
                     </g:north>
                     <g:south size="50">
+                        <g:VerticalPanel>
                         <g:Label>
                             Take your time to ask this question as you won’t be able to change it back. If you change your mind you will need to start another submission from the beginning
                         </g:Label>
+                        </g:VerticalPanel>
                     </g:south>
                 </g:DockLayoutPanel>
             </g:north>
             <g:center>
                 <g:DockLayoutPanel>
-                    <g:west size="250">
-                        <g:DockLayoutPanel>
-                            <g:north size="20">
-                                <g:Label addStyleNames="{style.title}">Submission Overview</g:Label>
-                            </g:north>
-                            <g:center>
-                                <g:VerticalPanel>
-                                    <g:Label addStyleNames="{style.title-lef-nav}">Experiment Description</g:Label>
-                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
-                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
-                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
-                                    <g:Label addStyleNames="{style.title-lef-nav}">Samples and Data</g:Label>
-                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
-                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
-                                    <g:Label addStyleNames="{style.titleMargin}">- Experiment Description</g:Label>
-                                </g:VerticalPanel>
-                            </g:center>
-                        </g:DockLayoutPanel>
-                    </g:west>
+                    <g:north size="35">
+                        <g:VerticalPanel>
+                        <g:Label>Please Select Experiment Design(s):</g:Label>
+                        </g:VerticalPanel>
+                    </g:north>
+                    <g:north size="250">
+                        <g:ScrollPanel width="100%" ui:field="experimentDesignPanel" addStyleNames="{style.expDesignPanel}"></g:ScrollPanel>
+                    </g:north>
                     <g:center>
                         <g:ScrollPanel height="100%" ui:field="templateDetails" addStyleNames="{style.templateDetails}"/>
                     </g:center>

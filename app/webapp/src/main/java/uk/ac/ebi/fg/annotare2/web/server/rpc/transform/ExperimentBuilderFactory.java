@@ -49,10 +49,35 @@ public class ExperimentBuilderFactory {
                 return exp;
             }
         },
+        PLANT_ONE_COLOR_EXPERIMENT_BUILDER(PLANT_ONE_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(PLANT_ONE_COLOR_MICROARRAY);
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
         TWO_COLOR_EXPERIMENT_BUILDER(TWO_COLOR_MICROARRAY) {
             @Override
             ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
                 ExperimentProfile exp = new ExperimentProfile(TWO_COLOR_MICROARRAY);
+                exp.addLabel("Cy3");
+                exp.addLabel("Cy5");
+
+                ExperimentUpdater updater = experimentUpdater(exp);
+                updater.updateSettings(settings);
+                updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
+                exp.setAeExperimentType("transcription profiling by array");
+                return exp;
+            }
+        },
+        PLANT_TWO_COLOR_EXPERIMENT_BUILDER(PLANT_TWO_COLOR_MICROARRAY) {
+            @Override
+            ExperimentProfile setupExperiment(ExperimentSetupSettings settings) {
+                ExperimentProfile exp = new ExperimentProfile(PLANT_TWO_COLOR_MICROARRAY);
                 exp.addLabel("Cy3");
                 exp.addLabel("Cy5");
 
@@ -71,7 +96,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
+                //updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
                 exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }
@@ -84,7 +109,7 @@ public class ExperimentBuilderFactory {
                 ExperimentUpdater updater = experimentUpdater(exp);
                 updater.updateSettings(settings);
                 updater.createSamples(settings.getNumberOfHybs(), "Sample #", 1);
-                updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
+                //updater.updateExtractAttributes(settings.getExtractValues(),settings.getNumberOfHybs());
                 exp.setAeExperimentType("RNA-seq of coding RNA");
                 return exp;
             }
