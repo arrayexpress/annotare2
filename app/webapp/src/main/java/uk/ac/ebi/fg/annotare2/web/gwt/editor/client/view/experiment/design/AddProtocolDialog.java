@@ -198,52 +198,7 @@ public class AddProtocolDialog extends DialogBox {
                 optionalProtocols.add(protocol.getName());
         }
 
-        for (String protocol:
-                mandatoryProtocols) {
-
-            PlaceholderTextArea textBox = new PlaceholderTextArea();
-
-            textBox.setWidth("95%");
-            textBox.setStyleName("protocol_description_textArea_resize");
-            textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Please enter the description for the "+ protocol);
-
-            protocolDescriptions.put(protocol,textBox);
-
-            Label protocolLabel = new Label(protocol);
-            protocolLabel.addStyleName("protocolLabel");
-
-            protocolsPanel.add(protocolLabel);
-            protocolsPanel.add(textBox);
-
-            /*if(protocol.equalsIgnoreCase("nucleic acid sequencing protocol"))
-            {
-                HorizontalPanel sequencingProtocolPanel = new HorizontalPanel();
-                VerticalPanel protocolHardware = new VerticalPanel();
-                Label hardwareLabel = new Label("Hardware");
-                ListBox hardwareList = new ListBox();
-                hardwareList.setVisibleItemCount(1);
-                for(String seqHardware:sequencingHardwareList)
-                {
-                    hardwareList.addItem(seqHardware);
-                }
-                protocolHardware.add(hardwareLabel);
-                protocolHardware.add(hardwareList);
-                sequencingProtocolPanel.add(protocolHardware);
-
-                VerticalPanel protocolPerformer = new VerticalPanel();
-
-                PlaceholderTextBox performerTextBox = new PlaceholderTextBox();
-
-                performerTextBox.setWidth("100%");
-                performerTextBox.setName(protocol+"performer");
-                performerTextBox.setPlaceholder("Performer Description");
-                protocolPerformer.add(performerTextBox);
-                sequencingProtocolPanel.add(protocolPerformer);
-
-                protocolsPanel.add(sequencingProtocolPanel);
-            }*/
-        }
+        addProtocolsToPanel(mandatoryProtocols, protocolsPanel, protocolDescriptions);
 
         Label optionalProtocolsLabel = new Label("Optional Protocols");
         optionalProtocolsLabel.addStyleName("optionalProtocolHeaderLabel");
@@ -251,23 +206,7 @@ public class AddProtocolDialog extends DialogBox {
 
         protocolsPanel.add(optionalProtocolsLabel);
 
-        for (String protocol:
-                optionalProtocols) {
-            PlaceholderTextArea textBox = new PlaceholderTextArea();
-
-            textBox.setWidth("95%");
-            textBox.setStyleName("protocol_description_textArea_resize");
-            textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Please enter the description for the "+ protocol);
-
-            protocolDescriptions.put(protocol,textBox);
-
-            Label protocolLabel = new Label(protocol);
-            protocolLabel.addStyleName("protocolLabel");
-
-            protocolsPanel.add(protocolLabel);
-            protocolsPanel.add(textBox);
-        }
+        addProtocolsToPanel(optionalProtocols, protocolsPanel, protocolDescriptions);
 
         selectedProtocolTypes.clear();
         for (ProtocolType type : types) {
@@ -277,6 +216,26 @@ public class AddProtocolDialog extends DialogBox {
 
                 selectedProtocolTypes.add(protocol);
             }
+        }
+    }
+
+    protected static void addProtocolsToPanel(List<String> protocols, VerticalPanel protocolsPanel,
+                                              HashMap<String,TextArea> protocolDescriptions) {
+        for (String protocol: protocols) {
+            PlaceholderTextArea textBox = new PlaceholderTextArea();
+
+            textBox.setWidth("95%");
+            textBox.setStyleName("protocol_description_textArea_resize");
+            textBox.setName(protocol+"description");
+            textBox.setPlaceholder("Please enter the description for the "+ protocol);
+
+            protocolDescriptions.put(protocol,textBox);
+
+            Label protocolLabel = new Label(protocol);
+            protocolLabel.addStyleName("protocolLabel");
+
+            protocolsPanel.add(protocolLabel);
+            protocolsPanel.add(textBox);
         }
     }
 

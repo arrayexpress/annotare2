@@ -42,7 +42,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
     private List<String> protocolsList;
     private List<Protocol> selectedProtocolTypes;
     private DialogCallback<List<Protocol>> callback;
-    private HashMap<String,TextBox> protocolDescriptions;
+    private HashMap<String,TextArea> protocolDescriptions;
 
     public AddOptionalProtocolDialog(Presenter presenter, DialogCallback<List<Protocol>> callback) {
         this.presenter = presenter;
@@ -59,36 +59,6 @@ public class AddOptionalProtocolDialog extends DialogBox {
         protocolsList = new ArrayList<>();
         selectedProtocolTypes = new ArrayList<>();
         protocolDescriptions = new HashMap<>();
-
-
-        /*protocolsList.add("growth protocol");
-        protocolsList.add("nucleic acid extraction protocol");
-        protocolsList.add("nucleic acid library construction protocol");
-        protocolsList.add("nucleic acid sequencing protocol");
-
-        protocolsList.add("sample collection protocol");
-        protocolsList.add("treatment protocol");
-        protocolsList.add("normalization data transformation protocol");*/
-
-        /*Label optionalProtocolsLabel = new Label("Optional Protocols");
-        optionalProtocolsLabel.addStyleName("optionalProtocolHeaderLabel");
-        optionalProtocolsLabel.addStyleName("optionalProtocolHeader");
-
-        protocolsPanel.add(optionalProtocolsLabel);*/
-
-        /*for (String protocol:
-                optionalProtocols) {
-            TextBox textBox = new TextBox();
-
-            textBox.setWidth("100%");
-            textBox.setName(protocol+"description");
-
-            protocolDescriptions.put(protocol,textBox);
-
-            protocolsPanel.add(new Label(protocol));
-            protocolsPanel.add(textBox);
-        }*/
-
         center();
 
     }
@@ -106,30 +76,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
 
         List<Protocol> selectedProtocols = selectedProtocolTypes;
 
-        boolean descriptionIsNull = false;
-
-        /*for (ProtocolDetail detail:
-                selectedProtocolTypes) {
-            detail.setProtocolDescription(protocolDescriptions.get(detail.getProtocolType().getTerm().getLabel()).getValue());
-        }
-
-        for (ProtocolDetail detail:
-                selectedProtocolTypes) {
-            if(isNullOrEmpty(detail.getProtocolDescription()))
-            {
-                descriptionIsNull = true;
-                break;
-            }
-        }
-
-        if(descriptionIsNull)
-        {
-            descriptionNotNullLabel.setVisible(true);
-            return;
-        }
-*/
-
-        for(Map.Entry<String,TextBox> entry: protocolDescriptions.entrySet() )
+        for(Map.Entry<String,TextArea> entry: protocolDescriptions.entrySet() )
         {
             if(!isNullOrEmpty(entry.getValue().getValue()))
             {
@@ -190,32 +137,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
             protocolsList.add(type.getTerm().getLabel());
         }
 
-        for (String protocol:
-                protocolsList) {
-
-            PlaceholderTextBox textBox = new PlaceholderTextBox();
-
-            textBox.setWidth("100%");
-            textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Protocol Description");
-
-
-            protocolDescriptions.put(protocol,textBox);
-
-            Label protocolLabel = new Label(protocol);
-            protocolLabel.addStyleName("protocolLabel");
-
-            protocolsPanel.add(protocolLabel);
-            protocolsPanel.add(textBox);
-        }
-/*        for (ProtocolType type : types) {
-            ProtocolDetail detail = new ProtocolDetail();
-            if (mandatoryProtocols.contains(type.getTerm().getLabel())) {
-                detail.setProtocolType(type);
-
-                selectedProtocolTypes.add(detail);
-            }
-        }*/
+        AddProtocolDialog.addProtocolsToPanel(protocolsList, protocolsPanel, protocolDescriptions);
     }
 
     public interface Presenter {
