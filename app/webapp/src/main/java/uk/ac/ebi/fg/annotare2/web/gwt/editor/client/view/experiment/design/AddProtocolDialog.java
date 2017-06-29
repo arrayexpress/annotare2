@@ -61,7 +61,7 @@ public class AddProtocolDialog extends DialogBox {
     private List<String> optionalProtocols;
     private List<Protocol> selectedProtocolTypes;
     private DialogCallback<List<Protocol>> callback;
-    private HashMap<String,TextBox> protocolDescriptions;
+    private HashMap<String,TextArea> protocolDescriptions;
     private String sequencingHardware = "454 GS, 454 GS 20, 454 GS FLX, 454 GS FLX+, 454 GS FLX Titanium, 454 GS Junior, Illumina Genome Analyzer, Illumina Genome Analyzer II, Illumina Genome Analyzer IIx, Illumina HiSeq 1000, Illumina HiSeq 1500, Illumina HiSeq 2000, Illumina HiSeq 2500, Illumina HiSeq 3000, Illumina HiSeq 4000, Illumina MiSeq, Illumina HiScanSQ, HiSeq X Five, HiSeq X Ten, NextSeq 500, NextSeq 550, Helicos HeliScope, AB SOLiD System, AB SOLiD System 2.0, AB SOLiD System 3.0, AB SOLiD 3 Plus System, AB SOLiD 4 System, AB SOLiD 4hq System, AB SOLiD PI System, AB 5500 Genetic Analyzer, AB 5500xl Genetic Analyzer, AB 5500xl-W Genetic Analysis System, Complete Genomics, BGISEQ-500, PacBio RS, PacBio RS II, Sequel, Ion Torrent PGM, Ion Torrent Proton, MinION, GridION, AB 3730xL Genetic Analyzer, AB 3730 Genetic Analyzer, AB 3500xL Genetic Analyzer, AB 3500 Genetic Analyzer, AB 3130xL Genetic Analyzer, AB 3130 Genetic Analyzer, AB 310 Genetic Analyzer, unspecified";
     private List<String> sequencingHardwareList;
 
@@ -124,7 +124,7 @@ public class AddProtocolDialog extends DialogBox {
         }
 
 
-        for(Map.Entry<String,TextBox> entry: protocolDescriptions.entrySet() )
+        for(Map.Entry<String,TextArea> entry: protocolDescriptions.entrySet() )
         {
             if(!isNullOrEmpty(entry.getValue().getValue()))
             {
@@ -201,11 +201,12 @@ public class AddProtocolDialog extends DialogBox {
         for (String protocol:
                 mandatoryProtocols) {
 
-            PlaceholderTextBox textBox = new PlaceholderTextBox();
+            PlaceholderTextArea textBox = new PlaceholderTextArea();
 
-            textBox.setWidth("100%");
+            textBox.setWidth("95%");
+            textBox.setStyleName("protocol_description_textArea_resize");
             textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Protocol Description");
+            textBox.setPlaceholder("Please enter the description for the "+ protocol);
 
             protocolDescriptions.put(protocol,textBox);
 
@@ -252,11 +253,12 @@ public class AddProtocolDialog extends DialogBox {
 
         for (String protocol:
                 optionalProtocols) {
-            PlaceholderTextBox textBox = new PlaceholderTextBox();
+            PlaceholderTextArea textBox = new PlaceholderTextArea();
 
-            textBox.setWidth("100%");
+            textBox.setWidth("95%");
+            textBox.setStyleName("protocol_description_textArea_resize");
             textBox.setName(protocol+"description");
-            textBox.setPlaceholder("Protocol Description");
+            textBox.setPlaceholder("Please enter the description for the "+ protocol);
 
             protocolDescriptions.put(protocol,textBox);
 

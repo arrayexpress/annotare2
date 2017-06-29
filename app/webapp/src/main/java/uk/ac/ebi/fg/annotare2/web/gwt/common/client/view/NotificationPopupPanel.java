@@ -56,6 +56,12 @@ public class NotificationPopupPanel extends PopupPanel {
     private final Element iconElement, messageElement;
     private final Type type;
     private final boolean shouldAutoHide;
+    private int delay = 5000;
+
+    public NotificationPopupPanel(Type warning, boolean shouldAutoHide, boolean isModal, int delay) {
+        this(warning,shouldAutoHide,isModal);
+        this.delay = delay;
+    }
 
     private NotificationPopupPanel(Type type, boolean shouldAutoHide, boolean isModal) {
         super(!isModal, isModal);
@@ -98,7 +104,7 @@ public class NotificationPopupPanel extends PopupPanel {
                     hide();
                 }
             };
-        timer.schedule(8000);
+        timer.schedule(delay);
     }
 
     private static NotificationPopupPanel instance = null;
@@ -126,6 +132,14 @@ public class NotificationPopupPanel extends PopupPanel {
             cancel();
         }
         instance = new NotificationPopupPanel(Type.WARNING, shouldAutoHide, isModal);
+        instance.showMessage(message);
+    }
+
+    public static void warning(String message, boolean shouldAutoHide, boolean isModal, int delay) {
+        if (null != instance) {
+            cancel();
+        }
+        instance = new NotificationPopupPanel(Type.WARNING, shouldAutoHide, isModal, delay);
         instance.showMessage(message);
     }
 

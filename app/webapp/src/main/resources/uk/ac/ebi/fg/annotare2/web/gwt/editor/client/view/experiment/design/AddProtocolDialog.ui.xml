@@ -42,15 +42,17 @@
         }
 
     </ui:style>
-    <g:ResizeLayoutPanel height="800px" width="600px">
+    <g:ResizeLayoutPanel height="600px" width="600px">
         <g:DockLayoutPanel>
             <g:north size="30" addStyleNames="{style.protocolDialogPadding}">
                 <g:Label text="Minimum Protocols Required" addStyleNames="{style.minimumProtocolheader} {style.minimumProtocolheaderLabel}">
                 </g:Label>
             </g:north>
             <g:center>
-                <g:VerticalPanel width="100%" height="100%" ui:field="protocolsPanel">
-                </g:VerticalPanel>
+                <g:ScrollPanel>
+                    <g:VerticalPanel width="100%" height="100%" ui:field="protocolsPanel">
+                    </g:VerticalPanel>
+                </g:ScrollPanel>
             </g:center>
             <g:south size="50">
                 <g:HTMLPanel>

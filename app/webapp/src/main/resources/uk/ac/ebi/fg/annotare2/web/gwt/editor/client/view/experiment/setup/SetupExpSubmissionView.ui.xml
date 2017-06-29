@@ -87,7 +87,7 @@
                 <g:VerticalPanel>
                     <g:HorizontalPanel >
                         <g:cell verticalAlignment="ALIGN_MIDDLE">
-                            <g:Label addStyleNames="{style.question}">Select  Submission Type </g:Label>
+                            <g:Label addStyleNames="{style.question}">Select Submission Type </g:Label>
                         </g:cell>
                         <g:cell verticalAlignment="ALIGN_MIDDLE">
                         <g:ListBox
