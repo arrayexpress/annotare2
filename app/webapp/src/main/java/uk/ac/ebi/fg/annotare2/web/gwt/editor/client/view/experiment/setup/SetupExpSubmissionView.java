@@ -18,6 +18,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -135,8 +136,6 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     private Widget createContent() {
         VerticalPanel stackPanel = new VerticalPanel();//Style.Unit.PX);
         stackPanel.setWidth("100%");
-        stackPanel.setHeight("10%");
-
         for (ExperimentDesignType type : ExperimentDesignType.values()) {
             OntologyTerm term = new OntologyTerm(type.getAccession(),type.getLabel());
             stackPanel.add(createSectionContent(term));//, fromSafeConstant(term.getName()), 25);

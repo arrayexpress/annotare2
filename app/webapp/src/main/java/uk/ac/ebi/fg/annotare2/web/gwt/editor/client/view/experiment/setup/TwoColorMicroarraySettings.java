@@ -33,9 +33,6 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.Validation
  */
 public class TwoColorMicroarraySettings extends Composite implements HasSubmissionSettings {
 
-    @UiField
-    HTML description;
-
     @UiField(provided = true)
     SuggestBox arrayDesign;
 
@@ -52,18 +49,6 @@ public class TwoColorMicroarraySettings extends Composite implements HasSubmissi
         this.view = view;
         this.arrayDesign = new UpperCaseSuggestBox(new ArrayDesignSuggestOracle(view));
         initWidget(Binder.BINDER.createAndBindUi(this));
-        this.description.setHTML(fromSafeConstant(
-                "<p>One hybridization is where two labeled samples are hybridized on an array chip.</p>" +
-                        "<p>An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-3237/'>" +
-                        "E-MEXP-3237</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/22432704'>" +
-                        "Europe PMC 22432704</a>. " +
-                        "A two colour experiment uses two dyes, normally Cy3 " +
-                        "and Cy5. For two colour data one row in the  SDRF (Sample and Data " +
-                        "Relationship Format) file is equal to one colour channel.</p>"+
-                        "<p>Not sure if your array is already accessioned in ArrayExpress, " +
-                        "or not sure what an array is? " +
-                        "<a href=\"http://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html\" " +
-                        "target=\"_blank\">Here's a quick guide</a>.</p>"));
         integerValuesOnly(numberOfHybs);
     }
 

@@ -33,9 +33,6 @@ import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.Validation
  */
 public class OneColorMicroarraySettings extends Composite implements HasSubmissionSettings {
 
-    @UiField
-    HTML description;
-
     @UiField(provided = true)
     SuggestBox arrayDesign;
 
@@ -55,19 +52,6 @@ public class OneColorMicroarraySettings extends Composite implements HasSubmissi
         this.view = view;
         this.arrayDesign = new UpperCaseSuggestBox(new ArrayDesignSuggestOracle(view));
         initWidget(Binder.BINDER.createAndBindUi(this));
-        this.description.setHTML(fromSafeConstant(
-                "<p>One hybridization is where one labeled sample is hybridized on an array chip</p>" +
-                        "<p>An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-641/'>" +
-                        "E-MTAB-641</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/21980142'>" +
-                        "Europe PMC 21980142</a>. A one colour experiment uses one dye or label. For " +
-                        "example experiments using an Affymetrix array use the label biotin. For " +
-                        "one colour data one row in the SDRF (Sample and Data Relationship " +
-                        "Format) file is equal to one assay.</p>" +
-                        "<p>Not sure if your array is already accessioned in ArrayExpress, " +
-                        "or not sure what an array is? " +
-                        "<a href=\"http://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html\" " +
-                        "target=\"_blank\">Here's a quick guide</a>.</p>"
-        ));
         integerValuesOnly(numberOfHybs);
     }
 

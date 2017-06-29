@@ -98,7 +98,7 @@ public class NotificationPopupPanel extends PopupPanel {
                     hide();
                 }
             };
-        timer.schedule(5000);
+        timer.schedule(8000);
     }
 
     private static NotificationPopupPanel instance = null;

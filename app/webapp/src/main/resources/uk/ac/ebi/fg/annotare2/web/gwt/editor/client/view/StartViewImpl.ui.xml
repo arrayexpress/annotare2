@@ -38,10 +38,6 @@
             box-shadow: 3px 3px 4px #cdcdcd;
         }
 
-        .centerView td {
-            padding: 10px;
-        }
-
         .square {
             text-align: center;
             vertical-align: middle;
@@ -67,7 +63,7 @@
             <table class="{style.centerView}">
                 <tr>
                     <td>
-                        <w:SetupExpSubmissionView ui:field="view" height="600px" width="850px"/>
+                        <w:SetupExpSubmissionView ui:field="view" height="500px" width="1000px"/>
                     </td>
                 </tr>
             </table>

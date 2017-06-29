@@ -28,68 +28,90 @@
             font-family: Arial, Helvetica, sans-serif;
             margin-left: 15px;
             margin-right: 15px;
-            font-size: 15px;
+            font-size: 10pt;
             line-height: 160%;
         }
 
-        .title{
+        .title {
             font-size: 18px;
             color: #207A7A;
+            margin-right: 10px;
         }
 
-        .expDesignPanel{
+        .expDesignPanel {
             border-style: solid !important;
             border-width: 1px;
             margin: 10px;
-            width: 96% !important;
             border-color: #207a7a;
+            width:250px;
         }
 
-        .title-lef-nav
-        {
+        .title-lef-nav {
             font-size: 16px;
             color: #207A7A;
             margin-top: 5px;
         }
 
-        .titleMargin{
-            margin-left: 10px;
+        .titleMargin {
+            margin-left: 2px;
+        }
+
+        .padded {
+            margin: 12pt;
+        }
+
+        .top-padded {
+            margin-top: 16pt;
+        }
+
+        .help {
+            color: #b36363;
+            margin-top: 5px;
+            width: 500px;
+            padding-left: 30px
+        }
+
+        .question {
+            color: #207A7A;
+            font-size: 12pt;
+            margin-right: 10px;
+        }
+        .middle {
+            vertical-align: middle;
         }
 
     </ui:style>
-    <g:ResizeLayoutPanel height="300px" width="700px">
-        <g:DockLayoutPanel>
-            <g:north size="100">
-                <g:DockLayoutPanel>
-                    <g:north size="50">
-                        <g:HorizontalPanel>
-                            <g:Label addStyleNames="{style.title}"> Please, Select the Submission Type </g:Label>
-                            <g:ListBox title="Select the technology type carefully because we rely on this to present you with relevant questions to complete this submission" ui:field="templateBox" visibleItemCount="1" width="100%" height="100%"/>
-                        </g:HorizontalPanel>
-                    </g:north>
-                    <g:south size="50">
-                        <g:VerticalPanel>
-                        <g:Label>
-                            Take your time to ask this question as you won’t be able to change it back. If you change your mind you will need to start another submission from the beginning
-                        </g:Label>
-                        </g:VerticalPanel>
-                    </g:south>
-                </g:DockLayoutPanel>
-            </g:north>
+    <g:ResizeLayoutPanel>
+        <g:DockLayoutPanel addStyleNames="{style.padded}">
             <g:center>
-                <g:DockLayoutPanel>
-                    <g:north size="35">
+                <g:VerticalPanel>
+                    <g:HorizontalPanel >
+                        <g:cell verticalAlignment="ALIGN_MIDDLE">
+                            <g:Label addStyleNames="{style.question}">Select  Submission Type </g:Label>
+                        </g:cell>
+                        <g:cell verticalAlignment="ALIGN_MIDDLE">
+                        <g:ListBox
+                                title="Select the technology type carefully because we rely on this to present you with relevant questions to complete this submission"
+                                ui:field="templateBox" visibleItemCount="1" width="100%" height="100%"/>
+                        </g:cell>
+                        <g:HTMLPanel addStyleNames="{style.help}">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Take your time to answer this question as you won’t be able to change it back. If you change your
+                            mind you will need to start another submission from the beginning.
+                        </g:HTMLPanel>
+                    </g:HorizontalPanel>
+                    <g:HorizontalPanel addStyleNames="{style.top-padded}">
                         <g:VerticalPanel>
-                        <g:Label>Please Select Experiment Design(s):</g:Label>
+                            <g:Label addStyleNames="{style.question}">Select Experiment Design(s)</g:Label>
+                            <g:ScrollPanel ui:field="experimentDesignPanel"
+                                           addStyleNames="{style.expDesignPanel}"/>
                         </g:VerticalPanel>
-                    </g:north>
-                    <g:north size="250">
-                        <g:ScrollPanel width="100%" ui:field="experimentDesignPanel" addStyleNames="{style.expDesignPanel}"></g:ScrollPanel>
-                    </g:north>
-                    <g:center>
-                        <g:ScrollPanel height="100%" ui:field="templateDetails" addStyleNames="{style.templateDetails}"/>
-                    </g:center>
-                </g:DockLayoutPanel>
+                        <g:VerticalPanel width="600">
+                            <g:Label addStyleNames="{style.question}">Provide Experiment Details</g:Label>
+                            <g:ScrollPanel ui:field="templateDetails"
+                                           addStyleNames="{style.templateDetails}"/>
+                        </g:VerticalPanel>
+                    </g:HorizontalPanel>
+                </g:VerticalPanel>
             </g:center>
             <g:south size="50">
                 <g:HTMLPanel>
