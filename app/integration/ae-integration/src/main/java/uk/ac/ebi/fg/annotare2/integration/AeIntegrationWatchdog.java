@@ -22,6 +22,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.gwt.thirdparty.json.JSONObject;
 import com.google.inject.Inject;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -284,8 +286,12 @@ public class AeIntegrationWatchdog {
 
     @Transactional(rollbackOn = {SubsTrackingException.class})
     public void processSubmitted(Submission submission) throws SubsTrackingException {
-        SubmissionOutcome outcome = submitSubmission(submission);
+        Pair<SubmissionOutcome, Integer> submissionOutcomeIntegerPair = submitSubmission(submission);
+        SubmissionOutcome outcome = submissionOutcomeIntegerPair.getLeft();
+        Integer substrackingId = submissionOutcomeIntegerPair.getRight();
         if (SubmissionOutcome.SUBMISSION_FAILED != outcome) {
+            File exportDir = copyDataFiles(submission, substrackingId);
+            addFilesToSubstracking(submission,substrackingId, exportDir);
             boolean hasResubmitted = SubmissionStatus.RESUBMITTED == submission.getStatus();
             submission.setStatus(SubmissionStatus.IN_CURATION);
             submissionManager.save(submission);
@@ -336,6 +342,109 @@ public class AeIntegrationWatchdog {
                 );
             }
         }
+    }
+
+    private void addFilesToSubstracking(Submission submission, Integer substrackingId, File exportDir) throws SubsTrackingException {
+        Connection subsTrackingConnection = null;
+
+        try{
+            if (properties.isSubsTrackingEnabled()) {
+                subsTrackingConnection = subsTracking.getConnection();
+                if (null == subsTrackingConnection) {
+                    throw new SubsTrackingException(SubsTrackingException.UNABLE_TO_OBTAIN_CONNECTION);
+                }
+                subsTrackingConnection.setAutoCommit(false);
+                if (submission instanceof ExperimentSubmission) {
+                    exportExperimentSubmissionFiles(subsTrackingConnection, (ExperimentSubmission) submission, exportDir);
+                } else if (submission instanceof ImportedExperimentSubmission) {
+                    exportImportedExperimentSubmissionFiles(subsTrackingConnection, (ImportedExperimentSubmission) submission, exportDir);
+                }
+
+                subsTracking.sendSubmission(subsTrackingConnection, substrackingId);
+                subsTrackingConnection.commit();
+            }
+        } catch (Throwable e) {
+            try {
+                if (null != subsTrackingConnection) {
+                    subsTrackingConnection.rollback();
+                }
+            } catch (SQLException ee) {
+                logger.error("SQLException:", ee);
+            }
+            throw new SubsTrackingException(e);
+        } finally {
+            if (properties.isSubsTrackingEnabled()) {
+                subsTracking.releaseConnection(subsTrackingConnection);
+            }
+        }
+
+    }
+
+    private File copyDataFiles(Submission submission, Integer subsTrackingId) throws SubsTrackingException {
+        if (!(submission instanceof ExperimentSubmission)) {
+            throw new SubsTrackingException(submission.getId() + " is not an Experiment Submission");
+        }
+        File exportDir = getExportDir(subsTrackingId);
+
+        try {
+            ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+            Set<DataFile> dataFiles = dataFileManager.getAssignedFiles(submission);
+            Set<DataFile> rawDataFiles = dataFileManager.getAssignedFiles(submission, FileType.RAW_FILE);
+            boolean isSequencing = exp.getType().isSequencing();
+            String dataFilesPostProcessingScript = properties.getSubsTrackingDataFilesPostProcessingScript();
+
+            String ftpSubDirectory = submission.getFtpSubDirectory();
+
+            if (dataFiles.size() > 0) {
+                logger.debug("Will copy {} data files", dataFiles.size());
+                for (DataFile dataFile : dataFiles) {
+                    logger.debug("Processing data file {}", dataFile.getName());
+                    if (DataFileStatus.STORED == dataFile.getStatus()) {
+                        URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
+                                ? new URI(ftpManager.getDirectory(ftpSubDirectory) + dataFile.getName())
+                                : new File(exportDir, dataFile.getName()).toURI();
+                        DataFileHandle source = dataFileManager.getFileHandle(dataFile);
+                        DataFileHandle destination = source.copyTo(destinationURI);
+                        logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
+                        if (!isNullOrEmpty(dataFilesPostProcessingScript) && destination instanceof LocalFileHandle) {
+                            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
+                            if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {
+                                logger.info(isNullOrEmpty(
+                                        executor.getOutput()) ?
+                                        "Ran post-processing script on " + destination.getName() : executor.getOutput()
+                                );
+                            } else {
+                                logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
+                            }
+                        }
+                    } else if (!dataFile.getStatus().isOk()) {
+                        throw new IOException("Unable to process data file " + dataFile.getName() + ": " + dataFile.getStatus().getTitle());
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            throw new SubsTrackingException(e);
+        }
+        return exportDir;
+    }
+
+    private File getExportDir(Integer subsTrackingId) {
+        File exportDir;
+        if (properties.isSubsTrackingEnabled()) {
+            exportDir = new File(properties.getSubsTrackingExportDir(), properties.getSubsTrackingUser());
+            if (!exportDir.exists()) {
+                exportDir.mkdir();
+                exportDir.setWritable(true, false);
+            }
+            exportDir = new File(exportDir, properties.getSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
+            if (!exportDir.exists()) {
+                exportDir.mkdir();
+                exportDir.setWritable(true, false);
+            }
+        } else {
+            exportDir = properties.getExportDir();
+        }
+        return exportDir;
     }
 
     @Transactional
@@ -462,18 +571,18 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private SubmissionOutcome submitSubmission(Submission submission) throws SubsTrackingException {
+    private Pair<SubmissionOutcome, Integer> submitSubmission(Submission submission) throws SubsTrackingException {
 
         SubmissionOutcome result = SubmissionOutcome.SUBMISSION_FAILED;
         Connection subsTrackingConnection = null;
+        Integer subsTrackingId = -1;
 
-        File exportDir;
         try {
             // check all files are in a good shape first; if not - skip
             Collection<DataFile> files = dataFileManager.getAssignedFiles(submission);
             for (DataFile file : files) {
                 if (!file.getStatus().isFinal()) {
-                    return result;
+                    return new MutablePair<>(result, -1) ;
                 }
             }
 
@@ -484,7 +593,7 @@ public class AeIntegrationWatchdog {
                 }
 
                 subsTrackingConnection.setAutoCommit(false);
-                Integer subsTrackingId = submission.getSubsTrackingId();
+                subsTrackingId = submission.getSubsTrackingId();
                 if (null == subsTrackingId) {
                     subsTrackingId = subsTracking.addSubmission(subsTrackingConnection, submission);
                     submission.setSubsTrackingId(subsTrackingId);
@@ -493,33 +602,10 @@ public class AeIntegrationWatchdog {
                     subsTracking.updateSubmission(subsTrackingConnection, submission);
                     result = SubmissionOutcome.REPEAT_SUBMISSION_OK;
                 }
-
-                exportDir = new File(properties.getSubsTrackingExportDir(), properties.getSubsTrackingUser());
-                if (!exportDir.exists()) {
-                    exportDir.mkdir();
-                    exportDir.setWritable(true, false);
-                }
-                exportDir = new File(exportDir, properties.getSubsTrackingExperimentType() + "_" + String.valueOf(subsTrackingId));
-                if (!exportDir.exists()) {
-                    exportDir.mkdir();
-                    exportDir.setWritable(true, false);
-                }
-            } else {
-                exportDir = properties.getExportDir();
-            }
-
-            if (submission instanceof ExperimentSubmission) {
-                exportExperimentSubmissionFiles(subsTrackingConnection, (ExperimentSubmission) submission, exportDir);
-            } else if (submission instanceof ImportedExperimentSubmission) {
-                exportImportedExperimentSubmissionFiles(subsTrackingConnection, (ImportedExperimentSubmission) submission, exportDir);
-            }
-
-            if (properties.isSubsTrackingEnabled()) {
-                subsTracking.sendSubmission(subsTrackingConnection, submission.getSubsTrackingId());
                 subsTrackingConnection.commit();
-            }
 
-            return result;
+            }
+            return new MutablePair<>(result, subsTrackingId) ;
         } catch (Throwable e) {
             try {
                 if (null != subsTrackingConnection) {
@@ -593,30 +679,8 @@ public class AeIntegrationWatchdog {
             }
 
             if (dataFiles.size() > 0) {
-                logger.debug("Will process {} data files", dataFiles.size());
+                logger.debug("Savings {} data files in the db", dataFiles.size());
                 for (DataFile dataFile : dataFiles) {
-                    logger.debug("Processing data file {}", dataFile.getName());
-                    if (DataFileStatus.STORED == dataFile.getStatus()) {
-                        URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
-                                ? new URI(ftpManager.getDirectory(ftpSubDirectory) + dataFile.getName())
-                                : new File(exportDirectory, dataFile.getName()).toURI();
-                        DataFileHandle source = dataFileManager.getFileHandle(dataFile);
-                        DataFileHandle destination = source.copyTo(destinationURI);
-                        logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
-                        if (!isNullOrEmpty(dataFilesPostProcessingScript) && destination instanceof LocalFileHandle) {
-                            LinuxShellCommandExecutor executor = new LinuxShellCommandExecutor();
-                            if (executor.execute(dataFilesPostProcessingScript + " " + destination.getUri().getPath())) {
-                                logger.info(isNullOrEmpty(
-                                        executor.getOutput()) ?
-                                        "Ran post-processing script on " + destination.getName() : executor.getOutput()
-                                );
-                            } else {
-                                logger.error("Data file post-processing script returned an error: {}", executor.getErrors());
-                            }
-                        }
-                    } else if (!dataFile.getStatus().isOk()) {
-                        throw new IOException("Unable to process data file " + dataFile.getName() + ": " + dataFile.getStatus().getTitle());
-                    }
                     if (properties.isSubsTrackingEnabled()) {
                         subsTracking.addDataFile(connection, subsTrackingId, dataFile.getName());
                     }
