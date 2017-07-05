@@ -395,6 +395,12 @@ public class AeIntegrationWatchdog {
 
             String ftpSubDirectory = submission.getFtpSubDirectory();
 
+            if (isSequencing && rawDataFiles.size() > 0) {
+                if (!ftpManager.doesExist(ftpSubDirectory)) {
+                    ftpManager.createDirectory(ftpSubDirectory);
+                }
+            }
+
             if (dataFiles.size() > 0) {
                 logger.debug("Will copy {} data files", dataFiles.size());
                 for (DataFile dataFile : dataFiles) {
