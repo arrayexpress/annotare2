@@ -136,6 +136,7 @@ public class AddProtocolDialog extends DialogBox {
                         if(entry.getKey().toString().equalsIgnoreCase(type.getTerm().getLabel()))
                         {
                             protocol.setType(type.getTerm());
+                            protocol.setSubjectType(type.getSubjectType());
                             protocol.setDescription(entry.getValue().getValue());
                             selectedProtocols.add(protocol);
                         }
@@ -213,7 +214,7 @@ public class AddProtocolDialog extends DialogBox {
             Protocol protocol = new Protocol(1);
             if (mandatoryProtocols.contains(type.getTerm().getLabel())) {
                 protocol.setType(type.getTerm());
-
+                protocol.setSubjectType(type.getSubjectType());
                 selectedProtocolTypes.add(protocol);
             }
         }

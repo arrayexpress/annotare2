@@ -88,6 +88,7 @@ public class AddOptionalProtocolDialog extends DialogBox {
                         if(entry.getKey().toString().equalsIgnoreCase(type.getTerm().getLabel()))
                         {
                             protocol.setType(type.getTerm());
+                            protocol.setSubjectType(type.getSubjectType());
                             protocol.setDescription(entry.getValue().getValue());
                             selectedProtocols.add(protocol);
                         }
