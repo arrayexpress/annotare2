@@ -93,23 +93,22 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_170104_Shown";
+    private final static String NOTICE_COOKIE = "Notice_170712_Shown";
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1483488000000L); // stop showing on 4 jan (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1504256400000L); // stop showing on 1 Aug (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Annotare Christmas Downtime",
-                    "<p>Due to reduced staffing levels over the holiday period (19 Dec 2016 - 4 Jan 2017), please " +
-                            "allow extra time for your submission or update requests to be processed.</p>" +
+                    "Curators need holidays too!",
+                    "<p>Due to reduced staffing levels over the summer months (July - August), please allow extra time for your submission or update requests to be processed.</p>" +
                             "<p>For new submisisons, please try to get your new submission in the best possible shape" +
                             " by following our " +
                             "<a href=\"https://www.ebi.ac.uk/arrayexpress/submit/overview.html\" target=\"_blank\">" +
-                            "submission guidelines</a>, as that would greatly speed " +
-                            "up our curation efforts.</p>" +
-                            "<p>Happy Holidays!</p>",
+                            "submission guidelines</a> as that would speed up our curation efforts.</p>" +
+                            "<p>Thank you for your understanding!</p>"+
+                            "<p>The ArrayExpress curation team</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
