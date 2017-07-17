@@ -22,14 +22,22 @@
 
     <ui:style>
         .showHideButton {
-            height: 27px;
-            font-size: 12pt;
-            border: 0;
-            background: #e7e7e7;
-            color: #48877c;
+            height: 20px;
+            border: none;
+            background: #e0e0e0;
+            color: #444444;
             cursor: pointer;
             outline: none;
-            padding-left: 5px;
+            transform: rotate(90deg);
+            white-space: nowrap;
+            transform-origin: top left;
+            margin-left: 20px;
+            border-right: 1px solid #cdcdcd;
+        }
+
+        .gray {
+
+            background: #eeeeee;
         }
     </ui:style>
 
@@ -53,22 +61,18 @@
                         <g:center>
                             <g:SplitLayoutPanel ui:field="fileUploadPanel">
                                 <g:center size="580">
-                                    <g:DockLayoutPanel>
-                                        <g:center>
-                                            <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
-                                        </g:center>
-                                        <g:east size="25">
-                                            <g:SimpleLayoutPanel ui:field="simpleToggleButtonPanel">
-                                                <g:Button styleName="{style.showHideButton}" ui:field="showHideButton"><i class="fa fa-arrow-circle-down"/></g:Button>
-                                            </g:SimpleLayoutPanel>
-                                        </g:east>
-                                    </g:DockLayoutPanel>
+                                    <g:SimpleLayoutPanel height="100%" ui:field="contentDisplay"/>
                                 </g:center>
                                 <g:east size="520">
                                     <g:SimpleLayoutPanel ui:field="fileUploadDisplay"/>
                                 </g:east>
                             </g:SplitLayoutPanel>
                         </g:center>
+                        <g:east size="20">
+                            <g:SimpleLayoutPanel ui:field="simpleToggleButtonPanel" styleName="{style.gray}">
+                                <g:Button styleName="{style.showHideButton}" ui:field="showHideButton"><i class="fa fa-upload" aria-hidden="true"></i> File Upload </g:Button>
+                            </g:SimpleLayoutPanel>
+                        </g:east>
                     </g:DockLayoutPanel>
                 </g:center>
                 <g:south size="40">
