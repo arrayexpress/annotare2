@@ -42,7 +42,7 @@ import java.util.*;
  */
 public class GridView<R extends HasIdentity> extends Composite implements RequiresResize {
 
-    private static final int PAGE_SIZE = 50;
+    private static final int PAGE_SIZE = 5000;
 
     interface Binder extends UiBinder<Widget, GridView> {
         Binder BINDER = GWT.create(Binder.class);
@@ -115,9 +115,9 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
 
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
-        pager.setDisplay(dataGrid);
-        toolBar.add(pager);
-        toolBar.setCellHorizontalAlignment(pager, HasHorizontalAlignment.ALIGN_RIGHT);
+        //pager.setDisplay(dataGrid);
+        //toolBar.add(pager);
+        //toolBar.setCellHorizontalAlignment(pager, HasHorizontalAlignment.ALIGN_RIGHT);
 
         gridPanel.add(dataGrid);
     }
