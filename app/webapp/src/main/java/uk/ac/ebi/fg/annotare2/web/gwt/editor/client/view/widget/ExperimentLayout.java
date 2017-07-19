@@ -62,6 +62,7 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
     interface Binder extends UiBinder<Widget, ExperimentLayout> {
         Binder BINDER = GWT.create(Binder.class);
+
     }
 
     public ExperimentLayout(EventBus eventBus, int submissionCount) {
@@ -73,7 +74,7 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
                 openLogPanel(DEFAULT_LOG_PANEL_SIZE);
             }
         });
-        showHideButton.setHTML("<i class=\"fa fa-chevron-circle-right\"/>");
+        //showHideButton.setHTML("<i class=\"fa fa-chevron-circle-right\"/>");
         filePanelIsVisible = true;
         contentDisplay.addAttachHandler(new AttachEvent.Handler() {
             @Override
@@ -87,13 +88,13 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
 
                 if(filePanelIsVisible)
                 {
-                    showHideButton.setHTML("<i class=\"fa fa-chevron-circle-left\"/>");
+                    showHideButton.setHTML("<i class=\"fa fa-download\" aria-hidden=\"true\"></i> File Upload ");
                     Widget w = fileUploadPanel.getWidget(0);
                     fileUploadPanel.setWidgetHidden(w,true);
                 }
                 else
                 {
-                    showHideButton.setHTML("<i class=\"fa fa-chevron-circle-right\"/>");
+                    showHideButton.setHTML("<i class=\"fa fa-upload\" aria-hidden=\"true\"></i> File Upload ");
                     Widget w = fileUploadPanel.getWidget(0);
                     fileUploadPanel.setWidgetHidden(w,false);
                 }
