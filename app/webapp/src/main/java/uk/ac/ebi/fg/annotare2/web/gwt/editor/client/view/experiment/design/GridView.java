@@ -218,9 +218,11 @@ public class GridView<R extends HasIdentity> extends Composite implements Requir
 
     private void selectAllRows(boolean selected) {
         if (isRowSelectionEnabled) {
-            int start = pager.getPageStart();
+            //int start = pager.getPageStart();
+/*            List<R> sublist = dataProvider.getList().subList(
+                    start, Math.min(start + pager.getPageSize(), dataProvider.getList().size()));*/
             List<R> sublist = dataProvider.getList().subList(
-                    start, Math.min(start + pager.getPageSize(), dataProvider.getList().size()));
+                    1, dataProvider.getList().size());
             for (R row : sublist) {
                 selectionModel.setSelected(row, selected);
             }
