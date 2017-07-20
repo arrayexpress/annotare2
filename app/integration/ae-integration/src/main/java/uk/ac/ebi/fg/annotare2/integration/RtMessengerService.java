@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
@@ -29,6 +30,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +50,12 @@ import uk.ac.ebi.fg.annotare2.submission.transform.DataSerializationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,6 +126,12 @@ public class RtMessengerService extends EmailMessengerService {
         boolean serverStatus = false;
         try {
 
+            List<BasicNameValuePair> params = new ArrayList<>();
+
+            params.add(new BasicNameValuePair("user",properties.getRtIntegrationUser()));
+            params.add(new BasicNameValuePair("pass",properties.getRtIntegrationPassword()));
+            params.add(new BasicNameValuePair("content",""));
+
             SSLContextBuilder builder = new SSLContextBuilder();
 
             builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -129,13 +140,13 @@ public class RtMessengerService extends EmailMessengerService {
             CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
                     sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
 
-            MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+            /*MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                     .addTextBody("user", properties.getRtIntegrationUser())
                     .addTextBody("pass", properties.getRtIntegrationPassword())
-                    .addTextBody("content", "");
+                    .addTextBody("content", "");*/
 
             HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl());
-            httppost.setEntity(entityBuilder.build());
+            httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity r = response.getEntity();
             BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
@@ -152,6 +163,7 @@ public class RtMessengerService extends EmailMessengerService {
             } catch (Exception e) {
                 logger.error("Error parsing RT response",e);
             }
+    //        httpclient.close();
         }catch(Exception e)
         {
             logger.error("Error checking Rt Server Status",e);
@@ -163,15 +175,21 @@ public class RtMessengerService extends EmailMessengerService {
     }
 
     @Override
-    public void ticketUpdate(Map<String, String> params, String ticketNumber) throws Exception
+    public void ticketUpdate(Map<String, String> param, String ticketNumber) throws Exception
     {
         if (StringUtils.isBlank(ticketNumber)) {
-            logger.debug("Rt ticket is null for params: "+ params);
+            logger.debug("Rt ticket is null for params: "+ param);
             throw new Exception("Rt ticket is null");
         }
         logger.debug("Updating Rt ticket "+ ticketNumber);
         boolean ticketUpdated = false;
         String errorTrace = "";
+        List<BasicNameValuePair> params = new ArrayList<>();
+
+        params.add(new BasicNameValuePair("user",properties.getRtIntegrationUser()));
+        params.add(new BasicNameValuePair("pass",properties.getRtIntegrationPassword()));
+        params.add(new BasicNameValuePair("content",getMessageContent(param)));
+
 
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -180,13 +198,13 @@ public class RtMessengerService extends EmailMessengerService {
         CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
                 sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
 
-        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+        /*MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                 .addTextBody("user", properties.getRtIntegrationUser())
                 .addTextBody("pass", properties.getRtIntegrationPassword())
-                .addTextBody("content", getMessageContent(params));
+                .addTextBody("content", getMessageContent(param));*/
 
         HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl() + "ticket/"+ticketNumber+"/edit");
-        httppost.setEntity(entityBuilder.build());
+        httppost.setEntity(new UrlEncodedFormEntity(params,StandardCharsets.UTF_8));
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
@@ -211,6 +229,8 @@ public class RtMessengerService extends EmailMessengerService {
                 errorTrace = errorTrace + line + "\n";
             }
         }
+
+  //      httpclient.close();
     }
 
     private String getMessageContent(Map<String, String> params)
@@ -229,6 +249,8 @@ public class RtMessengerService extends EmailMessengerService {
     private String createRtTicket(Submission submission, Message message) throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
         boolean ticketCreated = false;
+        List<BasicNameValuePair> params = new ArrayList<>();
+
         String errorTrace = "";
         SSLContextBuilder builder = new SSLContextBuilder();
         builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -237,15 +259,18 @@ public class RtMessengerService extends EmailMessengerService {
         CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
                 sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
 
+        params.add(new BasicNameValuePair("user",properties.getRtIntegrationUser()));
+        params.add(new BasicNameValuePair("pass",properties.getRtIntegrationPassword()));
+        params.add(new BasicNameValuePair("content",getMessageContent(getNewTicketFieldsMap(message))));
 
 
-        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+        /*MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                 .addTextBody("user", properties.getRtIntegrationUser())
                 .addTextBody("pass", properties.getRtIntegrationPassword())
-                .addTextBody("content", getMessageContent(getNewTicketFieldsMap(message)));
+                .addTextBody("content", getMessageContent(getNewTicketFieldsMap(message)));*/
 
         HttpPost httppost = new HttpPost( properties.getRtIntegrationUrl() + "ticket/new");
-        httppost.setEntity(entityBuilder.build());
+        httppost.setEntity(new UrlEncodedFormEntity(params,StandardCharsets.UTF_8));
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
@@ -285,6 +310,7 @@ public class RtMessengerService extends EmailMessengerService {
                 messenger.send("There was a problem updating ticket status to stalled " + submission.getRtTicketNumber(), x);
             }
         }
+//        httpclient.close();
         return ticket;
     }
 
@@ -330,6 +356,12 @@ public class RtMessengerService extends EmailMessengerService {
             throw new Exception("Rt ticket is null");
         }
 
+        List<BasicNameValuePair> params = new ArrayList<>();
+
+        params.add(new BasicNameValuePair("user",properties.getRtIntegrationUser()));
+        params.add(new BasicNameValuePair("pass",properties.getRtIntegrationPassword()));
+        params.add(new BasicNameValuePair("content",getMessageContent(getFieldsMap(message))));
+
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
         logger.debug("Rt ticket number is "+ ticketNumber);
@@ -372,13 +404,13 @@ public class RtMessengerService extends EmailMessengerService {
         CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(
                 sslConnectionSocketFactory).setRedirectStrategy(new LaxRedirectStrategy()).build();
 
-        MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
+        /*MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
                 .addTextBody("user", properties.getRtIntegrationUser())
                 .addTextBody("pass", properties.getRtIntegrationPassword())
-                .addTextBody("content", getMessageContent(getFieldsMap(message)));
+                .addTextBody("content", getMessageContent(getFieldsMap(message)));*/
 
         HttpPost httppost = new HttpPost(properties.getRtIntegrationUrl() + "ticket/"+ticketNumber+"/comment");
-        httppost.setEntity(entityBuilder.build());
+        httppost.setEntity(new UrlEncodedFormEntity(params,StandardCharsets.UTF_8));
         HttpResponse response = httpclient.execute(httppost);
         HttpEntity r = response.getEntity();
         BufferedReader inp = new BufferedReader(new InputStreamReader(r.getContent()));
@@ -404,6 +436,8 @@ public class RtMessengerService extends EmailMessengerService {
                 errorTrace = errorTrace + line + "\n";
             }
         }
+
+        //httpclient.close();
     }
 
 }

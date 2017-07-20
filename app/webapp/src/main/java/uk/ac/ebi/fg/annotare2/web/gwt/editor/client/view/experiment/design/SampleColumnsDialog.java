@@ -127,8 +127,8 @@ public class SampleColumnsDialog extends DialogBox {
         {
             attributeTemplates.add(entry.getValue().getName());
         }
-        setMandatoryColumn();
         addMandatoryColumns();
+        setMandatoryColumn();
     }
 
     private void setMandatoryColumn()
