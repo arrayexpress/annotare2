@@ -21,11 +21,11 @@ package uk.ac.ebi.fg.annotare2.submission.model;
  */
 public enum ExperimentProfileType {
     ONE_COLOR_MICROARRAY("One-color microarray"),
-    PLANT_ONE_COLOR_MICROARRAY("Plants-one-color microarray"),
     TWO_COLOR_MICROARRAY("Two-color microarray"),
-    PLANT_TWO_COLOR_MICROARRAY("Plants-two-color microarray"),
     SEQUENCING("High-throughput sequencing"),
-    PLANT_SEQUENCING("Plants-High-throughput sequencing");
+    PLANT_ONE_COLOR_MICROARRAY("Plant - One-color microarray"),
+    PLANT_TWO_COLOR_MICROARRAY("Plant - Two-color microarray"),
+    PLANT_SEQUENCING("Plant - High-throughput sequencing");
 
     private final String title;
 

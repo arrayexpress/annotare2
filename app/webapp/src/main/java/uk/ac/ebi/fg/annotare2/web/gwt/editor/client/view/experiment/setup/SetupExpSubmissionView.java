@@ -17,9 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -95,9 +93,23 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
             cancelButton.addClickHandler(cancelClick);
         }
 
+        OptGroupElement nonPlantGroup = Document.get().createOptGroupElement();
+        nonPlantGroup.setLabel("Non-Plant");
+        OptGroupElement plantGroup = Document.get().createOptGroupElement();
+        plantGroup.setLabel("Plant");
+        templateBox.getElement().appendChild(nonPlantGroup);
         for (ExperimentProfileType type : ExperimentProfileType.values()) {
-            templateBox.addItem(type.getTitle(), type.name());
+            OptionElement optElement = Document.get().createOptionElement();
+            optElement.setInnerText(type.getTitle());
+            optElement.setValue(type.name());
+            if (type.name().toLowerCase().startsWith("plant")) {
+                plantGroup.appendChild(optElement);
+            } else {
+                nonPlantGroup.appendChild(optElement);
+            }
         }
+        templateBox.getElement().appendChild(nonPlantGroup);
+        templateBox.getElement().appendChild(plantGroup);
 
         templateBox.addChangeHandler(new ChangeHandler() {
             @Override

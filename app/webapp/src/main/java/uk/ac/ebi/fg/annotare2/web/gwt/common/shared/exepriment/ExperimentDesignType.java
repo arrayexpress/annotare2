@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
  * Created by haideri on 19/06/2017.
  */
 public enum ExperimentDesignType {
-
+    BINDING_SITE_IDENTIFICATION_DESIGN("binding site identification design","EFO:0004664",SampleAttributeTemplate.IMMUNOPRECIPITATE_ORIGIN),
     CASE_CONTROL_DESIGN("case control design","EFO:0001427",SampleAttributeTemplate.DESEASE_ATTRIBUTE),
     CELL_TYPE_COMPARISON_DESIGN("cell type comparison design","EFO:0001745", SampleAttributeTemplate.CELL_TYPE_ORIGIN),
     COMPOUND_TREATMENT_DESIGN("compound treatment design","EFO:0001755",SampleAttributeTemplate.COMPOUND_ATTRIBUTE,SampleAttributeTemplate.DOSE_ORIGIN),
@@ -23,11 +23,10 @@ public enum ExperimentDesignType {
     GROWTH_CONDITION_DESIGN("growth condition design","EFO:0001759",SampleAttributeTemplate.GROWTH_CONDITION_ORIGIN),
     ORGANISM_PART_COMPARISON_DESIGN("organism part comparison design","EFO:0001750",SampleAttributeTemplate.ORGANISM_PART_ATTRIBUTE),
     SEX_DESIGN("sex design","EFO:0001752",SampleAttributeTemplate.SEX_ORIGIN),
+    SPECIES_DESIGN("species design","EFO:0001753",SampleAttributeTemplate.ORGANISM_ATTRIBUTE),
     STIMULUS_STRESS_DESIGN("stimulus or stress design","EFO:0001762",SampleAttributeTemplate.STIMULUS_ATTRIBUTE),
-    TIME_SERIES_DESIGN("time series design","EFO:0001779",SampleAttributeTemplate.TIME_ATTRIBUTE),
-    BINDING_SITE_IDENTIFICATION_DESIGN("binding site identification design","EFO:0004664",SampleAttributeTemplate.IMMUNOPRECIPITATE_ORIGIN),
     STAIN_LINE_DESIGN("strain or line design","EFO:0001754",SampleAttributeTemplate.STRAIN_ATTRIBUTE),
-    SPECIES_DESIGN("species design","EFO:0001753",SampleAttributeTemplate.ORGANISM_ATTRIBUTE);
+    TIME_SERIES_DESIGN("time series design","EFO:0001779",SampleAttributeTemplate.TIME_ATTRIBUTE);
 
     private final String label;
     private final String accession;
