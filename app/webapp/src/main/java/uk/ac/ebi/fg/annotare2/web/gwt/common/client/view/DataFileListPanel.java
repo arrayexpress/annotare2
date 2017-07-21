@@ -90,7 +90,7 @@ public class DataFileListPanel extends SimpleLayoutPanel {
         grid.setColumnWidth(checkboxColumn, 40, Style.Unit.PX);
 
         emptyTableWidget = new HTML("<p><br/></p><p><b style=\"font-size:18px;\">Upload Files</b><br/><br/>Drag-and-drop files here to start upload<br/> or press the \"Upload Files\" button.<br/><br/></p>"+
-        "<p><i class=\"fa fa-warning\"></i>File names only contain letters [A-Z,a-z],<br/>numbers [0,9], underscores [_], and dots [.]</p>");
+        "<p><i class=\"fa fa-warning\"></i>File names can only contain letters [A-Z,a-z],<br/>numbers [0,9], underscores [_], and dots [.]</p>");
         emptyTableWidget.addStyleName("empty");
 
         final EditSuggestCell nameCell = new EditSuggestCell(null) {
