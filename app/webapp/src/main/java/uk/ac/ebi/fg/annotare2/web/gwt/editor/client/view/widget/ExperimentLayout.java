@@ -82,6 +82,7 @@ public class ExperimentLayout extends Composite implements EditorLayout, Require
                 showNotificationMole();
             }
         });
+        dockLayoutPanel.setWidgetSize (tabBarDisplay,4);
         showHideButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {

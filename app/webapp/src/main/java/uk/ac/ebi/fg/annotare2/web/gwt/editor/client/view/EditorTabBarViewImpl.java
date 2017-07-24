@@ -19,6 +19,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.dto.UserDto;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.ExperimentTab;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.EditorTabBar;
@@ -62,6 +63,11 @@ public class EditorTabBarViewImpl extends Composite implements EditorTabBarView 
                 }
                 shownTabs.add(tab);
             }
+        }
+        if (shownTabs.size()>1) {
+            DockLayoutPanel dockLayoutPanel = ((DockLayoutPanel) (this.getParent().asWidget().getParent().asWidget()));
+            dockLayoutPanel.setWidgetSize(dockLayoutPanel.getWidget(0), 40);
+            tabBar.setWrapperStyleName("app-TabBar-curator");
         }
         tabBar.addTabs(shownTabs.toArray(new EditorTab[]{}));
 
