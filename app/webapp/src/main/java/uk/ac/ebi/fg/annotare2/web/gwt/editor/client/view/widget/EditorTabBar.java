@@ -39,6 +39,8 @@ public class EditorTabBar extends Composite implements IsWidget, HasSelectionHan
 
     private int selected = -1;
 
+    private SimplePanel simple = new SimplePanel();
+
     public EditorTabBar() {
         HorizontalPanel wrapper = new HorizontalPanel();
         wrapper.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
@@ -46,7 +48,6 @@ public class EditorTabBar extends Composite implements IsWidget, HasSelectionHan
         wrapper.setWidth("100%");
 
         panel = new HorizontalPanel();
-        SimplePanel simple = new SimplePanel();
         simple.add(panel);
         simple.addStyleName("app-TabBar");
 
@@ -90,6 +91,10 @@ public class EditorTabBar extends Composite implements IsWidget, HasSelectionHan
         }
         setSelectedStyle(panel.getWidget(index), true);
         selected = index;
+    }
+
+    public void setWrapperStyleName(String style) {
+        simple.setStyleName(style);
     }
 
     public void setSelectedStyle(Widget widget, boolean selected) {

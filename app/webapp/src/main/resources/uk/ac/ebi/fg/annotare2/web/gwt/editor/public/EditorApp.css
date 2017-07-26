@@ -455,8 +455,14 @@ a.wgt-button :hover {
 }
 */
 
-.app-TabBar {
+.app-TabBar-curator {
     border-top: 1px solid #E5A066;
+    border-bottom: 1px solid #eeeeee;
+    background-color: #eeeeee;
+}
+
+.app-TabBar {
+    border-top: 5px solid #e7e7e7;
     border-bottom: 1px solid #eeeeee;
     background-color: #eeeeee;
 }
@@ -599,7 +605,7 @@ a.wgt-button :hover {
     resize: vertical;
 }
 
-fileSizeColumn
+.fileSizeColumn
 {
     padding-right: 15px !important;
 }
