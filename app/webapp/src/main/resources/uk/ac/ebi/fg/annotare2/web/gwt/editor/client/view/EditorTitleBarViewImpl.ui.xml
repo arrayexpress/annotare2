@@ -192,7 +192,7 @@
                         <g:Button addStyleNames="{style.regularButton}" ui:field="releaseButton" visible="false"><i class="fa fa-repeat"/>Re-assign to Submitter</g:Button>
                         <g:Button addStyleNames="{style.regularButton}" ui:field="exportButton" title="Download your submission in spreadsheet format"><i class="fa fa-arrow-circle-down"/>Save as Spreadsheets</g:Button>
                         <g:Button addStyleNames="{style.validateButton}" ui:field="validateButton" title="Check if the files are correctly assigned and all mandatory fields are filled in. Error messages are displayed at the bottom of the page."><i class="fa fa-check"/>Validate</g:Button>
-                        <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton" title="Submit your experiment to ArrayExpress. Contact the curation help-desk (arrayexpress@ebi.ac.uk) to make changes after this step."><i class="fa fa-paper-plane-o"/>Submit to ArrayExpress</g:Button>
+                        <g:Button addStyleNames="{style.submitButton}" ui:field="submitButton" title="Submit your experiment to ArrayExpress. Contact the curation help-desk (annotare@ebi.ac.uk) to make changes after this step."><i class="fa fa-paper-plane-o"/>Submit to ArrayExpress</g:Button>
                     </td>
                 </tr>
             </table>
