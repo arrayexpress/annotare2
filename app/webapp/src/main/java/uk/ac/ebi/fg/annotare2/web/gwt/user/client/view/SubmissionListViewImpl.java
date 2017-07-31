@@ -24,6 +24,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.*;
 import com.google.inject.Inject;
@@ -48,6 +50,9 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
     private ImageResources resourceBundle;
 
     private Presenter presenter;
+
+    @UiField(provided = true)
+    SimplePager pager;
 
     private ListDataProvider<SubmissionRow> dataProvider;
 
@@ -154,6 +159,11 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         dataProvider = new ListDataProvider<SubmissionRow>();
         dataProvider.addDataDisplay(dataGrid);
 
+        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+        pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
+        pager.setDisplay(dataGrid);
+        pager.setPageSize(50);
+
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -181,6 +191,7 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
     }
 
     public void setSubmissions(List<SubmissionRow> submissions) {
-        dataProvider.setList(submissions);
-    }
+
+            dataProvider.setList(submissions);
+        }
 }
