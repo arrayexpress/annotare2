@@ -43,7 +43,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleCol
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.USER_DEFIED_ATTRIBUTE;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.USER_DEFINED_ATTRIBUTE;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.valueOf;
 
 /**
@@ -191,7 +191,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        addColumn(USER_DEFIED_ATTRIBUTE);
+        addColumn(USER_DEFINED_ATTRIBUTE);
     }
 
     @UiHandler("okButton")
