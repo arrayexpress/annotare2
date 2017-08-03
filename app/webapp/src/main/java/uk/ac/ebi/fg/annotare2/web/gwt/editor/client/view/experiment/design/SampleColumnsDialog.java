@@ -28,9 +28,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
-import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
-import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
@@ -43,7 +41,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleCol
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
-import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.USER_DEFINED_ATTRIBUTE;
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.USER_DEFIED_ATTRIBUTE;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.valueOf;
 
 /**
@@ -191,7 +189,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        addColumn(USER_DEFINED_ATTRIBUTE);
+        addColumn(USER_DEFIED_ATTRIBUTE);
     }
 
     @UiHandler("okButton")

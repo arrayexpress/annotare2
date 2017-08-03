@@ -86,7 +86,9 @@ public enum SampleAttributeTemplate {
     PHENOTYPE_ATTRIBUTE(PHENOTYPE),
     TUMOR_GRADING_ATTRIBUTE(TUMOR_GRADING),
 
-    USER_DEFINED_ATTRIBUTE(ValueRange.<String>any(), ValueRange.<SystemEfoTerm>any(), ValueRange.<SystemEfoTerm>any(), range(CHARACTERISTIC, FACTOR_VALUE), false, true),
+    //This need to changed to USER_DEFINED but instead of changing the code it should be done in database "template" field of SampleAttribute Json needs to be changed
+
+    USER_DEFIED_ATTRIBUTE(ValueRange.<String>any(), ValueRange.<SystemEfoTerm>any(), ValueRange.<SystemEfoTerm>any(), range(CHARACTERISTIC, FACTOR_VALUE), false, true),
 
 
     // Previously removed attribute
@@ -170,7 +172,7 @@ public enum SampleAttributeTemplate {
         try {
             return valueOf(string);
         } catch (NullPointerException e) {
-            return USER_DEFINED_ATTRIBUTE;
+            return USER_DEFIED_ATTRIBUTE;
         }
     }
 
@@ -203,7 +205,7 @@ public enum SampleAttributeTemplate {
 
     public static Collection<SampleAttributeTemplate> getAll() {
         EnumSet<SampleAttributeTemplate> allTemplates = allOf(SampleAttributeTemplate.class);
-        allTemplates.remove(USER_DEFINED_ATTRIBUTE);
+        allTemplates.remove(USER_DEFIED_ATTRIBUTE);
         return allTemplates;
     }
 
