@@ -5,7 +5,7 @@ package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
  */
 public enum OptionalProtocols {
 
-    SAMPLE_COLLECTION_PROTOCOL("sample collection protocol"),
+    GROWTH_PROTOCOL("growth protocol"),
     TREATMENT_PROTOCOL("treatment protocol"),
     NORMALIZATION_DATA_TRANSFORMATION_PROTOCOL("normalization data transformation protocol"),
     CONVERSION_PROTOCOL("conversion protocol"),
