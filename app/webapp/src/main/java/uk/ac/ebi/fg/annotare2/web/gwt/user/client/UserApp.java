@@ -93,7 +93,7 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_170712_Shown";
+    private final static String NOTICE_COOKIE = "Notice_100817_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
         stopNoticeDate.setTime(1503356400000L); // stop showing on 22 Aug (http://www.epochconverter.com/)
