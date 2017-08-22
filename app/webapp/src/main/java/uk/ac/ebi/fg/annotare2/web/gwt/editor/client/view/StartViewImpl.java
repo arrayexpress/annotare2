@@ -17,12 +17,20 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.utils.Urls;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.setup.SetupExpSubmissionView;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactUsDialog;
 
 import java.util.List;
 
@@ -35,11 +43,14 @@ public class StartViewImpl extends Composite implements StartView {
         Binder BINDER = GWT.create(Binder.class);
     }
 
+    private final ContactUsDialog contactUsDialog;
+
     @UiField
     SetupExpSubmissionView view;
 
     public StartViewImpl() {
         initWidget(Binder.BINDER.createAndBindUi(this));
+        contactUsDialog = new ContactUsDialog();
     }
 
     @Override
@@ -50,5 +61,15 @@ public class StartViewImpl extends Composite implements StartView {
     @Override
     public void setArrayDesignList(List<ArrayDesignRef> adList) {
         view.setArrayDesignList(adList);
+    }
+
+    @UiHandler("contactButton")
+    void onFeedbackButtonClick(ClickEvent event) {
+        contactUsDialog.center();
+    }
+
+    @UiHandler("helpButton")
+    void onHelpButtonClick(ClickEvent event) {
+        Window.open(Urls.getContextUrl() + "help/", "_blank", "");
     }
 }

@@ -20,10 +20,6 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
 >
     <ui:style>
-        .border {
-            border-bottom: 1px solid #eeeeee;
-        }
-
         .templateDetails {
             font-family: Arial, Helvetica, sans-serif;
             margin-left: 15px;
@@ -32,28 +28,12 @@
             line-height: 160%;
         }
 
-        .title {
-            font-size: 18px;
-            color: #207A7A;
-            margin-right: 10px;
-        }
-
         .expDesignPanel {
             border-style: solid !important;
             border-width: 1px;
             margin: 10px;
             border-color: #207a7a;
             width:250px;
-        }
-
-        .title-lef-nav {
-            font-size: 16px;
-            color: #207A7A;
-            margin-top: 5px;
-        }
-
-        .titleMargin {
-            margin-left: 2px;
         }
 
         .padded {
@@ -76,39 +56,120 @@
             font-size: 12pt;
             margin-right: 10px;
         }
-        .middle {
-            vertical-align: middle;
+        .info {
+            border: none !important;
+
+        }
+        .info:focus
+        {
+            outline: none !important;
         }
 
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 275px;
+            word-wrap: normal;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .expDescription
+        {
+            padding-top:10px;
+            margin-top:10px;
+            border-top:1px solid #eeeeee;
+            color:#777;
+            width: 90%;
+        }
     </ui:style>
     <g:ResizeLayoutPanel>
         <g:DockLayoutPanel addStyleNames="{style.padded}">
             <g:center>
                 <g:VerticalPanel>
-                    <g:HorizontalPanel >
+
+                    <g:VerticalPanel>
+                        <g:HorizontalPanel>
+                            <g:VerticalPanel>
+                        <g:HorizontalPanel>
                         <g:cell verticalAlignment="ALIGN_MIDDLE">
-                            <g:Label addStyleNames="{style.question}">Select Submission Type </g:Label>
+                            <g:Label addStyleNames="{style.question}" ui:field="selectSubmissionTypeLabel">Select Submission Template </g:Label>
                         </g:cell>
                         <g:cell verticalAlignment="ALIGN_MIDDLE">
-                        <g:ListBox
-                                title="Select the technology type carefully because we rely on this to present you with relevant questions to complete this submission"
+                        <g:ListBox title="Select the technology type carefully because we rely on this to present you with relevant questions to complete this submission"
                                 ui:field="templateBox" visibleItemCount="1" width="100%" height="100%"/>
                         </g:cell>
-                        <g:HTMLPanel addStyleNames="{style.help}">
-                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Take your time to answer this question as you won’t be able to change it back. If you change your
-                            mind you will need to start another submission from the beginning.
-                        </g:HTMLPanel>
                     </g:HorizontalPanel>
-                    <g:HorizontalPanel addStyleNames="{style.top-padded}">
+                        <g:HTMLPanel addStyleNames="{style.help}" ui:field="warningMsg" width="100%">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Please ensure you have selected the correct template as this cannot be changed later!
+                        </g:HTMLPanel>
+                            </g:VerticalPanel>
+                            <g:HTMLPanel addStyleNames="{style.help}" ui:field="plantExperimentDetails" width="100%">
+                                <div style="color:#6dab49;">
+                                    This template is designed for plant species to reflect plant-specific metadata
+                                    <img src="../../assets/images/plant-picture.png" alt="plantPic"></img>
+                                </div>
+                            </g:HTMLPanel>
+                        </g:HorizontalPanel>
+                        <g:HTMLPanel addStyleNames="{style.help}" ui:field="oneColorDetails" width="100%">
+                            <div class="{style.expDescription}">
+                                <p>A one-colour experiment uses one label (or dye). An example experiment is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-641/'>
+                                    E-MTAB-641</a>.</p>
+                                <p>Annotare expects the following experimental workflow (1 raw data file per sample or a raw data matrix including data for multiple samples):</p>
+                                <p><img src="../../assets/images/one_color_template.png" alt="One Color" width="450" height="200"></img></p>
+                            </div>
+                        </g:HTMLPanel>
+                        <g:HTMLPanel addStyleNames="{style.help}" ui:field="twoColorDetails" width="100%">
+                            <div class="{style.expDescription}">
+                                <p>A two-colour experiment compares two dyes, normally Cy3 and Cy5. An example experiment is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-3237/'>
+                                    E-MEXP-3237</a>.</p>
+                                <p>Annotare expects the following experimental workflow (1 raw data file per 2 labelled extracts):<b></b>
+                                If your data is split into separate files, use "Contact Us" once you are ready to submit.</p>
+                                <p><img src="../../assets/images/two_color_template.png" alt="Two Colour" width="450" height="200"></img></p>
+                            </div>
+                        </g:HTMLPanel>
+                        <g:HTMLPanel addStyleNames="{style.help}" ui:field="highSeqDetails" width="100%">
+                             <div class="{style.expDescription}">
+                                A sequencing experiment produces raw sequence data generated by next-generation sequencing
+                                platforms such as Illumina Genome Analyzer/HiSeq or Ion Torrent. An example is
+                                <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-582/'>E-MTAB-582</a>.
+                                 <p><img src="../../assets/images/sequencing_template.png" alt="Two Colour" width="450" height="200"></img></p>
+                            </div>
+                        </g:HTMLPanel>
+                    </g:VerticalPanel>
+                        <g:HorizontalPanel addStyleNames="{style.top-padded}">
                         <g:VerticalPanel>
-                            <g:Label addStyleNames="{style.question}">Select Experiment Design(s)</g:Label>
-                            <g:ScrollPanel ui:field="experimentDesignPanel"
-                                           addStyleNames="{style.expDesignPanel}"/>
+                            <g:HorizontalPanel>
+                            <g:Label addStyleNames="{style.question}" ui:field="experimentDesignPanelLabel">Select Experiment Design(s)</g:Label>
+                                <g:HTMLPanel ui:field="expDesignInfo">
+                                <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    <span class="{style.tooltiptext}">
+                                        <strong>(Optional) Choose the designs types that best describe your experiment to pre-select the experimental variable(s) for your experiment.</strong>
+                                    </span>
+                                </div>
+                                </g:HTMLPanel>
+                            </g:HorizontalPanel>
+                            <g:ScrollPanel ui:field="experimentDesignPanel" addStyleNames="{style.expDesignPanel}"/>
                         </g:VerticalPanel>
-                        <g:VerticalPanel width="600">
-                            <g:Label addStyleNames="{style.question}">Provide Experiment Details</g:Label>
-                            <g:ScrollPanel ui:field="templateDetails"
-                                           addStyleNames="{style.templateDetails}"/>
+                        <g:VerticalPanel width="600" height="500">
+                            <g:Label addStyleNames="{style.question}" ui:field="templateDetailsLabel">Provide Experiment Details</g:Label>
+                            <g:SimplePanel ui:field="templateDetails" addStyleNames="{style.templateDetails}"/>
                         </g:VerticalPanel>
                     </g:HorizontalPanel>
                 </g:VerticalPanel>
@@ -117,9 +178,13 @@
                 <g:HTMLPanel>
                     <table style="width:100%">
                         <tr>
+                            <td align="left">
+                                <g:Button ui:field="prevButton">Prev</g:Button>
+                            </td>
                             <td align="right">
                                 <g:Button ui:field="cancelButton">Cancel</g:Button>
                                 <g:Button ui:field="okButton">OK</g:Button>
+                                <g:Button ui:field="nextButton">Next</g:Button>
                             </td>
                         </tr>
                     </table>

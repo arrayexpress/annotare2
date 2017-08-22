@@ -25,10 +25,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
-import uk.ac.ebi.fg.annotare2.submission.model.ExtractAttribute;
-import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.*;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.WaitingPopup;
@@ -53,7 +52,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     }
 
     @UiField
-    ScrollPanel templateDetails;
+    SimplePanel templateDetails;
 
     @UiField
     ListBox templateBox;
@@ -67,6 +66,39 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     @UiField
     Button okButton;
 
+    @UiField
+    Label templateDetailsLabel;
+
+    @UiField
+    Label experimentDesignPanelLabel;
+
+    @UiField
+    Button nextButton;
+
+    @UiField
+    Button prevButton;
+
+    @UiField
+    Label selectSubmissionTypeLabel;
+
+    @UiField
+    HTMLPanel oneColorDetails;
+
+    @UiField
+    HTMLPanel twoColorDetails;
+
+    @UiField
+    HTMLPanel warningMsg;
+
+    @UiField
+    HTMLPanel highSeqDetails;
+
+    @UiField
+    HTMLPanel plantExperimentDetails;
+
+    @UiField
+    HTMLPanel expDesignInfo;
+
     private Presenter presenter;
 
     private final Map<ExperimentProfileType, HasSubmissionSettings> widgets = new HashMap<>();
@@ -76,6 +108,8 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     private List<OntologyTermGroup> experimentalDesigns;
 
     private List<OntologyTerm> experimentalDesignTerms;
+
+    private Boolean oneClrDetail, twoClrDetail, highSeqDetail, plantDetail;
 
     public SetupExpSubmissionView() {
         this(null);
@@ -92,6 +126,11 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         } else {
             cancelButton.addClickHandler(cancelClick);
         }
+
+        okButton.setVisible(false);
+        nextButton.setVisible(true);
+        prevButton.setVisible(false);
+        expDesignInfo.setVisible(false);
 
         OptGroupElement nonPlantGroup = Document.get().createOptGroupElement();
         nonPlantGroup.setLabel("Non-Plant");
@@ -119,6 +158,54 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         });
         selectFirstTemplate(templateBox);
         getExpDesigns();
+
+        nextButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                templateDetails.setVisible(true);
+                templateDetailsLabel.setVisible(true);
+                experimentDesignPanel.setVisible(true);
+                experimentDesignPanelLabel.setVisible(true);
+                warningMsg.setVisible(false);
+                templateBox.setVisible(false);
+                expDesignInfo.setVisible(true);
+                oneColorDetails.setVisible(false);
+                twoColorDetails.setVisible(false);
+                highSeqDetails.setVisible(false);
+                plantExperimentDetails.setVisible(false);
+                selectSubmissionTypeLabel.setVisible(false);
+                prevButton.setVisible(true);
+                okButton.setVisible(true);
+                nextButton.setVisible(false);
+            }
+        });
+
+        prevButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                templateDetails.setVisible(false);
+                templateDetailsLabel.setVisible(false);
+                experimentDesignPanel.setVisible(false);
+                experimentDesignPanelLabel.setVisible(false);
+                expDesignInfo.setVisible(false);
+                warningMsg.setVisible(true);
+
+                if(oneClrDetail)
+                    oneColorDetails.setVisible(true);
+                if(twoClrDetail)
+                    twoColorDetails.setVisible(true);
+                if(highSeqDetail)
+                    highSeqDetails.setVisible(true);
+                if(plantDetail)
+                    plantExperimentDetails.setVisible(true);
+
+                templateBox.setVisible(true);
+                selectSubmissionTypeLabel.setVisible(true);
+                prevButton.setVisible(false);
+                nextButton.setVisible(true);
+                okButton.setVisible(false);
+            }
+        });
         //getExpDesigns();
 
         /*Button btn = new Button();
@@ -131,6 +218,10 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         });*/
 
 
+        templateDetails.setVisible(false);
+        templateDetailsLabel.setVisible(false);
+        experimentDesignPanel.setVisible(false);
+        experimentDesignPanelLabel.setVisible(false);
     }
 
     private void getExpDesigns()
@@ -240,27 +331,71 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     }
 
     private void showDetails(ExperimentProfileType type) {
-        HasSubmissionSettings w = widgets.get(type);
-        if (w == null) {
-            w = createWidget(type);
-            widgets.put(type, w);
-        }
+        HasSubmissionSettings w = createWidget(type);
         templateDetails.setWidget(w);
     }
 
     private HasSubmissionSettings createWidget(ExperimentProfileType type) {
         switch (type) {
             case ONE_COLOR_MICROARRAY:
+                twoColorDetails.setVisible(false);
+                highSeqDetails.setVisible(false);
+                oneColorDetails.setVisible(true);
+                plantExperimentDetails.setVisible(false);
+                oneClrDetail = true;
+                twoClrDetail = false;
+                highSeqDetail = false;
+                plantDetail = false;
                 return new OneColorMicroarraySettings(this);
             case TWO_COLOR_MICROARRAY:
+                twoColorDetails.setVisible(true);
+                oneColorDetails.setVisible(false);
+                highSeqDetails.setVisible(false);
+                plantExperimentDetails.setVisible(false);
+                oneClrDetail = false;
+                twoClrDetail = true;
+                highSeqDetail = false;
+                plantDetail = false;
                 return new TwoColorMicroarraySettings(this);
             case SEQUENCING:
+                twoColorDetails.setVisible(false);
+                oneColorDetails.setVisible(false);
+                highSeqDetails.setVisible(true);
+                plantExperimentDetails.setVisible(false);
+                oneClrDetail = false;
+                twoClrDetail = false;
+                highSeqDetail = true;
+                plantDetail = false;
                 return new HighThroughputSeqSettings();
             case PLANT_SEQUENCING:
+                twoColorDetails.setVisible(false);
+                oneColorDetails.setVisible(false);
+                highSeqDetails.setVisible(true);
+                plantExperimentDetails.setVisible(true);
+                oneClrDetail = false;
+                twoClrDetail = false;
+                highSeqDetail = true;
+                plantDetail = true;
                 return new HighThroughputSeqSettings();
             case PLANT_ONE_COLOR_MICROARRAY:
+                twoColorDetails.setVisible(false);
+                highSeqDetails.setVisible(false);
+                oneColorDetails.setVisible(true);
+                plantExperimentDetails.setVisible(true);
+                oneClrDetail = true;
+                twoClrDetail = false;
+                highSeqDetail = false;
+                plantDetail = true;
                 return new OneColorMicroarraySettings(this);
             case PLANT_TWO_COLOR_MICROARRAY:
+                twoColorDetails.setVisible(true);
+                oneColorDetails.setVisible(false);
+                highSeqDetails.setVisible(false);
+                plantExperimentDetails.setVisible(true);
+                oneClrDetail = false;
+                twoClrDetail = true;
+                highSeqDetail = false;
+                plantDetail = true;
                 return new TwoColorMicroarraySettings(this);
             default:
                 throw new IllegalArgumentException("Unknown experiment type: " + type);

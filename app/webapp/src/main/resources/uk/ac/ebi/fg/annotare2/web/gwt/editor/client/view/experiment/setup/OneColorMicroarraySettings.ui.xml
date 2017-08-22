@@ -20,21 +20,71 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         >
     <ui:style>
-        .help {
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
 
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 275px;
+            word-wrap: normal;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .expDetailLabel
+        {
+            padding: 35px !important;
         }
     </ui:style>
     <g:HTMLPanel>
         <table>
             <tr>
-                <td>How many hybridizations did you perform?</td>
+                <td class="{style.expDetailLabel}">How many hybridizations did you perform?
+                    <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                    <span class="{style.tooltiptext}">
+                        <strong>1 sample = 1 biological replicate</strong>
+                    </span>
+                    </div>
+                </td>
                 <td width="200px">
                     <g:TextBox ui:field="numberOfHybs" width="50px"/>
                 </td>
             </tr>
             <tr>
+                <td class="{style.expDetailLabel}">
+                    What label did you use?
+                    <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <span class="{style.tooltiptext}">
+                            <strong>Chemicals (e.g. Cy3 fluorescent dye) conjugated to nucleic acid to label them before microarray hybridisation. Experiments with Affymetrix or Illumina arrays usually use the label ’biotin’.</strong>
+                        </span>
+                    </div>
+                </td>
                 <td>
+                    <g:TextBox title="Chemicals (e.g. Cy3 fluorescent dye,  biotin) conjugated to nucleic acids to label them before microarray hybridisation" ui:field="label" width="100%"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="{style.expDetailLabel}">
                     What array did you use?
+                    <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <span class="{style.tooltiptext}">
+                            <strong>Start typing (e.g. manufacturer’s name) and select your array from the list. Only the top 15 matches are shown.</strong>
+                        </span>
+                    </div>
                 </td>
                 <td>
                     <g:SuggestBox title="Start typing (e.g. manufacturer's name) and select your array from the drop down (Only the top 15 matches are shown)" ui:field="arrayDesign" width="100%"/>
@@ -42,25 +92,12 @@
             </tr>
             <tr>
                 <td>
-                    What label did you use?
-                </td>
-                <td>
-                    <g:TextBox title="Chemicals (e.g. Cy3 fluorescent dye,  biotin) conjugated to nucleic acids to label them before microarray hybridisation" ui:field="label" width="100%"/>
+                    <p>If you cannot find your array design,
+                        try searching <a href="https://www.ebi.ac.uk/arrayexpress/arrays/browse.html?directsub=on" target="_blank">here</a> or
+                        <a href="https://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html"
+                           target="_blank">submit your array design</a> to ArrayExpress.</p>
                 </td>
             </tr>
         </table>
-        <div style="padding-top:10px;margin-top:10px;border-top:1px solid #eeeeee; color:#777">
-            <p>One hybridization is where one labeled sample is hybridized on an array chip</p>
-            <p>An example is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-641/'>
-            E-MTAB-641</a>, <a target='_blank' href='http://europepmc.org/abstract/MED/21980142'>
-            Europe PMC 21980142</a>. A one colour experiment uses one dye or label. For
-            example experiments using an Affymetrix array use the label biotin. For
-            one colour data one row in the SDRF (Sample and Data Relationship
-            Format) file is equal to one assay.</p>
-            <p>Not sure if your array is already accessioned in ArrayExpress,
-            or not sure what an array is?
-            <a href="http://www.ebi.ac.uk/arrayexpress/help/adf_submissions_overview.html"
-            target="_blank">Here's a quick guide</a>.</p>
-        </div>
     </g:HTMLPanel>
 </ui:UiBinder>
