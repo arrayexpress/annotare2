@@ -18,10 +18,13 @@ package uk.ac.ebi.fg.annotare2.web.server.rpc;
  */
 
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.core.AccessControlException;
 import uk.ac.ebi.fg.annotare2.core.components.Messenger;
 import uk.ac.ebi.fg.annotare2.core.transaction.Transactional;
+import uk.ac.ebi.fg.annotare2.db.model.ExperimentSubmission;
+import uk.ac.ebi.fg.annotare2.integration.EmailTemplates;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.NoPermissionException;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.SubmissionCreateService;
 import uk.ac.ebi.fg.annotare2.web.server.services.AccountService;
@@ -29,19 +32,36 @@ import uk.ac.ebi.fg.annotare2.web.server.services.SubmissionManagerImpl;
 
 public class SubmissionCreateServiceImpl extends SubmissionBasedRemoteService implements SubmissionCreateService {
 
+    private final Messenger messenger;
+
     @Inject
     public SubmissionCreateServiceImpl(
             AccountService accountService,
             SubmissionManagerImpl submissionManager,
             Messenger messenger) {
         super(accountService, submissionManager, messenger);
+        this.messenger = messenger;
     }
 
     @Transactional(rollbackOn = NoPermissionException.class)
     @Override
     public long createExperiment() throws NoPermissionException {
         try {
-            return createExperimentSubmission().getId();
+            ExperimentSubmission submission = createExperimentSubmission();
+
+            //create ticket in RT
+            messenger.send(
+                    EmailTemplates.NEW_SUBMISSION_TEMPLATE,
+                    new ImmutableMap.Builder<String, String>()
+                            .put("to.name", submission.getCreatedBy().getName())
+                            .put("to.email", submission.getCreatedBy().getEmail())
+                            .put("submission.id", String.valueOf(submission.getId()))
+                            .build()
+                    , submission.getCreatedBy()
+                    , submission
+            );
+
+            return submission.getId();
         } catch (AccessControlException e) {
             throw noPermission(e);
         }

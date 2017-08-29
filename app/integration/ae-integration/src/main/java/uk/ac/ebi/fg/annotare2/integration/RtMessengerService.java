@@ -316,26 +316,41 @@ public class RtMessengerService extends EmailMessengerService {
 
     private Map<String,String> getNewTicketFieldsMap(Message message)
     {
-        ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
+        //ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
-        if (submission instanceof ExperimentSubmission) {
+        /*if (submission instanceof ExperimentSubmission) {
             try {
                 ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
                 submissionType = exp.getType();
             } catch (DataSerializationException x) {
                 logger.error("Error creating new ticket fields map", x);
             }
-        }
+        }*/
 
         return new ImmutableMap.Builder<String, String>()
                 .put(RtFieldNames.REQUESTOR, message.getUser().getEmail())
                 .put(RtFieldNames.SUBJECT, message.getSubject())
                 .put(RtFieldNames.TEXT, message.getBody().replaceAll("\\n","\n "))
                 .put(RtFieldNames.QUEUE, properties.getRtQueueName())
-                .put(RtFieldNames.SUBMISSION_ID,String.valueOf(message.getSubmission().getId()))
-                .put(RtFieldNames.EXPERIMENT_TYPE, submissionType.isSequencing() ? "HTS" : "MA")
+                .put(RtFieldNames.SUBMISSION_ID,String.valueOf(submission.getId()))
                 .build();
+    }
+
+    private Map<String,String> getTicketUpdateFieldsMap(Message message, Submission submission, ExperimentProfileType submissionType)
+    {
+        if(submissionType != null)
+            return new ImmutableMap.Builder<String, String>()
+                    .put(RtFieldNames.DIRECTORY, properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
+                    .put(RtFieldNames.SUBJECT, message.getSubject())
+                    .put(RtFieldNames.EXPERIMENT_TYPE, submissionType.isSequencing() ? "HTS" : "MA")
+                    .build();
+        else
+            return new ImmutableMap.Builder<String, String>()
+                    .put(RtFieldNames.DIRECTORY, properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
+                    .put(RtFieldNames.SUBJECT, message.getSubject())
+                    .build();
+
     }
 
     private Map<String,String> getFieldsMap(Message message)
@@ -362,20 +377,28 @@ public class RtMessengerService extends EmailMessengerService {
         params.add(new BasicNameValuePair("pass",properties.getRtIntegrationPassword()));
         params.add(new BasicNameValuePair("content",getMessageContent(getFieldsMap(message))));
 
+        ExperimentProfileType submissionType = ExperimentProfileType.ONE_COLOR_MICROARRAY;
         Submission submission = message.getSubmission();
         submission = HibernateEntity.deproxy(submission, Submission.class);
+
+        if (submission instanceof ExperimentSubmission) {
+            try {
+                ExperimentProfile exp = ((ExperimentSubmission) submission).getExperimentProfile();
+                if(exp != null)
+                    submissionType = exp.getType();
+                else
+                    submissionType = null;
+            } catch (DataSerializationException x) {
+                logger.error("Error sending RT message", x);
+            }
+        }
+
         logger.debug("Rt ticket number is "+ ticketNumber);
         logger.debug("Adding message to  Rt ticket "+ submission.getRtTicketNumber());
 
         if(null != submission.getSubsTrackingId() && !message.getSubject().equalsIgnoreCase(RtFieldNames.CONTACT_US_SUBJECT)) {
             try {
-                ticketUpdate(
-                        new ImmutableMap.Builder<String, String>()
-                                .put(RtFieldNames.DIRECTORY, properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
-                                .put(RtFieldNames.SUBJECT, message.getSubject())
-                                .build(),
-                        ticketNumber
-                );
+                ticketUpdate(getTicketUpdateFieldsMap(message,submission,submissionType), ticketNumber);
             } catch (Exception x) {
                 messenger.send("There was a problem updating Submission Directory " + submission.getRtTicketNumber(), x);
             }

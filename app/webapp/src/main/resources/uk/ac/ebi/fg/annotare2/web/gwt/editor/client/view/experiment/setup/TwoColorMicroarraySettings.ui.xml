@@ -31,11 +31,11 @@
             visibility: hidden;
             width: 275px;
             word-wrap: normal;
-            background-color: black;
+            background-color: #888;
             color: #fff;
-            text-align: center;
+            text-align: justify;
             border-radius: 6px;
-            padding: 5px 0;
+            padding: 2px 5px;
 
             /* Position the tooltip */
             position: absolute;
@@ -48,7 +48,11 @@
 
         .expDetailLabel
         {
-            padding: 35px !important;
+            padding: 30px !important;
+        }
+        div > i
+        {
+            color: #888;
         }
     </ui:style>
 
@@ -58,7 +62,7 @@
                 <td class="{style.expDetailLabel}">How many hybridizations did you perform?
                     <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
                         <span class="{style.tooltiptext}">
-                            <strong>1 sample = 1 biological replicate</strong>
+                            1 sample = 1 biological replicate
                         </span>
                     </div>
                 </td>
@@ -71,7 +75,7 @@
                     What array did you use?
                     <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
                         <span class="{style.tooltiptext}">
-                            <strong>Start typing (e.g. manufacturer’s name) and select your array from the list. Only the top 15 matches are shown.</strong>
+                            Start typing (e.g. manufacturer’s name) and select your array from the list. Only the top 15 matches are shown.
                         </span>
                     </div>
                 </td>

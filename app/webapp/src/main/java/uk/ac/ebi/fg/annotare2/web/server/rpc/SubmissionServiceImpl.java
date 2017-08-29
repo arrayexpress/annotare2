@@ -254,7 +254,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
             submission.setExperimentProfile(experimentProfile);
             save(submission);
 
-            //create ticket in RT
+            /*//create ticket in RT
             messenger.send(
                     EmailTemplates.NEW_SUBMISSION_TEMPLATE,
                     new ImmutableMap.Builder<String, String>()
@@ -264,7 +264,7 @@ public class SubmissionServiceImpl extends SubmissionBasedRemoteService implemen
                             .build()
                     , submission.getCreatedBy()
                     , submission
-            );
+            );*/
 
         } catch (RecordNotFoundException e) {
             throw noSuchRecord(e);

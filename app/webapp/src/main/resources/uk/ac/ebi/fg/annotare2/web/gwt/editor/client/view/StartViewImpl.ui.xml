@@ -121,7 +121,7 @@
             <table class="{style.centerView}">
                 <tr>
                     <td>
-                        <w:SetupExpSubmissionView ui:field="view" height="500px" width="1000px"/>
+                        <w:SetupExpSubmissionView ui:field="view" height="460px" width="880px"/>
                     </td>
                 </tr>
             </table>

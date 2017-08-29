@@ -48,7 +48,6 @@
             color: #b36363;
             margin-top: 5px;
             width: 500px;
-            padding-left: 30px
         }
 
         .question {
@@ -56,15 +55,41 @@
             font-size: 12pt;
             margin-right: 10px;
         }
-        .info {
-            border: none !important;
-
-        }
-        .info:focus
+        .plantImage
         {
-            outline: none !important;
+            display: inline-block;
+            vertical-align: top;
+            height: 100%;
+            margin-left: 100px;
+            margin-top: 50px;
         }
 
+        .plantImageTextOneClr
+        {
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -34%;
+            margin-left: 61%;
+            color: #93ce59;
+        }
+
+        .plantImageTextTwoClr
+        {
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -16%;
+            margin-left: 65%;
+            color: #93ce59;
+        }
+
+        .plantImageTextSeq
+        {
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -28%;
+            margin-left: 71%;
+            color: #93ce59;
+        }
         .tooltip {
             position: relative;
             display: inline-block;
@@ -75,11 +100,11 @@
             visibility: hidden;
             width: 275px;
             word-wrap: normal;
-            background-color: black;
+            background-color: #888;
             color: #fff;
-            text-align: center;
+            text-align: justify;
             border-radius: 6px;
-            padding: 5px 0;
+            padding: 2px 5px;
 
             /* Position the tooltip */
             position: absolute;
@@ -96,7 +121,6 @@
             margin-top:10px;
             border-top:1px solid #eeeeee;
             color:#777;
-            width: 90%;
         }
     </ui:style>
     <g:ResizeLayoutPanel>
@@ -104,9 +128,9 @@
             <g:center>
                 <g:VerticalPanel>
 
-                    <g:VerticalPanel>
+                    <g:VerticalPanel ui:field="expSetupPanel">
                         <g:HorizontalPanel>
-                            <g:VerticalPanel>
+                            <g:VerticalPanel width="525px">
                         <g:HorizontalPanel>
                         <g:cell verticalAlignment="ALIGN_MIDDLE">
                             <g:Label addStyleNames="{style.question}" ui:field="selectSubmissionTypeLabel">Select Submission Template </g:Label>
@@ -116,23 +140,19 @@
                                 ui:field="templateBox" visibleItemCount="1" width="100%" height="100%"/>
                         </g:cell>
                     </g:HorizontalPanel>
+
                         <g:HTMLPanel addStyleNames="{style.help}" ui:field="warningMsg" width="100%">
-                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Please ensure you have selected the correct template as this cannot be changed later!
+                            <i class="fa fa-exclamation-triangle" style="color: #b36363 !important;" aria-hidden="true"></i>Please ensure you have selected the correct template as this cannot be changed later!
                         </g:HTMLPanel>
                             </g:VerticalPanel>
-                            <g:HTMLPanel addStyleNames="{style.help}" ui:field="plantExperimentDetails" width="100%">
-                                <div style="color:#6dab49;">
-                                    This template is designed for plant species to reflect plant-specific metadata
-                                    <img src="../../assets/images/plant-picture.png" alt="plantPic"></img>
-                                </div>
-                            </g:HTMLPanel>
                         </g:HorizontalPanel>
+                        <g:VerticalPanel ui:field="genericExpDetails">
                         <g:HTMLPanel addStyleNames="{style.help}" ui:field="oneColorDetails" width="100%">
                             <div class="{style.expDescription}">
                                 <p>A one-colour experiment uses one label (or dye). An example experiment is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-641/'>
                                     E-MTAB-641</a>.</p>
                                 <p>Annotare expects the following experimental workflow (1 raw data file per sample or a raw data matrix including data for multiple samples):</p>
-                                <p><img src="../../assets/images/one_color_template.png" alt="One Color" width="450" height="200"></img></p>
+                                <p><img src="../../assets/images/one_color_template.png" alt="One Color" width="320" height="225" style="margin-left: 50px;"></img></p>
                             </div>
                         </g:HTMLPanel>
                         <g:HTMLPanel addStyleNames="{style.help}" ui:field="twoColorDetails" width="100%">
@@ -140,18 +160,53 @@
                                 <p>A two-colour experiment compares two dyes, normally Cy3 and Cy5. An example experiment is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-3237/'>
                                     E-MEXP-3237</a>.</p>
                                 <p>Annotare expects the following experimental workflow (1 raw data file per 2 labelled extracts):<b></b>
-                                If your data is split into separate files, use "Contact Us" once you are ready to submit.</p>
-                                <p><img src="../../assets/images/two_color_template.png" alt="Two Colour" width="450" height="200"></img></p>
+                                    If your data is split into separate files, use "Contact Us" once you are ready to submit.</p>
+                                <p><img src="../../assets/images/two_color_template.png" alt="Two Colour" width="400" height="150"></img></p>
                             </div>
                         </g:HTMLPanel>
                         <g:HTMLPanel addStyleNames="{style.help}" ui:field="highSeqDetails" width="100%">
-                             <div class="{style.expDescription}">
-                                A sequencing experiment produces raw sequence data generated by next-generation sequencing
-                                platforms such as Illumina Genome Analyzer/HiSeq or Ion Torrent. An example is
-                                <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-582/'>E-MTAB-582</a>.
-                                 <p><img src="../../assets/images/sequencing_template.png" alt="Two Colour" width="450" height="200"></img></p>
+                            <div class="{style.expDescription}">
+                                <p>A sequencing experiment produces raw sequence data generated by next-generation sequencing
+                                    platforms such as Illumina Genome Analyzer/HiSeq or Ion Torrent. An example is
+                                    <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-582/'>E-MTAB-582</a>.</p>
+                                <p><img src="../../assets/images/sequencing_template.png" alt="Sequencing" width="450" height="200"></img></p>
+
                             </div>
                         </g:HTMLPanel>
+                        </g:VerticalPanel>
+                        <g:VerticalPanel ui:field="plantExpDetails">
+                        <g:HTMLPanel addStyleNames="{style.help}" ui:field="plantOneColorDetails" width="100%">
+                            <div class="{style.expDescription}">
+                                <p>A one-colour experiment uses one label (or dye). An example experiment is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-641/'>
+                                    E-MTAB-641</a>.</p>
+                                <p>Annotare expects the following experimental workflow (1 raw data file per sample or a raw data matrix including data for multiple samples):</p>
+                                <div><img src="../../assets/images/one_color_template.png" alt="One Color" width="320" height="225" style="margin-left: 50px;"></img>
+                                    <img src="../../assets/images/plant-picture.png" alt="plantPic" class="{style.plantImage}"></img>
+                                <p class="{style.plantImageTextOneClr}">This template is designed for plant species to reflect plant-specific metadata</p></div>
+                            </div>
+                        </g:HTMLPanel>
+                        <g:HTMLPanel addStyleNames="{style.help}" ui:field="plantTwoColorDetails" width="100%">
+                            <div class="{style.expDescription}">
+                                <p>A two-colour experiment compares two dyes, normally Cy3 and Cy5. An example experiment is <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MEXP-3237/'>
+                                    E-MEXP-3237</a>.</p>
+                                <p>Annotare expects the following experimental wor  kflow (1 raw data file per 2 labelled extracts):<b></b>
+                                    If your data is split into separate files, use "Contact Us" once you are ready to submit.</p>
+                                <div><img src="../../assets/images/two_color_template.png" alt="Two Color" width="400" height="150"></img>
+                                    <img src="../../assets/images/plant-picture.png" alt="plantPic" class="{style.plantImage}"></img>
+                                    <p class="{style.plantImageTextTwoClr}">This template is designed for plant species to reflect plant-specific metadata</p></div>
+                            </div>
+                        </g:HTMLPanel>
+                        <g:HTMLPanel addStyleNames="{style.help}" ui:field="plantHighSeqDetails" width="100%">
+                            <div class="{style.expDescription}">
+                                <p>A sequencing experiment produces raw sequence data generated by next-generation sequencing
+                                    platforms such as Illumina Genome Analyzer/HiSeq or Ion Torrent. An example is
+                                    <a target='_blank' href='http://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-582/'>E-MTAB-582</a>.</p>
+                                <div><img src="../../assets/images/sequencing_template.png" alt="Sequencing" width="450" height="200"></img>
+                                    <img src="../../assets/images/plant-picture.png" alt="plantPic" class="{style.plantImage}"></img>
+                                    <p class="{style.plantImageTextSeq}">This template is designed for plant species to reflect plant-specific metadata</p></div>
+                            </div>
+                        </g:HTMLPanel>
+                        </g:VerticalPanel>
                     </g:VerticalPanel>
                         <g:HorizontalPanel addStyleNames="{style.top-padded}">
                         <g:VerticalPanel>
@@ -160,7 +215,7 @@
                                 <g:HTMLPanel ui:field="expDesignInfo">
                                 <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
                                     <span class="{style.tooltiptext}">
-                                        <strong>(Optional) Choose the designs types that best describe your experiment to pre-select the experimental variable(s) for your experiment.</strong>
+                                        (Optional) Choose the designs types that best describe your experiment to pre-select the experimental variable(s) for your experiment.
                                     </span>
                                 </div>
                                 </g:HTMLPanel>

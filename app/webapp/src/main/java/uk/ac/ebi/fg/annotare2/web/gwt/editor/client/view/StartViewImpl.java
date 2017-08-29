@@ -56,6 +56,7 @@ public class StartViewImpl extends Composite implements StartView {
     @Override
     public void setPresenter(Presenter presenter) {
         view.setPresenter(presenter);
+        contactUsDialog.setPresenter(presenter);
     }
 
     @Override

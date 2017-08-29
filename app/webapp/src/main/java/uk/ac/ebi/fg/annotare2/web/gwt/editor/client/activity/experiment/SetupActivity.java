@@ -38,6 +38,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.StartView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper.callbackWrap;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.EditorUtils.getSubmissionId;
 
 /**
@@ -86,6 +87,20 @@ public class SetupActivity extends AbstractActivity implements StartView.Present
     @Override
     public void getArrayDesigns(String query, int limit, AsyncCallback<ArrayList<ArrayDesignRef>> callback) {
         dataService.getArrayDesignList(query,limit, AsyncCallbackWrapper.callbackWrap(callback));
+    }
+
+    @Override
+    public void sendMessage(String subject, String message) {
+        submissionService.sendMessage(getSubmissionId(), subject, message,
+                callbackWrap(
+                        new ReportingAsyncCallback<Void>(FailureMessage.GENERIC_FAILURE) {
+
+                            @Override
+                            public void onSuccess(Void result) {
+                            }
+                        }
+                )
+        );
     }
 
     /*@Override

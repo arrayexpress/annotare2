@@ -35,6 +35,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.ArrayDesignRef;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.OntologyTermGroup;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDesignType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
+import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.ContactUsDialog;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SelectableLabel;
 import uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.widget.SuggestService;
 
@@ -88,16 +89,31 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     HTMLPanel twoColorDetails;
 
     @UiField
-    HTMLPanel warningMsg;
-
-    @UiField
     HTMLPanel highSeqDetails;
 
     @UiField
-    HTMLPanel plantExperimentDetails;
+    HTMLPanel plantOneColorDetails;
+
+    @UiField
+    HTMLPanel plantTwoColorDetails;
+
+    @UiField
+    HTMLPanel plantHighSeqDetails;
+
+    @UiField
+    HTMLPanel warningMsg;
 
     @UiField
     HTMLPanel expDesignInfo;
+
+    @UiField
+    VerticalPanel expSetupPanel;
+
+    @UiField
+    VerticalPanel plantExpDetails;
+
+    @UiField
+    VerticalPanel genericExpDetails;
 
     private Presenter presenter;
 
@@ -166,17 +182,15 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 templateDetailsLabel.setVisible(true);
                 experimentDesignPanel.setVisible(true);
                 experimentDesignPanelLabel.setVisible(true);
-                warningMsg.setVisible(false);
-                templateBox.setVisible(false);
                 expDesignInfo.setVisible(true);
-                oneColorDetails.setVisible(false);
-                twoColorDetails.setVisible(false);
-                highSeqDetails.setVisible(false);
-                plantExperimentDetails.setVisible(false);
-                selectSubmissionTypeLabel.setVisible(false);
                 prevButton.setVisible(true);
                 okButton.setVisible(true);
+
+                selectSubmissionTypeLabel.setVisible(false);
+                warningMsg.setVisible(false);
+                templateBox.setVisible(false);
                 nextButton.setVisible(false);
+                expSetupPanel.setVisible(false);
             }
         });
 
@@ -188,22 +202,15 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
                 experimentDesignPanel.setVisible(false);
                 experimentDesignPanelLabel.setVisible(false);
                 expDesignInfo.setVisible(false);
-                warningMsg.setVisible(true);
-
-                if(oneClrDetail)
-                    oneColorDetails.setVisible(true);
-                if(twoClrDetail)
-                    twoColorDetails.setVisible(true);
-                if(highSeqDetail)
-                    highSeqDetails.setVisible(true);
-                if(plantDetail)
-                    plantExperimentDetails.setVisible(true);
-
-                templateBox.setVisible(true);
-                selectSubmissionTypeLabel.setVisible(true);
                 prevButton.setVisible(false);
-                nextButton.setVisible(true);
                 okButton.setVisible(false);
+
+                selectSubmissionTypeLabel.setVisible(true);
+                warningMsg.setVisible(true);
+                expSetupPanel.setVisible(true);
+                templateBox.setVisible(true);
+                nextButton.setVisible(true);
+
             }
         });
         //getExpDesigns();
@@ -338,65 +345,53 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
     private HasSubmissionSettings createWidget(ExperimentProfileType type) {
         switch (type) {
             case ONE_COLOR_MICROARRAY:
+                genericExpDetails.setVisible(true);
                 twoColorDetails.setVisible(false);
                 highSeqDetails.setVisible(false);
                 oneColorDetails.setVisible(true);
-                plantExperimentDetails.setVisible(false);
-                oneClrDetail = true;
-                twoClrDetail = false;
-                highSeqDetail = false;
-                plantDetail = false;
+                plantExpDetails.setVisible(false);
                 return new OneColorMicroarraySettings(this);
+
             case TWO_COLOR_MICROARRAY:
+                genericExpDetails.setVisible(true);
                 twoColorDetails.setVisible(true);
                 oneColorDetails.setVisible(false);
                 highSeqDetails.setVisible(false);
-                plantExperimentDetails.setVisible(false);
-                oneClrDetail = false;
-                twoClrDetail = true;
-                highSeqDetail = false;
-                plantDetail = false;
+                plantExpDetails.setVisible(false);
                 return new TwoColorMicroarraySettings(this);
+
             case SEQUENCING:
+                genericExpDetails.setVisible(true);
                 twoColorDetails.setVisible(false);
                 oneColorDetails.setVisible(false);
                 highSeqDetails.setVisible(true);
-                plantExperimentDetails.setVisible(false);
-                oneClrDetail = false;
-                twoClrDetail = false;
-                highSeqDetail = true;
-                plantDetail = false;
+                plantExpDetails.setVisible(false);
                 return new HighThroughputSeqSettings();
+
             case PLANT_SEQUENCING:
-                twoColorDetails.setVisible(false);
-                oneColorDetails.setVisible(false);
-                highSeqDetails.setVisible(true);
-                plantExperimentDetails.setVisible(true);
-                oneClrDetail = false;
-                twoClrDetail = false;
-                highSeqDetail = true;
-                plantDetail = true;
+                genericExpDetails.setVisible(false);
+                plantExpDetails.setVisible(true);
+                plantTwoColorDetails.setVisible(false);
+                plantHighSeqDetails.setVisible(true);
+                plantOneColorDetails.setVisible(false);
                 return new HighThroughputSeqSettings();
+
             case PLANT_ONE_COLOR_MICROARRAY:
-                twoColorDetails.setVisible(false);
-                highSeqDetails.setVisible(false);
-                oneColorDetails.setVisible(true);
-                plantExperimentDetails.setVisible(true);
-                oneClrDetail = true;
-                twoClrDetail = false;
-                highSeqDetail = false;
-                plantDetail = true;
+                genericExpDetails.setVisible(false);
+                plantExpDetails.setVisible(true);
+                plantTwoColorDetails.setVisible(false);
+                plantHighSeqDetails.setVisible(false);
+                plantOneColorDetails.setVisible(true);
                 return new OneColorMicroarraySettings(this);
+
             case PLANT_TWO_COLOR_MICROARRAY:
-                twoColorDetails.setVisible(true);
-                oneColorDetails.setVisible(false);
-                highSeqDetails.setVisible(false);
-                plantExperimentDetails.setVisible(true);
-                oneClrDetail = false;
-                twoClrDetail = true;
-                highSeqDetail = false;
-                plantDetail = true;
+                genericExpDetails.setVisible(false);
+                plantExpDetails.setVisible(true);
+                plantTwoColorDetails.setVisible(true);
+                plantHighSeqDetails.setVisible(false);
+                plantOneColorDetails.setVisible(false);
                 return new TwoColorMicroarraySettings(this);
+
             default:
                 throw new IllegalArgumentException("Unknown experiment type: " + type);
         }
@@ -407,7 +402,7 @@ public class SetupExpSubmissionView extends Composite implements SuggestService<
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
     }
 
-    public interface Presenter {
+    public interface Presenter extends ContactUsDialog.Presenter {
 
         void setupNewSubmission(ExperimentSetupSettings settings, List<OntologyTerm> experimentDesigns, AsyncCallback<Void> callback);
 
