@@ -87,6 +87,8 @@ public class SampleColumnsDialog extends DialogBox {
 
     private List<String> attributeTemplates = new ArrayList<>();
 
+    private List<String> mandatoryAttributeTemplates = new ArrayList<>();
+
     private final SampleAttributeEfoSuggest efoSuggest;
 
     public SampleColumnsDialog(List<SampleColumn> columns,
@@ -144,7 +146,9 @@ public class SampleColumnsDialog extends DialogBox {
                     if(!attributeTemplates.contains(attribute.getName())) {
                         attribute.setIsVisible(true);
                         attributeTemplates.add(attribute.getName());
-                        addColumn(attribute);
+                        if(!mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase())) {
+                            addColumn(attribute);
+                        }
                     }
                 }
             }
@@ -249,6 +253,7 @@ public class SampleColumnsDialog extends DialogBox {
         for (SampleAttributeTemplate template : all) {
             if (!used.contains(template) && template.isMandatory()) {
                 addColumn(template);
+                mandatoryAttributeTemplates.add(template.getName().toLowerCase());
             }
         }
     }

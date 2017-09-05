@@ -33,7 +33,7 @@
             word-wrap: normal;
             background-color: #888;
             color: #fff;
-            text-align: justify;
+            text-align: left;
             border-radius: 6px;
             padding: 2px 5px;
 
@@ -59,7 +59,7 @@
     <g:HTMLPanel>
         <table>
             <tr>
-                <td class="{style.expDetailLabel}">How many hybridizations did you perform?
+                <td class="{style.expDetailLabel}">How many samples does your experiment have?
                     <div class="{style.tooltip}"><i class="fa fa-info-circle" aria-hidden="true"></i>
                         <span class="{style.tooltiptext}">
                             1 sample = 1 biological replicate

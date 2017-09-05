@@ -20,7 +20,7 @@
         xmlns:g="urn:import:com.google.gwt.user.client.ui"
         xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 
-     <g:ResizeLayoutPanel addStyleNames="app-SubmissionList">
+     <!--<g:ResizeLayoutPanel addStyleNames="app-SubmissionList">
          <g:DockLayoutPanel>
              <g:north size="40">
                  <g:HTMLPanel>
@@ -37,6 +37,10 @@
          <c:DataGrid ui:field='dataGrid' width="100%" height="100%"/>
              </g:center>
          </g:DockLayoutPanel>
-     </g:ResizeLayoutPanel>
+     </g:ResizeLayoutPanel>-->
+
+    <g:ResizeLayoutPanel addStyleNames="app-SubmissionList">
+                <c:DataGrid ui:field='dataGrid' width="100%" height="100%"/>
+    </g:ResizeLayoutPanel>
 
 </ui:UiBinder>

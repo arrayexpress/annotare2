@@ -51,8 +51,10 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
 
     private Presenter presenter;
 
+/*
     @UiField(provided = true)
     SimplePager pager;
+*/
 
     private ListDataProvider<SubmissionRow> dataProvider;
 
@@ -159,11 +161,14 @@ public class SubmissionListViewImpl extends Composite implements SubmissionListV
         dataProvider = new ListDataProvider<SubmissionRow>();
         dataProvider.addDataDisplay(dataGrid);
 
-        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+
+        //Was done to add paging to the submission list
+
+        /*SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
         pager.setDisplay(dataGrid);
         pager.setPageSize(50);
-
+*/
         Binder uiBinder = GWT.create(Binder.class);
         initWidget(uiBinder.createAndBindUi(this));
     }
