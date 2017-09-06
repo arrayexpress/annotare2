@@ -20,9 +20,12 @@ import com.google.common.base.Function;
 import com.google.common.collect.Ordering;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -167,6 +170,7 @@ public class SampleColumnsDialog extends DialogBox {
         }
 
         SampleColumnEditor editor = new SampleColumnEditor(column, efoSuggest);
+        updateColumnTitles();
         editor.addValueChangeHandler(new ValueChangeHandler<SampleColumn>() {
             @Override
             public void onValueChange(ValueChangeEvent<SampleColumn> event) {
