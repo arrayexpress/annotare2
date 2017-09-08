@@ -395,6 +395,19 @@ public class AeIntegrationWatchdog {
 
             String ftpSubDirectory = submission.getFtpSubDirectory();
 
+            if (isSequencing && rawDataFiles.size() > 0) {
+                if (!ftpManager.doesExist(ftpSubDirectory)) {
+                    ftpManager.createDirectory(ftpSubDirectory);
+                }
+            }
+
+            File unpackedExportDirectory = new File(exportDir, "unpacked");
+            if (!unpackedExportDirectory.exists()) {
+                unpackedExportDirectory.mkdir();
+                unpackedExportDirectory.setWritable(true, false);
+            }
+
+
             if (dataFiles.size() > 0) {
                 logger.debug("Will copy {} data files", dataFiles.size());
                 for (DataFile dataFile : dataFiles) {
@@ -402,7 +415,7 @@ public class AeIntegrationWatchdog {
                     if (DataFileStatus.STORED == dataFile.getStatus()) {
                         URI destinationURI = (isSequencing && rawDataFiles.contains(dataFile))
                                 ? new URI(ftpManager.getDirectory(ftpSubDirectory) + dataFile.getName())
-                                : new File(exportDir, dataFile.getName()).toURI();
+                                : new File(unpackedExportDirectory, dataFile.getName()).toURI();
                         DataFileHandle source = dataFileManager.getFileHandle(dataFile);
                         DataFileHandle destination = source.copyTo(destinationURI);
                         logger.debug("Copied data file {} to {}", dataFile.getName(), destinationURI);
