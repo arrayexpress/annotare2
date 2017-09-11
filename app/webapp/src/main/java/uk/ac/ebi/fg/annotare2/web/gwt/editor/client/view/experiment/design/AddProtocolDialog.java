@@ -201,7 +201,7 @@ public class AddProtocolDialog extends DialogBox {
 
         addProtocolsToPanel(mandatoryProtocols, protocolsPanel, protocolDescriptions);
 
-        Label optionalProtocolsLabel = new Label("Optional Protocols");
+        Label optionalProtocolsLabel = new Label("Additional Protocols");
         optionalProtocolsLabel.addStyleName("optionalProtocolHeaderLabel");
         optionalProtocolsLabel.addStyleName("optionalProtocolHeader");
 

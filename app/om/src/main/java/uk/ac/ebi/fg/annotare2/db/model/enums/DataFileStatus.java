@@ -27,7 +27,7 @@ public enum DataFileStatus {
     STORED("uploaded"),
     TO_BE_ASSOCIATED("verifying..."),
     ASSOCIATED("uploaded (FTP)"),
-    MD5_ERROR("MD5 check error"),
+    MD5_ERROR("MD5 error"),
     FILE_NOT_FOUND_ERROR("file not found"),
     ERROR("error");
 
