@@ -11,7 +11,7 @@ package uk.ac.ebi.fg.annotare2.autosubs.jooq.tables;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Experiments extends org.jooq.impl.TableImpl<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord> {
 
-	private static final long serialVersionUID = -1168066381;
+	private static final long serialVersionUID = 325534233;
 
 	/**
 	 * The singleton instance of <code>ae_autosubs.experiments</code>
@@ -225,6 +225,11 @@ public class Experiments extends org.jooq.impl.TableImpl<uk.ac.ebi.fg.annotare2.
 	 * The column <code>ae_autosubs.experiments.atlas_fail_score</code>. 
 	 */
 	public final org.jooq.TableField<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord, java.lang.String> ATLAS_FAIL_SCORE = createField("atlas_fail_score", org.jooq.impl.SQLDataType.VARCHAR.length(255), this);
+
+	/**
+	 * The column <code>ae_autosubs.experiments.annotare_submission_id</code>. 
+	 */
+	public final org.jooq.TableField<uk.ac.ebi.fg.annotare2.autosubs.jooq.tables.records.ExperimentsRecord, java.lang.Integer> ANNOTARE_SUBMISSION_ID = createField("annotare_submission_id", org.jooq.impl.SQLDataType.INTEGER, this);
 
 	/**
 	 * Create a <code>ae_autosubs.experiments</code> table reference

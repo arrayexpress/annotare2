@@ -17,6 +17,7 @@
 
 package uk.ac.ebi.fg.annotare2.autosubs;
 
+import com.google.common.primitives.Ints;
 import com.google.inject.Inject;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -100,6 +101,7 @@ public class SubsTracking {
                                         .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
                                         .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() ? 1 : 0)
                                         .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
+                                        .set(EXPERIMENTS.ANNOTARE_SUBMISSION_ID, Ints.checkedCast(submission.getId()))
                                         .returning(EXPERIMENTS.ID)
                                         .fetchOne();
                 if (null != r) {
@@ -122,6 +124,7 @@ public class SubsTracking {
                             .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
                             .set(EXPERIMENTS.IS_UHTS, 0)
                             .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
+                            .set(EXPERIMENTS.ANNOTARE_SUBMISSION_ID, Ints.checkedCast(submission.getId()))
                             .returning(EXPERIMENTS.ID)
                             .fetchOne();
             if (null != r) {
@@ -160,6 +163,7 @@ public class SubsTracking {
                                 .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
                                 .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
                                 .set(EXPERIMENTS.NUM_SUBMISSIONS, numSubmissions + 1)
+                                .set(EXPERIMENTS.ANNOTARE_SUBMISSION_ID, Ints.checkedCast(submission.getId()))
                                 .where(EXPERIMENTS.ID.equal(submission.getSubsTrackingId()))
                                 .execute();
 
