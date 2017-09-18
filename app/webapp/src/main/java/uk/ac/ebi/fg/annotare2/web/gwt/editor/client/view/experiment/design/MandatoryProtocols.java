@@ -1,9 +1,7 @@
 
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
-/**
- * Created by haideri on 17/05/2017.
- */
+
 public enum MandatoryProtocols {
 
     SAMPLE_COLLECTION_PROTOCOL("sample collection protocol"),
