@@ -32,6 +32,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
+import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
@@ -92,7 +93,11 @@ public class SampleColumnsDialog extends DialogBox {
 
     private List<String> mandatoryAttributeTemplates = new ArrayList<>();
 
+    private List<SampleAttributeTemplate> mandatoryTemplates = new ArrayList<>();
+
     private final SampleAttributeEfoSuggest efoSuggest;
+
+    private String experimentDesignType;
 
     public SampleColumnsDialog(List<SampleColumn> columns,
                                SampleAttributeEfoSuggest efoSuggest,
@@ -131,7 +136,6 @@ public class SampleColumnsDialog extends DialogBox {
             attributeTemplates.add(entry.getValue().getName());
         }
         addMandatoryColumns();
-        setMandatoryColumn();
     }
 
     private void setMandatoryColumn()
@@ -144,18 +148,37 @@ public class SampleColumnsDialog extends DialogBox {
 
         for(ExperimentDesignType designType: ExperimentDesignType.values())
         {
+            experimentDesignType = designType.getLabel();
             if(expDesignTypes.contains(designType.getLabel())) {
                 for (SampleAttributeTemplate attribute : designType.getAttributes()) {
                     if(!attributeTemplates.contains(attribute.getName())) {
                         attribute.setIsVisible(true);
                         attributeTemplates.add(attribute.getName());
-                        if(!mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase())) {
-                            addColumn(attribute);
+                        if(mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()) && (experimentDesignType.equalsIgnoreCase("species design"))) {
+                            removeAddedColumn(attribute);
+                            addColumn(attribute, experimentDesignType);
+                        }
+                        else {
+                            addColumn(attribute, "");
                         }
                     }
                 }
             }
 
+        }
+    }
+
+    private void removeAddedColumn(SampleAttributeTemplate attributeTemplate)
+    {
+        for (int i = 0; i< columnList.getItemCount();i++) {
+
+            if (columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName()) ||
+                    columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName()+"experimentalvariable")) {
+
+                columnList.removeItem(i);
+                columnMap.remove(i+1);
+                break;
+            }
         }
     }
 
@@ -186,7 +209,7 @@ public class SampleColumnsDialog extends DialogBox {
         SampleAttributeTemplate template = getSelectedTemplate();
         if (template != null) {
             templateColumnList.removeItem(templateColumnList.getSelectedIndex());
-            addColumn(template);
+            addColumn(template,"");
         }
     }
 
@@ -197,7 +220,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        addColumn(USER_DEFIED_ATTRIBUTE);
+        addColumn(USER_DEFIED_ATTRIBUTE,"");
     }
 
     @UiHandler("okButton")
@@ -256,10 +279,11 @@ public class SampleColumnsDialog extends DialogBox {
 
         for (SampleAttributeTemplate template : all) {
             if (!used.contains(template) && template.isMandatory()) {
-                addColumn(template);
+                mandatoryTemplates.add(template);
                 mandatoryAttributeTemplates.add(template.getName().toLowerCase());
             }
         }
+        addColumn(mandatoryTemplates,"");
     }
 
     private void updateTemplates() {
@@ -295,25 +319,53 @@ public class SampleColumnsDialog extends DialogBox {
         return names;
     }
 
-    private void addColumn(final SampleAttributeTemplate template) {
+    private void addColumn(final SampleAttributeTemplate template, final String experimentDesignType) {
         efoSuggest.getSystemEfoTerms(
                 new ReportingAsyncCallback<SystemEfoTermMap>(FailureMessage.UNABLE_TO_LOAD_EFO) {
                     @Override
                     public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
-                        addColumn(template, systemEfoTermMap);
+                        addColumn(template, systemEfoTermMap, experimentDesignType);
                     }
                 }
         );
     }
 
-    private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context) {
-        SampleColumn column = SampleColumn.create(template, context);
+    private void addColumn(final List<SampleAttributeTemplate> templates, final String experimentDesignType) {
+        efoSuggest.getSystemEfoTerms(
+                new ReportingAsyncCallback<SystemEfoTermMap>(FailureMessage.UNABLE_TO_LOAD_EFO) {
+                    @Override
+                    public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
+                        addColumn(templates, systemEfoTermMap, experimentDesignType);
+                        setMandatoryColumn();
+
+                    }
+                }
+        );
+    }
+
+    private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType) {
+        SampleColumn column = SampleColumn.create(template, context, experimentDesignType);
         if (null == column) {
             NotificationPopupPanel.error("Unable to add an attribute.", true, false);
         } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
             NotificationPopupPanel.error("Unable to add '" + column.getName() + "': attribute is already defined.", true, false);
         } else {
-            setColumn(column, true);
+                setColumn(column, true);
+        }
+    }
+
+    private void addColumn(List<SampleAttributeTemplate> templates, SystemEfoTermMap context, String experimentDesignType) {
+        for (SampleAttributeTemplate template: templates
+             ) {
+            SampleColumn column = SampleColumn.create(template, context, experimentDesignType);
+            if (null == column) {
+                NotificationPopupPanel.error("Unable to add an attribute.", true, false);
+            } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
+                NotificationPopupPanel.error("Unable to add '" + column.getName() + "': attribute is already defined.", true, false);
+            } else {
+                setColumn(column, true);
+
+            }
         }
     }
 

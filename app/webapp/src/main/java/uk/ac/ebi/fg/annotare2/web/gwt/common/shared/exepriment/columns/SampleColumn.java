@@ -25,6 +25,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.util.ValueRange;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.parse;
 
 /**
@@ -93,7 +94,7 @@ public class SampleColumn implements IsSerializable {
         return new SampleColumn(attr);
     }
 
-    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context) {
+    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType) {
         SampleAttribute attr = new SampleAttribute(0, template.name());
         attr.setType(template.getTypes().iterator().next());
         ValueRange<String> nameRange = template.getNameRange();
@@ -109,6 +110,21 @@ public class SampleColumn implements IsSerializable {
                 attr.setTerm(term);
             }
         }
+
+        if(isNullOrEmpty(experimentDesignType)) {
+            if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism")))
+            {
+                attr.setType(SampleAttributeType.FACTOR_VALUE);
+            }
+        }
+        else
+        {
+            if (!(template.getName().toLowerCase().equalsIgnoreCase("material type")))
+            {
+                attr.setType(SampleAttributeType.FACTOR_VALUE);
+            }
+        }
+
         return new SampleColumn(attr);
     }
 }
