@@ -67,6 +67,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
                 new SampleColumnsDialog(columns,
                         presenter.getEfoTerms(),
                         presenter.getExperimentDesigns(),
+                        presenter.getExperimentProfileType(),
                         new DialogCallback<List<SampleColumn>>() {
                             @Override
                             public boolean onOk(List<SampleColumn> columns) {

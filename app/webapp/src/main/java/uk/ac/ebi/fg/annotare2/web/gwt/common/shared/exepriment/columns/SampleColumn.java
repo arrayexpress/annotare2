@@ -94,7 +94,7 @@ public class SampleColumn implements IsSerializable {
         return new SampleColumn(attr);
     }
 
-    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType) {
+    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType, boolean isMandatory) {
         SampleAttribute attr = new SampleAttribute(0, template.name());
         attr.setType(template.getTypes().iterator().next());
         ValueRange<String> nameRange = template.getNameRange();
@@ -111,20 +111,17 @@ public class SampleColumn implements IsSerializable {
             }
         }
 
-        if(isNullOrEmpty(experimentDesignType)) {
-            if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism")))
-            {
-                attr.setType(SampleAttributeType.FACTOR_VALUE);
+        if(!isMandatory) {
+            if (isNullOrEmpty(experimentDesignType)) {
+                if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism"))) {
+                    attr.setType(SampleAttributeType.FACTOR_VALUE);
+                }
+            } else {
+                if (!(template.getName().toLowerCase().equalsIgnoreCase("material type"))) {
+                    attr.setType(SampleAttributeType.FACTOR_VALUE);
+                }
             }
         }
-        else
-        {
-            if (!(template.getName().toLowerCase().equalsIgnoreCase("material type")))
-            {
-                attr.setType(SampleAttributeType.FACTOR_VALUE);
-            }
-        }
-
         return new SampleColumn(attr);
     }
 }

@@ -44,6 +44,8 @@ public interface SamplesView extends IsWidget {
 
         Collection<OntologyTerm> getExperimentDesigns();
 
+        ExperimentProfileType getExperimentProfileType();
+
         void updateColumns(List<SampleColumn> newColumns);
 
         void updateRow(SampleRow row);

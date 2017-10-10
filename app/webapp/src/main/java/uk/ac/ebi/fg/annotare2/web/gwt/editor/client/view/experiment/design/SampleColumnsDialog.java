@@ -31,6 +31,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.*;
+import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.OntologyTerm;
 import uk.ac.ebi.fg.annotare2.submission.model.SampleAttributeType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
@@ -40,11 +41,13 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDesignType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentProfileTypeToAttributesMapping;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.columns.SampleColumn;
 
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
+import static java.util.EnumSet.of;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.USER_DEFIED_ATTRIBUTE;
 import static uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate.valueOf;
 
@@ -102,6 +105,7 @@ public class SampleColumnsDialog extends DialogBox {
     public SampleColumnsDialog(List<SampleColumn> columns,
                                SampleAttributeEfoSuggest efoSuggest,
                                Collection<OntologyTerm> experimentDesigns,
+                               ExperimentProfileType experimentProfileType,
                                DialogCallback<List<SampleColumn>> callback) {
         setModal(true);
         setGlassEnabled(true);
@@ -127,15 +131,19 @@ public class SampleColumnsDialog extends DialogBox {
                 removeButtonClicked(null);
             }
         }, DoubleClickEvent.getType());
+
         this.efoSuggest = efoSuggest;
         this.callback = callback;
+
         setColumns(columns);
         updateTemplates();
+
         for (Map.Entry<Integer,SampleColumn> entry : columnMap.entrySet())
         {
             attributeTemplates.add(entry.getValue().getName());
         }
-        addMandatoryColumns();
+
+        addMandatoryColumns(experimentProfileType);
     }
 
     private void setMandatoryColumn()
@@ -273,7 +281,26 @@ public class SampleColumnsDialog extends DialogBox {
         move(index, index + 1);
     }
 
-    private void addMandatoryColumns() {
+    private void addMandatoryColumns(ExperimentProfileType experimentProfileType) {
+
+        List<SampleAttributeTemplate> attributeTemplates;
+        Collection<ExperimentProfileType> experimentProfileTypes;
+
+        for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
+             ExperimentProfileTypeToAttributesMapping.values()) {
+
+            experimentProfileTypes = expTypeToAttribute.getExpProfileTypes();
+
+            if(experimentProfileTypes.contains(experimentProfileType)) {
+                attributeTemplates = expTypeToAttribute.getAttributes();
+
+                for (SampleAttributeTemplate attributeTemplate :
+                        attributeTemplates) {
+                    attributeTemplate.setIsMandatory(true);
+                }
+            }
+        }
+
         Set<SampleAttributeTemplate> used = getUsedTemplates();
         Collection<SampleAttributeTemplate> all = SampleAttributeTemplate.getAll();
 
@@ -344,7 +371,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType) {
-        SampleColumn column = SampleColumn.create(template, context, experimentDesignType);
+        SampleColumn column = SampleColumn.create(template, context, experimentDesignType, false);
         if (null == column) {
             NotificationPopupPanel.error("Unable to add an attribute.", true, false);
         } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
@@ -357,7 +384,7 @@ public class SampleColumnsDialog extends DialogBox {
     private void addColumn(List<SampleAttributeTemplate> templates, SystemEfoTermMap context, String experimentDesignType) {
         for (SampleAttributeTemplate template: templates
              ) {
-            SampleColumn column = SampleColumn.create(template, context, experimentDesignType);
+            SampleColumn column = SampleColumn.create(template, context, experimentDesignType, true);
             if (null == column) {
                 NotificationPopupPanel.error("Unable to add an attribute.", true, false);
             } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
