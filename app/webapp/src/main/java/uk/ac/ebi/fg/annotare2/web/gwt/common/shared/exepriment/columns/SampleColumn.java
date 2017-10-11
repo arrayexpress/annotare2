@@ -95,6 +95,7 @@ public class SampleColumn implements IsSerializable {
     }
 
     public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType, boolean isMandatory) {
+
         SampleAttribute attr = new SampleAttribute(0, template.name());
         attr.setType(template.getTypes().iterator().next());
         ValueRange<String> nameRange = template.getNameRange();
@@ -111,15 +112,43 @@ public class SampleColumn implements IsSerializable {
             }
         }
 
-        if(!isMandatory) {
-            if (isNullOrEmpty(experimentDesignType)) {
-                if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism"))) {
-                    attr.setType(SampleAttributeType.FACTOR_VALUE);
+        if (!isMandatory) {
+                if (isNullOrEmpty(experimentDesignType)) {
+                    if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism"))) {
+                        attr.setType(SampleAttributeType.FACTOR_VALUE);
+                    }
+                } else {
+                    if (!(template.getName().toLowerCase().equalsIgnoreCase("material type"))) {
+                        attr.setType(SampleAttributeType.FACTOR_VALUE);
+                    }
                 }
-            } else {
-                if (!(template.getName().toLowerCase().equalsIgnoreCase("material type"))) {
-                    attr.setType(SampleAttributeType.FACTOR_VALUE);
-                }
+            }
+        return new SampleColumn(attr);
+    }
+
+    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, boolean isMandatory, boolean isExperimentVariable) {
+
+        SampleAttribute attr = new SampleAttribute(0, template.name());
+        attr.setType(template.getTypes().iterator().next());
+        ValueRange<String> nameRange = template.getNameRange();
+        if (nameRange.isSingleton()) {
+            attr.setName(nameRange.get());
+        }
+
+        ValueRange<SystemEfoTerm> termRange = template.getTermRange();
+        if (termRange.isSingleton()) {
+            SystemEfoTerm systemTerm = termRange.get();
+            OntologyTerm term = context.getEfoTerm(systemTerm);
+            if (term != null) {
+                attr.setTerm(term);
+            }
+        }
+
+        if(isExperimentVariable) {
+            if (!isMandatory) {
+                    if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism"))) {
+                        attr.setType(SampleAttributeType.FACTOR_VALUE);
+                    }
             }
         }
         return new SampleColumn(attr);

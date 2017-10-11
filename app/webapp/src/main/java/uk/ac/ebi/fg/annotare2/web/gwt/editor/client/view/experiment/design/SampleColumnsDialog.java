@@ -100,8 +100,6 @@ public class SampleColumnsDialog extends DialogBox {
 
     private final SampleAttributeEfoSuggest efoSuggest;
 
-    private String experimentDesignType;
-
     public SampleColumnsDialog(List<SampleColumn> columns,
                                SampleAttributeEfoSuggest efoSuggest,
                                Collection<OntologyTerm> experimentDesigns,
@@ -156,7 +154,7 @@ public class SampleColumnsDialog extends DialogBox {
 
         for(ExperimentDesignType designType: ExperimentDesignType.values())
         {
-            experimentDesignType = designType.getLabel();
+            String experimentDesignType = designType.getLabel();
             if(expDesignTypes.contains(designType.getLabel())) {
                 for (SampleAttributeTemplate attribute : designType.getAttributes()) {
                     if(!attributeTemplates.contains(attribute.getName())) {
@@ -217,7 +215,7 @@ public class SampleColumnsDialog extends DialogBox {
         SampleAttributeTemplate template = getSelectedTemplate();
         if (template != null) {
             templateColumnList.removeItem(templateColumnList.getSelectedIndex());
-            addColumn(template,"");
+            addColumn(template);
         }
     }
 
@@ -228,7 +226,7 @@ public class SampleColumnsDialog extends DialogBox {
 
     @UiHandler("newColumnLabel")
     void newColumnClicked(ClickEvent event) {
-        addColumn(USER_DEFIED_ATTRIBUTE,"");
+        addColumn(USER_DEFIED_ATTRIBUTE);
     }
 
     @UiHandler("okButton")
@@ -310,7 +308,7 @@ public class SampleColumnsDialog extends DialogBox {
                 mandatoryAttributeTemplates.add(template.getName().toLowerCase());
             }
         }
-        addColumn(mandatoryTemplates,"");
+        addColumn(mandatoryTemplates);
     }
 
     private void updateTemplates() {
@@ -357,12 +355,23 @@ public class SampleColumnsDialog extends DialogBox {
         );
     }
 
-    private void addColumn(final List<SampleAttributeTemplate> templates, final String experimentDesignType) {
+    private void addColumn(final SampleAttributeTemplate template) {
         efoSuggest.getSystemEfoTerms(
                 new ReportingAsyncCallback<SystemEfoTermMap>(FailureMessage.UNABLE_TO_LOAD_EFO) {
                     @Override
                     public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
-                        addColumn(templates, systemEfoTermMap, experimentDesignType);
+                        addColumn(template, systemEfoTermMap);
+                    }
+                }
+        );
+    }
+
+    private void addColumn(final List<SampleAttributeTemplate> templates) {
+        efoSuggest.getSystemEfoTerms(
+                new ReportingAsyncCallback<SystemEfoTermMap>(FailureMessage.UNABLE_TO_LOAD_EFO) {
+                    @Override
+                    public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
+                        addColumn(templates, systemEfoTermMap);
                         setMandatoryColumn();
 
                     }
@@ -381,10 +390,21 @@ public class SampleColumnsDialog extends DialogBox {
         }
     }
 
-    private void addColumn(List<SampleAttributeTemplate> templates, SystemEfoTermMap context, String experimentDesignType) {
+    private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context) {
+        SampleColumn column = SampleColumn.create(template, context, false, false);
+        if (null == column) {
+            NotificationPopupPanel.error("Unable to add an attribute.", true, false);
+        } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
+            NotificationPopupPanel.error("Unable to add '" + column.getName() + "': attribute is already defined.", true, false);
+        } else {
+            setColumn(column, true);
+        }
+    }
+
+    private void addColumn(List<SampleAttributeTemplate> templates, SystemEfoTermMap context) {
         for (SampleAttributeTemplate template: templates
              ) {
-            SampleColumn column = SampleColumn.create(template, context, experimentDesignType, true);
+            SampleColumn column = SampleColumn.create(template, context, true, false);
             if (null == column) {
                 NotificationPopupPanel.error("Unable to add an attribute.", true, false);
             } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
