@@ -110,7 +110,7 @@ public class ProtocolTypes {
         private final String id;
 
         @JsonProperty("usage")
-        private final Usage usage;
+        private final List<Usage> usage;
 
         @JsonProperty("subject")
         private final ProtocolSubjectType subjectType;
@@ -121,9 +121,11 @@ public class ProtocolTypes {
         @JsonProperty("definition")
         private final String definition;
 
+        private boolean flag;
+
         public Config(@JsonProperty("label") String label,
                       @JsonProperty("id") String id,
-                      @JsonProperty("usage") Usage usage,
+                      @JsonProperty("usage") ArrayList<Usage> usage,
                       @JsonProperty("subject") ProtocolSubjectType subjectType,
                       @JsonProperty("precedence") Integer precedence,
                       @JsonProperty("definition") String definition) {
@@ -133,6 +135,7 @@ public class ProtocolTypes {
             this.subjectType = checkNotNull(subjectType);
             this.precedence = checkNotNull(precedence);
             this.definition = checkNotNull(definition);
+            this.flag = false;
         }
 
         public String getId() {
@@ -152,7 +155,15 @@ public class ProtocolTypes {
         }
 
         private boolean isUsedIn(ExperimentProfileType expType) {
-            return usage.isOkay(expType);
+            for (Usage use: usage
+                 ) {
+                if(flag = use.isOkay(expType))
+                {
+                    return true;
+                }
+
+            }
+            return flag;
         }
 
         private static <T> T checkNotNull(T t) {

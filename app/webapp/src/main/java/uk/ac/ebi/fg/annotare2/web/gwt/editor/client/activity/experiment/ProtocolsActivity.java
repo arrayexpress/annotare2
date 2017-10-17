@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 import uk.ac.ebi.fg.annotare2.submission.model.Protocol;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.AsyncCallbackWrapper;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.FailureMessage;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ProtocolAssignmentProfile;
@@ -52,6 +53,8 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     private final ExperimentDataProxy expData;
     private final ApplicationDataProxy appData;
     private HandlerRegistration criticalUpdateHandler;
+
+    private ExperimentProfileType expProfileType;
 
     @Inject
     public ProtocolsActivity(ProtocolsView view, OntologyDataProxy ontologyDataProxy, ExperimentDataProxy expData, ApplicationDataProxy appData) {
@@ -103,6 +106,25 @@ public class ProtocolsActivity extends AbstractActivity implements ProtocolsView
     @Override
     public void createProtocol(ProtocolType protocolType) {
         expData.createProtocol(protocolType);
+    }
+
+    @Override
+    public ExperimentProfileType getExperimentProfileType()
+    {
+        expData.getExperimentProfileTypeAsync(new AsyncCallbackWrapper<ExperimentProfileType>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onSuccess(ExperimentProfileType experimentProfileType) {
+
+                expProfileType = experimentProfileType;
+            }
+        });
+
+        return expProfileType;
     }
 
     @Override

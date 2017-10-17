@@ -14,7 +14,7 @@ import static java.util.EnumSet.*;
  */
 public enum ExperimentProfileTypeToAttributesMapping {
 
-    PLANT_EXPERIMENT(of(ExperimentProfileType.PLANT_SEQUENCING), SampleAttributeTemplate.ORGANISM_ATTRIBUTE,SampleAttributeTemplate.CULTIVAR_ATTRIBUTE,SampleAttributeTemplate.AGE_ATTRIBUTE,SampleAttributeTemplate.DEVELOPMENTAL_STAGE_ORIGIN,SampleAttributeTemplate.GENOTYPE_ATTRIBUTE,SampleAttributeTemplate.ORGANISM_ATTRIBUTE);
+    PLANT_EXPERIMENT(of(ExperimentProfileType.PLANT_SEQUENCING), SampleAttributeTemplate.ORGANISM_ATTRIBUTE,SampleAttributeTemplate.CULTIVAR_ATTRIBUTE,SampleAttributeTemplate.AGE_ATTRIBUTE,SampleAttributeTemplate.DEVELOPMENTAL_STAGE_ORIGIN,SampleAttributeTemplate.GENOTYPE_ATTRIBUTE,SampleAttributeTemplate.ORGANISM_PART_ATTRIBUTE);
 
     private final List<SampleAttributeTemplate> attributes;
     private EnumSet<ExperimentProfileType> expProfileTypes;

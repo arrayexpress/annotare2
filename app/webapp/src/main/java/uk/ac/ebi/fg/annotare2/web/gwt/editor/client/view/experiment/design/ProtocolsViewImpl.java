@@ -420,6 +420,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
         }
         if(gridView.getRows().isEmpty()) {
             (new AddProtocolDialog(presenter,
+                    presenter.getExperimentProfileType(),
                     new DialogCallback<List<Protocol>>() {
                         @Override
                         public boolean onOk(List<Protocol> protocols) {
