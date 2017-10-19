@@ -165,7 +165,8 @@ public class SampleColumnsDialog extends DialogBox {
                             addColumn(attribute, experimentDesignType);
                         }
                         else {
-                            addColumn(attribute, "");
+                            if(!mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()))
+                                addColumn(attribute, "");
                         }
                     }
                 }
@@ -373,6 +374,7 @@ public class SampleColumnsDialog extends DialogBox {
                     public void onSuccess(SystemEfoTermMap systemEfoTermMap) {
                         addColumn(templates, systemEfoTermMap);
                         setMandatoryColumn();
+                        updateTemplates();
 
                     }
                 }
