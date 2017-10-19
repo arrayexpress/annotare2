@@ -99,7 +99,7 @@ public class SubsTracking {
                                 .set(EXPERIMENTS.NAME, trimStringToSize(asciiCompliantString(submission.getTitle()), 255))
                                         .set(EXPERIMENTS.SUBMITTER_DESCRIPTION, asciiCompliantString(((ExperimentSubmission) submission).getExperimentProfile().getDescription()))
                                         .set(EXPERIMENTS.EXPERIMENT_TYPE, properties.getSubsTrackingExperimentType())
-                                        .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() ? 1 : 0)
+                                        .set(EXPERIMENTS.IS_UHTS, ((ExperimentSubmission) submission).getExperimentProfile().getType().isSequencing() || (((ExperimentSubmission) submission).getExperimentProfile().getType().isPlantSequncing()) ? 1 : 0)
                                         .set(EXPERIMENTS.NUM_SUBMISSIONS, 1)
                                         .set(EXPERIMENTS.ANNOTARE_SUBMISSION_ID, Ints.checkedCast(submission.getId()))
                                         .returning(EXPERIMENTS.ID)

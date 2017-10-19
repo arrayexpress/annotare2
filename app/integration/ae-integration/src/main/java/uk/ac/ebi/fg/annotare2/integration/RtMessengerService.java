@@ -343,7 +343,7 @@ public class RtMessengerService extends EmailMessengerService {
             return new ImmutableMap.Builder<String, String>()
                     .put(RtFieldNames.DIRECTORY, properties.getSubsTrackingExperimentType() + "_" + submission.getSubsTrackingId())
                     .put(RtFieldNames.SUBJECT, message.getSubject())
-                    .put(RtFieldNames.EXPERIMENT_TYPE, submissionType.isSequencing() ? "HTS" : "MA")
+                    .put(RtFieldNames.EXPERIMENT_TYPE, submissionType.isSequencing() || submissionType.isPlantSequncing() ? "HTS" : "MA")
                     .build();
         else
             return new ImmutableMap.Builder<String, String>()

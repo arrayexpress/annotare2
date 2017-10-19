@@ -297,7 +297,7 @@ public class MageTabGenerator {
         }
 
         Map<Integer, SDRFNode> extractLayer = generateExtractNodes(sourceLayer);
-        if (exp.getType().isMicroarray()) {
+        if (exp.getType().isMicroarray() || exp.getType().isPlantMicroarray()) {
             Map<String, SDRFNode> labeledExtractLayer = generateLabeledExtractNodes(extractLayer);
             generateMicroarrayAssayScanAndDataFileNodes(sdrf, labeledExtractLayer);
         } else {
@@ -641,7 +641,7 @@ public class MageTabGenerator {
     private TechnologyTypeAttribute createTechnologyTypeAttribute() {
         TechnologyTypeAttribute technologyType = new TechnologyTypeAttribute();
         technologyType.setAttributeValue(
-                exp.getType().isMicroarray() ? "array assay" : "sequencing assay");
+                exp.getType().isMicroarray() || exp.getType().isPlantMicroarray() ? "array assay" : "sequencing assay");
         return technologyType;
     }
 
@@ -706,7 +706,7 @@ public class MageTabGenerator {
             case RAW_FILE:
                 ArrayDataNode rawFileNode = getOrCreateNode(ArrayDataNode.class, fileName);
 
-                if (exp.getType().isSequencing() && rawFileNode.comments.isEmpty()) {
+                if ((exp.getType().isSequencing() || exp.getType().isPlantSequncing()) && rawFileNode.comments.isEmpty()) {
                     rawFileNode.comments.put("MD5", Arrays.asList(null != fileRef ? fileRef.getHash() : null));
                 }
                 fileNode = rawFileNode;

@@ -52,15 +52,15 @@ public abstract class ExperimentUpdater implements ExperimentUpdatePerformer {
             case ONE_COLOR_MICROARRAY:
                 return new OneColorMicroarrayUpdater(exp);
             case PLANT_ONE_COLOR_MICROARRAY:
-                return new OneColorMicroarrayUpdater(exp);
+                return new PlantOneColorMicroarrayUpdater(exp);
             case TWO_COLOR_MICROARRAY:
                 return new TwoColorMicroarrayUpdater(exp);
             case PLANT_TWO_COLOR_MICROARRAY:
-                return new TwoColorMicroarrayUpdater(exp);
+                return new PlantTwoColorMicroarrayUpdater(exp);
             case SEQUENCING:
                 return new SequencingUpdater(exp);
             case PLANT_SEQUENCING:
-                return new SequencingUpdater(exp);
+                return new PlantSequencingUpdater(exp);
         }
         throw new IllegalArgumentException("No updater for experiment type: " + type);
     }
