@@ -160,7 +160,10 @@ public class SampleColumnsDialog extends DialogBox {
                     if(!attributeTemplates.contains(attribute.getName())) {
                         attribute.setIsVisible(true);
                         attributeTemplates.add(attribute.getName());
-                        if(mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()) && (experimentDesignType.equalsIgnoreCase("species design"))) {
+                        if(mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()) &&
+                                (experimentDesignType.equalsIgnoreCase("species design") ||
+                                        experimentDesignType.equalsIgnoreCase("organism part comparison design") ||
+                                        experimentDesignType.equalsIgnoreCase("development or differentiation design"))) {
                             removeAddedColumn(attribute);
                             addColumn(attribute, experimentDesignType);
                         }
@@ -179,8 +182,8 @@ public class SampleColumnsDialog extends DialogBox {
     {
         for (int i = 0; i< columnList.getItemCount();i++) {
 
-            if (columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName()) ||
-                    columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName()+"experimentalvariable")) {
+            if (columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName().replaceAll("[()\\s]","")) ||
+                    columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName().replaceAll("[()\\s]","")+"experimentalvariable")) {
 
                 columnList.removeItem(i);
                 columnMap.remove(i+1);
