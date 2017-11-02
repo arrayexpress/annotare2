@@ -185,10 +185,16 @@ public class SampleColumnsDialog extends DialogBox {
             if (columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName().replaceAll("[()\\s]","")) ||
                     columnList.getItemText(i).replaceAll("[()\\s]","").equalsIgnoreCase(attributeTemplate.getName().replaceAll("[()\\s]","")+"experimentalvariable")) {
 
-                columnList.removeItem(i);
-                columnMap.remove(i+1);
+
+                int columnId = parseInt(columnList.getValue(i));
+                    columnList.removeItem(i);
+                    columnMap.remove(columnId);
+                    updateTemplates();
+                    DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
+                    
                 break;
             }
+
         }
     }
 
@@ -288,6 +294,8 @@ public class SampleColumnsDialog extends DialogBox {
         List<SampleAttributeTemplate> attributeTemplates;
         Collection<ExperimentProfileType> experimentProfileTypes;
 
+        Set<SampleAttributeTemplate> used = getUsedTemplates();
+
         for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
              ExperimentProfileTypeToAttributesMapping.values()) {
 
@@ -298,16 +306,20 @@ public class SampleColumnsDialog extends DialogBox {
 
                 for (SampleAttributeTemplate attributeTemplate :
                         attributeTemplates) {
-                    attributeTemplate.setIsMandatory(true);
+                    if (!used.contains(attributeTemplate))
+                    {
+                        mandatoryTemplates.add(attributeTemplate);
+                        mandatoryAttributeTemplates.add(attributeTemplate.getName().toLowerCase());
+                    }
                 }
             }
         }
 
-        Set<SampleAttributeTemplate> used = getUsedTemplates();
+
         Collection<SampleAttributeTemplate> all = SampleAttributeTemplate.getAll();
 
         for (SampleAttributeTemplate template : all) {
-            if (!used.contains(template) && template.isMandatory()) {
+            if (!used.contains(template) && template.isMandatory() && !mandatoryTemplates.contains(template)) {
                 mandatoryTemplates.add(template);
                 mandatoryAttributeTemplates.add(template.getName().toLowerCase());
             }
@@ -385,7 +397,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType) {
-        SampleColumn column = SampleColumn.create(template, context, experimentDesignType, false);
+        SampleColumn column = SampleColumn.create(template, context, experimentDesignType);
         if (null == column) {
             NotificationPopupPanel.error("Unable to add an attribute.", true, false);
         } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
@@ -396,7 +408,7 @@ public class SampleColumnsDialog extends DialogBox {
     }
 
     private void addColumn(SampleAttributeTemplate template, SystemEfoTermMap context) {
-        SampleColumn column = SampleColumn.create(template, context, false, false);
+        SampleColumn column = SampleColumn.create(template, context);
         if (null == column) {
             NotificationPopupPanel.error("Unable to add an attribute.", true, false);
         } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
@@ -409,7 +421,7 @@ public class SampleColumnsDialog extends DialogBox {
     private void addColumn(List<SampleAttributeTemplate> templates, SystemEfoTermMap context) {
         for (SampleAttributeTemplate template: templates
              ) {
-            SampleColumn column = SampleColumn.create(template, context, true, false);
+            SampleColumn column = SampleColumn.create(template, context);
             if (null == column) {
                 NotificationPopupPanel.error("Unable to add an attribute.", true, false);
             } else if (getUserColumnNamesLowerCased().contains(column.getName().toLowerCase())) {
@@ -437,7 +449,7 @@ public class SampleColumnsDialog extends DialogBox {
         }
         int columnId = parseInt(columnList.getValue(index));
         SampleAttributeTemplate template = columnMap.get(columnId).getTemplate();
-        if (!template.isMandatory()) {
+        if (!template.isMandatory() && !mandatoryTemplates.contains(template)) {
             columnList.removeItem(index);
             columnMap.remove(columnId);
             updateTemplates();

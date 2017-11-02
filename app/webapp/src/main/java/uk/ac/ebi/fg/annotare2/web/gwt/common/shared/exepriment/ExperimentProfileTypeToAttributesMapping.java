@@ -1,6 +1,5 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
-import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfile;
 import uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType;
 
 import java.util.*;

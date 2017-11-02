@@ -167,7 +167,7 @@ public class DataAssignmentViewImpl extends Composite implements DataAssignmentV
     private List<EnumWithHelpText> getAllowedColumnTypes() {
         List<EnumWithHelpText> types = new ArrayList<>();
         for (FileType type : FileType.values()) {
-            if (ExperimentProfileType.SEQUENCING == experimentType) {
+            if (ExperimentProfileType.SEQUENCING == experimentType || ExperimentProfileType.PLANT_SEQUENCING == experimentType) {
                 if (!type.isFGEM() || type.isProcessed() && (0 == countColumnsByType(type))) {
                     types.add(type);
                 }

@@ -10,7 +10,6 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentSetupSettings;
 
 import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.PLANT_SEQUENCING;
-import static uk.ac.ebi.fg.annotare2.submission.model.ExperimentProfileType.SEQUENCING;
 import static uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.utils.ValidationUtils.integerValuesOnly;
 
 /**

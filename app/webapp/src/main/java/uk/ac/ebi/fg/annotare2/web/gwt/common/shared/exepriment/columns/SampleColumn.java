@@ -94,7 +94,7 @@ public class SampleColumn implements IsSerializable {
         return new SampleColumn(attr);
     }
 
-    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType, boolean isMandatory) {
+    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, String experimentDesignType) {
 
         SampleAttribute attr = new SampleAttribute(0, template.name());
         attr.setType(template.getTypes().iterator().next());
@@ -112,21 +112,19 @@ public class SampleColumn implements IsSerializable {
             }
         }
 
-        if (!isMandatory) {
                 if (isNullOrEmpty(experimentDesignType)) {
                     if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism"))) {
-                        attr.setType(SampleAttributeType.FACTOR_VALUE);
+                        attr.setType(SampleAttributeType.CHARACTERISTIC_AND_FACTOR_VALUE);
                     }
                 } else {
                     if (!(template.getName().toLowerCase().equalsIgnoreCase("material type"))) {
-                        attr.setType(SampleAttributeType.FACTOR_VALUE);
+                        attr.setType(SampleAttributeType.CHARACTERISTIC_AND_FACTOR_VALUE);
                     }
                 }
-            }
         return new SampleColumn(attr);
     }
 
-    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context, boolean isMandatory, boolean isExperimentVariable) {
+    public static SampleColumn create(SampleAttributeTemplate template, SystemEfoTermMap context) {
 
         SampleAttribute attr = new SampleAttribute(0, template.name());
         attr.setType(template.getTypes().iterator().next());
@@ -144,13 +142,6 @@ public class SampleColumn implements IsSerializable {
             }
         }
 
-        if(isExperimentVariable) {
-            if (!isMandatory) {
-                    if (!(template.getName().toLowerCase().equalsIgnoreCase("material type") || template.getName().toLowerCase().equalsIgnoreCase("organism"))) {
-                        attr.setType(SampleAttributeType.FACTOR_VALUE);
-                    }
-            }
-        }
         return new SampleColumn(attr);
     }
 }
