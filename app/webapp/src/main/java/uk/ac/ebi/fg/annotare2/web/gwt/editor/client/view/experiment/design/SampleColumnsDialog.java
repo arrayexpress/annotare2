@@ -163,13 +163,14 @@ public class SampleColumnsDialog extends DialogBox {
                         if(mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()) &&
                                 (experimentDesignType.equalsIgnoreCase("species design") ||
                                         experimentDesignType.equalsIgnoreCase("organism part comparison design") ||
-                                        experimentDesignType.equalsIgnoreCase("development or differentiation design"))) {
+                                        experimentDesignType.equalsIgnoreCase("development or differentiation design") ||
+                                        experimentDesignType.equalsIgnoreCase("genotype design"))) {
                             removeAddedColumn(attribute);
                             addColumn(attribute, experimentDesignType);
                         }
                         else {
                             if(!mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()))
-                                addColumn(attribute, "");
+                                addColumn(attribute);
                         }
                     }
                 }
@@ -191,7 +192,6 @@ public class SampleColumnsDialog extends DialogBox {
                     columnMap.remove(columnId);
                     updateTemplates();
                     DomEvent.fireNativeEvent(Document.get().createChangeEvent(), columnList);
-                    
                 break;
             }
 
