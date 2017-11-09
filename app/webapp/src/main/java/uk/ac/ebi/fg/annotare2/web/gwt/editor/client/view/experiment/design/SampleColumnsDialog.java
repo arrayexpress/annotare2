@@ -39,6 +39,7 @@ import uk.ac.ebi.fg.annotare2.web.gwt.common.client.rpc.ReportingAsyncCallback.F
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.DialogCallback;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.client.view.NotificationPopupPanel;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.SystemEfoTermMap;
+import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDesignToAttributesMapping;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentDesignType;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.SampleAttributeTemplate;
 import uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment.ExperimentProfileTypeToAttributesMapping;
@@ -161,11 +162,12 @@ public class SampleColumnsDialog extends DialogBox {
                         attribute.setIsVisible(true);
                         attributeTemplates.add(attribute.getName());
                         if(mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()) &&
-                                (experimentDesignType.equalsIgnoreCase("species design") ||
-                                        experimentDesignType.equalsIgnoreCase("organism part comparison design") ||
-                                        experimentDesignType.equalsIgnoreCase("development or differentiation design") ||
-                                        experimentDesignType.equalsIgnoreCase("genotype design"))) {
+                                (isUsedIn(experimentDesignType))) {
                             removeAddedColumn(attribute);
+                            addColumn(attribute, experimentDesignType);
+                        }
+                        else if(isUsedIn(experimentDesignType))
+                        {
                             addColumn(attribute, experimentDesignType);
                         }
                         else {
@@ -177,6 +179,19 @@ public class SampleColumnsDialog extends DialogBox {
             }
 
         }
+    }
+
+    private boolean isUsedIn(String experimentDesign)
+    {
+        for (ExperimentDesignToAttributesMapping exp:
+             ExperimentDesignToAttributesMapping.values()) {
+
+            if(exp.isOkay(experimentDesign))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void removeAddedColumn(SampleAttributeTemplate attributeTemplate)
