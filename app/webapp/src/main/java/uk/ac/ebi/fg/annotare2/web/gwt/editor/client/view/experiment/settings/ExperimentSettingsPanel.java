@@ -124,6 +124,10 @@ public class ExperimentSettingsPanel extends Composite implements SuggestService
                 return new OneColorMicroarraySettingsEditor(this);
             case TWO_COLOR_MICROARRAY:
                 return new TwoColorMicroarraySettingsEditor(this);
+            case PLANT_ONE_COLOR_MICROARRAY:
+                return new PlantOneColorMicroarraySettingsEditor(this);
+            case PLANT_TWO_COLOR_MICROARRAY:
+                return new PlantTwoColorMicroarraySettingsEditor(this);
             default:
                 return new DummySettingsEditor();
         }
