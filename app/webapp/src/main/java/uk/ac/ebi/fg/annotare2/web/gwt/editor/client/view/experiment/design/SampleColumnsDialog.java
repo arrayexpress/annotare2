@@ -101,6 +101,8 @@ public class SampleColumnsDialog extends DialogBox {
 
     private final SampleAttributeEfoSuggest efoSuggest;
 
+    private final ExperimentProfileType experimentProfileType;
+
     public SampleColumnsDialog(List<SampleColumn> columns,
                                SampleAttributeEfoSuggest efoSuggest,
                                Collection<OntologyTerm> experimentDesigns,
@@ -142,6 +144,7 @@ public class SampleColumnsDialog extends DialogBox {
             attributeTemplates.add(entry.getValue().getName());
         }
 
+        this.experimentProfileType = experimentProfileType;
         addMandatoryColumns(experimentProfileType);
     }
 
@@ -157,12 +160,17 @@ public class SampleColumnsDialog extends DialogBox {
         {
             String experimentDesignType = designType.getLabel();
             if(expDesignTypes.contains(designType.getLabel())) {
+
                 for (SampleAttributeTemplate attribute : designType.getAttributes()) {
+
                     if(!attributeTemplates.contains(attribute.getName())) {
+
                         attribute.setIsVisible(true);
                         attributeTemplates.add(attribute.getName());
+
                         if(mandatoryAttributeTemplates.contains(attribute.getName().toLowerCase()) &&
                                 (isUsedIn(experimentDesignType))) {
+
                             removeAddedColumn(attribute);
                             addColumn(attribute, experimentDesignType);
                         }
@@ -464,7 +472,7 @@ public class SampleColumnsDialog extends DialogBox {
         }
         int columnId = parseInt(columnList.getValue(index));
         SampleAttributeTemplate template = columnMap.get(columnId).getTemplate();
-        if (!template.isMandatory() && !mandatoryTemplates.contains(template)) {
+        if (!template.isMandatory() && !mandatoryTemplates.contains(template) && !hasTemplate(template,experimentProfileType)) {
             columnList.removeItem(index);
             columnMap.remove(columnId);
             updateTemplates();
@@ -539,5 +547,30 @@ public class SampleColumnsDialog extends DialogBox {
     private static void setItemSelected(ListBox listBox, int index) {
         listBox.setItemSelected(index, true);
         DomEvent.fireNativeEvent(Document.get().createChangeEvent(), listBox);
+    }
+
+    private boolean hasTemplate(SampleAttributeTemplate template, ExperimentProfileType experimentProfileType)
+    {
+        List<SampleAttributeTemplate> attributeTemplates;
+        Collection<ExperimentProfileType> experimentProfileTypes;
+
+        for (ExperimentProfileTypeToAttributesMapping expTypeToAttribute:
+                ExperimentProfileTypeToAttributesMapping.values()) {
+
+            experimentProfileTypes = expTypeToAttribute.getExpProfileTypes();
+
+            if(experimentProfileTypes.contains(experimentProfileType)) {
+                attributeTemplates = expTypeToAttribute.getAttributes();
+
+                for (SampleAttributeTemplate attributeTemplate :
+                        attributeTemplates) {
+                    if (template == attributeTemplate) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
