@@ -1,7 +1,5 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.common.shared.exepriment;
 
-import uk.ac.ebi.fg.annotare2.submission.model.SampleAttribute;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +24,8 @@ public enum ExperimentDesignType {
     SPECIES_DESIGN("species design","EFO:0001753",SampleAttributeTemplate.ORGANISM_ATTRIBUTE),
     STIMULUS_STRESS_DESIGN("stimulus or stress design","EFO:0001762",SampleAttributeTemplate.STIMULUS_ATTRIBUTE),
     STAIN_LINE_DESIGN("strain or line design","EFO:0001754",SampleAttributeTemplate.STRAIN_ATTRIBUTE),
+    INJURY_DESIGN("injury design","EFO:0001760",SampleAttributeTemplate.INJURY_ATTRIBUTE),
+    CLINICAL_HISTORY_DESIGN("clinical history design","EFO:0000352",SampleAttributeTemplate.CLINICAL_HISTORY_ATTRIBUTE),
     TIME_SERIES_DESIGN("time series design","EFO:0001779",SampleAttributeTemplate.TIME_ATTRIBUTE);
 
     private final String label;
