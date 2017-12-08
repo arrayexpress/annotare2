@@ -210,7 +210,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
             }
         };
 
-        gridView.addPermanentColumn("Name", column, comparator, 150, Style.Unit.PX);
+        gridView.addPermanentColumn("Name", column, comparator, 100, Style.Unit.PX);
     }
 
     private void addAssignmentColumn() {
@@ -255,7 +255,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 );
             }
         });
-        gridView.addPermanentColumn("Assign protocols to samples", column, null, 300, Style.Unit.PX);
+        gridView.addPermanentColumn("Assign protocols to samples", column, null, 200, Style.Unit.PX);
     }
 
     private boolean isNameUnique(String name, int rowIndex) {
@@ -305,7 +305,7 @@ public class ProtocolsViewImpl extends Composite implements ProtocolsView, Requi
                 updateRow(row);
             }
         });
-        gridView.addPermanentColumn("Description *", column, null, 150, Style.Unit.PX, "If referring to a published protocol, please provide detailed citation, and the section in which the protocol can be found");
+        gridView.addPermanentColumn("Description *", column, null, 300, Style.Unit.PX, "If referring to a published protocol, please provide detailed citation, and the section in which the protocol can be found");
     }
 
     private void addHardwareColumn() {
