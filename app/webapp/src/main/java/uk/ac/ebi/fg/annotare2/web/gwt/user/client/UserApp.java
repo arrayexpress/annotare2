@@ -93,18 +93,23 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_100817_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_181217_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1503356400000L); // stop showing on 22 Aug (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1515456000000L); // stop showing on 22 Aug (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Annotare Downtime!",
-                    "<p>Dear Submitter,</p>" +
-                            "<p>Due to essential systems maintenance, Annotare will not be available from 18th to 21st August. We apologise for any inconvenience.</p>" +
-                            "<p>Regards,<br/>Annotare Team</p>",
+                    "Annotare Christmas Downtime",
+                    "<p>Due to reduced staffing levels over the holiday period (18 Dec 2017 - 8 Jan 2018), please " +
+                            "allow extra time for your submission or update requests to be processed.</p>" +
+                            "<p>For new submisisons, please try to get your new submission in the best possible shape" +
+                            " by following our " +
+                            "<a href=\"https://www.ebi.ac.uk/arrayexpress/submit/overview.html\" target=\"_blank\">" +
+                            "submission guidelines</a>, as that would greatly speed " +
+                            "up our curation efforts.</p>" +
+                            "<p>Happy Holidays!</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
