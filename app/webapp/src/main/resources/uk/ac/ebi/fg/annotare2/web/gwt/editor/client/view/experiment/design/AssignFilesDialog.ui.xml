@@ -27,7 +27,7 @@
             line-height: 160%;
         }
     </ui:style>
-    <g:ResizeLayoutPanel height="300px" width="650px">
+    <g:ResizeLayoutPanel height="350px" width="650px">
         <g:DockLayoutPanel>
             <g:center>
                 <g:SplitLayoutPanel>
