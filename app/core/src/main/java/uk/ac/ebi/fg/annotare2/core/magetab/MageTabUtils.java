@@ -88,7 +88,6 @@ public class MageTabUtils {
         errorMap.put("DADMN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] A processed data matrix file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
         errorMap.put("DADMN02", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] A processed data matrix file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
         errorMap.put("DADMN04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'normalization data transformation protocol' must be included wich describes the analysis methods used to generate the processed data matrix file. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
-        errorMap.put("DADN01", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] The 'Processed Data File' column has not been filled in (completely). See <a target=\"_blank\" href=\"../../help/assign_files.html\">Assign files to samples (Annotare Help)</a> for more details.");
         errorMap.put("DADN02", "[<a href=\"#DESIGN:FILES\">Assign Files</a>] A processed data file name can only contain alphanumeric characters, underscores and dots. Click on the file name in the upload panel to rename, then press 'Enter' to save the changes.");
         errorMap.put("DADN04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'normalization data transformation protocol' must be included which describes the analysis methods used to generate the processed data file(s). To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
         errorMap.put("EF01", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] An experiment must have at least one experimental variable. Go to [<a href=\"#DESIGN:SAMPLES\">Samples</a>] and press 'Add Sample Attributes and Variables...'. In the left panel, select the sample attribute that varies among your samples and is subject of the study, then tick the box next to 'Experimental Variable'.");
@@ -114,6 +113,7 @@ public class MageTabUtils {
         obsoleteErrors.add("ADMN03");
         obsoleteErrors.add("DADMN03");
         obsoleteErrors.add("DADN03");
+        obsoleteErrors.add("DADN01");
         obsoleteErrors.add("ADN03");
         obsoleteErrors.add("AD01");
         obsoleteErrors.add("AD03");
