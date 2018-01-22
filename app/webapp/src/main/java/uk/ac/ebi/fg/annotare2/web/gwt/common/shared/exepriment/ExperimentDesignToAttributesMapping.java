@@ -16,6 +16,7 @@ public enum ExperimentDesignToAttributesMapping {
     STRAIN_OR_LINE_DESIGN("strain or line design","strain"),
     CLINICAL_HISTORY_DESIGN("clinical history design","clinical history"),
     INJURY_DESIGN("injury design","injury"),
+    PATHOGENICITY_DESIGN("pathogenicity design","infect"),
     STIMULUS_OR_STRESS_DESIGN("stimulus or stress design","stimulus");
 
     private String experimentDesign;

@@ -20,6 +20,7 @@ public enum ExperimentDesignType {
     GENETIC_MODIFICATION_DESIGN("genetic modification design","EFO:0001758",SampleAttributeTemplate.GENOTYPE_ATTRIBUTE),
     GENOTYPE_DESIGN("genotype design","EFO:0001748",SampleAttributeTemplate.GENOTYPE_ATTRIBUTE),
     GROWTH_CONDITION_DESIGN("growth condition design","EFO:0001759",SampleAttributeTemplate.GROWTH_CONDITION_ORIGIN),
+    PATHOGENICITY_DESIGN("pathogenicity design","EFO:0001761",SampleAttributeTemplate.INFECT_ATTRIBUTE),
     INJURY_DESIGN("injury design","EFO:0001760",SampleAttributeTemplate.INJURY_ATTRIBUTE),
     ORGANISM_PART_COMPARISON_DESIGN("organism part comparison design","EFO:0001750",SampleAttributeTemplate.ORGANISM_PART_ATTRIBUTE),
     SEX_DESIGN("sex design","EFO:0001752",SampleAttributeTemplate.SEX_ORIGIN),
