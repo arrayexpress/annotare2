@@ -17,6 +17,7 @@
 package uk.ac.ebi.fg.annotare2.web.gwt.editor.client.view.experiment.design;
 
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -298,7 +299,7 @@ public class SamplesViewImpl extends Composite implements SamplesView, RequiresR
 
     private void addTextColumn(final SampleColumn sampleColumn) {
         Column<SampleRow, String> column = new Column<SampleRow, String>(
-                new EditSuggestCell(null)
+                new EditTextCell()
         ) {
             @Override
             public String getValue(SampleRow row) {
