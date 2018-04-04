@@ -65,6 +65,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -74,7 +76,8 @@ public class AeIntegrationWatchdog {
 
     private static final Logger logger = LoggerFactory.getLogger(AeIntegrationWatchdog.class);
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+    private final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
     private final AEConnection aeConnection;
@@ -87,6 +90,7 @@ public class AeIntegrationWatchdog {
     private final EfoSearch efoSearch;
     private final ExtendedAnnotareProperties properties;
     private final Messenger messenger;
+    private static AtomicCounter atomicCounter;
 
     private enum SubmissionOutcome {
         INITIAL_SUBMISSION_OK,
@@ -120,6 +124,8 @@ public class AeIntegrationWatchdog {
         this.efoSearch = efoSearch;
         this.properties = properties;
         this.messenger = messenger;
+
+        atomicCounter = new AtomicCounter();
     }
 
     @PostConstruct
@@ -128,16 +134,29 @@ public class AeIntegrationWatchdog {
             @Override
             public void run() {
                 Session session = sessionFactory.openSession();
-                try {
-                    periodicRun();
-                } catch (Throwable x) {
-                    logger.error("Submission watchdog process caught an exception:", x);
-                    messenger.send("Error in submission watchdog process:", x);
-                } finally {
-                    session.close();
-                }
-            }
-
+                        try {
+                            final Runnable submissionProcess = new Runnable() {
+                                @Override
+                                public void run() {
+                                    Session submissionSession = sessionFactory.openSession();
+                                    try{
+                                        periodicRun();
+                                    }catch(Throwable x){
+                                        logger.error("Submission watchdog process caught an exception:", x);
+                                        messenger.send("Error in submission watchdog process:", x);
+                                    }finally {
+                                        submissionSession.close();
+                                    }
+                                }
+                            };
+                            executor.submit(submissionProcess);
+                        } catch (Throwable x) {
+                            logger.error("Submission watchdog process caught an exception:", x);
+                            messenger.send("Error in submission watchdog process:", x);
+                        } finally {
+                            session.close();
+                        }
+                    }
         };
 
         if (properties.isSubsTrackingEnabled()) {
@@ -154,7 +173,7 @@ public class AeIntegrationWatchdog {
     }
 
     private void periodicRun() throws Exception {
-        Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
+        final Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED
                 , SubmissionStatus.RESUBMITTED
                 , SubmissionStatus.AWAITING_FILE_VALIDATION
@@ -169,37 +188,87 @@ public class AeIntegrationWatchdog {
         boolean hasProcessedOneSubmission = false;
         boolean hasValidatedOneSubmission = false;
 
-        for (Submission submission : submissions) {
-            switch (submission.getStatus()) {
-                case SUBMITTED:
-                case RESUBMITTED:
-                    if (!hasProcessedOneSubmission) {
-                        processSubmitted(submission);
-                        hasProcessedOneSubmission = true;
-                    }
-                    break;
+        //submissionSessionFactory = sessionFactory.create();
 
-                case IN_CURATION:
-                    processInCuration(submission);
-                    break;
-
-                case PRIVATE_IN_AE:
-                    processPrivateInAE(submission);
-                    break;
-
-                case PUBLIC_IN_AE:
-                    processPublicInAE(submission);
-                    break;
-
-                case AWAITING_FILE_VALIDATION:
-                    processAwaitingFileValidation(submission);
-                    break;
-
-                case VALIDATING_FILES:
-                    processValidatingFiles(submission);
-                    break;
+        if(atomicCounter.getCount() < 4) {
+            //Thread processSubmitted = new Thread() {
+              //  @Override
+                //public void run() {
+                  //  final Session submissionSession = submissionSessionFactory.openSession();
+                    //try {
+            if(!sessionFactory.hasOpenSession()){
+                Session submissionSession = sessionFactory.openSession();
             }
+                        for (Submission submission : submissions) {
+                            switch (submission.getStatus()) {
+                                case SUBMITTED:
+                                case RESUBMITTED:
+                                    try {
+                                        processSubmitted(submission);
+                                        atomicCounter.decrement();
+                                        break;
+                                    } catch (Exception e) {
+                                        logger.error("There was an error during experiment submission (SUBMITTED/RESUBMITTED) state",e);
+                                    }
+
+                                case IN_CURATION:
+                                    try {
+                                        processInCuration(submission);
+                                        atomicCounter.decrement();
+                                        break;
+                                    } catch (Exception e) {
+                                        logger.error("There was an error in submission (IN_CURATION) state",e);
+                                    }
+
+                                case PRIVATE_IN_AE:
+                                    try {
+                                        processPrivateInAE(submission);
+                                        atomicCounter.decrement();
+                                        break;
+                                    } catch (Exception e) {
+                                        logger.error("There was an error in submission (PRIVATE_IN_AE) state",e);
+                                    }
+
+                                case PUBLIC_IN_AE:
+                                    try {
+                                        processPublicInAE(submission);
+                                        atomicCounter.decrement();
+                                        break;
+                                    } catch (Exception e) {
+                                        logger.error("There was an error in submission (PUBLIC_IN_AE) state",e);
+                                    }
+
+                                case AWAITING_FILE_VALIDATION:
+                                    try {
+                                        processAwaitingFileValidation(submission);
+                                        atomicCounter.decrement();
+                                        break;
+                                    } catch (Exception e) {
+                                        logger.error("There was an error in submission (AWAITING_FILE_VALIDATION) state",e);
+                                    }
+
+                                case VALIDATING_FILES:
+                                    try {
+                                        processValidatingFiles(submission);
+                                        atomicCounter.decrement();
+                                        break;
+                                    } catch (Exception e) {
+                                        logger.error("There was an error in submission (VALIDATING_FILES) state",e);
+                                    }
+                            }
+                        }
+                    //} catch (RuntimeException e) {
+                    //    logger.error(e.getMessage());
+                   // } finally {
+                      //  submissionSession.close();
+                 //   }
+              //  }
+            //};
+
+            atomicCounter.increment();
+           // processSubmitted.start();
         }
+
     }
 
     @Transactional(rollbackOn = {FileValidationException.class})
@@ -814,5 +883,31 @@ public class AeIntegrationWatchdog {
         }
     }
 
+    public class AtomicCounter {
+
+        private final AtomicInteger counter = new AtomicInteger(0);
+
+        public int getCount(){ return counter.get(); }
+
+        public void increment() {
+            while(true){
+                int existingValue = getCount();
+                int newValue = existingValue + 1;
+                if(counter.compareAndSet(existingValue,newValue)){
+                    return;
+                }
+            }
+        }
+
+        public void decrement() {
+            while(getCount() > 0){
+                int existingValue = getCount();
+                int newValue = existingValue - 1;
+                if(counter.compareAndSet(existingValue,newValue)){
+                    return;
+                }
+            }
+        }
+    }
 
 }
