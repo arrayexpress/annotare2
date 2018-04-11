@@ -93,23 +93,20 @@ public class UserApp implements EntryPoint {
         showNotice();
     }
 
-    private final static String NOTICE_COOKIE = "Notice_181217_Shown"; // change name according to the cookie display date ddmmyy
+    private final static String NOTICE_COOKIE = "Notice_090418_Shown"; // change name according to the cookie display date ddmmyy
     private void showNotice() {
         Date stopNoticeDate = new Date();
-        stopNoticeDate.setTime(1515456000000L); // stop showing on 22 Aug (http://www.epochconverter.com/)
+        stopNoticeDate.setTime(1523833199000L); // stop showing on 15 April (http://www.epochconverter.com/)
         if (!"YEZ".equalsIgnoreCase(Cookies.getCookie(NOTICE_COOKIE)) && (new Date().before(stopNoticeDate))) {
             Date expiryDate = new Date();
             expiryDate.setTime(8000000000000L);
             CookieDialog dialogBox = new CookieDialog(
-                    "Annotare Christmas Downtime",
-                    "<p>Due to reduced staffing levels over the holiday period (18 Dec 2017 - 8 Jan 2018), please " +
-                            "allow extra time for your submission or update requests to be processed.</p>" +
-                            "<p>For new submisisons, please try to get your new submission in the best possible shape" +
-                            " by following our " +
-                            "<a href=\"https://www.ebi.ac.uk/arrayexpress/submit/overview.html\" target=\"_blank\">" +
-                            "submission guidelines</a>, as that would greatly speed " +
-                            "up our curation efforts.</p>" +
-                            "<p>Happy Holidays!</p>",
+                    "Annotare Easter Downtime",
+                    "<p>Dear Submitters,<p>" +
+                            "<p>Please be aware but sadly both curators will be away from the office over " +
+                            "the next week (9th-13th April 2018) so there will be a delay in submissions processing." +
+                            "We will do our best to reply and curate urgent submissions or those already in progress.</p>" +
+                            "<p>Apologies for any inconvenience</p>",
                     NOTICE_COOKIE, expiryDate
             );
             dialogBox.show();
