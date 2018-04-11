@@ -76,7 +76,7 @@ public class AeIntegrationWatchdog {
 
     private static final int THREAD_COUNT = 3;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(THREAD_COUNT);
-    final BlockingQueue<Long> submissionQueue = new ArrayBlockingQueue<>(3);
+    final BlockingQueue<Long> submissionsBeingProcessed = new ArrayBlockingQueue<>(THREAD_COUNT);
     private final HibernateSessionFactory sessionFactory;
     private final SubsTracking subsTracking;
     private final AEConnection aeConnection;
@@ -130,7 +130,7 @@ public class AeIntegrationWatchdog {
             public void run() {
                 Session session = sessionFactory.openSession();
                 try {
-                    periodicRun();
+                    processSubmissions();
                 } catch (Throwable x) {
                     logger.error("Submission watchdog process caught an exception:", x);
                     messenger.send("Error in submission watchdog process:", x);
@@ -156,7 +156,7 @@ public class AeIntegrationWatchdog {
         }
     }
 
-    private void periodicRun() throws Exception {
+    private void processSubmissions() throws Exception {
         final Collection<Submission> submissions = submissionDao.getSubmissionsByStatus(
                 SubmissionStatus.SUBMITTED
                 , SubmissionStatus.RESUBMITTED
@@ -168,14 +168,19 @@ public class AeIntegrationWatchdog {
         );
 
         for (Submission submission : submissions) {
-            if (!submissionQueue.contains(submission.getId())) {
-                submissionQueue.add(submission.getId());
+            if (!submissionsBeingProcessed.contains(submission.getId())) {
+                submissionsBeingProcessed.add(submission.getId());
+                for (Long submissionId:
+                     submissionsBeingProcessed) {
+                    logger.debug("Submissions being processed: " + submissionId);
+                }
                 switch (submission.getStatus()) {
                     case SUBMITTED:
                     case RESUBMITTED:
                         try {
                             processSubmitted(submission);
-                            submissionQueue.remove(submission.getId());
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error during experiment submission (SUBMITTED/RESUBMITTED) state", e);
@@ -184,7 +189,8 @@ public class AeIntegrationWatchdog {
                     case IN_CURATION:
                         try {
                             processInCuration(submission);
-                            submissionQueue.remove(submission.getId());
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (IN_CURATION) state", e);
@@ -193,7 +199,8 @@ public class AeIntegrationWatchdog {
                     case PRIVATE_IN_AE:
                         try {
                             processPrivateInAE(submission);
-                            submissionQueue.remove(submission.getId());
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (PRIVATE_IN_AE) state", e);
@@ -202,7 +209,8 @@ public class AeIntegrationWatchdog {
                     case PUBLIC_IN_AE:
                         try {
                             processPublicInAE(submission);
-                            submissionQueue.remove(submission.getId());
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (PUBLIC_IN_AE) state", e);
@@ -211,7 +219,8 @@ public class AeIntegrationWatchdog {
                     case AWAITING_FILE_VALIDATION:
                         try {
                             processAwaitingFileValidation(submission);
-                            submissionQueue.remove(submission.getId());
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (AWAITING_FILE_VALIDATION) state", e);
@@ -220,7 +229,8 @@ public class AeIntegrationWatchdog {
                     case VALIDATING_FILES:
                         try {
                             processValidatingFiles(submission);
-                            submissionQueue.remove(submission.getId());
+                            submissionsBeingProcessed.remove(submission.getId());
+                            logger.debug("Submission being removed from current processing submission set: " + submission.getId());
                             break;
                         } catch (Exception e) {
                             logger.error("There was an error in submission (VALIDATING_FILES) state", e);
