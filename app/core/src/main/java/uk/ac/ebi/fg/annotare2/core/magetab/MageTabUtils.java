@@ -92,7 +92,7 @@ public class MageTabUtils {
         errorMap.put("DADN04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'normalization data transformation protocol' must be included which describes the analysis methods used to generate the processed data file(s). To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
         errorMap.put("EF01", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] An experiment must have at least one experimental variable. Go to [<a href=\"#DESIGN:SAMPLES\">Samples</a>] and press 'Add Sample Attributes and Variables...'. In the left panel, select the sample attribute that varies among your samples and is subject of the study, then tick the box next to 'Experimental Variable'.");
         errorMap.put("EX03", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid extraction protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
-        errorMap.put("EX04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] A 'nucleic acid library construction protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("EX04", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] (%s) A sample should be described by a 'nucleic acid library construction protocol'.");
         errorMap.put("FV04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] (%s) The values of an experimental variable must vary (for compound+dose at least one must vary). One of the experimental variables contains the same values for all samples. Make sure the correct values were entered, or if the attribute is not a factor in this experiment, uncheck 'Experimental Variable' in the 'Add Samples and Experimental Variables' dialogue.");
         errorMap.put("G01", "[<a href=\"#DESIGN:GENERAL_INFO\">General Info</a>] The experiment must have a title. Please provide an informative title that states the intent (and not conclusion) of the experiment.");
         errorMap.put("G02", "[<a href=\"#DESIGN:GENERAL_INFO\">General Info</a>] The experiment must have a description. Please outline the scientific background and the experimental workflow in the text field.");
@@ -109,6 +109,7 @@ public class MageTabUtils {
         errorMap.put("PR10", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] The 'nucleic acid sequencing protocol' must specify the sequencing hardware. Choose the name of the sequencing machine from the drop-down menu under 'Hardware' for the 'nucleic acid sequencing protocol'.");
         errorMap.put("SR04", "[<a href=\"#DESIGN:SAMPLES\">Sample annotation</a>] 'Organism' is a mandatory attribute for the source material and must be filled in.");
         errorMap.put("SR08", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] (%s) A 'growth protocol', 'treatment protocol' or 'sample collection protocol' must be included. To create a protocol, go to [<a href=\"#DESIGN:PROTOCOLS\">Describe protocols</a>] and press the 'Add Protocol' button. Insert text in the 'Description' field for the required protocol.");
+        errorMap.put("AN03", "[<a href=\"#DESIGN:PROTOCOLS\">Protocols</a>] (%s) A sample should be described by a 'nucleic acid sequencing protocol'.");
 
         obsoleteErrors.add("ADMN03");
         obsoleteErrors.add("DADMN03");
@@ -119,7 +120,6 @@ public class MageTabUtils {
         obsoleteErrors.add("AD03");
         obsoleteErrors.add("AD04");
         obsoleteErrors.add("AN02");
-        obsoleteErrors.add("AN03");
         obsoleteErrors.add("AN05");
         obsoleteErrors.add("AN06");
         obsoleteErrors.add("CA03");
